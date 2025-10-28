@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lunaengine"
+dynamic = ["version"]
+description = "A modern 2D game engine with advanced UI and graphics"
+dependencies = [
+    "pygame>=2.5.0",
+    "numpy>=1.21.0",
+    "PyOpenGL>=3.1.0",
+    "PyOpenGL-accelerate>=3.1.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "flake8"]
