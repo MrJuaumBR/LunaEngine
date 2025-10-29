@@ -128,6 +128,10 @@ class CodeStatistics:
         
         return stats
     
+    def get_code_density(self,stats):
+        # Code density
+        return (stats['code_lines'] / max(1, stats['total_lines'])) * 100
+    
     def print_statistics(self, stats: Dict):
         """Print formatted statistics"""
         print("=" * 60)
@@ -170,7 +174,7 @@ class CodeStatistics:
             print(f"   {i:2}. {file_info['path'][:35]:<35} {comment_ratio:5.1f}% comments")
         
         # Code density
-        code_density = (stats['code_lines'] / max(1, stats['total_lines'])) * 100
+        code_density = self.get_code_density(stats)
         print(f"\n📝 CODE DENSITY: {code_density:.1f}%")
         
         if code_density > 80:
@@ -216,6 +220,14 @@ def save_detailed_report(stats: Dict, report_file: Path):
         f.write(f"- **Code Lines**: {stats['code_lines']}\n")
         f.write(f"- **Comment Lines**: {stats['comment_lines']}\n")
         f.write(f"- **Blank Lines**: {stats['blank_lines']}\n")
+        
+        f.write("\n## Code Density\n\n")
+        code_density = (stats['code_lines'] / max(1, stats['total_lines'])) * 100
+        f.write(f"- **Code Density**: {code_density:.1f}%\n")
+        text = "High code density - consider adding more comments" if code_density > 80 else \
+               "Well documented - good comment ratio" if code_density < 50 else \
+               "Balanced code and comments"
+        f.write(f"- {text}\n")
         
         f.write("\n## Files by Extension\n\n")
         f.write("| Extension | Count | Percentage |\n")

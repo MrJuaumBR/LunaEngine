@@ -337,7 +337,7 @@ Include: 1) Brief description, 2) Parameters, 3) Returns. Keep it under 10 lines
         """Process a single module and return markdown + output file path"""
         print(f"🔄 Processing {module_path}...")
         markdown_docs = self.generate_markdown_docs(module_path)
-        output_file = Path("ollama_docs") / f"{module_path.stem}.md"
+        output_file = Path("docs") / f"{module_path.stem}.md"
         return markdown_docs, output_file
 
     def generate_full_documentation(self):
@@ -350,16 +350,22 @@ Include: 1) Brief description, 2) Parameters, 3) Returns. Keep it under 10 lines
         self._total_count = 0
 
         # Create documentation directory
-        docs_dir = Path("ollama_docs")
+        docs_dir = Path("docs")
         docs_dir.mkdir(exist_ok=True)
 
         modules = [
             "lunaengine/core/engine.py",
+            "lunaengine/core/renderer.py",
             "lunaengine/ui/elements.py",
+            "lunaengine/ui/themes.py",
+            "lunaengine/ui/layout.py",
             "lunaengine/utils/image_converter.py", 
+            "lunaengine/utils/math_utils.py",
+            "lunaengine/utils/threading.py",
             "lunaengine/graphics/lighting.py",
             "lunaengine/graphics/particles.py",
-            "lunaengine/utils/performance.py"
+            "lunaengine/utils/performance.py",
+            "lunaengine/tools/code_stats.py",
         ]
 
         # First count total items for progress
@@ -415,7 +421,7 @@ This documentation was automatically generated using Ollama AI models with optim
         
         total_time = time.time() - self._start_time
         print(f"🎉 Documentation generation complete! Time: {total_time:.1f}s")
-        print("📁 Open ollama_docs/README.md to browse the documentation")
+        print("📁 Open docs/README.md to browse the documentation")
 
 def generate_full_documentation():
     """Generate complete documentation for LunaEngine"""

@@ -49,23 +49,17 @@ Optimized performance monitoring with minimal overhead
 
 #### Methods
 
+##### Method `__init__`
+
+Private method.
+
+*Line: 8*
+
 ##### Method `_get_windows_cpu_cores`
 
 Get CPU cores on Windows
 
 *Line: 137*
-
-##### Method `_get_empty_stats`
-
-Return empty stats structure
-
-*Line: 74*
-
-##### Method `update_frame`
-
-Update frame timing - optimized version
-
-*Line: 19*
 
 ##### Method `get_hardware_info`
 
@@ -73,17 +67,23 @@ Get hardware information (cached)
 
 *Line: 87*
 
+##### Method `update_frame`
+
+Update frame timing - optimized version
+
+*Line: 19*
+
 ##### Method `get_stats`
 
 Get FPS statistics with optimized calculations
 
 *Line: 37*
 
-##### Method `__init__`
+##### Method `_get_empty_stats`
 
-Private method.
+Return empty stats structure
 
-*Line: 8*
+*Line: 74*
 
 ##### Method `_get_windows_memory`
 
@@ -107,17 +107,23 @@ Get CPU cores on Linux
 
 ## Functions
 
+### Function `get_stats`
+
+Get FPS statistics with optimized calculations
+
+*Line: 37*
+
 ### Function `_get_windows_memory`
 
 Get memory info on Windows
 
 *Line: 160*
 
-### Function `__init__`
+### Function `_get_empty_stats`
 
-Private method.
+Return empty stats structure
 
-*Line: 190*
+*Line: 74*
 
 ### Function `_get_linux_cpu_cores`
 
@@ -137,42 +143,6 @@ Private method.
 
 *Line: 8*
 
-### Function `update_frame`
-
-Update frame timing - optimized version
-
-*Line: 19*
-
-### Function `_get_empty_stats`
-
-Return empty stats structure
-
-*Line: 74*
-
-### Function `cleanup`
-
-Clean up unused resources
-
-*Line: 204*
-
-### Function `mark_font_unused`
-
-Mark a font as potentially unused
-
-*Line: 196*
-
-### Function `_get_linux_memory`
-
-Get memory info on Linux
-
-*Line: 168*
-
-### Function `get_stats`
-
-Get FPS statistics with optimized calculations
-
-*Line: 37*
-
 ### Function `get_hardware_info`
 
 Get hardware information (cached)
@@ -184,4 +154,34 @@ Get hardware information (cached)
 Mark a surface as potentially unused
 
 *Line: 200*
+
+### Function `_get_linux_memory`
+
+Get memory info on Linux
+
+*Line: 168*
+
+### Function `mark_font_unused`
+
+Mark a font as potentially unused
+
+*Line: 196*
+
+### Function `__init__`
+
+Private method.
+
+*Line: 190*
+
+### Function `cleanup`
+
+Clean up unused resources
+
+*Line: 204*
+
+### Function `update_frame`
+
+Update frame timing - optimized version
+
+*Line: 19*
 

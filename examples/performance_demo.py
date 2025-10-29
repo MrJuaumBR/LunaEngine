@@ -2,7 +2,8 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from lunaengine import LunaEngine, TextLabel, Button, Slider, Dropdown
+from lunaengine import LunaEngine
+from lunaengine.ui import TextLabel, Button, Slider, Dropdown
 
 class PerformanceDemoScene:
     def __init__(self):
@@ -71,7 +72,7 @@ def main():
     count_slider.on_value_changed = change_test_count
     scene.ui_elements.append(count_slider)
     
-    count_text = TextLabel(20, 305, f"Test Elements: {scene.test_count}", 16, (150, 200, 150))
+    count_text = TextLabel(20, 325, f"Test Elements: {scene.test_count}", 16, (150, 200, 150))
     scene.ui_elements.append(count_text)
     
     # Instructions
