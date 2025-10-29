@@ -1,0 +1,106 @@
+/* LunaEngine Documentation */
+:root {
+    --primary-color: #007bff;
+    --bg-color: #ffffff;
+    --text-color: #212529;
+    --border-color: #dee2e6;
+    --card-bg: #ffffff;
+    --header-bg: #f8f9fa;
+}
+
+[data-theme="dark"] {
+    --primary-color: #0d6efd;
+    --bg-color: #1a1a1a;
+    --text-color: #e9ecef;
+    --border-color: #495057;
+    --card-bg: #2d3748;
+    --header-bg: #343a40;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.navbar {
+    background-color: var(--header-bg) !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.theme-toggle {
+    cursor: pointer;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    background-color: var(--border-color);
+}
+
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 5rem 0;
+}
+
+.stats-card {
+    background: rgba(255,255,255,0.1);
+    padding: 2rem;
+    border-radius: 1rem;
+    backdrop-filter: blur(10px);
+}
+
+.module-card {
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+    background-color: var(--card-bg);
+}
+
+.module-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.module-stats {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.file-card {
+    transition: all 0.3s ease;
+}
+
+.file-card:hover {
+    transform: translateX(5px);
+}
+
+.class-item, .function-item {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color) !important;
+}
+
+.method-item {
+    border-left: 3px solid var(--success);
+    padding-left: 1rem;
+}
+
+pre code {
+    border-radius: 0.5rem;
+    padding: 1rem !important;
+    background: #f8f9fa !important;
+}
+
+[data-theme="dark"] pre code {
+    background: #2d3748 !important;
+    color: #e9ecef !important;
+}

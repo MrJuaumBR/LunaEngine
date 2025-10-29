@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend - LunaEngine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary me-3">Backend</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Module Header -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                        <li class="breadcrumb-item active">Backend</li>
+                    </ol>
+                </nav>
+                
+                <div class="d-flex align-items-center mb-3">
+                    <h1 class="mb-0">Backend</h1>
+                    <span class="badge bg-info ms-3">Code Analysis</span>
+                </div>
+                <p class="lead text-muted">Renderer backends - OpenGL, Pygame</p>
+            </div>
+        </div>
+
+        <!-- Module Files -->
+        <div class="row">
+            <div class="col-12">
+
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                opengl.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    OpenGLRenderer
+                                </h6>
+                <div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, width, height)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>initialize(self)</code>
+                        <br><small class="text-muted">Initialize OpenGL context</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_create_shaders(self)</code>
+                        <br><small class="text-muted">Create basic shaders for 2D rendering</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_setup_quad_geometry(self)</code>
+                        <br><small class="text-muted">Setup quad geometry for rendering</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>begin_frame(self)</code>
+                        <br><small class="text-muted">Begin rendering frame</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>end_frame(self)</code>
+                        <br><small class="text-muted">End rendering frame</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_surface_to_texture(self, surface)</code>
+                        <br><small class="text-muted">Convert pygame surface to OpenGL texture</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>draw_surface(self, surface, x, y)</code>
+                        <br><small class="text-muted">Draw a pygame surface using OpenGL</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>draw_rect(self, x, y, width, height, color)</code>
+                        <br><small class="text-muted">Draw a colored rectangle</small></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                pygame_backend.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    PygameRenderer
+                                </h6>
+                <p class="text-muted mb-2">Simple Pygame-based renderer for development</p><small class="text-muted">Inherits from: Renderer</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, width, height)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>initialize(self)</code>
+                        <br><small class="text-muted">Initialize the renderer</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>begin_frame(self)</code>
+                        <br><small class="text-muted">Begin rendering frame - clear the surface</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>end_frame(self)</code>
+                        <br><small class="text-muted">End rendering frame</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>get_surface(self)</code>
+                        <br><small class="text-muted">Get the underlying pygame surface</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>draw_surface(self, surface, x, y)</code>
+                        <br><small class="text-muted">Draw a pygame surface - FIXED: Use proper blitting</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>draw_rect(self, x, y, width, height, color, fill)</code>
+                        <br><small class="text-muted">Draw a colored rectangle</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>draw_circle(self, x, y, radius, color)</code>
+                        <br><small class="text-muted">Draw a circle</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>draw_line(self, start_x, start_y, end_x, end_y, color, width)</code>
+                        <br><small class="text-muted">Draw a line</small></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <a href="../index.html" class="btn btn-primary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+</body>
+</html>

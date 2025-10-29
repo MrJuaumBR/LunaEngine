@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphics - LunaEngine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary me-3">Graphics</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Module Header -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                        <li class="breadcrumb-item active">Graphics</li>
+                    </ol>
+                </nav>
+                
+                <div class="d-flex align-items-center mb-3">
+                    <h1 class="mb-0">Graphics</h1>
+                    <span class="badge bg-info ms-3">Code Analysis</span>
+                </div>
+                <p class="lead text-muted">Graphics and rendering - Sprites, Lighting, Particles</p>
+            </div>
+        </div>
+
+        <!-- Module Files -->
+        <div class="row">
+            <div class="col-12">
+
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                lighting.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Light
+                                </h6>
+                <div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, radius, color, intensity)</code>
+                        </div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    LightSystem
+                                </h6>
+                <div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, screen_width, screen_height)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>add_light(self, light)</code>
+                        <br><small class="text-muted">Add a light to the system</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>remove_light(self, light)</code>
+                        <br><small class="text-muted">Remove a light from the system</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>calculate_lighting(self, surface)</code>
+                        <br><small class="text-muted">Calculate lighting for a surface</small></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                particles.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Particle
+                                </h6>
+                <div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>update(self, dt)</code>
+                        <br><small class="text-muted">Update particle position and state</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>is_alive(self)</code>
+                        <br><small class="text-muted">Check if particle is still alive</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ParticleEmitter
+                                </h6>
+                <div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>update(self, dt)</code>
+                        <br><small class="text-muted">Update emitter and all particles</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>emit_particle(self)</code>
+                        <br><small class="text-muted">Emit a new particle</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>draw(self, surface)</code>
+                        <br><small class="text-muted">Draw all particles</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ParticleSystem
+                                </h6>
+                <div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>add_emitter(self, emitter)</code>
+                        <br><small class="text-muted">Add an emitter to the system</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>remove_emitter(self, emitter)</code>
+                        <br><small class="text-muted">Remove an emitter</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>update(self, dt)</code>
+                        <br><small class="text-muted">Update all emitters</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>draw(self, surface)</code>
+                        <br><small class="text-muted">Draw all particles from all emitters</small></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                shadows.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ShadowSystem
+                                </h6>
+                <div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, screen_width, screen_height)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>add_occluder(self, rect)</code>
+                        <br><small class="text-muted">Add an object that casts shadows</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>remove_occluder(self, rect)</code>
+                        <br><small class="text-muted">Remove an occluder</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>calculate_shadows(self, light_pos, light_radius)</code>
+                        <br><small class="text-muted">Calculate shadows for a light source</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_draw_shadow_polygon(self, surface, light_pos, occluder, light_radius)</code>
+                        <br><small class="text-muted">Draw shadow polygon for an occluder</small></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                spritesheet.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    SpriteSheet
+                                </h6>
+                <div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, filename, sprite_width, sprite_height)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_extract_sprites(self)</code>
+                        <br><small class="text-muted">Extract individual sprites from the spritesheet</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>get_sprite(self, index)</code>
+                        <br><small class="text-muted">Get sprite by index</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>get_animation_frames(self, start, end)</code>
+                        <br><small class="text-muted">Get a sequence of frames for animation</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>get_sprite_by_position(self, row, col)</code>
+                        <br><small class="text-muted">Get sprite by grid position</small></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <a href="../index.html" class="btn btn-primary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+</body>
+</html>

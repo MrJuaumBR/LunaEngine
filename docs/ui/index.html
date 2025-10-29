@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ui - LunaEngine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary me-3">Ui</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Module Header -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                        <li class="breadcrumb-item active">Ui</li>
+                    </ol>
+                </nav>
+                
+                <div class="d-flex align-items-center mb-3">
+                    <h1 class="mb-0">Ui</h1>
+                    <span class="badge bg-info ms-3">Code Analysis</span>
+                </div>
+                <p class="lead text-muted">User interface components - Buttons, Layouts, Themes</p>
+            </div>
+        </div>
+
+        <!-- Module Files -->
+        <div class="row">
+            <div class="col-12">
+
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                elements.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                elements.py - UI Elements Module for LunaEngine
+
+ENGINE PATH:
+lunaengine -> ui -> elements.py
+
+DESCRIPTION:
+This module provides a comprehensive collection of user interface (UI) elements
+for creating interactive graphical interfaces in Pygame. It includes basic components
+like buttons, labels, and text fields, as well as more complex elements like dropdown
+menus, progress bars, and scrollable containers.
+
+LIBRARIES USED:
+- pygame: For graphical rendering and event handling
+- numpy: For mathematical calculations (primarily in gradients)
+- typing: For type hints and type annotations
+- enum: For enum definitions (UI states)
+
+MAIN CLASSES:
+
+1. UIState (Enum):
+   - Defines possible UI element states (NORMAL, HOVERED, PRESSED, DISABLED)
+
+2. FontManager:
+   - Manages Pygame fonts with lazy loading and caching
+   - Ensures proper font system initialization
+
+3. UIElement:
+   - Base class for all UI elements providing common functionality
+   - Handles positioning, theming, mouse interaction, and rendering
+
+4. TextLabel:
+   - Displays static or dynamic text with theme support
+   - Supports custom fonts and colors
+
+5. ImageLabel:
+   - Displays images with optional scaling
+   - Supports various image formats
+
+6. Button:
+   - Interactive button with hover, press, and disabled states
+   - Supports text and theme-based styling
+
+7. ImageButton:
+   - Button that uses images instead of text
+   - Includes state-based visual feedback
+
+8. TextBox:
+   - Interactive text input field with cursor
+   - Supports keyboard input and text editing
+
+9. ProgressBar:
+   - Visual progress indicator for loading or value display
+   - Shows percentage and customizable range
+
+10. UIDraggable:
+    - UI element that can be dragged around the screen
+    - Provides visual feedback during dragging
+
+11. UIGradient:
+    - UI element with gradient background
+    - Supports horizontal and vertical gradients with multiple colors
+
+12. Select:
+    - Selection element with arrow buttons to cycle through options
+    - Compact alternative to dropdowns
+
+13. Switch:
+    - Toggle switch element with sliding animation
+    - Alternative to checkboxes with smooth transitions
+
+14. ScrollingFrame:
+    - Container element with scrollable content
+    - Supports both horizontal and vertical scrolling
+
+15. Slider:
+    - Interactive slider for selecting numeric values
+    - Draggable thumb with value display
+
+16. Dropdown:
+    - Dropdown menu for selecting from a list of options
+    - Supports scrolling for long lists and custom themes
+
+This module forms the core of LunaEngine's UI system, providing a flexible and
+themeable foundation for building complex user interfaces in Pygame applications.
+                            </div>
+            <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    UIState
+                                </h6>
+                <p class="text-muted mb-2">Enumeration of possible UI element states.</p><small class="text-muted">Inherits from: Enum</small></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    FontManager
+                                </h6>
+                <p class="text-muted mb-2">Manages fonts and ensures Pygame font system is initialized.</p><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>initialize(cls)</code>
+                        <br><small class="text-muted">Initialize the font system.
+
+This method should be called before using any font-related functionality.
+It initializes Pygame's font module if not already initialized.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>get_font(cls, font_name, font_size)</code>
+                        <br><small class="text-muted">Get a font object for rendering text.
+
+Args:
+    font_name (Optional[str]): Path to font file or None for default system font.
+    font_size (int): Size of the font in pixels.
+    
+Returns:
+    pygame.font.Font: A font object ready for text rendering.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    UIElement
+                                </h6>
+                <p class="text-muted mb-2">Base class for all UI elements providing common functionality.</p><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, width, height, root_point)</code>
+                        <br><small class="text-muted">Initialize a UI element with position and dimensions.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    width (int): Width of the element in pixels.
+    height (int): Height of the element in pixels.
+    root_point (Tuple[float, float]): Anchor point for positioning where (0,0) is top-left 
+                                    and (1,1) is bottom-right.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>get_actual_position(self, parent_width, parent_height)</code>
+                        <br><small class="text-muted">Calculate actual screen position based on root_point anchor.
+
+Args:
+    parent_width (int): Width of parent element if applicable.
+    parent_height (int): Height of parent element if applicable.
+    
+Returns:
+    Tuple[int, int]: The actual (x, y) screen coordinates.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>add_child(self, child)</code>
+                        <br><small class="text-muted">Add a child element to this UI element.
+
+Args:
+    child: The child UI element to add.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>update(self, dt)</code>
+                        <br><small class="text-muted">Update element state.
+
+Args:
+    dt (float): Delta time in seconds since last update.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>update_theme(self, theme_type)</code>
+                        <br><small class="text-muted">Update the theme for this element and all its children.
+
+Args:
+    theme_type (ThemeType): The new theme to apply.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_with_mouse(self, mouse_pos, mouse_pressed, dt)</code>
+                        <br><small class="text-muted">Update element with current mouse state for interaction.
+
+Args:
+    mouse_pos (Tuple[int, int]): Current mouse position (x, y).
+    mouse_pressed (bool): Whether mouse button is currently pressed.
+    dt (float): Delta time in seconds.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        <br><small class="text-muted">Render the element to the screen.
+
+Args:
+    renderer: The renderer object used for drawing.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>on_click(self)</code>
+                        <br><small class="text-muted">Called when element is clicked by the user.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>on_hover(self)</code>
+                        <br><small class="text-muted">Called when mouse hovers over the element.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    TextLabel
+                                </h6>
+                <p class="text-muted mb-2">UI element for displaying text labels.</p><small class="text-muted">Inherits from: UIElement</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, text, font_size, color, font_name, root_point, theme)</code>
+                        <br><small class="text-muted">Initialize a text label element.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    text (str): The text to display.
+    font_size (int): Size of the font in pixels.
+    color (Optional[Tuple[int, int, int]]): Custom text color (overrides theme).
+    font_name (Optional[str]): Path to font file or None for default font.
+    root_point (Tuple[float, float]): Anchor point for positioning.
+    theme (ThemeType): Theme to use for text color.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>update_theme(self, theme_type)</code>
+                        <br><small class="text-muted">Update theme for text label.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>font(self)</code>
+                        <br><small class="text-muted">Get the font object (lazy loading).
+
+Returns:
+    pygame.font.Font: The font object for this label.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_text(self, text)</code>
+                        <br><small class="text-muted">Update the displayed text and recalculate element size.
+
+Args:
+    text (str): The new text to display.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_theme(self, theme_type)</code>
+                        <br><small class="text-muted">Set the theme for this text label.
+
+Args:
+    theme_type (ThemeType): The theme to apply.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_text_color(self)</code>
+                        <br><small class="text-muted">Get the current text color.
+
+Returns:
+    Tuple[int, int, int]: RGB color tuple for the text.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        <br><small class="text-muted">Render the text label.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ImageLabel
+                                </h6>
+                <p class="text-muted mb-2">UI element for displaying images.</p><small class="text-muted">Inherits from: UIElement</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, image_path, width, height, root_point)</code>
+                        <br><small class="text-muted">Initialize an image label element.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    image_path (str): Path to the image file.
+    width (Optional[int]): Width of the image (None for original size).
+    height (Optional[int]): Height of the image (None for original size).
+    root_point (Tuple[float, float]): Anchor point for positioning.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_load_image(self)</code>
+                        <br><small class="text-muted">Load and prepare the image.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_image(self, image_path)</code>
+                        <br><small class="text-muted">Change the displayed image.
+
+Args:
+    image_path (str): Path to the new image file.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        <br><small class="text-muted">Render the image label.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Button
+                                </h6>
+                <p class="text-muted mb-2">Interactive button element that responds to clicks.</p><small class="text-muted">Inherits from: UIElement</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, width, height, text, font_size, font_name, root_point, theme)</code>
+                        <br><small class="text-muted">Initialize a button element.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    width (int): Width of the button in pixels.
+    height (int): Height of the button in pixels.
+    text (str): Text to display on the button.
+    font_size (int): Size of the font in pixels.
+    font_name (Optional[str]): Path to font file or None for default font.
+    root_point (Tuple[float, float]): Anchor point for positioning.
+    theme (ThemeType): Theme to use for button appearance.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>font(self)</code>
+                        <br><small class="text-muted">Get the font object (lazy loading).</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_on_click(self, callback)</code>
+                        <br><small class="text-muted">Set the callback function for click events.
+
+Args:
+    callback (Callable): Function to call when button is clicked.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_theme(self, theme_type)</code>
+                        <br><small class="text-muted">Set the theme for this button.
+
+Args:
+    theme_type (ThemeType): The theme to apply.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_colors(self)</code>
+                        <br><small class="text-muted">Get colors from the current theme.
+
+Returns:
+    UITheme: The current theme object.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_with_mouse(self, mouse_pos, mouse_pressed, dt)</code>
+                        <br><small class="text-muted">Update button with mouse interaction.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_color_for_state(self)</code>
+                        <br><small class="text-muted">Get the appropriate color for the current button state.
+
+Returns:
+    Tuple[int, int, int]: RGB color tuple for the current state.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_text_color(self)</code>
+                        <br><small class="text-muted">Get the text color from the current theme.
+
+Returns:
+    Tuple[int, int, int]: RGB color tuple for the text.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        <br><small class="text-muted">Render the button.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ImageButton
+                                </h6>
+                <p class="text-muted mb-2">Interactive button that displays an image instead of text.</p><small class="text-muted">Inherits from: UIElement</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, image_path, width, height, root_point, theme)</code>
+                        <br><small class="text-muted">Initialize an image button element.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    image_path (str): Path to the image file.
+    width (Optional[int]): Width of the button.
+    height (Optional[int]): Height of the button.
+    root_point (Tuple[float, float]): Anchor point for positioning.
+    theme (ThemeType): Theme to use for button states.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_load_image(self)</code>
+                        <br><small class="text-muted">Load the button image.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_on_click(self, callback)</code>
+                        <br><small class="text-muted">Set the callback function for click events.
+
+Args:
+    callback (Callable): Function to call when button is clicked.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_with_mouse(self, mouse_pos, mouse_pressed, dt)</code>
+                        <br><small class="text-muted">Update image button with mouse interaction.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_overlay_color(self)</code>
+                        <br><small class="text-muted">Get overlay color based on button state.
+
+Returns:
+    Optional[Tuple[int, int, int]]: Overlay color or None for no overlay.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        <br><small class="text-muted">Render the image button.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    TextBox
+                                </h6>
+                <p class="text-muted mb-2">Interactive text input field - OPTIMIZED</p><small class="text-muted">Inherits from: UIElement</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, width, height, text, font_size, font_name, root_point, theme)</code>
+                        <br><small class="text-muted">Initialize a text box element.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    width (int): Width of the text box.
+    height (int): Height of the text box.
+    text (str): Initial text content (acts as placeholder).
+    font_size (int): Size of the font.
+    font_name (Optional[str]): Font to use.
+    root_point (Tuple[float, float]): Anchor point for positioning.
+    theme (ThemeType): Theme to use for appearance.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>font(self)</code>
+                        <br><small class="text-muted">Get the font object with lazy loading.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_text_surface(self)</code>
+                        <br><small class="text-muted">Update text surface cache when text changes.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_text_color(self)</code>
+                        <br><small class="text-muted">Get appropriate text color based on state.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_background_color(self)</code>
+                        <br><small class="text-muted">Get background color based on state.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_text(self, text)</code>
+                        <br><small class="text-muted">Set the text content.
+
+Args:
+    text (str): New text content.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_with_mouse(self, mouse_pos, mouse_pressed, dt)</code>
+                        <br><small class="text-muted">Update text box with mouse interaction - OPTIMIZED</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>handle_key_input(self, event)</code>
+                        <br><small class="text-muted">Handle keyboard input when focused - OPTIMIZED
+
+Args:
+    event: Pygame keyboard event.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_cursor_position(self, actual_x, actual_y)</code>
+                        <br><small class="text-muted">Calculate cursor position - OPTIMIZED</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        <br><small class="text-muted">Render the text box - FIXED</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ProgressBar
+                                </h6>
+                <p class="text-muted mb-2">Visual progress indicator for loading or health display.</p><small class="text-muted">Inherits from: UIElement</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, width, height, min_val, max_val, value, root_point, theme)</code>
+                        <br><small class="text-muted">Initialize a progress bar element.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    width (int): Width of the progress bar.
+    height (int): Height of the progress bar.
+    min_val (float): Minimum value.
+    max_val (float): Maximum value.
+    value (float): Current value.
+    root_point (Tuple[float, float]): Anchor point for positioning.
+    theme (ThemeType): Theme to use for appearance.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_value(self, value)</code>
+                        <br><small class="text-muted">Set the current progress value.
+
+Args:
+    value (float): New progress value.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>get_percentage(self)</code>
+                        <br><small class="text-muted">Get progress as percentage.
+
+Returns:
+    float: Progress percentage (0-100).</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        <br><small class="text-muted">Render the progress bar.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    UIDraggable
+                                </h6>
+                <p class="text-muted mb-2">UI element that can be dragged around the screen.</p><small class="text-muted">Inherits from: UIElement</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, width, height, root_point, theme)</code>
+                        <br><small class="text-muted">Initialize a draggable UI element.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    width (int): Width of the element.
+    height (int): Height of the element.
+    root_point (Tuple[float, float]): Anchor point for positioning.
+    theme (ThemeType): Theme to use for appearance.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_with_mouse(self, mouse_pos, mouse_pressed, dt)</code>
+                        <br><small class="text-muted">Update draggable element with mouse interaction.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        <br><small class="text-muted">Render the draggable element.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    UIGradient
+                                </h6>
+                <p class="text-muted mb-2">UI element with gradient background.</p><small class="text-muted">Inherits from: UIElement</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, width, height, colors, direction, root_point)</code>
+                        <br><small class="text-muted">Initialize a gradient UI element.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    width (int): Width of the element.
+    height (int): Height of the element.
+    colors (List[Tuple[int, int, int]]): List of colors for the gradient.
+    direction (str): Gradient direction ("horizontal" or "vertical").
+    root_point (Tuple[float, float]): Anchor point for positioning.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_generate_gradient(self)</code>
+                        <br><small class="text-muted">Generate the gradient surface.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_interpolate_colors(self, ratio)</code>
+                        <br><small class="text-muted">Interpolate between gradient colors.
+
+Args:
+    ratio (float): Interpolation ratio (0-1).
+    
+Returns:
+    Tuple[int, int, int]: Interpolated color.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_colors(self, colors)</code>
+                        <br><small class="text-muted">Set new gradient colors.
+
+Args:
+    colors (List[Tuple[int, int, int]]): New gradient colors.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        <br><small class="text-muted">Render the gradient element.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Select
+                                </h6>
+                <p class="text-muted mb-2">Selection element with arrow buttons to cycle through options.</p><small class="text-muted">Inherits from: UIElement</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, width, height, options, font_size, font_name, root_point, theme)</code>
+                        <br><small class="text-muted">Initialize a select element.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    width (int): Width of the element.
+    height (int): Height of the element.
+    options (List[str]): Available options.
+    font_size (int): Font size.
+    font_name (Optional[str]): Font to use.
+    root_point (Tuple[float, float]): Anchor point for positioning.
+    theme (ThemeType): Theme to use for appearance.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>font(self)</code>
+                        <br><small class="text-muted">Get the font object.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>next_option(self)</code>
+                        <br><small class="text-muted">Select the next option.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>previous_option(self)</code>
+                        <br><small class="text-muted">Select the previous option.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_selected_index(self, index)</code>
+                        <br><small class="text-muted">Set selected option by index.
+
+Args:
+    index (int): Index of option to select.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_on_selection_changed(self, callback)</code>
+                        <br><small class="text-muted">Set selection change callback.
+
+Args:
+    callback (Callable): Function called when selection changes.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_with_mouse(self, mouse_pos, mouse_pressed, dt)</code>
+                        <br><small class="text-muted">Update select element with mouse interaction.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        <br><small class="text-muted">Render the select element.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Switch
+                                </h6>
+                <p class="text-muted mb-2">Toggle switch element (like checkbox but with sliding animation).</p><small class="text-muted">Inherits from: UIElement</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, width, height, checked, root_point, theme)</code>
+                        <br><small class="text-muted">Initialize a switch element.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    width (int): Width of the switch.
+    height (int): Height of the switch.
+    checked (bool): Initial state.
+    root_point (Tuple[float, float]): Anchor point for positioning.
+    theme (ThemeType): Theme to use for appearance.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>toggle(self)</code>
+                        <br><small class="text-muted">Toggle the switch state.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_checked(self, checked)</code>
+                        <br><small class="text-muted">Set the switch state.
+
+Args:
+    checked (bool): New state.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_on_toggle(self, callback)</code>
+                        <br><small class="text-muted">Set toggle callback.
+
+Args:
+    callback (Callable): Function called when switch is toggled.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_with_mouse(self, mouse_pos, mouse_pressed, dt)</code>
+                        <br><small class="text-muted">Update switch with mouse interaction.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        <br><small class="text-muted">Render the switch.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ScrollingFrame
+                                </h6>
+                <p class="text-muted mb-2">Container element with scrollable content.</p><small class="text-muted">Inherits from: UIElement</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, width, height, content_width, content_height, root_point, theme)</code>
+                        <br><small class="text-muted">Initialize a scrolling frame.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    width (int): Visible width.
+    height (int): Visible height.
+    content_width (int): Total content width.
+    content_height (int): Total content height.
+    root_point (Tuple[float, float]): Anchor point for positioning.
+    theme (ThemeType): Theme to use for appearance.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>handle_scroll(self, scroll_y)</code>
+                        <br><small class="text-muted">Handle scroll input.
+
+Args:
+    scroll_y (int): Vertical scroll amount.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        <br><small class="text-muted">Render the scrolling frame.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_draw_horizontal_scrollbar(self, renderer, x, y, theme)</code>
+                        <br><small class="text-muted">Draw horizontal scrollbar.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_draw_vertical_scrollbar(self, renderer, x, y, theme)</code>
+                        <br><small class="text-muted">Draw vertical scrollbar.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Slider
+                                </h6>
+                <p class="text-muted mb-2">Interactive slider for selecting numeric values</p><small class="text-muted">Inherits from: UIElement</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, width, height, min_val, max_val, value, root_point, theme)</code>
+                        <br><small class="text-muted">Initialize a slider element.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    width (int): Width of the slider track in pixels.
+    height (int): Height of the slider in pixels.
+    min_val (float): Minimum value of the slider.
+    max_val (float): Maximum value of the slider.
+    value (float): Initial value of the slider.
+    root_point (Tuple[float, float]): Anchor point for positioning.
+    theme (ThemeType): Theme to use for slider appearance.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_theme(self, theme_type)</code>
+                        <br><small class="text-muted">Set slider theme</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_colors(self)</code>
+                        <br><small class="text-muted">Get colors from current theme</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_with_mouse(self, mouse_pos, mouse_pressed, dt)</code>
+                        <br><small class="text-muted">Update slider with mouse interaction</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        </div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Dropdown
+                                </h6>
+                <p class="text-muted mb-2">Dropdown menu for selecting from a list of options</p><small class="text-muted">Inherits from: UIElement</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, width, height, options, font_size, font_name, root_point, theme, max_visible_options)</code>
+                        <br><small class="text-muted">Initialize a dropdown menu element.
+
+Args:
+    x (int): X coordinate position.
+    y (int): Y coordinate position.
+    width (int): Width of the dropdown in pixels.
+    height (int): Height of the dropdown in pixels.
+    options (List[str]): List of available options.
+    font_size (int): Size of the font in pixels.
+    font_name (Optional[str]): Path to font file or None for default font.
+    root_point (Tuple[float, float]): Anchor point for positioning.
+    theme (ThemeType): Theme to use for dropdown appearance.
+    max_visible_options (int): Maximum number of options to show before scrolling.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>font(self)</code>
+                        <br><small class="text-muted">Lazy font loading</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_theme(self, theme_type)</code>
+                        <br><small class="text-muted">Set dropdown theme</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_colors(self)</code>
+                        <br><small class="text-muted">Get colors from current theme</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_with_mouse(self, mouse_pos, mouse_pressed, dt)</code>
+                        <br><small class="text-muted">Update dropdown with mouse interaction and scroll support</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>handle_scroll(self, scroll_y)</code>
+                        <br><small class="text-muted">Handle mouse wheel scrolling</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_visible_options(self)</code>
+                        <br><small class="text-muted">Get the list of option indices that are currently visible</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_scrollbar_rect(self, actual_x, actual_y)</code>
+                        <br><small class="text-muted">Get the scrollbar rectangle</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>render(self, renderer)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>add_option(self, option)</code>
+                        <br><small class="text-muted">Add an option to the dropdown</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>remove_option(self, option)</code>
+                        <br><small class="text-muted">Remove an option from the dropdown</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_selected_index(self, index)</code>
+                        <br><small class="text-muted">Set the selected option by index</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_on_selection_changed(self, callback)</code>
+                        <br><small class="text-muted">Set callback for when selection changes</small></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                layout.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                layout.py - UI Layout Managers for LunaEngine
+
+ENGINE PATH:
+lunaengine -> ui -> layout.py
+
+DESCRIPTION:
+This module provides layout management classes that automatically arrange
+UI elements according to specified rules, simplifying the process of creating
+structured and responsive user interfaces.
+
+LIBRARIES USED:
+- typing: For type hints and type annotations
+
+MAIN CLASSES:
+
+1. UILayout:
+   - Base class for all layout managers
+   - Provides common functionality for element management
+   - Handles element addition and removal
+
+2. VerticalLayout:
+   - Arranges elements vertically with consistent spacing
+   - Automatically positions elements from top to bottom
+
+3. HorizontalLayout:
+   - Arranges elements horizontally with consistent spacing
+   - Automatically positions elements from left to right
+
+4. GridLayout:
+   - Arranges elements in a grid pattern with specified columns
+   - Supports custom cell dimensions and spacing
+   - Automatically wraps elements to new rows
+
+5. JustifiedLayout:
+   - Distributes elements with equal spacing
+   - Supports both horizontal and vertical justification
+   - Fills available space evenly
+
+This module simplifies UI composition by providing automatic positioning
+and alignment of elements, reducing manual coordinate calculations.
+                            </div>
+            <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    UILayout
+                                </h6>
+                <p class="text-muted mb-2">Base class for UI layout managers.</p><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y)</code>
+                        <br><small class="text-muted">Initialize a layout manager.
+
+Args:
+    x (int): Starting X coordinate for the layout.
+    y (int): Starting Y coordinate for the layout.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>add_element(self, element)</code>
+                        <br><small class="text-muted">Add an element to the layout.
+
+Args:
+    element (UIElement): The UI element to add to the layout.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>remove_element(self, element)</code>
+                        <br><small class="text-muted">Remove an element from the layout.
+
+Args:
+    element (UIElement): The UI element to remove from the layout.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_layout(self)</code>
+                        <br><small class="text-muted">Update element positions based on layout rules.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    VerticalLayout
+                                </h6>
+                <p class="text-muted mb-2">Layout that arranges elements vertically.</p><small class="text-muted">Inherits from: UILayout</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, spacing)</code>
+                        <br><small class="text-muted">Initialize a vertical layout.
+
+Args:
+    x (int): Starting X coordinate.
+    y (int): Starting Y coordinate.
+    spacing (int): Space between elements in pixels.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_layout(self)</code>
+                        <br><small class="text-muted">Arrange elements vertically with spacing.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    HorizontalLayout
+                                </h6>
+                <p class="text-muted mb-2">Layout that arranges elements horizontally.</p><small class="text-muted">Inherits from: UILayout</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, spacing)</code>
+                        <br><small class="text-muted">Initialize a horizontal layout.
+
+Args:
+    x (int): Starting X coordinate.
+    y (int): Starting Y coordinate.
+    spacing (int): Space between elements in pixels.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_layout(self)</code>
+                        <br><small class="text-muted">Arrange elements horizontally with spacing.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    GridLayout
+                                </h6>
+                <p class="text-muted mb-2">Layout that arranges elements in a grid.</p><small class="text-muted">Inherits from: UILayout</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, cols, cell_width, cell_height, h_spacing, v_spacing)</code>
+                        <br><small class="text-muted">Initialize a grid layout.
+
+Args:
+    x (int): Starting X coordinate.
+    y (int): Starting Y coordinate.
+    cols (int): Number of columns in the grid.
+    cell_width (int): Width of each cell.
+    cell_height (int): Height of each cell.
+    h_spacing (int): Horizontal spacing between cells.
+    v_spacing (int): Vertical spacing between cells.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_layout(self)</code>
+                        <br><small class="text-muted">Arrange elements in a grid pattern.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    JustifiedLayout
+                                </h6>
+                <p class="text-muted mb-2">Layout that justifies elements with equal spacing.</p><small class="text-muted">Inherits from: UILayout</small><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, x, y, justify_x, justify_y)</code>
+                        <br><small class="text-muted">Initialize a justified layout.
+
+Args:
+    x (int): Starting X coordinate.
+    y (int): Starting Y coordinate.
+    justify_x (bool): Whether to justify horizontally.
+    justify_y (bool): Whether to justify vertically.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_update_layout(self)</code>
+                        <br><small class="text-muted">Arrange elements with justified spacing.</small></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                styles.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    UIState
+                                </h6>
+                <p class="text-muted mb-2">Enumeration of possible UI element states.</p><small class="text-muted">Inherits from: Enum</small></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    UIStyle
+                                </h6>
+                <p class="text-muted mb-2">Defines the visual style for UI elements.</p><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self)</code>
+                        <br><small class="text-muted">Initialize a UI style with default values.</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>get_color(self, state)</code>
+                        <br><small class="text-muted">Get the color for a specific UI state.
+
+Args:
+    state (UIState): The UI state to get color for.
+    
+Returns:
+    Tuple[int, int, int]: RGB color tuple for the specified state.</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Theme
+                                </h6>
+                <p class="text-muted mb-2">Collection of styles for different UI elements forming a complete theme.</p><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self)</code>
+                        <br><small class="text-muted">Initialize a theme with default styles for all UI elements.</small></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                themes.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                themes.py - UI Themes Manager for LunaEngine
+
+ENGINE PATH:
+lunaengine -> ui -> themes.py
+
+DESCRIPTION:
+This module manages comprehensive UI themes with predefined color schemes
+for various applications and visual styles. It includes a wide range of
+themes from basic functional ones to brand-specific and aesthetic designs.
+
+LIBRARIES USED:
+- enum: For theme type definitions
+- typing: For type hints and type annotations
+- dataclasses: For structured theme data storage
+
+MAIN CLASSES:
+
+1. UITheme (dataclass):
+   - Complete UI theme configuration for all elements
+   - Defines colors for buttons, dropdowns, sliders, labels, and general UI
+   - Supports optional border colors for different elements
+   - Now includes background2 for better contrast
+
+2. ThemeType (Enum):
+   - Comprehensive enumeration of available theme types including:
+     - Basic: DEFAULT, PRIMARY, SECONDARY, WARN, ERROR, SUCCESS, INFO
+     - Fantasy: FANTASY_DARK, FANTASY_LIGHT
+     - Cherry: CHERRY_DARK, CHERRY_LIGHT
+     - Gemstones: RUBY, EMERALD, DIAMOND
+     - Metals: SILVER, COPPER, BRONZE
+     - Brand: ROBLOX, DISCORD, GMAIL, YOUTUBE
+     - Aesthetic: AZURE, EIGHTIES, CLOUDS, QUEEN, KING
+     - New: FOREST, SUNSET, OCEAN, MATRIX, LAVENDER, CHOCOLATE
+
+3. ThemeManager:
+   - Manages theme registration, retrieval, and application
+   - Provides access to predefined themes
+   - Handles current theme state management
+   - Supports theme customization and overrides
+
+This module provides a rich theming system with over 20 predefined color schemes
+suitable for various application types and visual preferences.
+                            </div>
+            <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    UITheme
+                                </h6>
+                <p class="text-muted mb-2">Complete UI theme configuration for all elements</p></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ThemeType
+                                </h6>
+                <small class="text-muted">Inherits from: Enum</small></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ThemeManager
+                                </h6>
+                <p class="text-muted mb-2">Manages complete UI themes</p><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>initialize_default_themes(cls)</code>
+                        <br><small class="text-muted">Initialize all complete UI themes</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>get_theme_by_name(cls, name)</code>
+                        <br><small class="text-muted">Get theme by name string</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>get_theme(cls, theme_type)</code>
+                        <br><small class="text-muted">Get complete theme by type</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_theme(cls, theme_type, theme)</code>
+                        <br><small class="text-muted">Set or override a theme</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>set_current_theme(cls, theme_type)</code>
+                        <br><small class="text-muted">Set the current default theme</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>get_current_theme(cls)</code>
+                        <br><small class="text-muted">Get current default theme</small></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <a href="../index.html" class="btn btn-primary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+</body>
+</html>

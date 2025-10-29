@@ -18,6 +18,11 @@ A modern, optimized 2D game engine built with Python and Pygame featuring advanc
 ## 📁 Project Structure
 ```bash
 LunaEngine/
+├── .vscode # VsCode settings
+├── docs # Docs Ai made *ignore
+├── .github/
+│   └── workflows/
+│       └── docs.yml
 ├── examples/ # Demo applications
 │   ├── basic_game.py # Basic UI demonstration
 │   ├── image_conversion_demo.py # Image embedding system

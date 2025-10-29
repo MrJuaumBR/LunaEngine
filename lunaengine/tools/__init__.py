@@ -1,5 +1,3 @@
-"""
-LunaEngine Development Tools
-"""
+"""Tools module for LunaEngine"""
 
 __all__ = []

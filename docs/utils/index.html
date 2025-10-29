@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utils - LunaEngine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary me-3">Utils</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Module Header -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                        <li class="breadcrumb-item active">Utils</li>
+                    </ol>
+                </nav>
+                
+                <div class="d-flex align-items-center mb-3">
+                    <h1 class="mb-0">Utils</h1>
+                    <span class="badge bg-info ms-3">Code Analysis</span>
+                </div>
+                <p class="lead text-muted">Utility functions - Performance, Math, Threading</p>
+            </div>
+        </div>
+
+        <!-- Module Files -->
+        <div class="row">
+            <div class="col-12">
+
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                image_converter.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ImageConverter
+                                </h6>
+                <p class="text-muted mb-2">Converts images to Python code for embedding in games
+Uses Pygame for image loading - NO PILLOW REQUIRED</p><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>image_to_python_code(image_path, output_var_name, max_size, method)</code>
+                        <br><small class="text-muted">Convert an image to Python code</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_resize_surface(surface, max_size)</code>
+                        <br><small class="text-muted">Resize surface while maintaining aspect ratio</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_to_pixel_array(surface, width, height, var_name)</code>
+                        <br><small class="text-muted">Convert to Python pixel array code - FIXED COLOR BUG</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_to_base64(surface, width, height, var_name)</code>
+                        <br><small class="text-muted">Convert to base64 encoded string</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_to_compressed(surface, width, height, var_name)</code>
+                        <br><small class="text-muted">Convert to compressed base64 string</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>create_image_from_code(image_data)</code>
+                        <br><small class="text-muted">Create a pygame Surface from converted image data</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_from_pixel_array(image_data)</code>
+                        <br><small class="text-muted">Create surface from pixel array - FIXED COLOR BUG</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_from_encoded_data(image_data)</code>
+                        <br><small class="text-muted">Create surface from encoded data</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    EmbeddedImage
+                                </h6>
+                <p class="text-muted mb-2">Helper class for working with embedded images</p><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, image_data)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>surface(self)</code>
+                        <br><small class="text-muted">Get the pygame Surface (lazy loading)</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>width(self)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>height(self)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>draw(self, renderer, x, y)</code>
+                        <br><small class="text-muted">Draw the image using a renderer</small></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                math_utils.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        <h6 class="mt-4">Functions:</h6>
+                        <div class="function-item mb-2 p-2 border rounded">
+                            <code>lerp(a, b, t)</code>
+                <br><small class="text-muted">Linear interpolation between a and b</small></div>
+                        <div class="function-item mb-2 p-2 border rounded">
+                            <code>clamp(value, min_val, max_val)</code>
+                <br><small class="text-muted">Clamp value between min and max</small></div>
+                        <div class="function-item mb-2 p-2 border rounded">
+                            <code>distance(point1, point2)</code>
+                <br><small class="text-muted">Calculate distance between two points</small></div>
+                        <div class="function-item mb-2 p-2 border rounded">
+                            <code>normalize_vector(x, y)</code>
+                <br><small class="text-muted">Normalize a 2D vector</small></div>
+                        <div class="function-item mb-2 p-2 border rounded">
+                            <code>angle_between_points(point1, point2)</code>
+                <br><small class="text-muted">Calculate angle between two points in radians</small></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                performance.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    PerformanceMonitor
+                                </h6>
+                <p class="text-muted mb-2">Optimized performance monitoring with minimal overhead</p><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, history_size)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>update_frame(self)</code>
+                        <br><small class="text-muted">Update frame timing - optimized version</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>get_stats(self)</code>
+                        <br><small class="text-muted">Get FPS statistics with optimized calculations</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_empty_stats(self)</code>
+                        <br><small class="text-muted">Return empty stats structure</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>get_hardware_info(self)</code>
+                        <br><small class="text-muted">Get hardware information (cached)</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_windows_cpu_cores(self)</code>
+                        <br><small class="text-muted">Get CPU cores on Windows</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_linux_cpu_cores(self)</code>
+                        <br><small class="text-muted">Get CPU cores on Linux</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_windows_memory(self)</code>
+                        <br><small class="text-muted">Get memory info on Windows</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_get_linux_memory(self)</code>
+                        <br><small class="text-muted">Get memory info on Linux</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    GarbageCollector
+                                </h6>
+                <p class="text-muted mb-2">Manages cleanup of unused resources</p><div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>mark_font_unused(self, font)</code>
+                        <br><small class="text-muted">Mark a font as potentially unused</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>mark_surface_unused(self, surface)</code>
+                        <br><small class="text-muted">Mark a surface as potentially unused</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>cleanup(self, force)</code>
+                        <br><small class="text-muted">Clean up unused resources</small></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                threading.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Task
+                                </h6>
+                <div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, func, *args, **kwargs)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>execute(self)</code>
+                        <br><small class="text-muted">Execute the task</small></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ThreadPool
+                                </h6>
+                <div class="mt-2"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>__init__(self, num_threads)</code>
+                        </div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>start(self)</code>
+                        <br><small class="text-muted">Start the thread pool</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>stop(self)</code>
+                        <br><small class="text-muted">Stop the thread pool</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>submit(self, task)</code>
+                        <br><small class="text-muted">Submit a task to the thread pool</small></div>
+                                <div class="method-item ms-3 mt-1">
+                                    <code>_worker(self)</code>
+                        <br><small class="text-muted">Worker thread function</small></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <a href="../index.html" class="btn btn-primary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+</body>
+</html>

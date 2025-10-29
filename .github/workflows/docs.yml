@@ -1,0 +1,168 @@
+name: Documentation CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+    paths:
+      - 'lunaengine/**'
+      - 'generate_docs.py'
+      - 'requirements.txt'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sunday
+  workflow_dispatch:  # Manual trigger
+
+env:
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  docs:
+    name: Generate and Deploy Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+
+    - name: Cache Python packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/pip
+          ~/.cache/pypoetry
+          venv
+        key: ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # Install project dependencies if they exist
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt
+          echo "✅ Installed requirements.txt"
+        fi
+        
+        # Install documentation dependencies
+        pip install astunparse
+        
+        # Verify Python can import the project
+        python -c "import sys; sys.path.insert(0, '.'); print('✅ Python path configured')"
+
+    - name: Generate documentation
+      id: generate
+      run: |
+        set -e  # Exit on error
+        
+        echo "🔧 Starting documentation generation..."
+        
+        # Check if generate_docs.py exists
+        if [ ! -f "generate_docs.py" ]; then
+          echo "❌ generate_docs.py not found!"
+          exit 1
+        fi
+        
+        # Run the documentation generator
+        python generate_docs.py
+        
+        # Verify documentation was generated
+        if [ ! -d "docs" ]; then
+          echo "❌ Documentation folder was not created!"
+          exit 1
+        fi
+        
+        if [ ! -f "docs/index.html" ]; then
+          echo "❌ Main index.html was not generated!"
+          exit 1
+        fi
+        
+        echo "✅ Documentation generated successfully!"
+        echo "docs_count=$(find docs -name '*.html' | wc -l)" >> $GITHUB_OUTPUT
+
+    - name: Test documentation
+      run: |
+        echo "🧪 Testing generated documentation..."
+        
+        # Check if main pages exist
+        required_pages=("index.html" "quick-start.html")
+        for page in "${required_pages[@]}"; do
+          if [ -f "docs/$page" ]; then
+            echo "✅ $page exists"
+          else
+            echo "⚠️  $page missing"
+          fi
+        done
+        
+        # Check module directories
+        modules=("core" "ui" "graphics" "utils" "backend" "tools")
+        for module in "${modules[@]}"; do
+          if [ -d "docs/$module" ] && [ -f "docs/$module/index.html" ]; then
+            echo "✅ $module documentation exists"
+          else
+            echo "⚠️  $module documentation incomplete"
+          fi
+        done
+
+    - name: Upload documentation artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: lunaengine-docs
+        path: docs/
+        retention-days: 7
+
+    - name: Deploy to GitHub Pages
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs
+        publish_branch: gh-pages
+        force_orphan: true
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        commit_message: '📚 docs: Auto-generated documentation [skip ci]'
+
+    - name: Documentation summary
+      if: always()
+      run: |
+        echo "## 📚 LunaEngine Documentation Report" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ -d "docs" ]; then
+          echo "### ✅ Generation Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Generated on:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Total HTML files:** $(find docs -name '*.html' | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Main documentation:** [index.html](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Quick start guide:** [quick-start.html](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/quick-start.html)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "### 📁 Generated Modules" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          for module in core ui graphics utils backend tools; do
+            if [ -f "docs/$module/index.html" ]; then
+              echo "- ✅ **$module**: [View docs](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/$module/)" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "- ⚠️  **$module**: Documentation missing" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+        else
+          echo "### ❌ Generation Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Documentation generation failed. Check the logs for details." >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "---" >> $GITHUB_STEP_SUMMARY
+        echo "*Auto-generated by GitHub Actions*" >> $GITHUB_STEP_SUMMARY

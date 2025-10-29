@@ -1,27 +1,14 @@
 """
-LunaEngine - A modern 2D game engine
+LunaEngine - A powerful 2D game engine for Python
 """
 
-__version__ = "0.1.0"
-__author__ = "MrJuaum"
+__version__ = "1.0.0"
 
-from .core.engine import LunaEngine
-from .core.window import Window
-from .ui.elements import *
-from .ui.layout import *
-from .ui.styles import *
-from .graphics.spritesheet import SpriteSheet
-from .graphics.lighting import LightSystem, Light
-from .graphics.shadows import ShadowSystem
-from .graphics.particles import ParticleSystem, ParticleEmitter
+from . import core
+from . import ui
+from . import graphics
+from . import utils
+from . import backend
+from . import tools
 
-__all__ = [
-    'LunaEngine',
-    'Window',
-    'SpriteSheet', 
-    'LightSystem',
-    'Light',
-    'ShadowSystem',
-    'ParticleSystem',
-    'ParticleEmitter',
-]
+__all__ = ['core', 'ui', 'graphics', 'utils', 'backend', 'tools']

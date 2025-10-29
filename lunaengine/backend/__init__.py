@@ -1,4 +1,3 @@
-from .opengl import OpenGLRenderer
-from .pygame_backend import PygameRenderer
+"""Backend module for LunaEngine"""
 
-__all__ = ['OpenGLRenderer', 'PygameRenderer']
+__all__ = []
