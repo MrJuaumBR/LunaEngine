@@ -8,6 +8,8 @@ import os
 import ast
 import shutil
 import stat
+import html
+import re
 from pathlib import Path
 from datetime import datetime
 
@@ -26,6 +28,54 @@ def safe_remove_folder(folder_path):
             return False
     return True
 
+def format_docstring(docstring):
+    """Formata docstring preservando quebras de linha e indentação"""
+    if not docstring or docstring == 'No documentation':
+        return 'No documentation'
+    
+    # Escapa caracteres HTML
+    docstring = html.escape(docstring)
+    
+    # Preserva quebras de linha
+    docstring = docstring.replace('\n', '<br>')
+    
+    # Preserva tabs e múltiplos espaços
+    docstring = docstring.replace('  ', ' &nbsp;').replace('\t', '&nbsp;&nbsp;&nbsp;&nbsp;')
+    
+    return docstring
+
+def extract_theme_colors(file_path):
+    """Extrai cores dos temas do arquivo themes.py"""
+    colors_data = {}
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Procura por classes de tema
+        theme_classes = re.findall(r'class\s+(\w+Theme).*?:', content)
+        
+        for theme_class in theme_classes:
+            colors_data[theme_class] = {}
+            
+            # Extrai cores hexadecimais
+            hex_colors = re.findall(r'\"(#(?:[0-9a-fA-F]{3}){1,2})\"', content)
+            named_colors = re.findall(r'(\w+)\s*=\s*\"(#(?:[0-9a-fA-F]{3}){1,2})\"', content)
+            
+            for color_name, color_hex in named_colors:
+                colors_data[theme_class][color_name] = color_hex
+            
+            # Se não encontrou cores nomeadas, usa todas as cores hex encontradas
+            if not colors_data[theme_class] and hex_colors:
+                for i, color_hex in enumerate(hex_colors[:10]):  # Limita a 10 cores
+                    colors_data[theme_class][f'color_{i+1}'] = color_hex
+        
+        return colors_data
+        
+    except Exception as e:
+        print(f"      ⚠️  Error extracting theme colors: {e}")
+        return {}
+
 def analyze_project():
     """Analyzes the entire LunaEngine project"""
     
@@ -35,7 +85,8 @@ def analyze_project():
         'modules': {},
         'total_files': 0,
         'total_classes': 0,
-        'total_functions': 0
+        'total_functions': 0,
+        'total_methods': 0
     }
     
     lunaengine_path = "lunaengine"
@@ -54,7 +105,8 @@ def analyze_project():
             project['total_files'] += len(module_info['files'])
             project['total_classes'] += len(module_info['classes'])
             project['total_functions'] += len(module_info['functions'])
-            print(f"   ✅ {module}: {len(module_info['files'])} files, {len(module_info['classes'])} classes")
+            project['total_methods'] += module_info['total_methods']
+            print(f"   ✅ {module}: {len(module_info['files'])} files, {len(module_info['classes'])} classes, {len(module_info['functions'])} functions")
         else:
             print(f"   ⚠️  {module}: not found")
     
@@ -68,7 +120,8 @@ def analyze_module(module_path, module_name):
         'description': get_module_description(module_name),
         'files': [],
         'classes': [],
-        'functions': []
+        'functions': [],
+        'total_methods': 0
     }
     
     for file in os.listdir(module_path):
@@ -76,15 +129,21 @@ def analyze_module(module_path, module_name):
             file_path = os.path.join(module_path, file)
             file_info = analyze_python_file(file_path)
             
+            # Extrai cores de temas se for o arquivo themes.py
+            if file == 'themes.py':
+                file_info['theme_colors'] = extract_theme_colors(file_path)
+            
             module_info['files'].append({
                 'name': file,
                 'classes': file_info['classes'],
                 'functions': file_info['functions'],
-                'docstring': file_info['docstring']
+                'docstring': file_info['docstring'],
+                'theme_colors': file_info.get('theme_colors', {})
             })
             
             module_info['classes'].extend(file_info['classes'])
             module_info['functions'].extend(file_info['functions'])
+            module_info['total_methods'] += file_info['total_methods']
     
     return module_info
 
@@ -94,7 +153,8 @@ def analyze_python_file(file_path):
     file_info = {
         'classes': [],
         'functions': [],
-        'docstring': ''
+        'docstring': '',
+        'total_methods': 0
     }
     
     try:
@@ -107,20 +167,24 @@ def analyze_python_file(file_path):
             
             # Module docstring
             if tree.body and isinstance(tree.body[0], ast.Expr) and isinstance(tree.body[0].value, ast.Str):
-                file_info['docstring'] = tree.body[0].value.s.strip()
+                file_info['docstring'] = format_docstring(tree.body[0].value.s.strip())
+            elif tree.body and hasattr(ast, 'Constant') and isinstance(tree.body[0], ast.Expr) and isinstance(tree.body[0].value, ast.Constant) and isinstance(tree.body[0].value.value, str):
+                # Python 3.8+ usa ast.Constant para strings
+                file_info['docstring'] = format_docstring(tree.body[0].value.value.strip())
             
             # Extract classes and functions
             for node in tree.body:
                 if isinstance(node, ast.ClassDef):
                     class_info = extract_class_info(node)
                     file_info['classes'].append(class_info)
+                    file_info['total_methods'] += len(class_info['methods'])
                     
                 elif isinstance(node, ast.FunctionDef):
                     function_info = extract_function_info(node)
                     file_info['functions'].append(function_info)
                     
-        except SyntaxError:
-            # Fallback to basic analysis
+        except SyntaxError as e:
+            print(f"      ⚠️  Syntax error in {os.path.basename(file_path)}: {e}")
             extract_basic_info(content, file_info)
             
     except Exception as e:
@@ -134,50 +198,98 @@ def extract_class_info(class_node):
     
     class_info = {
         'name': class_node.name,
-        'docstring': ast.get_docstring(class_node) or 'No documentation',
+        'docstring': format_docstring(ast.get_docstring(class_node)) or 'No documentation',
         'methods': [],
-        'bases': [ast.unparse(base) for base in class_node.bases]
+        'bases': [ast.unparse(base) for base in class_node.bases],
+        'attributes': extract_class_attributes(class_node)
     }
     
     # Class methods
     for item in class_node.body:
         if isinstance(item, ast.FunctionDef):
-            method_info = {
-                'name': item.name,
-                'docstring': ast.get_docstring(item) or 'No documentation',
-                'args': extract_arguments(item.args)
-            }
+            method_info = extract_function_info(item, is_method=True)
             class_info['methods'].append(method_info)
     
     return class_info
 
-def extract_function_info(function_node):
-    """Extracts information from a function"""
+def extract_class_attributes(class_node):
+    """Extracts class attributes with type annotations"""
+    attributes = []
     
-    return {
+    for item in class_node.body:
+        if isinstance(item, ast.AnnAssign):
+            # Typed attribute (e.g., name: str = "default")
+            attr_name = item.target.id if isinstance(item.target, ast.Name) else 'unknown'
+            attr_type = ast.unparse(item.annotation) if item.annotation else 'Any'
+            default_value = ast.unparse(item.value) if item.value else 'None'
+            attributes.append({
+                'name': attr_name,
+                'type': attr_type,
+                'default': default_value
+            })
+        elif isinstance(item, ast.Assign):
+            # Regular attribute (e.g., name = "default")
+            for target in item.targets:
+                if isinstance(target, ast.Name):
+                    attr_name = target.id
+                    default_value = ast.unparse(item.value) if item.value else 'None'
+                    attributes.append({
+                        'name': attr_name,
+                        'type': 'Any',
+                        'default': default_value
+                    })
+    
+    return attributes
+
+def extract_function_info(function_node, is_method=False):
+    """Extracts information from a function with type annotations"""
+    
+    function_info = {
         'name': function_node.name,
-        'docstring': ast.get_docstring(function_node) or 'No documentation',
-        'args': extract_arguments(function_node.args)
+        'docstring': format_docstring(ast.get_docstring(function_node)) or 'No documentation',
+        'args': extract_arguments(function_node.args),
+        'returns': extract_return_annotation(function_node),
+        'is_method': is_method
     }
+    
+    return function_info
 
 def extract_arguments(args_node):
-    """Extracts function/method arguments"""
+    """Extracts function/method arguments with type annotations"""
     
     arguments = []
     
-    # Positional arguments
+    # Positional arguments with type annotations
     for arg in args_node.args:
-        arguments.append(arg.arg)
+        arg_info = {
+            'name': arg.arg,
+            'type': ast.unparse(arg.annotation) if arg.annotation else 'Any'
+        }
+        arguments.append(arg_info)
     
     # *args
     if args_node.vararg:
-        arguments.append(f"*{args_node.vararg.arg}")
+        arg_info = {
+            'name': f"*{args_node.vararg.arg}",
+            'type': ast.unparse(args_node.vararg.annotation) if args_node.vararg.annotation else 'Any'
+        }
+        arguments.append(arg_info)
     
     # **kwargs
     if args_node.kwarg:
-        arguments.append(f"**{args_node.kwarg.arg}")
+        arg_info = {
+            'name': f"**{args_node.kwarg.arg}",
+            'type': ast.unparse(args_node.kwarg.annotation) if args_node.kwarg.annotation else 'Any'
+        }
+        arguments.append(arg_info)
     
     return arguments
+
+def extract_return_annotation(function_node):
+    """Extracts return type annotation"""
+    if function_node.returns:
+        return ast.unparse(function_node.returns)
+    return 'None'
 
 def extract_basic_info(content, file_info):
     """Extracts basic information using regex (fallback)"""
@@ -192,7 +304,8 @@ def extract_basic_info(content, file_info):
             'name': cls,
             'docstring': 'No documentation',
             'methods': [],
-            'bases': []
+            'bases': [],
+            'attributes': []
         })
     
     # Functions
@@ -202,7 +315,9 @@ def extract_basic_info(content, file_info):
         file_info['functions'].append({
             'name': func,
             'docstring': 'No documentation',
-            'args': []
+            'args': [],
+            'returns': 'None',
+            'is_method': False
         })
 
 def get_module_description(module_name):
@@ -240,6 +355,7 @@ def generate_documentation():
     generate_main_page(project)
     generate_module_pages(project)
     generate_quick_start()
+    generate_contact_page()
     
     print(f"\n🎉 DOCUMENTATION GENERATED SUCCESSFULLY!")
     print(f"📊 Project statistics:")
@@ -247,6 +363,7 @@ def generate_documentation():
     print(f"   • Files: {project['total_files']}")
     print(f"   • Classes: {project['total_classes']}")
     print(f"   • Functions: {project['total_functions']}")
+    print(f"   • Methods: {project['total_methods']}")
     print(f"📁 Folder: {os.path.abspath('docs')}")
 
 def generate_main_page(project):
@@ -311,9 +428,11 @@ def generate_main_page(project):
                     <div class="stats-card">
                         <h3 class="text-white mb-2">{len(project['modules'])}</h3>
                         <p class="text-white-50 mb-1">Modules</p>
-                        <div class="d-flex justify-content-center gap-3">
+                        <div class="d-flex justify-content-center gap-3 flex-wrap">
                             <small class="text-white-50">{project['total_files']} files</small>
                             <small class="text-white-50">{project['total_classes']} classes</small>
+                            <small class="text-white-50">{project['total_functions']} functions</small>
+                            <small class="text-white-50">{project['total_methods']} methods</small>
                         </div>
                     </div>
                 </div>
@@ -332,8 +451,11 @@ def generate_main_page(project):
                                 <h6 class="mb-0"><i class="bi bi-rocket me-2"></i>Get started quickly with LunaEngine</h6>
                             </div>
                             <div class="col-md-4 text-end">
-                                <a href="quick-start.html" class="btn btn-light btn-sm">
+                                <a href="quick-start.html" class="btn btn-light btn-sm me-2">
                                     <i class="bi bi-play-circle me-1"></i>Quick Guide
+                                </a>
+                                <a href="contact.html" class="btn btn-outline-light btn-sm">
+                                    <i class="bi bi-people me-1"></i>Community
                                 </a>
                             </div>
                         </div>
@@ -386,6 +508,9 @@ def generate_main_page(project):
                             <span class="badge bg-light text-dark">
                                 <i class="bi bi-gear me-1"></i>{len(module_info['functions'])} functions
                             </span>
+                            <span class="badge bg-light text-dark">
+                                <i class="bi bi-hammer me-1"></i>{module_info['total_methods']} methods
+                            </span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
@@ -397,7 +522,7 @@ def generate_main_page(project):
             </div>
 """
     
-    html += """
+    html += f"""
         </div>
     </div>
 
@@ -505,13 +630,17 @@ def generate_single_module_page(module_name, module_info):
                         <div class="card-body">
         """
         
-        if file_info['docstring']:
+        if file_info['docstring'] and file_info['docstring'] != 'No documentation':
             html += f"""
-                            <div class="alert alert-info">
+                            <div class="alert alert-info docstring-content">
                                 <i class="bi bi-info-circle me-2"></i>
-                                {file_info['docstring']}
+                                <div class="docstring-text">{file_info['docstring']}</div>
                             </div>
             """
+        
+        # Se for themes.py, mostra visualização das cores
+        if file_info['name'] == 'themes.py' and file_info.get('theme_colors'):
+            html += generate_theme_colors_section(file_info['theme_colors'])
         
         # Classes
         if file_info['classes']:
@@ -526,22 +655,33 @@ def generate_single_module_page(module_name, module_info):
                 """
                 
                 if cls['docstring'] and cls['docstring'] != 'No documentation':
-                    html += f'<p class="text-muted mb-2">{cls["docstring"]}</p>'
+                    html += f'<div class="docstring-content mb-2"><div class="docstring-text">{cls["docstring"]}</div></div>'
                 
                 if cls['bases']:
                     html += f'<small class="text-muted">Inherits from: {", ".join(cls["bases"])}</small>'
                 
+                # Class attributes
+                if cls['attributes']:
+                    html += '<div class="mt-3"><strong>Attributes:</strong>'
+                    for attr in cls['attributes']:
+                        html += f"""
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>{attr['name']}: {attr['type']} = {attr['default']}</code>
+                                </div>
+                        """
+                    html += '</div>'
+                
                 # Methods
                 if cls['methods']:
-                    html += '<div class="mt-2"><strong>Methods:</strong>'
+                    html += '<div class="mt-3"><strong>Methods:</strong>'
                     for method in cls['methods']:
-                        args_str = ', '.join(method['args']) if method['args'] else ''
+                        args_str = ', '.join([f"{arg['name']}: {arg['type']}" for arg in method['args']])
                         html += f"""
-                                <div class="method-item ms-3 mt-1">
-                                    <code>{method['name']}({args_str})</code>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def {method['name']}({args_str}) -> {method['returns']}</code>
                         """
                         if method['docstring'] and method['docstring'] != 'No documentation':
-                            html += f'<br><small class="text-muted">{method["docstring"]}</small>'
+                            html += f'<div class="docstring-content mt-1"><div class="docstring-text">{method["docstring"]}</div></div>'
                         html += '</div>'
                     html += '</div>'
                 
@@ -551,13 +691,13 @@ def generate_single_module_page(module_name, module_info):
         if file_info['functions']:
             html += '<h6 class="mt-4">Functions:</h6>'
             for func in file_info['functions']:
-                args_str = ', '.join(func['args']) if func['args'] else ''
+                args_str = ', '.join([f"{arg['name']}: {arg['type']}" for arg in func['args']])
                 html += f"""
-                        <div class="function-item mb-2 p-2 border rounded">
-                            <code>{func['name']}({args_str})</code>
+                        <div class="function-item mb-3 p-3 border rounded">
+                            <code>def {func['name']}({args_str}) -> {func['returns']}</code>
                 """
                 if func['docstring'] and func['docstring'] != 'No documentation':
-                    html += f'<br><small class="text-muted">{func["docstring"]}</small>'
+                    html += f'<div class="docstring-content mt-2"><div class="docstring-text">{func["docstring"]}</div></div>'
                 html += '</div>'
         
         html += """
@@ -587,6 +727,62 @@ def generate_single_module_page(module_name, module_info):
     
     with open(f"{module_dir}/index.html", "w", encoding="utf-8") as f:
         f.write(html)
+
+def generate_theme_colors_section(theme_colors):
+    """Gera seção visual para cores dos temas"""
+    if not theme_colors:
+        return ""
+    
+    html = """
+                            <div class="theme-colors-section mt-4">
+                                <h6><i class="bi bi-palette me-2"></i>Theme Colors Preview</h6>
+    """
+    
+    for theme_name, colors in theme_colors.items():
+        html += f"""
+                                <div class="theme-preview mb-4">
+                                    <h6 class="text-primary">{theme_name}</h6>
+                                    <div class="color-grid">
+        """
+        
+        for color_name, color_hex in colors.items():
+            # Determina cor do texto baseado no brilho da cor de fundo
+            text_color = get_contrast_color(color_hex)
+            html += f"""
+                                        <div class="color-item" style="background-color: {color_hex}; color: {text_color};">
+                                            <div class="color-swatch"></div>
+                                            <div class="color-info">
+                                                <small class="color-name">{color_name}</small>
+                                                <small class="color-hex">{color_hex}</small>
+                                            </div>
+                                        </div>
+            """
+        
+        html += """
+                                    </div>
+                                </div>
+        """
+    
+    html += """
+                            </div>
+    """
+    
+    return html
+
+def get_contrast_color(hex_color):
+    """Determina se deve usar texto claro ou escuro baseado no brilho da cor"""
+    # Remove o # se presente
+    hex_color = hex_color.lstrip('#')
+    
+    # Converte para RGB
+    r = int(hex_color[0:2], 16)
+    g = int(hex_color[2:4], 16)
+    b = int(hex_color[4:6], 16)
+    
+    # Calcula brilho (fórmula de luminância)
+    brightness = (r * 299 + g * 587 + b * 114) / 1000
+    
+    return '#ffffff' if brightness < 128 else '#000000'
 
 def generate_quick_start():
     """Generates quick start page"""
@@ -627,7 +823,7 @@ def generate_quick_start():
                     </div>
                     <div class="card-body">
                         <pre><code># Clone the repository
-git clone https://github.com/your-username/LunaEngine.git
+git clone https://github.com/MrJuaumBR/LunaEngine.git
 cd LunaEngine
 
 # Install dependencies
@@ -672,13 +868,17 @@ game.run()</code></pre>
                             <li>Check out examples in the <code>examples/</code> folder</li>
                             <li>Experiment with UI, graphics, and utilities</li>
                             <li>Consult specific module documentation</li>
+                            <li>Join our <a href="contact.html">community</a> for help and support</li>
                         </ol>
                     </div>
                 </div>
 
                 <div class="text-center">
-                    <a href="index.html" class="btn btn-primary">
+                    <a href="index.html" class="btn btn-primary me-2">
                         <i class="bi bi-house me-2"></i>Back to Home
+                    </a>
+                    <a href="contact.html" class="btn btn-outline-primary">
+                        <i class="bi bi-people me-2"></i>Join Community
                     </a>
                 </div>
             </div>
@@ -693,160 +893,597 @@ game.run()</code></pre>
     with open("docs/quick-start.html", "w", encoding="utf-8") as f:
         f.write(html)
 
-def generate_theme_files():
-    """Generates theme files"""
+def generate_contact_page():
+    """Generates contact/community page"""
     
-    css_content = """/* LunaEngine Documentation */
+    print("📞 Creating contact page...")
+    
+    html = """<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community & Contact - LunaEngine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <button class="btn btn-outline-secondary theme-toggle">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="text-center mb-4">👥 Community & Contact</h1>
+                <p class="lead text-center text-muted mb-5">
+                    Join our community to get help, share your projects, and contribute to LunaEngine!
+                </p>
+
+                <div class="row g-4">
+                    <!-- GitHub -->
+                    <div class="col-md-6">
+                        <div class="card h-100 community-card">
+                            <div class="card-body text-center p-4">
+                                <div class="community-icon github mb-3">
+                                    <i class="bi bi-github fs-1"></i>
+                                </div>
+                                <h4 class="card-title">GitHub</h4>
+                                <p class="card-text text-muted">
+                                    Star the repository, report issues, and contribute to the codebase.
+                                </p>
+                                <a href="https://github.com/MrJuaumBR/LunaEngine" target="_blank" class="btn btn-dark">
+                                    <i class="bi bi-box-arrow-up-right me-2"></i>Visit GitHub
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Discord -->
+                    <div class="col-md-6">
+                        <div class="card h-100 community-card">
+                            <div class="card-body text-center p-4">
+                                <div class="community-icon discord mb-3">
+                                    <i class="bi bi-discord fs-1"></i>
+                                </div>
+                                <h4 class="card-title">Discord</h4>
+                                <p class="card-text text-muted">
+                                    Join our Discord server for real-time discussions and support.
+                                </p>
+                                <a href="https://discord.gg/fb84sHDX7R" target="_blank" class="btn btn-primary" style="background-color: #5865F2; border-color: #5865F2;">
+                                    <i class="bi bi-box-arrow-up-right me-2"></i>Join Discord
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- YouTube -->
+                    <div class="col-md-6">
+                        <div class="card h-100 community-card">
+                            <div class="card-body text-center p-4">
+                                <div class="community-icon youtube mb-3">
+                                    <i class="bi bi-youtube fs-1"></i>
+                                </div>
+                                <h4 class="card-title">YouTube</h4>
+                                <p class="card-text text-muted">
+                                    Watch tutorials, demos, and development updates on our channel.
+                                </p>
+                                <a href="https://www.youtube.com/@mrjuaumbr" target="_blank" class="btn btn-danger">
+                                    <i class="bi bi-box-arrow-up-right me-2"></i>Visit YouTube
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documentation -->
+                    <div class="col-md-6">
+                        <div class="card h-100 community-card">
+                            <div class="card-body text-center p-4">
+                                <div class="community-icon docs mb-3">
+                                    <i class="bi bi-book fs-1"></i>
+                                </div>
+                                <h4 class="card-title">Documentation</h4>
+                                <p class="card-text text-muted">
+                                    Explore the complete documentation and API reference.
+                                </p>
+                                <a href="index.html" class="btn btn-info text-white">
+                                    <i class="bi bi-book me-2"></i>View Docs
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-5">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-lightbulb me-2"></i>Getting Help</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Check the documentation first</li>
+                            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Search existing GitHub issues</li>
+                            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Ask in Discord for quick help</li>
+                            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Report bugs on GitHub</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>Share your projects with the community</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="text-center mt-5">
+                    <a href="index.html" class="btn btn-primary me-2">
+                        <i class="bi bi-house me-2"></i>Back to Home
+                    </a>
+                    <a href="quick-start.html" class="btn btn-outline-primary">
+                        <i class="bi bi-rocket me-2"></i>Quick Start
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+</body>
+</html>"""
+    
+    with open("docs/contact.html", "w", encoding="utf-8") as f:
+        f.write(html)
+
+def generate_theme_files():
+    """Generates CSS and JS theme files"""
+    
+    print("🎨 Creating theme files...")
+    
+    # CSS file
+    css = """/* LunaEngine Documentation Theme */
 :root {
-    --primary-color: #007bff;
+    --primary-color: #6f42c1;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
     --bg-color: #ffffff;
     --text-color: #212529;
     --border-color: #dee2e6;
     --card-bg: #ffffff;
-    --header-bg: #f8f9fa;
+    --header-bg: #ffffff;
+    --footer-bg: #343a40;
+    --code-bg: #f8f9fa;
+    --link-color: #6f42c1;
 }
 
 [data-theme="dark"] {
-    --primary-color: #0d6efd;
-    --bg-color: #1a1a1a;
-    --text-color: #e9ecef;
-    --border-color: #495057;
+    --primary-color: #8c68cd;
+    --secondary-color: #a0aec0;
+    --success-color: #48bb78;
+    --warning-color: #ed8936;
+    --danger-color: #f56565;
+    --light-color: #4a5568;
+    --dark-color: #e2e8f0;
+    --bg-color: #1a202c;
+    --text-color: #e2e8f0;
+    --border-color: #4a5568;
     --card-bg: #2d3748;
-    --header-bg: #343a40;
+    --header-bg: #2d3748;
+    --footer-bg: #1a202c;
+    --code-bg: #4a5568;
+    --link-color: #90cdf4;
 }
 
+/* Base Styles */
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     transition: all 0.3s ease;
 }
 
+/* Navigation */
 .navbar {
     background-color: var(--header-bg) !important;
     border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.theme-toggle {
-    cursor: pointer;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
+.navbar-brand {
+    color: var(--primary-color) !important;
 }
 
-.theme-toggle:hover {
-    background-color: var(--border-color);
+.navbar .form-control {
+    background-color: var(--bg-color);
+    border-color: var(--border-color);
+    color: var(--text-color);
 }
 
+.navbar .input-group-text {
+    background-color: var(--bg-color);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+/* Hero Section */
 .hero-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 5rem 0;
+    background: linear-gradient(135deg, var(--primary-color), #8c68cd);
+    padding: 4rem 0;
+    margin-bottom: 2rem;
 }
 
 .stats-card {
-    background: rgba(255,255,255,0.1);
-    padding: 2rem;
-    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.module-card {
-    border: 1px solid var(--border-color);
-    border-radius: 0.75rem;
-    transition: all 0.3s ease;
+/* Cards */
+.card {
     background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.module-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.module-stats {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+.module-card .card-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.module-stats .badge {
+    margin: 0.1rem;
+    font-size: 0.75rem;
+}
+
+/* Docstring Styling */
+.docstring-content {
+    background-color: var(--light-color);
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin: 0.5rem 0;
+}
+
+.docstring-text {
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    color: var(--text-color);
+}
+
+/* Theme Colors Preview */
+.theme-colors-section {
+    background: var(--light-color);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
     margin-top: 1rem;
 }
 
-.file-card {
-    transition: all 0.3s ease;
+.color-item {
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-.file-card:hover {
-    transform: translateX(5px);
+.color-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.color-swatch {
+    width: 100%;
+    height: 20px;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.color-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.color-name {
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.color-hex {
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.75rem;
+    opacity: 0.9;
+}
+
+.theme-preview {
+    margin-bottom: 2rem;
+}
+
+.theme-preview:last-child {
+    margin-bottom: 0;
+}
+
+/* Code Blocks */
+pre {
+    background-color: var(--code-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    padding: 1rem;
+    color: var(--text-color);
+    overflow-x: auto;
+}
+
+code {
+    color: var(--primary-color);
+    background-color: var(--code-bg);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: 'Consolas', 'Monaco', monospace;
+}
+
+/* Community Cards */
+.community-card {
+    text-align: center;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.community-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.community-icon.github {
+    background-color: #333;
+    color: white;
+}
+
+.community-icon.discord {
+    background-color: #5865F2;
+    color: white;
+}
+
+.community-icon.youtube {
+    background-color: #FF0000;
+    color: white;
+}
+
+.community-icon.docs {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    background-color: var(--bg-color);
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: var(--text-color);
+}
+
+/* Alerts */
+.alert {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.alert-info {
+    border-left: 4px solid var(--info);
+}
+
+/* File Cards */
+.file-card .card-header {
+    background-color: var(--light-color);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .class-item, .function-item {
     background-color: var(--card-bg);
-    border: 1px solid var(--border-color) !important;
+    border: 1px solid var(--border-color);
 }
 
 .method-item {
-    border-left: 3px solid var(--success);
-    padding-left: 1rem;
+    background-color: var(--bg-color);
 }
 
-pre code {
-    border-radius: 0.5rem;
-    padding: 1rem !important;
-    background: #f8f9fa !important;
+.attribute-item code {
+    font-size: 0.9em;
 }
 
-[data-theme="dark"] pre code {
-    background: #2d3748 !important;
-    color: #e9ecef !important;
+/* Theme Toggle */
+.theme-toggle {
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
 }
-"""
-    
-    js_content = """// Theme management
-$(document).ready(function() {
-    const savedTheme = localStorage.getItem('lunaengine-theme') || 'light';
-    setTheme(savedTheme);
-    
-    $('.theme-toggle').click(function() {
-        const currentTheme = $('body').attr('data-theme') || 'light';
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        setTheme(newTheme);
-        localStorage.setItem('lunaengine-theme', newTheme);
-    });
-    
-    $('#moduleSearch').on('input', function() {
-        const searchTerm = $(this).val().toLowerCase();
-        $('.module-card').each(function() {
-            const text = $(this).text().toLowerCase();
-            $(this).toggle(text.includes(searchTerm));
-        });
-    });
-});
 
-function setTheme(theme) {
-    $('body').attr('data-theme', theme);
-    $('.theme-icon').text(theme === 'dark' ? '☀️' : '🌙');
+.theme-toggle:hover {
+    background-color: var(--light-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 0;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .module-stats .badge {
+        display: block;
+        margin: 0.2rem 0;
+    }
+    
+    .color-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+}
+
+/* Search */
+#moduleSearch:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+}
+
+/* Links */
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    background-color: var(--footer-bg) !important;
+    color: var(--light-color);
 }
 """
     
     with open("docs/theme.css", "w", encoding="utf-8") as f:
-        f.write(css_content)
+        f.write(css)
+    
+    # JavaScript file
+    js = """// LunaEngine Documentation JavaScript
+
+$(document).ready(function() {
+    // Theme Toggle
+    $('.theme-toggle').click(function() {
+        const currentTheme = $('html').attr('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        
+        $('html').attr('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Update theme icon
+        const themeIcon = $('.theme-icon');
+        themeIcon.text(newTheme === 'light' ? '🌙' : '☀️');
+    });
+    
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    $('html').attr('data-theme', savedTheme);
+    $('.theme-icon').text(savedTheme === 'light' ? '🌙' : '☀️');
+    
+    // Module Search
+    $('#moduleSearch').on('input', function() {
+        const searchTerm = $(this).val().toLowerCase();
+        
+        $('.module-card').each(function() {
+            const card = $(this);
+            const cardText = card.text().toLowerCase();
+            
+            if (cardText.includes(searchTerm)) {
+                card.show();
+            } else {
+                card.hide();
+            }
+        });
+    });
+    
+    // Smooth scrolling for anchor links
+    $('a[href^="#"]').on('click', function(event) {
+        event.preventDefault();
+        const target = $($(this).attr('href'));
+        
+        if (target.length) {
+            $('html, body').animate({
+                scrollTop: target.offset().top - 70
+            }, 500);
+        }
+    });
+    
+    // Add copy to clipboard for code blocks
+    $('pre').each(function() {
+        const codeBlock = $(this);
+        const copyButton = $('<button class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2">Copy</button>');
+        
+        codeBlock.css('position', 'relative').append(copyButton);
+        
+        copyButton.on('click', function() {
+            const code = codeBlock.find('code').text() || codeBlock.text();
+            navigator.clipboard.writeText(code).then(function() {
+                copyButton.text('Copied!');
+                setTimeout(() => copyButton.text('Copy'), 2000);
+            });
+        });
+    });
+});
+
+// Utility functions
+function formatCode(code) {
+    return code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+"""
     
     with open("docs/theme.js", "w", encoding="utf-8") as f:
-        f.write(js_content)
+        f.write(js)
 
-def main():
-    print("=" * 60)
-    print("🚀 DEFINITIVE DOCUMENTATION GENERATOR - LUNAENGINE")
-    print("=" * 60)
-    
-    generate_documentation()
-    
-    print(f"\n🌐 To view documentation:")
-    print(f"   cd docs && python -m http.server 8000")
-    print(f"   Open: http://localhost:8000")
+# ========== EXECUTION ==========
 
 if __name__ == "__main__":
-    main()
+    print("🎯 LUNAENGINE - DEFINITIVE DOCUMENTATION GENERATOR")
+    print("=" * 50)
+    
+    try:
+        generate_documentation()
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        print("Please check if the lunaengine folder exists and try again.")

@@ -62,99 +62,58 @@
                                     <i class="bi bi-box me-2"></i>
                                     LunaEngine
                                 </h6>
-                <div class="mt-2"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>__init__(self, title, width, height, use_opengl)</code>
-                        <br><small class="text-muted">Initialize the LunaEngine
-Args:
-    title (str) *Optional: The title of the game window (default: "LunaEngine Game")
-    width (int) *Optional: The width of the game window (default: 800)
-    height (int) *Optional: The height of the game window (default: 600)
-    use_opengl (bool) *Optional: Use OpenGL for rendering (default: False)
-Returns:
-    None</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>initialize(self)</code>
-                        <br><small class="text-muted">Initialize the engine</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>add_scene(self, name, scene)</code>
-                        <br><small class="text-muted">Add a scene to the engine
-
-Args:
-    name (str): The name of the scene
-    scene: The scene object
-Returns:
-    None</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>set_scene(self, name)</code>
-                        <br><small class="text-muted">Set the current active scene
-
-Args:
-    name (str): The name of the scene to set as current
-Returns:
-    None</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>on_event(self, event_type)</code>
-                        <br><small class="text-muted">Decorator to register event handlers
-
-Args:
-    event_type (int): The Pygame event type to listen for
-Returns:
-    Callable: The decorator function</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>get_all_themes(self)</code>
-                        <br><small class="text-muted">Get all available themes including user custom ones
-
-Returns:
-    Dict[str, any]: Dictionary with theme names as keys and theme objects as values</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>get_theme_names(self)</code>
-                        <br><small class="text-muted">Get list of all available theme names
-
-Returns:
-    List[str]: List of theme names</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>set_global_theme(self, theme_name)</code>
-                        <br><small class="text-muted">Set the global theme for the entire engine and update all UI elements
-
-Args:
-    theme_name (str): Name of the theme to set
-    
-Returns:
-    bool: True if theme was set successfully, False otherwise</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_update_all_ui_themes(self, theme_enum)</code>
-                        <br><small class="text-muted">Update all UI elements in the current scene to use the new theme
-
-Args:
-    theme_enum: The theme enum to apply</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>get_fps_stats(self)</code>
-                        <br><small class="text-muted">Get comprehensive FPS statistics (optimized)
-
-Returns:
-    dict: A dictionary containing FPS statistics</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>get_hardware_info(self)</code>
-                        <br><small class="text-muted">Get hardware information</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>run(self)</code>
-                        <br><small class="text-muted">Main game loop - OPTIMIZED</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_handle_mouse_scroll(self, event)</code>
-                        <br><small class="text-muted">Handle mouse wheel scrolling for UI elements - OPTIMIZED</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_handle_keyboard_event(self, event)</code>
-                        <br><small class="text-muted">Handle keyboard events for focused UI elements - OPTIMIZED</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_update_ui_elements(self, mouse_pos, mouse_pressed, dt)</code>
-                        <br><small class="text-muted">Update UI elements with mouse interaction - OPTIMIZED</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_render_ui_elements(self, renderer)</code>
-                        <br><small class="text-muted">Render UI elements in correct order - OPTIMIZED</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>shutdown(self)</code>
-                        <br><small class="text-muted">Cleanup resources</small></div></div></div>
+                <div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def __init__(self: Any, title: str, width: int, height: int, use_opengl: bool) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the LunaEngine<br>Args:<br> &nbsp; &nbsp;title (str) *Optional: The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int) *Optional: The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int) *Optional: The height of the game window (default: 600)<br> &nbsp; &nbsp;use_opengl (bool) *Optional: Use OpenGL for rendering (default: False)<br>Returns:<br> &nbsp; &nbsp;None</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def initialize(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the engine</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def add_scene(self: Any, name: str, scene: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Add a scene to the engine<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene<br> &nbsp; &nbsp;scene: The scene object<br>Returns:<br> &nbsp; &nbsp;None</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def set_scene(self: Any, name: str) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set the current active scene<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene to set as current<br>Returns:<br> &nbsp; &nbsp;None</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def on_event(self: Any, event_type: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator to register event handlers<br><br>Args:<br> &nbsp; &nbsp;event_type (int): The Pygame event type to listen for<br>Returns:<br> &nbsp; &nbsp;Callable: The decorator function</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def get_all_themes(self: Any) -> Dict[str, any]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get all available themes including user custom ones<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, any]: Dictionary with theme names as keys and theme objects as values</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def get_theme_names(self: Any) -> List[str]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get list of all available theme names<br><br>Returns:<br> &nbsp; &nbsp;List[str]: List of theme names</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def set_global_theme(self: Any, theme_name: str) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set the global theme for the entire engine and update all UI elements<br><br>Args:<br> &nbsp; &nbsp;theme_name (str): Name of the theme to set<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if theme was set successfully, False otherwise</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _update_all_ui_themes(self: Any, theme_enum: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update all UI elements in the current scene to use the new theme<br><br>Args:<br> &nbsp; &nbsp;theme_enum: The theme enum to apply</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def get_fps_stats(self: Any) -> dict</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get comprehensive FPS statistics (optimized)<br><br>Returns:<br> &nbsp; &nbsp;dict: A dictionary containing FPS statistics</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def get_hardware_info(self: Any) -> dict</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get hardware information</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def run(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Main game loop - OPTIMIZED</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _handle_mouse_scroll(self: Any, event: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Handle mouse wheel scrolling for UI elements - OPTIMIZED</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _handle_keyboard_event(self: Any, event: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Handle keyboard events for focused UI elements - OPTIMIZED</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _update_ui_elements(self: Any, mouse_pos: Any, mouse_pressed: Any, dt: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update UI elements with mouse interaction - OPTIMIZED</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _render_ui_elements(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render UI elements in correct order - OPTIMIZED</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def shutdown(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Cleanup resources</div></div></div></div></div>
                         </div>
                     </div>
                 </div>
@@ -174,27 +133,27 @@ Returns:
                                     <i class="bi bi-box me-2"></i>
                                     Renderer
                                 </h6>
-                <p class="text-muted mb-2">Abstract base class for renderers</p><small class="text-muted">Inherits from: ABC</small><div class="mt-2"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>initialize(self)</code>
+                <div class="docstring-content mb-2"><div class="docstring-text">Abstract base class for renderers</div></div><small class="text-muted">Inherits from: ABC</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def initialize(self: Any) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>begin_frame(self)</code>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def begin_frame(self: Any) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>end_frame(self)</code>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def end_frame(self: Any) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>draw_surface(self, surface, x, y)</code>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def draw_surface(self: Any, surface: pygame.Surface, x: int, y: int) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>draw_rect(self, x, y, width, height, color)</code>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: Tuple[int, int, int]) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>draw_circle(self, x, y, radius, color)</code>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def draw_circle(self: Any, x: int, y: int, radius: int, color: Tuple[int, int, int]) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>draw_line(self, start_x, start_y, end_x, end_y, color, width)</code>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def draw_line(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: Tuple[int, int, int], width: int) -> None</code>
                         </div></div></div>
                         </div>
                     </div>
@@ -215,28 +174,28 @@ Returns:
                                     <i class="bi bi-box me-2"></i>
                                     Window
                                 </h6>
-                <div class="mt-2"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>__init__(self, title, width, height, fullscreen, resizable)</code>
+                <div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def __init__(self: Any, title: str, width: int, height: int, fullscreen: bool, resizable: bool) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>create(self)</code>
-                        <br><small class="text-muted">Create the game window</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>set_title(self, title)</code>
-                        <br><small class="text-muted">Set window title</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>set_size(self, width, height)</code>
-                        <br><small class="text-muted">Resize the window</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>toggle_fullscreen(self)</code>
-                        <br><small class="text-muted">Toggle fullscreen mode</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>get_size(self)</code>
-                        <br><small class="text-muted">Get window size</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>get_center(self)</code>
-                        <br><small class="text-muted">Get window center coordinates</small></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def create(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Create the game window</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def set_title(self: Any, title: str) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set window title</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def set_size(self: Any, width: int, height: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Resize the window</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def toggle_fullscreen(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Toggle fullscreen mode</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def get_size(self: Any) -> Tuple[int, int]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get window size</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def get_center(self: Any) -> Tuple[int, int]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get window center coordinates</div></div></div></div></div>
                         </div>
                     </div>
                 </div>

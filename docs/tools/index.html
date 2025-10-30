@@ -57,10 +57,9 @@
                         </div>
                         <div class="card-body">
         
-                            <div class="alert alert-info">
+                            <div class="alert alert-info docstring-content">
                                 <i class="bi bi-info-circle me-2"></i>
-                                LunaEngine Code Statistics Script
-Counts lines of code, files, and provides detailed statistics
+                                <div class="docstring-text">LunaEngine Code Statistics Script<br>Counts lines of code, files, and provides detailed statistics</div>
                             </div>
             <h6>Classes:</h6>
                             <div class="class-item mb-3 p-3 border rounded">
@@ -68,32 +67,31 @@ Counts lines of code, files, and provides detailed statistics
                                     <i class="bi bi-box me-2"></i>
                                     CodeStatistics
                                 </h6>
-                <div class="mt-2"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>__init__(self, root_dir)</code>
+                <div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def __init__(self: Any, root_dir: str) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>count_lines_in_file(self, file_path)</code>
-                        <br><small class="text-muted">Count lines in a file
-Returns: (total_lines, code_lines, comment_lines, blank_lines)</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>get_all_files(self)</code>
-                        <br><small class="text-muted">Get all relevant files in the project</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>analyze_project(self)</code>
-                        <br><small class="text-muted">Analyze the entire project and return statistics</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>get_code_density(self, stats)</code>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def count_lines_in_file(self: Any, file_path: Path) -> Tuple[int, int, int]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Count lines in a file<br>Returns: (total_lines, code_lines, comment_lines, blank_lines)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def get_all_files(self: Any) -> List[Path]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get all relevant files in the project</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def analyze_project(self: Any) -> Dict</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Analyze the entire project and return statistics</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def get_code_density(self: Any, stats: Any) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>print_statistics(self, stats)</code>
-                        <br><small class="text-muted">Print formatted statistics</small></div></div></div><h6 class="mt-4">Functions:</h6>
-                        <div class="function-item mb-2 p-2 border rounded">
-                            <code>main()</code>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def print_statistics(self: Any, stats: Dict) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Print formatted statistics</div></div></div></div></div><h6 class="mt-4">Functions:</h6>
+                        <div class="function-item mb-3 p-3 border rounded">
+                            <code>def main() -> None</code>
                 </div>
-                        <div class="function-item mb-2 p-2 border rounded">
-                            <code>save_detailed_report(stats, report_file)</code>
-                <br><small class="text-muted">Save a detailed markdown report</small></div>
+                        <div class="function-item mb-3 p-3 border rounded">
+                            <code>def save_detailed_report(stats: Dict, report_file: Path) -> None</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">Save a detailed markdown report</div></div></div>
                         </div>
                     </div>
                 </div>
@@ -108,26 +106,23 @@ Returns: (total_lines, code_lines, comment_lines, blank_lines)</small></div>
                         </div>
                         <div class="card-body">
         
-                            <div class="alert alert-info">
+                            <div class="alert alert-info docstring-content">
                                 <i class="bi bi-info-circle me-2"></i>
-                                LunaEngine Image Conversion Tool
-Converts images to embedded Python code with resolution scaling
-
-! Not tested
+                                <div class="docstring-text">LunaEngine Image Conversion Tool<br>Converts images to embedded Python code with resolution scaling<br><br>! Not tested</div>
                             </div>
             <h6 class="mt-4">Functions:</h6>
-                        <div class="function-item mb-2 p-2 border rounded">
-                            <code>main()</code>
+                        <div class="function-item mb-3 p-3 border rounded">
+                            <code>def main() -> None</code>
                 </div>
-                        <div class="function-item mb-2 p-2 border rounded">
-                            <code>show_preview(original_path, var_name, python_code, target_size)</code>
-                <br><small class="text-muted">Show a preview of the original and converted image</small></div>
-                        <div class="function-item mb-2 p-2 border rounded">
-                            <code>print_statistics(original_path, output_path, var_name, python_code)</code>
-                <br><small class="text-muted">Print conversion statistics</small></div>
-                        <div class="function-item mb-2 p-2 border rounded">
-                            <code>batch_convert()</code>
-                <br><small class="text-muted">Batch convert multiple images</small></div>
+                        <div class="function-item mb-3 p-3 border rounded">
+                            <code>def show_preview(original_path: Path, var_name: str, python_code: str, target_size: tuple) -> None</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">Show a preview of the original and converted image</div></div></div>
+                        <div class="function-item mb-3 p-3 border rounded">
+                            <code>def print_statistics(original_path: Path, output_path: Path, var_name: str, python_code: str) -> None</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">Print conversion statistics</div></div></div>
+                        <div class="function-item mb-3 p-3 border rounded">
+                            <code>def batch_convert() -> None</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">Batch convert multiple images</div></div></div>
                         </div>
                     </div>
                 </div>

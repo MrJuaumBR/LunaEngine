@@ -55,11 +55,17 @@ LunaEngine/
 │   ├── backend/ # Renderer backends
 │   │   ├── opengl.py # OpenGL renderer
 │   │   └── pygame_backend.py # Pygame renderer
-├── └── tools/ # Development tools
-│       ├── generate_documentation.py # Uses Ollama to generate docs
+│   └── tools/ # Development tools
 │       ├── code_stats.py # Code statistics analyzer
 │       └── image_conversion_tool.py # Image conversion CLI
+├── generate_docs.py # Generate the docs folder
+├── LICENSE
+├── pyproject.toml
+├── setup.py # Not used
+├── .gitignore
+├── .gitattributes
 └── requirements.txt # Dependencies
+
 ```
 
 

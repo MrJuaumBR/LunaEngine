@@ -62,53 +62,52 @@
                                     <i class="bi bi-box me-2"></i>
                                     ImageConverter
                                 </h6>
-                <p class="text-muted mb-2">Converts images to Python code for embedding in games
-Uses Pygame for image loading - NO PILLOW REQUIRED</p><div class="mt-2"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>image_to_python_code(image_path, output_var_name, max_size, method)</code>
-                        <br><small class="text-muted">Convert an image to Python code</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_resize_surface(surface, max_size)</code>
-                        <br><small class="text-muted">Resize surface while maintaining aspect ratio</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_to_pixel_array(surface, width, height, var_name)</code>
-                        <br><small class="text-muted">Convert to Python pixel array code - FIXED COLOR BUG</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_to_base64(surface, width, height, var_name)</code>
-                        <br><small class="text-muted">Convert to base64 encoded string</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_to_compressed(surface, width, height, var_name)</code>
-                        <br><small class="text-muted">Convert to compressed base64 string</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>create_image_from_code(image_data)</code>
-                        <br><small class="text-muted">Create a pygame Surface from converted image data</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_from_pixel_array(image_data)</code>
-                        <br><small class="text-muted">Create surface from pixel array - FIXED COLOR BUG</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_from_encoded_data(image_data)</code>
-                        <br><small class="text-muted">Create surface from encoded data</small></div></div></div>
+                <div class="docstring-content mb-2"><div class="docstring-text">Converts images to Python code for embedding in games<br>Uses Pygame for image loading - NO PILLOW REQUIRED</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def image_to_python_code(image_path: str, output_var_name: str, max_size: Optional[Tuple[int, int]], method: str) -> str</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Convert an image to Python code</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _resize_surface(surface: pygame.Surface, max_size: Tuple[int, int]) -> pygame.Surface</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Resize surface while maintaining aspect ratio</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _to_pixel_array(surface: pygame.Surface, width: int, height: int, var_name: str) -> str</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Convert to Python pixel array code - FIXED COLOR BUG</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _to_base64(surface: pygame.Surface, width: int, height: int, var_name: str) -> str</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Convert to base64 encoded string</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _to_compressed(surface: pygame.Surface, width: int, height: int, var_name: str) -> str</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Convert to compressed base64 string</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def create_image_from_code(image_data: dict) -> pygame.Surface</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Create a pygame Surface from converted image data</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _from_pixel_array(image_data: dict) -> pygame.Surface</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Create surface from pixel array - FIXED COLOR BUG</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _from_encoded_data(image_data: dict) -> pygame.Surface</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Create surface from encoded data</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     EmbeddedImage
                                 </h6>
-                <p class="text-muted mb-2">Helper class for working with embedded images</p><div class="mt-2"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>__init__(self, image_data)</code>
+                <div class="docstring-content mb-2"><div class="docstring-text">Helper class for working with embedded images</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def __init__(self: Any, image_data: dict) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>surface(self)</code>
-                        <br><small class="text-muted">Get the pygame Surface (lazy loading)</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>width(self)</code>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def surface(self: Any) -> pygame.Surface</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the pygame Surface (lazy loading)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def width(self: Any) -> int</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>height(self)</code>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def height(self: Any) -> int</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>draw(self, renderer, x, y)</code>
-                        <br><small class="text-muted">Draw the image using a renderer</small></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def draw(self: Any, renderer: Any, x: int, y: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw the image using a renderer</div></div></div></div></div>
                         </div>
                     </div>
                 </div>
@@ -123,21 +122,21 @@ Uses Pygame for image loading - NO PILLOW REQUIRED</p><div class="mt-2"><strong>
                         </div>
                         <div class="card-body">
         <h6 class="mt-4">Functions:</h6>
-                        <div class="function-item mb-2 p-2 border rounded">
-                            <code>lerp(a, b, t)</code>
-                <br><small class="text-muted">Linear interpolation between a and b</small></div>
-                        <div class="function-item mb-2 p-2 border rounded">
-                            <code>clamp(value, min_val, max_val)</code>
-                <br><small class="text-muted">Clamp value between min and max</small></div>
-                        <div class="function-item mb-2 p-2 border rounded">
-                            <code>distance(point1, point2)</code>
-                <br><small class="text-muted">Calculate distance between two points</small></div>
-                        <div class="function-item mb-2 p-2 border rounded">
-                            <code>normalize_vector(x, y)</code>
-                <br><small class="text-muted">Normalize a 2D vector</small></div>
-                        <div class="function-item mb-2 p-2 border rounded">
-                            <code>angle_between_points(point1, point2)</code>
-                <br><small class="text-muted">Calculate angle between two points in radians</small></div>
+                        <div class="function-item mb-3 p-3 border rounded">
+                            <code>def lerp(a: float, b: float, t: float) -> float</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">Linear interpolation between a and b</div></div></div>
+                        <div class="function-item mb-3 p-3 border rounded">
+                            <code>def clamp(value: float, min_val: float, max_val: float) -> float</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">Clamp value between min and max</div></div></div>
+                        <div class="function-item mb-3 p-3 border rounded">
+                            <code>def distance(point1: Tuple[float, float], point2: Tuple[float, float]) -> float</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">Calculate distance between two points</div></div></div>
+                        <div class="function-item mb-3 p-3 border rounded">
+                            <code>def normalize_vector(x: float, y: float) -> Tuple[float, float]</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">Normalize a 2D vector</div></div></div>
+                        <div class="function-item mb-3 p-3 border rounded">
+                            <code>def angle_between_points(point1: Tuple[float, float], point2: Tuple[float, float]) -> float</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">Calculate angle between two points in radians</div></div></div>
                         </div>
                     </div>
                 </div>
@@ -157,52 +156,52 @@ Uses Pygame for image loading - NO PILLOW REQUIRED</p><div class="mt-2"><strong>
                                     <i class="bi bi-box me-2"></i>
                                     PerformanceMonitor
                                 </h6>
-                <p class="text-muted mb-2">Optimized performance monitoring with minimal overhead</p><div class="mt-2"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>__init__(self, history_size)</code>
+                <div class="docstring-content mb-2"><div class="docstring-text">Optimized performance monitoring with minimal overhead</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def __init__(self: Any, history_size: int) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>update_frame(self)</code>
-                        <br><small class="text-muted">Update frame timing - optimized version</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>get_stats(self)</code>
-                        <br><small class="text-muted">Get FPS statistics with optimized calculations</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_get_empty_stats(self)</code>
-                        <br><small class="text-muted">Return empty stats structure</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>get_hardware_info(self)</code>
-                        <br><small class="text-muted">Get hardware information (cached)</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_get_windows_cpu_cores(self)</code>
-                        <br><small class="text-muted">Get CPU cores on Windows</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_get_linux_cpu_cores(self)</code>
-                        <br><small class="text-muted">Get CPU cores on Linux</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_get_windows_memory(self)</code>
-                        <br><small class="text-muted">Get memory info on Windows</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_get_linux_memory(self)</code>
-                        <br><small class="text-muted">Get memory info on Linux</small></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def update_frame(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update frame timing - optimized version</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def get_stats(self: Any) -> Dict[str, float]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get FPS statistics with optimized calculations</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _get_empty_stats(self: Any) -> Dict[str, float]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Return empty stats structure</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def get_hardware_info(self: Any) -> Dict[str, str]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get hardware information (cached)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _get_windows_cpu_cores(self: Any) -> int</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get CPU cores on Windows</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _get_linux_cpu_cores(self: Any) -> int</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get CPU cores on Linux</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _get_windows_memory(self: Any) -> str</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get memory info on Windows</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _get_linux_memory(self: Any) -> str</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get memory info on Linux</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     GarbageCollector
                                 </h6>
-                <p class="text-muted mb-2">Manages cleanup of unused resources</p><div class="mt-2"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>__init__(self)</code>
+                <div class="docstring-content mb-2"><div class="docstring-text">Manages cleanup of unused resources</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def __init__(self: Any) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>mark_font_unused(self, font)</code>
-                        <br><small class="text-muted">Mark a font as potentially unused</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>mark_surface_unused(self, surface)</code>
-                        <br><small class="text-muted">Mark a surface as potentially unused</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>cleanup(self, force)</code>
-                        <br><small class="text-muted">Clean up unused resources</small></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def mark_font_unused(self: Any, font: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Mark a font as potentially unused</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def mark_surface_unused(self: Any, surface: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Mark a surface as potentially unused</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def cleanup(self: Any, force: bool) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Clean up unused resources</div></div></div></div></div>
                         </div>
                     </div>
                 </div>
@@ -222,34 +221,34 @@ Uses Pygame for image loading - NO PILLOW REQUIRED</p><div class="mt-2"><strong>
                                     <i class="bi bi-box me-2"></i>
                                     Task
                                 </h6>
-                <div class="mt-2"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>__init__(self, func, *args, **kwargs)</code>
+                <div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def __init__(self: Any, func: Callable, *args: Any, **kwargs: Any) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>execute(self)</code>
-                        <br><small class="text-muted">Execute the task</small></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def execute(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Execute the task</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     ThreadPool
                                 </h6>
-                <div class="mt-2"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>__init__(self, num_threads)</code>
+                <div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def __init__(self: Any, num_threads: int) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>start(self)</code>
-                        <br><small class="text-muted">Start the thread pool</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>stop(self)</code>
-                        <br><small class="text-muted">Stop the thread pool</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>submit(self, task)</code>
-                        <br><small class="text-muted">Submit a task to the thread pool</small></div>
-                                <div class="method-item ms-3 mt-1">
-                                    <code>_worker(self)</code>
-                        <br><small class="text-muted">Worker thread function</small></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def start(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Start the thread pool</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def stop(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Stop the thread pool</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def submit(self: Any, task: Task) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Submit a task to the thread pool</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                    <code>def _worker(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Worker thread function</div></div></div></div></div>
                         </div>
                     </div>
                 </div>
