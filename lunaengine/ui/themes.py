@@ -44,8 +44,19 @@ suitable for various application types and visual preferences.
 """
 
 from enum import Enum
-from typing import Dict, Tuple, Optional
+from typing import Dict, Tuple, Optional, List, Literal
 from dataclasses import dataclass
+
+# color_name is for typing in the get_color fucntion
+color_name_type = Literal['button_normal', 'button_hover', 'button_pressed', 'button_disabled', 
+                     'button_text', 'button_border',
+                     'dropdown_normal', 'dropdown_hover', 'dropdown_expanded', 'dropdown_text',
+                     'dropdown_option_normal', 'dropdown_option_hover', 'dropdown_option_selected',
+                     'dropdown_border',
+                     'slider_track', 'slider_thumb_normal', 'slider_thumb_hover', 'slider_thumb_pressed',
+                     'slider_text',
+                     'label_text',
+                     'background', 'background2', 'text_primary', 'text_secondary', 'border', 'border2']
 
 @dataclass
 class UITheme:
@@ -86,6 +97,7 @@ class UITheme:
     button_border: Optional[Tuple[int, int, int]] = None
     dropdown_border: Optional[Tuple[int, int, int]] = None
     border: Optional[Tuple[int, int, int]] = None
+    border2: Optional[Tuple[int, int, int]] = None
 
 class ThemeType(Enum):
     DEFAULT = "default"
@@ -135,12 +147,15 @@ class ThemeType(Enum):
     DISCORD = "discord"
     GMAIL = "gmail"
     YOUTUBE = "youtube"
+    MATRIX = "matrix"
+    BUILDER = "builder"
+    GALAXY_DARK = "galaxy_dark"
+    GALAXY_LIGHT = "galaxy_light"
     
-    # Novos temas
+    # Nature themes
     FOREST = "forest"
     SUNSET = "sunset"
     OCEAN = "ocean"
-    MATRIX = "matrix"
     LAVENDER = "lavender"
     CHOCOLATE = "chocolate"
 
@@ -231,7 +246,172 @@ class ThemeManager:
             border=(150, 150, 150)
         )
         
-        # ECLIPSE THEME - Corrigido (não era uma cópia)
+        # SECONDARY THEME
+        cls._themes[ThemeType.SECONDARY] = UITheme(
+            button_normal=(108, 117, 125),
+            button_hover=(88, 97, 105),
+            button_pressed=(68, 77, 85),
+            button_disabled=(150, 150, 150),
+            button_text=(255, 255, 255),
+            button_border=None,
+            
+            dropdown_normal=(80, 80, 100),
+            dropdown_hover=(100, 100, 120),
+            dropdown_expanded=(90, 90, 110),
+            dropdown_text=(255, 255, 255),
+            dropdown_option_normal=(60, 60, 80),
+            dropdown_option_hover=(70, 70, 90),
+            dropdown_option_selected=(80, 80, 100),
+            dropdown_border=(150, 150, 170),
+            
+            slider_track=(90, 90, 90),
+            slider_thumb_normal=(108, 117, 125),
+            slider_thumb_hover=(128, 137, 145),
+            slider_thumb_pressed=(88, 97, 105),
+            slider_text=(255, 255, 255),
+            
+            label_text=(240, 240, 240),
+            
+            background=(60, 60, 80),
+            background2=(50, 50, 70),
+            text_primary=(240, 240, 240),
+            text_secondary=(200, 200, 200),
+            border=(120, 120, 140)
+        )
+
+        # WARN THEME
+        cls._themes[ThemeType.WARN] = UITheme(
+            button_normal=(255, 193, 7),
+            button_hover=(235, 173, 0),
+            button_pressed=(215, 153, 0),
+            button_disabled=(180, 170, 120),
+            button_text=(0, 0, 0),
+            button_border=None,
+            
+            dropdown_normal=(90, 90, 70),
+            dropdown_hover=(110, 110, 90),
+            dropdown_expanded=(100, 100, 80),
+            dropdown_text=(255, 255, 255),
+            dropdown_option_normal=(70, 70, 50),
+            dropdown_option_hover=(80, 80, 60),
+            dropdown_option_selected=(90, 90, 70),
+            dropdown_border=(200, 180, 100),
+            
+            slider_track=(100, 90, 60),
+            slider_thumb_normal=(255, 193, 7),
+            slider_thumb_hover=(255, 213, 27),
+            slider_thumb_pressed=(235, 173, 0),
+            slider_text=(255, 255, 255),
+            
+            label_text=(255, 255, 255),
+            
+            background=(70, 60, 40),
+            background2=(60, 50, 30),
+            text_primary=(255, 255, 255),
+            text_secondary=(255, 220, 150),
+            border=(200, 180, 100)
+        )
+
+        # ERROR THEME
+        cls._themes[ThemeType.ERROR] = UITheme(
+            button_normal=(220, 53, 69),
+            button_hover=(200, 33, 49),
+            button_pressed=(180, 13, 29),
+            button_disabled=(150, 100, 110),
+            button_text=(255, 255, 255),
+            button_border=None,
+            
+            dropdown_normal=(90, 50, 55),
+            dropdown_hover=(110, 70, 75),
+            dropdown_expanded=(100, 60, 65),
+            dropdown_text=(255, 255, 255),
+            dropdown_option_normal=(70, 30, 35),
+            dropdown_option_hover=(80, 40, 45),
+            dropdown_option_selected=(90, 50, 55),
+            dropdown_border=(200, 100, 110),
+            
+            slider_track=(100, 60, 65),
+            slider_thumb_normal=(220, 53, 69),
+            slider_thumb_hover=(240, 73, 89),
+            slider_thumb_pressed=(200, 33, 49),
+            slider_text=(255, 255, 255),
+            
+            label_text=(255, 255, 255),
+            
+            background=(70, 30, 35),
+            background2=(60, 20, 25),
+            text_primary=(255, 255, 255),
+            text_secondary=(255, 200, 200),
+            border=(200, 100, 110)
+        )
+
+        # SUCCESS THEME
+        cls._themes[ThemeType.SUCCESS] = UITheme(
+            button_normal=(40, 167, 69),
+            button_hover=(20, 147, 49),
+            button_pressed=(0, 127, 29),
+            button_disabled=(100, 150, 120),
+            button_text=(255, 255, 255),
+            button_border=None,
+            
+            dropdown_normal=(50, 80, 60),
+            dropdown_hover=(70, 100, 80),
+            dropdown_expanded=(60, 90, 70),
+            dropdown_text=(255, 255, 255),
+            dropdown_option_normal=(30, 60, 40),
+            dropdown_option_hover=(40, 70, 50),
+            dropdown_option_selected=(50, 80, 60),
+            dropdown_border=(100, 180, 120),
+            
+            slider_track=(60, 100, 70),
+            slider_thumb_normal=(40, 167, 69),
+            slider_thumb_hover=(60, 187, 89),
+            slider_thumb_pressed=(20, 147, 49),
+            slider_text=(255, 255, 255),
+            
+            label_text=(255, 255, 255),
+            
+            background=(30, 60, 40),
+            background2=(20, 50, 30),
+            text_primary=(255, 255, 255),
+            text_secondary=(200, 240, 200),
+            border=(100, 180, 120)
+        )
+
+        # INFO THEME
+        cls._themes[ThemeType.INFO] = UITheme(
+            button_normal=(23, 162, 184),
+            button_hover=(3, 142, 164),
+            button_pressed=(0, 122, 144),
+            button_disabled=(100, 150, 160),
+            button_text=(255, 255, 255),
+            button_border=None,
+            
+            dropdown_normal=(50, 70, 90),
+            dropdown_hover=(70, 90, 110),
+            dropdown_expanded=(60, 80, 100),
+            dropdown_text=(255, 255, 255),
+            dropdown_option_normal=(30, 50, 70),
+            dropdown_option_hover=(40, 60, 80),
+            dropdown_option_selected=(50, 70, 90),
+            dropdown_border=(100, 170, 200),
+            
+            slider_track=(60, 100, 120),
+            slider_thumb_normal=(23, 162, 184),
+            slider_thumb_hover=(43, 182, 204),
+            slider_thumb_pressed=(3, 142, 164),
+            slider_text=(255, 255, 255),
+            
+            label_text=(255, 255, 255),
+            
+            background=(30, 50, 70),
+            background2=(20, 40, 60),
+            text_primary=(255, 255, 255),
+            text_secondary=(200, 230, 255),
+            border=(100, 170, 200)
+        )
+        
+        # ECLIPSE THEME
         cls._themes[ThemeType.ECLIPSE] = UITheme(
             button_normal=(58, 12, 163),
             button_hover=(78, 32, 183),
@@ -429,6 +609,138 @@ class ThemeManager:
             border=(255, 182, 193)
         )
         
+        # CHERRY LIGHT THEME
+        cls._themes[ThemeType.CHERRY_LIGHT] = UITheme(
+            button_normal=(255, 228, 225),
+            button_hover=(255, 218, 215),
+            button_pressed=(255, 208, 205),
+            button_disabled=(240, 230, 230),
+            button_text=(178, 34, 34),
+            button_border=(219, 112, 147),
+            
+            dropdown_normal=(255, 240, 245),
+            dropdown_hover=(255, 230, 235),
+            dropdown_expanded=(255, 235, 240),
+            dropdown_text=(178, 34, 34),
+            dropdown_option_normal=(255, 250, 250),
+            dropdown_option_hover=(255, 245, 245),
+            dropdown_option_selected=(255, 240, 245),
+            dropdown_border=(219, 112, 147),
+            
+            slider_track=(240, 220, 220),
+            slider_thumb_normal=(219, 112, 147),
+            slider_thumb_hover=(199, 92, 127),
+            slider_thumb_pressed=(179, 72, 107),
+            slider_text=(178, 34, 34),
+            
+            label_text=(178, 34, 34),
+            
+            background=(255, 250, 250),
+            background2=(245, 240, 240),
+            text_primary=(178, 34, 34),
+            text_secondary=(205, 92, 92),
+            border=(219, 112, 147)
+        )
+
+        # GALAXY DARK THEME - Deep space with cosmic purple and blue
+        cls._themes[ThemeType.GALAXY_DARK] = UITheme(
+            button_normal=(75, 0, 130),
+            button_hover=(95, 25, 150),
+            button_pressed=(65, 0, 110),
+            button_disabled=(60, 40, 80),
+            button_text=(230, 230, 250),
+            button_border=(138, 43, 226),
+            
+            dropdown_normal=(25, 25, 55),
+            dropdown_hover=(35, 35, 75),
+            dropdown_expanded=(30, 30, 65),
+            dropdown_text=(230, 230, 250),
+            dropdown_option_normal=(20, 20, 45),
+            dropdown_option_hover=(22, 22, 50),
+            dropdown_option_selected=(25, 25, 55),
+            dropdown_border=(138, 43, 226),
+            
+            slider_track=(40, 40, 80),
+            slider_thumb_normal=(147, 112, 219),
+            slider_thumb_hover=(167, 132, 239),
+            slider_thumb_pressed=(127, 92, 199),
+            slider_text=(230, 230, 250),
+            
+            label_text=(230, 230, 250),
+            
+            background=(10, 10, 30),
+            background2=(5, 5, 20),
+            text_primary=(230, 230, 250),
+            text_secondary=(176, 224, 230),
+            border=(138, 43, 226)
+        )
+
+        # GALAXY LIGHT THEME - Nebula inspired pastel colors
+        cls._themes[ThemeType.GALAXY_LIGHT] = UITheme(
+            button_normal=(216, 191, 216),
+            button_hover=(196, 171, 196),
+            button_pressed=(176, 151, 176),
+            button_disabled=(230, 220, 230),
+            button_text=(75, 0, 130),
+            button_border=(147, 112, 219),
+            
+            dropdown_normal=(230, 230, 250),
+            dropdown_hover=(210, 210, 230),
+            dropdown_expanded=(220, 220, 240),
+            dropdown_text=(75, 0, 130),
+            dropdown_option_normal=(240, 240, 255),
+            dropdown_option_hover=(235, 235, 250),
+            dropdown_option_selected=(230, 230, 250),
+            dropdown_border=(147, 112, 219),
+            
+            slider_track=(200, 200, 220),
+            slider_thumb_normal=(186, 85, 211),
+            slider_thumb_hover=(166, 65, 191),
+            slider_thumb_pressed=(146, 45, 171),
+            slider_text=(75, 0, 130),
+            
+            label_text=(75, 0, 130),
+            
+            background=(248, 248, 255),
+            background2=(240, 240, 250),
+            text_primary=(75, 0, 130),
+            text_secondary=(106, 90, 205),
+            border=(147, 112, 219)
+        )
+
+        # BUILDER THEME - Construction/development inspired
+        cls._themes[ThemeType.BUILDER] = UITheme(
+            button_normal=(210, 180, 140),
+            button_hover=(190, 160, 120),
+            button_pressed=(170, 140, 100),
+            button_disabled=(150, 140, 130),
+            button_text=(47, 79, 79),
+            button_border=(160, 120, 80),
+            
+            dropdown_normal=(245, 245, 220),
+            dropdown_hover=(225, 225, 200),
+            dropdown_expanded=(235, 235, 210),
+            dropdown_text=(47, 79, 79),
+            dropdown_option_normal=(255, 255, 240),
+            dropdown_option_hover=(250, 250, 230),
+            dropdown_option_selected=(245, 245, 220),
+            dropdown_border=(160, 120, 80),
+            
+            slider_track=(200, 180, 160),
+            slider_thumb_normal=(139, 69, 19),
+            slider_thumb_hover=(159, 89, 39),
+            slider_thumb_pressed=(119, 49, 0),
+            slider_text=(47, 79, 79),
+            
+            label_text=(47, 79, 79),
+            
+            background=(253, 245, 230),
+            background2=(243, 235, 220),
+            text_primary=(47, 79, 79),
+            text_secondary=(101, 67, 33),
+            border=(160, 120, 80)
+        )
+
         # NEON THEME
         cls._themes[ThemeType.NEON] = UITheme(
             button_normal=(0, 255, 255),
@@ -1185,6 +1497,36 @@ class ThemeManager:
     def get_current_theme(cls) -> ThemeType:
         """Get current default theme"""
         return cls._current_theme
+    
+    @classmethod
+    def get_themes(cls) -> Dict[ThemeType, UITheme]:
+        """Get all available themes"""
+        if not cls._themes:
+            cls.initialize_default_themes()
+        return cls._themes
+    
+    @classmethod
+    def get_theme_types(cls) -> List[ThemeType]:
+        """Get all available theme types"""
+        if not cls._themes:
+            cls.initialize_default_themes()
+        return list(cls._themes.keys())
+    
+    @classmethod
+    def get_theme_names(cls) -> List[str]:
+        """Get all available theme names"""
+        if not cls._themes:
+            cls.initialize_default_themes()
+        return [theme.value for theme in cls._themes.keys()]
+    
+    @classmethod
+    def get_color(cls, color_name: color_name_type) -> Tuple[int, int, int]:
+        """Get a specific color from the current theme"""
+        theme = cls.get_theme(cls._current_theme)
+        if theme is None: return (0, 0, 0)
+        elif theme.__dict__.get(color_name) is None: return (0, 0, 0)
+        else: return getattr(theme, color_name)
+        
 
 # Initialize themes
 ThemeManager.initialize_default_themes()

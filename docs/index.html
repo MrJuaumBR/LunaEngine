@@ -17,8 +17,8 @@
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search modules...">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 <button class="btn btn-outline-secondary theme-toggle">
                     <span class="theme-icon">🌙</span>
@@ -56,10 +56,10 @@
                         <h3 class="text-white mb-2">6</h3>
                         <p class="text-white-50 mb-1">Modules</p>
                         <div class="d-flex justify-content-center gap-3 flex-wrap">
-                            <small class="text-white-50">19 files</small>
-                            <small class="text-white-50">46 classes</small>
+                            <small class="text-white-50">20 files</small>
+                            <small class="text-white-50">49 classes</small>
                             <small class="text-white-50">11 functions</small>
-                            <small class="text-white-50">232 methods</small>
+                            <small class="text-white-50">266 methods</small>
                         </div>
                     </div>
                 </div>
@@ -92,14 +92,147 @@
         </div>
     </div>
 
+    <!-- Code Statistics Section -->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Code Statistics</h5>
+                        <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#codeStatsCollapse" aria-expanded="false" aria-controls="codeStatsCollapse">
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="codeStatsCollapse">
+                        <div class="card-body">
+                            <div class="code-stats-content markdown-content">
+                                # LunaEngine Code Statistics
+
+## Overview
+
+- **Total Files**: 28
+- **Total Lines**: 7193
+- **Code Lines**: 4041
+- **Comment Lines**: 1835
+- **Blank Lines**: 1317
+
+## Theme Statistics
+
+- **Total Themes**: 39
+
+## Code Density
+
+- **Code Density**: 56.2%
+- Balanced code and comments
+
+## Project Structure
+
+```bash
+📁 lunaengine/
+├── 🐍 __init__.py
+├── 📁 backend/
+│   ├── 🐍 __init__.py
+│   ├── 🐍 opengl.py
+│   └── 🐍 pygame_backend.py
+├── 📝 CODE_STATISTICS.md
+├── 📁 core/
+│   ├── 🐍 __init__.py
+│   ├── 🐍 engine.py
+│   ├── 🐍 renderer.py
+│   ├── 🐍 scene.py
+│   └── 🐍 window.py
+├── 📁 graphics/
+│   ├── 🐍 __init__.py
+│   ├── 🐍 lighting.py
+│   ├── 🐍 particles.py
+│   ├── 🐍 shadows.py
+│   └── 🐍 spritesheet.py
+├── 📁 tools/
+│   ├── 🐍 __init__.py
+│   ├── 🐍 code_stats.py
+│   └── 🐍 image_conversion_tool.py
+├── 📁 ui/
+│   ├── 🐍 __init__.py
+│   ├── 🐍 elements.py
+│   ├── 🐍 layout.py
+│   ├── 🐍 styles.py
+│   └── 🐍 themes.py
+└── 📁 utils/
+    ├── 🐍 __init__.py
+    ├── 🐍 image_converter.py
+    ├── 🐍 math_utils.py
+    ├── 🐍 performance.py
+    └── 🐍 threading.py
+```
+
+## Files by Extension
+
+| Extension | Count | Percentage |
+|-----------|-------|------------|
+| `.md` | 1 | 3.6% |
+| `.py` | 27 | 96.4% |
+
+## Files by Directory
+
+| Directory | File Count |
+|-----------|------------|
+| `backend` | 3 |
+| `core` | 5 |
+| `graphics` | 5 |
+| `root` | 2 |
+| `tools` | 3 |
+| `ui` | 5 |
+| `utils` | 5 |
+
+## File Details
+
+| File | Total Lines | Code | Comments | Blank | Size (KB) |
+|------|------------|------|----------|-------|-----------|
+| `ui\elements.py` | 1841 | 1061 | 418 | 362 | 71.8 |
+| `ui\themes.py` | 1532 | 1179 | 115 | 238 | 56.0 |
+| `core\engine.py` | 425 | 193 | 150 | 82 | 16.0 |
+| `tools\code_stats.py` | 369 | 249 | 55 | 65 | 15.1 |
+| `graphics\spritesheet.py` | 362 | 135 | 157 | 70 | 13.3 |
+| `tools\image_conversion_tool.py` | 308 | 195 | 51 | 62 | 12.7 |
+| `utils\image_converter.py` | 304 | 174 | 77 | 53 | 11.4 |
+| `utils\performance.py` | 252 | 144 | 60 | 48 | 9.1 |
+| `ui\layout.py` | 213 | 82 | 91 | 40 | 7.2 |
+| `backend\opengl.py` | 198 | 103 | 58 | 37 | 7.1 |
+| `core\scene.py` | 172 | 40 | 93 | 39 | 5.4 |
+| `graphics\particles.py` | 155 | 86 | 43 | 26 | 5.5 |
+| `core\window.py` | 124 | 35 | 67 | 22 | 3.9 |
+| `backend\pygame_backend.py` | 123 | 31 | 70 | 22 | 3.9 |
+| `CODE_STATISTICS.md` | 110 | 88 | 8 | 14 | 3.3 |
+| `core\renderer.py` | 104 | 26 | 59 | 19 | 3.2 |
+| `graphics\shadows.py` | 97 | 44 | 35 | 18 | 3.7 |
+| `graphics\lighting.py` | 91 | 43 | 32 | 16 | 3.6 |
+| `ui\styles.py` | 91 | 35 | 38 | 18 | 2.8 |
+| `utils\threading.py` | 87 | 43 | 29 | 15 | 2.6 |
+| `ui\__init__.py` | 56 | 17 | 26 | 13 | 1.9 |
+| `utils\math_utils.py` | 55 | 16 | 29 | 10 | 2.0 |
+| `graphics\__init__.py` | 33 | 5 | 21 | 7 | 1.1 |
+| `utils\__init__.py` | 28 | 1 | 21 | 6 | 1.0 |
+| `core\__init__.py` | 27 | 6 | 15 | 6 | 0.7 |
+| `backend\__init__.py` | 19 | 1 | 13 | 5 | 0.6 |
+| `__init__.py` | 14 | 8 | 3 | 3 | 0.3 |
+| `tools\__init__.py` | 3 | 1 | 1 | 1 | 0.0 |
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modules Grid -->
     <div class="container mt-5">
         <h2 class="mb-4">LunaEngine Modules</h2>
         <div class="row g-4">
 
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 rounded-top-18">
                 <div class="module-card h-100">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-primary text-white rounded-top-18">
                         <div class="d-flex align-items-center">
                             <i class="bi bi-cpu fs-4 me-3"></i>
                             <div>
@@ -112,16 +245,16 @@
                         <p class="text-muted">Core engine systems - Engine, Window, Renderer</p>
                         <div class="module-stats">
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-file-text me-1"></i>3 files
+                                <i class="bi bi-file-text me-1"></i>4 files
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>3 classes
+                                <i class="bi bi-box me-1"></i>4 classes
                             </span>
                             <span class="badge bg-light text-dark">
                                 <i class="bi bi-gear me-1"></i>0 functions
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>31 methods
+                                <i class="bi bi-hammer me-1"></i>42 methods
                             </span>
                         </div>
                     </div>
@@ -133,9 +266,9 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 rounded-top-18">
                 <div class="module-card h-100">
-                    <div class="card-header bg-success text-white">
+                    <div class="card-header bg-success text-white rounded-top-18">
                         <div class="d-flex align-items-center">
                             <i class="bi bi-ui-radios fs-4 me-3"></i>
                             <div>
@@ -151,13 +284,13 @@
                                 <i class="bi bi-file-text me-1"></i>4 files
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>27 classes
+                                <i class="bi bi-box me-1"></i>28 classes
                             </span>
                             <span class="badge bg-light text-dark">
                                 <i class="bi bi-gear me-1"></i>0 functions
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>117 methods
+                                <i class="bi bi-hammer me-1"></i>125 methods
                             </span>
                         </div>
                     </div>
@@ -169,9 +302,9 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 rounded-top-18">
                 <div class="module-card h-100">
-                    <div class="card-header bg-warning text-white">
+                    <div class="card-header bg-warning text-white rounded-top-18">
                         <div class="d-flex align-items-center">
                             <i class="bi bi-brightness-high fs-4 me-3"></i>
                             <div>
@@ -187,13 +320,13 @@
                                 <i class="bi bi-file-text me-1"></i>4 files
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>7 classes
+                                <i class="bi bi-box me-1"></i>8 classes
                             </span>
                             <span class="badge bg-light text-dark">
                                 <i class="bi bi-gear me-1"></i>0 functions
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>27 methods
+                                <i class="bi bi-hammer me-1"></i>38 methods
                             </span>
                         </div>
                     </div>
@@ -205,9 +338,9 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 rounded-top-18">
                 <div class="module-card h-100">
-                    <div class="card-header bg-info text-white">
+                    <div class="card-header bg-info text-white rounded-top-18">
                         <div class="d-flex align-items-center">
                             <i class="bi bi-tools fs-4 me-3"></i>
                             <div>
@@ -241,9 +374,9 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 rounded-top-18">
                 <div class="module-card h-100">
-                    <div class="card-header bg-secondary text-white">
+                    <div class="card-header bg-secondary text-white rounded-top-18">
                         <div class="d-flex align-items-center">
                             <i class="bi bi-hdd-stack fs-4 me-3"></i>
                             <div>
@@ -277,9 +410,9 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 rounded-top-18">
                 <div class="module-card h-100">
-                    <div class="card-header bg-danger text-white">
+                    <div class="card-header bg-danger text-white rounded-top-18">
                         <div class="d-flex align-items-center">
                             <i class="bi bi-wrench fs-4 me-3"></i>
                             <div>
@@ -301,7 +434,7 @@
                                 <i class="bi bi-gear me-1"></i>6 functions
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>6 methods
+                                <i class="bi bi-hammer me-1"></i>10 methods
                             </span>
                         </div>
                     </div>
@@ -327,14 +460,75 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2025-10-29 21:22
+                        Documentation generated on 2025-10-31 15:19
                     </p>
                 </div>
             </div>
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
 </body>
 </html>

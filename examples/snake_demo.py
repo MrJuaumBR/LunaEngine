@@ -3,17 +3,23 @@ import os
 import random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from lunaengine import LunaEngine, TextLabel, Button, ThemeType, Dropdown, ThemeManager, Slider
-from lunaengine.backend.pygame_backend import PygameRenderer
+from lunaengine.core import Scene, LunaEngine # Core Items
+from lunaengine.ui.elements import * # UI Elements
+from lunaengine.backend.pygame_backend import PygameRenderer # Pygame Renderer
 import pygame
 
-class MainMenuScene:
+class MainMenuScene(Scene):
     CurrentTheme = ThemeType.EMERALD
     SnakeColor = (0, 255, 0)  # Default green snake
     
+    def on_enter(self, previous_scene = None):
+        super().on_enter(previous_scene)
+        
+    def on_exit(self, next_scene = None):
+        super().on_exit(next_scene)
+    
     def __init__(self, engine: LunaEngine):
-        self.engine = engine
-        self.ui_elements = []
+        super().__init__(engine)
         
         # Title
         Ui_TitleLabel = TextLabel(512, 80, "Snake Game Demo", 72, root_point=(0.5, 0.5), theme=self.CurrentTheme)
@@ -87,10 +93,16 @@ class MainMenuScene:
         for element in self.ui_elements:
             element.render(renderer)
             
-class InGameScene:
+class InGameScene(Scene):
+    
+    def on_enter(self, previous_scene = None):
+        return super().on_enter(previous_scene)
+    
+    def on_exit(self, next_scene = None):
+        return super().on_exit(next_scene)
+    
     def __init__(self, engine: LunaEngine):
-        self.engine = engine
-        self.ui_elements = []
+        super().__init__(engine)
         
         # Get snake color from main menu
         self.snake_color = engine.scenes["MainMenu"].SnakeColor if "MainMenu" in engine.scenes else (0, 255, 0)
@@ -278,11 +290,9 @@ class InGameScene:
 def main():
     engine = LunaEngine("LunaEngine - Snake Demo", 1024, 720)
     engine.fps = 60
-    scene = MainMenuScene(engine)
-    scene2 = InGameScene(engine)
     
-    engine.add_scene("MainMenu", scene)
-    engine.add_scene("InGame", scene2)
+    engine.add_scene("MainMenu", MainMenuScene)
+    engine.add_scene("InGame", InGameScene)
     engine.set_scene("MainMenu")
     engine.run()
     

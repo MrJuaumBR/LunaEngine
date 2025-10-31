@@ -1,3 +1,32 @@
+"""
+Math Utilities - Essential Mathematical Functions for Game Development
+
+LOCATION: lunaengine/utils/math_utils.py
+
+DESCRIPTION:
+Collection of fundamental mathematical functions commonly used in game
+development. Provides optimized implementations for interpolation,
+clamping, distance calculations, and vector operations.
+
+KEY FUNCTIONS:
+- lerp: Linear interpolation for smooth transitions
+- clamp: Value constraint within specified ranges
+- distance: Euclidean distance between points
+- normalize_vector: Vector normalization for movement calculations
+- angle_between_points: Angle calculation for directional systems
+
+LIBRARIES USED:
+- math: Core mathematical operations and trigonometric functions
+- numpy: High-performance numerical operations (optional)
+- typing: Type annotations for coordinates and return values
+
+USAGE:
+>>> smoothed_value = lerp(start, end, 0.5)
+>>> constrained_value = clamp(value, 0, 100)
+>>> dist = distance((x1, y1), (x2, y2))
+>>> direction = normalize_vector(dx, dy)
+>>> angle = angle_between_points(point_a, point_b)
+"""
 import math
 import numpy as np
 from typing import Tuple

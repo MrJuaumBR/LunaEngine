@@ -7,6 +7,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="../theme.css" rel="stylesheet">
+    <style>
+    .search-highlight {
+        background-color: #ffeb3b;
+        padding: 2px 4px;
+        border-radius: 3px;
+        animation: highlight-pulse 2s ease-in-out;
+    }
+    
+    @keyframes highlight-pulse {
+        0% { background-color: #ffeb3b; }
+        50% { background-color: #ffff72; }
+        100% { background-color: #ffeb3b; }
+    }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
@@ -16,6 +30,10 @@
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search in graphics... (e.g.: def render(), .update())">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                </div>
                 <span class="badge bg-primary me-3">Graphics</span>
                 <button class="btn btn-outline-secondary theme-toggle">
                     <span class="theme-icon">🌙</span>
@@ -56,32 +74,37 @@
                             </h5>
                         </div>
                         <div class="card-body">
-        <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded">
+        
+                            <div class="alert alert-info docstring-content">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <div class="docstring-text">Dynamic Lighting System - Real-time Light Sources and Illumination<br><br>LOCATION: lunaengine/graphics/lighting.py<br><br>DESCRIPTION:<br>Provides a dynamic lighting system that simulates real-time light sources<br>with configurable properties. Supports multiple lights, ambient lighting,<br>radial gradients, and light accumulation for creating atmospheric scenes.<br><br>KEY FEATURES:<br>- Multiple concurrent light sources with individual properties<br>- Configurable color, intensity, and radius for each light<br>- Ambient lighting control for base scene illumination<br>- Radial gradient light falloff for realistic lighting<br>- Light accumulation with additive blending<br><br>LIBRARIES USED:<br>- pygame: Surface creation, alpha blending, and rendering operations<br>- numpy: Mathematical calculations for light distribution<br>- math: Distance calculations and geometric operations<br>- typing: Type annotations for coordinates and colors<br><br>USAGE:<br>&gt;&gt;&gt; light_system = LightSystem(800, 600)<br>&gt;&gt;&gt; light = Light(100, 100, 150, (255, 200, 100), 0.8)<br>&gt;&gt;&gt; light_system.add_light(light)<br>&gt;&gt;&gt; lit_surface = light_system.calculate_lighting(original_surface)</div>
+                            </div>
+            <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-light">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     Light
                                 </h6>
                 <div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-light-__init__">
                                     <code>def __init__(self: Any, x: float, y: float, radius: float, color: Tuple[int, int, int], intensity: float) -> None</code>
                         </div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-lightsystem">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     LightSystem
                                 </h6>
                 <div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lightsystem-__init__">
                                     <code>def __init__(self: Any, screen_width: int, screen_height: int) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lightsystem-add_light">
                                     <code>def add_light(self: Any, light: Light) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Add a light to the system</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lightsystem-remove_light">
                                     <code>def remove_light(self: Any, light: Light) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Remove a light from the system</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lightsystem-calculate_lighting">
                                     <code>def calculate_lighting(self: Any, surface: pygame.Surface) -> pygame.Surface</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Calculate lighting for a surface</div></div></div></div></div>
                         </div>
@@ -97,59 +120,64 @@
                             </h5>
                         </div>
                         <div class="card-body">
-        <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded">
+        
+                            <div class="alert alert-info docstring-content">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <div class="docstring-text">Particle System - Dynamic Visual Effects and Emitters<br><br>LOCATION: lunaengine/graphics/particles.py<br><br>DESCRIPTION:<br>Comprehensive particle system for creating dynamic visual effects like<br>fire, smoke, magic spells, explosions, and environmental effects. Supports<br>multiple emitters with configurable particle properties and behaviors.<br><br>KEY FEATURES:<br>- Individual particle management with physics simulation<br>- Configurable emitters with emission rates and timing<br>- Particle properties: velocity, lifetime, color, size, rotation<br>- Smooth alpha blending and life-based fading<br>- Efficient particle pooling and lifecycle management<br><br>LIBRARIES USED:<br>- pygame: Particle rendering and surface operations<br>- numpy: Mathematical operations for particle physics<br>- random: Randomization of particle properties<br>- math: Trigonometric functions for particle movement<br>- typing: Type hints for particle parameters and collections<br><br>USAGE:<br>&gt;&gt;&gt; emitter = ParticleEmitter(400, 300)<br>&gt;&gt;&gt; emitter.emission_rate = 20<br>&gt;&gt;&gt; particle_system = ParticleSystem()<br>&gt;&gt;&gt; particle_system.add_emitter(emitter)<br>&gt;&gt;&gt; particle_system.update(delta_time)<br>&gt;&gt;&gt; particle_system.draw(screen_surface)</div>
+                            </div>
+            <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-particle">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     Particle
                                 </h6>
                 <div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particle-__init__">
                                     <code>def __init__(self: Any, x: float, y: float) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particle-update">
                                     <code>def update(self: Any, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update particle position and state</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particle-is_alive">
                                     <code>def is_alive(self: Any) -> bool</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Check if particle is still alive</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-particleemitter">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     ParticleEmitter
                                 </h6>
                 <div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particleemitter-__init__">
                                     <code>def __init__(self: Any, x: float, y: float) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particleemitter-update">
                                     <code>def update(self: Any, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update emitter and all particles</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particleemitter-emit_particle">
                                     <code>def emit_particle(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Emit a new particle</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particleemitter-draw">
                                     <code>def draw(self: Any, surface: pygame.Surface) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw all particles</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-particlesystem">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     ParticleSystem
                                 </h6>
                 <div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-__init__">
                                     <code>def __init__(self: Any) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-add_emitter">
                                     <code>def add_emitter(self: Any, emitter: ParticleEmitter) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Add an emitter to the system</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-remove_emitter">
                                     <code>def remove_emitter(self: Any, emitter: ParticleEmitter) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Remove an emitter</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-update">
                                     <code>def update(self: Any, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update all emitters</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-draw">
                                     <code>def draw(self: Any, surface: pygame.Surface) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw all particles from all emitters</div></div></div></div></div>
                         </div>
@@ -165,26 +193,31 @@
                             </h5>
                         </div>
                         <div class="card-body">
-        <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded">
+        
+                            <div class="alert alert-info docstring-content">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <div class="docstring-text">Real-time Shadow System - Dynamic Shadow Casting and Occlusion<br><br>LOCATION: lunaengine/graphics/shadows.py<br><br>DESCRIPTION:<br>Advanced shadow system that calculates real-time shadows based on light<br>sources and occluding objects. Creates dynamic shadow polygons that<br>respond to light position and object geometry for immersive lighting.<br><br>KEY FEATURES:<br>- Dynamic shadow casting from multiple occluders<br>- Light-based shadow calculation with configurable radius<br>- Shadow polygon generation with proper vertex extension<br>- Alpha-blended shadow rendering for smooth edges<br>- Efficient occluder management and removal<br><br>LIBRARIES USED:<br>- pygame: Polygon rendering and surface operations<br>- numpy: Mathematical calculations for shadow geometry<br>- math: Vector calculations and distance measurements<br>- typing: Type annotations for coordinates and shapes<br><br>USAGE:<br>&gt;&gt;&gt; shadow_system = ShadowSystem(800, 600)<br>&gt;&gt;&gt; shadow_system.add_occluder(pygame.Rect(100, 100, 50, 50))<br>&gt;&gt;&gt; shadow_map = shadow_system.calculate_shadows((200, 200), 300)<br>&gt;&gt;&gt; screen.blit(shadow_map, (0, 0))</div>
+                            </div>
+            <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-shadowsystem">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     ShadowSystem
                                 </h6>
                 <div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-__init__">
                                     <code>def __init__(self: Any, screen_width: int, screen_height: int) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-add_occluder">
                                     <code>def add_occluder(self: Any, rect: pygame.Rect) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Add an object that casts shadows</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-remove_occluder">
                                     <code>def remove_occluder(self: Any, rect: pygame.Rect) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Remove an occluder</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-calculate_shadows">
                                     <code>def calculate_shadows(self: Any, light_pos: Tuple[float, float], light_radius: float) -> pygame.Surface</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Calculate shadows for a light source</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-_draw_shadow_polygon">
                                     <code>def _draw_shadow_polygon(self: Any, surface: pygame.Surface, light_pos: Tuple[float, float], occluder: pygame.Rect, light_radius: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw shadow polygon for an occluder</div></div></div></div></div>
                         </div>
@@ -200,28 +233,72 @@
                             </h5>
                         </div>
                         <div class="card-body">
-        <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded">
+        
+                            <div class="alert alert-info docstring-content">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <div class="docstring-text">Sprite Sheet System with Alpha Support and Time-Based Animations<br><br>LOCATION: lunaengine/graphics/spritesheet.py<br><br>DESCRIPTION:<br>Advanced sprite sheet management system with alpha channel support and<br>time-based animation system. Provides efficient sprite extraction from<br>texture atlases with flexible positioning and frame-rate independent animations.<br><br>KEY FEATURES:<br>- Full alpha channel support for transparent sprites<br>- Flexible sprite extraction using Rect coordinates<br>- Batch sprite extraction for multiple regions<br>- Time-based animation system (frame-rate independent)<br>- Support for padding, margin, and scaling<br>- Animation sequencing with configurable durations<br>- Automatic frame extraction based on parameters<br><br>LIBRARIES USED:<br>- pygame: Image loading, surface manipulation, and alpha processing<br>- typing: Type hints for better code documentation<br>- time: Animation timing calculations<br><br>! WARN:<br>- Ensure pygame is initialized before using this module<br><br>USAGE:<br>&gt;&gt;&gt; # Basic sprite sheet<br>&gt;&gt;&gt; spritesheet = SpriteSheet(&quot;characters.png&quot;)<br>&gt;&gt;&gt; single_sprite = spritesheet.get_sprite_at_rect(pygame.Rect(0, 0, 64, 64))<br>&gt;&gt;&gt; <br>&gt;&gt;&gt; # Multiple sprites<br>&gt;&gt;&gt; regions = [pygame.Rect(0, 0, 64, 64), pygame.Rect(64, 0, 64, 64)]<br>&gt;&gt;&gt; sprites = spritesheet.get_sprites_at_regions(regions)<br>&gt;&gt;&gt; <br>&gt;&gt;&gt; # Animation - automatically extracts frames<br>&gt;&gt;&gt; walk_animation = Animation(&quot;tiki_texture.png&quot;, (70, 70), (0, 0), frame_count=6, <br>&gt;&gt;&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; scale=(2, 2), duration=1.0)<br>&gt;&gt;&gt; current_frame = walk_animation.get_current_frame()</div>
+                            </div>
+            <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-spritesheet">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     SpriteSheet
                                 </h6>
-                <div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, filename: str, sprite_width: int, sprite_height: int) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def _extract_sprites(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Extract individual sprites from the spritesheet</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def get_sprite(self: Any, index: int) -> Optional[pygame.Surface]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get sprite by index</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def get_animation_frames(self: Any, start: int, end: int) -> List[pygame.Surface]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get a sequence of frames for animation</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def get_sprite_by_position(self: Any, row: int, col: int) -> Optional[pygame.Surface]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get sprite by grid position</div></div></div></div></div>
+                <div class="docstring-content mb-2"><div class="docstring-text">Main sprite sheet class for managing and extracting sprites from texture atlases.<br><br>This class handles loading sprite sheets with alpha support and provides<br>multiple methods for extracting individual sprites or sprite sequences.<br><br>Attributes:<br> &nbsp; &nbsp;sheet (pygame.Surface): The loaded sprite sheet surface with alpha<br> &nbsp; &nbsp;filename (str): Path to the sprite sheet file<br> &nbsp; &nbsp;width (int): Width of the sprite sheet<br> &nbsp; &nbsp;height (int): Height of the sprite sheet</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-spritesheet-__init__">
+                                    <code>def __init__(self: Any, filename: str) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the sprite sheet with alpha support.<br><br>Args:<br> &nbsp; &nbsp;filename (str): Path to the sprite sheet image file</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-spritesheet-get_sprite_at_rect">
+                                    <code>def get_sprite_at_rect(self: Any, rect: pygame.Rect) -> pygame.Surface</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Extract a sprite from a specific rectangular region.<br><br>Args:<br> &nbsp; &nbsp;rect (pygame.Rect): Rectangle defining the sprite region (x, y, width, height)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface with alpha<br> &nbsp; &nbsp;<br>Raises:<br> &nbsp; &nbsp;ValueError: If the rect is outside the sprite sheet bounds</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-spritesheet-get_sprites_at_regions">
+                                    <code>def get_sprites_at_regions(self: Any, regions: List[pygame.Rect]) -> List[pygame.Surface]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Extract multiple sprites from a list of rectangular regions.<br><br>Args:<br> &nbsp; &nbsp;regions (List[pygame.Rect]): List of rectangles defining sprite regions<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[pygame.Surface]: List of extracted sprite surfaces</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-spritesheet-get_sprite_grid">
+                                    <code>def get_sprite_grid(self: Any, cell_size: Tuple[int, int], grid_pos: Tuple[int, int]) -> pygame.Surface</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Extract a sprite from a grid-based sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;cell_size (Tuple[int, int]): Width and height of each grid cell<br> &nbsp; &nbsp;grid_pos (Tuple[int, int]): Grid coordinates (col, row)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-animation">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Animation
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Time-based animation system for sprite sequences.<br><br>This class automatically extracts frames from a sprite sheet based on<br>the provided parameters and manages animation timing.<br><br>Attributes:<br> &nbsp; &nbsp;spritesheet (SpriteSheet): The source sprite sheet<br> &nbsp; &nbsp;frames (List[pygame.Surface]): List of animation frames<br> &nbsp; &nbsp;frame_count (int): Total number of frames in the animation<br> &nbsp; &nbsp;current_frame_index (int): Current frame index in the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;frame_duration (float): Duration of each frame in seconds<br> &nbsp; &nbsp;last_update_time (float): Last time the animation was updated<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;playing (bool): Whether the animation is currently playing</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-__init__">
+                                    <code>def __init__(self: Any, spritesheet_file: str, size: Tuple[int, int], start_pos: Tuple[int, int], frame_count: int, padding: Tuple[int, int], margin: Tuple[int, int], scale: Tuple[float, float], duration: float, loop: bool) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the animation and automatically extract frames from sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;spritesheet_file (str): Path to the sprite sheet file<br> &nbsp; &nbsp;size (Tuple[int, int]): Size of each sprite (width, height)<br> &nbsp; &nbsp;start_pos (Tuple[int, int]): Starting position in the sprite sheet (x, y)<br> &nbsp; &nbsp;frame_count (int): Number of frames to extract for the animation<br> &nbsp; &nbsp;padding (Tuple[int, int]): Padding between sprites (x, y)<br> &nbsp; &nbsp;margin (Tuple[int, int]): Margin around the sprite sheet (x, y)<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-_extract_animation_frames">
+                                    <code>def _extract_animation_frames(self: Any) -> List[pygame.Surface]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Automatically extract animation frames based on parameters.<br><br>Creates a sequence of rectangles and extracts the corresponding sprites<br>from the sprite sheet.<br><br>Returns:<br> &nbsp; &nbsp;List[pygame.Surface]: List of extracted frames</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-_apply_scaling">
+                                    <code>def _apply_scaling(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Apply scaling to all animation frames.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-update">
+                                    <code>def update(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update the animation based on elapsed time.<br><br>This method uses time-based animation rather than frame-based,<br>making it frame-rate independent.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-get_current_frame">
+                                    <code>def get_current_frame(self: Any) -> pygame.Surface</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the current animation frame.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The current frame surface</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-reset">
+                                    <code>def reset(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Reset the animation to the first frame.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-is_finished">
+                                    <code>def is_finished(self: Any) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Check if a non-looping animation has finished.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if the animation has finished, False otherwise</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-set_duration">
+                                    <code>def set_duration(self: Any, new_duration: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Change the animation duration.<br><br>Args:<br> &nbsp; &nbsp;new_duration (float): New total duration in seconds</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-play">
+                                    <code>def play(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Start or resume the animation.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-pause">
+                                    <code>def pause(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Pause the animation.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-get_frame_count">
+                                    <code>def get_frame_count(self: Any) -> int</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the number of frames in the animation.<br><br>Returns:<br> &nbsp; &nbsp;int: Number of frames</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-get_progress">
+                                    <code>def get_progress(self: Any) -> float</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the current progress of the animation (0.0 to 1.0).<br><br>Returns:<br> &nbsp; &nbsp;float: Animation progress from start (0.0) to end (1.0)</div></div></div></div></div>
                         </div>
                     </div>
                 </div>
@@ -241,5 +318,65 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
 </body>
 </html>

@@ -1,7 +1,37 @@
-import pygame
+"""
+Particle System - Dynamic Visual Effects and Emitters
+
+LOCATION: lunaengine/graphics/particles.py
+
+DESCRIPTION:
+Comprehensive particle system for creating dynamic visual effects like
+fire, smoke, magic spells, explosions, and environmental effects. Supports
+multiple emitters with configurable particle properties and behaviors.
+
+KEY FEATURES:
+- Individual particle management with physics simulation
+- Configurable emitters with emission rates and timing
+- Particle properties: velocity, lifetime, color, size, rotation
+- Smooth alpha blending and life-based fading
+- Efficient particle pooling and lifecycle management
+
+LIBRARIES USED:
+- pygame: Particle rendering and surface operations
+- numpy: Mathematical operations for particle physics
+- random: Randomization of particle properties
+- math: Trigonometric functions for particle movement
+- typing: Type hints for particle parameters and collections
+
+USAGE:
+>>> emitter = ParticleEmitter(400, 300)
+>>> emitter.emission_rate = 20
+>>> particle_system = ParticleSystem()
+>>> particle_system.add_emitter(emitter)
+>>> particle_system.update(delta_time)
+>>> particle_system.draw(screen_surface)
+"""
+import pygame, random, math
 import numpy as np
-import random
-import math
 from typing import List, Tuple, Optional
 
 class Particle:

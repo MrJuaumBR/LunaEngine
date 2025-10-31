@@ -1,0 +1,3013 @@
+{
+  "modules": [
+    {
+      "name": "core",
+      "title": "Core",
+      "description": "Core engine systems - Engine, Window, Renderer",
+      "link": "core/index.html",
+      "files_count": 4,
+      "classes_count": 4,
+      "functions_count": 0
+    },
+    {
+      "name": "ui",
+      "title": "Ui",
+      "description": "User interface components - Buttons, Layouts, Themes",
+      "link": "ui/index.html",
+      "files_count": 4,
+      "classes_count": 28,
+      "functions_count": 0
+    },
+    {
+      "name": "graphics",
+      "title": "Graphics",
+      "description": "Graphics and rendering - Sprites, Lighting, Particles",
+      "link": "graphics/index.html",
+      "files_count": 4,
+      "classes_count": 8,
+      "functions_count": 0
+    },
+    {
+      "name": "utils",
+      "title": "Utils",
+      "description": "Utility functions - Performance, Math, Threading",
+      "link": "utils/index.html",
+      "files_count": 4,
+      "classes_count": 6,
+      "functions_count": 5
+    },
+    {
+      "name": "backend",
+      "title": "Backend",
+      "description": "Renderer backends - OpenGL, Pygame",
+      "link": "backend/index.html",
+      "files_count": 2,
+      "classes_count": 2,
+      "functions_count": 0
+    },
+    {
+      "name": "tools",
+      "title": "Tools",
+      "description": "Development tools - Documentation, Analysis",
+      "link": "tools/index.html",
+      "files_count": 2,
+      "classes_count": 1,
+      "functions_count": 6
+    }
+  ],
+  "classes": [
+    {
+      "name": "LunaEngine",
+      "module": "core",
+      "file": "engine.py",
+      "description": "Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene",
+      "link": "core/index.html#class-lunaengine",
+      "methods_count": 17,
+      "element_id": "class-lunaengine"
+    },
+    {
+      "name": "Renderer",
+      "module": "core",
+      "file": "renderer.py",
+      "description": "Abstract base class for all renderers in LunaEngine.",
+      "link": "core/index.html#class-renderer",
+      "methods_count": 7,
+      "element_id": "class-renderer"
+    },
+    {
+      "name": "Scene",
+      "module": "core",
+      "file": "scene.py",
+      "description": "Base class for all game scenes.<br><br>Provides lifecycle methods and UI element management. <br>All custom scenes should inherit from this class.<br><br>Attributes:<br> &nbsp; &nbsp;ui_elements (List[UIElement]): List of UI elements in this scene<br> &nbsp; &nbsp;_initialized (bool): Whether the scene has been initialized<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine",
+      "link": "core/index.html#class-scene",
+      "methods_count": 11,
+      "element_id": "class-scene"
+    },
+    {
+      "name": "Window",
+      "module": "core",
+      "file": "window.py",
+      "description": "Manages the game window and display settings.<br><br>This class handles window creation, resizing, fullscreen mode,<br>and provides utility methods for window information.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether window is in fullscreen mode<br> &nbsp; &nbsp;resizable (bool): Whether window is resizable<br> &nbsp; &nbsp;surface (pygame.Surface): The window surface",
+      "link": "core/index.html#class-window",
+      "methods_count": 7,
+      "element_id": "class-window"
+    },
+    {
+      "name": "_UIDGenerator",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "Internal class for generating unique IDs for UI elements.<br><br>Generates IDs in the format: ui_{element_type}_{counter}<br>Example: ui_button_1, ui_label_2, ui_dropdown_1",
+      "link": "ui/index.html#class-_uidgenerator",
+      "methods_count": 2,
+      "element_id": "class-_uidgenerator"
+    },
+    {
+      "name": "UIState",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "Enumeration of possible UI element states.",
+      "link": "ui/index.html#class-uistate",
+      "methods_count": 0,
+      "element_id": "class-uistate"
+    },
+    {
+      "name": "FontManager",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "Manages fonts and ensures Pygame font system is initialized.",
+      "link": "ui/index.html#class-fontmanager",
+      "methods_count": 2,
+      "element_id": "class-fontmanager"
+    },
+    {
+      "name": "UIElement",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "Base class for all UI elements providing common functionality.<br><br>Attributes:<br> &nbsp; &nbsp;element_id (str): Unique identifier for this element in format ui_{type}_{counter}<br> &nbsp; &nbsp;x (int): X coordinate position<br> &nbsp; &nbsp;y (int): Y coordinate position<br> &nbsp; &nbsp;width (int): Width of the element in pixels<br> &nbsp; &nbsp;height (int): Height of the element in pixels<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning<br> &nbsp; &nbsp;state (UIState): Current state of the element<br> &nbsp; &nbsp;visible (bool): Whether element is visible<br> &nbsp; &nbsp;enabled (bool): Whether element is enabled<br> &nbsp; &nbsp;children (List[UIElement]): Child elements<br> &nbsp; &nbsp;parent (UIElement): Parent element",
+      "link": "ui/index.html#class-uielement",
+      "methods_count": 11,
+      "element_id": "class-uielement"
+    },
+    {
+      "name": "TextLabel",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "UI element for displaying text labels.",
+      "link": "ui/index.html#class-textlabel",
+      "methods_count": 7,
+      "element_id": "class-textlabel"
+    },
+    {
+      "name": "ImageLabel",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-imagelabel",
+      "methods_count": 4,
+      "element_id": "class-imagelabel"
+    },
+    {
+      "name": "Button",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-button",
+      "methods_count": 9,
+      "element_id": "class-button"
+    },
+    {
+      "name": "ImageButton",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-imagebutton",
+      "methods_count": 6,
+      "element_id": "class-imagebutton"
+    },
+    {
+      "name": "TextBox",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-textbox",
+      "methods_count": 10,
+      "element_id": "class-textbox"
+    },
+    {
+      "name": "ProgressBar",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-progressbar",
+      "methods_count": 4,
+      "element_id": "class-progressbar"
+    },
+    {
+      "name": "UIDraggable",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-uidraggable",
+      "methods_count": 3,
+      "element_id": "class-uidraggable"
+    },
+    {
+      "name": "UIGradient",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-uigradient",
+      "methods_count": 5,
+      "element_id": "class-uigradient"
+    },
+    {
+      "name": "Select",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-select",
+      "methods_count": 8,
+      "element_id": "class-select"
+    },
+    {
+      "name": "Switch",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-switch",
+      "methods_count": 6,
+      "element_id": "class-switch"
+    },
+    {
+      "name": "ScrollingFrame",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-scrollingframe",
+      "methods_count": 5,
+      "element_id": "class-scrollingframe"
+    },
+    {
+      "name": "Slider",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-slider",
+      "methods_count": 5,
+      "element_id": "class-slider"
+    },
+    {
+      "name": "Dropdown",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-dropdown",
+      "methods_count": 13,
+      "element_id": "class-dropdown"
+    },
+    {
+      "name": "UILayout",
+      "module": "ui",
+      "file": "layout.py",
+      "description": "Base class for UI layout managers.",
+      "link": "ui/index.html#class-uilayout",
+      "methods_count": 4,
+      "element_id": "class-uilayout"
+    },
+    {
+      "name": "VerticalLayout",
+      "module": "ui",
+      "file": "layout.py",
+      "description": "Layout that arranges elements vertically.",
+      "link": "ui/index.html#class-verticallayout",
+      "methods_count": 2,
+      "element_id": "class-verticallayout"
+    },
+    {
+      "name": "HorizontalLayout",
+      "module": "ui",
+      "file": "layout.py",
+      "description": "Layout that arranges elements horizontally.",
+      "link": "ui/index.html#class-horizontallayout",
+      "methods_count": 2,
+      "element_id": "class-horizontallayout"
+    },
+    {
+      "name": "GridLayout",
+      "module": "ui",
+      "file": "layout.py",
+      "description": "Layout that arranges elements in a grid.",
+      "link": "ui/index.html#class-gridlayout",
+      "methods_count": 2,
+      "element_id": "class-gridlayout"
+    },
+    {
+      "name": "JustifiedLayout",
+      "module": "ui",
+      "file": "layout.py",
+      "description": "Layout that justifies elements with equal spacing.",
+      "link": "ui/index.html#class-justifiedlayout",
+      "methods_count": 2,
+      "element_id": "class-justifiedlayout"
+    },
+    {
+      "name": "UIState",
+      "module": "ui",
+      "file": "styles.py",
+      "description": "Enumeration of possible UI element states.",
+      "link": "ui/index.html#class-uistate",
+      "methods_count": 0,
+      "element_id": "class-uistate"
+    },
+    {
+      "name": "UIStyle",
+      "module": "ui",
+      "file": "styles.py",
+      "description": "Defines the visual style for UI elements.",
+      "link": "ui/index.html#class-uistyle",
+      "methods_count": 2,
+      "element_id": "class-uistyle"
+    },
+    {
+      "name": "Theme",
+      "module": "ui",
+      "file": "styles.py",
+      "description": "Collection of styles for different UI elements forming a complete theme.",
+      "link": "ui/index.html#class-theme",
+      "methods_count": 1,
+      "element_id": "class-theme"
+    },
+    {
+      "name": "UITheme",
+      "module": "ui",
+      "file": "themes.py",
+      "description": "Complete UI theme configuration for all elements",
+      "link": "ui/index.html#class-uitheme",
+      "methods_count": 0,
+      "element_id": "class-uitheme"
+    },
+    {
+      "name": "ThemeType",
+      "module": "ui",
+      "file": "themes.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-themetype",
+      "methods_count": 0,
+      "element_id": "class-themetype"
+    },
+    {
+      "name": "ThemeManager",
+      "module": "ui",
+      "file": "themes.py",
+      "description": "Manages complete UI themes",
+      "link": "ui/index.html#class-thememanager",
+      "methods_count": 10,
+      "element_id": "class-thememanager"
+    },
+    {
+      "name": "Light",
+      "module": "graphics",
+      "file": "lighting.py",
+      "description": "No documentation",
+      "link": "graphics/index.html#class-light",
+      "methods_count": 1,
+      "element_id": "class-light"
+    },
+    {
+      "name": "LightSystem",
+      "module": "graphics",
+      "file": "lighting.py",
+      "description": "No documentation",
+      "link": "graphics/index.html#class-lightsystem",
+      "methods_count": 4,
+      "element_id": "class-lightsystem"
+    },
+    {
+      "name": "Particle",
+      "module": "graphics",
+      "file": "particles.py",
+      "description": "No documentation",
+      "link": "graphics/index.html#class-particle",
+      "methods_count": 3,
+      "element_id": "class-particle"
+    },
+    {
+      "name": "ParticleEmitter",
+      "module": "graphics",
+      "file": "particles.py",
+      "description": "No documentation",
+      "link": "graphics/index.html#class-particleemitter",
+      "methods_count": 4,
+      "element_id": "class-particleemitter"
+    },
+    {
+      "name": "ParticleSystem",
+      "module": "graphics",
+      "file": "particles.py",
+      "description": "No documentation",
+      "link": "graphics/index.html#class-particlesystem",
+      "methods_count": 5,
+      "element_id": "class-particlesystem"
+    },
+    {
+      "name": "ShadowSystem",
+      "module": "graphics",
+      "file": "shadows.py",
+      "description": "No documentation",
+      "link": "graphics/index.html#class-shadowsystem",
+      "methods_count": 5,
+      "element_id": "class-shadowsystem"
+    },
+    {
+      "name": "SpriteSheet",
+      "module": "graphics",
+      "file": "spritesheet.py",
+      "description": "Main sprite sheet class for managing and extracting sprites from texture atlases.<br><br>This class handles loading sprite sheets with alpha support and provides<br>multiple methods for extracting individual sprites or sprite sequences.<br><br>Attributes:<br> &nbsp; &nbsp;sheet (pygame.Surface): The loaded sprite sheet surface with alpha<br> &nbsp; &nbsp;filename (str): Path to the sprite sheet file<br> &nbsp; &nbsp;width (int): Width of the sprite sheet<br> &nbsp; &nbsp;height (int): Height of the sprite sheet",
+      "link": "graphics/index.html#class-spritesheet",
+      "methods_count": 4,
+      "element_id": "class-spritesheet"
+    },
+    {
+      "name": "Animation",
+      "module": "graphics",
+      "file": "spritesheet.py",
+      "description": "Time-based animation system for sprite sequences.<br><br>This class automatically extracts frames from a sprite sheet based on<br>the provided parameters and manages animation timing.<br><br>Attributes:<br> &nbsp; &nbsp;spritesheet (SpriteSheet): The source sprite sheet<br> &nbsp; &nbsp;frames (List[pygame.Surface]): List of animation frames<br> &nbsp; &nbsp;frame_count (int): Total number of frames in the animation<br> &nbsp; &nbsp;current_frame_index (int): Current frame index in the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;frame_duration (float): Duration of each frame in seconds<br> &nbsp; &nbsp;last_update_time (float): Last time the animation was updated<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;playing (bool): Whether the animation is currently playing",
+      "link": "graphics/index.html#class-animation",
+      "methods_count": 12,
+      "element_id": "class-animation"
+    },
+    {
+      "name": "ImageConverter",
+      "module": "utils",
+      "file": "image_converter.py",
+      "description": "Converts images to Python code for embedding in games<br>Uses Pygame for image loading - NO PILLOW REQUIRED",
+      "link": "utils/index.html#class-imageconverter",
+      "methods_count": 8,
+      "element_id": "class-imageconverter"
+    },
+    {
+      "name": "EmbeddedImage",
+      "module": "utils",
+      "file": "image_converter.py",
+      "description": "Helper class for working with embedded images",
+      "link": "utils/index.html#class-embeddedimage",
+      "methods_count": 5,
+      "element_id": "class-embeddedimage"
+    },
+    {
+      "name": "PerformanceMonitor",
+      "module": "utils",
+      "file": "performance.py",
+      "description": "Optimized performance monitoring with minimal overhead",
+      "link": "utils/index.html#class-performancemonitor",
+      "methods_count": 9,
+      "element_id": "class-performancemonitor"
+    },
+    {
+      "name": "GarbageCollector",
+      "module": "utils",
+      "file": "performance.py",
+      "description": "Manages cleanup of unused resources",
+      "link": "utils/index.html#class-garbagecollector",
+      "methods_count": 4,
+      "element_id": "class-garbagecollector"
+    },
+    {
+      "name": "Task",
+      "module": "utils",
+      "file": "threading.py",
+      "description": "No documentation",
+      "link": "utils/index.html#class-task",
+      "methods_count": 2,
+      "element_id": "class-task"
+    },
+    {
+      "name": "ThreadPool",
+      "module": "utils",
+      "file": "threading.py",
+      "description": "No documentation",
+      "link": "utils/index.html#class-threadpool",
+      "methods_count": 5,
+      "element_id": "class-threadpool"
+    },
+    {
+      "name": "OpenGLRenderer",
+      "module": "backend",
+      "file": "opengl.py",
+      "description": "OpenGL-based hardware-accelerated renderer for LunaEngine<br><br>LOCATION: lunaengine/backend/opengl.py<br><br>DESCRIPTION:<br>Provides high-performance 2D rendering using OpenGL with shader support.<br>Converts pygame surfaces to OpenGL textures and renders them using custom<br>shaders for optimal performance.<br><br>FEATURES:<br>- Hardware-accelerated 2D rendering<br>- Custom vertex and fragment shaders<br>- Texture-based sprite rendering<br>- Alpha blending and transparency support<br><br>LIBRARIES USED:<br>- pygame: Surface creation and image processing<br>- OpenGL.GL: Core OpenGL functionality<br>- OpenGL.GL.shaders: Shader compilation and management<br>- numpy: Vertex data and matrix operations<br><br>USAGE:<br>&gt;&gt;&gt; renderer = OpenGLRenderer(800, 600)<br>&gt;&gt;&gt; renderer.initialize()<br>&gt;&gt;&gt; renderer.draw_surface(sprite_surface, x, y)",
+      "link": "backend/index.html#class-openglrenderer",
+      "methods_count": 9,
+      "element_id": "class-openglrenderer"
+    },
+    {
+      "name": "PygameRenderer",
+      "module": "backend",
+      "file": "pygame_backend.py",
+      "description": "Pygame-based software renderer for LunaEngine<br><br>LOCATION: lunaengine/backend/pygame_backend.py<br><br>DESCRIPTION:<br>Provides a simple, reliable software renderer using Pygame&#x27;s built-in<br>drawing functions. Serves as a fallback when OpenGL is not available<br>or for development purposes.<br><br>FEATURES:<br>- Software-based 2D rendering<br>- Basic shape drawing (rectangles, circles, lines)<br>- Surface blitting and composition<br>- Cross-platform compatibility<br><br>LIBRARIES USED:<br>- pygame: Core graphics, surface management, and drawing primitives<br><br>INHERITS FROM:<br>- Renderer: Base renderer class from core module<br><br>USAGE:<br>&gt;&gt;&gt; renderer = PygameRenderer(800, 600)<br>&gt;&gt;&gt; renderer.initialize()<br>&gt;&gt;&gt; renderer.draw_rect(100, 100, 50, 50, (255, 0, 0))",
+      "link": "backend/index.html#class-pygamerenderer",
+      "methods_count": 9,
+      "element_id": "class-pygamerenderer"
+    },
+    {
+      "name": "CodeStatistics",
+      "module": "tools",
+      "file": "code_stats.py",
+      "description": "No documentation",
+      "link": "tools/index.html#class-codestatistics",
+      "methods_count": 10,
+      "element_id": "class-codestatistics"
+    }
+  ],
+  "functions": [
+    {
+      "name": "lerp",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "Linear interpolation between a and b",
+      "link": "utils/index.html#func-lerp",
+      "is_method": false,
+      "element_id": "func-lerp"
+    },
+    {
+      "name": "clamp",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "Clamp value between min and max",
+      "link": "utils/index.html#func-clamp",
+      "is_method": false,
+      "element_id": "func-clamp"
+    },
+    {
+      "name": "distance",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "Calculate distance between two points",
+      "link": "utils/index.html#func-distance",
+      "is_method": false,
+      "element_id": "func-distance"
+    },
+    {
+      "name": "normalize_vector",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "Normalize a 2D vector",
+      "link": "utils/index.html#func-normalize_vector",
+      "is_method": false,
+      "element_id": "func-normalize_vector"
+    },
+    {
+      "name": "angle_between_points",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "Calculate angle between two points in radians",
+      "link": "utils/index.html#func-angle_between_points",
+      "is_method": false,
+      "element_id": "func-angle_between_points"
+    },
+    {
+      "name": "main",
+      "module": "tools",
+      "file": "code_stats.py",
+      "description": "No documentation",
+      "link": "tools/index.html#func-main",
+      "is_method": false,
+      "element_id": "func-main"
+    },
+    {
+      "name": "save_detailed_report",
+      "module": "tools",
+      "file": "code_stats.py",
+      "description": "Save a detailed markdown report",
+      "link": "tools/index.html#func-save_detailed_report",
+      "is_method": false,
+      "element_id": "func-save_detailed_report"
+    },
+    {
+      "name": "main",
+      "module": "tools",
+      "file": "image_conversion_tool.py",
+      "description": "No documentation",
+      "link": "tools/index.html#func-main",
+      "is_method": false,
+      "element_id": "func-main"
+    },
+    {
+      "name": "show_preview",
+      "module": "tools",
+      "file": "image_conversion_tool.py",
+      "description": "Show a preview of the original and converted image",
+      "link": "tools/index.html#func-show_preview",
+      "is_method": false,
+      "element_id": "func-show_preview"
+    },
+    {
+      "name": "print_statistics",
+      "module": "tools",
+      "file": "image_conversion_tool.py",
+      "description": "Print conversion statistics",
+      "link": "tools/index.html#func-print_statistics",
+      "is_method": false,
+      "element_id": "func-print_statistics"
+    },
+    {
+      "name": "batch_convert",
+      "module": "tools",
+      "file": "image_conversion_tool.py",
+      "description": "Batch convert multiple images",
+      "link": "tools/index.html#func-batch_convert",
+      "is_method": false,
+      "element_id": "func-batch_convert"
+    }
+  ],
+  "methods": [
+    {
+      "name": "__init__",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Initialize the LunaEngine.<br><br>Args:<br> &nbsp; &nbsp;title (str): The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int): The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int): The height of the game window (default: 600)<br> &nbsp; &nbsp;use_opengl (bool): Use OpenGL for rendering (default: False)",
+      "link": "core/index.html#method-lunaengine-__init__",
+      "is_method": true,
+      "element_id": "method-lunaengine-__init__"
+    },
+    {
+      "name": "initialize",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Initialize the engine and create the game window.",
+      "link": "core/index.html#method-lunaengine-initialize",
+      "is_method": true,
+      "element_id": "method-lunaengine-initialize"
+    },
+    {
+      "name": "add_scene",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Add a scene to the engine by class (the engine will instantiate it).<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene<br> &nbsp; &nbsp;scene_class (Type[Scene]): The scene class to instantiate<br> &nbsp; &nbsp;*args: Arguments to pass to scene constructor<br> &nbsp; &nbsp;**kwargs: Keyword arguments to pass to scene constructor",
+      "link": "core/index.html#method-lunaengine-add_scene",
+      "is_method": true,
+      "element_id": "method-lunaengine-add_scene"
+    },
+    {
+      "name": "set_scene",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Set the current active scene.<br><br>Calls on_exit on the current scene and on_enter on the new scene.<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene to set as current",
+      "link": "core/index.html#method-lunaengine-set_scene",
+      "is_method": true,
+      "element_id": "method-lunaengine-set_scene"
+    },
+    {
+      "name": "on_event",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Decorator to register event handlers<br><br>Args:<br> &nbsp; &nbsp;event_type (int): The Pygame event type to listen for<br>Returns:<br> &nbsp; &nbsp;Callable: The decorator function",
+      "link": "core/index.html#method-lunaengine-on_event",
+      "is_method": true,
+      "element_id": "method-lunaengine-on_event"
+    },
+    {
+      "name": "get_all_themes",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get all available themes including user custom ones<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, any]: Dictionary with theme names as keys and theme objects as values",
+      "link": "core/index.html#method-lunaengine-get_all_themes",
+      "is_method": true,
+      "element_id": "method-lunaengine-get_all_themes"
+    },
+    {
+      "name": "get_theme_names",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get list of all available theme names<br><br>Returns:<br> &nbsp; &nbsp;List[str]: List of theme names",
+      "link": "core/index.html#method-lunaengine-get_theme_names",
+      "is_method": true,
+      "element_id": "method-lunaengine-get_theme_names"
+    },
+    {
+      "name": "set_global_theme",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Set the global theme for the entire engine and update all UI elements<br><br>Args:<br> &nbsp; &nbsp;theme_name (str): Name of the theme to set<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if theme was set successfully, False otherwise",
+      "link": "core/index.html#method-lunaengine-set_global_theme",
+      "is_method": true,
+      "element_id": "method-lunaengine-set_global_theme"
+    },
+    {
+      "name": "_update_all_ui_themes",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Update all UI elements in the current scene to use the new theme<br><br>Args:<br> &nbsp; &nbsp;theme_enum: The theme enum to apply",
+      "link": "core/index.html#method-lunaengine-_update_all_ui_themes",
+      "is_method": true,
+      "element_id": "method-lunaengine-_update_all_ui_themes"
+    },
+    {
+      "name": "get_fps_stats",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get comprehensive FPS statistics (optimized)<br><br>Returns:<br> &nbsp; &nbsp;dict: A dictionary containing FPS statistics",
+      "link": "core/index.html#method-lunaengine-get_fps_stats",
+      "is_method": true,
+      "element_id": "method-lunaengine-get_fps_stats"
+    },
+    {
+      "name": "get_hardware_info",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get hardware information",
+      "link": "core/index.html#method-lunaengine-get_hardware_info",
+      "is_method": true,
+      "element_id": "method-lunaengine-get_hardware_info"
+    },
+    {
+      "name": "run",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Main game loop - OPTIMIZED",
+      "link": "core/index.html#method-lunaengine-run",
+      "is_method": true,
+      "element_id": "method-lunaengine-run"
+    },
+    {
+      "name": "_handle_mouse_scroll",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Handle mouse wheel scrolling for UI elements - OPTIMIZED",
+      "link": "core/index.html#method-lunaengine-_handle_mouse_scroll",
+      "is_method": true,
+      "element_id": "method-lunaengine-_handle_mouse_scroll"
+    },
+    {
+      "name": "_handle_keyboard_event",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Handle keyboard events for focused UI elements - OPTIMIZED",
+      "link": "core/index.html#method-lunaengine-_handle_keyboard_event",
+      "is_method": true,
+      "element_id": "method-lunaengine-_handle_keyboard_event"
+    },
+    {
+      "name": "_update_ui_elements",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Update UI elements with mouse interaction - OPTIMIZED",
+      "link": "core/index.html#method-lunaengine-_update_ui_elements",
+      "is_method": true,
+      "element_id": "method-lunaengine-_update_ui_elements"
+    },
+    {
+      "name": "_render_ui_elements",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Render UI elements in correct order - OPTIMIZED",
+      "link": "core/index.html#method-lunaengine-_render_ui_elements",
+      "is_method": true,
+      "element_id": "method-lunaengine-_render_ui_elements"
+    },
+    {
+      "name": "shutdown",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Cleanup resources",
+      "link": "core/index.html#method-lunaengine-shutdown",
+      "is_method": true,
+      "element_id": "method-lunaengine-shutdown"
+    },
+    {
+      "name": "initialize",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Initialize the renderer and required resources.",
+      "link": "core/index.html#method-renderer-initialize",
+      "is_method": true,
+      "element_id": "method-renderer-initialize"
+    },
+    {
+      "name": "begin_frame",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Begin a new rendering frame (clear screen, etc.).",
+      "link": "core/index.html#method-renderer-begin_frame",
+      "is_method": true,
+      "element_id": "method-renderer-begin_frame"
+    },
+    {
+      "name": "end_frame",
+      "class": "Renderer",
+      "module": "core",
+      "description": "End the current rendering frame (swap buffers, etc.).",
+      "link": "core/index.html#method-renderer-end_frame",
+      "is_method": true,
+      "element_id": "method-renderer-end_frame"
+    },
+    {
+      "name": "draw_surface",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Draw a pygame surface at specified coordinates.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): The surface to draw<br> &nbsp; &nbsp;x (int): X coordinate<br> &nbsp; &nbsp;y (int): Y coordinate",
+      "link": "core/index.html#method-renderer-draw_surface",
+      "is_method": true,
+      "element_id": "method-renderer-draw_surface"
+    },
+    {
+      "name": "draw_rect",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Draw a rectangle.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate<br> &nbsp; &nbsp;y (int): Y coordinate<br> &nbsp; &nbsp;width (int): Rectangle width<br> &nbsp; &nbsp;height (int): Rectangle height<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple",
+      "link": "core/index.html#method-renderer-draw_rect",
+      "is_method": true,
+      "element_id": "method-renderer-draw_rect"
+    },
+    {
+      "name": "draw_circle",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Draw a circle.<br><br>Args:<br> &nbsp; &nbsp;x (int): Center X coordinate<br> &nbsp; &nbsp;y (int): Center Y coordinate<br> &nbsp; &nbsp;radius (int): Circle radius<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple",
+      "link": "core/index.html#method-renderer-draw_circle",
+      "is_method": true,
+      "element_id": "method-renderer-draw_circle"
+    },
+    {
+      "name": "draw_line",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Draw a line.<br><br>Args:<br> &nbsp; &nbsp;start_x (int): Start X coordinate<br> &nbsp; &nbsp;start_y (int): Start Y coordinate<br> &nbsp; &nbsp;end_x (int): End X coordinate<br> &nbsp; &nbsp;end_y (int): End Y coordinate<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;width (int): Line width (default: 1)",
+      "link": "core/index.html#method-renderer-draw_line",
+      "is_method": true,
+      "element_id": "method-renderer-draw_line"
+    },
+    {
+      "name": "__init__",
+      "class": "Scene",
+      "module": "core",
+      "description": "Initialize a new scene with empty UI elements list.<br><br>Args:<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine",
+      "link": "core/index.html#method-scene-__init__",
+      "is_method": true,
+      "element_id": "method-scene-__init__"
+    },
+    {
+      "name": "on_enter",
+      "class": "Scene",
+      "module": "core",
+      "description": "Called when the scene becomes active.<br><br>Use this to initialize resources, create UI elements, or reset game state.<br><br>Args:<br> &nbsp; &nbsp;previous_scene (str, optional): Name of the previous scene",
+      "link": "core/index.html#method-scene-on_enter",
+      "is_method": true,
+      "element_id": "method-scene-on_enter"
+    },
+    {
+      "name": "on_exit",
+      "class": "Scene",
+      "module": "core",
+      "description": "Called when the scene is being replaced.<br><br>Use this to clean up resources, save game state, or perform transitions.<br><br>Args:<br> &nbsp; &nbsp;next_scene (str, optional): Name of the next scene",
+      "link": "core/index.html#method-scene-on_exit",
+      "is_method": true,
+      "element_id": "method-scene-on_exit"
+    },
+    {
+      "name": "update",
+      "class": "Scene",
+      "module": "core",
+      "description": "Update scene logic.<br><br>Called every frame to update game logic, animations, and interactions.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds since last frame",
+      "link": "core/index.html#method-scene-update",
+      "is_method": true,
+      "element_id": "method-scene-update"
+    },
+    {
+      "name": "render",
+      "class": "Scene",
+      "module": "core",
+      "description": "Render the scene.<br><br>Called every frame to draw the scene content.<br><br>Args:<br> &nbsp; &nbsp;renderer: The renderer to use for drawing operations",
+      "link": "core/index.html#method-scene-render",
+      "is_method": true,
+      "element_id": "method-scene-render"
+    },
+    {
+      "name": "add_ui_element",
+      "class": "Scene",
+      "module": "core",
+      "description": "Add a UI element to the scene.<br><br>Args:<br> &nbsp; &nbsp;ui_element (UIElement): The UI element to add to the scene",
+      "link": "core/index.html#method-scene-add_ui_element",
+      "is_method": true,
+      "element_id": "method-scene-add_ui_element"
+    },
+    {
+      "name": "remove_ui_element",
+      "class": "Scene",
+      "module": "core",
+      "description": "Remove a UI element from the scene.<br><br>Args:<br> &nbsp; &nbsp;ui_element (UIElement): The UI element to remove<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if element was found and removed, False otherwise",
+      "link": "core/index.html#method-scene-remove_ui_element",
+      "is_method": true,
+      "element_id": "method-scene-remove_ui_element"
+    },
+    {
+      "name": "get_ui_element_by_id",
+      "class": "Scene",
+      "module": "core",
+      "description": "Get UI element by its unique ID.<br><br>Args:<br> &nbsp; &nbsp;element_id (str): The unique ID of the element to find<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;UIElement: The found UI element or None if not found",
+      "link": "core/index.html#method-scene-get_ui_element_by_id",
+      "is_method": true,
+      "element_id": "method-scene-get_ui_element_by_id"
+    },
+    {
+      "name": "get_ui_elements_by_type",
+      "class": "Scene",
+      "module": "core",
+      "description": "Get all UI elements of a specific type.<br><br>Args:<br> &nbsp; &nbsp;element_type (type): The class type to filter by (e.g., Button, Label)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[UIElement]: List of UI elements matching the specified type",
+      "link": "core/index.html#method-scene-get_ui_elements_by_type",
+      "is_method": true,
+      "element_id": "method-scene-get_ui_elements_by_type"
+    },
+    {
+      "name": "get_all_ui_elements",
+      "class": "Scene",
+      "module": "core",
+      "description": "Get all UI elements in the scene.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: All UI elements in the scene",
+      "link": "core/index.html#method-scene-get_all_ui_elements",
+      "is_method": true,
+      "element_id": "method-scene-get_all_ui_elements"
+    },
+    {
+      "name": "clear_ui_elements",
+      "class": "Scene",
+      "module": "core",
+      "description": "Remove all UI elements from the scene.",
+      "link": "core/index.html#method-scene-clear_ui_elements",
+      "is_method": true,
+      "element_id": "method-scene-clear_ui_elements"
+    },
+    {
+      "name": "__init__",
+      "class": "Window",
+      "module": "core",
+      "description": "Initialize window settings.<br><br>Args:<br> &nbsp; &nbsp;title (str): Window title (default: &quot;LunaEngine&quot;)<br> &nbsp; &nbsp;width (int): Window width (default: 800)<br> &nbsp; &nbsp;height (int): Window height (default: 600)<br> &nbsp; &nbsp;fullscreen (bool): Start in fullscreen mode (default: False)<br> &nbsp; &nbsp;resizable (bool): Allow window resizing (default: True)",
+      "link": "core/index.html#method-window-__init__",
+      "is_method": true,
+      "element_id": "method-window-__init__"
+    },
+    {
+      "name": "create",
+      "class": "Window",
+      "module": "core",
+      "description": "Create the game window with specified settings.",
+      "link": "core/index.html#method-window-create",
+      "is_method": true,
+      "element_id": "method-window-create"
+    },
+    {
+      "name": "set_title",
+      "class": "Window",
+      "module": "core",
+      "description": "Set window title.<br><br>Args:<br> &nbsp; &nbsp;title (str): New window title",
+      "link": "core/index.html#method-window-set_title",
+      "is_method": true,
+      "element_id": "method-window-set_title"
+    },
+    {
+      "name": "set_size",
+      "class": "Window",
+      "module": "core",
+      "description": "Resize the window.<br><br>Args:<br> &nbsp; &nbsp;width (int): New window width<br> &nbsp; &nbsp;height (int): New window height",
+      "link": "core/index.html#method-window-set_size",
+      "is_method": true,
+      "element_id": "method-window-set_size"
+    },
+    {
+      "name": "toggle_fullscreen",
+      "class": "Window",
+      "module": "core",
+      "description": "Toggle between fullscreen and windowed mode.",
+      "link": "core/index.html#method-window-toggle_fullscreen",
+      "is_method": true,
+      "element_id": "method-window-toggle_fullscreen"
+    },
+    {
+      "name": "get_size",
+      "class": "Window",
+      "module": "core",
+      "description": "Get current window size.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int]: (width, height) of the window",
+      "link": "core/index.html#method-window-get_size",
+      "is_method": true,
+      "element_id": "method-window-get_size"
+    },
+    {
+      "name": "get_center",
+      "class": "Window",
+      "module": "core",
+      "description": "Get window center coordinates.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int]: (x, y) coordinates of window center",
+      "link": "core/index.html#method-window-get_center",
+      "is_method": true,
+      "element_id": "method-window-get_center"
+    },
+    {
+      "name": "__init__",
+      "class": "_UIDGenerator",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-_uidgenerator-__init__",
+      "is_method": true,
+      "element_id": "method-_uidgenerator-__init__"
+    },
+    {
+      "name": "generate_id",
+      "class": "_UIDGenerator",
+      "module": "ui",
+      "description": "Generate a unique ID for a UI element.<br><br>Args:<br> &nbsp; &nbsp;element_type (str): Type of the UI element (e.g., &#x27;button&#x27;, &#x27;label&#x27;)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;str: Unique ID in format &quot;ui_{element_type}_{counter}&quot;",
+      "link": "ui/index.html#method-_uidgenerator-generate_id",
+      "is_method": true,
+      "element_id": "method-_uidgenerator-generate_id"
+    },
+    {
+      "name": "initialize",
+      "class": "FontManager",
+      "module": "ui",
+      "description": "Initialize the font system.<br><br>This method should be called before using any font-related functionality.<br>It initializes Pygame&#x27;s font module if not already initialized.",
+      "link": "ui/index.html#method-fontmanager-initialize",
+      "is_method": true,
+      "element_id": "method-fontmanager-initialize"
+    },
+    {
+      "name": "get_font",
+      "class": "FontManager",
+      "module": "ui",
+      "description": "Get a font object for rendering text.<br><br>Args:<br> &nbsp; &nbsp;font_name (Optional[str]): Path to font file or None for default system font.<br> &nbsp; &nbsp;font_size (int): Size of the font in pixels.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;pygame.font.Font: A font object ready for text rendering.",
+      "link": "ui/index.html#method-fontmanager-get_font",
+      "is_method": true,
+      "element_id": "method-fontmanager-get_font"
+    },
+    {
+      "name": "__init__",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Initialize a UI element with position and dimensions.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the element in pixels.<br> &nbsp; &nbsp;height (int): Height of the element in pixels.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning where (0,0) is top-left <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;and (1,1) is bottom-right.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID. If None, generates automatic ID.",
+      "link": "ui/index.html#method-uielement-__init__",
+      "is_method": true,
+      "element_id": "method-uielement-__init__"
+    },
+    {
+      "name": "get_id",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Get the unique ID of this UI element.<br><br>Returns:<br> &nbsp; &nbsp;str: The unique element ID",
+      "link": "ui/index.html#method-uielement-get_id",
+      "is_method": true,
+      "element_id": "method-uielement-get_id"
+    },
+    {
+      "name": "set_id",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Set a new unique ID for this UI element.<br><br>Args:<br> &nbsp; &nbsp;new_id (str): The new unique ID to set",
+      "link": "ui/index.html#method-uielement-set_id",
+      "is_method": true,
+      "element_id": "method-uielement-set_id"
+    },
+    {
+      "name": "get_actual_position",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Calculate actual screen position based on root_point anchor.<br><br>Args:<br> &nbsp; &nbsp;parent_width (int): Width of parent element if applicable.<br> &nbsp; &nbsp;parent_height (int): Height of parent element if applicable.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int]: The actual (x, y) screen coordinates.",
+      "link": "ui/index.html#method-uielement-get_actual_position",
+      "is_method": true,
+      "element_id": "method-uielement-get_actual_position"
+    },
+    {
+      "name": "add_child",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Add a child element to this UI element.<br><br>Args:<br> &nbsp; &nbsp;child: The child UI element to add.",
+      "link": "ui/index.html#method-uielement-add_child",
+      "is_method": true,
+      "element_id": "method-uielement-add_child"
+    },
+    {
+      "name": "update",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Update element state.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds since last update.",
+      "link": "ui/index.html#method-uielement-update",
+      "is_method": true,
+      "element_id": "method-uielement-update"
+    },
+    {
+      "name": "update_theme",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Update the theme for this element and all its children.<br><br>Args:<br> &nbsp; &nbsp;theme_type (ThemeType): The new theme to apply.",
+      "link": "ui/index.html#method-uielement-update_theme",
+      "is_method": true,
+      "element_id": "method-uielement-update_theme"
+    },
+    {
+      "name": "_update_with_mouse",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Update element with current mouse state for interaction.<br><br>Args:<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position (x, y).<br> &nbsp; &nbsp;mouse_pressed (bool): Whether mouse button is currently pressed.<br> &nbsp; &nbsp;dt (float): Delta time in seconds.",
+      "link": "ui/index.html#method-uielement-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-uielement-_update_with_mouse"
+    },
+    {
+      "name": "render",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Render the element to the screen.<br><br>Args:<br> &nbsp; &nbsp;renderer: The renderer object used for drawing.",
+      "link": "ui/index.html#method-uielement-render",
+      "is_method": true,
+      "element_id": "method-uielement-render"
+    },
+    {
+      "name": "on_click",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Called when element is clicked by the user.",
+      "link": "ui/index.html#method-uielement-on_click",
+      "is_method": true,
+      "element_id": "method-uielement-on_click"
+    },
+    {
+      "name": "on_hover",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Called when mouse hovers over the element.",
+      "link": "ui/index.html#method-uielement-on_hover",
+      "is_method": true,
+      "element_id": "method-uielement-on_hover"
+    },
+    {
+      "name": "__init__",
+      "class": "TextLabel",
+      "module": "ui",
+      "description": "Initialize a text label element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;text (str): The text to display.<br> &nbsp; &nbsp;font_size (int): Size of the font in pixels.<br> &nbsp; &nbsp;color (Optional[Tuple[int, int, int]]): Custom text color (overrides theme).<br> &nbsp; &nbsp;font_name (Optional[str]): Path to font file or None for default font.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for text color.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID. If None, generates automatic ID.",
+      "link": "ui/index.html#method-textlabel-__init__",
+      "is_method": true,
+      "element_id": "method-textlabel-__init__"
+    },
+    {
+      "name": "update_theme",
+      "class": "TextLabel",
+      "module": "ui",
+      "description": "Update theme for text label.",
+      "link": "ui/index.html#method-textlabel-update_theme",
+      "is_method": true,
+      "element_id": "method-textlabel-update_theme"
+    },
+    {
+      "name": "font",
+      "class": "TextLabel",
+      "module": "ui",
+      "description": "Get the font object (lazy loading).<br><br>Returns:<br> &nbsp; &nbsp;pygame.font.Font: The font object for this label.",
+      "link": "ui/index.html#method-textlabel-font",
+      "is_method": true,
+      "element_id": "method-textlabel-font"
+    },
+    {
+      "name": "set_text",
+      "class": "TextLabel",
+      "module": "ui",
+      "description": "Update the displayed text and recalculate element size.<br><br>Args:<br> &nbsp; &nbsp;text (str): The new text to display.",
+      "link": "ui/index.html#method-textlabel-set_text",
+      "is_method": true,
+      "element_id": "method-textlabel-set_text"
+    },
+    {
+      "name": "set_theme",
+      "class": "TextLabel",
+      "module": "ui",
+      "description": "Set the theme for this text label.<br><br>Args:<br> &nbsp; &nbsp;theme_type (ThemeType): The theme to apply.",
+      "link": "ui/index.html#method-textlabel-set_theme",
+      "is_method": true,
+      "element_id": "method-textlabel-set_theme"
+    },
+    {
+      "name": "_get_text_color",
+      "class": "TextLabel",
+      "module": "ui",
+      "description": "Get the current text color.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color tuple for the text.",
+      "link": "ui/index.html#method-textlabel-_get_text_color",
+      "is_method": true,
+      "element_id": "method-textlabel-_get_text_color"
+    },
+    {
+      "name": "render",
+      "class": "TextLabel",
+      "module": "ui",
+      "description": "Render the text label.",
+      "link": "ui/index.html#method-textlabel-render",
+      "is_method": true,
+      "element_id": "method-textlabel-render"
+    },
+    {
+      "name": "__init__",
+      "class": "ImageLabel",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-imagelabel-__init__",
+      "is_method": true,
+      "element_id": "method-imagelabel-__init__"
+    },
+    {
+      "name": "_load_image",
+      "class": "ImageLabel",
+      "module": "ui",
+      "description": "Load and prepare the image.",
+      "link": "ui/index.html#method-imagelabel-_load_image",
+      "is_method": true,
+      "element_id": "method-imagelabel-_load_image"
+    },
+    {
+      "name": "set_image",
+      "class": "ImageLabel",
+      "module": "ui",
+      "description": "Change the displayed image.<br><br>Args:<br> &nbsp; &nbsp;image_path (str): Path to the new image file.",
+      "link": "ui/index.html#method-imagelabel-set_image",
+      "is_method": true,
+      "element_id": "method-imagelabel-set_image"
+    },
+    {
+      "name": "render",
+      "class": "ImageLabel",
+      "module": "ui",
+      "description": "Render the image label.",
+      "link": "ui/index.html#method-imagelabel-render",
+      "is_method": true,
+      "element_id": "method-imagelabel-render"
+    },
+    {
+      "name": "__init__",
+      "class": "Button",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-button-__init__",
+      "is_method": true,
+      "element_id": "method-button-__init__"
+    },
+    {
+      "name": "font",
+      "class": "Button",
+      "module": "ui",
+      "description": "Get the font object (lazy loading).",
+      "link": "ui/index.html#method-button-font",
+      "is_method": true,
+      "element_id": "method-button-font"
+    },
+    {
+      "name": "set_on_click",
+      "class": "Button",
+      "module": "ui",
+      "description": "Set the callback function for click events.<br><br>Args:<br> &nbsp; &nbsp;callback (Callable): Function to call when button is clicked.",
+      "link": "ui/index.html#method-button-set_on_click",
+      "is_method": true,
+      "element_id": "method-button-set_on_click"
+    },
+    {
+      "name": "set_theme",
+      "class": "Button",
+      "module": "ui",
+      "description": "Set the theme for this button.<br><br>Args:<br> &nbsp; &nbsp;theme_type (ThemeType): The theme to apply.",
+      "link": "ui/index.html#method-button-set_theme",
+      "is_method": true,
+      "element_id": "method-button-set_theme"
+    },
+    {
+      "name": "_get_colors",
+      "class": "Button",
+      "module": "ui",
+      "description": "Get colors from the current theme.<br><br>Returns:<br> &nbsp; &nbsp;UITheme: The current theme object.",
+      "link": "ui/index.html#method-button-_get_colors",
+      "is_method": true,
+      "element_id": "method-button-_get_colors"
+    },
+    {
+      "name": "_update_with_mouse",
+      "class": "Button",
+      "module": "ui",
+      "description": "Update button with mouse interaction.",
+      "link": "ui/index.html#method-button-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-button-_update_with_mouse"
+    },
+    {
+      "name": "_get_color_for_state",
+      "class": "Button",
+      "module": "ui",
+      "description": "Get the appropriate color for the current button state.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color tuple for the current state.",
+      "link": "ui/index.html#method-button-_get_color_for_state",
+      "is_method": true,
+      "element_id": "method-button-_get_color_for_state"
+    },
+    {
+      "name": "_get_text_color",
+      "class": "Button",
+      "module": "ui",
+      "description": "Get the text color from the current theme.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color tuple for the text.",
+      "link": "ui/index.html#method-button-_get_text_color",
+      "is_method": true,
+      "element_id": "method-button-_get_text_color"
+    },
+    {
+      "name": "render",
+      "class": "Button",
+      "module": "ui",
+      "description": "Render the button.",
+      "link": "ui/index.html#method-button-render",
+      "is_method": true,
+      "element_id": "method-button-render"
+    },
+    {
+      "name": "__init__",
+      "class": "ImageButton",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-imagebutton-__init__",
+      "is_method": true,
+      "element_id": "method-imagebutton-__init__"
+    },
+    {
+      "name": "_load_image",
+      "class": "ImageButton",
+      "module": "ui",
+      "description": "Load the button image.",
+      "link": "ui/index.html#method-imagebutton-_load_image",
+      "is_method": true,
+      "element_id": "method-imagebutton-_load_image"
+    },
+    {
+      "name": "set_on_click",
+      "class": "ImageButton",
+      "module": "ui",
+      "description": "Set the callback function for click events.<br><br>Args:<br> &nbsp; &nbsp;callback (Callable): Function to call when button is clicked.",
+      "link": "ui/index.html#method-imagebutton-set_on_click",
+      "is_method": true,
+      "element_id": "method-imagebutton-set_on_click"
+    },
+    {
+      "name": "_update_with_mouse",
+      "class": "ImageButton",
+      "module": "ui",
+      "description": "Update image button with mouse interaction.",
+      "link": "ui/index.html#method-imagebutton-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-imagebutton-_update_with_mouse"
+    },
+    {
+      "name": "_get_overlay_color",
+      "class": "ImageButton",
+      "module": "ui",
+      "description": "Get overlay color based on button state.<br><br>Returns:<br> &nbsp; &nbsp;Optional[Tuple[int, int, int]]: Overlay color or None for no overlay.",
+      "link": "ui/index.html#method-imagebutton-_get_overlay_color",
+      "is_method": true,
+      "element_id": "method-imagebutton-_get_overlay_color"
+    },
+    {
+      "name": "render",
+      "class": "ImageButton",
+      "module": "ui",
+      "description": "Render the image button.",
+      "link": "ui/index.html#method-imagebutton-render",
+      "is_method": true,
+      "element_id": "method-imagebutton-render"
+    },
+    {
+      "name": "__init__",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-textbox-__init__",
+      "is_method": true,
+      "element_id": "method-textbox-__init__"
+    },
+    {
+      "name": "font",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "Get the font object with lazy loading.",
+      "link": "ui/index.html#method-textbox-font",
+      "is_method": true,
+      "element_id": "method-textbox-font"
+    },
+    {
+      "name": "_update_text_surface",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "Update text surface cache when text changes.",
+      "link": "ui/index.html#method-textbox-_update_text_surface",
+      "is_method": true,
+      "element_id": "method-textbox-_update_text_surface"
+    },
+    {
+      "name": "_get_text_color",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "Get appropriate text color based on state.",
+      "link": "ui/index.html#method-textbox-_get_text_color",
+      "is_method": true,
+      "element_id": "method-textbox-_get_text_color"
+    },
+    {
+      "name": "_get_background_color",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "Get background color based on state.",
+      "link": "ui/index.html#method-textbox-_get_background_color",
+      "is_method": true,
+      "element_id": "method-textbox-_get_background_color"
+    },
+    {
+      "name": "set_text",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "Set the text content.<br><br>Args:<br> &nbsp; &nbsp;text (str): New text content.",
+      "link": "ui/index.html#method-textbox-set_text",
+      "is_method": true,
+      "element_id": "method-textbox-set_text"
+    },
+    {
+      "name": "_update_with_mouse",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "Update text box with mouse interaction - OPTIMIZED",
+      "link": "ui/index.html#method-textbox-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-textbox-_update_with_mouse"
+    },
+    {
+      "name": "handle_key_input",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "Handle keyboard input when focused - OPTIMIZED<br><br>Args:<br> &nbsp; &nbsp;event: Pygame keyboard event.",
+      "link": "ui/index.html#method-textbox-handle_key_input",
+      "is_method": true,
+      "element_id": "method-textbox-handle_key_input"
+    },
+    {
+      "name": "_get_cursor_position",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "Calculate cursor position - OPTIMIZED",
+      "link": "ui/index.html#method-textbox-_get_cursor_position",
+      "is_method": true,
+      "element_id": "method-textbox-_get_cursor_position"
+    },
+    {
+      "name": "render",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "Render the text box - FIXED",
+      "link": "ui/index.html#method-textbox-render",
+      "is_method": true,
+      "element_id": "method-textbox-render"
+    },
+    {
+      "name": "__init__",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-progressbar-__init__",
+      "is_method": true,
+      "element_id": "method-progressbar-__init__"
+    },
+    {
+      "name": "set_value",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "Set the current progress value.<br><br>Args:<br> &nbsp; &nbsp;value (float): New progress value.",
+      "link": "ui/index.html#method-progressbar-set_value",
+      "is_method": true,
+      "element_id": "method-progressbar-set_value"
+    },
+    {
+      "name": "get_percentage",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "Get progress as percentage.<br><br>Returns:<br> &nbsp; &nbsp;float: Progress percentage (0-100).",
+      "link": "ui/index.html#method-progressbar-get_percentage",
+      "is_method": true,
+      "element_id": "method-progressbar-get_percentage"
+    },
+    {
+      "name": "render",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "Render the progress bar.",
+      "link": "ui/index.html#method-progressbar-render",
+      "is_method": true,
+      "element_id": "method-progressbar-render"
+    },
+    {
+      "name": "__init__",
+      "class": "UIDraggable",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-uidraggable-__init__",
+      "is_method": true,
+      "element_id": "method-uidraggable-__init__"
+    },
+    {
+      "name": "_update_with_mouse",
+      "class": "UIDraggable",
+      "module": "ui",
+      "description": "Update draggable element with mouse interaction.",
+      "link": "ui/index.html#method-uidraggable-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-uidraggable-_update_with_mouse"
+    },
+    {
+      "name": "render",
+      "class": "UIDraggable",
+      "module": "ui",
+      "description": "Render the draggable element.",
+      "link": "ui/index.html#method-uidraggable-render",
+      "is_method": true,
+      "element_id": "method-uidraggable-render"
+    },
+    {
+      "name": "__init__",
+      "class": "UIGradient",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-uigradient-__init__",
+      "is_method": true,
+      "element_id": "method-uigradient-__init__"
+    },
+    {
+      "name": "_generate_gradient",
+      "class": "UIGradient",
+      "module": "ui",
+      "description": "Generate the gradient surface.",
+      "link": "ui/index.html#method-uigradient-_generate_gradient",
+      "is_method": true,
+      "element_id": "method-uigradient-_generate_gradient"
+    },
+    {
+      "name": "_interpolate_colors",
+      "class": "UIGradient",
+      "module": "ui",
+      "description": "Interpolate between gradient colors.<br><br>Args:<br> &nbsp; &nbsp;ratio (float): Interpolation ratio (0-1).<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: Interpolated color.",
+      "link": "ui/index.html#method-uigradient-_interpolate_colors",
+      "is_method": true,
+      "element_id": "method-uigradient-_interpolate_colors"
+    },
+    {
+      "name": "set_colors",
+      "class": "UIGradient",
+      "module": "ui",
+      "description": "Set new gradient colors.<br><br>Args:<br> &nbsp; &nbsp;colors (List[Tuple[int, int, int]]): New gradient colors.",
+      "link": "ui/index.html#method-uigradient-set_colors",
+      "is_method": true,
+      "element_id": "method-uigradient-set_colors"
+    },
+    {
+      "name": "render",
+      "class": "UIGradient",
+      "module": "ui",
+      "description": "Render the gradient element.",
+      "link": "ui/index.html#method-uigradient-render",
+      "is_method": true,
+      "element_id": "method-uigradient-render"
+    },
+    {
+      "name": "__init__",
+      "class": "Select",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-select-__init__",
+      "is_method": true,
+      "element_id": "method-select-__init__"
+    },
+    {
+      "name": "font",
+      "class": "Select",
+      "module": "ui",
+      "description": "Get the font object.",
+      "link": "ui/index.html#method-select-font",
+      "is_method": true,
+      "element_id": "method-select-font"
+    },
+    {
+      "name": "next_option",
+      "class": "Select",
+      "module": "ui",
+      "description": "Select the next option.",
+      "link": "ui/index.html#method-select-next_option",
+      "is_method": true,
+      "element_id": "method-select-next_option"
+    },
+    {
+      "name": "previous_option",
+      "class": "Select",
+      "module": "ui",
+      "description": "Select the previous option.",
+      "link": "ui/index.html#method-select-previous_option",
+      "is_method": true,
+      "element_id": "method-select-previous_option"
+    },
+    {
+      "name": "set_selected_index",
+      "class": "Select",
+      "module": "ui",
+      "description": "Set selected option by index.<br><br>Args:<br> &nbsp; &nbsp;index (int): Index of option to select.",
+      "link": "ui/index.html#method-select-set_selected_index",
+      "is_method": true,
+      "element_id": "method-select-set_selected_index"
+    },
+    {
+      "name": "set_on_selection_changed",
+      "class": "Select",
+      "module": "ui",
+      "description": "Set selection change callback.<br><br>Args:<br> &nbsp; &nbsp;callback (Callable): Function called when selection changes.",
+      "link": "ui/index.html#method-select-set_on_selection_changed",
+      "is_method": true,
+      "element_id": "method-select-set_on_selection_changed"
+    },
+    {
+      "name": "_update_with_mouse",
+      "class": "Select",
+      "module": "ui",
+      "description": "Update select element with mouse interaction.",
+      "link": "ui/index.html#method-select-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-select-_update_with_mouse"
+    },
+    {
+      "name": "render",
+      "class": "Select",
+      "module": "ui",
+      "description": "Render the select element.",
+      "link": "ui/index.html#method-select-render",
+      "is_method": true,
+      "element_id": "method-select-render"
+    },
+    {
+      "name": "__init__",
+      "class": "Switch",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-switch-__init__",
+      "is_method": true,
+      "element_id": "method-switch-__init__"
+    },
+    {
+      "name": "toggle",
+      "class": "Switch",
+      "module": "ui",
+      "description": "Toggle the switch state.",
+      "link": "ui/index.html#method-switch-toggle",
+      "is_method": true,
+      "element_id": "method-switch-toggle"
+    },
+    {
+      "name": "set_checked",
+      "class": "Switch",
+      "module": "ui",
+      "description": "Set the switch state.<br><br>Args:<br> &nbsp; &nbsp;checked (bool): New state.",
+      "link": "ui/index.html#method-switch-set_checked",
+      "is_method": true,
+      "element_id": "method-switch-set_checked"
+    },
+    {
+      "name": "set_on_toggle",
+      "class": "Switch",
+      "module": "ui",
+      "description": "Set toggle callback.<br><br>Args:<br> &nbsp; &nbsp;callback (Callable): Function called when switch is toggled.",
+      "link": "ui/index.html#method-switch-set_on_toggle",
+      "is_method": true,
+      "element_id": "method-switch-set_on_toggle"
+    },
+    {
+      "name": "_update_with_mouse",
+      "class": "Switch",
+      "module": "ui",
+      "description": "Update switch with mouse interaction.",
+      "link": "ui/index.html#method-switch-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-switch-_update_with_mouse"
+    },
+    {
+      "name": "render",
+      "class": "Switch",
+      "module": "ui",
+      "description": "Render the switch.",
+      "link": "ui/index.html#method-switch-render",
+      "is_method": true,
+      "element_id": "method-switch-render"
+    },
+    {
+      "name": "__init__",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-scrollingframe-__init__",
+      "is_method": true,
+      "element_id": "method-scrollingframe-__init__"
+    },
+    {
+      "name": "handle_scroll",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "Handle scroll input.<br><br>Args:<br> &nbsp; &nbsp;scroll_y (int): Vertical scroll amount.",
+      "link": "ui/index.html#method-scrollingframe-handle_scroll",
+      "is_method": true,
+      "element_id": "method-scrollingframe-handle_scroll"
+    },
+    {
+      "name": "render",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "Render the scrolling frame.",
+      "link": "ui/index.html#method-scrollingframe-render",
+      "is_method": true,
+      "element_id": "method-scrollingframe-render"
+    },
+    {
+      "name": "_draw_horizontal_scrollbar",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "Draw horizontal scrollbar.",
+      "link": "ui/index.html#method-scrollingframe-_draw_horizontal_scrollbar",
+      "is_method": true,
+      "element_id": "method-scrollingframe-_draw_horizontal_scrollbar"
+    },
+    {
+      "name": "_draw_vertical_scrollbar",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "Draw vertical scrollbar.",
+      "link": "ui/index.html#method-scrollingframe-_draw_vertical_scrollbar",
+      "is_method": true,
+      "element_id": "method-scrollingframe-_draw_vertical_scrollbar"
+    },
+    {
+      "name": "__init__",
+      "class": "Slider",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-slider-__init__",
+      "is_method": true,
+      "element_id": "method-slider-__init__"
+    },
+    {
+      "name": "set_theme",
+      "class": "Slider",
+      "module": "ui",
+      "description": "Set slider theme",
+      "link": "ui/index.html#method-slider-set_theme",
+      "is_method": true,
+      "element_id": "method-slider-set_theme"
+    },
+    {
+      "name": "_get_colors",
+      "class": "Slider",
+      "module": "ui",
+      "description": "Get colors from current theme",
+      "link": "ui/index.html#method-slider-_get_colors",
+      "is_method": true,
+      "element_id": "method-slider-_get_colors"
+    },
+    {
+      "name": "_update_with_mouse",
+      "class": "Slider",
+      "module": "ui",
+      "description": "Update slider with mouse interaction",
+      "link": "ui/index.html#method-slider-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-slider-_update_with_mouse"
+    },
+    {
+      "name": "render",
+      "class": "Slider",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-slider-render",
+      "is_method": true,
+      "element_id": "method-slider-render"
+    },
+    {
+      "name": "__init__",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-dropdown-__init__",
+      "is_method": true,
+      "element_id": "method-dropdown-__init__"
+    },
+    {
+      "name": "font",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Lazy font loading",
+      "link": "ui/index.html#method-dropdown-font",
+      "is_method": true,
+      "element_id": "method-dropdown-font"
+    },
+    {
+      "name": "set_theme",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Set dropdown theme",
+      "link": "ui/index.html#method-dropdown-set_theme",
+      "is_method": true,
+      "element_id": "method-dropdown-set_theme"
+    },
+    {
+      "name": "_get_colors",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Get colors from current theme",
+      "link": "ui/index.html#method-dropdown-_get_colors",
+      "is_method": true,
+      "element_id": "method-dropdown-_get_colors"
+    },
+    {
+      "name": "_update_with_mouse",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Update dropdown with mouse interaction and scroll support",
+      "link": "ui/index.html#method-dropdown-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-dropdown-_update_with_mouse"
+    },
+    {
+      "name": "handle_scroll",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Handle mouse wheel scrolling",
+      "link": "ui/index.html#method-dropdown-handle_scroll",
+      "is_method": true,
+      "element_id": "method-dropdown-handle_scroll"
+    },
+    {
+      "name": "_get_visible_options",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Get the list of option indices that are currently visible",
+      "link": "ui/index.html#method-dropdown-_get_visible_options",
+      "is_method": true,
+      "element_id": "method-dropdown-_get_visible_options"
+    },
+    {
+      "name": "_get_scrollbar_rect",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Get the scrollbar rectangle",
+      "link": "ui/index.html#method-dropdown-_get_scrollbar_rect",
+      "is_method": true,
+      "element_id": "method-dropdown-_get_scrollbar_rect"
+    },
+    {
+      "name": "render",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-dropdown-render",
+      "is_method": true,
+      "element_id": "method-dropdown-render"
+    },
+    {
+      "name": "add_option",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Add an option to the dropdown",
+      "link": "ui/index.html#method-dropdown-add_option",
+      "is_method": true,
+      "element_id": "method-dropdown-add_option"
+    },
+    {
+      "name": "remove_option",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Remove an option from the dropdown",
+      "link": "ui/index.html#method-dropdown-remove_option",
+      "is_method": true,
+      "element_id": "method-dropdown-remove_option"
+    },
+    {
+      "name": "set_selected_index",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Set the selected option by index",
+      "link": "ui/index.html#method-dropdown-set_selected_index",
+      "is_method": true,
+      "element_id": "method-dropdown-set_selected_index"
+    },
+    {
+      "name": "set_on_selection_changed",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Set callback for when selection changes",
+      "link": "ui/index.html#method-dropdown-set_on_selection_changed",
+      "is_method": true,
+      "element_id": "method-dropdown-set_on_selection_changed"
+    },
+    {
+      "name": "__init__",
+      "class": "UILayout",
+      "module": "ui",
+      "description": "Initialize a layout manager.<br><br>Args:<br> &nbsp; &nbsp;x (int): Starting X coordinate for the layout.<br> &nbsp; &nbsp;y (int): Starting Y coordinate for the layout.",
+      "link": "ui/index.html#method-uilayout-__init__",
+      "is_method": true,
+      "element_id": "method-uilayout-__init__"
+    },
+    {
+      "name": "add_element",
+      "class": "UILayout",
+      "module": "ui",
+      "description": "Add an element to the layout.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to add to the layout.",
+      "link": "ui/index.html#method-uilayout-add_element",
+      "is_method": true,
+      "element_id": "method-uilayout-add_element"
+    },
+    {
+      "name": "remove_element",
+      "class": "UILayout",
+      "module": "ui",
+      "description": "Remove an element from the layout.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to remove from the layout.",
+      "link": "ui/index.html#method-uilayout-remove_element",
+      "is_method": true,
+      "element_id": "method-uilayout-remove_element"
+    },
+    {
+      "name": "_update_layout",
+      "class": "UILayout",
+      "module": "ui",
+      "description": "Update element positions based on layout rules.",
+      "link": "ui/index.html#method-uilayout-_update_layout",
+      "is_method": true,
+      "element_id": "method-uilayout-_update_layout"
+    },
+    {
+      "name": "__init__",
+      "class": "VerticalLayout",
+      "module": "ui",
+      "description": "Initialize a vertical layout.<br><br>Args:<br> &nbsp; &nbsp;x (int): Starting X coordinate.<br> &nbsp; &nbsp;y (int): Starting Y coordinate.<br> &nbsp; &nbsp;spacing (int): Space between elements in pixels.",
+      "link": "ui/index.html#method-verticallayout-__init__",
+      "is_method": true,
+      "element_id": "method-verticallayout-__init__"
+    },
+    {
+      "name": "_update_layout",
+      "class": "VerticalLayout",
+      "module": "ui",
+      "description": "Arrange elements vertically with spacing.",
+      "link": "ui/index.html#method-verticallayout-_update_layout",
+      "is_method": true,
+      "element_id": "method-verticallayout-_update_layout"
+    },
+    {
+      "name": "__init__",
+      "class": "HorizontalLayout",
+      "module": "ui",
+      "description": "Initialize a horizontal layout.<br><br>Args:<br> &nbsp; &nbsp;x (int): Starting X coordinate.<br> &nbsp; &nbsp;y (int): Starting Y coordinate.<br> &nbsp; &nbsp;spacing (int): Space between elements in pixels.",
+      "link": "ui/index.html#method-horizontallayout-__init__",
+      "is_method": true,
+      "element_id": "method-horizontallayout-__init__"
+    },
+    {
+      "name": "_update_layout",
+      "class": "HorizontalLayout",
+      "module": "ui",
+      "description": "Arrange elements horizontally with spacing.",
+      "link": "ui/index.html#method-horizontallayout-_update_layout",
+      "is_method": true,
+      "element_id": "method-horizontallayout-_update_layout"
+    },
+    {
+      "name": "__init__",
+      "class": "GridLayout",
+      "module": "ui",
+      "description": "Initialize a grid layout.<br><br>Args:<br> &nbsp; &nbsp;x (int): Starting X coordinate.<br> &nbsp; &nbsp;y (int): Starting Y coordinate.<br> &nbsp; &nbsp;cols (int): Number of columns in the grid.<br> &nbsp; &nbsp;cell_width (int): Width of each cell.<br> &nbsp; &nbsp;cell_height (int): Height of each cell.<br> &nbsp; &nbsp;h_spacing (int): Horizontal spacing between cells.<br> &nbsp; &nbsp;v_spacing (int): Vertical spacing between cells.",
+      "link": "ui/index.html#method-gridlayout-__init__",
+      "is_method": true,
+      "element_id": "method-gridlayout-__init__"
+    },
+    {
+      "name": "_update_layout",
+      "class": "GridLayout",
+      "module": "ui",
+      "description": "Arrange elements in a grid pattern.",
+      "link": "ui/index.html#method-gridlayout-_update_layout",
+      "is_method": true,
+      "element_id": "method-gridlayout-_update_layout"
+    },
+    {
+      "name": "__init__",
+      "class": "JustifiedLayout",
+      "module": "ui",
+      "description": "Initialize a justified layout.<br><br>Args:<br> &nbsp; &nbsp;x (int): Starting X coordinate.<br> &nbsp; &nbsp;y (int): Starting Y coordinate.<br> &nbsp; &nbsp;justify_x (bool): Whether to justify horizontally.<br> &nbsp; &nbsp;justify_y (bool): Whether to justify vertically.",
+      "link": "ui/index.html#method-justifiedlayout-__init__",
+      "is_method": true,
+      "element_id": "method-justifiedlayout-__init__"
+    },
+    {
+      "name": "_update_layout",
+      "class": "JustifiedLayout",
+      "module": "ui",
+      "description": "Arrange elements with justified spacing.",
+      "link": "ui/index.html#method-justifiedlayout-_update_layout",
+      "is_method": true,
+      "element_id": "method-justifiedlayout-_update_layout"
+    },
+    {
+      "name": "__init__",
+      "class": "UIStyle",
+      "module": "ui",
+      "description": "Initialize a UI style with default values.",
+      "link": "ui/index.html#method-uistyle-__init__",
+      "is_method": true,
+      "element_id": "method-uistyle-__init__"
+    },
+    {
+      "name": "get_color",
+      "class": "UIStyle",
+      "module": "ui",
+      "description": "Get the color for a specific UI state.<br><br>Args:<br> &nbsp; &nbsp;state (UIState): The UI state to get color for.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color tuple for the specified state.",
+      "link": "ui/index.html#method-uistyle-get_color",
+      "is_method": true,
+      "element_id": "method-uistyle-get_color"
+    },
+    {
+      "name": "__init__",
+      "class": "Theme",
+      "module": "ui",
+      "description": "Initialize a theme with default styles for all UI elements.",
+      "link": "ui/index.html#method-theme-__init__",
+      "is_method": true,
+      "element_id": "method-theme-__init__"
+    },
+    {
+      "name": "initialize_default_themes",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Initialize all complete UI themes",
+      "link": "ui/index.html#method-thememanager-initialize_default_themes",
+      "is_method": true,
+      "element_id": "method-thememanager-initialize_default_themes"
+    },
+    {
+      "name": "get_theme_by_name",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get theme by name string",
+      "link": "ui/index.html#method-thememanager-get_theme_by_name",
+      "is_method": true,
+      "element_id": "method-thememanager-get_theme_by_name"
+    },
+    {
+      "name": "get_theme",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get complete theme by type",
+      "link": "ui/index.html#method-thememanager-get_theme",
+      "is_method": true,
+      "element_id": "method-thememanager-get_theme"
+    },
+    {
+      "name": "set_theme",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Set or override a theme",
+      "link": "ui/index.html#method-thememanager-set_theme",
+      "is_method": true,
+      "element_id": "method-thememanager-set_theme"
+    },
+    {
+      "name": "set_current_theme",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Set the current default theme",
+      "link": "ui/index.html#method-thememanager-set_current_theme",
+      "is_method": true,
+      "element_id": "method-thememanager-set_current_theme"
+    },
+    {
+      "name": "get_current_theme",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get current default theme",
+      "link": "ui/index.html#method-thememanager-get_current_theme",
+      "is_method": true,
+      "element_id": "method-thememanager-get_current_theme"
+    },
+    {
+      "name": "get_themes",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get all available themes",
+      "link": "ui/index.html#method-thememanager-get_themes",
+      "is_method": true,
+      "element_id": "method-thememanager-get_themes"
+    },
+    {
+      "name": "get_theme_types",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get all available theme types",
+      "link": "ui/index.html#method-thememanager-get_theme_types",
+      "is_method": true,
+      "element_id": "method-thememanager-get_theme_types"
+    },
+    {
+      "name": "get_theme_names",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get all available theme names",
+      "link": "ui/index.html#method-thememanager-get_theme_names",
+      "is_method": true,
+      "element_id": "method-thememanager-get_theme_names"
+    },
+    {
+      "name": "get_color",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get a specific color from the current theme",
+      "link": "ui/index.html#method-thememanager-get_color",
+      "is_method": true,
+      "element_id": "method-thememanager-get_color"
+    },
+    {
+      "name": "__init__",
+      "class": "Light",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-light-__init__",
+      "is_method": true,
+      "element_id": "method-light-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "LightSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-lightsystem-__init__",
+      "is_method": true,
+      "element_id": "method-lightsystem-__init__"
+    },
+    {
+      "name": "add_light",
+      "class": "LightSystem",
+      "module": "graphics",
+      "description": "Add a light to the system",
+      "link": "graphics/index.html#method-lightsystem-add_light",
+      "is_method": true,
+      "element_id": "method-lightsystem-add_light"
+    },
+    {
+      "name": "remove_light",
+      "class": "LightSystem",
+      "module": "graphics",
+      "description": "Remove a light from the system",
+      "link": "graphics/index.html#method-lightsystem-remove_light",
+      "is_method": true,
+      "element_id": "method-lightsystem-remove_light"
+    },
+    {
+      "name": "calculate_lighting",
+      "class": "LightSystem",
+      "module": "graphics",
+      "description": "Calculate lighting for a surface",
+      "link": "graphics/index.html#method-lightsystem-calculate_lighting",
+      "is_method": true,
+      "element_id": "method-lightsystem-calculate_lighting"
+    },
+    {
+      "name": "__init__",
+      "class": "Particle",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-particle-__init__",
+      "is_method": true,
+      "element_id": "method-particle-__init__"
+    },
+    {
+      "name": "update",
+      "class": "Particle",
+      "module": "graphics",
+      "description": "Update particle position and state",
+      "link": "graphics/index.html#method-particle-update",
+      "is_method": true,
+      "element_id": "method-particle-update"
+    },
+    {
+      "name": "is_alive",
+      "class": "Particle",
+      "module": "graphics",
+      "description": "Check if particle is still alive",
+      "link": "graphics/index.html#method-particle-is_alive",
+      "is_method": true,
+      "element_id": "method-particle-is_alive"
+    },
+    {
+      "name": "__init__",
+      "class": "ParticleEmitter",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-particleemitter-__init__",
+      "is_method": true,
+      "element_id": "method-particleemitter-__init__"
+    },
+    {
+      "name": "update",
+      "class": "ParticleEmitter",
+      "module": "graphics",
+      "description": "Update emitter and all particles",
+      "link": "graphics/index.html#method-particleemitter-update",
+      "is_method": true,
+      "element_id": "method-particleemitter-update"
+    },
+    {
+      "name": "emit_particle",
+      "class": "ParticleEmitter",
+      "module": "graphics",
+      "description": "Emit a new particle",
+      "link": "graphics/index.html#method-particleemitter-emit_particle",
+      "is_method": true,
+      "element_id": "method-particleemitter-emit_particle"
+    },
+    {
+      "name": "draw",
+      "class": "ParticleEmitter",
+      "module": "graphics",
+      "description": "Draw all particles",
+      "link": "graphics/index.html#method-particleemitter-draw",
+      "is_method": true,
+      "element_id": "method-particleemitter-draw"
+    },
+    {
+      "name": "__init__",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-particlesystem-__init__",
+      "is_method": true,
+      "element_id": "method-particlesystem-__init__"
+    },
+    {
+      "name": "add_emitter",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Add an emitter to the system",
+      "link": "graphics/index.html#method-particlesystem-add_emitter",
+      "is_method": true,
+      "element_id": "method-particlesystem-add_emitter"
+    },
+    {
+      "name": "remove_emitter",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Remove an emitter",
+      "link": "graphics/index.html#method-particlesystem-remove_emitter",
+      "is_method": true,
+      "element_id": "method-particlesystem-remove_emitter"
+    },
+    {
+      "name": "update",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Update all emitters",
+      "link": "graphics/index.html#method-particlesystem-update",
+      "is_method": true,
+      "element_id": "method-particlesystem-update"
+    },
+    {
+      "name": "draw",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Draw all particles from all emitters",
+      "link": "graphics/index.html#method-particlesystem-draw",
+      "is_method": true,
+      "element_id": "method-particlesystem-draw"
+    },
+    {
+      "name": "__init__",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-shadowsystem-__init__",
+      "is_method": true,
+      "element_id": "method-shadowsystem-__init__"
+    },
+    {
+      "name": "add_occluder",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Add an object that casts shadows",
+      "link": "graphics/index.html#method-shadowsystem-add_occluder",
+      "is_method": true,
+      "element_id": "method-shadowsystem-add_occluder"
+    },
+    {
+      "name": "remove_occluder",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Remove an occluder",
+      "link": "graphics/index.html#method-shadowsystem-remove_occluder",
+      "is_method": true,
+      "element_id": "method-shadowsystem-remove_occluder"
+    },
+    {
+      "name": "calculate_shadows",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Calculate shadows for a light source",
+      "link": "graphics/index.html#method-shadowsystem-calculate_shadows",
+      "is_method": true,
+      "element_id": "method-shadowsystem-calculate_shadows"
+    },
+    {
+      "name": "_draw_shadow_polygon",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Draw shadow polygon for an occluder",
+      "link": "graphics/index.html#method-shadowsystem-_draw_shadow_polygon",
+      "is_method": true,
+      "element_id": "method-shadowsystem-_draw_shadow_polygon"
+    },
+    {
+      "name": "__init__",
+      "class": "SpriteSheet",
+      "module": "graphics",
+      "description": "Initialize the sprite sheet with alpha support.<br><br>Args:<br> &nbsp; &nbsp;filename (str): Path to the sprite sheet image file",
+      "link": "graphics/index.html#method-spritesheet-__init__",
+      "is_method": true,
+      "element_id": "method-spritesheet-__init__"
+    },
+    {
+      "name": "get_sprite_at_rect",
+      "class": "SpriteSheet",
+      "module": "graphics",
+      "description": "Extract a sprite from a specific rectangular region.<br><br>Args:<br> &nbsp; &nbsp;rect (pygame.Rect): Rectangle defining the sprite region (x, y, width, height)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface with alpha<br> &nbsp; &nbsp;<br>Raises:<br> &nbsp; &nbsp;ValueError: If the rect is outside the sprite sheet bounds",
+      "link": "graphics/index.html#method-spritesheet-get_sprite_at_rect",
+      "is_method": true,
+      "element_id": "method-spritesheet-get_sprite_at_rect"
+    },
+    {
+      "name": "get_sprites_at_regions",
+      "class": "SpriteSheet",
+      "module": "graphics",
+      "description": "Extract multiple sprites from a list of rectangular regions.<br><br>Args:<br> &nbsp; &nbsp;regions (List[pygame.Rect]): List of rectangles defining sprite regions<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[pygame.Surface]: List of extracted sprite surfaces",
+      "link": "graphics/index.html#method-spritesheet-get_sprites_at_regions",
+      "is_method": true,
+      "element_id": "method-spritesheet-get_sprites_at_regions"
+    },
+    {
+      "name": "get_sprite_grid",
+      "class": "SpriteSheet",
+      "module": "graphics",
+      "description": "Extract a sprite from a grid-based sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;cell_size (Tuple[int, int]): Width and height of each grid cell<br> &nbsp; &nbsp;grid_pos (Tuple[int, int]): Grid coordinates (col, row)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface",
+      "link": "graphics/index.html#method-spritesheet-get_sprite_grid",
+      "is_method": true,
+      "element_id": "method-spritesheet-get_sprite_grid"
+    },
+    {
+      "name": "__init__",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Initialize the animation and automatically extract frames from sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;spritesheet_file (str): Path to the sprite sheet file<br> &nbsp; &nbsp;size (Tuple[int, int]): Size of each sprite (width, height)<br> &nbsp; &nbsp;start_pos (Tuple[int, int]): Starting position in the sprite sheet (x, y)<br> &nbsp; &nbsp;frame_count (int): Number of frames to extract for the animation<br> &nbsp; &nbsp;padding (Tuple[int, int]): Padding between sprites (x, y)<br> &nbsp; &nbsp;margin (Tuple[int, int]): Margin around the sprite sheet (x, y)<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop",
+      "link": "graphics/index.html#method-animation-__init__",
+      "is_method": true,
+      "element_id": "method-animation-__init__"
+    },
+    {
+      "name": "_extract_animation_frames",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Automatically extract animation frames based on parameters.<br><br>Creates a sequence of rectangles and extracts the corresponding sprites<br>from the sprite sheet.<br><br>Returns:<br> &nbsp; &nbsp;List[pygame.Surface]: List of extracted frames",
+      "link": "graphics/index.html#method-animation-_extract_animation_frames",
+      "is_method": true,
+      "element_id": "method-animation-_extract_animation_frames"
+    },
+    {
+      "name": "_apply_scaling",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Apply scaling to all animation frames.",
+      "link": "graphics/index.html#method-animation-_apply_scaling",
+      "is_method": true,
+      "element_id": "method-animation-_apply_scaling"
+    },
+    {
+      "name": "update",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Update the animation based on elapsed time.<br><br>This method uses time-based animation rather than frame-based,<br>making it frame-rate independent.",
+      "link": "graphics/index.html#method-animation-update",
+      "is_method": true,
+      "element_id": "method-animation-update"
+    },
+    {
+      "name": "get_current_frame",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Get the current animation frame.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The current frame surface",
+      "link": "graphics/index.html#method-animation-get_current_frame",
+      "is_method": true,
+      "element_id": "method-animation-get_current_frame"
+    },
+    {
+      "name": "reset",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Reset the animation to the first frame.",
+      "link": "graphics/index.html#method-animation-reset",
+      "is_method": true,
+      "element_id": "method-animation-reset"
+    },
+    {
+      "name": "is_finished",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Check if a non-looping animation has finished.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if the animation has finished, False otherwise",
+      "link": "graphics/index.html#method-animation-is_finished",
+      "is_method": true,
+      "element_id": "method-animation-is_finished"
+    },
+    {
+      "name": "set_duration",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Change the animation duration.<br><br>Args:<br> &nbsp; &nbsp;new_duration (float): New total duration in seconds",
+      "link": "graphics/index.html#method-animation-set_duration",
+      "is_method": true,
+      "element_id": "method-animation-set_duration"
+    },
+    {
+      "name": "play",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Start or resume the animation.",
+      "link": "graphics/index.html#method-animation-play",
+      "is_method": true,
+      "element_id": "method-animation-play"
+    },
+    {
+      "name": "pause",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Pause the animation.",
+      "link": "graphics/index.html#method-animation-pause",
+      "is_method": true,
+      "element_id": "method-animation-pause"
+    },
+    {
+      "name": "get_frame_count",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Get the number of frames in the animation.<br><br>Returns:<br> &nbsp; &nbsp;int: Number of frames",
+      "link": "graphics/index.html#method-animation-get_frame_count",
+      "is_method": true,
+      "element_id": "method-animation-get_frame_count"
+    },
+    {
+      "name": "get_progress",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Get the current progress of the animation (0.0 to 1.0).<br><br>Returns:<br> &nbsp; &nbsp;float: Animation progress from start (0.0) to end (1.0)",
+      "link": "graphics/index.html#method-animation-get_progress",
+      "is_method": true,
+      "element_id": "method-animation-get_progress"
+    },
+    {
+      "name": "image_to_python_code",
+      "class": "ImageConverter",
+      "module": "utils",
+      "description": "Convert an image to Python code",
+      "link": "utils/index.html#method-imageconverter-image_to_python_code",
+      "is_method": true,
+      "element_id": "method-imageconverter-image_to_python_code"
+    },
+    {
+      "name": "_resize_surface",
+      "class": "ImageConverter",
+      "module": "utils",
+      "description": "Resize surface while maintaining aspect ratio",
+      "link": "utils/index.html#method-imageconverter-_resize_surface",
+      "is_method": true,
+      "element_id": "method-imageconverter-_resize_surface"
+    },
+    {
+      "name": "_to_pixel_array",
+      "class": "ImageConverter",
+      "module": "utils",
+      "description": "Convert to Python pixel array code - FIXED COLOR BUG",
+      "link": "utils/index.html#method-imageconverter-_to_pixel_array",
+      "is_method": true,
+      "element_id": "method-imageconverter-_to_pixel_array"
+    },
+    {
+      "name": "_to_base64",
+      "class": "ImageConverter",
+      "module": "utils",
+      "description": "Convert to base64 encoded string",
+      "link": "utils/index.html#method-imageconverter-_to_base64",
+      "is_method": true,
+      "element_id": "method-imageconverter-_to_base64"
+    },
+    {
+      "name": "_to_compressed",
+      "class": "ImageConverter",
+      "module": "utils",
+      "description": "Convert to compressed base64 string",
+      "link": "utils/index.html#method-imageconverter-_to_compressed",
+      "is_method": true,
+      "element_id": "method-imageconverter-_to_compressed"
+    },
+    {
+      "name": "create_image_from_code",
+      "class": "ImageConverter",
+      "module": "utils",
+      "description": "Create a pygame Surface from converted image data",
+      "link": "utils/index.html#method-imageconverter-create_image_from_code",
+      "is_method": true,
+      "element_id": "method-imageconverter-create_image_from_code"
+    },
+    {
+      "name": "_from_pixel_array",
+      "class": "ImageConverter",
+      "module": "utils",
+      "description": "Create surface from pixel array - FIXED COLOR BUG",
+      "link": "utils/index.html#method-imageconverter-_from_pixel_array",
+      "is_method": true,
+      "element_id": "method-imageconverter-_from_pixel_array"
+    },
+    {
+      "name": "_from_encoded_data",
+      "class": "ImageConverter",
+      "module": "utils",
+      "description": "Create surface from encoded data",
+      "link": "utils/index.html#method-imageconverter-_from_encoded_data",
+      "is_method": true,
+      "element_id": "method-imageconverter-_from_encoded_data"
+    },
+    {
+      "name": "__init__",
+      "class": "EmbeddedImage",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/index.html#method-embeddedimage-__init__",
+      "is_method": true,
+      "element_id": "method-embeddedimage-__init__"
+    },
+    {
+      "name": "surface",
+      "class": "EmbeddedImage",
+      "module": "utils",
+      "description": "Get the pygame Surface (lazy loading)",
+      "link": "utils/index.html#method-embeddedimage-surface",
+      "is_method": true,
+      "element_id": "method-embeddedimage-surface"
+    },
+    {
+      "name": "width",
+      "class": "EmbeddedImage",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/index.html#method-embeddedimage-width",
+      "is_method": true,
+      "element_id": "method-embeddedimage-width"
+    },
+    {
+      "name": "height",
+      "class": "EmbeddedImage",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/index.html#method-embeddedimage-height",
+      "is_method": true,
+      "element_id": "method-embeddedimage-height"
+    },
+    {
+      "name": "draw",
+      "class": "EmbeddedImage",
+      "module": "utils",
+      "description": "Draw the image using a renderer",
+      "link": "utils/index.html#method-embeddedimage-draw",
+      "is_method": true,
+      "element_id": "method-embeddedimage-draw"
+    },
+    {
+      "name": "__init__",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/index.html#method-performancemonitor-__init__",
+      "is_method": true,
+      "element_id": "method-performancemonitor-__init__"
+    },
+    {
+      "name": "update_frame",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Update frame timing - optimized version",
+      "link": "utils/index.html#method-performancemonitor-update_frame",
+      "is_method": true,
+      "element_id": "method-performancemonitor-update_frame"
+    },
+    {
+      "name": "get_stats",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Get FPS statistics with optimized calculations",
+      "link": "utils/index.html#method-performancemonitor-get_stats",
+      "is_method": true,
+      "element_id": "method-performancemonitor-get_stats"
+    },
+    {
+      "name": "_get_empty_stats",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Return empty stats structure",
+      "link": "utils/index.html#method-performancemonitor-_get_empty_stats",
+      "is_method": true,
+      "element_id": "method-performancemonitor-_get_empty_stats"
+    },
+    {
+      "name": "get_hardware_info",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Get hardware information (cached)",
+      "link": "utils/index.html#method-performancemonitor-get_hardware_info",
+      "is_method": true,
+      "element_id": "method-performancemonitor-get_hardware_info"
+    },
+    {
+      "name": "_get_windows_cpu_cores",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Get CPU cores on Windows",
+      "link": "utils/index.html#method-performancemonitor-_get_windows_cpu_cores",
+      "is_method": true,
+      "element_id": "method-performancemonitor-_get_windows_cpu_cores"
+    },
+    {
+      "name": "_get_linux_cpu_cores",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Get CPU cores on Linux",
+      "link": "utils/index.html#method-performancemonitor-_get_linux_cpu_cores",
+      "is_method": true,
+      "element_id": "method-performancemonitor-_get_linux_cpu_cores"
+    },
+    {
+      "name": "_get_windows_memory",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Get memory info on Windows",
+      "link": "utils/index.html#method-performancemonitor-_get_windows_memory",
+      "is_method": true,
+      "element_id": "method-performancemonitor-_get_windows_memory"
+    },
+    {
+      "name": "_get_linux_memory",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Get memory info on Linux",
+      "link": "utils/index.html#method-performancemonitor-_get_linux_memory",
+      "is_method": true,
+      "element_id": "method-performancemonitor-_get_linux_memory"
+    },
+    {
+      "name": "__init__",
+      "class": "GarbageCollector",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/index.html#method-garbagecollector-__init__",
+      "is_method": true,
+      "element_id": "method-garbagecollector-__init__"
+    },
+    {
+      "name": "mark_font_unused",
+      "class": "GarbageCollector",
+      "module": "utils",
+      "description": "Mark a font as potentially unused",
+      "link": "utils/index.html#method-garbagecollector-mark_font_unused",
+      "is_method": true,
+      "element_id": "method-garbagecollector-mark_font_unused"
+    },
+    {
+      "name": "mark_surface_unused",
+      "class": "GarbageCollector",
+      "module": "utils",
+      "description": "Mark a surface as potentially unused",
+      "link": "utils/index.html#method-garbagecollector-mark_surface_unused",
+      "is_method": true,
+      "element_id": "method-garbagecollector-mark_surface_unused"
+    },
+    {
+      "name": "cleanup",
+      "class": "GarbageCollector",
+      "module": "utils",
+      "description": "Clean up unused resources",
+      "link": "utils/index.html#method-garbagecollector-cleanup",
+      "is_method": true,
+      "element_id": "method-garbagecollector-cleanup"
+    },
+    {
+      "name": "__init__",
+      "class": "Task",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/index.html#method-task-__init__",
+      "is_method": true,
+      "element_id": "method-task-__init__"
+    },
+    {
+      "name": "execute",
+      "class": "Task",
+      "module": "utils",
+      "description": "Execute the task",
+      "link": "utils/index.html#method-task-execute",
+      "is_method": true,
+      "element_id": "method-task-execute"
+    },
+    {
+      "name": "__init__",
+      "class": "ThreadPool",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/index.html#method-threadpool-__init__",
+      "is_method": true,
+      "element_id": "method-threadpool-__init__"
+    },
+    {
+      "name": "start",
+      "class": "ThreadPool",
+      "module": "utils",
+      "description": "Start the thread pool",
+      "link": "utils/index.html#method-threadpool-start",
+      "is_method": true,
+      "element_id": "method-threadpool-start"
+    },
+    {
+      "name": "stop",
+      "class": "ThreadPool",
+      "module": "utils",
+      "description": "Stop the thread pool",
+      "link": "utils/index.html#method-threadpool-stop",
+      "is_method": true,
+      "element_id": "method-threadpool-stop"
+    },
+    {
+      "name": "submit",
+      "class": "ThreadPool",
+      "module": "utils",
+      "description": "Submit a task to the thread pool",
+      "link": "utils/index.html#method-threadpool-submit",
+      "is_method": true,
+      "element_id": "method-threadpool-submit"
+    },
+    {
+      "name": "_worker",
+      "class": "ThreadPool",
+      "module": "utils",
+      "description": "Worker thread function",
+      "link": "utils/index.html#method-threadpool-_worker",
+      "is_method": true,
+      "element_id": "method-threadpool-_worker"
+    },
+    {
+      "name": "__init__",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Initialize OpenGL renderer with specified dimensions<br><br>ARGS:<br> &nbsp; &nbsp;width: Screen width in pixels<br> &nbsp; &nbsp;height: Screen height in pixels",
+      "link": "backend/index.html#method-openglrenderer-__init__",
+      "is_method": true,
+      "element_id": "method-openglrenderer-__init__"
+    },
+    {
+      "name": "initialize",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Initialize OpenGL context and setup shaders",
+      "link": "backend/index.html#method-openglrenderer-initialize",
+      "is_method": true,
+      "element_id": "method-openglrenderer-initialize"
+    },
+    {
+      "name": "_create_shaders",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Create basic shaders for 2D rendering",
+      "link": "backend/index.html#method-openglrenderer-_create_shaders",
+      "is_method": true,
+      "element_id": "method-openglrenderer-_create_shaders"
+    },
+    {
+      "name": "_setup_quad_geometry",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Setup quad geometry for rendering",
+      "link": "backend/index.html#method-openglrenderer-_setup_quad_geometry",
+      "is_method": true,
+      "element_id": "method-openglrenderer-_setup_quad_geometry"
+    },
+    {
+      "name": "begin_frame",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Begin rendering frame",
+      "link": "backend/index.html#method-openglrenderer-begin_frame",
+      "is_method": true,
+      "element_id": "method-openglrenderer-begin_frame"
+    },
+    {
+      "name": "end_frame",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "End rendering frame",
+      "link": "backend/index.html#method-openglrenderer-end_frame",
+      "is_method": true,
+      "element_id": "method-openglrenderer-end_frame"
+    },
+    {
+      "name": "_surface_to_texture",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Convert pygame surface to OpenGL texture",
+      "link": "backend/index.html#method-openglrenderer-_surface_to_texture",
+      "is_method": true,
+      "element_id": "method-openglrenderer-_surface_to_texture"
+    },
+    {
+      "name": "draw_surface",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Draw a pygame surface using OpenGL",
+      "link": "backend/index.html#method-openglrenderer-draw_surface",
+      "is_method": true,
+      "element_id": "method-openglrenderer-draw_surface"
+    },
+    {
+      "name": "draw_rect",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Draw a colored rectangle",
+      "link": "backend/index.html#method-openglrenderer-draw_rect",
+      "is_method": true,
+      "element_id": "method-openglrenderer-draw_rect"
+    },
+    {
+      "name": "__init__",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "Initialize Pygame renderer with specified dimensions<br><br>ARGS:<br> &nbsp; &nbsp;width: Screen width in pixels<br> &nbsp; &nbsp;height: Screen height in pixels",
+      "link": "backend/index.html#method-pygamerenderer-__init__",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-__init__"
+    },
+    {
+      "name": "initialize",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "Initialize the renderer - create main surface",
+      "link": "backend/index.html#method-pygamerenderer-initialize",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-initialize"
+    },
+    {
+      "name": "begin_frame",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "Begin rendering frame - clear the surface with black",
+      "link": "backend/index.html#method-pygamerenderer-begin_frame",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-begin_frame"
+    },
+    {
+      "name": "end_frame",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "End rendering frame - no additional processing needed",
+      "link": "backend/index.html#method-pygamerenderer-end_frame",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-end_frame"
+    },
+    {
+      "name": "get_surface",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "Get the underlying pygame surface<br><br>RETURNS:<br> &nbsp; &nbsp;pygame.Surface: The main rendering surface",
+      "link": "backend/index.html#method-pygamerenderer-get_surface",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-get_surface"
+    },
+    {
+      "name": "draw_surface",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "Draw a pygame surface onto the renderer<br><br>ARGS:<br> &nbsp; &nbsp;surface: Pygame surface to draw<br> &nbsp; &nbsp;x: X coordinate for drawing<br> &nbsp; &nbsp;y: Y coordinate for drawing",
+      "link": "backend/index.html#method-pygamerenderer-draw_surface",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-draw_surface"
+    },
+    {
+      "name": "draw_rect",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "Draw a colored rectangle<br><br>ARGS:<br> &nbsp; &nbsp;x: X coordinate of top-left corner<br> &nbsp; &nbsp;y: Y coordinate of top-left corner<br> &nbsp; &nbsp;width: Rectangle width<br> &nbsp; &nbsp;height: Rectangle height<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the rectangle (default: True)",
+      "link": "backend/index.html#method-pygamerenderer-draw_rect",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-draw_rect"
+    },
+    {
+      "name": "draw_circle",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "Draw a circle<br><br>ARGS:<br> &nbsp; &nbsp;x: Center X coordinate<br> &nbsp; &nbsp;y: Center Y coordinate<br> &nbsp; &nbsp;radius: Circle radius<br> &nbsp; &nbsp;color: RGB color tuple",
+      "link": "backend/index.html#method-pygamerenderer-draw_circle",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-draw_circle"
+    },
+    {
+      "name": "draw_line",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "Draw a line<br><br>ARGS:<br> &nbsp; &nbsp;start_x: Starting X coordinate<br> &nbsp; &nbsp;start_y: Starting Y coordinate<br> &nbsp; &nbsp;end_x: Ending X coordinate<br> &nbsp; &nbsp;end_y: Ending Y coordinate<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;width: Line width (default: 1)",
+      "link": "backend/index.html#method-pygamerenderer-draw_line",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-draw_line"
+    },
+    {
+      "name": "__init__",
+      "class": "CodeStatistics",
+      "module": "tools",
+      "description": "No documentation",
+      "link": "tools/index.html#method-codestatistics-__init__",
+      "is_method": true,
+      "element_id": "method-codestatistics-__init__"
+    },
+    {
+      "name": "count_themes_in_engine",
+      "class": "CodeStatistics",
+      "module": "tools",
+      "description": "Count the number of themes available in LunaEngine<br>Returns: Dictionary with theme statistics",
+      "link": "tools/index.html#method-codestatistics-count_themes_in_engine",
+      "is_method": true,
+      "element_id": "method-codestatistics-count_themes_in_engine"
+    },
+    {
+      "name": "count_lines_in_file",
+      "class": "CodeStatistics",
+      "module": "tools",
+      "description": "Count lines in a file<br>Returns: (total_lines, code_lines, comment_lines, blank_lines)",
+      "link": "tools/index.html#method-codestatistics-count_lines_in_file",
+      "is_method": true,
+      "element_id": "method-codestatistics-count_lines_in_file"
+    },
+    {
+      "name": "get_all_files",
+      "class": "CodeStatistics",
+      "module": "tools",
+      "description": "Get all relevant files in the project",
+      "link": "tools/index.html#method-codestatistics-get_all_files",
+      "is_method": true,
+      "element_id": "method-codestatistics-get_all_files"
+    },
+    {
+      "name": "get_project_structure",
+      "class": "CodeStatistics",
+      "module": "tools",
+      "description": "Get the complete project structure as a list of formatted lines",
+      "link": "tools/index.html#method-codestatistics-get_project_structure",
+      "is_method": true,
+      "element_id": "method-codestatistics-get_project_structure"
+    },
+    {
+      "name": "format_structure_tree",
+      "class": "CodeStatistics",
+      "module": "tools",
+      "description": "Format the structure lines as a tree",
+      "link": "tools/index.html#method-codestatistics-format_structure_tree",
+      "is_method": true,
+      "element_id": "method-codestatistics-format_structure_tree"
+    },
+    {
+      "name": "get_file_emoji",
+      "class": "CodeStatistics",
+      "module": "tools",
+      "description": "Get appropriate emoji for file type",
+      "link": "tools/index.html#method-codestatistics-get_file_emoji",
+      "is_method": true,
+      "element_id": "method-codestatistics-get_file_emoji"
+    },
+    {
+      "name": "analyze_project",
+      "class": "CodeStatistics",
+      "module": "tools",
+      "description": "Analyze the entire project and return statistics",
+      "link": "tools/index.html#method-codestatistics-analyze_project",
+      "is_method": true,
+      "element_id": "method-codestatistics-analyze_project"
+    },
+    {
+      "name": "get_code_density",
+      "class": "CodeStatistics",
+      "module": "tools",
+      "description": "No documentation",
+      "link": "tools/index.html#method-codestatistics-get_code_density",
+      "is_method": true,
+      "element_id": "method-codestatistics-get_code_density"
+    },
+    {
+      "name": "print_statistics",
+      "class": "CodeStatistics",
+      "module": "tools",
+      "description": "Print formatted statistics",
+      "link": "tools/index.html#method-codestatistics-print_statistics",
+      "is_method": true,
+      "element_id": "method-codestatistics-print_statistics"
+    }
+  ],
+  "last_updated": "2025-10-31T15:19:13.144628",
+  "pages": [
+    {
+      "name": "Quick Start",
+      "description": "Get started quickly with LunaEngine",
+      "link": "quick-start.html",
+      "type": "guide"
+    },
+    {
+      "name": "Community & Contact",
+      "description": "Join our community and get help",
+      "link": "contact.html",
+      "type": "community"
+    }
+  ]
+}

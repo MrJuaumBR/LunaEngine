@@ -7,6 +7,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="../theme.css" rel="stylesheet">
+    <style>
+    .search-highlight {
+        background-color: #ffeb3b;
+        padding: 2px 4px;
+        border-radius: 3px;
+        animation: highlight-pulse 2s ease-in-out;
+    }
+    
+    @keyframes highlight-pulse {
+        0% { background-color: #ffeb3b; }
+        50% { background-color: #ffff72; }
+        100% { background-color: #ffeb3b; }
+    }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
@@ -16,6 +30,10 @@
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search in core... (e.g.: def render(), .update())">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                </div>
                 <span class="badge bg-primary me-3">Core</span>
                 <button class="btn btn-outline-secondary theme-toggle">
                     <span class="theme-icon">🌙</span>
@@ -56,62 +74,67 @@
                             </h5>
                         </div>
                         <div class="card-body">
-        <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded">
+        
+                            <div class="alert alert-info docstring-content">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <div class="docstring-text">LunaEngine Main Engine - Core Game Loop and Management System<br><br>LOCATION: lunaengine/core/engine.py<br><br>DESCRIPTION:<br>The central engine class that orchestrates the entire game lifecycle. Manages<br>scene transitions, rendering pipeline, event handling, performance monitoring,<br>and UI system integration. This is the primary interface for game developers.<br><br>KEY RESPONSIBILITIES:<br>- Game loop execution with fixed timestep<br>- Scene management and lifecycle control<br>- Event distribution to scenes and UI elements<br>- Performance monitoring and optimization<br>- Theme management across the entire application<br>- Resource initialization and cleanup<br><br>LIBRARIES USED:<br>- pygame: Window management, event handling, timing, and surface operations<br>- numpy: Mathematical operations for game calculations<br>- threading: Background task management (if needed)<br>- typing: Type hints for better code documentation<br><br>DEPENDENCIES:<br>- ..backend.pygame_backend: Default rendering backend<br>- ..ui.elements: UI component system<br>- ..utils.performance: Performance monitoring utilities<br>- .scene: Scene management base class</div>
+                            </div>
+            <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-lunaengine">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     LunaEngine
                                 </h6>
-                <div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <div class="docstring-content mb-2"><div class="docstring-text">Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-__init__">
                                     <code>def __init__(self: Any, title: str, width: int, height: int, use_opengl: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the LunaEngine<br>Args:<br> &nbsp; &nbsp;title (str) *Optional: The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int) *Optional: The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int) *Optional: The height of the game window (default: 600)<br> &nbsp; &nbsp;use_opengl (bool) *Optional: Use OpenGL for rendering (default: False)<br>Returns:<br> &nbsp; &nbsp;None</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the LunaEngine.<br><br>Args:<br> &nbsp; &nbsp;title (str): The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int): The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int): The height of the game window (default: 600)<br> &nbsp; &nbsp;use_opengl (bool): Use OpenGL for rendering (default: False)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-initialize">
                                     <code>def initialize(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the engine</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def add_scene(self: Any, name: str, scene: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Add a scene to the engine<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene<br> &nbsp; &nbsp;scene: The scene object<br>Returns:<br> &nbsp; &nbsp;None</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the engine and create the game window.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-add_scene">
+                                    <code>def add_scene(self: Any, name: str, scene_class: Type[Scene], *args: Any, **kwargs: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Add a scene to the engine by class (the engine will instantiate it).<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene<br> &nbsp; &nbsp;scene_class (Type[Scene]): The scene class to instantiate<br> &nbsp; &nbsp;*args: Arguments to pass to scene constructor<br> &nbsp; &nbsp;**kwargs: Keyword arguments to pass to scene constructor</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-set_scene">
                                     <code>def set_scene(self: Any, name: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set the current active scene<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene to set as current<br>Returns:<br> &nbsp; &nbsp;None</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set the current active scene.<br><br>Calls on_exit on the current scene and on_enter on the new scene.<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene to set as current</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-on_event">
                                     <code>def on_event(self: Any, event_type: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Decorator to register event handlers<br><br>Args:<br> &nbsp; &nbsp;event_type (int): The Pygame event type to listen for<br>Returns:<br> &nbsp; &nbsp;Callable: The decorator function</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-get_all_themes">
                                     <code>def get_all_themes(self: Any) -> Dict[str, any]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get all available themes including user custom ones<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, any]: Dictionary with theme names as keys and theme objects as values</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-get_theme_names">
                                     <code>def get_theme_names(self: Any) -> List[str]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get list of all available theme names<br><br>Returns:<br> &nbsp; &nbsp;List[str]: List of theme names</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-set_global_theme">
                                     <code>def set_global_theme(self: Any, theme_name: str) -> bool</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set the global theme for the entire engine and update all UI elements<br><br>Args:<br> &nbsp; &nbsp;theme_name (str): Name of the theme to set<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if theme was set successfully, False otherwise</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_update_all_ui_themes">
                                     <code>def _update_all_ui_themes(self: Any, theme_enum: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update all UI elements in the current scene to use the new theme<br><br>Args:<br> &nbsp; &nbsp;theme_enum: The theme enum to apply</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-get_fps_stats">
                                     <code>def get_fps_stats(self: Any) -> dict</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get comprehensive FPS statistics (optimized)<br><br>Returns:<br> &nbsp; &nbsp;dict: A dictionary containing FPS statistics</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-get_hardware_info">
                                     <code>def get_hardware_info(self: Any) -> dict</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get hardware information</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-run">
                                     <code>def run(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Main game loop - OPTIMIZED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_handle_mouse_scroll">
                                     <code>def _handle_mouse_scroll(self: Any, event: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Handle mouse wheel scrolling for UI elements - OPTIMIZED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_handle_keyboard_event">
                                     <code>def _handle_keyboard_event(self: Any, event: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Handle keyboard events for focused UI elements - OPTIMIZED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_update_ui_elements">
                                     <code>def _update_ui_elements(self: Any, mouse_pos: Any, mouse_pressed: Any, dt: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update UI elements with mouse interaction - OPTIMIZED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_render_ui_elements">
                                     <code>def _render_ui_elements(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render UI elements in correct order - OPTIMIZED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-shutdown">
                                     <code>def shutdown(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Cleanup resources</div></div></div></div></div>
                         </div>
@@ -127,34 +150,97 @@
                             </h5>
                         </div>
                         <div class="card-body">
-        <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded">
+        
+                            <div class="alert alert-info docstring-content">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <div class="docstring-text">Renderer Abstraction Layer - Graphics Backend Interface<br><br>LOCATION: lunaengine/core/renderer.py<br><br>DESCRIPTION:<br>Defines the abstract interface for all rendering backends in LunaEngine.<br>Provides a unified API for 2D graphics operations regardless of the underlying<br>graphics technology (Pygame, OpenGL, etc.). Ensures consistent rendering<br>behavior across different platforms and hardware.<br><br>KEY FEATURES:<br>- Abstract base class for renderer implementations<br>- Standardized drawing primitives (shapes, surfaces, lines)<br>- Frame lifecycle management (begin/end frame)<br>- Hardware abstraction for graphics operations<br><br>LIBRARIES USED:<br>- abc: Abstract base class functionality<br>- pygame: Surface and rendering type definitions<br>- typing: Type hints for method signatures<br><br>IMPLEMENTATIONS:<br>- PygameRenderer (backend/pygame_backend.py): Software-based fallback<br>- OpenGLRenderer (backend/opengl.py): Hardware-accelerated rendering</div>
+                            </div>
+            <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-renderer">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     Renderer
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Abstract base class for renderers</div></div><small class="text-muted">Inherits from: ABC</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <div class="docstring-content mb-2"><div class="docstring-text">Abstract base class for all renderers in LunaEngine.</div></div><small class="text-muted">Inherits from: ABC</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-initialize">
                                     <code>def initialize(self: Any) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the renderer and required resources.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-begin_frame">
                                     <code>def begin_frame(self: Any) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Begin a new rendering frame (clear screen, etc.).</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-end_frame">
                                     <code>def end_frame(self: Any) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">End the current rendering frame (swap buffers, etc.).</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_surface">
                                     <code>def draw_surface(self: Any, surface: pygame.Surface, x: int, y: int) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a pygame surface at specified coordinates.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): The surface to draw<br> &nbsp; &nbsp;x (int): X coordinate<br> &nbsp; &nbsp;y (int): Y coordinate</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_rect">
                                     <code>def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: Tuple[int, int, int]) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a rectangle.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate<br> &nbsp; &nbsp;y (int): Y coordinate<br> &nbsp; &nbsp;width (int): Rectangle width<br> &nbsp; &nbsp;height (int): Rectangle height<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_circle">
                                     <code>def draw_circle(self: Any, x: int, y: int, radius: int, color: Tuple[int, int, int]) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a circle.<br><br>Args:<br> &nbsp; &nbsp;x (int): Center X coordinate<br> &nbsp; &nbsp;y (int): Center Y coordinate<br> &nbsp; &nbsp;radius (int): Circle radius<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_line">
                                     <code>def draw_line(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: Tuple[int, int, int], width: int) -> None</code>
-                        </div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a line.<br><br>Args:<br> &nbsp; &nbsp;start_x (int): Start X coordinate<br> &nbsp; &nbsp;start_y (int): Start Y coordinate<br> &nbsp; &nbsp;end_x (int): End X coordinate<br> &nbsp; &nbsp;end_y (int): End Y coordinate<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;width (int): Line width (default: 1)</div></div></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                scene.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        
+                            <div class="alert alert-info docstring-content">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <div class="docstring-text">Scene Management System - Game State and UI Container<br><br>LOCATION: lunaengine/core/scene.py<br><br>DESCRIPTION:<br>Provides the foundation for organizing game content into manageable states.<br>Each scene represents a distinct game state (menu, gameplay, pause screen)<br>with its own logic, rendering, and UI elements. Supports seamless transitions<br>between scenes with proper lifecycle management.<br><br>KEY FEATURES:<br>- Scene lifecycle hooks (on_enter/on_exit)<br>- UI element management with unique identifiers<br>- Type-based element filtering and retrieval<br>- Scene transition state tracking<br><br>LIBRARIES USED:<br>- abc: Abstract base class for scene interface<br>- typing: Type hints for collections and optional values<br>- TYPE_CHECKING: For circular import resolution<br><br>USAGE PATTERN:<br>1. Inherit from Scene class<br>2. Implement abstract methods (on_enter, on_exit, update, render)<br>3. Add UI elements in on_enter method<br>4. Manage scene-specific logic in update method</div>
+                            </div>
+            <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-scene">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Scene
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Base class for all game scenes.<br><br>Provides lifecycle methods and UI element management. <br>All custom scenes should inherit from this class.<br><br>Attributes:<br> &nbsp; &nbsp;ui_elements (List[UIElement]): List of UI elements in this scene<br> &nbsp; &nbsp;_initialized (bool): Whether the scene has been initialized<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine</div></div><small class="text-muted">Inherits from: ABC</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-__init__">
+                                    <code>def __init__(self: Any, engine: 'LunaEngine', *args: tuple, **kwargs: dict) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a new scene with empty UI elements list.<br><br>Args:<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-on_enter">
+                                    <code>def on_enter(self: Any, previous_scene: Optional[str]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Called when the scene becomes active.<br><br>Use this to initialize resources, create UI elements, or reset game state.<br><br>Args:<br> &nbsp; &nbsp;previous_scene (str, optional): Name of the previous scene</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-on_exit">
+                                    <code>def on_exit(self: Any, next_scene: Optional[str]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Called when the scene is being replaced.<br><br>Use this to clean up resources, save game state, or perform transitions.<br><br>Args:<br> &nbsp; &nbsp;next_scene (str, optional): Name of the next scene</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-update">
+                                    <code>def update(self: Any, dt: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update scene logic.<br><br>Called every frame to update game logic, animations, and interactions.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds since last frame</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-render">
+                                    <code>def render(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render the scene.<br><br>Called every frame to draw the scene content.<br><br>Args:<br> &nbsp; &nbsp;renderer: The renderer to use for drawing operations</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-add_ui_element">
+                                    <code>def add_ui_element(self: Any, ui_element: UIElement) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Add a UI element to the scene.<br><br>Args:<br> &nbsp; &nbsp;ui_element (UIElement): The UI element to add to the scene</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-remove_ui_element">
+                                    <code>def remove_ui_element(self: Any, ui_element: UIElement) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Remove a UI element from the scene.<br><br>Args:<br> &nbsp; &nbsp;ui_element (UIElement): The UI element to remove<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if element was found and removed, False otherwise</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-get_ui_element_by_id">
+                                    <code>def get_ui_element_by_id(self: Any, element_id: str) -> Optional[UIElement]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get UI element by its unique ID.<br><br>Args:<br> &nbsp; &nbsp;element_id (str): The unique ID of the element to find<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;UIElement: The found UI element or None if not found</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-get_ui_elements_by_type">
+                                    <code>def get_ui_elements_by_type(self: Any, element_type: type) -> List[UIElement]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get all UI elements of a specific type.<br><br>Args:<br> &nbsp; &nbsp;element_type (type): The class type to filter by (e.g., Button, Label)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[UIElement]: List of UI elements matching the specified type</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-get_all_ui_elements">
+                                    <code>def get_all_ui_elements(self: Any) -> List[UIElement]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get all UI elements in the scene.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: All UI elements in the scene</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-clear_ui_elements">
+                                    <code>def clear_ui_elements(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Remove all UI elements from the scene.</div></div></div></div></div>
                         </div>
                     </div>
                 </div>
@@ -168,34 +254,39 @@
                             </h5>
                         </div>
                         <div class="card-body">
-        <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded">
+        
+                            <div class="alert alert-info docstring-content">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <div class="docstring-text">Window Management System - Display and Surface Control<br><br>LOCATION: lunaengine/core/window.py<br><br>DESCRIPTION:<br>Handles the creation, configuration, and management of the game window.<br>Provides functionality for display mode changes, window properties, and<br>surface management. Supports both windowed and fullscreen modes with<br>dynamic resizing capabilities.<br><br>KEY FEATURES:<br>- Window creation with customizable flags<br>- Fullscreen/windowed mode switching<br>- Dynamic window resizing support<br>- Display surface management<br>- Window property configuration<br><br>LIBRARIES USED:<br>- pygame: Display system, surface creation, and window flags<br>- typing: Type hints for coordinates and optional parameters<br><br>WINDOW FLAGS SUPPORTED:<br>- OPENGL: OpenGL context creation<br>- FULLSCREEN: Fullscreen display mode<br>- RESIZABLE: User-resizable window<br>- DOUBLEBUF: Double buffering for smooth rendering</div>
+                            </div>
+            <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-window">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     Window
                                 </h6>
-                <div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <div class="docstring-content mb-2"><div class="docstring-text">Manages the game window and display settings.<br><br>This class handles window creation, resizing, fullscreen mode,<br>and provides utility methods for window information.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether window is in fullscreen mode<br> &nbsp; &nbsp;resizable (bool): Whether window is resizable<br> &nbsp; &nbsp;surface (pygame.Surface): The window surface</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-__init__">
                                     <code>def __init__(self: Any, title: str, width: int, height: int, fullscreen: bool, resizable: bool) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize window settings.<br><br>Args:<br> &nbsp; &nbsp;title (str): Window title (default: &quot;LunaEngine&quot;)<br> &nbsp; &nbsp;width (int): Window width (default: 800)<br> &nbsp; &nbsp;height (int): Window height (default: 600)<br> &nbsp; &nbsp;fullscreen (bool): Start in fullscreen mode (default: False)<br> &nbsp; &nbsp;resizable (bool): Allow window resizing (default: True)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-create">
                                     <code>def create(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Create the game window</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Create the game window with specified settings.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-set_title">
                                     <code>def set_title(self: Any, title: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set window title</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set window title.<br><br>Args:<br> &nbsp; &nbsp;title (str): New window title</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-set_size">
                                     <code>def set_size(self: Any, width: int, height: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Resize the window</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Resize the window.<br><br>Args:<br> &nbsp; &nbsp;width (int): New window width<br> &nbsp; &nbsp;height (int): New window height</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-toggle_fullscreen">
                                     <code>def toggle_fullscreen(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Toggle fullscreen mode</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Toggle between fullscreen and windowed mode.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-get_size">
                                     <code>def get_size(self: Any) -> Tuple[int, int]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get window size</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get current window size.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int]: (width, height) of the window</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-get_center">
                                     <code>def get_center(self: Any) -> Tuple[int, int]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get window center coordinates</div></div></div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get window center coordinates.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int]: (x, y) coordinates of window center</div></div></div></div></div>
                         </div>
                     </div>
                 </div>
@@ -215,5 +306,65 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
 </body>
 </html>

@@ -16,6 +16,37 @@ class CodeStatistics:
         self.exclude_files = {'*.pyc', '*.pyo', '*.pyd', '*.so', '*.dll'}
         self.file_extensions = {'.py', '.txt', '.md', '.toml', '.cfg', '.ini'}
         
+    def count_themes_in_engine(self) -> Dict:
+        """
+        Count the number of themes available in LunaEngine
+        Returns: Dictionary with theme statistics
+        """
+        themes_stats = {
+            'total_themes': 0,
+            'error': None
+        }
+        
+        try:
+            sys.path.insert(0, str(self.root_dir))
+            
+            # Import the ThemeManager
+            from ui.themes import ThemeManager
+            
+            # Get all themes and count them
+            themes = ThemeManager.get_themes()
+            themes_stats['total_themes'] = len(themes)
+                    
+        except ImportError as e:
+            themes_stats['error'] = f"Could not import ThemeManager: {e}"
+        except Exception as e:
+            themes_stats['error'] = f"Error counting themes: {e}"
+        finally:
+            # Remove the path we added
+            if str(self.root_dir) in sys.path:
+                sys.path.remove(str(self.root_dir))
+        
+        return themes_stats
+    
     def count_lines_in_file(self, file_path: Path) -> Tuple[int, int, int]:
         """
         Count lines in a file
@@ -81,6 +112,64 @@ class CodeStatistics:
                     
         return files
     
+    def get_project_structure(self) -> List[str]:
+        """Get the complete project structure as a list of formatted lines"""
+        lines = []
+        
+        def add_directory(path: Path, prefix: str = "", is_last: bool = True):
+            """Recursively add directory structure to lines"""
+            # Get all items in directory
+            items = []
+            for item in sorted(path.iterdir()):
+                if item.name in self.exclude_dirs:
+                    continue
+                if item.is_dir() or item.suffix in self.file_extensions:
+                    items.append(item)
+            
+            # Process each item
+            for i, item in enumerate(items):
+                is_last_item = (i == len(items) - 1)
+                
+                if item.is_dir():
+                    # Directory
+                    connector = "└── " if is_last_item else "├── "
+                    lines.append(prefix + connector + "📁 " + item.name + "/")
+                    
+                    # Recursively process subdirectory
+                    new_prefix = prefix + ("    " if is_last_item else "│   ")
+                    add_directory(item, new_prefix, is_last_item)
+                else:
+                    # File
+                    connector = "└── " if is_last_item else "├── "
+                    ext = item.suffix.lower()
+                    emoji = self.get_file_emoji(ext)
+                    lines.append(prefix + connector + emoji + " " + item.name)
+        
+        # Start from root
+        lines.append("📁 " + str(self.root_dir.name) + "/")
+        add_directory(self.root_dir, "", True)
+        
+        return lines
+
+    def format_structure_tree(self, structure_lines: List[str]) -> str:
+        """Format the structure lines as a tree"""
+        return "\n".join(structure_lines)
+    
+    def get_file_emoji(self, extension: str) -> str:
+        """Get appropriate emoji for file type"""
+        emoji_map = {
+            '.py': '🐍',
+            '.md': '📝',
+            '.txt': '📄',
+            '.toml': '⚙️',
+            '.cfg': '⚙️',
+            '.ini': '⚙️',
+            '.json': '📋',
+            '.yml': '📋',
+            '.yaml': '📋',
+        }
+        return emoji_map.get(extension, '📄')
+    
     def analyze_project(self) -> Dict:
         """Analyze the entire project and return statistics"""
         files = self.get_all_files()
@@ -92,7 +181,9 @@ class CodeStatistics:
             'code_lines': 0,
             'comment_lines': 0,
             'blank_lines': 0,
-            'files': []
+            'files': [],
+            'themes': self.count_themes_in_engine(),
+            'project_structure': self.get_project_structure()  # Now returns list of lines
         }
         
         for file_path in files:
@@ -128,7 +219,7 @@ class CodeStatistics:
         
         return stats
     
-    def get_code_density(self,stats):
+    def get_code_density(self, stats):
         # Code density
         return (stats['code_lines'] / max(1, stats['total_lines'])) * 100
     
@@ -145,6 +236,13 @@ class CodeStatistics:
         print(f"   Code Lines:      {stats['code_lines']:>6} ({stats['code_lines']/max(1, stats['total_lines'])*100:.1f}%)")
         print(f"   Comment Lines:   {stats['comment_lines']:>6} ({stats['comment_lines']/max(1, stats['total_lines'])*100:.1f}%)")
         print(f"   Blank Lines:     {stats['blank_lines']:>6} ({stats['blank_lines']/max(1, stats['total_lines'])*100:.1f}%)")
+        
+        # Theme statistics
+        print(f"\n🎨 THEME STATISTICS:")
+        if stats['themes']['error']:
+            print(f"   ❌ Error: {stats['themes']['error']}")
+        else:
+            print(f"   Total Themes:    {stats['themes']['total_themes']:>6}")
         
         # Files by extension
         print(f"\n📁 FILES BY EXTENSION:")
@@ -172,6 +270,11 @@ class CodeStatistics:
         for i, file_info in enumerate(commented_files, 1):
             comment_ratio = (file_info['comment_lines'] / max(1, file_info['total_lines'])) * 100
             print(f"   {i:2}. {file_info['path'][:35]:<35} {comment_ratio:5.1f}% comments")
+        
+        # Project structure
+        print(f"\n🌳 PROJECT STRUCTURE:")
+        structure_tree = self.format_structure_tree(stats['project_structure'])
+        print(structure_tree)
         
         # Code density
         code_density = self.get_code_density(stats)
@@ -206,10 +309,10 @@ def main():
     
     # Save detailed report to file
     report_file = project_root / "CODE_STATISTICS.md"
-    save_detailed_report(stats, report_file)
+    save_detailed_report(stats, report_file, analyzer)
     print(f"\n📄 Detailed report saved to: {report_file}")
 
-def save_detailed_report(stats: Dict, report_file: Path):
+def save_detailed_report(stats: Dict, report_file: Path, analyzer: CodeStatistics):
     """Save a detailed markdown report"""
     with open(report_file, 'w', encoding='utf-8') as f:
         f.write("# LunaEngine Code Statistics\n\n")
@@ -221,6 +324,13 @@ def save_detailed_report(stats: Dict, report_file: Path):
         f.write(f"- **Comment Lines**: {stats['comment_lines']}\n")
         f.write(f"- **Blank Lines**: {stats['blank_lines']}\n")
         
+        # Add theme statistics to report
+        f.write("\n## Theme Statistics\n\n")
+        if stats['themes']['error']:
+            f.write(f"- **Error**: {stats['themes']['error']}\n")
+        else:
+            f.write(f"- **Total Themes**: {stats['themes']['total_themes']}\n")
+        
         f.write("\n## Code Density\n\n")
         code_density = (stats['code_lines'] / max(1, stats['total_lines'])) * 100
         f.write(f"- **Code Density**: {code_density:.1f}%\n")
@@ -228,6 +338,12 @@ def save_detailed_report(stats: Dict, report_file: Path):
                "Well documented - good comment ratio" if code_density < 50 else \
                "Balanced code and comments"
         f.write(f"- {text}\n")
+        
+        f.write("\n## Project Structure\n\n")
+        f.write("```bash\n")
+        for line in stats['project_structure']:
+            f.write(line + "\n")
+        f.write("```\n")
         
         f.write("\n## Files by Extension\n\n")
         f.write("| Extension | Count | Percentage |\n")

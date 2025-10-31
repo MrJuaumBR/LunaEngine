@@ -91,6 +91,36 @@ from typing import Optional, Callable, List, Tuple, Any
 from enum import Enum
 from .themes import ThemeManager, ThemeType
 
+class _UIDGenerator:
+    """
+    Internal class for generating unique IDs for UI elements.
+    
+    Generates IDs in the format: ui_{element_type}_{counter}
+    Example: ui_button_1, ui_label_2, ui_dropdown_1
+    """
+    
+    def __init__(self):
+        self._counters = {}
+    
+    def generate_id(self, element_type: str) -> str:
+        """
+        Generate a unique ID for a UI element.
+        
+        Args:
+            element_type (str): Type of the UI element (e.g., 'button', 'label')
+            
+        Returns:
+            str: Unique ID in format "ui_{element_type}_{counter}"
+        """
+        if element_type not in self._counters:
+            self._counters[element_type] = 0
+        
+        self._counters[element_type] += 1
+        return f"ui_{element_type}_{self._counters[element_type]}"
+
+# Global ID generator instance
+_uid_generator = _UIDGenerator()
+
 class UIState(Enum):
     """Enumeration of possible UI element states."""
     NORMAL = 0
@@ -140,9 +170,25 @@ class FontManager:
             return pygame.font.Font(font_name, font_size)
 
 class UIElement:
-    """Base class for all UI elements providing common functionality."""
+    """
+    Base class for all UI elements providing common functionality.
     
-    def __init__(self, x: int, y: int, width: int, height: int, root_point: Tuple[float, float] = (0, 0)):
+    Attributes:
+        element_id (str): Unique identifier for this element in format ui_{type}_{counter}
+        x (int): X coordinate position
+        y (int): Y coordinate position
+        width (int): Width of the element in pixels
+        height (int): Height of the element in pixels
+        root_point (Tuple[float, float]): Anchor point for positioning
+        state (UIState): Current state of the element
+        visible (bool): Whether element is visible
+        enabled (bool): Whether element is enabled
+        children (List[UIElement]): Child elements
+        parent (UIElement): Parent element
+    """
+    
+    def __init__(self, x: int, y: int, width: int, height: int, root_point: Tuple[float, float] = (0, 0),
+                 element_id: Optional[str] = None):
         """
         Initialize a UI element with position and dimensions.
         
@@ -153,6 +199,7 @@ class UIElement:
             height (int): Height of the element in pixels.
             root_point (Tuple[float, float]): Anchor point for positioning where (0,0) is top-left 
                                             and (1,1) is bottom-right.
+            element_id (Optional[str]): Custom element ID. If None, generates automatic ID.
         """
         self.x = x
         self.y = y
@@ -164,6 +211,28 @@ class UIElement:
         self.enabled = True
         self.children = []
         self.parent = None
+        
+        # Generate unique ID using element type name
+        element_type = self.__class__.__name__.lower()
+        self.element_id = element_id if element_id else _uid_generator.generate_id(element_type)
+    
+    def get_id(self) -> str:
+        """
+        Get the unique ID of this UI element.
+        
+        Returns:
+            str: The unique element ID
+        """
+        return self.element_id
+        
+    def set_id(self, new_id: str) -> None:
+        """
+        Set a new unique ID for this UI element.
+        
+        Args:
+            new_id (str): The new unique ID to set
+        """
+        self.element_id = new_id
         
     def get_actual_position(self, parent_width: int = 0, parent_height: int = 0) -> Tuple[int, int]:
         """
@@ -270,6 +339,7 @@ class UIElement:
         """Called when mouse hovers over the element."""
         pass
 
+
 class TextLabel(UIElement):
     """UI element for displaying text labels."""
     
@@ -277,7 +347,8 @@ class TextLabel(UIElement):
                  color: Optional[Tuple[int, int, int]] = None,
                  font_name: Optional[str] = None, 
                  root_point: Tuple[float, float] = (0, 0),
-                 theme: ThemeType = None):
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
         """
         Initialize a text label element.
         
@@ -290,13 +361,14 @@ class TextLabel(UIElement):
             font_name (Optional[str]): Path to font file or None for default font.
             root_point (Tuple[float, float]): Anchor point for positioning.
             theme (ThemeType): Theme to use for text color.
+            element_id (Optional[str]): Custom element ID. If None, generates automatic ID.
         """
         FontManager.initialize()
         temp_color = color or (255, 255, 255)
         font = FontManager.get_font(font_name, font_size)
         text_surface = font.render(text, True, temp_color)
         
-        super().__init__(x, y, text_surface.get_width(), text_surface.get_height(), root_point)
+        super().__init__(x, y, text_surface.get_width(), text_surface.get_height(), root_point, element_id)
         self.text = text
         self.font_size = font_size
         self.custom_color = color
@@ -367,22 +439,10 @@ class TextLabel(UIElement):
         super().render(renderer)
 
 class ImageLabel(UIElement):
-    """UI element for displaying images."""
-    
     def __init__(self, x: int, y: int, image_path: str, 
                  width: Optional[int] = None, height: Optional[int] = None,
-                 root_point: Tuple[float, float] = (0, 0)):
-        """
-        Initialize an image label element.
-        
-        Args:
-            x (int): X coordinate position.
-            y (int): Y coordinate position.
-            image_path (str): Path to the image file.
-            width (Optional[int]): Width of the image (None for original size).
-            height (Optional[int]): Height of the image (None for original size).
-            root_point (Tuple[float, float]): Anchor point for positioning.
-        """
+                 root_point: Tuple[float, float] = (0, 0),
+                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
         self.image_path = image_path
         self._image = None
         self._load_image()
@@ -392,7 +452,8 @@ class ImageLabel(UIElement):
         if height is None:
             height = self._image.get_height()
             
-        super().__init__(x, y, width, height, root_point)
+        super().__init__(x, y, width, height, root_point, element_id)
+
         
     def _load_image(self):
         """Load and prepare the image."""
@@ -428,27 +489,12 @@ class ImageLabel(UIElement):
         super().render(renderer)
 
 class Button(UIElement):
-    """Interactive button element that responds to clicks."""
-    
     def __init__(self, x: int, y: int, width: int, height: int, text: str = "", 
                  font_size: int = 20, font_name: Optional[str] = None, 
                  root_point: Tuple[float, float] = (0, 0),
-                 theme: ThemeType = None):
-        """
-        Initialize a button element.
-        
-        Args:
-            x (int): X coordinate position.
-            y (int): Y coordinate position.
-            width (int): Width of the button in pixels.
-            height (int): Height of the button in pixels.
-            text (str): Text to display on the button.
-            font_size (int): Size of the font in pixels.
-            font_name (Optional[str]): Path to font file or None for default font.
-            root_point (Tuple[float, float]): Anchor point for positioning.
-            theme (ThemeType): Theme to use for button appearance.
-        """
-        super().__init__(x, y, width, height, root_point)
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+        super().__init__(x, y, width, height, root_point, element_id)
         self.text = text
         self.font_size = font_size
         self.font_name = font_name
@@ -571,24 +617,11 @@ class Button(UIElement):
         super().render(renderer)
 
 class ImageButton(UIElement):
-    """Interactive button that displays an image instead of text."""
-    
     def __init__(self, x: int, y: int, image_path: str, 
                  width: Optional[int] = None, height: Optional[int] = None,
                  root_point: Tuple[float, float] = (0, 0),
-                 theme: ThemeType = None):
-        """
-        Initialize an image button element.
-        
-        Args:
-            x (int): X coordinate position.
-            y (int): Y coordinate position.
-            image_path (str): Path to the image file.
-            width (Optional[int]): Width of the button.
-            height (Optional[int]): Height of the button.
-            root_point (Tuple[float, float]): Anchor point for positioning.
-            theme (ThemeType): Theme to use for button states.
-        """
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
         self.image_path = image_path
         self._image = None
         self._load_image()
@@ -598,7 +631,7 @@ class ImageButton(UIElement):
         if height is None:
             height = self._image.get_height()
             
-        super().__init__(x, y, width, height, root_point)
+        super().__init__(x, y, width, height, root_point, element_id)
         self.on_click_callback = None
         self._was_pressed = False
         
@@ -680,27 +713,12 @@ class ImageButton(UIElement):
         super().render(renderer)
 
 class TextBox(UIElement):
-    """Interactive text input field - OPTIMIZED"""
-    
     def __init__(self, x: int, y: int, width: int, height: int, 
                  text: str = "", font_size: int = 20, font_name: Optional[str] = None,
                  root_point: Tuple[float, float] = (0, 0),
-                 theme: ThemeType = None):
-        """
-        Initialize a text box element.
-        
-        Args:
-            x (int): X coordinate position.
-            y (int): Y coordinate position.
-            width (int): Width of the text box.
-            height (int): Height of the text box.
-            text (str): Initial text content (acts as placeholder).
-            font_size (int): Size of the font.
-            font_name (Optional[str]): Font to use.
-            root_point (Tuple[float, float]): Anchor point for positioning.
-            theme (ThemeType): Theme to use for appearance.
-        """
-        super().__init__(x, y, width, height, root_point)
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+        super().__init__(x, y, width, height, root_point, element_id)
         self.placeholder_text = text
         self.text = ""
         self.font_size = font_size
@@ -928,27 +946,12 @@ class TextBox(UIElement):
         super().render(renderer)
 
 class ProgressBar(UIElement):
-    """Visual progress indicator for loading or health display."""
-    
     def __init__(self, x: int, y: int, width: int, height: int,
                  min_val: float = 0, max_val: float = 100, value: float = 0,
                  root_point: Tuple[float, float] = (0, 0),
-                 theme: ThemeType = None):
-        """
-        Initialize a progress bar element.
-        
-        Args:
-            x (int): X coordinate position.
-            y (int): Y coordinate position.
-            width (int): Width of the progress bar.
-            height (int): Height of the progress bar.
-            min_val (float): Minimum value.
-            max_val (float): Maximum value.
-            value (float): Current value.
-            root_point (Tuple[float, float]): Anchor point for positioning.
-            theme (ThemeType): Theme to use for appearance.
-        """
-        super().__init__(x, y, width, height, root_point)
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+        super().__init__(x, y, width, height, root_point, element_id)
         self.min_val = min_val
         self.max_val = max_val
         self.value = value
@@ -1004,27 +1007,16 @@ class ProgressBar(UIElement):
         super().render(renderer)
 
 class UIDraggable(UIElement):
-    """UI element that can be dragged around the screen."""
-    
     def __init__(self, x: int, y: int, width: int, height: int,
                  root_point: Tuple[float, float] = (0, 0),
-                 theme: ThemeType = None):
-        """
-        Initialize a draggable UI element.
-        
-        Args:
-            x (int): X coordinate position.
-            y (int): Y coordinate position.
-            width (int): Width of the element.
-            height (int): Height of the element.
-            root_point (Tuple[float, float]): Anchor point for positioning.
-            theme (ThemeType): Theme to use for appearance.
-        """
-        super().__init__(x, y, width, height, root_point)
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+        super().__init__(x, y, width, height, root_point, element_id)
         self.dragging = False
         self.drag_offset = (0, 0)
         
         self.theme_type = theme or ThemeManager.get_current_theme()
+
     
     def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
         """Update draggable element with mouse interaction."""
@@ -1075,25 +1067,12 @@ class UIDraggable(UIElement):
         super().render(renderer)
 
 class UIGradient(UIElement):
-    """UI element with gradient background."""
-    
     def __init__(self, x: int, y: int, width: int, height: int,
                  colors: List[Tuple[int, int, int]],
                  direction: str = "horizontal",
-                 root_point: Tuple[float, float] = (0, 0)):
-        """
-        Initialize a gradient UI element.
-        
-        Args:
-            x (int): X coordinate position.
-            y (int): Y coordinate position.
-            width (int): Width of the element.
-            height (int): Height of the element.
-            colors (List[Tuple[int, int, int]]): List of colors for the gradient.
-            direction (str): Gradient direction ("horizontal" or "vertical").
-            root_point (Tuple[float, float]): Anchor point for positioning.
-        """
-        super().__init__(x, y, width, height, root_point)
+                 root_point: Tuple[float, float] = (0, 0),
+                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+        super().__init__(x, y, width, height, root_point, element_id)
         self.colors = colors
         self.direction = direction
         self._gradient_surface = None
@@ -1164,27 +1143,12 @@ class UIGradient(UIElement):
         super().render(renderer)
 
 class Select(UIElement):
-    """Selection element with arrow buttons to cycle through options."""
-    
     def __init__(self, x: int, y: int, width: int, height: int,
                  options: List[str], font_size: int = 20, font_name: Optional[str] = None,
                  root_point: Tuple[float, float] = (0, 0),
-                 theme: ThemeType = None):
-        """
-        Initialize a select element.
-        
-        Args:
-            x (int): X coordinate position.
-            y (int): Y coordinate position.
-            width (int): Width of the element.
-            height (int): Height of the element.
-            options (List[str]): Available options.
-            font_size (int): Font size.
-            font_name (Optional[str]): Font to use.
-            root_point (Tuple[float, float]): Anchor point for positioning.
-            theme (ThemeType): Theme to use for appearance.
-        """
-        super().__init__(x, y, width, height, root_point)
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+        super().__init__(x, y, width, height, root_point, element_id)
         self.options = options
         self.selected_index = 0
         self.font_size = font_size
@@ -1326,25 +1290,13 @@ class Select(UIElement):
         
         super().render(renderer)
 
+
 class Switch(UIElement):
-    """Toggle switch element (like checkbox but with sliding animation)."""
-    
     def __init__(self, x: int, y: int, width: int = 60, height: int = 30,
                  checked: bool = False, root_point: Tuple[float, float] = (0, 0),
-                 theme: ThemeType = None):
-        """
-        Initialize a switch element.
-        
-        Args:
-            x (int): X coordinate position.
-            y (int): Y coordinate position.
-            width (int): Width of the switch.
-            height (int): Height of the switch.
-            checked (bool): Initial state.
-            root_point (Tuple[float, float]): Anchor point for positioning.
-            theme (ThemeType): Theme to use for appearance.
-        """
-        super().__init__(x, y, width, height, root_point)
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+        super().__init__(x, y, width, height, root_point, element_id)
         self.checked = checked
         self.animation_progress = 1.0 if checked else 0.0
         self.on_toggle = None
@@ -1434,26 +1386,12 @@ class Switch(UIElement):
         super().render(renderer)
 
 class ScrollingFrame(UIElement):
-    """Container element with scrollable content."""
-    
     def __init__(self, x: int, y: int, width: int, height: int,
                  content_width: int, content_height: int,
                  root_point: Tuple[float, float] = (0, 0),
-                 theme: ThemeType = None):
-        """
-        Initialize a scrolling frame.
-        
-        Args:
-            x (int): X coordinate position.
-            y (int): Y coordinate position.
-            width (int): Visible width.
-            height (int): Visible height.
-            content_width (int): Total content width.
-            content_height (int): Total content height.
-            root_point (Tuple[float, float]): Anchor point for positioning.
-            theme (ThemeType): Theme to use for appearance.
-        """
-        super().__init__(x, y, width, height, root_point)
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+        super().__init__(x, y, width, height, root_point, element_id)
         self.content_width = content_width
         self.content_height = content_height
         self.scroll_x = 0
@@ -1461,6 +1399,7 @@ class ScrollingFrame(UIElement):
         self.scrollbar_size = 15
         
         self.theme_type = theme or ThemeManager.get_current_theme()
+
     
     def handle_scroll(self, scroll_y: int):  # MUDANÇA AQUI: removido scroll_x
         """
@@ -1545,26 +1484,12 @@ class ScrollingFrame(UIElement):
         renderer.draw_rect(scrollbar_x, thumb_y, scrollbar_width, thumb_height, theme.slider_thumb_normal)
 
 class Slider(UIElement):
-    """Interactive slider for selecting numeric values"""
     def __init__(self, x: int, y: int, width: int, height: int, 
                  min_val: float = 0, max_val: float = 100, value: float = 50,
                  root_point: Tuple[float, float] = (0, 0),
-                 theme: ThemeType = None):
-        """
-        Initialize a slider element.
-        
-        Args:
-            x (int): X coordinate position.
-            y (int): Y coordinate position.
-            width (int): Width of the slider track in pixels.
-            height (int): Height of the slider in pixels.
-            min_val (float): Minimum value of the slider.
-            max_val (float): Maximum value of the slider.
-            value (float): Initial value of the slider.
-            root_point (Tuple[float, float]): Anchor point for positioning.
-            theme (ThemeType): Theme to use for slider appearance.
-        """
-        super().__init__(x, y, width, height, root_point)
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+        super().__init__(x, y, width, height, root_point, element_id)
         self.min_val = min_val
         self.max_val = max_val
         self.value = value
@@ -1648,30 +1573,16 @@ class Slider(UIElement):
         
         super().render(renderer)
 
+
 class Dropdown(UIElement):
-    """Dropdown menu for selecting from a list of options"""
     def __init__(self, x: int, y: int, width: int, height: int, 
                  options: List[str] = None, font_size: int = 20, 
                  font_name: Optional[str] = None, 
                  root_point: Tuple[float, float] = (0, 0),
                  theme: ThemeType = None,
-                 max_visible_options: int = 10):  # Add max visible options
-        """
-        Initialize a dropdown menu element.
-        
-        Args:
-            x (int): X coordinate position.
-            y (int): Y coordinate position.
-            width (int): Width of the dropdown in pixels.
-            height (int): Height of the dropdown in pixels.
-            options (List[str]): List of available options.
-            font_size (int): Size of the font in pixels.
-            font_name (Optional[str]): Path to font file or None for default font.
-            root_point (Tuple[float, float]): Anchor point for positioning.
-            theme (ThemeType): Theme to use for dropdown appearance.
-            max_visible_options (int): Maximum number of options to show before scrolling.
-        """
-        super().__init__(x, y, width, height, root_point)
+                 max_visible_options: int = 10,
+                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+        super().__init__(x, y, width, height, root_point, element_id)
         self.options = options or []
         self.selected_index = 0
         self.expanded = False

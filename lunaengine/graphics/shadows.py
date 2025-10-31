@@ -1,6 +1,34 @@
-import pygame
+"""
+Real-time Shadow System - Dynamic Shadow Casting and Occlusion
+
+LOCATION: lunaengine/graphics/shadows.py
+
+DESCRIPTION:
+Advanced shadow system that calculates real-time shadows based on light
+sources and occluding objects. Creates dynamic shadow polygons that
+respond to light position and object geometry for immersive lighting.
+
+KEY FEATURES:
+- Dynamic shadow casting from multiple occluders
+- Light-based shadow calculation with configurable radius
+- Shadow polygon generation with proper vertex extension
+- Alpha-blended shadow rendering for smooth edges
+- Efficient occluder management and removal
+
+LIBRARIES USED:
+- pygame: Polygon rendering and surface operations
+- numpy: Mathematical calculations for shadow geometry
+- math: Vector calculations and distance measurements
+- typing: Type annotations for coordinates and shapes
+
+USAGE:
+>>> shadow_system = ShadowSystem(800, 600)
+>>> shadow_system.add_occluder(pygame.Rect(100, 100, 50, 50))
+>>> shadow_map = shadow_system.calculate_shadows((200, 200), 300)
+>>> screen.blit(shadow_map, (0, 0))
+"""
+import pygame, math
 import numpy as np
-import math
 from typing import List, Tuple
 
 class ShadowSystem:

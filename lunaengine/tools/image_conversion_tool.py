@@ -1,8 +1,25 @@
 """
 LunaEngine Image Conversion Tool
-Converts images to embedded Python code with resolution scaling
 
-! Not tested
+Function:
+    Converts images to embedded Python code for use in the LunaEngine graphics engine,
+    supporting resolution scaling and multiple encoding methods.
+
+Description:
+    Command-line tool for converting images into Python representations that can be
+    embedded directly in source code. Offers resizing options, preview capabilities,
+    and batch conversion support.
+
+Location:
+    lunaengine/tools/image_conversion_tool.py
+
+Libraries Used:
+    - os: Path and directory manipulation
+    - sys: Argument handling and system control
+    - argparse: Command-line argument processing
+    - pathlib: Object-oriented path handling
+    - pygame: Image processing and preview functionality
+    - utils (internal module): ImageConverter and EmbeddedImage for conversion
 """
 
 import os

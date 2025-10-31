@@ -1,9 +1,37 @@
-import pygame
+"""
+Image Converter - Embedded Image Management and Conversion System
+
+LOCATION: lunaengine/utils/image_converter.py
+
+DESCRIPTION:
+Provides comprehensive image conversion and embedding capabilities for
+including images directly in Python code. Supports multiple encoding
+methods and allows games to be distributed as single files without
+external image dependencies.
+
+KEY FEATURES:
+- Multiple encoding methods (pixel array, base64, compressed)
+- Automatic image resizing with aspect ratio preservation
+- Embedded image reconstruction without external dependencies
+- Alpha channel support for transparent images
+- Fallback mechanisms for robust error handling
+
+LIBRARIES USED:
+- pygame: Image loading, surface manipulation, and pixel operations
+- base64: Data encoding for compact image storage
+- zlib: Image compression for reduced code size
+- numpy: Optional performance optimizations
+- typing: Type hints for image parameters and return values
+
+USAGE:
+>>> converter = ImageConverter()
+>>> python_code = converter.image_to_python_code("sprite.png", "sprite_data")
+>>> embedded_image = EmbeddedImage(sprite_data)
+>>> embedded_image.draw(renderer, 100, 100)
+"""
+import pygame, base64, zlib, os
 import numpy as np
 from typing import Tuple, List, Optional
-import base64
-import zlib
-import os
 
 class ImageConverter:
     """

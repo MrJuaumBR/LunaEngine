@@ -1,22 +1,68 @@
-import pygame
+"""
+LunaEngine Main Engine - Core Game Loop and Management System
+
+LOCATION: lunaengine/core/engine.py
+
+DESCRIPTION:
+The central engine class that orchestrates the entire game lifecycle. Manages
+scene transitions, rendering pipeline, event handling, performance monitoring,
+and UI system integration. This is the primary interface for game developers.
+
+KEY RESPONSIBILITIES:
+- Game loop execution with fixed timestep
+- Scene management and lifecycle control
+- Event distribution to scenes and UI elements
+- Performance monitoring and optimization
+- Theme management across the entire application
+- Resource initialization and cleanup
+
+LIBRARIES USED:
+- pygame: Window management, event handling, timing, and surface operations
+- numpy: Mathematical operations for game calculations
+- threading: Background task management (if needed)
+- typing: Type hints for better code documentation
+
+DEPENDENCIES:
+- ..backend.pygame_backend: Default rendering backend
+- ..ui.elements: UI component system
+- ..utils.performance: Performance monitoring utilities
+- .scene: Scene management base class
+"""
+
+import pygame, threading
 import numpy as np
-from typing import Dict, List, Callable, Optional
-import threading
+from typing import Dict, List, Callable, Optional, Type
 from ..backend.pygame_backend import PygameRenderer
 from ..ui.elements import *
+from .scene import Scene
 from ..utils.performance import PerformanceMonitor, GarbageCollector
 
 class LunaEngine:
+    """
+    Main game engine class for LunaEngine.
+    
+    This class manages the entire game lifecycle including initialization,
+    scene management, event handling, rendering, and shutdown.
+    
+    Attributes:
+        title (str): Window title
+        width (int): Window width
+        height (int): Window height
+        running (bool): Whether the engine is running
+        clock (pygame.time.Clock): Game clock for FPS control
+        scenes (Dict[str, Scene]): Registered scenes
+        current_scene (Scene): Currently active scene
+    """
+    
     def __init__(self, title: str = "LunaEngine Game", width: int = 800, height: int = 600, use_opengl: bool = False):
         """
-        Initialize the LunaEngine
+        Initialize the LunaEngine.
+        
         Args:
-            title (str) *Optional: The title of the game window (default: "LunaEngine Game")
-            width (int) *Optional: The width of the game window (default: 800)
-            height (int) *Optional: The height of the game window (default: 600)
-            use_opengl (bool) *Optional: Use OpenGL for rendering (default: False)
-        Returns:
-            None
+            title (str): The title of the game window (default: "LunaEngine Game")
+            width (int): The width of the game window (default: 800)
+            height (int): The height of the game window (default: 600)
+            use_opengl (bool): Use OpenGL for rendering (default: False)
         """
         self.title = title
         self.width = width
@@ -24,8 +70,9 @@ class LunaEngine:
         self.running = False
         self.clock = pygame.time.Clock()
         self.fps = 60
-        self.scenes = {}
-        self.current_scene = None
+        self.scenes: Dict[str, Scene] = {}
+        self.current_scene: Optional[Scene] = None
+        self.previous_scene_name: Optional[str] = None
         self._event_handlers = {}
         
         # Performance monitoring
@@ -37,7 +84,7 @@ class LunaEngine:
         self.screen = None
         
     def initialize(self):
-        """Initialize the engine"""
+        """Initialize the engine and create the game window."""
         pygame.init()
         # Initialize font system early
         FontManager.initialize()
@@ -50,29 +97,45 @@ class LunaEngine:
         self.renderer.initialize()
         self.running = True
         
-    def add_scene(self, name: str, scene):
+    def add_scene(self, name: str, scene_class: Type[Scene], *args, **kwargs):
         """
-        Add a scene to the engine
+        Add a scene to the engine by class (the engine will instantiate it).
         
         Args:
             name (str): The name of the scene
-            scene: The scene object
-        Returns:
-            None
+            scene_class (Type[Scene]): The scene class to instantiate
+            *args: Arguments to pass to scene constructor
+            **kwargs: Keyword arguments to pass to scene constructor
         """
-        self.scenes[name] = scene
+        if callable(scene_class): scene_instance = scene_class(self, *args, **kwargs)
+        else: scene_instance = scene_class
+        self.scenes[name] = scene_instance
         
     def set_scene(self, name: str):
         """
-        Set the current active scene
+        Set the current active scene.
+        
+        Calls on_exit on the current scene and on_enter on the new scene.
         
         Args:
             name (str): The name of the scene to set as current
-        Returns:
-            None
         """
         if name in self.scenes:
+            # Call on_exit for current scene
+            if self.current_scene:
+                self.current_scene.on_exit(name)
+                
+            # Store previous scene name
+            previous_name = None
+            for scene_name, scene_obj in self.scenes.items():
+                if scene_obj == self.current_scene:
+                    previous_name = scene_name
+                    break
+            self.previous_scene_name = previous_name
+            
+            # Set new scene and call on_enter
             self.current_scene = self.scenes[name]
+            self.current_scene.on_enter(self.previous_scene_name)
     
     
     

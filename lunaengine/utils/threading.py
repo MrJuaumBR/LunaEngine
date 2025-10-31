@@ -1,3 +1,33 @@
+"""
+Threading System - Concurrent Task Execution and Management
+
+LOCATION: lunaengine/utils/threading.py
+
+DESCRIPTION:
+Provides a thread pool system for concurrent task execution, allowing
+background processing without blocking the main game loop. Supports
+task submission, execution, and result management.
+
+KEY COMPONENTS:
+- Task: Individual executable task with parameters and results
+- ThreadPool: Managed pool of worker threads for concurrent execution
+- Queue-based task distribution for efficient load balancing
+- Exception handling and task result management
+
+LIBRARIES USED:
+- threading: Core threading functionality and thread management
+- queue: Thread-safe task queue implementation
+- typing: Type hints for callable functions and task parameters
+
+USAGE:
+>>> pool = ThreadPool(4)
+>>> pool.start()
+>>> task = Task(expensive_calculation, arg1, arg2)
+>>> pool.submit(task)
+>>> # Later: check task.result or task.exception
+>>> pool.stop()
+"""
+
 import threading
 import queue
 from typing import Callable, Any

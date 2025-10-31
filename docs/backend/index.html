@@ -7,6 +7,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="../theme.css" rel="stylesheet">
+    <style>
+    .search-highlight {
+        background-color: #ffeb3b;
+        padding: 2px 4px;
+        border-radius: 3px;
+        animation: highlight-pulse 2s ease-in-out;
+    }
+    
+    @keyframes highlight-pulse {
+        0% { background-color: #ffeb3b; }
+        50% { background-color: #ffff72; }
+        100% { background-color: #ffeb3b; }
+    }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
@@ -16,6 +30,10 @@
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search in backend... (e.g.: def render(), .update())">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                </div>
                 <span class="badge bg-primary me-3">Backend</span>
                 <button class="btn btn-outline-secondary theme-toggle">
                     <span class="theme-icon">🌙</span>
@@ -57,37 +75,37 @@
                         </div>
                         <div class="card-body">
         <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-openglrenderer">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     OpenGLRenderer
                                 </h6>
-                <div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <div class="docstring-content mb-2"><div class="docstring-text">OpenGL-based hardware-accelerated renderer for LunaEngine<br><br>LOCATION: lunaengine/backend/opengl.py<br><br>DESCRIPTION:<br>Provides high-performance 2D rendering using OpenGL with shader support.<br>Converts pygame surfaces to OpenGL textures and renders them using custom<br>shaders for optimal performance.<br><br>FEATURES:<br>- Hardware-accelerated 2D rendering<br>- Custom vertex and fragment shaders<br>- Texture-based sprite rendering<br>- Alpha blending and transparency support<br><br>LIBRARIES USED:<br>- pygame: Surface creation and image processing<br>- OpenGL.GL: Core OpenGL functionality<br>- OpenGL.GL.shaders: Shader compilation and management<br>- numpy: Vertex data and matrix operations<br><br>USAGE:<br>&gt;&gt;&gt; renderer = OpenGLRenderer(800, 600)<br>&gt;&gt;&gt; renderer.initialize()<br>&gt;&gt;&gt; renderer.draw_surface(sprite_surface, x, y)</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-__init__">
                                     <code>def __init__(self: Any, width: int, height: int) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize OpenGL renderer with specified dimensions<br><br>ARGS:<br> &nbsp; &nbsp;width: Screen width in pixels<br> &nbsp; &nbsp;height: Screen height in pixels</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-initialize">
                                     <code>def initialize(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize OpenGL context</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize OpenGL context and setup shaders</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_create_shaders">
                                     <code>def _create_shaders(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Create basic shaders for 2D rendering</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_setup_quad_geometry">
                                     <code>def _setup_quad_geometry(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Setup quad geometry for rendering</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-begin_frame">
                                     <code>def begin_frame(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Begin rendering frame</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-end_frame">
                                     <code>def end_frame(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">End rendering frame</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_surface_to_texture">
                                     <code>def _surface_to_texture(self: Any, surface: pygame.Surface) -> int</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Convert pygame surface to OpenGL texture</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_surface">
                                     <code>def draw_surface(self: Any, surface: pygame.Surface, x: int, y: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw a pygame surface using OpenGL</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_rect">
                                     <code>def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: tuple) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw a colored rectangle</div></div></div></div></div>
                         </div>
@@ -104,39 +122,39 @@
                         </div>
                         <div class="card-body">
         <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-pygamerenderer">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     PygameRenderer
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Simple Pygame-based renderer for development</div></div><small class="text-muted">Inherits from: Renderer</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <div class="docstring-content mb-2"><div class="docstring-text">Pygame-based software renderer for LunaEngine<br><br>LOCATION: lunaengine/backend/pygame_backend.py<br><br>DESCRIPTION:<br>Provides a simple, reliable software renderer using Pygame&#x27;s built-in<br>drawing functions. Serves as a fallback when OpenGL is not available<br>or for development purposes.<br><br>FEATURES:<br>- Software-based 2D rendering<br>- Basic shape drawing (rectangles, circles, lines)<br>- Surface blitting and composition<br>- Cross-platform compatibility<br><br>LIBRARIES USED:<br>- pygame: Core graphics, surface management, and drawing primitives<br><br>INHERITS FROM:<br>- Renderer: Base renderer class from core module<br><br>USAGE:<br>&gt;&gt;&gt; renderer = PygameRenderer(800, 600)<br>&gt;&gt;&gt; renderer.initialize()<br>&gt;&gt;&gt; renderer.draw_rect(100, 100, 50, 50, (255, 0, 0))</div></div><small class="text-muted">Inherits from: Renderer</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-__init__">
                                     <code>def __init__(self: Any, width: int, height: int) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize Pygame renderer with specified dimensions<br><br>ARGS:<br> &nbsp; &nbsp;width: Screen width in pixels<br> &nbsp; &nbsp;height: Screen height in pixels</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-initialize">
                                     <code>def initialize(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the renderer</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the renderer - create main surface</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-begin_frame">
                                     <code>def begin_frame(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Begin rendering frame - clear the surface</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Begin rendering frame - clear the surface with black</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-end_frame">
                                     <code>def end_frame(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">End rendering frame</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">End rendering frame - no additional processing needed</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-get_surface">
                                     <code>def get_surface(self: Any) -> pygame.Surface</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the underlying pygame surface</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the underlying pygame surface<br><br>RETURNS:<br> &nbsp; &nbsp;pygame.Surface: The main rendering surface</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-draw_surface">
                                     <code>def draw_surface(self: Any, surface: pygame.Surface, x: int, y: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a pygame surface - FIXED: Use proper blitting</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a pygame surface onto the renderer<br><br>ARGS:<br> &nbsp; &nbsp;surface: Pygame surface to draw<br> &nbsp; &nbsp;x: X coordinate for drawing<br> &nbsp; &nbsp;y: Y coordinate for drawing</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-draw_rect">
                                     <code>def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: Tuple[int, int, int], fill: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a colored rectangle</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a colored rectangle<br><br>ARGS:<br> &nbsp; &nbsp;x: X coordinate of top-left corner<br> &nbsp; &nbsp;y: Y coordinate of top-left corner<br> &nbsp; &nbsp;width: Rectangle width<br> &nbsp; &nbsp;height: Rectangle height<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the rectangle (default: True)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-draw_circle">
                                     <code>def draw_circle(self: Any, x: int, y: int, radius: int, color: Tuple[int, int, int]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a circle</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a circle<br><br>ARGS:<br> &nbsp; &nbsp;x: Center X coordinate<br> &nbsp; &nbsp;y: Center Y coordinate<br> &nbsp; &nbsp;radius: Circle radius<br> &nbsp; &nbsp;color: RGB color tuple</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-draw_line">
                                     <code>def draw_line(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: Tuple[int, int, int], width: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a line</div></div></div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a line<br><br>ARGS:<br> &nbsp; &nbsp;start_x: Starting X coordinate<br> &nbsp; &nbsp;start_y: Starting Y coordinate<br> &nbsp; &nbsp;end_x: Ending X coordinate<br> &nbsp; &nbsp;end_y: Ending Y coordinate<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;width: Line width (default: 1)</div></div></div></div></div>
                         </div>
                     </div>
                 </div>
@@ -156,5 +174,65 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
 </body>
 </html>

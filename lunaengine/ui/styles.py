@@ -1,3 +1,31 @@
+"""
+UI Styles System - Visual Style Definitions and State Management
+
+LOCATION: lunaengine/ui/styles.py
+
+DESCRIPTION:
+Provides foundational style definitions and UI state management for visual elements.
+Defines the basic structure for UI styling with support for different element states
+(normal, hovered, pressed, disabled) and theme application.
+
+KEY COMPONENTS:
+- UIState: Enumeration of possible UI element interaction states
+- UIStyle: Individual style definition with colors, fonts, and padding
+- Theme: Complete theme collection with styles for all UI element types
+
+LIBRARIES USED:
+- typing: For type hints and dictionary annotations
+- enum: For UI state enumeration
+
+USAGE:
+>>> style = UIStyle()
+>>> color = style.get_color(UIState.HOVERED)
+>>> theme = Theme()  # Creates default theme with all element styles
+
+This module serves as the foundation for the more comprehensive theming system
+in themes.py, providing basic style management capabilities.
+"""
+
 from typing import Dict, Tuple
 from enum import Enum
 

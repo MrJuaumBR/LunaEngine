@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - LunaEngine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="globalSearch" class="form-control" placeholder="Search everything in LunaEngine...">
+                    <button class="btn btn-primary" type="button" id="searchButton">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active">Search Results</li>
+                    </ol>
+                </nav>
+                
+                <h1 class="mb-4"><i class="bi bi-search me-2"></i>Search Results</h1>
+                
+                <div id="searchInfo" class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Global search across all LunaEngine documentation: 334 items indexed
+                </div>
+                
+                <div id="searchResults" class="search-results-container">
+                    <!-- Results will be populated by JavaScript -->
+                </div>
+                
+                <div id="noResults" class="text-center py-5" style="display: none;">
+                    <i class="bi bi-search display-1 text-muted mb-3"></i>
+                    <h3 class="text-muted">No results found</h3>
+                    <p class="text-muted">Try different keywords or browse the modules directly.</p>
+                    <a href="index.html" class="btn btn-primary mt-3">
+                        <i class="bi bi-house me-2"></i>Back to Home
+                    </a>
+                </div>
+
+                <div id="searchStats" class="mt-4 text-center" style="display: none;">
+                    <small class="text-muted" id="statsText"></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="search.js"></script>
+    <script src="theme.js"></script>
+</body>
+</html>

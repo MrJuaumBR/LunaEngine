@@ -15,9 +15,15 @@
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
-            <button class="btn btn-outline-secondary theme-toggle">
-                <span class="theme-icon">🌙</span>
-            </button>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search documentation...">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                </div>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -25,105 +31,83 @@
         <div class="row">
             <div class="col-lg-8 mx-auto">
                 <h1 class="text-center mb-4">👥 Community & Contact</h1>
-                <p class="lead text-center text-muted mb-5">
-                    Join our community to get help, share your projects, and contribute to LunaEngine!
-                </p>
-
+                
                 <div class="row g-4">
-                    <!-- GitHub -->
                     <div class="col-md-6">
-                        <div class="card h-100 community-card">
-                            <div class="card-body text-center p-4">
-                                <div class="community-icon github mb-3">
-                                    <i class="bi bi-github fs-1"></i>
-                                </div>
-                                <h4 class="card-title">GitHub</h4>
-                                <p class="card-text text-muted">
-                                    Star the repository, report issues, and contribute to the codebase.
-                                </p>
-                                <a href="https://github.com/MrJuaumBR/LunaEngine" target="_blank" class="btn btn-dark">
-                                    <i class="bi bi-box-arrow-up-right me-2"></i>Visit GitHub
+                        <div class="card h-100 text-center">
+                            <div class="card-body">
+                                <i class="bi bi-github fs-1 text-primary mb-3"></i>
+                                <h5>GitHub Repository</h5>
+                                <p class="text-muted">Source code, issues, and contributions</p>
+                                <a href="https://github.com/MrJuaumBR/LunaEngine" class="btn btn-outline-primary">
+                                    Visit GitHub
                                 </a>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Discord -->
+                    
                     <div class="col-md-6">
-                        <div class="card h-100 community-card">
-                            <div class="card-body text-center p-4">
-                                <div class="community-icon discord mb-3">
-                                    <i class="bi bi-discord fs-1"></i>
-                                </div>
-                                <h4 class="card-title">Discord</h4>
-                                <p class="card-text text-muted">
-                                    Join our Discord server for real-time discussions and support.
-                                </p>
-                                <a href="https://discord.gg/fb84sHDX7R" target="_blank" class="btn btn-primary" style="background-color: #5865F2; border-color: #5865F2;">
-                                    <i class="bi bi-box-arrow-up-right me-2"></i>Join Discord
+                        <div class="card h-100 text-center">
+                            <div class="card-body">
+                                <i class="bi bi-discord fs-1 text-info mb-3"></i>
+                                <h5>Discord Community</h5>
+                                <p class="text-muted">Join our community for help and discussions</p>
+                                <a href="https://discord.gg/fb84sHDX7R" class="btn btn-outline-info">
+                                    Join Discord
                                 </a>
                             </div>
                         </div>
                     </div>
-
-                    <!-- YouTube -->
+                    
                     <div class="col-md-6">
-                        <div class="card h-100 community-card">
-                            <div class="card-body text-center p-4">
-                                <div class="community-icon youtube mb-3">
-                                    <i class="bi bi-youtube fs-1"></i>
-                                </div>
-                                <h4 class="card-title">YouTube</h4>
-                                <p class="card-text text-muted">
-                                    Watch tutorials, demos, and development updates on our channel.
-                                </p>
-                                <a href="https://www.youtube.com/@mrjuaumbr" target="_blank" class="btn btn-danger">
-                                    <i class="bi bi-box-arrow-up-right me-2"></i>Visit YouTube
+                        <div class="card h-100 text-center">
+                            <div class="card-body">
+                                <i class="bi bi-youtube fs-1 text-danger mb-3"></i>
+                                <h5>YouTube Channel</h5>
+                                <p class="text-muted">Watch some of our videos!</p>
+                                <a href="https://youtube.com/@MrJuaumBR" class="btn btn-outline-danger">
+                                    Go to Channel
                                 </a>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Documentation -->
+                    
                     <div class="col-md-6">
-                        <div class="card h-100 community-card">
-                            <div class="card-body text-center p-4">
-                                <div class="community-icon docs mb-3">
-                                    <i class="bi bi-book fs-1"></i>
-                                </div>
-                                <h4 class="card-title">Documentation</h4>
-                                <p class="card-text text-muted">
-                                    Explore the complete documentation and API reference.
-                                </p>
-                                <a href="index.html" class="btn btn-info text-white">
-                                    <i class="bi bi-book me-2"></i>View Docs
+                        <div class="card h-100 text-center">
+                            <div class="card-body">
+                                <i class="bi bi-file-text fs-1 text-success mb-3"></i>
+                                <h5>Documentation</h5>
+                                <p class="text-muted">Browse the complete documentation</p>
+                                <a href="index.html" class="btn btn-outline-success">
+                                    View Docs
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="card mt-5">
-                    <div class="card-header bg-warning text-dark">
-                        <h5 class="mb-0"><i class="bi bi-lightbulb me-2"></i>Getting Help</h5>
+                
+                <div class="card mt-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Contributing</h5>
                     </div>
                     <div class="card-body">
-                        <ul class="list-unstyled">
-                            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Check the documentation first</li>
-                            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Search existing GitHub issues</li>
-                            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Ask in Discord for quick help</li>
-                            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Report bugs on GitHub</li>
-                            <li><i class="bi bi-check-circle text-success me-2"></i>Share your projects with the community</li>
+                        <p>We welcome contributions! Here's how you can help:</p>
+                        <ul>
+                            <li>Report bugs and issues on GitHub</li>
+                            <li>Suggest new features and improvements</li>
+                            <li>Submit pull requests with bug fixes</li>
+                            <li>Improve documentation and examples</li>
+                            <li>Share your projects made with LunaEngine</li>
                         </ul>
                     </div>
                 </div>
-
-                <div class="text-center mt-5">
+                
+                <div class="text-center mt-4">
                     <a href="index.html" class="btn btn-primary me-2">
                         <i class="bi bi-house me-2"></i>Back to Home
                     </a>
                     <a href="quick-start.html" class="btn btn-outline-primary">
-                        <i class="bi bi-rocket me-2"></i>Quick Start
+                        <i class="bi bi-play-circle me-2"></i>Quick Start
                     </a>
                 </div>
             </div>
@@ -132,5 +116,65 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
 </body>
 </html>

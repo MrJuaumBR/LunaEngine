@@ -1,3 +1,34 @@
+"""
+Performance Monitoring - System Optimization and Resource Management
+
+LOCATION: lunaengine/utils/performance.py
+
+DESCRIPTION:
+Comprehensive performance monitoring system that tracks frame rates,
+system resources, and provides optimization utilities. Includes hardware
+detection, garbage collection, and performance statistics.
+
+KEY COMPONENTS:
+- PerformanceMonitor: Real-time FPS tracking and hardware monitoring
+- GarbageCollector: Automatic resource cleanup and memory management
+- Hardware detection for system-specific optimizations
+- Frame time analysis and performance statistics
+
+LIBRARIES USED:
+- psutil: System resource monitoring (CPU, memory)
+- pygame: Version detection and integration
+- platform: System information and platform detection
+- time: Precise timing measurements
+- threading: Background monitoring capabilities
+- collections: Efficient data structures for performance tracking
+
+USAGE:
+>>> monitor = PerformanceMonitor()
+>>> stats = monitor.get_stats()
+>>> hardware = monitor.get_hardware_info()
+>>> gc = GarbageCollector()
+>>> gc.cleanup()
+"""
 import sys, psutil, subprocess, platform, time, pygame, threading, os
 from typing import Dict, List, Tuple, Optional
 from collections import deque

@@ -7,6 +7,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="../theme.css" rel="stylesheet">
+    <style>
+    .search-highlight {
+        background-color: #ffeb3b;
+        padding: 2px 4px;
+        border-radius: 3px;
+        animation: highlight-pulse 2s ease-in-out;
+    }
+    
+    @keyframes highlight-pulse {
+        0% { background-color: #ffeb3b; }
+        50% { background-color: #ffff72; }
+        100% { background-color: #ffeb3b; }
+    }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
@@ -16,6 +30,10 @@
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search in ui... (e.g.: def render(), .update())">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                </div>
                 <span class="badge bg-primary me-3">Ui</span>
                 <button class="btn btn-outline-secondary theme-toggle">
                     <span class="theme-icon">🌙</span>
@@ -62,7 +80,19 @@
                                 <div class="docstring-text">elements.py - UI Elements Module for LunaEngine<br><br>ENGINE PATH:<br>lunaengine -&gt; ui -&gt; elements.py<br><br>DESCRIPTION:<br>This module provides a comprehensive collection of user interface (UI) elements<br>for creating interactive graphical interfaces in Pygame. It includes basic components<br>like buttons, labels, and text fields, as well as more complex elements like dropdown<br>menus, progress bars, and scrollable containers.<br><br>LIBRARIES USED:<br>- pygame: For graphical rendering and event handling<br>- numpy: For mathematical calculations (primarily in gradients)<br>- typing: For type hints and type annotations<br>- enum: For enum definitions (UI states)<br><br>MAIN CLASSES:<br><br>1. UIState (Enum):<br> &nbsp; - Defines possible UI element states (NORMAL, HOVERED, PRESSED, DISABLED)<br><br>2. FontManager:<br> &nbsp; - Manages Pygame fonts with lazy loading and caching<br> &nbsp; - Ensures proper font system initialization<br><br>3. UIElement:<br> &nbsp; - Base class for all UI elements providing common functionality<br> &nbsp; - Handles positioning, theming, mouse interaction, and rendering<br><br>4. TextLabel:<br> &nbsp; - Displays static or dynamic text with theme support<br> &nbsp; - Supports custom fonts and colors<br><br>5. ImageLabel:<br> &nbsp; - Displays images with optional scaling<br> &nbsp; - Supports various image formats<br><br>6. Button:<br> &nbsp; - Interactive button with hover, press, and disabled states<br> &nbsp; - Supports text and theme-based styling<br><br>7. ImageButton:<br> &nbsp; - Button that uses images instead of text<br> &nbsp; - Includes state-based visual feedback<br><br>8. TextBox:<br> &nbsp; - Interactive text input field with cursor<br> &nbsp; - Supports keyboard input and text editing<br><br>9. ProgressBar:<br> &nbsp; - Visual progress indicator for loading or value display<br> &nbsp; - Shows percentage and customizable range<br><br>10. UIDraggable:<br> &nbsp; &nbsp;- UI element that can be dragged around the screen<br> &nbsp; &nbsp;- Provides visual feedback during dragging<br><br>11. UIGradient:<br> &nbsp; &nbsp;- UI element with gradient background<br> &nbsp; &nbsp;- Supports horizontal and vertical gradients with multiple colors<br><br>12. Select:<br> &nbsp; &nbsp;- Selection element with arrow buttons to cycle through options<br> &nbsp; &nbsp;- Compact alternative to dropdowns<br><br>13. Switch:<br> &nbsp; &nbsp;- Toggle switch element with sliding animation<br> &nbsp; &nbsp;- Alternative to checkboxes with smooth transitions<br><br>14. ScrollingFrame:<br> &nbsp; &nbsp;- Container element with scrollable content<br> &nbsp; &nbsp;- Supports both horizontal and vertical scrolling<br><br>15. Slider:<br> &nbsp; &nbsp;- Interactive slider for selecting numeric values<br> &nbsp; &nbsp;- Draggable thumb with value display<br><br>16. Dropdown:<br> &nbsp; &nbsp;- Dropdown menu for selecting from a list of options<br> &nbsp; &nbsp;- Supports scrolling for long lists and custom themes<br><br>This module forms the core of LunaEngine&#x27;s UI system, providing a flexible and<br>themeable foundation for building complex user interfaces in Pygame applications.</div>
                             </div>
             <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-_uidgenerator">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    _UIDGenerator
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Internal class for generating unique IDs for UI elements.<br><br>Generates IDs in the format: ui_{element_type}_{counter}<br>Example: ui_button_1, ui_label_2, ui_dropdown_1</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-_uidgenerator-__init__">
+                                    <code>def __init__(self: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-_uidgenerator-generate_id">
+                                    <code>def generate_id(self: Any, element_type: str) -> str</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Generate a unique ID for a UI element.<br><br>Args:<br> &nbsp; &nbsp;element_type (str): Type of the UI element (e.g., &#x27;button&#x27;, &#x27;label&#x27;)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;str: Unique ID in format &quot;ui_{element_type}_{counter}&quot;</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-uistate">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     UIState
@@ -84,7 +114,7 @@
                                     <code>DISABLED: Any = 3</code>
                                 </div>
                         </div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-fontmanager">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     FontManager
@@ -98,376 +128,382 @@
                                     <code>_default_fonts: Any = {}</code>
                                 </div>
                         </div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-fontmanager-initialize">
                                     <code>def initialize(cls: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize the font system.<br><br>This method should be called before using any font-related functionality.<br>It initializes Pygame&#x27;s font module if not already initialized.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-fontmanager-get_font">
                                     <code>def get_font(cls: Any, font_name: Optional[str], font_size: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get a font object for rendering text.<br><br>Args:<br> &nbsp; &nbsp;font_name (Optional[str]): Path to font file or None for default system font.<br> &nbsp; &nbsp;font_size (int): Size of the font in pixels.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;pygame.font.Font: A font object ready for text rendering.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-uielement">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     UIElement
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Base class for all UI elements providing common functionality.</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, root_point: Tuple[float, float]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a UI element with position and dimensions.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the element in pixels.<br> &nbsp; &nbsp;height (int): Height of the element in pixels.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning where (0,0) is top-left <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;and (1,1) is bottom-right.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <div class="docstring-content mb-2"><div class="docstring-text">Base class for all UI elements providing common functionality.<br><br>Attributes:<br> &nbsp; &nbsp;element_id (str): Unique identifier for this element in format ui_{type}_{counter}<br> &nbsp; &nbsp;x (int): X coordinate position<br> &nbsp; &nbsp;y (int): Y coordinate position<br> &nbsp; &nbsp;width (int): Width of the element in pixels<br> &nbsp; &nbsp;height (int): Height of the element in pixels<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning<br> &nbsp; &nbsp;state (UIState): Current state of the element<br> &nbsp; &nbsp;visible (bool): Whether element is visible<br> &nbsp; &nbsp;enabled (bool): Whether element is enabled<br> &nbsp; &nbsp;children (List[UIElement]): Child elements<br> &nbsp; &nbsp;parent (UIElement): Parent element</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, root_point: Tuple[float, float], element_id: Optional[str]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a UI element with position and dimensions.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the element in pixels.<br> &nbsp; &nbsp;height (int): Height of the element in pixels.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning where (0,0) is top-left <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;and (1,1) is bottom-right.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID. If None, generates automatic ID.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-get_id">
+                                    <code>def get_id(self: Any) -> str</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the unique ID of this UI element.<br><br>Returns:<br> &nbsp; &nbsp;str: The unique element ID</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-set_id">
+                                    <code>def set_id(self: Any, new_id: str) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set a new unique ID for this UI element.<br><br>Args:<br> &nbsp; &nbsp;new_id (str): The new unique ID to set</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-get_actual_position">
                                     <code>def get_actual_position(self: Any, parent_width: int, parent_height: int) -> Tuple[int, int]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Calculate actual screen position based on root_point anchor.<br><br>Args:<br> &nbsp; &nbsp;parent_width (int): Width of parent element if applicable.<br> &nbsp; &nbsp;parent_height (int): Height of parent element if applicable.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int]: The actual (x, y) screen coordinates.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-add_child">
                                     <code>def add_child(self: Any, child: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Add a child element to this UI element.<br><br>Args:<br> &nbsp; &nbsp;child: The child UI element to add.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-update">
                                     <code>def update(self: Any, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update element state.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds since last update.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-update_theme">
                                     <code>def update_theme(self: Any, theme_type: ThemeType) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update the theme for this element and all its children.<br><br>Args:<br> &nbsp; &nbsp;theme_type (ThemeType): The new theme to apply.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update element with current mouse state for interaction.<br><br>Args:<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position (x, y).<br> &nbsp; &nbsp;mouse_pressed (bool): Whether mouse button is currently pressed.<br> &nbsp; &nbsp;dt (float): Delta time in seconds.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render the element to the screen.<br><br>Args:<br> &nbsp; &nbsp;renderer: The renderer object used for drawing.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-on_click">
                                     <code>def on_click(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Called when element is clicked by the user.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-on_hover">
                                     <code>def on_hover(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Called when mouse hovers over the element.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-textlabel">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     TextLabel
                                 </h6>
                 <div class="docstring-content mb-2"><div class="docstring-text">UI element for displaying text labels.</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, text: str, font_size: int, color: Optional[Tuple[int, int, int]], font_name: Optional[str], root_point: Tuple[float, float], theme: ThemeType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a text label element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;text (str): The text to display.<br> &nbsp; &nbsp;font_size (int): Size of the font in pixels.<br> &nbsp; &nbsp;color (Optional[Tuple[int, int, int]]): Custom text color (overrides theme).<br> &nbsp; &nbsp;font_name (Optional[str]): Path to font file or None for default font.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for text color.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, text: str, font_size: int, color: Optional[Tuple[int, int, int]], font_name: Optional[str], root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a text label element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;text (str): The text to display.<br> &nbsp; &nbsp;font_size (int): Size of the font in pixels.<br> &nbsp; &nbsp;color (Optional[Tuple[int, int, int]]): Custom text color (overrides theme).<br> &nbsp; &nbsp;font_name (Optional[str]): Path to font file or None for default font.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for text color.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID. If None, generates automatic ID.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-update_theme">
                                     <code>def update_theme(self: Any, theme_type: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update theme for text label.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-font">
                                     <code>def font(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the font object (lazy loading).<br><br>Returns:<br> &nbsp; &nbsp;pygame.font.Font: The font object for this label.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-set_text">
                                     <code>def set_text(self: Any, text: str) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update the displayed text and recalculate element size.<br><br>Args:<br> &nbsp; &nbsp;text (str): The new text to display.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-set_theme">
                                     <code>def set_theme(self: Any, theme_type: ThemeType) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set the theme for this text label.<br><br>Args:<br> &nbsp; &nbsp;theme_type (ThemeType): The theme to apply.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-_get_text_color">
                                     <code>def _get_text_color(self: Any) -> Tuple[int, int, int]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the current text color.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color tuple for the text.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render the text label.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-imagelabel">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     ImageLabel
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">UI element for displaying images.</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, image_path: str, width: Optional[int], height: Optional[int], root_point: Tuple[float, float]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize an image label element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;image_path (str): Path to the image file.<br> &nbsp; &nbsp;width (Optional[int]): Width of the image (None for original size).<br> &nbsp; &nbsp;height (Optional[int]): Height of the image (None for original size).<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagelabel-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, image_path: str, width: Optional[int], height: Optional[int], root_point: Tuple[float, float], element_id: Optional[str]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagelabel-_load_image">
                                     <code>def _load_image(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Load and prepare the image.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagelabel-set_image">
                                     <code>def set_image(self: Any, image_path: str) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Change the displayed image.<br><br>Args:<br> &nbsp; &nbsp;image_path (str): Path to the new image file.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagelabel-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render the image label.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-button">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     Button
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Interactive button element that responds to clicks.</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, text: str, font_size: int, font_name: Optional[str], root_point: Tuple[float, float], theme: ThemeType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a button element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the button in pixels.<br> &nbsp; &nbsp;height (int): Height of the button in pixels.<br> &nbsp; &nbsp;text (str): Text to display on the button.<br> &nbsp; &nbsp;font_size (int): Size of the font in pixels.<br> &nbsp; &nbsp;font_name (Optional[str]): Path to font file or None for default font.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for button appearance.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, text: str, font_size: int, font_name: Optional[str], root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-font">
                                     <code>def font(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the font object (lazy loading).</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-set_on_click">
                                     <code>def set_on_click(self: Any, callback: Callable) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set the callback function for click events.<br><br>Args:<br> &nbsp; &nbsp;callback (Callable): Function to call when button is clicked.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-set_theme">
                                     <code>def set_theme(self: Any, theme_type: ThemeType) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set the theme for this button.<br><br>Args:<br> &nbsp; &nbsp;theme_type (ThemeType): The theme to apply.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-_get_colors">
                                     <code>def _get_colors(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get colors from the current theme.<br><br>Returns:<br> &nbsp; &nbsp;UITheme: The current theme object.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update button with mouse interaction.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-_get_color_for_state">
                                     <code>def _get_color_for_state(self: Any) -> Tuple[int, int, int]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the appropriate color for the current button state.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color tuple for the current state.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-_get_text_color">
                                     <code>def _get_text_color(self: Any) -> Tuple[int, int, int]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the text color from the current theme.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color tuple for the text.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render the button.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-imagebutton">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     ImageButton
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Interactive button that displays an image instead of text.</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, image_path: str, width: Optional[int], height: Optional[int], root_point: Tuple[float, float], theme: ThemeType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize an image button element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;image_path (str): Path to the image file.<br> &nbsp; &nbsp;width (Optional[int]): Width of the button.<br> &nbsp; &nbsp;height (Optional[int]): Height of the button.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for button states.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagebutton-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, image_path: str, width: Optional[int], height: Optional[int], root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagebutton-_load_image">
                                     <code>def _load_image(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Load the button image.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagebutton-set_on_click">
                                     <code>def set_on_click(self: Any, callback: Callable) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set the callback function for click events.<br><br>Args:<br> &nbsp; &nbsp;callback (Callable): Function to call when button is clicked.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagebutton-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update image button with mouse interaction.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagebutton-_get_overlay_color">
                                     <code>def _get_overlay_color(self: Any) -> Optional[Tuple[int, int, int]]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get overlay color based on button state.<br><br>Returns:<br> &nbsp; &nbsp;Optional[Tuple[int, int, int]]: Overlay color or None for no overlay.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagebutton-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render the image button.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-textbox">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     TextBox
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Interactive text input field - OPTIMIZED</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, text: str, font_size: int, font_name: Optional[str], root_point: Tuple[float, float], theme: ThemeType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a text box element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the text box.<br> &nbsp; &nbsp;height (int): Height of the text box.<br> &nbsp; &nbsp;text (str): Initial text content (acts as placeholder).<br> &nbsp; &nbsp;font_size (int): Size of the font.<br> &nbsp; &nbsp;font_name (Optional[str]): Font to use.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for appearance.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, text: str, font_size: int, font_name: Optional[str], root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-font">
                                     <code>def font(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the font object with lazy loading.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-_update_text_surface">
                                     <code>def _update_text_surface(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update text surface cache when text changes.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-_get_text_color">
                                     <code>def _get_text_color(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get appropriate text color based on state.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-_get_background_color">
                                     <code>def _get_background_color(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get background color based on state.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-set_text">
                                     <code>def set_text(self: Any, text: str) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set the text content.<br><br>Args:<br> &nbsp; &nbsp;text (str): New text content.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update text box with mouse interaction - OPTIMIZED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-handle_key_input">
                                     <code>def handle_key_input(self: Any, event: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Handle keyboard input when focused - OPTIMIZED<br><br>Args:<br> &nbsp; &nbsp;event: Pygame keyboard event.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-_get_cursor_position">
                                     <code>def _get_cursor_position(self: Any, actual_x: int, actual_y: int) -> Tuple[int, int]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Calculate cursor position - OPTIMIZED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render the text box - FIXED</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-progressbar">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     ProgressBar
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Visual progress indicator for loading or health display.</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, min_val: float, max_val: float, value: float, root_point: Tuple[float, float], theme: ThemeType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a progress bar element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the progress bar.<br> &nbsp; &nbsp;height (int): Height of the progress bar.<br> &nbsp; &nbsp;min_val (float): Minimum value.<br> &nbsp; &nbsp;max_val (float): Maximum value.<br> &nbsp; &nbsp;value (float): Current value.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for appearance.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, min_val: float, max_val: float, value: float, root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-set_value">
                                     <code>def set_value(self: Any, value: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set the current progress value.<br><br>Args:<br> &nbsp; &nbsp;value (float): New progress value.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-get_percentage">
                                     <code>def get_percentage(self: Any) -> float</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get progress as percentage.<br><br>Returns:<br> &nbsp; &nbsp;float: Progress percentage (0-100).</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render the progress bar.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-uidraggable">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     UIDraggable
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">UI element that can be dragged around the screen.</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, root_point: Tuple[float, float], theme: ThemeType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a draggable UI element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the element.<br> &nbsp; &nbsp;height (int): Height of the element.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for appearance.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uidraggable-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uidraggable-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update draggable element with mouse interaction.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uidraggable-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render the draggable element.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-uigradient">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     UIGradient
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">UI element with gradient background.</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, colors: List[Tuple[int, int, int]], direction: str, root_point: Tuple[float, float]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a gradient UI element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the element.<br> &nbsp; &nbsp;height (int): Height of the element.<br> &nbsp; &nbsp;colors (List[Tuple[int, int, int]]): List of colors for the gradient.<br> &nbsp; &nbsp;direction (str): Gradient direction (&quot;horizontal&quot; or &quot;vertical&quot;).<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uigradient-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, colors: List[Tuple[int, int, int]], direction: str, root_point: Tuple[float, float], element_id: Optional[str]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uigradient-_generate_gradient">
                                     <code>def _generate_gradient(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Generate the gradient surface.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uigradient-_interpolate_colors">
                                     <code>def _interpolate_colors(self: Any, ratio: float) -> Tuple[int, int, int]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Interpolate between gradient colors.<br><br>Args:<br> &nbsp; &nbsp;ratio (float): Interpolation ratio (0-1).<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: Interpolated color.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uigradient-set_colors">
                                     <code>def set_colors(self: Any, colors: List[Tuple[int, int, int]]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set new gradient colors.<br><br>Args:<br> &nbsp; &nbsp;colors (List[Tuple[int, int, int]]): New gradient colors.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uigradient-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render the gradient element.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-select">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     Select
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Selection element with arrow buttons to cycle through options.</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, options: List[str], font_size: int, font_name: Optional[str], root_point: Tuple[float, float], theme: ThemeType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a select element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the element.<br> &nbsp; &nbsp;height (int): Height of the element.<br> &nbsp; &nbsp;options (List[str]): Available options.<br> &nbsp; &nbsp;font_size (int): Font size.<br> &nbsp; &nbsp;font_name (Optional[str]): Font to use.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for appearance.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, options: List[str], font_size: int, font_name: Optional[str], root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-font">
                                     <code>def font(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the font object.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-next_option">
                                     <code>def next_option(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Select the next option.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-previous_option">
                                     <code>def previous_option(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Select the previous option.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-set_selected_index">
                                     <code>def set_selected_index(self: Any, index: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set selected option by index.<br><br>Args:<br> &nbsp; &nbsp;index (int): Index of option to select.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-set_on_selection_changed">
                                     <code>def set_on_selection_changed(self: Any, callback: Callable[[int, str], None]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set selection change callback.<br><br>Args:<br> &nbsp; &nbsp;callback (Callable): Function called when selection changes.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update select element with mouse interaction.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render the select element.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-switch">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     Switch
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Toggle switch element (like checkbox but with sliding animation).</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, checked: bool, root_point: Tuple[float, float], theme: ThemeType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a switch element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the switch.<br> &nbsp; &nbsp;height (int): Height of the switch.<br> &nbsp; &nbsp;checked (bool): Initial state.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for appearance.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-switch-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, checked: bool, root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-switch-toggle">
                                     <code>def toggle(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Toggle the switch state.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-switch-set_checked">
                                     <code>def set_checked(self: Any, checked: bool) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set the switch state.<br><br>Args:<br> &nbsp; &nbsp;checked (bool): New state.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-switch-set_on_toggle">
                                     <code>def set_on_toggle(self: Any, callback: Callable[[bool], None]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set toggle callback.<br><br>Args:<br> &nbsp; &nbsp;callback (Callable): Function called when switch is toggled.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-switch-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update switch with mouse interaction.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-switch-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render the switch.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-scrollingframe">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     ScrollingFrame
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Container element with scrollable content.</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, content_width: int, content_height: int, root_point: Tuple[float, float], theme: ThemeType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a scrolling frame.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Visible width.<br> &nbsp; &nbsp;height (int): Visible height.<br> &nbsp; &nbsp;content_width (int): Total content width.<br> &nbsp; &nbsp;content_height (int): Total content height.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for appearance.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, content_width: int, content_height: int, root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-handle_scroll">
                                     <code>def handle_scroll(self: Any, scroll_y: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Handle scroll input.<br><br>Args:<br> &nbsp; &nbsp;scroll_y (int): Vertical scroll amount.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render the scrolling frame.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-_draw_horizontal_scrollbar">
                                     <code>def _draw_horizontal_scrollbar(self: Any, renderer: Any, x: int, y: int, theme: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw horizontal scrollbar.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-_draw_vertical_scrollbar">
                                     <code>def _draw_vertical_scrollbar(self: Any, renderer: Any, x: int, y: int, theme: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw vertical scrollbar.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-slider">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     Slider
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Interactive slider for selecting numeric values</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, min_val: float, max_val: float, value: float, root_point: Tuple[float, float], theme: ThemeType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a slider element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the slider track in pixels.<br> &nbsp; &nbsp;height (int): Height of the slider in pixels.<br> &nbsp; &nbsp;min_val (float): Minimum value of the slider.<br> &nbsp; &nbsp;max_val (float): Maximum value of the slider.<br> &nbsp; &nbsp;value (float): Initial value of the slider.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for slider appearance.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-slider-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, min_val: float, max_val: float, value: float, root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-slider-set_theme">
                                     <code>def set_theme(self: Any, theme_type: ThemeType) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set slider theme</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-slider-_get_colors">
                                     <code>def _get_colors(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get colors from current theme</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-slider-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update slider with mouse interaction</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-slider-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         </div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-dropdown">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     Dropdown
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Dropdown menu for selecting from a list of options</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
-                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, options: List[str], font_size: int, font_name: Optional[str], root_point: Tuple[float, float], theme: ThemeType, max_visible_options: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a dropdown menu element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the dropdown in pixels.<br> &nbsp; &nbsp;height (int): Height of the dropdown in pixels.<br> &nbsp; &nbsp;options (List[str]): List of available options.<br> &nbsp; &nbsp;font_size (int): Size of the font in pixels.<br> &nbsp; &nbsp;font_name (Optional[str]): Path to font file or None for default font.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for dropdown appearance.<br> &nbsp; &nbsp;max_visible_options (int): Maximum number of options to show before scrolling.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                <small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, options: List[str], font_size: int, font_name: Optional[str], root_point: Tuple[float, float], theme: ThemeType, max_visible_options: int, element_id: Optional[str]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-font">
                                     <code>def font(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Lazy font loading</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-set_theme">
                                     <code>def set_theme(self: Any, theme_type: ThemeType) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set dropdown theme</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-_get_colors">
                                     <code>def _get_colors(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get colors from current theme</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update dropdown with mouse interaction and scroll support</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-handle_scroll">
                                     <code>def handle_scroll(self: Any, scroll_y: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Handle mouse wheel scrolling</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-_get_visible_options">
                                     <code>def _get_visible_options(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the list of option indices that are currently visible</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-_get_scrollbar_rect">
                                     <code>def _get_scrollbar_rect(self: Any, actual_x: int, actual_y: int) -> Tuple[int, int, int, int]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the scrollbar rectangle</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-add_option">
                                     <code>def add_option(self: Any, option: str) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Add an option to the dropdown</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-remove_option">
                                     <code>def remove_option(self: Any, option: str) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Remove an option from the dropdown</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-set_selected_index">
                                     <code>def set_selected_index(self: Any, index: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set the selected option by index</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-set_on_selection_changed">
                                     <code>def set_on_selection_changed(self: Any, callback: Callable[[int, str], None]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set callback for when selection changes</div></div></div></div></div>
                         </div>
@@ -489,70 +525,70 @@
                                 <div class="docstring-text">layout.py - UI Layout Managers for LunaEngine<br><br>ENGINE PATH:<br>lunaengine -&gt; ui -&gt; layout.py<br><br>DESCRIPTION:<br>This module provides layout management classes that automatically arrange<br>UI elements according to specified rules, simplifying the process of creating<br>structured and responsive user interfaces.<br><br>LIBRARIES USED:<br>- typing: For type hints and type annotations<br><br>MAIN CLASSES:<br><br>1. UILayout:<br> &nbsp; - Base class for all layout managers<br> &nbsp; - Provides common functionality for element management<br> &nbsp; - Handles element addition and removal<br><br>2. VerticalLayout:<br> &nbsp; - Arranges elements vertically with consistent spacing<br> &nbsp; - Automatically positions elements from top to bottom<br><br>3. HorizontalLayout:<br> &nbsp; - Arranges elements horizontally with consistent spacing<br> &nbsp; - Automatically positions elements from left to right<br><br>4. GridLayout:<br> &nbsp; - Arranges elements in a grid pattern with specified columns<br> &nbsp; - Supports custom cell dimensions and spacing<br> &nbsp; - Automatically wraps elements to new rows<br><br>5. JustifiedLayout:<br> &nbsp; - Distributes elements with equal spacing<br> &nbsp; - Supports both horizontal and vertical justification<br> &nbsp; - Fills available space evenly<br><br>This module simplifies UI composition by providing automatic positioning<br>and alignment of elements, reducing manual coordinate calculations.</div>
                             </div>
             <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-uilayout">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     UILayout
                                 </h6>
                 <div class="docstring-content mb-2"><div class="docstring-text">Base class for UI layout managers.</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uilayout-__init__">
                                     <code>def __init__(self: Any, x: int, y: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize a layout manager.<br><br>Args:<br> &nbsp; &nbsp;x (int): Starting X coordinate for the layout.<br> &nbsp; &nbsp;y (int): Starting Y coordinate for the layout.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uilayout-add_element">
                                     <code>def add_element(self: Any, element: UIElement) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Add an element to the layout.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to add to the layout.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uilayout-remove_element">
                                     <code>def remove_element(self: Any, element: UIElement) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Remove an element from the layout.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to remove from the layout.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uilayout-_update_layout">
                                     <code>def _update_layout(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update element positions based on layout rules.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-verticallayout">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     VerticalLayout
                                 </h6>
                 <div class="docstring-content mb-2"><div class="docstring-text">Layout that arranges elements vertically.</div></div><small class="text-muted">Inherits from: UILayout</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-verticallayout-__init__">
                                     <code>def __init__(self: Any, x: int, y: int, spacing: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize a vertical layout.<br><br>Args:<br> &nbsp; &nbsp;x (int): Starting X coordinate.<br> &nbsp; &nbsp;y (int): Starting Y coordinate.<br> &nbsp; &nbsp;spacing (int): Space between elements in pixels.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-verticallayout-_update_layout">
                                     <code>def _update_layout(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Arrange elements vertically with spacing.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-horizontallayout">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     HorizontalLayout
                                 </h6>
                 <div class="docstring-content mb-2"><div class="docstring-text">Layout that arranges elements horizontally.</div></div><small class="text-muted">Inherits from: UILayout</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-horizontallayout-__init__">
                                     <code>def __init__(self: Any, x: int, y: int, spacing: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize a horizontal layout.<br><br>Args:<br> &nbsp; &nbsp;x (int): Starting X coordinate.<br> &nbsp; &nbsp;y (int): Starting Y coordinate.<br> &nbsp; &nbsp;spacing (int): Space between elements in pixels.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-horizontallayout-_update_layout">
                                     <code>def _update_layout(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Arrange elements horizontally with spacing.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-gridlayout">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     GridLayout
                                 </h6>
                 <div class="docstring-content mb-2"><div class="docstring-text">Layout that arranges elements in a grid.</div></div><small class="text-muted">Inherits from: UILayout</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-gridlayout-__init__">
                                     <code>def __init__(self: Any, x: int, y: int, cols: int, cell_width: int, cell_height: int, h_spacing: int, v_spacing: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize a grid layout.<br><br>Args:<br> &nbsp; &nbsp;x (int): Starting X coordinate.<br> &nbsp; &nbsp;y (int): Starting Y coordinate.<br> &nbsp; &nbsp;cols (int): Number of columns in the grid.<br> &nbsp; &nbsp;cell_width (int): Width of each cell.<br> &nbsp; &nbsp;cell_height (int): Height of each cell.<br> &nbsp; &nbsp;h_spacing (int): Horizontal spacing between cells.<br> &nbsp; &nbsp;v_spacing (int): Vertical spacing between cells.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-gridlayout-_update_layout">
                                     <code>def _update_layout(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Arrange elements in a grid pattern.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-justifiedlayout">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     JustifiedLayout
                                 </h6>
                 <div class="docstring-content mb-2"><div class="docstring-text">Layout that justifies elements with equal spacing.</div></div><small class="text-muted">Inherits from: UILayout</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-justifiedlayout-__init__">
                                     <code>def __init__(self: Any, x: int, y: int, justify_x: bool, justify_y: bool) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize a justified layout.<br><br>Args:<br> &nbsp; &nbsp;x (int): Starting X coordinate.<br> &nbsp; &nbsp;y (int): Starting Y coordinate.<br> &nbsp; &nbsp;justify_x (bool): Whether to justify horizontally.<br> &nbsp; &nbsp;justify_y (bool): Whether to justify vertically.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-justifiedlayout-_update_layout">
                                     <code>def _update_layout(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Arrange elements with justified spacing.</div></div></div></div></div>
                         </div>
@@ -568,8 +604,13 @@
                             </h5>
                         </div>
                         <div class="card-body">
-        <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded">
+        
+                            <div class="alert alert-info docstring-content">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <div class="docstring-text">UI Styles System - Visual Style Definitions and State Management<br><br>LOCATION: lunaengine/ui/styles.py<br><br>DESCRIPTION:<br>Provides foundational style definitions and UI state management for visual elements.<br>Defines the basic structure for UI styling with support for different element states<br>(normal, hovered, pressed, disabled) and theme application.<br><br>KEY COMPONENTS:<br>- UIState: Enumeration of possible UI element interaction states<br>- UIStyle: Individual style definition with colors, fonts, and padding<br>- Theme: Complete theme collection with styles for all UI element types<br><br>LIBRARIES USED:<br>- typing: For type hints and dictionary annotations<br>- enum: For UI state enumeration<br><br>USAGE:<br>&gt;&gt;&gt; style = UIStyle()<br>&gt;&gt;&gt; color = style.get_color(UIState.HOVERED)<br>&gt;&gt;&gt; theme = Theme() &nbsp;# Creates default theme with all element styles<br><br>This module serves as the foundation for the more comprehensive theming system<br>in themes.py, providing basic style management capabilities.</div>
+                            </div>
+            <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-uistate">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     UIState
@@ -591,25 +632,25 @@
                                     <code>DISABLED: Any = 'disabled'</code>
                                 </div>
                         </div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-uistyle">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     UIStyle
                                 </h6>
                 <div class="docstring-content mb-2"><div class="docstring-text">Defines the visual style for UI elements.</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uistyle-__init__">
                                     <code>def __init__(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize a UI style with default values.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uistyle-get_color">
                                     <code>def get_color(self: Any, state: UIState) -> Tuple[int, int, int]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the color for a specific UI state.<br><br>Args:<br> &nbsp; &nbsp;state (UIState): The UI state to get color for.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color tuple for the specified state.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-theme">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     Theme
                                 </h6>
                 <div class="docstring-content mb-2"><div class="docstring-text">Collection of styles for different UI elements forming a complete theme.</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-theme-__init__">
                                     <code>def __init__(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize a theme with default styles for all UI elements.</div></div></div></div></div>
                         </div>
@@ -643,7 +684,7 @@
         
                             </div>
     <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-uitheme">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     UITheme
@@ -748,8 +789,12 @@
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>border: Optional[Tuple[int, int, int]] = None</code>
                                 </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>border2: Optional[Tuple[int, int, int]] = None</code>
+                                </div>
                         </div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-themetype">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     ThemeType
@@ -876,6 +921,22 @@
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
+                                    <code>MATRIX: Any = 'matrix'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>BUILDER: Any = 'builder'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>GALAXY_DARK: Any = 'galaxy_dark'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>GALAXY_LIGHT: Any = 'galaxy_light'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
                                     <code>FOREST: Any = 'forest'</code>
                                 </div>
                         
@@ -888,10 +949,6 @@
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
-                                    <code>MATRIX: Any = 'matrix'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
                                     <code>LAVENDER: Any = 'lavender'</code>
                                 </div>
                         
@@ -899,7 +956,7 @@
                                     <code>CHOCOLATE: Any = 'chocolate'</code>
                                 </div>
                         </div></div>
-                            <div class="class-item mb-3 p-3 border rounded">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-thememanager">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     ThemeManager
@@ -913,24 +970,36 @@
                                     <code>_current_theme: ThemeType = ThemeType.DEFAULT</code>
                                 </div>
                         </div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-thememanager-initialize_default_themes">
                                     <code>def initialize_default_themes(cls: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize all complete UI themes</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-thememanager-get_theme_by_name">
                                     <code>def get_theme_by_name(cls: Any, name: str) -> UITheme</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get theme by name string</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-thememanager-get_theme">
                                     <code>def get_theme(cls: Any, theme_type: ThemeType) -> UITheme</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get complete theme by type</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-thememanager-set_theme">
                                     <code>def set_theme(cls: Any, theme_type: ThemeType, theme: UITheme) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set or override a theme</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-thememanager-set_current_theme">
                                     <code>def set_current_theme(cls: Any, theme_type: ThemeType) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set the current default theme</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success">
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-thememanager-get_current_theme">
                                     <code>def get_current_theme(cls: Any) -> ThemeType</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get current default theme</div></div></div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get current default theme</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-thememanager-get_themes">
+                                    <code>def get_themes(cls: Any) -> Dict[ThemeType, UITheme]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get all available themes</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-thememanager-get_theme_types">
+                                    <code>def get_theme_types(cls: Any) -> List[ThemeType]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get all available theme types</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-thememanager-get_theme_names">
+                                    <code>def get_theme_names(cls: Any) -> List[str]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get all available theme names</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-thememanager-get_color">
+                                    <code>def get_color(cls: Any, color_name: color_name_type) -> Tuple[int, int, int]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get a specific color from the current theme</div></div></div></div></div>
                         </div>
                     </div>
                 </div>
@@ -950,5 +1019,65 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
 </body>
 </html>

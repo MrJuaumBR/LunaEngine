@@ -4,7 +4,42 @@ from OpenGL.GL import *
 from OpenGL.GL.shaders import compileProgram, compileShader
 
 class OpenGLRenderer:
+    """
+    OpenGL-based hardware-accelerated renderer for LunaEngine
+    
+    LOCATION: lunaengine/backend/opengl.py
+    
+    DESCRIPTION:
+    Provides high-performance 2D rendering using OpenGL with shader support.
+    Converts pygame surfaces to OpenGL textures and renders them using custom
+    shaders for optimal performance.
+    
+    FEATURES:
+    - Hardware-accelerated 2D rendering
+    - Custom vertex and fragment shaders
+    - Texture-based sprite rendering
+    - Alpha blending and transparency support
+    
+    LIBRARIES USED:
+    - pygame: Surface creation and image processing
+    - OpenGL.GL: Core OpenGL functionality
+    - OpenGL.GL.shaders: Shader compilation and management
+    - numpy: Vertex data and matrix operations
+    
+    USAGE:
+    >>> renderer = OpenGLRenderer(800, 600)
+    >>> renderer.initialize()
+    >>> renderer.draw_surface(sprite_surface, x, y)
+    """
+    
     def __init__(self, width: int, height: int):
+        """
+        Initialize OpenGL renderer with specified dimensions
+        
+        ARGS:
+            width: Screen width in pixels
+            height: Screen height in pixels
+        """
         self.width = width
         self.height = height
         self.program = None
@@ -12,7 +47,7 @@ class OpenGLRenderer:
         self.quad_vbo = None
         
     def initialize(self):
-        """Initialize OpenGL context"""
+        """Initialize OpenGL context and setup shaders"""
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glClearColor(0.1, 0.1, 0.1, 1.0)

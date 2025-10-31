@@ -1,7 +1,35 @@
-import pygame
+"""
+Dynamic Lighting System - Real-time Light Sources and Illumination
+
+LOCATION: lunaengine/graphics/lighting.py
+
+DESCRIPTION:
+Provides a dynamic lighting system that simulates real-time light sources
+with configurable properties. Supports multiple lights, ambient lighting,
+radial gradients, and light accumulation for creating atmospheric scenes.
+
+KEY FEATURES:
+- Multiple concurrent light sources with individual properties
+- Configurable color, intensity, and radius for each light
+- Ambient lighting control for base scene illumination
+- Radial gradient light falloff for realistic lighting
+- Light accumulation with additive blending
+
+LIBRARIES USED:
+- pygame: Surface creation, alpha blending, and rendering operations
+- numpy: Mathematical calculations for light distribution
+- math: Distance calculations and geometric operations
+- typing: Type annotations for coordinates and colors
+
+USAGE:
+>>> light_system = LightSystem(800, 600)
+>>> light = Light(100, 100, 150, (255, 200, 100), 0.8)
+>>> light_system.add_light(light)
+>>> lit_surface = light_system.calculate_lighting(original_surface)
+"""
+import pygame, math
 import numpy as np
 from typing import List, Tuple
-import math
 
 class Light:
     def __init__(self, x: float, y: float, radius: float, color: Tuple[int, int, int] = (255, 255, 255), intensity: float = 1.0):
