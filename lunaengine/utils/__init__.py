@@ -25,4 +25,9 @@ This module provides the foundational utilities that enable efficient
 game development, performance optimization, and resource management.
 """
 
-__all__ = []
+from .image_converter import ImageConverter, EmbeddedImage
+
+__all__ = [
+    "ImageConverter",
+    "EmbeddedImage",
+]

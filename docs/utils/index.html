@@ -77,7 +77,7 @@
         
                             <div class="alert alert-info docstring-content">
                                 <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Image Converter - Embedded Image Management and Conversion System<br><br>LOCATION: lunaengine/utils/image_converter.py<br><br>DESCRIPTION:<br>Provides comprehensive image conversion and embedding capabilities for<br>including images directly in Python code. Supports multiple encoding<br>methods and allows games to be distributed as single files without<br>external image dependencies.<br><br>KEY FEATURES:<br>- Multiple encoding methods (pixel array, base64, compressed)<br>- Automatic image resizing with aspect ratio preservation<br>- Embedded image reconstruction without external dependencies<br>- Alpha channel support for transparent images<br>- Fallback mechanisms for robust error handling<br><br>LIBRARIES USED:<br>- pygame: Image loading, surface manipulation, and pixel operations<br>- base64: Data encoding for compact image storage<br>- zlib: Image compression for reduced code size<br>- numpy: Optional performance optimizations<br>- typing: Type hints for image parameters and return values<br><br>USAGE:<br>&gt;&gt;&gt; converter = ImageConverter()<br>&gt;&gt;&gt; python_code = converter.image_to_python_code(&quot;sprite.png&quot;, &quot;sprite_data&quot;)<br>&gt;&gt;&gt; embedded_image = EmbeddedImage(sprite_data)<br>&gt;&gt;&gt; embedded_image.draw(renderer, 100, 100)</div>
+                                <div class="docstring-text">Image Converter - Embedded Image Management and Conversion System<br>LOCATION: lunaengine/utils/image_converter.py<br>DESCRIPTION: Comprehensive image conversion and embedding system</div>
                             </div>
             <h6>Classes:</h6>
                             <div class="class-item mb-3 p-3 border rounded" id="class-imageconverter">
@@ -87,29 +87,29 @@
                                 </h6>
                 <div class="docstring-content mb-2"><div class="docstring-text">Converts images to Python code for embedding in games<br>Uses Pygame for image loading - NO PILLOW REQUIRED</div></div><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-image_to_python_code">
-                                    <code>def image_to_python_code(image_path: str, output_var_name: str, max_size: Optional[Tuple[int, int]], method: str) -> str</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Convert an image to Python code</div></div></div>
+                                    <code>def image_to_python_code(image_path: str, output_var_name: str, max_size: Optional[Tuple[int, int]], method: str, quality: float) -> str</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Convert an image to Python code with quality compression<br><br>Args:<br> &nbsp; &nbsp;image_path: Path to the image file<br> &nbsp; &nbsp;output_var_name: Name for the output variable<br> &nbsp; &nbsp;max_size: Maximum dimensions (width, height)<br> &nbsp; &nbsp;method: Conversion method (&#x27;pixel_array&#x27;, &#x27;base64&#x27;, &#x27;compressed&#x27;)<br> &nbsp; &nbsp;quality: Image quality (1.0 = original, 0.5 = half size, 0.25 = quarter size)</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-_resize_surface">
-                                    <code>def _resize_surface(surface: pygame.Surface, max_size: Tuple[int, int]) -> pygame.Surface</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Resize surface while maintaining aspect ratio</div></div></div>
+                                    <code>def _resize_surface(surface: pygame.Surface, target_size: Tuple[int, int]) -> pygame.Surface</code>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-_to_pixel_array">
                                     <code>def _to_pixel_array(surface: pygame.Surface, width: int, height: int, var_name: str) -> str</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Convert to Python pixel array code - FIXED COLOR BUG</div></div></div>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-_to_base64">
                                     <code>def _to_base64(surface: pygame.Surface, width: int, height: int, var_name: str) -> str</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Convert to base64 encoded string</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-_to_compressed">
-                                    <code>def _to_compressed(surface: pygame.Surface, width: int, height: int, var_name: str) -> str</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Convert to compressed base64 string</div></div></div>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-_to_compressed_optimized">
+                                    <code>def _to_compressed_optimized(surface: pygame.Surface, width: int, height: int, var_name: str) -> str</code>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-create_image_from_code">
                                     <code>def create_image_from_code(image_data: dict) -> pygame.Surface</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Create a pygame Surface from converted image data</div></div></div>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-_from_pixel_array">
                                     <code>def _from_pixel_array(image_data: dict) -> pygame.Surface</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Create surface from pixel array - FIXED COLOR BUG</div></div></div>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-_from_encoded_data">
                                     <code>def _from_encoded_data(image_data: dict) -> pygame.Surface</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Create surface from encoded data</div></div></div></div></div>
+                        </div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-embeddedimage">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -121,7 +121,7 @@
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-embeddedimage-surface">
                                     <code>def surface(self: Any) -> pygame.Surface</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the pygame Surface (lazy loading)</div></div></div>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-embeddedimage-width">
                                     <code>def width(self: Any) -> int</code>
                         </div>
@@ -130,7 +130,7 @@
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-embeddedimage-draw">
                                     <code>def draw(self: Any, renderer: Any, x: int, y: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw the image using a renderer</div></div></div></div></div>
+                        </div></div></div>
                         </div>
                     </div>
                 </div>

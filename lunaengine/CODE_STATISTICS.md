@@ -3,10 +3,10 @@
 ## Overview
 
 - **Total Files**: 28
-- **Total Lines**: 7193
-- **Code Lines**: 4041
-- **Comment Lines**: 1835
-- **Blank Lines**: 1317
+- **Total Lines**: 7454
+- **Code Lines**: 4274
+- **Comment Lines**: 1827
+- **Blank Lines**: 1353
 
 ## Theme Statistics
 
@@ -14,7 +14,7 @@
 
 ## Code Density
 
-- **Code Density**: 56.2%
+- **Code Density**: 57.3%
 - Balanced code and comments
 
 ## Project Structure
@@ -82,16 +82,16 @@
 |------|------------|------|----------|-------|-----------|
 | `ui\elements.py` | 1841 | 1061 | 418 | 362 | 71.8 |
 | `ui\themes.py` | 1532 | 1179 | 115 | 238 | 56.0 |
+| `graphics\particles.py` | 466 | 312 | 88 | 66 | 16.2 |
 | `core\engine.py` | 425 | 193 | 150 | 82 | 16.0 |
 | `tools\code_stats.py` | 369 | 249 | 55 | 65 | 15.1 |
 | `graphics\spritesheet.py` | 362 | 135 | 157 | 70 | 13.3 |
 | `tools\image_conversion_tool.py` | 308 | 195 | 51 | 62 | 12.7 |
-| `utils\image_converter.py` | 304 | 174 | 77 | 53 | 11.4 |
 | `utils\performance.py` | 252 | 144 | 60 | 48 | 9.1 |
+| `utils\image_converter.py` | 249 | 177 | 24 | 48 | 9.4 |
 | `ui\layout.py` | 213 | 82 | 91 | 40 | 7.2 |
 | `backend\opengl.py` | 198 | 103 | 58 | 37 | 7.1 |
 | `core\scene.py` | 172 | 40 | 93 | 39 | 5.4 |
-| `graphics\particles.py` | 155 | 86 | 43 | 26 | 5.5 |
 | `core\window.py` | 124 | 35 | 67 | 22 | 3.9 |
 | `backend\pygame_backend.py` | 123 | 31 | 70 | 22 | 3.9 |
 | `CODE_STATISTICS.md` | 110 | 88 | 8 | 14 | 3.3 |
@@ -103,7 +103,7 @@
 | `ui\__init__.py` | 56 | 17 | 26 | 13 | 1.9 |
 | `utils\math_utils.py` | 55 | 16 | 29 | 10 | 2.0 |
 | `graphics\__init__.py` | 33 | 5 | 21 | 7 | 1.1 |
-| `utils\__init__.py` | 28 | 1 | 21 | 6 | 1.0 |
+| `utils\__init__.py` | 33 | 5 | 21 | 7 | 1.1 |
 | `core\__init__.py` | 27 | 6 | 15 | 6 | 0.7 |
 | `backend\__init__.py` | 19 | 1 | 13 | 5 | 0.6 |
 | `__init__.py` | 14 | 8 | 3 | 3 | 0.3 |

@@ -4,8 +4,26 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lunaengine"
-dynamic = ["version"]
+version = "0.1.0"  # Removemos 'dynamic = ["version"]' e definimos diretamente
 description = "A modern 2D game engine with advanced UI and graphics"
+authors = [
+    {name = "MrJuaum"},
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+keywords = ["game", "engine", "2d", "graphics", "pygame"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
 dependencies = [
     "pygame>=2.5.0",
     "numpy>=1.21.0",
@@ -13,5 +31,18 @@ dependencies = [
     "PyOpenGL-accelerate>=3.1.0",
 ]
 
+[project.urls]
+Homepage = "https://mrjuaumbr.github.io/lunaengine/"
+Repository = "https://github.com/MrJuaumBR/lunaengine"
+"Issue Tracker" = "https://github.com/MrJuaumBR/lunaengine/issues"
+
 [project.optional-dependencies]
-dev = ["pytest", "black", "flake8"]
+dev = [
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "pytest>=7.0.0",
+    "setuptools>=65.0.0", 
+    "wheel>=0.37.0",
+    "twine>=4.0.0",
+    "build>=0.10.0"
+]

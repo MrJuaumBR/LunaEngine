@@ -24,7 +24,7 @@
       "description": "Graphics and rendering - Sprites, Lighting, Particles",
       "link": "graphics/index.html",
       "files_count": 4,
-      "classes_count": 8,
+      "classes_count": 10,
       "functions_count": 0
     },
     {
@@ -363,30 +363,48 @@
       "element_id": "class-lightsystem"
     },
     {
-      "name": "Particle",
+      "name": "ParticleType",
       "module": "graphics",
       "file": "particles.py",
-      "description": "No documentation",
-      "link": "graphics/index.html#class-particle",
-      "methods_count": 3,
-      "element_id": "class-particle"
+      "description": "Built-in particle types",
+      "link": "graphics/index.html#class-particletype",
+      "methods_count": 0,
+      "element_id": "class-particletype"
     },
     {
-      "name": "ParticleEmitter",
+      "name": "ExitPoint",
       "module": "graphics",
       "file": "particles.py",
-      "description": "No documentation",
-      "link": "graphics/index.html#class-particleemitter",
-      "methods_count": 4,
-      "element_id": "class-particleemitter"
+      "description": "Emission exit points for particles",
+      "link": "graphics/index.html#class-exitpoint",
+      "methods_count": 0,
+      "element_id": "class-exitpoint"
+    },
+    {
+      "name": "PhysicsType",
+      "module": "graphics",
+      "file": "particles.py",
+      "description": "Physics simulation types",
+      "link": "graphics/index.html#class-physicstype",
+      "methods_count": 0,
+      "element_id": "class-physicstype"
+    },
+    {
+      "name": "ParticleConfig",
+      "module": "graphics",
+      "file": "particles.py",
+      "description": "Configuration for particle behavior and appearance",
+      "link": "graphics/index.html#class-particleconfig",
+      "methods_count": 0,
+      "element_id": "class-particleconfig"
     },
     {
       "name": "ParticleSystem",
       "module": "graphics",
       "file": "particles.py",
-      "description": "No documentation",
+      "description": "Optimized particle system with support for custom particles",
       "link": "graphics/index.html#class-particlesystem",
-      "methods_count": 5,
+      "methods_count": 15,
       "element_id": "class-particlesystem"
     },
     {
@@ -2150,111 +2168,138 @@
     },
     {
       "name": "__init__",
-      "class": "Particle",
-      "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/index.html#method-particle-__init__",
-      "is_method": true,
-      "element_id": "method-particle-__init__"
-    },
-    {
-      "name": "update",
-      "class": "Particle",
-      "module": "graphics",
-      "description": "Update particle position and state",
-      "link": "graphics/index.html#method-particle-update",
-      "is_method": true,
-      "element_id": "method-particle-update"
-    },
-    {
-      "name": "is_alive",
-      "class": "Particle",
-      "module": "graphics",
-      "description": "Check if particle is still alive",
-      "link": "graphics/index.html#method-particle-is_alive",
-      "is_method": true,
-      "element_id": "method-particle-is_alive"
-    },
-    {
-      "name": "__init__",
-      "class": "ParticleEmitter",
-      "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/index.html#method-particleemitter-__init__",
-      "is_method": true,
-      "element_id": "method-particleemitter-__init__"
-    },
-    {
-      "name": "update",
-      "class": "ParticleEmitter",
-      "module": "graphics",
-      "description": "Update emitter and all particles",
-      "link": "graphics/index.html#method-particleemitter-update",
-      "is_method": true,
-      "element_id": "method-particleemitter-update"
-    },
-    {
-      "name": "emit_particle",
-      "class": "ParticleEmitter",
-      "module": "graphics",
-      "description": "Emit a new particle",
-      "link": "graphics/index.html#method-particleemitter-emit_particle",
-      "is_method": true,
-      "element_id": "method-particleemitter-emit_particle"
-    },
-    {
-      "name": "draw",
-      "class": "ParticleEmitter",
-      "module": "graphics",
-      "description": "Draw all particles",
-      "link": "graphics/index.html#method-particleemitter-draw",
-      "is_method": true,
-      "element_id": "method-particleemitter-draw"
-    },
-    {
-      "name": "__init__",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "No documentation",
+      "description": "Initialize the particle system",
       "link": "graphics/index.html#method-particlesystem-__init__",
       "is_method": true,
       "element_id": "method-particlesystem-__init__"
     },
     {
-      "name": "add_emitter",
+      "name": "_init_arrays",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Add an emitter to the system",
-      "link": "graphics/index.html#method-particlesystem-add_emitter",
+      "description": "Initialize NumPy arrays for particle data storage",
+      "link": "graphics/index.html#method-particlesystem-_init_arrays",
       "is_method": true,
-      "element_id": "method-particlesystem-add_emitter"
+      "element_id": "method-particlesystem-_init_arrays"
     },
     {
-      "name": "remove_emitter",
+      "name": "register_custom_particle",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Remove an emitter",
-      "link": "graphics/index.html#method-particlesystem-remove_emitter",
+      "description": "Register a custom particle type for user-defined effects",
+      "link": "graphics/index.html#method-particlesystem-register_custom_particle",
       "is_method": true,
-      "element_id": "method-particlesystem-remove_emitter"
+      "element_id": "method-particlesystem-register_custom_particle"
+    },
+    {
+      "name": "get_custom_particle",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Get configuration for a custom particle",
+      "link": "graphics/index.html#method-particlesystem-get_custom_particle",
+      "is_method": true,
+      "element_id": "method-particlesystem-get_custom_particle"
+    },
+    {
+      "name": "emit",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Emit particles from specified position with given parameters",
+      "link": "graphics/index.html#method-particlesystem-emit",
+      "is_method": true,
+      "element_id": "method-particlesystem-emit"
+    },
+    {
+      "name": "_resolve_particle_config",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Resolve particle configuration from various sources",
+      "link": "graphics/index.html#method-particlesystem-_resolve_particle_config",
+      "is_method": true,
+      "element_id": "method-particlesystem-_resolve_particle_config"
+    },
+    {
+      "name": "_get_exit_position",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Calculate initial position based on exit point",
+      "link": "graphics/index.html#method-particlesystem-_get_exit_position",
+      "is_method": true,
+      "element_id": "method-particlesystem-_get_exit_position"
+    },
+    {
+      "name": "_get_initial_velocity",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Calculate initial velocity vector with spread",
+      "link": "graphics/index.html#method-particlesystem-_get_initial_velocity",
+      "is_method": true,
+      "element_id": "method-particlesystem-_get_initial_velocity"
+    },
+    {
+      "name": "_setup_particle_properties",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Setup all properties for a new particle",
+      "link": "graphics/index.html#method-particlesystem-_setup_particle_properties",
+      "is_method": true,
+      "element_id": "method-particlesystem-_setup_particle_properties"
     },
     {
       "name": "update",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Update all emitters",
+      "description": "Update all active particles",
       "link": "graphics/index.html#method-particlesystem-update",
       "is_method": true,
       "element_id": "method-particlesystem-update"
     },
     {
-      "name": "draw",
+      "name": "_update_physics",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Draw all particles from all emitters",
-      "link": "graphics/index.html#method-particlesystem-draw",
+      "description": "Update physics using vectorized NumPy operations",
+      "link": "graphics/index.html#method-particlesystem-_update_physics",
       "is_method": true,
-      "element_id": "method-particlesystem-draw"
+      "element_id": "method-particlesystem-_update_physics"
+    },
+    {
+      "name": "_update_properties",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Update particle properties using vectorized operations",
+      "link": "graphics/index.html#method-particlesystem-_update_properties",
+      "is_method": true,
+      "element_id": "method-particlesystem-_update_properties"
+    },
+    {
+      "name": "render",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Render all active particles to the target surface",
+      "link": "graphics/index.html#method-particlesystem-render",
+      "is_method": true,
+      "element_id": "method-particlesystem-render"
+    },
+    {
+      "name": "clear",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Clear all particles and reset the system",
+      "link": "graphics/index.html#method-particlesystem-clear",
+      "is_method": true,
+      "element_id": "method-particlesystem-clear"
+    },
+    {
+      "name": "get_stats",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Get system statistics",
+      "link": "graphics/index.html#method-particlesystem-get_stats",
+      "is_method": true,
+      "element_id": "method-particlesystem-get_stats"
     },
     {
       "name": "__init__",
@@ -2449,7 +2494,7 @@
       "name": "image_to_python_code",
       "class": "ImageConverter",
       "module": "utils",
-      "description": "Convert an image to Python code",
+      "description": "Convert an image to Python code with quality compression<br><br>Args:<br> &nbsp; &nbsp;image_path: Path to the image file<br> &nbsp; &nbsp;output_var_name: Name for the output variable<br> &nbsp; &nbsp;max_size: Maximum dimensions (width, height)<br> &nbsp; &nbsp;method: Conversion method (&#x27;pixel_array&#x27;, &#x27;base64&#x27;, &#x27;compressed&#x27;)<br> &nbsp; &nbsp;quality: Image quality (1.0 = original, 0.5 = half size, 0.25 = quarter size)",
       "link": "utils/index.html#method-imageconverter-image_to_python_code",
       "is_method": true,
       "element_id": "method-imageconverter-image_to_python_code"
@@ -2458,7 +2503,7 @@
       "name": "_resize_surface",
       "class": "ImageConverter",
       "module": "utils",
-      "description": "Resize surface while maintaining aspect ratio",
+      "description": "No documentation",
       "link": "utils/index.html#method-imageconverter-_resize_surface",
       "is_method": true,
       "element_id": "method-imageconverter-_resize_surface"
@@ -2467,7 +2512,7 @@
       "name": "_to_pixel_array",
       "class": "ImageConverter",
       "module": "utils",
-      "description": "Convert to Python pixel array code - FIXED COLOR BUG",
+      "description": "No documentation",
       "link": "utils/index.html#method-imageconverter-_to_pixel_array",
       "is_method": true,
       "element_id": "method-imageconverter-_to_pixel_array"
@@ -2476,25 +2521,25 @@
       "name": "_to_base64",
       "class": "ImageConverter",
       "module": "utils",
-      "description": "Convert to base64 encoded string",
+      "description": "No documentation",
       "link": "utils/index.html#method-imageconverter-_to_base64",
       "is_method": true,
       "element_id": "method-imageconverter-_to_base64"
     },
     {
-      "name": "_to_compressed",
+      "name": "_to_compressed_optimized",
       "class": "ImageConverter",
       "module": "utils",
-      "description": "Convert to compressed base64 string",
-      "link": "utils/index.html#method-imageconverter-_to_compressed",
+      "description": "No documentation",
+      "link": "utils/index.html#method-imageconverter-_to_compressed_optimized",
       "is_method": true,
-      "element_id": "method-imageconverter-_to_compressed"
+      "element_id": "method-imageconverter-_to_compressed_optimized"
     },
     {
       "name": "create_image_from_code",
       "class": "ImageConverter",
       "module": "utils",
-      "description": "Create a pygame Surface from converted image data",
+      "description": "No documentation",
       "link": "utils/index.html#method-imageconverter-create_image_from_code",
       "is_method": true,
       "element_id": "method-imageconverter-create_image_from_code"
@@ -2503,7 +2548,7 @@
       "name": "_from_pixel_array",
       "class": "ImageConverter",
       "module": "utils",
-      "description": "Create surface from pixel array - FIXED COLOR BUG",
+      "description": "No documentation",
       "link": "utils/index.html#method-imageconverter-_from_pixel_array",
       "is_method": true,
       "element_id": "method-imageconverter-_from_pixel_array"
@@ -2512,7 +2557,7 @@
       "name": "_from_encoded_data",
       "class": "ImageConverter",
       "module": "utils",
-      "description": "Create surface from encoded data",
+      "description": "No documentation",
       "link": "utils/index.html#method-imageconverter-_from_encoded_data",
       "is_method": true,
       "element_id": "method-imageconverter-_from_encoded_data"
@@ -2530,7 +2575,7 @@
       "name": "surface",
       "class": "EmbeddedImage",
       "module": "utils",
-      "description": "Get the pygame Surface (lazy loading)",
+      "description": "No documentation",
       "link": "utils/index.html#method-embeddedimage-surface",
       "is_method": true,
       "element_id": "method-embeddedimage-surface"
@@ -2557,7 +2602,7 @@
       "name": "draw",
       "class": "EmbeddedImage",
       "module": "utils",
-      "description": "Draw the image using a renderer",
+      "description": "No documentation",
       "link": "utils/index.html#method-embeddedimage-draw",
       "is_method": true,
       "element_id": "method-embeddedimage-draw"
@@ -2995,7 +3040,7 @@
       "element_id": "method-codestatistics-print_statistics"
     }
   ],
-  "last_updated": "2025-10-31T15:35:16.865423",
+  "last_updated": "2025-10-31T18:43:25.499077",
   "pages": [
     {
       "name": "Quick Start",

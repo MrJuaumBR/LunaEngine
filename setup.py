@@ -12,9 +12,8 @@ setup(
         "PyOpenGL-accelerate>=3.1.0",
     ],
     python_requires=">=3.8",
-    author="Your Name",
-    author_email="your.email@example.com",
-    url="https://github.com/yourusername/lunaengine",
+    author="MrJuaum",
+    url="https://github.com/MrJuaumBR/lunaengine",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

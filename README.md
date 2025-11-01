@@ -15,59 +15,10 @@ A modern, optimized 2D game engine built with Python and Pygame featuring advanc
 | **Image Embedding** | Convert assets to Python code | ⚠️ Buggy |
 | **Modular Architecture** | Easy to extend and customize | |
 
-## 📁 Project Structure
-```bash
-LunaEngine/
-├── .vscode # VsCode settings
-├── docs # Docs Ai made *ignore
-├── .github/
-│   └── workflows/
-│       └── docs.yml
-├── examples/ # Demo applications
-│   ├── basic_game.py # Basic UI demonstration
-│   ├── image_conversion_demo.py # Image embedding system
-│   ├── performance_demo.py # Comprehensive performance demo
-│   ├── working.py # ???
-│   ├── snake_demo.py # A Snake game made with the engine
-│   ├── ui_comprehensive_demo.py # All Ui items used :)
-│   └── comprehensive_demo.py # All features combined
-├── lunaengine/ # Engine source code
-│   ├── CODE_STATISTICS.md # Code metrics (generated)
-│   ├── core/ # Core engine systems
-│   │   ├── engine.py # Main engine class
-│   │   ├── window.py # Window management
-│   │   └── renderer.py # Abstract renderer
-│   ├── ui/ # UI system
-│   │   ├── elements.py # UI components (Buttons, Sliders, etc.)
-│   │   ├── layout.py # Layout managers
-│   │   ├── themes.py # All Themes from engine(You can create customs too.)
-│   │   └── styles.py # UI theming system
-│   ├── graphics/ # Graphics subsystems
-│   │   ├── spritesheet.py # Sprite sheet management
-│   │   ├── lighting.py # Dynamic lighting system
-│   │   ├── shadows.py # Shadow rendering
-│   │   └── particles.py # Particle effects
-│   ├── utils/ # Utility modules
-│   │   ├── image_converter.py # Image embedding tools
-│   │   ├── performance.py # Performance monitoring
-│   │   ├── math_utils.py # Math helpers
-│   │   └── threading.py # Thread management
-│   ├── backend/ # Renderer backends
-│   │   ├── opengl.py # OpenGL renderer
-│   │   └── pygame_backend.py # Pygame renderer
-│   └── tools/ # Development tools
-│       ├── code_stats.py # Code statistics analyzer
-│       └── image_conversion_tool.py # Image conversion CLI
-├── generate_docs.py # Generate the docs folder
-├── LICENSE
-├── pyproject.toml
-├── setup.py # Not used
-├── .gitignore
-├── .gitattributes
-└── requirements.txt # Dependencies
-
-```
-
+# Code
+[See this file](./lunaengine/CODE_STATISTICS.md)
+[TestPyPi](https://test.pypi.org/project/lunaengine/)
+[PyPi](https://pypi.org/project/lunaengine/)
 
 ## 🚀 Quick Start
 
@@ -103,3 +54,17 @@ wheel>=0.37.0
 twine>=4.0.0
 ```
 
+## Build
+```bash
+# Make build
+python -m build
+
+# Check files
+twine check dist/* 
+
+# Upload testpypi
+twine upload --config-file .pypirc --repository testpypi dist/*
+
+# Upload PyPi
+twine upload --config-file .pypirc --repository pypi dist/*
+```
