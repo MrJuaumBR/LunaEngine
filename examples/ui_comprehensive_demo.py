@@ -129,7 +129,7 @@ class ComprehensiveUIDemo(Scene):
         self.add_ui_element(draggable)
         
         # Gradient
-        gradient = UIGradient(550, 290, 200, 50, [(255, 0, 0), (0, 255, 0), (0, 0, 255)])
+        gradient = UIGradient(550, 290, 200, 50, [(255, 0, 0), (200, 100, 0), (0, 255, 0), (0, 200, 100), (0, 0, 255)])
         self.add_ui_element(gradient)
         
         # Section 4: Advanced Elements

@@ -26,8 +26,14 @@ dynamic lighting, particle effects, and professional sprite animation.
 """
 
 from .spritesheet import SpriteSheet, Animation
+from .particles import ParticleSystem, ParticleConfig, ParticleType, PhysicsType, ExitPoint
 
 __all__ = [
     "SpriteSheet",
     "Animation",
+    "ParticleSystem",
+    "ParticleConfig",
+    "ParticleType",
+    "PhysicsType",
+    "ExitPoint"
 ]

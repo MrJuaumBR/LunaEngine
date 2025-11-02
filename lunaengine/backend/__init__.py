@@ -16,4 +16,9 @@ LIBRARIES USED:
 - numpy: Numerical operations for graphics math
 """
 
-__all__ = []
+from .opengl import OpenGLRenderer, TextureShader, ParticleShader, ShaderProgram
+from .pygame_backend import PygameRenderer
+
+__all__ = [
+    "OpenGLRenderer", "TextureShader", "ParticleShader", "ShaderProgram", "PygameRenderer"
+]

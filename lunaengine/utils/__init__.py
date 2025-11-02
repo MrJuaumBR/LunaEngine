@@ -27,10 +27,16 @@ game development, performance optimization, and resource management.
 
 from .image_converter import ImageConverter, EmbeddedImage
 from .performance import PerformanceMonitor, GarbageCollector
+from .math_utils import clamp, lerp, normalize_vector, angle_between_points, distance
 
 __all__ = [
     "ImageConverter",
     "EmbeddedImage",
     "PerformanceMonitor",
     "GarbageCollector",
+    "clamp",
+    "lerp",
+    "normalize_vector",
+    "angle_between_points",
+    "distance"
 ]

@@ -77,7 +77,7 @@
         
                             <div class="alert alert-info docstring-content">
                                 <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">OpenGL-based hardware-accelerated renderer for LunaEngine - SIMPLE FIXED VERSION</div>
+                                <div class="docstring-text">OpenGL-based hardware-accelerated renderer for LunaEngine - DYNAMIC PARTICLE BUFFERS</div>
                             </div>
             <h6>Classes:</h6>
                             <div class="class-item mb-3 p-3 border rounded" id="class-shaderprogram">
@@ -85,28 +85,28 @@
                                     <i class="bi bi-box me-2"></i>
                                     ShaderProgram
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Generic shader program for 2D rendering</div></div><div class="mt-3"><strong>Methods:</strong>
+                <div class="docstring-content mb-2"><div class="docstring-text">Generic shader program for 2D rendering with caching</div></div><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shaderprogram-__init__">
                                     <code>def __init__(self: Any, vertex_source: Any, fragment_source: Any) -> None</code>
                         </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shaderprogram-_get_uniform_location">
+                                    <code>def _get_uniform_location(self: Any, name: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get cached uniform location</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shaderprogram-_create_shaders">
                                     <code>def _create_shaders(self: Any, vertex_source: Any, fragment_source: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Compile shaders</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shaderprogram-_setup_geometry">
-                                    <code>def _setup_geometry(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Setup basic quad geometry</div></div></div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Compile shaders with error handling</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-particleshader">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     ParticleShader
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Shader for particle rendering with circles</div></div><small class="text-muted">Inherits from: ShaderProgram</small><div class="mt-3"><strong>Methods:</strong>
+                <div class="docstring-content mb-2"><div class="docstring-text">OPTIMIZED shader for particle rendering with instancing</div></div><small class="text-muted">Inherits from: ShaderProgram</small><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particleshader-__init__">
                                     <code>def __init__(self: Any) -> None</code>
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particleshader-_setup_geometry">
                                     <code>def _setup_geometry(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Setup simple point geometry for particles</div></div></div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Setup instanced particle geometry for maximum performance</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-simpleshader">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -115,7 +115,10 @@
                 <div class="docstring-content mb-2"><div class="docstring-text">Simple shader for solid color rendering</div></div><small class="text-muted">Inherits from: ShaderProgram</small><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-simpleshader-__init__">
                                     <code>def __init__(self: Any) -> None</code>
-                        </div></div></div>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-simpleshader-_setup_geometry">
+                                    <code>def _setup_geometry(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Setup basic quad geometry</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-textureshader">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -124,7 +127,10 @@
                 <div class="docstring-content mb-2"><div class="docstring-text">Shader for textured rendering</div></div><small class="text-muted">Inherits from: ShaderProgram</small><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textureshader-__init__">
                                     <code>def __init__(self: Any) -> None</code>
-                        </div></div></div>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textureshader-_setup_geometry">
+                                    <code>def _setup_geometry(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Setup textured quad geometry</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-openglrenderer">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -149,9 +155,27 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_convert_color">
                                     <code>def _convert_color(self: Any, color: tuple) -> Tuple[float, float, float, float]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Convert color from 0-255 range to 0.0-1.0 range</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_ensure_particle_capacity">
+                                    <code>def _ensure_particle_capacity(self: Any, required_count: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Ensure particle buffers are large enough - DYNAMIC RESIZING</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-enable_scissor">
+                                    <code>def enable_scissor(self: Any, x: int, y: int, width: int, height: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Enable scissor test for clipping region</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-disable_scissor">
+                                    <code>def disable_scissor(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Disable scissor test</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_rect">
                                     <code>def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: tuple, fill: bool, border_width: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a colored rectangle - PROPER BORDER WITH INSET CONTENT</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a colored rectangle</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_line">
+                                    <code>def draw_line(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: tuple, width: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a line between two points with specified width</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_draw_thick_line_optimized">
+                                    <code>def _draw_thick_line_optimized(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: tuple, width: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Optimized method for drawing thick lines</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_surface">
+                                    <code>def draw_surface(self: Any, surface: pygame.Surface, x: int, y: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a pygame surface as texture</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-render_surface">
                                     <code>def render_surface(self: Any, surface: pygame.Surface, x: int, y: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw a pygame surface as texture</div></div></div>
@@ -160,7 +184,7 @@
                         <div class="docstring-content mt-1"><div class="docstring-text">Marker method to identify this as OpenGL renderer</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-render_particles">
                                     <code>def render_particles(self: Any, particle_data: Dict[str, Any]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render particles - SUPER OPTIMIZED VERSION</div></div></div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">HIGHLY OPTIMIZED particle rendering with DYNAMIC BUFFER SIZING</div></div></div></div></div>
                         </div>
                     </div>
                 </div>

@@ -6,6 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lunaengine.core import Scene, LunaEngine # Core Items
 from lunaengine.ui.elements import * # UI Elements
 from lunaengine.backend.pygame_backend import PygameRenderer # Pygame Renderer
+from lunaengine.graphics.particles import ParticleSystem, ParticleConfig, ExitPoint, PhysicsType  # Adicionar importações de partículas
 import pygame
 
 class MainMenuScene(Scene):
@@ -116,10 +117,45 @@ class InGameScene(Scene):
         self.ui_elements.append(self.Ui_ScoreLabel)
         self.ui_elements.append(self.Ui_InfoLabel)
         
+        # Particle system for apple flare effect
+        self.particle_system = ParticleSystem(max_particles=500)
+        self.setup_apple_particles()
+        
         # Register key events
         @engine.on_event(pygame.KEYDOWN)
         def on_key_press(event):
             self.handle_key_press(event.key)
+    
+    def setup_apple_particles(self):
+        """Setup custom particle effects for the apple"""
+        # Apple glow/flare effect
+        apple_glow_config = ParticleConfig(
+            color_start=(255, 50, 50),    # Bright red
+            color_end=(255, 200, 50),     # Orange/yellow
+            size_start=2.0,
+            size_end=2.0,
+            lifetime=1.0,
+            speed=15.0,
+            gravity=0.0,
+            spread=360.0,  # Full circle
+            fade_out=True,
+            grow=True
+        )
+        self.particle_system.register_custom_particle("apple_glow", apple_glow_config)
+        
+        # Apple sparkle effect
+        apple_sparkle_config = ParticleConfig(
+            color_start=(255, 255, 200),  # Bright yellow
+            color_end=(255, 100, 100),    # Red
+            size_start=1.0,
+            size_end=3.0,
+            lifetime=0.8,
+            speed=40.0,
+            gravity=0.0,
+            spread=180.0,  # Half circle
+            fade_out=True
+        )
+        self.particle_system.register_custom_particle("apple_sparkle", apple_sparkle_config)
     
     def reset_game(self):
         """Reset the game to initial state"""
@@ -157,6 +193,33 @@ class InGameScene(Scene):
             if apple_pos not in self.snake:
                 self.apple = apple_pos
                 break
+    
+    def emit_apple_particles(self):
+        """Emit flare particles around the apple"""
+        if hasattr(self, 'apple'):
+            apple_x = self.apple[0] * self.cell_size + self.cell_size // 2
+            apple_y = self.apple[1] * self.cell_size + self.cell_size // 2
+            
+            # Continuous glow effect
+            self.particle_system.emit(
+                x=apple_x, y=apple_y,
+                particle_type="apple_glow",
+                count=2,
+                exit_point=ExitPoint("circular"),
+                physics_type=PhysicsType("topdown"),
+                spread=360.0
+            )
+            
+            # Occasional sparkles (less frequent)
+            if random.random() < 0.3:  # 30% chance each frame
+                self.particle_system.emit(
+                    x=apple_x, y=apple_y,
+                    particle_type="apple_sparkle",
+                    count=1,
+                    exit_point=ExitPoint("circular"),
+                    physics_type=PhysicsType("topdown"),
+                    spread=180.0
+                )
     
     def handle_key_press(self, key):
         """Handle keyboard input"""
@@ -201,6 +264,8 @@ class InGameScene(Scene):
         # Check if snake ate apple
         if new_head == self.apple:
             self.score += 10
+            # Emit burst of particles when apple is eaten
+            self.emit_apple_eaten_particles()
             self.spawn_apple()
             # Increase speed slightly every 3 apples (slower progression)
             if self.score % 30 == 0:
@@ -208,6 +273,31 @@ class InGameScene(Scene):
         else:
             # Remove tail if no apple eaten
             self.snake.pop()
+    
+    def emit_apple_eaten_particles(self):
+        """Emit a special particle burst when apple is eaten"""
+        if hasattr(self, 'apple'):
+            apple_x = self.apple[0] * self.cell_size + self.cell_size // 2
+            apple_y = self.apple[1] * self.cell_size + self.cell_size // 2
+            
+            # Big burst when apple is eaten
+            self.particle_system.emit(
+                x=apple_x, y=apple_y,
+                particle_type="apple_glow",
+                count=15,
+                exit_point=ExitPoint("circular"),
+                physics_type=PhysicsType("topdown"),
+                spread=360.0
+            )
+            
+            self.particle_system.emit(
+                x=apple_x, y=apple_y,
+                particle_type="apple_sparkle",
+                count=10,
+                exit_point=ExitPoint("circular"),
+                physics_type=PhysicsType("topdown"),
+                spread=360.0
+            )
     
     def update(self, dt):
         if self.game_over:
@@ -220,6 +310,13 @@ class InGameScene(Scene):
         if self.move_timer >= move_interval:
             self.update_snake()
             self.move_timer = 0
+        
+        # Update particle system
+        self.particle_system.update(dt)
+        
+        # Emit continuous apple particles (only if game is running)
+        if not self.game_over:
+            self.emit_apple_particles()
         
         # Update UI
         self.Ui_ScoreLabel.set_text(f"Score: {self.score}")
@@ -234,7 +331,7 @@ class InGameScene(Scene):
         renderer.draw_rect(0, 0, 1024, 720, current_theme.background)
         
         # Draw grid (optional, for visual reference)
-        grid_color = tuple(max(0, c - 20) for c in current_theme.background)
+        grid_color = tuple(max(0, c - 20) for c in current_theme.background2)
         for x in range(0, 1024, self.cell_size):
             renderer.draw_line(x, 0, x, 720, grid_color)
         for y in range(0, 720, self.cell_size):
@@ -266,6 +363,10 @@ class InGameScene(Scene):
             border_color = tuple(max(0, c - 40) for c in color)
             renderer.draw_rect(segment_x, segment_y, self.cell_size, self.cell_size, border_color, fill=False)
         
+        # Render particle system
+        if not self.engine.use_opengl:
+            self.particle_system.render(renderer.get_surface())
+        
         # Draw game over screen
         if self.game_over:
             # Semi-transparent overlay
@@ -288,8 +389,8 @@ class InGameScene(Scene):
             element.render(renderer)
             
 def main():
-    engine = LunaEngine("LunaEngine - Snake Demo", 1024, 720)
-    engine.fps = 60
+    engine = LunaEngine("LunaEngine - Snake Demo", 1024, 720, True)
+    engine.fps = 120
     
     engine.add_scene("MainMenu", MainMenuScene)
     engine.add_scene("InGame", InGameScene)

@@ -100,7 +100,7 @@ class PerformanceDemoScene(Scene):
                 renderer.draw_rect(x, y, 8, 8, (100, 100, 200))
 
 def main():
-    engine = LunaEngine("LunaEngine - Performance Demo", 800, 600)
+    engine = LunaEngine("LunaEngine - Performance Demo", 800, 600, True)
     engine.fps = 240
     
     

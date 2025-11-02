@@ -377,16 +377,20 @@ class LunaEngine:
             traceback.print_exc()
 
     def _render_ui_elements_opengl(self):
-        """Render UI elements using OpenGL renderer"""
+        """Render UI elements using OpenGL renderer - SKIP elements with ScrollingFrame parent"""
         if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
             return
         
-        # Sort elements for optimal rendering order
+        # Sort elements for optimal rendering order, skipping ScrollingFrame children
         regular_elements = []
         closed_dropdowns = []
         open_dropdowns = []
         
         for ui_element in self.current_scene.ui_elements:
+            # Skip elements that have ScrollingFrame as parent
+            if hasattr(ui_element, 'parent') and ui_element.parent and isinstance(ui_element.parent, ScrollingFrame):
+                continue
+                
             if isinstance(ui_element, Dropdown):
                 if ui_element.expanded:
                     open_dropdowns.append(ui_element)
@@ -417,7 +421,7 @@ class LunaEngine:
             if self.current_scene:
                 self.current_scene.render(self.renderer)
             
-            # 4. Render UI elements - AGORA AUTOMÁTICO!
+            # 4. Render UI elements
             self._render_ui_elements(self.renderer)
             
             # 5. Finalize Pygame frame
@@ -427,16 +431,21 @@ class LunaEngine:
             print(f"Pygame rendering error: {e}")
 
     def _render_ui_elements(self, renderer):
-        """Render UI elements - AGORA UNIVERSAL!"""
+        """Render UI elements - SKIP elements with ScrollingFrame parent"""
         if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
             return
         
-        # Sort elements for optimal rendering order
+        # Filter out elements that have ScrollingFrame as parent
+        root_elements = []
         regular_elements = []
         closed_dropdowns = []
         open_dropdowns = []
         
         for ui_element in self.current_scene.ui_elements:
+            # Skip elements that have ScrollingFrame as parent (they will be rendered by their parent)
+            if hasattr(ui_element, 'parent') and ui_element.parent and isinstance(ui_element.parent, ScrollingFrame):
+                continue
+                
             if isinstance(ui_element, Dropdown):
                 if ui_element.expanded:
                     open_dropdowns.append(ui_element)
@@ -445,7 +454,7 @@ class LunaEngine:
             else:
                 regular_elements.append(ui_element)
         
-        # Render in correct z-order - the render() method is now smart!
+        # Render in correct z-order
         for ui_element in regular_elements + closed_dropdowns:
             ui_element.render(renderer)
         

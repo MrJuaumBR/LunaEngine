@@ -325,16 +325,16 @@
                         <div class="docstring-content mt-1"><div class="docstring-text">Handle keyboard input when focused - OPTIMIZED<br><br>Args:<br> &nbsp; &nbsp;event: Pygame keyboard event.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-_get_cursor_position">
                                     <code>def _get_cursor_position(self: Any, actual_x: int, actual_y: int) -> Tuple[int, int]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Calculate cursor position - OPTIMIZED</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Calculate cursor position - IMPROVED with bounds checking</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-render_pygame">
                                     <code>def render_pygame(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-render_opengl">
                                     <code>def render_opengl(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend - FIXED cursor visibility</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-_render_text_content">
                                     <code>def _render_text_content(self: Any, renderer: Any, actual_x: int, actual_y: int, theme: Any, opengl: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Helper method to render text content</div></div></div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Helper method to render text content - FIXED subsurface error</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-progressbar">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -407,6 +407,9 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-__init__">
                                     <code>def __init__(self: Any, x: int, y: int, width: int, height: int, options: List[str], font_size: int, font_name: Optional[str], root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
                         </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-_create_arrow_surfaces">
+                                    <code>def _create_arrow_surfaces(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Create arrow surfaces for both backends</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-font">
                                     <code>def font(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the font object.</div></div></div>
@@ -425,12 +428,18 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update select element with mouse interaction.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-_render_select_content">
                                     <code>def _render_select_content(self: Any, renderer: Any, actual_x: int, actual_y: int, theme: Any, opengl: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Helper method to render select content</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-_draw_arrow_polygon">
-                                    <code>def _draw_arrow_polygon(self: Any, renderer: Any, points: Any, color: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw arrow polygon compatible with both Pygame and OpenGL.</div></div></div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Helper method to render select content for both backends</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-_draw_fallback_arrows">
+                                    <code>def _draw_fallback_arrows(self: Any, renderer: Any, actual_x: int, actual_y: int, arrow_color: Any, opengl: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Fallback arrow drawing method</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-switch">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -470,21 +479,30 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-__init__">
                                     <code>def __init__(self: Any, x: int, y: int, width: int, height: int, content_width: int, content_height: int, root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
                         </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-_update_with_mouse">
+                                    <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update scrolling frame with proper scroll handling</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-handle_scroll">
                                     <code>def handle_scroll(self: Any, scroll_y: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Handle scroll input.<br><br>Args:<br> &nbsp; &nbsp;scroll_y (int): Vertical scroll amount.</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Handle mouse wheel scrolling</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-render_pygame">
                                     <code>def render_pygame(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend - FIXED scroll application</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-render_opengl">
                                     <code>def render_opengl(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend - FIXED clipping</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-_get_vertical_scrollbar_rect">
+                                    <code>def _get_vertical_scrollbar_rect(self: Any, x: int, y: int) -> Tuple[int, int, int, int]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the vertical scrollbar rectangle - FIXED limits</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-_get_horizontal_scrollbar_rect">
+                                    <code>def _get_horizontal_scrollbar_rect(self: Any, x: int, y: int) -> Tuple[int, int, int, int]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the horizontal scrollbar rectangle - FIXED limits</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-_draw_horizontal_scrollbar">
                                     <code>def _draw_horizontal_scrollbar(self: Any, renderer: Any, x: int, y: int, theme: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw horizontal scrollbar.</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw horizontal scrollbar - FIXED limits</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-_draw_vertical_scrollbar">
                                     <code>def _draw_vertical_scrollbar(self: Any, renderer: Any, x: int, y: int, theme: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw vertical scrollbar.</div></div></div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw vertical scrollbar - FIXED limits</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-slider">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>

@@ -998,14 +998,30 @@ class TextBox(UIElement):
             self._needs_redraw = True
     
     def _get_cursor_position(self, actual_x: int, actual_y: int) -> Tuple[int, int]:
-        """Calculate cursor position - OPTIMIZED"""
+        """Calculate cursor position - IMPROVED with bounds checking"""
+        # Default position for empty text or cursor at start
+        base_x = actual_x + 5
+        base_y = actual_y + (self.height - self.font.get_height()) // 2
+        
         if not self.text or self.cursor_pos == 0:
-            return actual_x + 5, actual_y + 5
+            return base_x, base_y
         
         # Only measure text up to cursor position for efficiency
         text_before_cursor = self.text[:self.cursor_pos]
         text_width = self.font.size(text_before_cursor)[0]
-        return actual_x + 5 + text_width, actual_y + 5
+        
+        # Calculate cursor position with scrolling if needed
+        cursor_x = base_x + text_width
+        
+        # Apply scrolling if text is too long
+        if self._text_surface and self._text_rect.width > self.width - 10:
+            clip_width = self.width - 10
+            if text_width > clip_width:
+                # Text needs scrolling - adjust cursor position
+                scroll_offset = text_width - clip_width + 5
+                cursor_x = base_x + text_width - scroll_offset
+        
+        return cursor_x, base_y
     
     def render_pygame(self, renderer):
         """Render using Pygame backend"""
@@ -1037,69 +1053,108 @@ class TextBox(UIElement):
         super().render_pygame(renderer)
     
     def render_opengl(self, renderer):
-        """Render using OpenGL backend"""
+        """Render using OpenGL backend - FIXED cursor visibility"""
         if not self.visible:
             return
         
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
         
-        # Draw background
-        bg_color = self._get_background_color()
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
-        
-        # Draw border
+        # FIRST: Draw border
         if theme.dropdown_border:
             border_color = theme.text_primary if self.focused else theme.dropdown_border
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, fill=False)
         
+        # THEN: Draw background
+        bg_color = self._get_background_color()
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        
         # Draw text
         self._render_text_content(renderer, actual_x, actual_y, theme, opengl=True)
         
-        # Draw cursor
         if self.focused and self.cursor_visible:
             cursor_x, cursor_y = self._get_cursor_position(actual_x, actual_y)
-            cursor_height = self.height - 10
-            renderer.draw_rect(cursor_x, cursor_y, 2, cursor_height, theme.dropdown_text)
+            cursor_height = self.font.get_height()
+            cursor_y = actual_y + (self.height - cursor_height) // 2
+            
+            cursor_color = theme.text_primary
+            
+            # FIXED: Ensure cursor is within textbox bounds
+            if cursor_x < actual_x + self.width - 2:  # Leave 2px margin
+                renderer.draw_rect(cursor_x, cursor_y, 5, cursor_height, cursor_color)
         
         self._needs_redraw = False
-        super().render_opengl(renderer)
+        
+        # Render children (important for any child elements)
+        for child in self.children:
+            child.render_opengl(renderer)
     
     def _render_text_content(self, renderer, actual_x: int, actual_y: int, theme, opengl=False):
-        """Helper method to render text content"""
-        if self._text_surface is not None:
-            text_y = actual_y + (self.height - self._text_rect.height) // 2
+        """Helper method to render text content - FIXED subsurface error"""
+        if self._text_surface is None:
+            return
             
-            # Clip text if too long
-            if self._text_rect.width > self.width - 10:
-                clip_width = self.width - 10
-                if self.focused and self.text:
-                    cursor_x = self.font.size(self.text[:self.cursor_pos])[0]
-                    if cursor_x > clip_width:
-                        scroll_offset = cursor_x - clip_width + 10
-                        source_rect = pygame.Rect(scroll_offset, 0, clip_width, self._text_rect.height)
+        text_y = actual_y + (self.height - self._text_rect.height) // 2
+        
+        # Clip text if too long - FIXED: Check bounds before creating subsurface
+        if self._text_rect.width > self.width - 10:
+            clip_width = self.width - 10
+            
+            if self.focused and self.text:
+                # Calculate scroll offset for focused text with cursor
+                cursor_x = self.font.size(self.text[:self.cursor_pos])[0]
+                if cursor_x > clip_width:
+                    scroll_offset = cursor_x - clip_width + 10
+                    # FIXED: Ensure source_rect is within surface bounds
+                    source_rect = pygame.Rect(
+                        max(0, min(scroll_offset, self._text_rect.width - clip_width)),
+                        0,
+                        min(clip_width, self._text_rect.width),
+                        self._text_rect.height
+                    )
+                    if (source_rect.width > 0 and source_rect.height > 0 and 
+                        source_rect.right <= self._text_rect.width and 
+                        source_rect.bottom <= self._text_rect.height):
                         clipped_surface = self._text_surface.subsurface(source_rect)
                         if opengl and hasattr(renderer, 'render_surface'):
                             renderer.render_surface(clipped_surface, actual_x + 5, text_y)
                         else:
                             renderer.draw_surface(clipped_surface, actual_x + 5, text_y)
                     else:
+                        # Fallback: render without clipping if bounds are invalid
                         if opengl and hasattr(renderer, 'render_surface'):
                             renderer.render_surface(self._text_surface, actual_x + 5, text_y)
                         else:
                             renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
                 else:
-                    source_rect = pygame.Rect(0, 0, clip_width, self._text_rect.height)
+                    # Text fits without scrolling
+                    if opengl and hasattr(renderer, 'render_surface'):
+                        renderer.render_surface(self._text_surface, actual_x + 5, text_y)
+                    else:
+                        renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
+            else:
+                # Not focused - just clip from start
+                source_rect = pygame.Rect(0, 0, min(clip_width, self._text_rect.width), self._text_rect.height)
+                if (source_rect.width > 0 and source_rect.height > 0 and 
+                    source_rect.right <= self._text_rect.width and 
+                    source_rect.bottom <= self._text_rect.height):
                     clipped_surface = self._text_surface.subsurface(source_rect)
                     if opengl and hasattr(renderer, 'render_surface'):
                         renderer.render_surface(clipped_surface, actual_x + 5, text_y)
                     else:
                         renderer.draw_surface(clipped_surface, actual_x + 5, text_y)
-            else:
-                if opengl and hasattr(renderer, 'render_surface'):
-                    renderer.render_surface(self._text_surface, actual_x + 5, text_y)
                 else:
-                    renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
+                    # Fallback: render without clipping
+                    if opengl and hasattr(renderer, 'render_surface'):
+                        renderer.render_surface(self._text_surface, actual_x + 5, text_y)
+                    else:
+                        renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
+        else:
+            # Text fits normally
+            if opengl and hasattr(renderer, 'render_surface'):
+                renderer.render_surface(self._text_surface, actual_x + 5, text_y)
+            else:
+                renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
 
 class ProgressBar(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int,
@@ -1170,6 +1225,10 @@ class ProgressBar(UIElement):
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
         
+        # Draw border
+        if theme.border:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
+        
         # Draw background
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.slider_track)
         
@@ -1177,10 +1236,6 @@ class ProgressBar(UIElement):
         progress_width = int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
         if progress_width > 0:
             renderer.draw_rect(actual_x, actual_y, progress_width, self.height, theme.button_normal)
-        
-        # Draw border
-        if theme.border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
         
         # Draw text
         font = pygame.font.Font(None, 12)
@@ -1269,11 +1324,14 @@ class UIDraggable(UIElement):
             color = theme.button_pressed
         elif self.state == UIState.HOVERED:
             color = theme.button_hover
-            
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color)
         
+        # Draw border
         if theme.button_border:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.button_border, fill=False)
+            
+        # Draw background
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color)
+        
         
         super().render_opengl(renderer)
 
@@ -1372,7 +1430,7 @@ class Select(UIElement):
                  options: List[str], font_size: int = 20, font_name: Optional[str] = None,
                  root_point: Tuple[float, float] = (0, 0),
                  theme: ThemeType = None,
-                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+                 element_id: Optional[str] = None):
         super().__init__(x, y, width, height, root_point, element_id)
         self.options = options
         self.selected_index = 0
@@ -1389,6 +1447,23 @@ class Select(UIElement):
         
         # Arrow button dimensions
         self.arrow_width = 20
+        
+        # Pre-create arrow surfaces for consistent rendering
+        self._left_arrow_surface = None
+        self._right_arrow_surface = None
+        self._create_arrow_surfaces()
+        
+    def _create_arrow_surfaces(self):
+        """Create arrow surfaces for both backends"""
+        # Create left arrow surface (points left)
+        self._left_arrow_surface = pygame.Surface((15, 10), pygame.SRCALPHA)
+        left_arrow_points = [(10, 0), (0, 5), (10, 10)]
+        pygame.draw.polygon(self._left_arrow_surface, (255, 255, 255), left_arrow_points)
+        
+        # Create right arrow surface (points right)  
+        self._right_arrow_surface = pygame.Surface((15, 10), pygame.SRCALPHA)
+        right_arrow_points = [(0, 0), (10, 5), (0, 10)]
+        pygame.draw.polygon(self._right_arrow_surface, (255, 255, 255), right_arrow_points)
         
     @property
     def font(self):
@@ -1422,7 +1497,6 @@ class Select(UIElement):
         if 0 <= index < len(self.options):
             self.selected_index = index
     
-    # FIX: Add the missing method
     def set_on_selection_changed(self, callback: Callable[[int, str], None]):
         """
         Set selection change callback.
@@ -1467,27 +1541,96 @@ class Select(UIElement):
             
         super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
     
+    def render_pygame(self, renderer):
+        """Render using Pygame backend"""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Draw background
+        if self.state == UIState.NORMAL:
+            bg_color = theme.dropdown_normal
+        else:
+            bg_color = theme.dropdown_hover
+            
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        
+        # Draw border
+        if theme.dropdown_border:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
+                             theme.dropdown_border, fill=False)
+        
+        # Draw arrows and text
+        self._render_select_content(renderer, actual_x, actual_y, theme, opengl=False)
+        
+        # Render children
+        super().render_pygame(renderer)
+    
+    def render_opengl(self, renderer):
+        """Render using OpenGL backend"""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # FIRST: Draw border
+        if theme.dropdown_border:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
+                            theme.dropdown_border, fill=False, border_width=1)
+        
+        # THEN: Draw background
+        if self.state == UIState.NORMAL:
+            bg_color = theme.dropdown_normal
+        else:
+            bg_color = theme.dropdown_hover
+            
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        
+        # FINALLY: Draw arrows and text
+        self._render_select_content(renderer, actual_x, actual_y, theme, opengl=True)
+        
+        # Render children
+        super().render_opengl(renderer)
+    
     def _render_select_content(self, renderer, actual_x: int, actual_y: int, theme, opengl=False):
-        """Helper method to render select content"""
+        """Helper method to render select content for both backends"""
         arrow_color = theme.dropdown_text
         
-        # Left arrow points
-        left_arrow_points = [
-            (actual_x + self.arrow_width - 5, actual_y + self.height // 2 - 5),
-            (actual_x + 5, actual_y + self.height // 2),
-            (actual_x + self.arrow_width - 5, actual_y + self.height // 2 + 5)
-        ]
+        # Calculate arrow positions
+        left_arrow_x = actual_x + 5
+        left_arrow_y = actual_y + (self.height - 10) // 2
         
-        # Right arrow points
-        right_arrow_points = [
-            (actual_x + self.width - self.arrow_width + 5, actual_y + self.height // 2 - 5),
-            (actual_x + self.width - 5, actual_y + self.height // 2),
-            (actual_x + self.width - self.arrow_width + 5, actual_y + self.height // 2 + 5)
-        ]
+        right_arrow_x = actual_x + self.width - 20
+        right_arrow_y = actual_y + (self.height - 10) // 2
         
-        # Draw arrows using polygon method compatible with both backends
-        self._draw_arrow_polygon(renderer, left_arrow_points, arrow_color)
-        self._draw_arrow_polygon(renderer, right_arrow_points, arrow_color)
+        # Create colored arrow surfaces
+        if self._left_arrow_surface and self._right_arrow_surface:
+            # Create temporary surfaces with the correct theme color
+            left_arrow_colored = self._left_arrow_surface.copy()
+            left_arrow_colored.fill(arrow_color, special_flags=pygame.BLEND_RGBA_MULT)
+            
+            right_arrow_colored = self._right_arrow_surface.copy()
+            right_arrow_colored.fill(arrow_color, special_flags=pygame.BLEND_RGBA_MULT)
+            
+            # Draw arrows using surface rendering (works for both backends)
+            if opengl:
+                if hasattr(renderer, 'render_surface'):
+                    renderer.render_surface(left_arrow_colored, left_arrow_x, left_arrow_y)
+                    renderer.render_surface(right_arrow_colored, right_arrow_x, right_arrow_y)
+                else:
+                    # Fallback for OpenGL renderers without render_surface
+                    renderer.draw_surface(left_arrow_colored, left_arrow_x, left_arrow_y)
+                    renderer.draw_surface(right_arrow_colored, right_arrow_x, right_arrow_y)
+            else:
+                # Pygame backend
+                renderer.draw_surface(left_arrow_colored, left_arrow_x, left_arrow_y)
+                renderer.draw_surface(right_arrow_colored, right_arrow_x, right_arrow_y)
+        else:
+            # Fallback: draw simple triangles if surfaces aren't available
+            self._draw_fallback_arrows(renderer, actual_x, actual_y, arrow_color, opengl)
         
         # Draw selected text
         if self.options:
@@ -1503,37 +1646,40 @@ class Select(UIElement):
             else:
                 renderer.draw_surface(text_surface, text_x, text_y)
     
-    def _draw_arrow_polygon(self, renderer, points, color):
-        """
-        Draw arrow polygon compatible with both Pygame and OpenGL.
-        """
-        # Same implementation as in Dropdown class
-        if hasattr(renderer, 'draw_polygon'):
-            renderer.draw_polygon(points, color)
-        elif hasattr(renderer, 'draw_line'):
-            for i in range(len(points)):
-                start_point = points[i]
-                end_point = points[(i + 1) % len(points)]
-                renderer.draw_line(start_point[0], start_point[1], 
-                                 end_point[0], end_point[1], color, 2)
+    def _draw_fallback_arrows(self, renderer, actual_x: int, actual_y: int, arrow_color, opengl=False):
+        """Fallback arrow drawing method"""
+        # Left arrow points (points left)
+        left_arrow_points = [
+            (actual_x + 15, actual_y + self.height // 2 - 5),
+            (actual_x + 5, actual_y + self.height // 2),
+            (actual_x + 15, actual_y + self.height // 2 + 5)
+        ]
+        
+        # Right arrow points (points right)
+        right_arrow_points = [
+            (actual_x + self.width - 15, actual_y + self.height // 2 - 5),
+            (actual_x + self.width - 5, actual_y + self.height // 2),
+            (actual_x + self.width - 15, actual_y + self.height // 2 + 5)
+        ]
+        
+        if opengl:
+            # For OpenGL, try polygon drawing first
+            if hasattr(renderer, 'draw_polygon'):
+                renderer.draw_polygon(left_arrow_points, arrow_color)
+                renderer.draw_polygon(right_arrow_points, arrow_color)
+            elif hasattr(renderer, 'draw_line'):
+                # Draw as thick lines
+                for points in [left_arrow_points, right_arrow_points]:
+                    for i in range(len(points)):
+                        start_point = points[i]
+                        end_point = points[(i + 1) % len(points)]
+                        renderer.draw_line(start_point[0], start_point[1], 
+                                         end_point[0], end_point[1], arrow_color, 2)
         else:
-            try:
-                arrow_surface = pygame.Surface((20, 10), pygame.SRCALPHA)
-                pygame.draw.polygon(arrow_surface, color, [
-                    (5, 0), (15, 0), (10, 5)
-                ])
-                
-                arrow_x = points[0][0] - 10
-                arrow_y = points[0][1] - 2
-                
-                if hasattr(renderer, 'render_surface'):
-                    renderer.render_surface(arrow_surface, arrow_x, arrow_y)
-                else:
-                    renderer.draw_surface(arrow_surface, arrow_x, arrow_y)
-            except:
-                arrow_rect = (points[0][0] - 5, points[0][1] - 2, 10, 5)
-                renderer.draw_rect(arrow_rect[0], arrow_rect[1], 
-                                 arrow_rect[2], arrow_rect[3], color)
+            # For Pygame, draw directly on surface
+            surface = renderer.get_surface()
+            pygame.draw.polygon(surface, arrow_color, left_arrow_points)
+            pygame.draw.polygon(surface, arrow_color, right_arrow_points)
 
 
 class Switch(UIElement):
@@ -1689,32 +1835,84 @@ class ScrollingFrame(UIElement):
                  content_width: int, content_height: int,
                  root_point: Tuple[float, float] = (0, 0),
                  theme: ThemeType = None,
-                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+                 element_id: Optional[str] = None):
         super().__init__(x, y, width, height, root_point, element_id)
         self.content_width = content_width
         self.content_height = content_height
         self.scroll_x = 0
         self.scroll_y = 0
         self.scrollbar_size = 15
+        self.dragging_vertical = False
+        self.dragging_horizontal = False
+        self.scroll_drag_start = (0, 0)
         
         self.theme_type = theme or ThemeManager.get_current_theme()
 
-    
-    def handle_scroll(self, scroll_y: int):  # MUDANÇA AQUI: removido scroll_x
-        """
-        Handle scroll input.
+    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
+        """Update scrolling frame with proper scroll handling"""
+        if not self.visible or not self.enabled:
+            self.state = UIState.DISABLED
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
         
-        Args:
-            scroll_y (int): Vertical scroll amount.
-        """
+        # Calculate max scroll values
         max_scroll_x = max(0, self.content_width - self.width)
         max_scroll_y = max(0, self.content_height - self.height)
         
-        # MUDANÇA AQUI: removido scroll_x
-        self.scroll_y = max(0, min(max_scroll_y, self.scroll_y - scroll_y * 20))
+        # Handle scrollbar dragging
+        if mouse_pressed:
+            if not (self.dragging_vertical or self.dragging_horizontal):
+                # Check vertical scrollbar
+                if max_scroll_y > 0:
+                    scrollbar_rect = self._get_vertical_scrollbar_rect(actual_x, actual_y)
+                    if (scrollbar_rect[0] <= mouse_pos[0] <= scrollbar_rect[0] + scrollbar_rect[2] and 
+                        scrollbar_rect[1] <= mouse_pos[1] <= scrollbar_rect[1] + scrollbar_rect[3]):
+                        self.dragging_vertical = True
+                        self.scroll_drag_start = (mouse_pos[0], mouse_pos[1])
+                        self.scroll_start_y = self.scroll_y
+                
+                # Check horizontal scrollbar  
+                if max_scroll_x > 0:
+                    scrollbar_rect = self._get_horizontal_scrollbar_rect(actual_x, actual_y)
+                    if (scrollbar_rect[0] <= mouse_pos[0] <= scrollbar_rect[0] + scrollbar_rect[2] and 
+                        scrollbar_rect[1] <= mouse_pos[1] <= scrollbar_rect[1] + scrollbar_rect[3]):
+                        self.dragging_horizontal = True
+                        self.scroll_drag_start = (mouse_pos[0], mouse_pos[1])
+                        self.scroll_start_x = self.scroll_x
+        else:
+            self.dragging_vertical = False
+            self.dragging_horizontal = False
+            
+        # Update scroll position if dragging
+        if self.dragging_vertical and max_scroll_y > 0:
+            drag_delta_y = mouse_pos[1] - self.scroll_drag_start[1]
+            scroll_area_height = self.height - self.scrollbar_size
+            scroll_ratio = drag_delta_y / scroll_area_height
+            self.scroll_y = max(0, min(max_scroll_y, self.scroll_start_y + int(scroll_ratio * max_scroll_y)))
+            
+        if self.dragging_horizontal and max_scroll_x > 0:
+            drag_delta_x = mouse_pos[0] - self.scroll_drag_start[0]
+            scroll_area_width = self.width - self.scrollbar_size
+            scroll_ratio = drag_delta_x / scroll_area_width
+            self.scroll_x = max(0, min(max_scroll_x, self.scroll_start_x + int(scroll_ratio * max_scroll_x)))
+        
+        # Update children with scrolled mouse position for interaction
+        scrolled_mouse_pos = (mouse_pos[0] + self.scroll_x, mouse_pos[1] + self.scroll_y)
+        for child in self.children:
+            child._update_with_mouse(scrolled_mouse_pos, mouse_pressed, dt)
+            
+        self.state = UIState.NORMAL
+    
+    def handle_scroll(self, scroll_y: int):
+        """Handle mouse wheel scrolling"""
+        max_scroll_y = max(0, self.content_height - self.height)
+        self.scroll_y = max(0, min(max_scroll_y, self.scroll_y - scroll_y * 30))
+        max_scroll_x = max(0, self.content_width - self.width)
+        self.scroll_x = max(0, min(max_scroll_x, self.scroll_x - scroll_y * 30))
     
     def render_pygame(self, renderer):
-        """Render using Pygame backend"""
+        """Render using Pygame backend - FIXED scroll application"""
         if not self.visible:
             return
             
@@ -1728,12 +1926,19 @@ class ScrollingFrame(UIElement):
         original_clip = renderer.get_surface().get_clip()
         renderer.get_surface().set_clip(pygame.Rect(actual_x, actual_y, self.width, self.height))
         
-        # Render children with scroll offset
+        # Apply scroll transform by adjusting rendering position
         for child in self.children:
+            # Save original position
             original_x, original_y = child.x, child.y
+            
+            # Apply scroll offset to child position for rendering only
             child.x = original_x - self.scroll_x
             child.y = original_y - self.scroll_y
-            child.render(renderer)
+            
+            # Render child with scrolled position
+            child.render_pygame(renderer)
+            
+            # Restore original position immediately
             child.x, child.y = original_x, original_y
         
         # Restore clipping
@@ -1750,45 +1955,98 @@ class ScrollingFrame(UIElement):
         if theme.border:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
         
-        super().render_pygame(renderer)
-    
+        # super().render_pygame(renderer) - Will render duplicated children
+
     def render_opengl(self, renderer):
-        """Render using OpenGL backend"""
+        """Render using OpenGL backend - FIXED clipping"""
         if not self.visible:
             return
             
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
         
-        # Draw background
+        # FIRST: Draw border
+        if theme.border:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
+        
+        # THEN: Draw background
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.background)
         
-        # Setup clipping for content (OpenGL may handle this differently)
-        # For OpenGL, we rely on the renderer's built-in clipping
+        # Clips content
+        if hasattr(renderer, 'enable_scissor'):
+            # OpenGL scissor uses bottom-left origin, no Y flipping needed
+            renderer.enable_scissor(actual_x, actual_y, self.width, self.height)
         
-        # Render children with scroll offset
+        # Apply scroll transform to children rendering
         for child in self.children:
+            # Save original position
             original_x, original_y = child.x, child.y
+            
+            # Apply scroll offset to child position for rendering only
             child.x = original_x - self.scroll_x
             child.y = original_y - self.scroll_y
-            child.render(renderer)
+            
+            # Render child with scrolled position
+            child.render_opengl(renderer)
+            
+            # Restore original position immediately
             child.x, child.y = original_x, original_y
         
-        # Draw scrollbars if needed
+        # Disable scissor test
+        if hasattr(renderer, 'disable_scissor'):
+            renderer.disable_scissor()
+        
+        # Draw scrollbars on top
         if self.content_width > self.width:
             self._draw_horizontal_scrollbar(renderer, actual_x, actual_y, theme)
         
         if self.content_height > self.height:
             self._draw_vertical_scrollbar(renderer, actual_x, actual_y, theme)
+    
+    def _get_vertical_scrollbar_rect(self, x: int, y: int) -> Tuple[int, int, int, int]:
+        """Get the vertical scrollbar rectangle - FIXED limits"""
+        if self.content_height <= self.height:
+            return (0, 0, 0, 0)
         
-        # Draw border
-        if theme.border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
+        scrollbar_width = self.scrollbar_size
+        scrollbar_height = self.height - (self.scrollbar_size if self.content_width > self.width else 0)
         
-        super().render_opengl(renderer)
+        scrollbar_x = x + self.width - scrollbar_width
+        scrollbar_y = y
+        
+        # Calculate thumb height and position - FIXED: Same logic as drawing
+        max_scroll_y = max(1, self.content_height - self.height)
+        thumb_height = max(20, int((self.height / self.content_height) * scrollbar_height))
+        
+        available_height = scrollbar_height - thumb_height
+        scroll_ratio = self.scroll_y / max_scroll_y
+        thumb_y = scrollbar_y + int(scroll_ratio * available_height)
+        
+        return (scrollbar_x, thumb_y, scrollbar_width, thumb_height)
+
+    def _get_horizontal_scrollbar_rect(self, x: int, y: int) -> Tuple[int, int, int, int]:
+        """Get the horizontal scrollbar rectangle - FIXED limits"""
+        if self.content_width <= self.width:
+            return (0, 0, 0, 0)
+        
+        scrollbar_width = self.width - (self.scrollbar_size if self.content_height > self.height else 0)
+        scrollbar_height = self.scrollbar_size
+        
+        scrollbar_x = x
+        scrollbar_y = y + self.height - scrollbar_height
+        
+        # Calculate thumb width and position - FIXED: Same logic as drawing
+        max_scroll_x = max(1, self.content_width - self.width)
+        thumb_width = max(20, int((self.width / self.content_width) * scrollbar_width))
+        
+        available_width = scrollbar_width - thumb_width
+        scroll_ratio = self.scroll_x / max_scroll_x
+        thumb_x = scrollbar_x + int(scroll_ratio * available_width)
+        
+        return (thumb_x, scrollbar_y, thumb_width, scrollbar_height)
     
     def _draw_horizontal_scrollbar(self, renderer, x: int, y: int, theme):
-        """Draw horizontal scrollbar."""
+        """Draw horizontal scrollbar - FIXED limits"""
         scrollbar_width = self.width - (self.scrollbar_size if self.content_height > self.height else 0)
         scrollbar_height = self.scrollbar_size
         
@@ -1798,13 +2056,19 @@ class ScrollingFrame(UIElement):
         # Track
         renderer.draw_rect(scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height, theme.slider_track)
         
-        # Thumb
+        # Thumb - FIXED: Calculate thumb position correctly
+        max_scroll_x = max(1, self.content_width - self.width)  # Avoid division by zero
         thumb_width = max(20, int((self.width / self.content_width) * scrollbar_width))
-        thumb_x = scrollbar_x + int((self.scroll_x / self.content_width) * (scrollbar_width - thumb_width))
+        
+        # Ensure thumb doesn't exceed scrollbar bounds
+        available_width = scrollbar_width - thumb_width
+        scroll_ratio = self.scroll_x / max_scroll_x
+        thumb_x = scrollbar_x + int(scroll_ratio * available_width)
+        
         renderer.draw_rect(thumb_x, scrollbar_y, thumb_width, scrollbar_height, theme.slider_thumb_normal)
-    
+
     def _draw_vertical_scrollbar(self, renderer, x: int, y: int, theme):
-        """Draw vertical scrollbar."""
+        """Draw vertical scrollbar - FIXED limits"""
         scrollbar_width = self.scrollbar_size
         scrollbar_height = self.height - (self.scrollbar_size if self.content_width > self.width else 0)
         
@@ -1814,9 +2078,15 @@ class ScrollingFrame(UIElement):
         # Track
         renderer.draw_rect(scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height, theme.slider_track)
         
-        # Thumb
+        # Thumb - FIXED: Calculate thumb position correctly
+        max_scroll_y = max(1, self.content_height - self.height)  # Avoid division by zero
         thumb_height = max(20, int((self.height / self.content_height) * scrollbar_height))
-        thumb_y = scrollbar_y + int((self.scroll_y / self.content_height) * (scrollbar_height - thumb_height))
+        
+        # Ensure thumb doesn't exceed scrollbar bounds
+        available_height = scrollbar_height - thumb_height
+        scroll_ratio = self.scroll_y / max_scroll_y
+        thumb_y = scrollbar_y + int(scroll_ratio * available_height)
+        
         renderer.draw_rect(scrollbar_x, thumb_y, scrollbar_width, thumb_height, theme.slider_thumb_normal)
 
 class Slider(UIElement):

@@ -206,7 +206,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/index.html#class-select",
-      "methods_count": 9,
+      "methods_count": 12,
       "element_id": "class-select"
     },
     {
@@ -224,7 +224,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/index.html#class-scrollingframe",
-      "methods_count": 6,
+      "methods_count": 9,
       "element_id": "class-scrollingframe"
     },
     {
@@ -492,7 +492,7 @@
       "name": "ShaderProgram",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Generic shader program for 2D rendering",
+      "description": "Generic shader program for 2D rendering with caching",
       "link": "backend/index.html#class-shaderprogram",
       "methods_count": 3,
       "element_id": "class-shaderprogram"
@@ -501,7 +501,7 @@
       "name": "ParticleShader",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Shader for particle rendering with circles",
+      "description": "OPTIMIZED shader for particle rendering with instancing",
       "link": "backend/index.html#class-particleshader",
       "methods_count": 2,
       "element_id": "class-particleshader"
@@ -512,7 +512,7 @@
       "file": "opengl.py",
       "description": "Simple shader for solid color rendering",
       "link": "backend/index.html#class-simpleshader",
-      "methods_count": 1,
+      "methods_count": 2,
       "element_id": "class-simpleshader"
     },
     {
@@ -521,7 +521,7 @@
       "file": "opengl.py",
       "description": "Shader for textured rendering",
       "link": "backend/index.html#class-textureshader",
-      "methods_count": 1,
+      "methods_count": 2,
       "element_id": "class-textureshader"
     },
     {
@@ -530,7 +530,7 @@
       "file": "opengl.py",
       "description": "No documentation",
       "link": "backend/index.html#class-openglrenderer",
-      "methods_count": 10,
+      "methods_count": 16,
       "element_id": "class-openglrenderer"
     },
     {
@@ -775,7 +775,7 @@
       "name": "_render_ui_elements_opengl",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Render UI elements using OpenGL renderer",
+      "description": "Render UI elements using OpenGL renderer - SKIP elements with ScrollingFrame parent",
       "link": "core/index.html#method-lunaengine-_render_ui_elements_opengl",
       "is_method": true,
       "element_id": "method-lunaengine-_render_ui_elements_opengl"
@@ -793,7 +793,7 @@
       "name": "_render_ui_elements",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Render UI elements - AGORA UNIVERSAL!",
+      "description": "Render UI elements - SKIP elements with ScrollingFrame parent",
       "link": "core/index.html#method-lunaengine-_render_ui_elements",
       "is_method": true,
       "element_id": "method-lunaengine-_render_ui_elements"
@@ -1585,7 +1585,7 @@
       "name": "_get_cursor_position",
       "class": "TextBox",
       "module": "ui",
-      "description": "Calculate cursor position - OPTIMIZED",
+      "description": "Calculate cursor position - IMPROVED with bounds checking",
       "link": "ui/index.html#method-textbox-_get_cursor_position",
       "is_method": true,
       "element_id": "method-textbox-_get_cursor_position"
@@ -1603,7 +1603,7 @@
       "name": "render_opengl",
       "class": "TextBox",
       "module": "ui",
-      "description": "Render using OpenGL backend",
+      "description": "Render using OpenGL backend - FIXED cursor visibility",
       "link": "ui/index.html#method-textbox-render_opengl",
       "is_method": true,
       "element_id": "method-textbox-render_opengl"
@@ -1612,7 +1612,7 @@
       "name": "_render_text_content",
       "class": "TextBox",
       "module": "ui",
-      "description": "Helper method to render text content",
+      "description": "Helper method to render text content - FIXED subsurface error",
       "link": "ui/index.html#method-textbox-_render_text_content",
       "is_method": true,
       "element_id": "method-textbox-_render_text_content"
@@ -1762,6 +1762,15 @@
       "element_id": "method-select-__init__"
     },
     {
+      "name": "_create_arrow_surfaces",
+      "class": "Select",
+      "module": "ui",
+      "description": "Create arrow surfaces for both backends",
+      "link": "ui/index.html#method-select-_create_arrow_surfaces",
+      "is_method": true,
+      "element_id": "method-select-_create_arrow_surfaces"
+    },
+    {
       "name": "font",
       "class": "Select",
       "module": "ui",
@@ -1816,22 +1825,40 @@
       "element_id": "method-select-_update_with_mouse"
     },
     {
+      "name": "render_pygame",
+      "class": "Select",
+      "module": "ui",
+      "description": "Render using Pygame backend",
+      "link": "ui/index.html#method-select-render_pygame",
+      "is_method": true,
+      "element_id": "method-select-render_pygame"
+    },
+    {
+      "name": "render_opengl",
+      "class": "Select",
+      "module": "ui",
+      "description": "Render using OpenGL backend",
+      "link": "ui/index.html#method-select-render_opengl",
+      "is_method": true,
+      "element_id": "method-select-render_opengl"
+    },
+    {
       "name": "_render_select_content",
       "class": "Select",
       "module": "ui",
-      "description": "Helper method to render select content",
+      "description": "Helper method to render select content for both backends",
       "link": "ui/index.html#method-select-_render_select_content",
       "is_method": true,
       "element_id": "method-select-_render_select_content"
     },
     {
-      "name": "_draw_arrow_polygon",
+      "name": "_draw_fallback_arrows",
       "class": "Select",
       "module": "ui",
-      "description": "Draw arrow polygon compatible with both Pygame and OpenGL.",
-      "link": "ui/index.html#method-select-_draw_arrow_polygon",
+      "description": "Fallback arrow drawing method",
+      "link": "ui/index.html#method-select-_draw_fallback_arrows",
       "is_method": true,
-      "element_id": "method-select-_draw_arrow_polygon"
+      "element_id": "method-select-_draw_fallback_arrows"
     },
     {
       "name": "__init__",
@@ -1915,10 +1942,19 @@
       "element_id": "method-scrollingframe-__init__"
     },
     {
+      "name": "_update_with_mouse",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "Update scrolling frame with proper scroll handling",
+      "link": "ui/index.html#method-scrollingframe-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-scrollingframe-_update_with_mouse"
+    },
+    {
       "name": "handle_scroll",
       "class": "ScrollingFrame",
       "module": "ui",
-      "description": "Handle scroll input.<br><br>Args:<br> &nbsp; &nbsp;scroll_y (int): Vertical scroll amount.",
+      "description": "Handle mouse wheel scrolling",
       "link": "ui/index.html#method-scrollingframe-handle_scroll",
       "is_method": true,
       "element_id": "method-scrollingframe-handle_scroll"
@@ -1927,7 +1963,7 @@
       "name": "render_pygame",
       "class": "ScrollingFrame",
       "module": "ui",
-      "description": "Render using Pygame backend",
+      "description": "Render using Pygame backend - FIXED scroll application",
       "link": "ui/index.html#method-scrollingframe-render_pygame",
       "is_method": true,
       "element_id": "method-scrollingframe-render_pygame"
@@ -1936,16 +1972,34 @@
       "name": "render_opengl",
       "class": "ScrollingFrame",
       "module": "ui",
-      "description": "Render using OpenGL backend",
+      "description": "Render using OpenGL backend - FIXED clipping",
       "link": "ui/index.html#method-scrollingframe-render_opengl",
       "is_method": true,
       "element_id": "method-scrollingframe-render_opengl"
     },
     {
+      "name": "_get_vertical_scrollbar_rect",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "Get the vertical scrollbar rectangle - FIXED limits",
+      "link": "ui/index.html#method-scrollingframe-_get_vertical_scrollbar_rect",
+      "is_method": true,
+      "element_id": "method-scrollingframe-_get_vertical_scrollbar_rect"
+    },
+    {
+      "name": "_get_horizontal_scrollbar_rect",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "Get the horizontal scrollbar rectangle - FIXED limits",
+      "link": "ui/index.html#method-scrollingframe-_get_horizontal_scrollbar_rect",
+      "is_method": true,
+      "element_id": "method-scrollingframe-_get_horizontal_scrollbar_rect"
+    },
+    {
       "name": "_draw_horizontal_scrollbar",
       "class": "ScrollingFrame",
       "module": "ui",
-      "description": "Draw horizontal scrollbar.",
+      "description": "Draw horizontal scrollbar - FIXED limits",
       "link": "ui/index.html#method-scrollingframe-_draw_horizontal_scrollbar",
       "is_method": true,
       "element_id": "method-scrollingframe-_draw_horizontal_scrollbar"
@@ -1954,7 +2008,7 @@
       "name": "_draw_vertical_scrollbar",
       "class": "ScrollingFrame",
       "module": "ui",
-      "description": "Draw vertical scrollbar.",
+      "description": "Draw vertical scrollbar - FIXED limits",
       "link": "ui/index.html#method-scrollingframe-_draw_vertical_scrollbar",
       "is_method": true,
       "element_id": "method-scrollingframe-_draw_vertical_scrollbar"
@@ -3040,22 +3094,22 @@
       "element_id": "method-shaderprogram-__init__"
     },
     {
+      "name": "_get_uniform_location",
+      "class": "ShaderProgram",
+      "module": "backend",
+      "description": "Get cached uniform location",
+      "link": "backend/index.html#method-shaderprogram-_get_uniform_location",
+      "is_method": true,
+      "element_id": "method-shaderprogram-_get_uniform_location"
+    },
+    {
       "name": "_create_shaders",
       "class": "ShaderProgram",
       "module": "backend",
-      "description": "Compile shaders",
+      "description": "Compile shaders with error handling",
       "link": "backend/index.html#method-shaderprogram-_create_shaders",
       "is_method": true,
       "element_id": "method-shaderprogram-_create_shaders"
-    },
-    {
-      "name": "_setup_geometry",
-      "class": "ShaderProgram",
-      "module": "backend",
-      "description": "Setup basic quad geometry",
-      "link": "backend/index.html#method-shaderprogram-_setup_geometry",
-      "is_method": true,
-      "element_id": "method-shaderprogram-_setup_geometry"
     },
     {
       "name": "__init__",
@@ -3070,7 +3124,7 @@
       "name": "_setup_geometry",
       "class": "ParticleShader",
       "module": "backend",
-      "description": "Setup simple point geometry for particles",
+      "description": "Setup instanced particle geometry for maximum performance",
       "link": "backend/index.html#method-particleshader-_setup_geometry",
       "is_method": true,
       "element_id": "method-particleshader-_setup_geometry"
@@ -3085,6 +3139,15 @@
       "element_id": "method-simpleshader-__init__"
     },
     {
+      "name": "_setup_geometry",
+      "class": "SimpleShader",
+      "module": "backend",
+      "description": "Setup basic quad geometry",
+      "link": "backend/index.html#method-simpleshader-_setup_geometry",
+      "is_method": true,
+      "element_id": "method-simpleshader-_setup_geometry"
+    },
+    {
       "name": "__init__",
       "class": "TextureShader",
       "module": "backend",
@@ -3092,6 +3155,15 @@
       "link": "backend/index.html#method-textureshader-__init__",
       "is_method": true,
       "element_id": "method-textureshader-__init__"
+    },
+    {
+      "name": "_setup_geometry",
+      "class": "TextureShader",
+      "module": "backend",
+      "description": "Setup textured quad geometry",
+      "link": "backend/index.html#method-textureshader-_setup_geometry",
+      "is_method": true,
+      "element_id": "method-textureshader-_setup_geometry"
     },
     {
       "name": "__init__",
@@ -3148,13 +3220,67 @@
       "element_id": "method-openglrenderer-_convert_color"
     },
     {
+      "name": "_ensure_particle_capacity",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Ensure particle buffers are large enough - DYNAMIC RESIZING",
+      "link": "backend/index.html#method-openglrenderer-_ensure_particle_capacity",
+      "is_method": true,
+      "element_id": "method-openglrenderer-_ensure_particle_capacity"
+    },
+    {
+      "name": "enable_scissor",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Enable scissor test for clipping region",
+      "link": "backend/index.html#method-openglrenderer-enable_scissor",
+      "is_method": true,
+      "element_id": "method-openglrenderer-enable_scissor"
+    },
+    {
+      "name": "disable_scissor",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Disable scissor test",
+      "link": "backend/index.html#method-openglrenderer-disable_scissor",
+      "is_method": true,
+      "element_id": "method-openglrenderer-disable_scissor"
+    },
+    {
       "name": "draw_rect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a colored rectangle - PROPER BORDER WITH INSET CONTENT",
+      "description": "Draw a colored rectangle",
       "link": "backend/index.html#method-openglrenderer-draw_rect",
       "is_method": true,
       "element_id": "method-openglrenderer-draw_rect"
+    },
+    {
+      "name": "draw_line",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Draw a line between two points with specified width",
+      "link": "backend/index.html#method-openglrenderer-draw_line",
+      "is_method": true,
+      "element_id": "method-openglrenderer-draw_line"
+    },
+    {
+      "name": "_draw_thick_line_optimized",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Optimized method for drawing thick lines",
+      "link": "backend/index.html#method-openglrenderer-_draw_thick_line_optimized",
+      "is_method": true,
+      "element_id": "method-openglrenderer-_draw_thick_line_optimized"
+    },
+    {
+      "name": "draw_surface",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Draw a pygame surface as texture",
+      "link": "backend/index.html#method-openglrenderer-draw_surface",
+      "is_method": true,
+      "element_id": "method-openglrenderer-draw_surface"
     },
     {
       "name": "render_surface",
@@ -3178,7 +3304,7 @@
       "name": "render_particles",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Render particles - SUPER OPTIMIZED VERSION",
+      "description": "HIGHLY OPTIMIZED particle rendering with DYNAMIC BUFFER SIZING",
       "link": "backend/index.html#method-openglrenderer-render_particles",
       "is_method": true,
       "element_id": "method-openglrenderer-render_particles"
@@ -3364,7 +3490,7 @@
       "element_id": "method-codestatistics-print_statistics"
     }
   ],
-  "last_updated": "2025-11-02T12:41:44.493376",
+  "last_updated": "2025-11-02T16:21:39.183601",
   "pages": [
     {
       "name": "Quick Start",

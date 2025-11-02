@@ -3,10 +3,10 @@
 ## Overview
 
 - **Total Files**: 28
-- **Total Lines**: 8993
-- **Code Lines**: 5354
-- **Comment Lines**: 1949
-- **Blank Lines**: 1690
+- **Total Lines**: 9479
+- **Code Lines**: 5683
+- **Comment Lines**: 1999
+- **Blank Lines**: 1797
 
 ## Theme Statistics
 
@@ -14,7 +14,7 @@
 
 ## Code Density
 
-- **Code Density**: 59.5%
+- **Code Density**: 60.0%
 - Balanced code and comments
 
 ## Project Structure
@@ -80,11 +80,11 @@
 
 | File | Total Lines | Code | Comments | Blank | Size (KB) |
 |------|------------|------|----------|-------|-----------|
-| `ui\elements.py` | 2346 | 1378 | 500 | 468 | 93.2 |
+| `ui\elements.py` | 2616 | 1540 | 551 | 525 | 106.4 |
 | `ui\themes.py` | 2178 | 1676 | 122 | 380 | 79.3 |
-| `core\engine.py` | 563 | 283 | 170 | 110 | 21.5 |
+| `backend\opengl.py` | 609 | 405 | 69 | 135 | 23.5 |
+| `core\engine.py` | 572 | 288 | 172 | 112 | 22.0 |
 | `graphics\particles.py` | 536 | 358 | 94 | 84 | 19.3 |
-| `backend\opengl.py` | 419 | 259 | 72 | 88 | 15.3 |
 | `tools\code_stats.py` | 369 | 249 | 55 | 65 | 15.1 |
 | `graphics\spritesheet.py` | 362 | 135 | 157 | 70 | 13.3 |
 | `tools\image_conversion_tool.py` | 308 | 195 | 51 | 62 | 12.7 |
@@ -102,9 +102,9 @@
 | `utils\threading.py` | 87 | 43 | 29 | 15 | 2.6 |
 | `ui\__init__.py` | 56 | 17 | 26 | 13 | 1.9 |
 | `utils\math_utils.py` | 55 | 16 | 29 | 10 | 2.0 |
-| `utils\__init__.py` | 36 | 8 | 21 | 7 | 1.2 |
-| `graphics\__init__.py` | 33 | 5 | 21 | 7 | 1.1 |
+| `utils\__init__.py` | 42 | 14 | 21 | 7 | 1.4 |
+| `graphics\__init__.py` | 39 | 11 | 21 | 7 | 1.3 |
 | `core\__init__.py` | 27 | 6 | 15 | 6 | 0.7 |
-| `backend\__init__.py` | 19 | 1 | 13 | 5 | 0.6 |
+| `backend\__init__.py` | 24 | 5 | 13 | 6 | 0.8 |
 | `__init__.py` | 14 | 8 | 3 | 3 | 0.3 |
 | `tools\__init__.py` | 3 | 1 | 1 | 1 | 0.0 |

@@ -68,3 +68,7 @@ twine upload --config-file .pypirc --repository testpypi dist/*
 # Upload PyPi
 twine upload --config-file .pypirc --repository pypi dist/*
 ```
+
+## OpenGL
+- Require OpenGL 3.3+
+- ``LunaEngine("Game Title", screen_width, screen_height, use_opengl=True)``
