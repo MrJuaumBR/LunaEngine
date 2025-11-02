@@ -59,7 +59,6 @@ class Scene(ABC):
         self._initialized = False
         self.engine: LunaEngine = engine
         
-    @abstractmethod
     def on_enter(self, previous_scene: Optional[str] = None) -> None:
         """
         Called when the scene becomes active.
@@ -69,9 +68,8 @@ class Scene(ABC):
         Args:
             previous_scene (str, optional): Name of the previous scene
         """
-        pass
+        self._initialized = True
         
-    @abstractmethod
     def on_exit(self, next_scene: Optional[str] = None) -> None:
         """
         Called when the scene is being replaced.
@@ -83,7 +81,6 @@ class Scene(ABC):
         """
         pass
         
-    @abstractmethod
     def update(self, dt: float) -> None:
         """
         Update scene logic.
@@ -95,7 +92,6 @@ class Scene(ABC):
         """
         pass
         
-    @abstractmethod
     def render(self, renderer) -> None:
         """
         Render the scene.

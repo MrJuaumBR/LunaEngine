@@ -26,8 +26,11 @@ game development, performance optimization, and resource management.
 """
 
 from .image_converter import ImageConverter, EmbeddedImage
+from .performance import PerformanceMonitor, GarbageCollector
 
 __all__ = [
     "ImageConverter",
     "EmbeddedImage",
+    "PerformanceMonitor",
+    "GarbageCollector",
 ]

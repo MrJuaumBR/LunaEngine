@@ -1,17 +1,14 @@
 """
-Particle System - Fixed Version with Colors and Rendering
+Particle System - Optimized Version
 """
 
-import pygame
 import numpy as np
 from typing import List, Tuple, Optional, Dict, Any, Union
-import math
+import math, pygame, warnings
 from enum import Enum
 from dataclasses import dataclass
-import warnings
 
 class ParticleType(Enum):
-    """Built-in particle types"""
     FIRE = "fire"
     WATER = "water" 
     SMOKE = "smoke"
@@ -20,7 +17,6 @@ class ParticleType(Enum):
     CUSTOM = "custom"
 
 class ExitPoint(Enum):
-    """Emission exit points for particles"""
     TOP = "top"
     BOTTOM = "bottom" 
     LEFT = "left"
@@ -29,15 +25,11 @@ class ExitPoint(Enum):
     CIRCULAR = "circular"
 
 class PhysicsType(Enum):
-    """Physics simulation types"""
-    TOPDOWN = "topdown"      # For top-down games
-    PLATFORMER = "platformer" # For side-view platformers
+    TOPDOWN = "topdown"
+    PLATFORMER = "platformer"
 
 @dataclass
 class ParticleConfig:
-    """
-    Configuration for particle behavior and appearance
-    """
     color_start: Tuple[int, int, int] = (255, 255, 255)
     color_end: Tuple[int, int, int] = (255, 255, 255)
     size_start: float = 4.0
@@ -51,11 +43,8 @@ class ParticleConfig:
     spread: float = 45.0
 
 class ParticleSystem:
-    """
-    Optimized particle system with support for custom particles
-    """
+    """Particle System - Optimized version"""
     
-    # Pre-defined particle configurations - CORRIGIDO: sem propriedade 'colors'
     PARTICLE_CONFIGS: Dict[ParticleType, ParticleConfig] = {
         ParticleType.FIRE: ParticleConfig(
             color_start=(255, 100, 0),
@@ -117,28 +106,28 @@ class ParticleSystem:
         )
     }
     
-    def __init__(self, max_particles: int = 10000):
-        """
-        Initialize the particle system
-        """
+    def __init__(self, max_particles: int = 2000):  # REDUZIDO para melhor performance
         self.max_particles = max_particles
         self.active_particles = 0
         
-        # Pre-allocate NumPy arrays for maximum performance
+        # Pre-allocate NumPy arrays
         self._init_arrays()
         
-        # Surface cache for rendered particles
-        self._surface_cache: Dict[Tuple[int, int, Tuple[int, int, int]], pygame.Surface] = {}
-        
-        # Object pooling system
+        # Object pooling
         self._free_indices = list(range(max_particles))
-        
-        # Custom particle registry
         self._custom_configs: Dict[str, ParticleConfig] = {}
+        
+        # Pre-computed values
+        self._pi_2 = 2.0 * math.pi
+        self._deg_to_rad = math.pi / 180.0
+        
+        # Cache para dados de renderização
+        self._render_cache = None
+        self._cache_dirty = True
     
     def _init_arrays(self):
-        """Initialize NumPy arrays for particle data storage"""
-        # Position and velocity (2D vectors)
+        """Initialize optimized NumPy arrays"""
+        # Position and velocity
         self.positions = np.zeros((self.max_particles, 2), dtype=np.float32)
         self.velocities = np.zeros((self.max_particles, 2), dtype=np.float32)
         
@@ -149,14 +138,17 @@ class ParticleSystem:
         self.size_starts = np.zeros(self.max_particles, dtype=np.float32)
         self.size_ends = np.zeros(self.max_particles, dtype=np.float32)
         
-        # Color data (RGB)
+        # Color data
         self.colors_start = np.zeros((self.max_particles, 3), dtype=np.uint8)
         self.colors_end = np.zeros((self.max_particles, 3), dtype=np.uint8)
         self.colors_current = np.zeros((self.max_particles, 3), dtype=np.uint8)
         
+        # Alpha/transparency
+        self.alphas = np.full(self.max_particles, 255, dtype=np.uint8)
+        
         # Physics properties
         self.gravities = np.zeros(self.max_particles, dtype=np.float32)
-        self.dampings = np.zeros((self.max_particles, 2), dtype=np.float32)
+        self.dampings = np.full((self.max_particles, 2), 0.98, dtype=np.float32)
         
         # State flags
         self.active = np.zeros(self.max_particles, dtype=bool)
@@ -166,106 +158,148 @@ class ParticleSystem:
     def register_custom_particle(self, name: str, config: ParticleConfig) -> bool:
         """
         Register a custom particle type for user-defined effects
+        
+        Args:
+            name (str): Unique name for the custom particle type
+            config (ParticleConfig): Configuration for the custom particle
+            
+        Returns:
+            bool: True if registration was successful
+            
+        Raises:
+            ValueError: If particle name is already registered
         """
         if name in self._custom_configs:
             raise ValueError(f"Custom particle '{name}' is already registered")
         
+        # Validate the name doesn't conflict with built-in types
+        try:
+            ParticleType(name)  # This will raise ValueError if name is not a built-in
+            raise ValueError(f"Particle name '{name}' conflicts with built-in particle type")
+        except ValueError:
+            # Name is not a built-in type, so it's valid for custom registration
+            pass
+        
         self._custom_configs[name] = config
+        print(f"Registered custom particle: '{name}'")  # Debug info
         return True
-    
+
     def get_custom_particle(self, name: str) -> Optional[ParticleConfig]:
         """
         Get configuration for a custom particle
+        
+        Args:
+            name (str): Name of the custom particle type
+            
+        Returns:
+            Optional[ParticleConfig]: The particle configuration or None if not found
         """
         return self._custom_configs.get(name)
+
+    def list_custom_particles(self) -> List[str]:
+        """
+        Get list of all registered custom particle names
+        
+        Returns:
+            List[str]: List of custom particle names
+        """
+        return list(self._custom_configs.keys())
     
-    def emit(
-        self,
-        x: float,
-        y: float,
-        particle_type: Union[ParticleType, str],
-        count: int = 1,
-        exit_point: ExitPoint = ExitPoint.CENTER,
-        physics_type: PhysicsType = PhysicsType.TOPDOWN,
-        spread: Optional[float] = None,
-        angle: float = 0.0,
-        custom_config: Optional[ParticleConfig] = None
-    ):
-        """
-        Emit particles from specified position with given parameters
-        """
-        # Resolve particle configuration
-        config = self._resolve_particle_config(particle_type, custom_config)
-        if not config:
-            warnings.warn(f"Particle type '{particle_type}' not found")
-            return
+    def get_render_data(self) -> Dict[str, Any]:
+        """Get particle data for rendering with caching"""
+        if self.active_particles == 0:
+            return {
+                'active_count': 0,
+                'positions': np.array([], dtype=np.float32),
+                'sizes': np.array([], dtype=np.float32),
+                'colors': np.array([], dtype=np.uint8),
+                'alphas': np.array([], dtype=np.uint8)
+            }
         
-        # Use provided spread or default from config
-        actual_spread = spread if spread is not None else config.spread
+        # Use cache if available and not dirty
+        if not self._cache_dirty and self._render_cache is not None:
+            return self._render_cache
         
-        for _ in range(count):
-            if not self._free_indices:
-                break  # No free slots available
-                
-            idx = self._free_indices.pop()
-            self.active_particles += 1
-            
-            # Set initial position based on exit point
-            pos_x, pos_y = self._get_exit_position(x, y, exit_point)
-            self.positions[idx] = [pos_x, pos_y]
-            
-            # Set velocity with spread
-            vel_x, vel_y = self._get_initial_velocity(
-                exit_point, config.speed, actual_spread, angle
-            )
-            self.velocities[idx] = [vel_x, vel_y]
-            
-            # Set particle properties
-            self._setup_particle_properties(idx, config, physics_type)
+        active_indices = np.where(self.active)[0]
+        
+        self._render_cache = {
+            'active_count': len(active_indices),
+            'positions': self.positions[active_indices],
+            'sizes': self.sizes[active_indices],
+            'colors': self.colors_current[active_indices],
+            'alphas': self.alphas[active_indices]
+        }
+        
+        self._cache_dirty = False
+        return self._render_cache
     
     def _resolve_particle_config(
         self, 
         particle_type: Union[ParticleType, str], 
         custom_config: Optional[ParticleConfig]
     ) -> Optional[ParticleConfig]:
-        """Resolve particle configuration from various sources"""
+        """
+        Resolve particle configuration from various sources
+        
+        Args:
+            particle_type: The particle type identifier
+            custom_config: Optional custom configuration
+            
+        Returns:
+            ParticleConfig or None if not found
+        """
+        # If custom config provided directly, use it
         if custom_config:
             return custom_config
         
+        # Handle ParticleType enum
         if isinstance(particle_type, ParticleType):
             return self.PARTICLE_CONFIGS.get(particle_type)
+        
+        # Handle string type
         elif isinstance(particle_type, str):
-            # Try to convert string to ParticleType enum
+            # First try to convert string to ParticleType enum
             try:
                 particle_enum = ParticleType(particle_type)
                 return self.PARTICLE_CONFIGS.get(particle_enum)
             except ValueError:
                 # If not a built-in type, try custom particles
-                return self._custom_configs.get(particle_type)
+                if particle_type in self._custom_configs:
+                    return self._custom_configs[particle_type]
+                else:
+                    # Try case-insensitive match
+                    for custom_name in self._custom_configs.keys():
+                        if custom_name.lower() == particle_type.lower():
+                            return self._custom_configs[custom_name]
         
+        # Return None if not found
         return None
     
-    def _get_exit_position(self, x: float, y: float, exit_point: ExitPoint) -> Tuple[float, float]:
+    def _get_exit_offset(self, exit_point: ExitPoint) -> float:
+        """Get offset distance for exit points"""
+        return 10.0  # Fixed offset distance
+
+    def _get_exit_position(self, x: float, y: float, exit_point: ExitPoint, offset: float) -> Tuple[float, float]:
         """
         Calculate initial position based on exit point
         """
         if exit_point == ExitPoint.CENTER:
             return x, y
         elif exit_point == ExitPoint.TOP:
-            return x, y - 10
+            return x, y - offset  # TOP emits upward
         elif exit_point == ExitPoint.BOTTOM:
-            return x, y + 10
+            return x, y + offset  # BOTTOM emits downward
         elif exit_point == ExitPoint.LEFT:
-            return x - 10, y
+            return x - offset, y  # LEFT emits leftward
         elif exit_point == ExitPoint.RIGHT:
-            return x + 10, y
+            return x + offset, y  # RIGHT emits rightward
         elif exit_point == ExitPoint.CIRCULAR:
-            angle = np.random.uniform(0, 2 * math.pi)
+            angle = np.random.uniform(0, self._pi_2)
             radius = np.random.uniform(5, 15)
             return x + math.cos(angle) * radius, y + math.sin(angle) * radius
         else:
             return x, y
-    
+
     def _get_initial_velocity(
         self, 
         exit_point: ExitPoint, 
@@ -278,17 +312,18 @@ class ParticleSystem:
         """
         # Set base angle based on exit point
         if exit_point == ExitPoint.TOP:
-            exit_angle = 90  # Downward
+            exit_angle = 270  # Upward (0° is right, 90° is down, 270° is up)
         elif exit_point == ExitPoint.BOTTOM:
-            exit_angle = 270  # Upward  
+            exit_angle = 90   # Downward
         elif exit_point == ExitPoint.LEFT:
-            exit_angle = 0   # Right
+            exit_angle = 180  # Leftward
         elif exit_point == ExitPoint.RIGHT:
-            exit_angle = 180 # Left
+            exit_angle = 0    # Rightward
         else:
             exit_angle = base_angle
         
         # Apply spread randomization
+        spread_rad = spread * self._deg_to_rad
         final_angle = exit_angle + np.random.uniform(-spread/2, spread/2)
         angle_rad = math.radians(final_angle)
         
@@ -300,44 +335,72 @@ class ParticleSystem:
             math.sin(angle_rad) * actual_speed
         )
     
+    def emit(self, x: float, y: float, particle_type: Union[ParticleType, str],
+             count: int = 1, exit_point: ExitPoint = ExitPoint.CENTER,
+             physics_type: PhysicsType = PhysicsType.TOPDOWN,
+             spread: Optional[float] = None, angle: float = 0.0,
+             custom_config: Optional[ParticleConfig] = None):
+        """Emit particles with optimizations"""
+        config = self._resolve_particle_config(particle_type, custom_config)
+        if not config:
+            return
+        
+        actual_spread = spread if spread is not None else config.spread
+        exit_offset = self._get_exit_offset(exit_point)
+        
+        # Limit emission rate to prevent overload
+        count = min(count, 100)  # Máximo de 100 partículas por emissão
+        
+        for _ in range(count):
+            if not self._free_indices:
+                break
+                
+            idx = self._free_indices.pop()
+            self.active_particles += 1
+            self._cache_dirty = True  # Marcar cache como sujo
+            
+            # Set initial position
+            pos_x, pos_y = self._get_exit_position(x, y, exit_point, exit_offset)
+            self.positions[idx] = [pos_x, pos_y]
+            
+            # Set velocity
+            vel_x, vel_y = self._get_initial_velocity(
+                exit_point, config.speed, actual_spread, angle
+            )
+            self.velocities[idx] = [vel_x, vel_y]
+            
+            # Set particle properties
+            self._setup_particle_properties(idx, config, physics_type)
+    
     def _setup_particle_properties(self, idx: int, config: ParticleConfig, physics_type: PhysicsType):
-        """Setup all properties for a new particle"""
-        # Basic properties
+        """Setup particle properties - optimized"""
         self.lifetimes[idx] = config.lifetime
         self.max_lifetimes[idx] = config.lifetime
         self.sizes[idx] = config.size_start
         self.size_starts[idx] = config.size_start
         self.size_ends[idx] = config.size_end
         
-        # Colors
         self.colors_start[idx] = config.color_start
         self.colors_end[idx] = config.color_end
         self.colors_current[idx] = config.color_start
         
-        # Physics
+        self.alphas[idx] = 255
         self.gravities[idx] = config.gravity
-        self.dampings[idx] = [config.damping, config.damping]
         
-        # Adjust physics for platformer mode
         if physics_type == PhysicsType.PLATFORMER:
-            self.gravities[idx] *= 1.5  # Stronger gravity
-            self.dampings[idx] = [0.95, 0.95]   # Less damping
+            self.gravities[idx] *= 1.5
+            self.dampings[idx] = [0.95, 0.95]
         
-        # Flags
         self.active[idx] = True
         self.fade_outs[idx] = config.fade_out
         self.grows[idx] = config.grow
     
     def update(self, dt: float):
-        """
-        Update all active particles
-        """
+        """Update particles with vectorized operations"""
         if self.active_particles == 0:
             return
         
-        # Get active indices
-        active_mask = self.active
-        active_indices = np.where(active_mask)[0]
+        active_indices = np.where(self.active)[0]
         
         if len(active_indices) == 0:
             return
@@ -349,38 +412,27 @@ class ParticleSystem:
         dead_mask = self.lifetimes[active_indices] <= 0
         dead_indices = active_indices[dead_mask]
         
-        for idx in dead_indices:
-            self.active[idx] = False
-            self._free_indices.append(idx)
-            self.active_particles -= 1
-        
-        # Update remaining active particles
-        active_mask = self.active
-        active_indices = np.where(active_mask)[0]
+        if len(dead_indices) > 0:
+            self.active[dead_indices] = False
+            self._free_indices.extend(dead_indices)
+            self.active_particles -= len(dead_indices)
+            self._cache_dirty = True
+            
+            active_indices = active_indices[~dead_mask]
         
         if len(active_indices) == 0:
             return
         
         # Vectorized physics update
-        self._update_physics(active_indices, dt)
+        self.velocities[active_indices, 1] += self.gravities[active_indices] * dt
+        self.velocities[active_indices] *= self.dampings[active_indices]
+        self.positions[active_indices] += self.velocities[active_indices] * dt
         
         # Vectorized property updates
         self._update_properties(active_indices)
     
-    def _update_physics(self, indices: np.ndarray, dt: float):
-        """Update physics using vectorized NumPy operations"""
-        # Apply gravity to vertical velocity
-        self.velocities[indices, 1] += self.gravities[indices] * dt
-        
-        # Apply damping
-        self.velocities[indices] *= self.dampings[indices]
-        
-        # Update positions
-        self.positions[indices] += self.velocities[indices] * dt
-    
     def _update_properties(self, indices: np.ndarray):
         """Update particle properties using vectorized operations"""
-        # Calculate life ratio (0.0 to 1.0)
         life_ratios = 1.0 - (self.lifetimes[indices] / self.max_lifetimes[indices])
         
         # Update sizes for growing particles
@@ -393,16 +445,31 @@ class ParticleSystem:
                 life_ratios[grow_mask]
             )
         
-        # Update colors with interpolation
+        # Update colors
+        color_diffs = self.colors_end[indices] - self.colors_start[indices]
         self.colors_current[indices] = (
             self.colors_start[indices] + 
-            (self.colors_end[indices] - self.colors_start[indices]) * 
-            life_ratios[:, np.newaxis]
+            (color_diffs * life_ratios[:, np.newaxis])
         ).astype(np.uint8)
+        
+        # Update alpha for fade out
+        fade_mask = self.fade_outs[indices]
+        if np.any(fade_mask):
+            fade_indices = indices[fade_mask]
+            self.alphas[fade_indices] = (255 * (1.0 - life_ratios[fade_mask])).astype(np.uint8)
+        
+        self._cache_dirty = True
     
-    def render(self, surface: pygame.Surface):
+    def clear(self):
+        """Clear all particles"""
+        self.active.fill(False)
+        self._free_indices = list(range(self.max_particles))
+        self.active_particles = 0
+        self._cache_dirty = True
+    
+    def render(self, surface):
         """
-        Render all active particles to the target surface
+        Render particles - CORRIGIDO para Pygame
         """
         if self.active_particles == 0:
             return
@@ -410,57 +477,60 @@ class ParticleSystem:
         active_indices = np.where(self.active)[0]
         
         for idx in active_indices:
-            pos = self.positions[idx]
-            size = int(max(1, self.sizes[idx]))  # Garantir tamanho mínimo
+            if not self.active[idx] or self.alphas[idx] == 0:
+                continue
+            
+            x, y = int(self.positions[idx][0]), int(self.positions[idx][1])
+            size = max(1, int(self.sizes[idx]))
             color = tuple(self.colors_current[idx])
-            life_ratio = 1.0 - (self.lifetimes[idx] / self.max_lifetimes[idx])
+            alpha = self.alphas[idx]
             
-            # Handle fade out
-            alpha = 255
-            if self.fade_outs[idx]:
-                alpha = int(255 * (1.0 - life_ratio))
-            
-            # Skip fully transparent particles
-            if alpha <= 0:
+            # Culling básico
+            if (x < -size * 2 or x > surface.get_width() + size * 2 or 
+                y < -size * 2 or y > surface.get_height() + size * 2):
                 continue
             
-            # DEBUG: Print para verificar se as partículas estão sendo processadas
-            # print(f"Particle at {pos}, size: {size}, color: {color}, alpha: {alpha}")
+            # CORREÇÃO: Desenhar diretamente na surface
+            if alpha < 255:
+                # Para alpha, criar surface temporária
+                temp_surface = pygame.Surface((size * 2, size * 2), pygame.SRCALPHA)
+                pygame.draw.circle(temp_surface, (*color, alpha), (size, size), size)
+                surface.blit(temp_surface, (x - size, y - size))
+            else:
+                # Para opaco, desenhar diretamente
+                pygame.draw.circle(surface, color, (x, y), size)
             
-            # Create surface for this particle (simples, sem cache por enquanto)
-            try:
-                particle_surface = pygame.Surface((size, size), pygame.SRCALPHA)
-                final_color = (*color, alpha)
-                pygame.draw.circle(
-                    particle_surface, 
-                    final_color, 
-                    (size // 2, size // 2), 
-                    max(1, size // 2)  # Garantir raio mínimo
-                )
-                
-                # Blit particle
-                surface.blit(
-                    particle_surface, 
-                    (int(pos[0] - size // 2), int(pos[1] - size // 2))
-                )
-            except Exception as e:
-                print(f"Error rendering particle: {e}")
-                continue
-    
-    def clear(self):
-        """Clear all particles and reset the system"""
-        self.active.fill(False)
-        self._free_indices = list(range(self.max_particles))
-        self.active_particles = 0
-    
     def get_stats(self) -> Dict[str, Any]:
         """
-        Get system statistics
+        Get comprehensive system statistics
+        
+        Returns:
+            Dict with system statistics
         """
+        total_memory = (
+            self.positions.nbytes + 
+            self.velocities.nbytes + 
+            self.lifetimes.nbytes + 
+            self.max_lifetimes.nbytes +
+            self.sizes.nbytes +
+            self.size_starts.nbytes +
+            self.size_ends.nbytes +
+            self.colors_start.nbytes +
+            self.colors_end.nbytes +
+            self.colors_current.nbytes +
+            self.alphas.nbytes +
+            self.gravities.nbytes +
+            self.dampings.nbytes +
+            self.active.nbytes +
+            self.fade_outs.nbytes +
+            self.grows.nbytes
+        )
+        
         return {
             'active_particles': self.active_particles,
             'max_particles': self.max_particles,
-            'memory_usage_mb': (self.positions.nbytes + self.velocities.nbytes + 
-                              self.lifetimes.nbytes + self.sizes.nbytes) / (1024 * 1024),
-            'custom_particles_registered': len(self._custom_configs)
+            'memory_usage_mb': total_memory / (1024 * 1024),
+            'free_slots': len(self._free_indices),
+            'custom_particles_registered': len(self._custom_configs),
+            'cache_dirty': self._cache_dirty
         }

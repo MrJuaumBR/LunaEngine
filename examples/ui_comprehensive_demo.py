@@ -183,7 +183,7 @@ class ComprehensiveUIDemo(Scene):
         self.select_display.set_text(f"Choice: {self.demo_state['select_index'] + 1}")
         
         # Update FPS
-        self.fps_display.set_text(f"FPS: {self.engine.get_fps_stats()['current']:.1f}")
+        self.fps_display.set_text(f"FPS: {self.engine.get_fps_stats()['current_fps']:.1f}")
     
     def update(self, dt):
         """Update scene logic"""
@@ -208,7 +208,7 @@ class ComprehensiveUIDemo(Scene):
 
 def main():
     """Main function"""
-    engine = LunaEngine("LunaEngine - UI Demo", 1024, 720)
+    engine = LunaEngine("LunaEngine - UI Demo", 1024, 720, use_opengl=True)
     engine.fps = 60
     
     engine.add_scene("main", ComprehensiveUIDemo)

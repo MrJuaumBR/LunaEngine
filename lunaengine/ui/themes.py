@@ -32,6 +32,7 @@ MAIN CLASSES:
      - Brand: ROBLOX, DISCORD, GMAIL, YOUTUBE
      - Aesthetic: AZURE, EIGHTIES, CLOUDS, QUEEN, KING
      - New: FOREST, SUNSET, OCEAN, MATRIX, LAVENDER, CHOCOLATE
+     - New Dark/Light: DEEP_SPACE, NORD, DRACULA, SOLARIZED, MONOKAI, GRUVBOX
 
 3. ThemeManager:
    - Manages theme registration, retrieval, and application
@@ -56,7 +57,8 @@ color_name_type = Literal['button_normal', 'button_hover', 'button_pressed', 'bu
                      'slider_track', 'slider_thumb_normal', 'slider_thumb_hover', 'slider_thumb_pressed',
                      'slider_text',
                      'label_text',
-                     'background', 'background2', 'text_primary', 'text_secondary', 'border', 'border2']
+                     'background', 'background2', 'text_primary', 'text_secondary', 'border', 'border2',
+                     'switch_track_on', 'switch_track_off', 'switch_thumb_on', 'switch_thumb_off']
 
 @dataclass
 class UITheme:
@@ -92,6 +94,12 @@ class UITheme:
     background2: Tuple[int, int, int]  # Nova variável para contraste
     text_primary: Tuple[int, int, int]
     text_secondary: Tuple[int, int, int]
+    
+    # Switch colors (new)
+    switch_track_on: Tuple[int, int, int]
+    switch_track_off: Tuple[int, int, int]
+    switch_thumb_on: Tuple[int, int, int]
+    switch_thumb_off: Tuple[int, int, int]
     
     # Optional fields with defaults (must come last)
     button_border: Optional[Tuple[int, int, int]] = None
@@ -158,6 +166,17 @@ class ThemeType(Enum):
     OCEAN = "ocean"
     LAVENDER = "lavender"
     CHOCOLATE = "chocolate"
+    
+    # New Dark/Light themes
+    DEEP_SPACE = "deep_space"
+    NORD_DARK = "nord_dark"
+    NORD_LIGHT = "nord_light"
+    DRACULA = "dracula"
+    SOLARIZED_DARK = "solarized_dark"
+    SOLARIZED_LIGHT = "solarized_light"
+    MONOKAI = "monokai"
+    GRUVBOX_DARK = "gruvbox_dark"
+    GRUVBOX_LIGHT = "gruvbox_light"
 
 
 class ThemeManager:
@@ -202,15 +221,22 @@ class ThemeManager:
             
             # General
             background=(50, 50, 70),
-            background2=(40, 40, 60),  # Mais escuro para contraste
+            background2=(40, 40, 60),
             text_primary=(240, 240, 240),
             text_secondary=(200, 200, 200),
-            border=(120, 120, 140)
+            
+            # Switch
+            switch_track_on=(0, 200, 0),
+            switch_track_off=(80, 80, 80),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(220, 220, 220),
+            
+            border=(120, 120, 140),
+            border2=(100, 100, 120)
         )
         
         # PRIMARY THEME
         cls._themes[ThemeType.PRIMARY] = UITheme(
-            # Button
             button_normal=(0, 120, 215),
             button_hover=(0, 100, 190),
             button_pressed=(0, 80, 160),
@@ -218,7 +244,6 @@ class ThemeManager:
             button_text=(255, 255, 255),
             button_border=None,
             
-            # Dropdown
             dropdown_normal=(80, 80, 120),
             dropdown_hover=(100, 100, 140),
             dropdown_expanded=(90, 90, 130),
@@ -228,22 +253,26 @@ class ThemeManager:
             dropdown_option_selected=(80, 80, 120),
             dropdown_border=(200, 200, 200),
             
-            # Slider
             slider_track=(100, 100, 100),
             slider_thumb_normal=(150, 80, 80),
             slider_thumb_hover=(170, 90, 90),
             slider_thumb_pressed=(200, 100, 100),
             slider_text=(255, 255, 255),
             
-            # Label
             label_text=(255, 255, 255),
             
-            # General
             background=(40, 40, 60),
             background2=(30, 30, 50),
             text_primary=(255, 255, 255),
             text_secondary=(200, 200, 200),
-            border=(150, 150, 150)
+            
+            switch_track_on=(40, 167, 69),
+            switch_track_off=(108, 117, 125),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(240, 240, 240),
+            
+            border=(150, 150, 150),
+            border2=(130, 130, 150)
         )
         
         # SECONDARY THEME
@@ -276,7 +305,14 @@ class ThemeManager:
             background2=(50, 50, 70),
             text_primary=(240, 240, 240),
             text_secondary=(200, 200, 200),
-            border=(120, 120, 140)
+            
+            switch_track_on=(108, 117, 125),
+            switch_track_off=(70, 70, 80),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(220, 220, 220),
+            
+            border=(120, 120, 140),
+            border2=(100, 100, 120)
         )
 
         # WARN THEME
@@ -309,7 +345,14 @@ class ThemeManager:
             background2=(60, 50, 30),
             text_primary=(255, 255, 255),
             text_secondary=(255, 220, 150),
-            border=(200, 180, 100)
+            
+            switch_track_on=(255, 193, 7),
+            switch_track_off=(100, 90, 60),
+            switch_thumb_on=(0, 0, 0),
+            switch_thumb_off=(200, 190, 160),
+            
+            border=(200, 180, 100),
+            border2=(180, 160, 80)
         )
 
         # ERROR THEME
@@ -342,7 +385,14 @@ class ThemeManager:
             background2=(60, 20, 25),
             text_primary=(255, 255, 255),
             text_secondary=(255, 200, 200),
-            border=(200, 100, 110)
+            
+            switch_track_on=(220, 53, 69),
+            switch_track_off=(100, 60, 65),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(240, 200, 200),
+            
+            border=(200, 100, 110),
+            border2=(180, 80, 90)
         )
 
         # SUCCESS THEME
@@ -375,7 +425,14 @@ class ThemeManager:
             background2=(20, 50, 30),
             text_primary=(255, 255, 255),
             text_secondary=(200, 240, 200),
-            border=(100, 180, 120)
+            
+            switch_track_on=(40, 167, 69),
+            switch_track_off=(60, 100, 70),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(220, 240, 220),
+            
+            border=(100, 180, 120),
+            border2=(80, 160, 100)
         )
 
         # INFO THEME
@@ -408,7 +465,14 @@ class ThemeManager:
             background2=(20, 40, 60),
             text_primary=(255, 255, 255),
             text_secondary=(200, 230, 255),
-            border=(100, 170, 200)
+            
+            switch_track_on=(23, 162, 184),
+            switch_track_off=(60, 100, 120),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(220, 240, 255),
+            
+            border=(100, 170, 200),
+            border2=(80, 150, 180)
         )
         
         # ECLIPSE THEME
@@ -441,10 +505,17 @@ class ThemeManager:
             background2=(10, 0, 25),
             text_primary=(255, 255, 0),
             text_secondary=(255, 200, 0),
-            border=(255, 140, 0)
+            
+            switch_track_on=(255, 140, 0),
+            switch_track_off=(50, 10, 90),
+            switch_thumb_on=(255, 255, 0),
+            switch_thumb_off=(200, 180, 100),
+            
+            border=(255, 140, 0),
+            border2=(200, 100, 0)
         )
         
-        # MIDNIGHT DARK THEME - Corrigido (não era uma cópia)
+        # MIDNIGHT DARK THEME
         cls._themes[ThemeType.MIDNIGHT_DARK] = UITheme(
             button_normal=(25, 25, 112),
             button_hover=(45, 45, 132),
@@ -474,10 +545,17 @@ class ThemeManager:
             background2=(2, 2, 8),
             text_primary=(176, 224, 230),
             text_secondary=(135, 206, 250),
-            border=(70, 130, 180)
+            
+            switch_track_on=(70, 130, 180),
+            switch_track_off=(30, 30, 60),
+            switch_thumb_on=(176, 224, 230),
+            switch_thumb_off=(100, 149, 237),
+            
+            border=(70, 130, 180),
+            border2=(50, 110, 160)
         )
         
-        # MIDNIGHT LIGHT THEME - Corrigido (não era uma cópia)
+        # MIDNIGHT LIGHT THEME
         cls._themes[ThemeType.MIDNIGHT_LIGHT] = UITheme(
             button_normal=(135, 206, 250),
             button_hover=(115, 186, 230),
@@ -507,7 +585,14 @@ class ThemeManager:
             background2=(220, 230, 245),
             text_primary=(25, 25, 112),
             text_secondary=(65, 105, 225),
-            border=(135, 206, 250)
+            
+            switch_track_on=(70, 130, 180),
+            switch_track_off=(200, 220, 240),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(240, 248, 255),
+            
+            border=(135, 206, 250),
+            border2=(100, 180, 230)
         )
         
         # FANTASY DARK THEME - Magical and mystical
@@ -540,7 +625,14 @@ class ThemeManager:
             background2=(20, 0, 35),
             text_primary=(255, 215, 0),
             text_secondary=(255, 165, 0),
-            border=(255, 215, 0)
+            
+            switch_track_on=(255, 165, 0),
+            switch_track_off=(70, 30, 100),
+            switch_thumb_on=(255, 215, 0),
+            switch_thumb_off=(200, 150, 50),
+            
+            border=(255, 215, 0),
+            border2=(200, 165, 0)
         )
         
         # FANTASY LIGHT THEME
@@ -573,7 +665,14 @@ class ThemeManager:
             background2=(245, 240, 245),
             text_primary=(75, 0, 130),
             text_secondary=(100, 50, 150),
-            border=(147, 112, 219)
+            
+            switch_track_on=(147, 112, 219),
+            switch_track_off=(200, 180, 200),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(240, 230, 240),
+            
+            border=(147, 112, 219),
+            border2=(120, 90, 190)
         )
         
         # CHERRY DARK THEME
@@ -606,7 +705,14 @@ class ThemeManager:
             background2=(60, 20, 35),
             text_primary=(255, 250, 250),
             text_secondary=(255, 182, 193),
-            border=(255, 182, 193)
+            
+            switch_track_on=(255, 105, 180),
+            switch_track_off=(150, 80, 100),
+            switch_thumb_on=(255, 250, 250),
+            switch_thumb_off=(255, 200, 210),
+            
+            border=(255, 182, 193),
+            border2=(220, 150, 160)
         )
         
         # CHERRY LIGHT THEME
@@ -639,7 +745,14 @@ class ThemeManager:
             background2=(245, 240, 240),
             text_primary=(178, 34, 34),
             text_secondary=(205, 92, 92),
-            border=(219, 112, 147)
+            
+            switch_track_on=(219, 112, 147),
+            switch_track_off=(240, 220, 220),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(255, 240, 245),
+            
+            border=(219, 112, 147),
+            border2=(190, 90, 125)
         )
 
         # GALAXY DARK THEME - Deep space with cosmic purple and blue
@@ -672,7 +785,14 @@ class ThemeManager:
             background2=(5, 5, 20),
             text_primary=(230, 230, 250),
             text_secondary=(176, 224, 230),
-            border=(138, 43, 226)
+            
+            switch_track_on=(138, 43, 226),
+            switch_track_off=(40, 40, 80),
+            switch_thumb_on=(230, 230, 250),
+            switch_thumb_off=(147, 112, 219),
+            
+            border=(138, 43, 226),
+            border2=(100, 30, 180)
         )
 
         # GALAXY LIGHT THEME - Nebula inspired pastel colors
@@ -705,7 +825,14 @@ class ThemeManager:
             background2=(240, 240, 250),
             text_primary=(75, 0, 130),
             text_secondary=(106, 90, 205),
-            border=(147, 112, 219)
+            
+            switch_track_on=(186, 85, 211),
+            switch_track_off=(200, 200, 220),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(230, 230, 250),
+            
+            border=(147, 112, 219),
+            border2=(120, 90, 190)
         )
 
         # BUILDER THEME - Construction/development inspired
@@ -738,7 +865,14 @@ class ThemeManager:
             background2=(243, 235, 220),
             text_primary=(47, 79, 79),
             text_secondary=(101, 67, 33),
-            border=(160, 120, 80)
+            
+            switch_track_on=(160, 120, 80),
+            switch_track_off=(200, 180, 160),
+            switch_thumb_on=(255, 250, 240),
+            switch_thumb_off=(245, 245, 220),
+            
+            border=(160, 120, 80),
+            border2=(140, 100, 60)
         )
 
         # NEON THEME
@@ -771,7 +905,14 @@ class ThemeManager:
             background2=(5, 5, 20),
             text_primary=(0, 255, 255),
             text_secondary=(255, 0, 255),
-            border=(255, 0, 255)
+            
+            switch_track_on=(255, 0, 255),
+            switch_track_off=(0, 100, 100),
+            switch_thumb_on=(0, 0, 0),
+            switch_thumb_off=(0, 150, 150),
+            
+            border=(255, 0, 255),
+            border2=(200, 0, 200)
         )
         
         # RUBY THEME - Deep red gemstone
@@ -804,7 +945,14 @@ class ThemeManager:
             background2=(40, 0, 10),
             text_primary=(255, 255, 255),
             text_secondary=(255, 182, 193),
-            border=(255, 105, 180)
+            
+            switch_track_on=(255, 20, 147),
+            switch_track_off=(100, 0, 20),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(255, 182, 193),
+            
+            border=(255, 105, 180),
+            border2=(220, 80, 150)
         )
         
         # EMERALD THEME - Rich green gemstone
@@ -837,7 +985,14 @@ class ThemeManager:
             background2=(5, 25, 12),
             text_primary=(255, 255, 255),
             text_secondary=(200, 255, 200),
-            border=(0, 150, 0)
+            
+            switch_track_on=(0, 255, 127),
+            switch_track_off=(20, 80, 40),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(100, 200, 150),
+            
+            border=(0, 150, 0),
+            border2=(0, 120, 0)
         )
         
         # DIAMOND THEME - Crystal clear and bright
@@ -870,7 +1025,14 @@ class ThemeManager:
             background2=(230, 238, 245),
             text_primary=(0, 0, 0),
             text_secondary=(50, 50, 50),
-            border=(200, 220, 240)
+            
+            switch_track_on=(180, 200, 220),
+            switch_track_off=(150, 170, 190),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(240, 248, 255),
+            
+            border=(200, 220, 240),
+            border2=(180, 200, 220)
         )
         
         # SILVER THEME - Metallic silver
@@ -903,7 +1065,14 @@ class ThemeManager:
             background2=(85, 85, 85),
             text_primary=(255, 255, 255),
             text_secondary=(220, 220, 220),
-            border=(192, 192, 192)
+            
+            switch_track_on=(169, 169, 169),
+            switch_track_off=(130, 130, 130),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(220, 220, 220),
+            
+            border=(192, 192, 192),
+            border2=(169, 169, 169)
         )
         
         # COPPER THEME - Warm metallic copper
@@ -936,7 +1105,14 @@ class ThemeManager:
             background2=(60, 30, 3),
             text_primary=(255, 255, 255),
             text_secondary=(255, 200, 150),
-            border=(184, 115, 51)
+            
+            switch_track_on=(184, 115, 51),
+            switch_track_off=(100, 50, 10),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(218, 138, 56),
+            
+            border=(184, 115, 51),
+            border2=(150, 90, 30)
         )
         
         # BRONZE THEME - Rich bronze metal
@@ -969,7 +1145,14 @@ class ThemeManager:
             background2=(70, 35, 3),
             text_primary=(255, 255, 255),
             text_secondary=(255, 220, 170),
-            border=(205, 127, 50)
+            
+            switch_track_on=(205, 127, 50),
+            switch_track_off=(110, 60, 10),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(210, 140, 60),
+            
+            border=(205, 127, 50),
+            border2=(170, 100, 30)
         )
         
         # AZURE THEME - Bright sky blue
@@ -1002,7 +1185,14 @@ class ThemeManager:
             background2=(15, 15, 80),
             text_primary=(255, 255, 255),
             text_secondary=(173, 216, 230),
-            border=(135, 206, 250)
+            
+            switch_track_on=(0, 127, 255),
+            switch_track_off=(70, 130, 180),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(173, 216, 230),
+            
+            border=(135, 206, 250),
+            border2=(100, 180, 230)
         )
         
         # 80s THEME - Vibrant retro colors
@@ -1035,7 +1225,14 @@ class ThemeManager:
             background2=(10, 5, 15),
             text_primary=(255, 255, 0),
             text_secondary=(0, 255, 255),
-            border=(255, 0, 255)
+            
+            switch_track_on=(255, 0, 128),
+            switch_track_off=(128, 0, 255),
+            switch_thumb_on=(255, 255, 0),
+            switch_thumb_off=(0, 255, 255),
+            
+            border=(255, 0, 255),
+            border2=(200, 0, 200)
         )
         
         # CLOUDS THEME - Soft and dreamy
@@ -1068,7 +1265,14 @@ class ThemeManager:
             background2=(235, 235, 235),
             text_primary=(52, 73, 94),
             text_secondary=(127, 140, 141),
-            border=(189, 195, 199)
+            
+            switch_track_on=(149, 165, 166),
+            switch_track_off=(200, 205, 208),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(240, 245, 248),
+            
+            border=(189, 195, 199),
+            border2=(170, 180, 185)
         )
         
         # QUEEN THEME - Royal purple and gold
@@ -1101,7 +1305,14 @@ class ThemeManager:
             background2=(35, 10, 55),
             text_primary=(255, 215, 0),
             text_secondary=(255, 165, 0),
-            border=(255, 215, 0)
+            
+            switch_track_on=(147, 112, 219),
+            switch_track_off=(80, 40, 120),
+            switch_thumb_on=(255, 215, 0),
+            switch_thumb_off=(200, 150, 100),
+            
+            border=(255, 215, 0),
+            border2=(200, 165, 0)
         )
 
         # KING THEME - Royal blue and silver
@@ -1134,7 +1345,14 @@ class ThemeManager:
             background2=(5, 15, 50),
             text_primary=(255, 255, 255),
             text_secondary=(192, 192, 192),
-            border=(65, 105, 225)
+            
+            switch_track_on=(65, 105, 225),
+            switch_track_off=(20, 50, 120),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(192, 192, 192),
+            
+            border=(65, 105, 225),
+            border2=(40, 80, 180)
         )
 
         # ROBLOX THEME - Roblox brand colors
@@ -1167,7 +1385,14 @@ class ThemeManager:
             background2=(8, 8, 8),
             text_primary=(226, 48, 74),
             text_secondary=(255, 255, 255),
-            border=(226, 48, 74)
+            
+            switch_track_on=(226, 48, 74),
+            switch_track_off=(60, 60, 60),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(100, 100, 100),
+            
+            border=(226, 48, 74),
+            border2=(180, 30, 50)
         )
 
         # DISCORD THEME - Discord brand colors
@@ -1200,7 +1425,14 @@ class ThemeManager:
             background2=(25, 28, 32),
             text_primary=(255, 255, 255),
             text_secondary=(220, 220, 220),
-            border=(114, 137, 218)
+            
+            switch_track_on=(114, 137, 218),
+            switch_track_off=(40, 43, 48),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(80, 85, 95),
+            
+            border=(114, 137, 218),
+            border2=(90, 110, 180)
         )
 
         # GMAIL THEME - Gmail brand colors
@@ -1233,7 +1465,14 @@ class ThemeManager:
             background2=(245, 245, 245),
             text_primary=(60, 64, 67),
             text_secondary=(95, 99, 104),
-            border=(218, 220, 224)
+            
+            switch_track_on=(52, 168, 83),
+            switch_track_off=(218, 220, 224),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(240, 240, 240),
+            
+            border=(218, 220, 224),
+            border2=(200, 202, 205)
         )
 
         # YOUTUBE THEME - YouTube brand colors
@@ -1266,10 +1505,15 @@ class ThemeManager:
             background2=(8, 8, 8),
             text_primary=(255, 255, 255),
             text_secondary=(170, 170, 170),
-            border=(255, 0, 0)
+            
+            switch_track_on=(255, 0, 0),
+            switch_track_off=(60, 60, 60),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(100, 100, 100),
+            
+            border=(255, 0, 0),
+            border2=(200, 0, 0)
         )
-
-        # NOVOS TEMAS ADICIONADOS:
 
         # FOREST THEME - Nature inspired
         cls._themes[ThemeType.FOREST] = UITheme(
@@ -1301,7 +1545,14 @@ class ThemeManager:
             background2=(10, 40, 10),
             text_primary=(240, 255, 240),
             text_secondary=(200, 230, 200),
-            border=(85, 107, 47)
+            
+            switch_track_on=(34, 139, 34),
+            switch_track_off=(60, 100, 60),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(200, 230, 200),
+            
+            border=(85, 107, 47),
+            border2=(60, 80, 30)
         )
 
         # SUNSET THEME - Warm sunset colors
@@ -1334,7 +1585,14 @@ class ThemeManager:
             background2=(255, 200, 170),
             text_primary=(75, 0, 130),
             text_secondary=(106, 90, 205),
-            border=(255, 69, 0)
+            
+            switch_track_on=(255, 140, 0),
+            switch_track_off=(205, 92, 92),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(255, 218, 185),
+            
+            border=(255, 69, 0),
+            border2=(220, 50, 0)
         )
 
         # OCEAN THEME - Deep ocean blues
@@ -1367,7 +1625,14 @@ class ThemeManager:
             background2=(0, 0, 100),
             text_primary=(224, 255, 255),
             text_secondary=(173, 216, 230),
-            border=(64, 224, 208)
+            
+            switch_track_on=(0, 105, 148),
+            switch_track_off=(70, 130, 180),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(173, 216, 230),
+            
+            border=(64, 224, 208),
+            border2=(50, 180, 170)
         )
 
         # MATRIX THEME - Green code style
@@ -1400,7 +1665,14 @@ class ThemeManager:
             background2=(0, 10, 0),
             text_primary=(0, 255, 0),
             text_secondary=(50, 205, 50),
-            border=(0, 100, 0)
+            
+            switch_track_on=(0, 255, 0),
+            switch_track_off=(0, 80, 0),
+            switch_thumb_on=(0, 0, 0),
+            switch_thumb_off=(0, 150, 0),
+            
+            border=(0, 100, 0),
+            border2=(0, 80, 0)
         )
 
         # LAVENDER THEME - Soft purple theme
@@ -1433,7 +1705,14 @@ class ThemeManager:
             background2=(240, 240, 250),
             text_primary=(75, 0, 130),
             text_secondary=(106, 90, 205),
-            border=(147, 112, 219)
+            
+            switch_track_on=(147, 112, 219),
+            switch_track_off=(200, 180, 200),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(240, 240, 250),
+            
+            border=(147, 112, 219),
+            border2=(120, 90, 190)
         )
 
         # CHOCOLATE THEME - Rich brown theme
@@ -1466,7 +1745,374 @@ class ThemeManager:
             background2=(80, 50, 25),
             text_primary=(255, 250, 240),
             text_secondary=(245, 222, 179),
-            border=(139, 69, 19)
+            
+            switch_track_on=(160, 82, 45),
+            switch_track_off=(120, 60, 30),
+            switch_thumb_on=(255, 250, 240),
+            switch_thumb_off=(205, 133, 63),
+            
+            border=(139, 69, 19),
+            border2=(110, 50, 10)
+        )
+
+        # DEEP SPACE THEME - Dark cosmic theme
+        cls._themes[ThemeType.DEEP_SPACE] = UITheme(
+            button_normal=(100, 65, 165),
+            button_hover=(120, 85, 185),
+            button_pressed=(80, 45, 145),
+            button_disabled=(60, 60, 80),
+            button_text=(230, 230, 250),
+            button_border=(138, 43, 226),
+            
+            dropdown_normal=(30, 25, 45),
+            dropdown_hover=(50, 45, 65),
+            dropdown_expanded=(40, 35, 55),
+            dropdown_text=(230, 230, 250),
+            dropdown_option_normal=(20, 15, 35),
+            dropdown_option_hover=(25, 20, 40),
+            dropdown_option_selected=(30, 25, 45),
+            dropdown_border=(147, 112, 219),
+            
+            slider_track=(40, 35, 60),
+            slider_thumb_normal=(186, 85, 211),
+            slider_thumb_hover=(206, 105, 231),
+            slider_thumb_pressed=(166, 65, 191),
+            slider_text=(230, 230, 250),
+            
+            label_text=(230, 230, 250),
+            
+            background=(15, 10, 25),
+            background2=(10, 5, 15),
+            text_primary=(230, 230, 250),
+            text_secondary=(176, 196, 222),
+            
+            switch_track_on=(123, 104, 238),
+            switch_track_off=(50, 45, 65),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(200, 200, 210),
+            
+            border=(75, 0, 130),
+            border2=(60, 0, 100)
+        )
+        
+        # NORD DARK THEME - Arctic dark theme
+        cls._themes[ThemeType.NORD_DARK] = UITheme(
+            button_normal=(94, 129, 172),
+            button_hover=(114, 149, 192),
+            button_pressed=(74, 109, 152),
+            button_disabled=(100, 120, 140),
+            button_text=(236, 239, 244),
+            button_border=(129, 161, 193),
+            
+            dropdown_normal=(46, 52, 64),
+            dropdown_hover=(59, 66, 82),
+            dropdown_expanded=(52, 59, 73),
+            dropdown_text=(236, 239, 244),
+            dropdown_option_normal=(40, 46, 58),
+            dropdown_option_hover=(43, 49, 61),
+            dropdown_option_selected=(46, 52, 64),
+            dropdown_border=(76, 86, 106),
+            
+            slider_track=(67, 76, 94),
+            slider_thumb_normal=(136, 192, 208),
+            slider_thumb_hover=(156, 212, 228),
+            slider_thumb_pressed=(116, 172, 188),
+            slider_text=(236, 239, 244),
+            
+            label_text=(236, 239, 244),
+            
+            background=(36, 41, 51),
+            background2=(30, 35, 42),
+            text_primary=(236, 239, 244),
+            text_secondary=(216, 222, 233),
+            
+            switch_track_on=(143, 188, 187),
+            switch_track_off=(67, 76, 94),
+            switch_thumb_on=(236, 239, 244),
+            switch_thumb_off=(200, 205, 215),
+            
+            border=(76, 86, 106),
+            border2=(59, 66, 82)
+        )
+        
+        # NORD LIGHT THEME - Arctic light theme
+        cls._themes[ThemeType.NORD_LIGHT] = UITheme(
+            button_normal=(136, 192, 208),
+            button_hover=(116, 172, 188),
+            button_pressed=(96, 152, 168),
+            button_disabled=(180, 200, 210),
+            button_text=(46, 52, 64),
+            button_border=(129, 161, 193),
+            
+            dropdown_normal=(236, 239, 244),
+            dropdown_hover=(216, 222, 233),
+            dropdown_expanded=(226, 232, 240),
+            dropdown_text=(46, 52, 64),
+            dropdown_option_normal=(245, 247, 250),
+            dropdown_option_hover=(240, 244, 248),
+            dropdown_option_selected=(236, 239, 244),
+            dropdown_border=(216, 222, 233),
+            
+            slider_track=(229, 233, 240),
+            slider_thumb_normal=(94, 129, 172),
+            slider_thumb_hover=(114, 149, 192),
+            slider_thumb_pressed=(74, 109, 152),
+            slider_text=(46, 52, 64),
+            
+            label_text=(46, 52, 64),
+            
+            background=(255, 255, 255),
+            background2=(245, 247, 250),
+            text_primary=(46, 52, 64),
+            text_secondary=(76, 86, 106),
+            
+            switch_track_on=(143, 188, 187),
+            switch_track_off=(229, 233, 240),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(245, 247, 250),
+            
+            border=(216, 222, 233),
+            border2=(196, 202, 213)
+        )
+        
+        # DRACULA THEME - Popular dark theme
+        cls._themes[ThemeType.DRACULA] = UITheme(
+            button_normal=(189, 147, 249),
+            button_hover=(169, 127, 229),
+            button_pressed=(149, 107, 209),
+            button_disabled=(100, 100, 130),
+            button_text=(40, 42, 54),
+            button_border=(98, 114, 164),
+            
+            dropdown_normal=(68, 71, 90),
+            dropdown_hover=(88, 91, 110),
+            dropdown_expanded=(78, 81, 100),
+            dropdown_text=(248, 248, 242),
+            dropdown_option_normal=(58, 61, 80),
+            dropdown_option_hover=(63, 66, 85),
+            dropdown_option_selected=(68, 71, 90),
+            dropdown_border=(98, 114, 164),
+            
+            slider_track=(40, 42, 54),
+            slider_thumb_normal=(255, 121, 198),
+            slider_thumb_hover=(255, 141, 218),
+            slider_thumb_pressed=(235, 101, 178),
+            slider_text=(248, 248, 242),
+            
+            label_text=(248, 248, 242),
+            
+            background=(40, 42, 54),
+            background2=(30, 31, 41),
+            text_primary=(248, 248, 242),
+            text_secondary=(189, 147, 249),
+            
+            switch_track_on=(80, 250, 123),
+            switch_track_off=(68, 71, 90),
+            switch_thumb_on=(40, 42, 54),
+            switch_thumb_off=(139, 233, 253),
+            
+            border=(98, 114, 164),
+            border2=(78, 94, 144)
+        )
+        
+        # SOLARIZED DARK THEME
+        cls._themes[ThemeType.SOLARIZED_DARK] = UITheme(
+            button_normal=(38, 139, 210),
+            button_hover=(58, 159, 230),
+            button_pressed=(28, 119, 190),
+            button_disabled=(80, 100, 120),
+            button_text=(253, 246, 227),
+            button_border=(42, 161, 152),
+            
+            dropdown_normal=(0, 43, 54),
+            dropdown_hover=(7, 54, 66),
+            dropdown_expanded=(3, 48, 60),
+            dropdown_text=(253, 246, 227),
+            dropdown_option_normal=(0, 35, 44),
+            dropdown_option_hover=(0, 39, 49),
+            dropdown_option_selected=(0, 43, 54),
+            dropdown_border=(42, 161, 152),
+            
+            slider_track=(7, 54, 66),
+            slider_thumb_normal=(181, 137, 0),
+            slider_thumb_hover=(201, 157, 0),
+            slider_thumb_pressed=(161, 117, 0),
+            slider_text=(253, 246, 227),
+            
+            label_text=(253, 246, 227),
+            
+            background=(0, 43, 54),
+            background2=(0, 32, 41),
+            text_primary=(253, 246, 227),
+            text_secondary=(131, 148, 150),
+            
+            switch_track_on=(133, 153, 0),
+            switch_track_off=(7, 54, 66),
+            switch_thumb_on=(253, 246, 227),
+            switch_thumb_off=(131, 148, 150),
+            
+            border=(42, 161, 152),
+            border2=(32, 131, 122)
+        )
+        
+        # SOLARIZED LIGHT THEME
+        cls._themes[ThemeType.SOLARIZED_LIGHT] = UITheme(
+            button_normal=(38, 139, 210),
+            button_hover=(58, 159, 230),
+            button_pressed=(28, 119, 190),
+            button_disabled=(150, 170, 190),
+            button_text=(253, 246, 227),
+            button_border=(42, 161, 152),
+            
+            dropdown_normal=(253, 246, 227),
+            dropdown_hover=(238, 232, 213),
+            dropdown_expanded=(245, 239, 220),
+            dropdown_text=(101, 123, 131),
+            dropdown_option_normal=(255, 255, 255),
+            dropdown_option_hover=(250, 244, 225),
+            dropdown_option_selected=(253, 246, 227),
+            dropdown_border=(42, 161, 152),
+            
+            slider_track=(238, 232, 213),
+            slider_thumb_normal=(181, 137, 0),
+            slider_thumb_hover=(201, 157, 0),
+            slider_thumb_pressed=(161, 117, 0),
+            slider_text=(101, 123, 131),
+            
+            label_text=(101, 123, 131),
+            
+            background=(253, 246, 227),
+            background2=(238, 232, 213),
+            text_primary=(101, 123, 131),
+            text_secondary=(147, 161, 161),
+            
+            switch_track_on=(133, 153, 0),
+            switch_track_off=(238, 232, 213),
+            switch_thumb_on=(253, 246, 227),
+            switch_thumb_off=(147, 161, 161),
+            
+            border=(42, 161, 152),
+            border2=(32, 131, 122)
+        )
+        
+        # MONOKAI THEME - Vibrant programmer theme
+        cls._themes[ThemeType.MONOKAI] = UITheme(
+            button_normal=(249, 38, 114),
+            button_hover=(229, 18, 94),
+            button_pressed=(209, 0, 74),
+            button_disabled=(120, 100, 110),
+            button_text=(39, 40, 34),
+            button_border=(174, 129, 255),
+            
+            dropdown_normal=(39, 40, 34),
+            dropdown_hover=(59, 60, 54),
+            dropdown_expanded=(49, 50, 44),
+            dropdown_text=(248, 248, 242),
+            dropdown_option_normal=(29, 30, 24),
+            dropdown_option_hover=(34, 35, 29),
+            dropdown_option_selected=(39, 40, 34),
+            dropdown_border=(174, 129, 255),
+            
+            slider_track=(65, 67, 57),
+            slider_thumb_normal=(102, 217, 239),
+            slider_thumb_hover=(122, 237, 255),
+            slider_thumb_pressed=(82, 197, 219),
+            slider_text=(248, 248, 242),
+            
+            label_text=(248, 248, 242),
+            
+            background=(39, 40, 34),
+            background2=(29, 30, 24),
+            text_primary=(248, 248, 242),
+            text_secondary=(249, 38, 114),
+            
+            switch_track_on=(166, 226, 46),
+            switch_track_off=(65, 67, 57),
+            switch_thumb_on=(39, 40, 34),
+            switch_thumb_off=(249, 38, 114),
+            
+            border=(174, 129, 255),
+            border2=(140, 100, 210)
+        )
+        
+        # GRUVBOX DARK THEME - Warm dark theme
+        cls._themes[ThemeType.GRUVBOX_DARK] = UITheme(
+            button_normal=(251, 73, 52),
+            button_hover=(231, 53, 32),
+            button_pressed=(211, 33, 12),
+            button_disabled=(120, 100, 90),
+            button_text=(40, 40, 40),
+            button_border=(184, 187, 38),
+            
+            dropdown_normal=(60, 56, 54),
+            dropdown_hover=(80, 76, 74),
+            dropdown_expanded=(70, 66, 64),
+            dropdown_text=(251, 241, 199),
+            dropdown_option_normal=(50, 46, 44),
+            dropdown_option_hover=(55, 51, 49),
+            dropdown_option_selected=(60, 56, 54),
+            dropdown_border=(184, 187, 38),
+            
+            slider_track=(80, 73, 69),
+            slider_thumb_normal=(254, 128, 25),
+            slider_thumb_hover=(255, 148, 45),
+            slider_thumb_pressed=(234, 108, 5),
+            slider_text=(251, 241, 199),
+            
+            label_text=(251, 241, 199),
+            
+            background=(40, 40, 40),
+            background2=(29, 32, 33),
+            text_primary=(251, 241, 199),
+            text_secondary=(213, 196, 161),
+            
+            switch_track_on=(152, 151, 26),
+            switch_track_off=(80, 73, 69),
+            switch_thumb_on=(251, 241, 199),
+            switch_thumb_off=(213, 196, 161),
+            
+            border=(184, 187, 38),
+            border2=(150, 150, 30)
+        )
+        
+        # GRUVBOX LIGHT THEME - Warm light theme
+        cls._themes[ThemeType.GRUVBOX_LIGHT] = UITheme(
+            button_normal=(204, 36, 29),
+            button_hover=(184, 16, 9),
+            button_pressed=(164, 0, 0),
+            button_disabled=(180, 150, 140),
+            button_text=(251, 241, 199),
+            button_border=(215, 153, 33),
+            
+            dropdown_normal=(251, 241, 199),
+            dropdown_hover=(235, 219, 178),
+            dropdown_expanded=(243, 230, 188),
+            dropdown_text=(60, 56, 54),
+            dropdown_option_normal=(255, 255, 255),
+            dropdown_option_hover=(247, 237, 206),
+            dropdown_option_selected=(251, 241, 199),
+            dropdown_border=(215, 153, 33),
+            
+            slider_track=(213, 196, 161),
+            slider_thumb_normal=(254, 128, 25),
+            slider_thumb_hover=(255, 148, 45),
+            slider_thumb_pressed=(234, 108, 5),
+            slider_text=(60, 56, 54),
+            
+            label_text=(60, 56, 54),
+            
+            background=(251, 241, 199),
+            background2=(235, 219, 178),
+            text_primary=(60, 56, 54),
+            text_secondary=(124, 111, 100),
+            
+            switch_track_on=(152, 151, 26),
+            switch_track_off=(213, 196, 161),
+            switch_thumb_on=(251, 241, 199),
+            switch_thumb_off=(235, 219, 178),
+            
+            border=(215, 153, 33),
+            border2=(180, 125, 20)
         )
 
     @classmethod

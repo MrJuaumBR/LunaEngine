@@ -32,7 +32,6 @@ DEPENDENCIES:
 import pygame, threading
 import numpy as np
 from typing import Dict, List, Callable, Optional, Type
-from ..backend.pygame_backend import PygameRenderer
 from ..ui.elements import *
 from .scene import Scene
 from ..utils.performance import PerformanceMonitor, GarbageCollector
@@ -79,23 +78,59 @@ class LunaEngine:
         self.performance_monitor = PerformanceMonitor()
         self.garbage_collector = GarbageCollector()
         
-        # Use Pygame renderer for now (more reliable for 2D)
-        self.renderer = PygameRenderer(width, height)
+        # Choose rendering backend
+        self.use_opengl = use_opengl
+        from ..backend.pygame_backend import PygameRenderer
+        self.ui_renderer = PygameRenderer(width, height)
+        if use_opengl:
+            from ..backend.opengl import OpenGLRenderer
+            self.renderer = OpenGLRenderer(width, height)
+        else:
+            self.renderer = self.ui_renderer
+        
         self.screen = None
         
     def initialize(self):
         """Initialize the engine and create the game window."""
         pygame.init()
+        
         # Initialize font system early
         FontManager.initialize()
         
-        # Create display
-        self.screen = pygame.display.set_mode((self.width, self.height))
+        print(f"Initializing engine with OpenGL: {self.use_opengl}")
+        
+        # Create the display based on renderer type
+        if self.use_opengl:
+            # Set OpenGL attributes BEFORE creating display
+            pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MAJOR_VERSION, 3)
+            pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MINOR_VERSION, 3)
+            pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
+            
+            try:
+                self.screen = pygame.display.set_mode((self.width, self.height), pygame.OPENGL | pygame.DOUBLEBUF)
+                print("OpenGL display created successfully")
+            except Exception as e:
+                print(f"Failed to create OpenGL display: {e}")
+                print("Falling back to Pygame rendering")
+                self.use_opengl = False
+                self.screen = pygame.display.set_mode((self.width, self.height))
+        else:
+            self.screen = pygame.display.set_mode((self.width, self.height))
+        
         pygame.display.set_caption(self.title)
         
-        # Initialize renderer
-        self.renderer.initialize()
+        # Initialize both renderers
+        print("Initializing renderers...")
+        renderer_success = self.renderer.initialize()
+        
+        if self.use_opengl and not renderer_success:
+            print("OpenGL renderer failed to initialize, falling back to Pygame")
+            self.use_opengl = False
+            self.renderer = self.ui_renderer
+        
+        self.ui_renderer.initialize()
         self.running = True
+        print("Engine initialization complete")
         
     def add_scene(self, name: str, scene_class: Type[Scene], *args, **kwargs):
         """
@@ -250,6 +285,7 @@ class LunaEngine:
                 if hasattr(attr, 'update_theme'):
                     attr.update_theme(theme_enum)
     
+    
     def get_fps_stats(self) -> dict:
         """
         Get comprehensive FPS statistics (optimized)
@@ -262,9 +298,9 @@ class LunaEngine:
     def get_hardware_info(self) -> dict:
         """Get hardware information"""
         return self.performance_monitor.get_hardware_info()
-    
+
     def run(self):
-        """Main game loop - OPTIMIZED"""
+        """Main game loop - CORRECTED"""
         self.initialize()
         
         # Pre-cache frequently used values
@@ -281,7 +317,7 @@ class LunaEngine:
                 if event.type == pygame.QUIT:
                     self.running = False
                 
-                # FIX: Process both KEYDOWN and KEYUP for better text input
+                # Process both KEYDOWN and KEYUP for better text input
                 elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
                     self._handle_keyboard_event(event)
                 
@@ -303,24 +339,154 @@ class LunaEngine:
             mouse_pressed = pygame.mouse.get_pressed()[mouse_btn_left]
             self._update_ui_elements(mouse_pos, mouse_pressed, dt)
             
-            # RENDER EVERYTHING
-            self.renderer.begin_frame()
-            
-            # 1. Render scene
-            if self.current_scene:
-                self.current_scene.render(self.renderer)
-            
-            # 2. Render UI elements
-            self._render_ui_elements(self.renderer)
-            
-            # 3. Update display
-            self.screen.blit(self.renderer.get_surface(), (0, 0))
-            pygame.display.flip()
+            # CORRECTED: Unified rendering pipeline
+            if self.use_opengl:
+                # OPENGL MODE - Hybrid rendering
+                self._render_opengl_mode()
+            else:
+                # PYGAME MODE - Traditional rendering
+                self._render_pygame_mode()
             
             # Periodic garbage collection
             self.garbage_collector.cleanup()
         
         self.shutdown()
+
+    def _render_opengl_mode(self):
+        """Rendering pipeline for OpenGL mode - CORRECTED"""
+        try:
+            # 1. Start OpenGL frame
+            self.renderer.begin_frame()
+            
+            # 2. Render main scene objects
+            if self.current_scene:
+                self.current_scene.render(self.renderer)
+            
+            # 3. Render particles using OpenGL
+            self._render_particles_opengl()
+            
+            # 4. Render UI elements using OpenGL
+            self._render_ui_elements_opengl()
+            
+            # 5. Finalize OpenGL frame
+            self.renderer.end_frame()
+            
+        except Exception as e:
+            print(f"OpenGL rendering error: {e}")
+            import traceback
+            traceback.print_exc()
+
+    def _render_ui_elements_opengl(self):
+        """Render UI elements using OpenGL renderer"""
+        if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
+            return
+        
+        # Sort elements for optimal rendering order
+        regular_elements = []
+        closed_dropdowns = []
+        open_dropdowns = []
+        
+        for ui_element in self.current_scene.ui_elements:
+            if isinstance(ui_element, Dropdown):
+                if ui_element.expanded:
+                    open_dropdowns.append(ui_element)
+                else:
+                    closed_dropdowns.append(ui_element)
+            else:
+                regular_elements.append(ui_element)
+        
+        # Render in correct z-order
+        for ui_element in regular_elements + closed_dropdowns:
+            ui_element.render(self.renderer)
+        
+        for dropdown in open_dropdowns:
+            dropdown.render(self.renderer)
+
+    def _render_pygame_mode(self):
+        """Rendering pipeline for Pygame mode - SIMPLIFIED"""
+        try:
+            # 1. Clear screen
+            self.screen.fill((30, 30, 50))
+            
+            # 2. Set the screen as render target
+            if hasattr(self.renderer, 'set_surface'):
+                self.renderer.set_surface(self.screen)
+            self.renderer.begin_frame()
+            
+            # 3. Render main scene
+            if self.current_scene:
+                self.current_scene.render(self.renderer)
+            
+            # 4. Render UI elements - AGORA AUTOMÁTICO!
+            self._render_ui_elements(self.renderer)
+            
+            # 5. Finalize Pygame frame
+            pygame.display.flip()
+            
+        except Exception as e:
+            print(f"Pygame rendering error: {e}")
+
+    def _render_ui_elements(self, renderer):
+        """Render UI elements - AGORA UNIVERSAL!"""
+        if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
+            return
+        
+        # Sort elements for optimal rendering order
+        regular_elements = []
+        closed_dropdowns = []
+        open_dropdowns = []
+        
+        for ui_element in self.current_scene.ui_elements:
+            if isinstance(ui_element, Dropdown):
+                if ui_element.expanded:
+                    open_dropdowns.append(ui_element)
+                else:
+                    closed_dropdowns.append(ui_element)
+            else:
+                regular_elements.append(ui_element)
+        
+        # Render in correct z-order - the render() method is now smart!
+        for ui_element in regular_elements + closed_dropdowns:
+            ui_element.render(renderer)
+        
+        for dropdown in open_dropdowns:
+            dropdown.render(renderer)
+
+    def _render_particles_opengl(self):
+        """Render particles using OpenGL - FIXED"""
+        if (self.current_scene and 
+            hasattr(self.current_scene, 'particle_system') and
+            hasattr(self.renderer, 'render_particles')):
+            
+            try:
+                particle_data = self.current_scene.particle_system.get_render_data()
+                if particle_data['active_count'] > 0:
+                    self.renderer.render_particles(particle_data)
+            except Exception as e:
+                print(f"OpenGL particle rendering error: {e}")
+
+    def _render_ui_direct(self):
+        """Render UI directly to screen in Pygame mode"""
+        # Set UI renderer to use main screen
+        self.ui_renderer.set_surface(self.screen)
+        self.ui_renderer.begin_frame()
+        
+        # Render UI elements
+        self._render_ui_elements(self.ui_renderer)
+
+    def _render_particles(self):
+        """Render particles using the appropriate method"""
+        if not self.current_scene or not hasattr(self.current_scene, 'particle_system'):
+            return
+        
+        # Para OpenGL, usar renderização otimizada
+        if hasattr(self.renderer, 'render_particles'):
+            particle_data = self.current_scene.particle_system.get_render_data()
+            if particle_data['active_count'] > 0:
+                self.renderer.render_particles(particle_data)
+        else:
+            # Fallback para PygameRenderer
+            self.current_scene.particle_system.render(self.renderer.get_surface())
 
     def _handle_mouse_scroll(self, event):
         """Handle mouse wheel scrolling for UI elements - OPTIMIZED"""
@@ -389,34 +555,6 @@ class LunaEngine:
         # Update dropdowns last (for proper focus handling)
         for dropdown in dropdowns:
             dropdown._update_with_mouse(mouse_pos, mouse_pressed, dt)
-            
-    def _render_ui_elements(self, renderer):
-        """Render UI elements in correct order - OPTIMIZED"""
-        if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
-            return
-            
-        # Sort elements for optimal rendering order
-        regular_elements = []
-        closed_dropdowns = []
-        open_dropdowns = []
-        
-        for ui_element in self.current_scene.ui_elements:
-            if isinstance(ui_element, Dropdown):
-                if ui_element.expanded:
-                    open_dropdowns.append(ui_element)
-                else:
-                    closed_dropdowns.append(ui_element)
-            else:
-                regular_elements.append(ui_element)
-        
-        # Render in correct z-order:
-        # 1. Regular elements and closed dropdowns
-        for ui_element in regular_elements + closed_dropdowns:
-            ui_element.render(renderer)
-        
-        # 2. Open dropdowns (on top)
-        for dropdown in open_dropdowns:
-            dropdown.render(renderer)
     
     def shutdown(self):
         """Cleanup resources"""

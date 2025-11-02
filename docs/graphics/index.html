@@ -123,7 +123,7 @@
         
                             <div class="alert alert-info docstring-content">
                                 <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Particle System - Fixed Version with Colors and Rendering</div>
+                                <div class="docstring-text">Particle System - Optimized Version</div>
                             </div>
             <h6>Classes:</h6>
                             <div class="class-item mb-3 p-3 border rounded" id="class-particletype">
@@ -131,7 +131,7 @@
                                     <i class="bi bi-box me-2"></i>
                                     ParticleType
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Built-in particle types</div></div><small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
+                <small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>FIRE: Any = 'fire'</code>
                                 </div>
@@ -161,7 +161,7 @@
                                     <i class="bi bi-box me-2"></i>
                                     ExitPoint
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Emission exit points for particles</div></div><small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
+                <small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>TOP: Any = 'top'</code>
                                 </div>
@@ -191,7 +191,7 @@
                                     <i class="bi bi-box me-2"></i>
                                     PhysicsType
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Physics simulation types</div></div><small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
+                <small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>TOPDOWN: Any = 'topdown'</code>
                                 </div>
@@ -205,7 +205,7 @@
                                     <i class="bi bi-box me-2"></i>
                                     ParticleConfig
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Configuration for particle behavior and appearance</div></div><div class="mt-3"><strong>Attributes:</strong>
+                <div class="mt-3"><strong>Attributes:</strong>
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>color_start: Tuple[int, int, int] = (255, 255, 255)</code>
                                 </div>
@@ -255,56 +255,62 @@
                                     <i class="bi bi-box me-2"></i>
                                     ParticleSystem
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Optimized particle system with support for custom particles</div></div><div class="mt-3"><strong>Attributes:</strong>
+                <div class="docstring-content mb-2"><div class="docstring-text">Particle System - Optimized version</div></div><div class="mt-3"><strong>Attributes:</strong>
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>PARTICLE_CONFIGS: Dict[ParticleType, ParticleConfig] = {ParticleType.FIRE: ParticleConfig(color_start=(255, 100, 0), color_end=(255, 255, 0), size_start=8.0, size_end=2.0, lifetime=1.5, speed=150.0, gravity=-100.0, spread=60.0, fade_out=True, grow=False), ParticleType.WATER: ParticleConfig(color_start=(0, 100, 255), color_end=(0, 200, 255), size_start=6.0, size_end=4.0, lifetime=2.0, speed=80.0, gravity=300.0, spread=30.0, damping=0.9, fade_out=True), ParticleType.SMOKE: ParticleConfig(color_start=(100, 100, 100), color_end=(50, 50, 50), size_start=4.0, size_end=12.0, lifetime=3.0, speed=60.0, gravity=-50.0, spread=120.0, fade_out=True, grow=True), ParticleType.DUST: ParticleConfig(color_start=(200, 200, 150), color_end=(150, 150, 100), size_start=3.0, size_end=1.0, lifetime=1.0, speed=40.0, gravity=50.0, spread=180.0, fade_out=True), ParticleType.SPARK: ParticleConfig(color_start=(255, 255, 200), color_end=(255, 100, 0), size_start=2.0, size_end=1.0, lifetime=0.5, speed=200.0, gravity=200.0, spread=15.0, fade_out=True)}</code>
                                 </div>
                         </div><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-__init__">
                                     <code>def __init__(self: Any, max_particles: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the particle system</div></div></div>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_init_arrays">
                                     <code>def _init_arrays(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize NumPy arrays for particle data storage</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize optimized NumPy arrays</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-register_custom_particle">
                                     <code>def register_custom_particle(self: Any, name: str, config: ParticleConfig) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Register a custom particle type for user-defined effects</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Register a custom particle type for user-defined effects<br><br>Args:<br> &nbsp; &nbsp;name (str): Unique name for the custom particle type<br> &nbsp; &nbsp;config (ParticleConfig): Configuration for the custom particle<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if registration was successful<br> &nbsp; &nbsp;<br>Raises:<br> &nbsp; &nbsp;ValueError: If particle name is already registered</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-get_custom_particle">
                                     <code>def get_custom_particle(self: Any, name: str) -> Optional[ParticleConfig]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get configuration for a custom particle</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-emit">
-                                    <code>def emit(self: Any, x: float, y: float, particle_type: Union[ParticleType, str], count: int, exit_point: ExitPoint, physics_type: PhysicsType, spread: Optional[float], angle: float, custom_config: Optional[ParticleConfig]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Emit particles from specified position with given parameters</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get configuration for a custom particle<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the custom particle type<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[ParticleConfig]: The particle configuration or None if not found</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-list_custom_particles">
+                                    <code>def list_custom_particles(self: Any) -> List[str]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get list of all registered custom particle names<br><br>Returns:<br> &nbsp; &nbsp;List[str]: List of custom particle names</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-get_render_data">
+                                    <code>def get_render_data(self: Any) -> Dict[str, Any]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get particle data for rendering with caching</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_resolve_particle_config">
                                     <code>def _resolve_particle_config(self: Any, particle_type: Union[ParticleType, str], custom_config: Optional[ParticleConfig]) -> Optional[ParticleConfig]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Resolve particle configuration from various sources</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Resolve particle configuration from various sources<br><br>Args:<br> &nbsp; &nbsp;particle_type: The particle type identifier<br> &nbsp; &nbsp;custom_config: Optional custom configuration<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParticleConfig or None if not found</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_get_exit_offset">
+                                    <code>def _get_exit_offset(self: Any, exit_point: ExitPoint) -> float</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get offset distance for exit points</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_get_exit_position">
-                                    <code>def _get_exit_position(self: Any, x: float, y: float, exit_point: ExitPoint) -> Tuple[float, float]</code>
+                                    <code>def _get_exit_position(self: Any, x: float, y: float, exit_point: ExitPoint, offset: float) -> Tuple[float, float]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Calculate initial position based on exit point</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_get_initial_velocity">
                                     <code>def _get_initial_velocity(self: Any, exit_point: ExitPoint, speed: float, spread: float, base_angle: float) -> Tuple[float, float]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Calculate initial velocity vector with spread</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-emit">
+                                    <code>def emit(self: Any, x: float, y: float, particle_type: Union[ParticleType, str], count: int, exit_point: ExitPoint, physics_type: PhysicsType, spread: Optional[float], angle: float, custom_config: Optional[ParticleConfig]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Emit particles with optimizations</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_setup_particle_properties">
                                     <code>def _setup_particle_properties(self: Any, idx: int, config: ParticleConfig, physics_type: PhysicsType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Setup all properties for a new particle</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Setup particle properties - optimized</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-update">
                                     <code>def update(self: Any, dt: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update all active particles</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_update_physics">
-                                    <code>def _update_physics(self: Any, indices: np.ndarray, dt: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update physics using vectorized NumPy operations</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update particles with vectorized operations</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_update_properties">
                                     <code>def _update_properties(self: Any, indices: np.ndarray) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update particle properties using vectorized operations</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-render">
-                                    <code>def render(self: Any, surface: pygame.Surface) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render all active particles to the target surface</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-clear">
                                     <code>def clear(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Clear all particles and reset the system</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Clear all particles</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-render">
+                                    <code>def render(self: Any, surface: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render particles - CORRIGIDO para Pygame</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-get_stats">
                                     <code>def get_stats(self: Any) -> Dict[str, Any]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get system statistics</div></div></div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get comprehensive system statistics<br><br>Returns:<br> &nbsp; &nbsp;Dict with system statistics</div></div></div></div></div>
                         </div>
                     </div>
                 </div>

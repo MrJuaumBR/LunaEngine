@@ -139,7 +139,7 @@
                                     <i class="bi bi-box me-2"></i>
                                     UIElement
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Base class for all UI elements providing common functionality.<br><br>Attributes:<br> &nbsp; &nbsp;element_id (str): Unique identifier for this element in format ui_{type}_{counter}<br> &nbsp; &nbsp;x (int): X coordinate position<br> &nbsp; &nbsp;y (int): Y coordinate position<br> &nbsp; &nbsp;width (int): Width of the element in pixels<br> &nbsp; &nbsp;height (int): Height of the element in pixels<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning<br> &nbsp; &nbsp;state (UIState): Current state of the element<br> &nbsp; &nbsp;visible (bool): Whether element is visible<br> &nbsp; &nbsp;enabled (bool): Whether element is enabled<br> &nbsp; &nbsp;children (List[UIElement]): Child elements<br> &nbsp; &nbsp;parent (UIElement): Parent element</div></div><div class="mt-3"><strong>Methods:</strong>
+                <div class="docstring-content mb-2"><div class="docstring-text">Base class for all UI elements providing common functionality.<br><br>Attributes:<br> &nbsp; &nbsp;element_id (str): Unique identifier for this element in format ui_{type}_{counter}<br> &nbsp; &nbsp;x (int): X coordinate position<br> &nbsp; &nbsp;y (int): Y coordinate position<br> &nbsp; &nbsp;width (int): Width of the element in pixels<br> &nbsp; &nbsp;height (int): Height of the element in pixels<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning<br> &nbsp; &nbsp;state (UIState): Current state of the element<br> &nbsp; &nbsp;visible (bool): Whether element is visible<br> &nbsp; &nbsp;enabled (bool): Whether element is enabled<br> &nbsp; &nbsp;children (List[UIElement]): Child elements<br> &nbsp; &nbsp;parent (UIElement): Parent element</div></div><small class="text-muted">Inherits from: ABC</small><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-__init__">
                                     <code>def __init__(self: Any, x: int, y: int, width: int, height: int, root_point: Tuple[float, float], element_id: Optional[str]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize a UI element with position and dimensions.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the element in pixels.<br> &nbsp; &nbsp;height (int): Height of the element in pixels.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning where (0,0) is top-left <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;and (1,1) is bottom-right.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID. If None, generates automatic ID.</div></div></div>
@@ -164,9 +164,15 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update element with current mouse state for interaction.<br><br>Args:<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position (x, y).<br> &nbsp; &nbsp;mouse_pressed (bool): Whether mouse button is currently pressed.<br> &nbsp; &nbsp;dt (float): Delta time in seconds.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render this element using Pygame backend.<br>Override this in subclasses for Pygame-specific rendering.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render this element using OpenGL backend. &nbsp;<br>Override this in subclasses for OpenGL-specific rendering.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-render">
                                     <code>def render(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render the element to the screen.<br><br>Args:<br> &nbsp; &nbsp;renderer: The renderer object used for drawing.</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Universal render method</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-on_click">
                                     <code>def on_click(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Called when element is clicked by the user.</div></div></div>
@@ -197,9 +203,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-_get_text_color">
                                     <code>def _get_text_color(self: Any) -> Tuple[int, int, int]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the current text color.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color tuple for the text.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-render">
-                                    <code>def render(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render the text label.</div></div></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-imagelabel">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -215,9 +224,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagelabel-set_image">
                                     <code>def set_image(self: Any, image_path: str) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Change the displayed image.<br><br>Args:<br> &nbsp; &nbsp;image_path (str): Path to the new image file.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagelabel-render">
-                                    <code>def render(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render the image label.</div></div></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagelabel-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagelabel-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-button">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -248,9 +260,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-_get_text_color">
                                     <code>def _get_text_color(self: Any) -> Tuple[int, int, int]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the text color from the current theme.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color tuple for the text.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-render">
-                                    <code>def render(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render the button.</div></div></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-imagebutton">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -272,9 +287,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagebutton-_get_overlay_color">
                                     <code>def _get_overlay_color(self: Any) -> Optional[Tuple[int, int, int]]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get overlay color based on button state.<br><br>Returns:<br> &nbsp; &nbsp;Optional[Tuple[int, int, int]]: Overlay color or None for no overlay.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagebutton-render">
-                                    <code>def render(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render the image button.</div></div></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagebutton-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imagebutton-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-textbox">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -308,9 +326,15 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-_get_cursor_position">
                                     <code>def _get_cursor_position(self: Any, actual_x: int, actual_y: int) -> Tuple[int, int]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Calculate cursor position - OPTIMIZED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-render">
-                                    <code>def render(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render the text box - FIXED</div></div></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-_render_text_content">
+                                    <code>def _render_text_content(self: Any, renderer: Any, actual_x: int, actual_y: int, theme: Any, opengl: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Helper method to render text content</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-progressbar">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -326,9 +350,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-get_percentage">
                                     <code>def get_percentage(self: Any) -> float</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get progress as percentage.<br><br>Returns:<br> &nbsp; &nbsp;float: Progress percentage (0-100).</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-render">
-                                    <code>def render(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render the progress bar.</div></div></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-uidraggable">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -341,9 +368,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uidraggable-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update draggable element with mouse interaction.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uidraggable-render">
-                                    <code>def render(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render the draggable element.</div></div></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uidraggable-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uidraggable-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-uigradient">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -362,9 +392,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uigradient-set_colors">
                                     <code>def set_colors(self: Any, colors: List[Tuple[int, int, int]]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set new gradient colors.<br><br>Args:<br> &nbsp; &nbsp;colors (List[Tuple[int, int, int]]): New gradient colors.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uigradient-render">
-                                    <code>def render(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render the gradient element.</div></div></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uigradient-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uigradient-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-select">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -392,9 +425,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update select element with mouse interaction.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-render">
-                                    <code>def render(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render the select element.</div></div></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-_render_select_content">
+                                    <code>def _render_select_content(self: Any, renderer: Any, actual_x: int, actual_y: int, theme: Any, opengl: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Helper method to render select content</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-select-_draw_arrow_polygon">
+                                    <code>def _draw_arrow_polygon(self: Any, renderer: Any, points: Any, color: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw arrow polygon compatible with both Pygame and OpenGL.</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-switch">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -416,9 +452,15 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-switch-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update switch with mouse interaction.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-switch-render">
-                                    <code>def render(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render the switch.</div></div></div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-switch-_get_colors">
+                                    <code>def _get_colors(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get colors from current theme for switch</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-switch-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend - CONSISTENT with OpenGL</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-switch-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend - CONSISTENT with Pygame</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-scrollingframe">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -431,9 +473,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-handle_scroll">
                                     <code>def handle_scroll(self: Any, scroll_y: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Handle scroll input.<br><br>Args:<br> &nbsp; &nbsp;scroll_y (int): Vertical scroll amount.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-render">
-                                    <code>def render(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render the scrolling frame.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-_draw_horizontal_scrollbar">
                                     <code>def _draw_horizontal_scrollbar(self: Any, renderer: Any, x: int, y: int, theme: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw horizontal scrollbar.</div></div></div>
@@ -458,9 +503,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-slider-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update slider with mouse interaction</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-slider-render">
-                                    <code>def render(self: Any, renderer: Any) -> None</code>
-                        </div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-slider-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-slider-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-dropdown">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
@@ -491,9 +539,18 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-_get_scrollbar_rect">
                                     <code>def _get_scrollbar_rect(self: Any, actual_x: int, actual_y: int) -> Tuple[int, int, int, int]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the scrollbar rectangle</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-render">
-                                    <code>def render(self: Any, renderer: Any) -> None</code>
-                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-_draw_arrow_polygon">
+                                    <code>def _draw_arrow_polygon(self: Any, renderer: Any, points: Any, color: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw arrow polygon in a way compatible with both Pygame and OpenGL.<br><br>Args:<br> &nbsp; &nbsp;renderer: The renderer object<br> &nbsp; &nbsp;points: List of (x, y) points for the polygon<br> &nbsp; &nbsp;color: RGB color tuple</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-_render_expanded_options">
+                                    <code>def _render_expanded_options(self: Any, renderer: Any, actual_x: int, actual_y: int, theme: Any, opengl: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Helper method to render expanded options - WITH OPTION SEPARATORS</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-dropdown-add_option">
                                     <code>def add_option(self: Any, option: str) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Add an option to the dropdown</div></div></div>
@@ -669,7 +726,7 @@
         
                             <div class="alert alert-info docstring-content">
                                 <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">themes.py - UI Themes Manager for LunaEngine<br><br>ENGINE PATH:<br>lunaengine -&gt; ui -&gt; themes.py<br><br>DESCRIPTION:<br>This module manages comprehensive UI themes with predefined color schemes<br>for various applications and visual styles. It includes a wide range of<br>themes from basic functional ones to brand-specific and aesthetic designs.<br><br>LIBRARIES USED:<br>- enum: For theme type definitions<br>- typing: For type hints and type annotations<br>- dataclasses: For structured theme data storage<br><br>MAIN CLASSES:<br><br>1. UITheme (dataclass):<br> &nbsp; - Complete UI theme configuration for all elements<br> &nbsp; - Defines colors for buttons, dropdowns, sliders, labels, and general UI<br> &nbsp; - Supports optional border colors for different elements<br> &nbsp; - Now includes background2 for better contrast<br><br>2. ThemeType (Enum):<br> &nbsp; - Comprehensive enumeration of available theme types including:<br> &nbsp; &nbsp; - Basic: DEFAULT, PRIMARY, SECONDARY, WARN, ERROR, SUCCESS, INFO<br> &nbsp; &nbsp; - Fantasy: FANTASY_DARK, FANTASY_LIGHT<br> &nbsp; &nbsp; - Cherry: CHERRY_DARK, CHERRY_LIGHT<br> &nbsp; &nbsp; - Gemstones: RUBY, EMERALD, DIAMOND<br> &nbsp; &nbsp; - Metals: SILVER, COPPER, BRONZE<br> &nbsp; &nbsp; - Brand: ROBLOX, DISCORD, GMAIL, YOUTUBE<br> &nbsp; &nbsp; - Aesthetic: AZURE, EIGHTIES, CLOUDS, QUEEN, KING<br> &nbsp; &nbsp; - New: FOREST, SUNSET, OCEAN, MATRIX, LAVENDER, CHOCOLATE<br><br>3. ThemeManager:<br> &nbsp; - Manages theme registration, retrieval, and application<br> &nbsp; - Provides access to predefined themes<br> &nbsp; - Handles current theme state management<br> &nbsp; - Supports theme customization and overrides<br><br>This module provides a rich theming system with over 20 predefined color schemes<br>suitable for various application types and visual preferences.</div>
+                                <div class="docstring-text">themes.py - UI Themes Manager for LunaEngine<br><br>ENGINE PATH:<br>lunaengine -&gt; ui -&gt; themes.py<br><br>DESCRIPTION:<br>This module manages comprehensive UI themes with predefined color schemes<br>for various applications and visual styles. It includes a wide range of<br>themes from basic functional ones to brand-specific and aesthetic designs.<br><br>LIBRARIES USED:<br>- enum: For theme type definitions<br>- typing: For type hints and type annotations<br>- dataclasses: For structured theme data storage<br><br>MAIN CLASSES:<br><br>1. UITheme (dataclass):<br> &nbsp; - Complete UI theme configuration for all elements<br> &nbsp; - Defines colors for buttons, dropdowns, sliders, labels, and general UI<br> &nbsp; - Supports optional border colors for different elements<br> &nbsp; - Now includes background2 for better contrast<br><br>2. ThemeType (Enum):<br> &nbsp; - Comprehensive enumeration of available theme types including:<br> &nbsp; &nbsp; - Basic: DEFAULT, PRIMARY, SECONDARY, WARN, ERROR, SUCCESS, INFO<br> &nbsp; &nbsp; - Fantasy: FANTASY_DARK, FANTASY_LIGHT<br> &nbsp; &nbsp; - Cherry: CHERRY_DARK, CHERRY_LIGHT<br> &nbsp; &nbsp; - Gemstones: RUBY, EMERALD, DIAMOND<br> &nbsp; &nbsp; - Metals: SILVER, COPPER, BRONZE<br> &nbsp; &nbsp; - Brand: ROBLOX, DISCORD, GMAIL, YOUTUBE<br> &nbsp; &nbsp; - Aesthetic: AZURE, EIGHTIES, CLOUDS, QUEEN, KING<br> &nbsp; &nbsp; - New: FOREST, SUNSET, OCEAN, MATRIX, LAVENDER, CHOCOLATE<br> &nbsp; &nbsp; - New Dark/Light: DEEP_SPACE, NORD, DRACULA, SOLARIZED, MONOKAI, GRUVBOX<br><br>3. ThemeManager:<br> &nbsp; - Manages theme registration, retrieval, and application<br> &nbsp; - Provides access to predefined themes<br> &nbsp; - Handles current theme state management<br> &nbsp; - Supports theme customization and overrides<br><br>This module provides a rich theming system with over 20 predefined color schemes<br>suitable for various application types and visual preferences.</div>
                             </div>
             
                             <div class="theme-colors-section mt-4">
@@ -776,6 +833,22 @@
                         
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>text_secondary: Tuple[int, int, int] = None</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>switch_track_on: Tuple[int, int, int] = None</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>switch_track_off: Tuple[int, int, int] = None</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>switch_thumb_on: Tuple[int, int, int] = None</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>switch_thumb_off: Tuple[int, int, int] = None</code>
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
@@ -954,6 +1027,42 @@
                         
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>CHOCOLATE: Any = 'chocolate'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>DEEP_SPACE: Any = 'deep_space'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>NORD_DARK: Any = 'nord_dark'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>NORD_LIGHT: Any = 'nord_light'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>DRACULA: Any = 'dracula'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>SOLARIZED_DARK: Any = 'solarized_dark'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>SOLARIZED_LIGHT: Any = 'solarized_light'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>MONOKAI: Any = 'monokai'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>GRUVBOX_DARK: Any = 'gruvbox_dark'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>GRUVBOX_LIGHT: Any = 'gruvbox_light'</code>
                                 </div>
                         </div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-thememanager">

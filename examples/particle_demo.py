@@ -133,7 +133,6 @@ class ParticleDemoScene(Scene):
         section3_title = TextLabel(20, 330, "Physics & Emission", 20, (255, 255, 0))
         self.add_ui_element(section3_title)
         
-        # Exit point selector - CORRIGIDO: usar strings
         exit_points = ["top", "bottom", "left", "right", "center", "circular"]
         self.exit_dropdown = Dropdown(20, 360, 150, 30, exit_points)
         self.exit_dropdown.set_on_selection_changed(
@@ -241,7 +240,7 @@ class ParticleDemoScene(Scene):
         fps_stats = self.engine.get_fps_stats()
         
         self.demo_state['active_particles'] = stats['active_particles']
-        self.demo_state['fps'] = fps_stats['current']
+        self.demo_state['fps'] = fps_stats['current_fps']
         self.demo_state['memory_usage'] = stats['memory_usage_mb']
         
         # Update UI displays
@@ -262,31 +261,25 @@ class ParticleDemoScene(Scene):
         # Draw center marker
         renderer.draw_rect(510, 382, 4, 4, (255, 255, 0))
         
-        # Render particles
-        self.particle_system.render(renderer.get_surface())
-        
-        # Draw UI panels
-        renderer.draw_rect(0, 0, 1024, 100, (30, 30, 40, 200))
-        renderer.draw_rect(0, 100, 300, 668, (25, 25, 35, 180))
+        if not self.engine.use_opengl:
+            self.particle_system.render(renderer.get_surface())
 
 def main():
     """Main function"""
-    engine = LunaEngine("LunaEngine - Particle System Demo", 1024, 768)
+    # Teste com OpenGL ativado
+    engine = LunaEngine("LunaEngine - Particle System Demo", 1024, 768, use_opengl=False)
     engine.fps = 144
     
-    # Add performance monitoring event
     @engine.on_event(pygame.KEYDOWN)
     def handle_keydown(event):
         if event.key == pygame.K_r:
             print("Resetting particle system...")
             engine.scenes["main"].particle_system.clear()
         elif event.key == pygame.K_SPACE:
-            # Emit particles on spacebar
             engine.scenes["main"].emit_manual()
     
     engine.add_scene("main", ParticleDemoScene)
     engine.set_scene("main")
-    
     engine.run()
 
 if __name__ == "__main__":

@@ -41,16 +41,19 @@ class PygameRenderer(Renderer):
         """
         self.width = width
         self.height = height
-        self.surface = pygame.Surface((width, height))
+        self.surface = None
+        self._current_target = None
         
     def initialize(self):
         """Initialize the renderer - create main surface"""
         self.surface = pygame.Surface((self.width, self.height))
+        self._current_target = self.surface
         
     def begin_frame(self):
-        """Begin rendering frame - clear the surface with black"""
-        self.surface.fill((0, 0, 0))
-        
+        """Begin rendering frame - clear the surface with transparent black"""
+        if self._current_target:
+            self._current_target.fill((0, 0, 0, 0))  # Clear with transparent
+            
     def end_frame(self):
         """End rendering frame - no additional processing needed"""
         pass
@@ -60,9 +63,18 @@ class PygameRenderer(Renderer):
         Get the underlying pygame surface
         
         RETURNS:
-            pygame.Surface: The main rendering surface
+            pygame.Surface: The current rendering surface
         """
-        return self.surface
+        return self._current_target or pygame.Surface((self.width, self.height))
+        
+    def set_surface(self, surface: pygame.Surface):
+        """
+        Set custom surface for rendering
+        
+        ARGS:
+            surface: Pygame surface to use as render target
+        """
+        self._current_target = surface
         
     def draw_surface(self, surface: pygame.Surface, x: int, y: int):
         """
@@ -73,11 +85,11 @@ class PygameRenderer(Renderer):
             x: X coordinate for drawing
             y: Y coordinate for drawing
         """
-        if surface is not None:
-            self.surface.blit(surface, (x, y))
+        if surface is not None and self._current_target is not None:
+            self._current_target.blit(surface, (x, y))
         
     def draw_rect(self, x: int, y: int, width: int, height: int, 
-                  color: Tuple[int, int, int], fill: bool = True):
+                  color: Tuple[int, int, int], fill: bool = True, border_width: int = 1):
         """
         Draw a colored rectangle
         
@@ -89,11 +101,14 @@ class PygameRenderer(Renderer):
             color: RGB color tuple
             fill: Whether to fill the rectangle (default: True)
         """
+        if self._current_target is None:
+            return
+            
         rect = pygame.Rect(x, y, width, height)
         if fill:
-            pygame.draw.rect(self.surface, color, rect)
+            pygame.draw.rect(self._current_target, color, rect)
         else:
-            pygame.draw.rect(self.surface, color, rect, 1)
+            pygame.draw.rect(self._current_target, color, rect, border_width)
         
     def draw_circle(self, x: int, y: int, radius: int, color: Tuple[int, int, int]):
         """
@@ -105,7 +120,10 @@ class PygameRenderer(Renderer):
             radius: Circle radius
             color: RGB color tuple
         """
-        pygame.draw.circle(self.surface, color, (x, y), radius)
+        if self._current_target is None:
+            return
+            
+        pygame.draw.circle(self._current_target, color, (x, y), radius)
         
     def draw_line(self, start_x: int, start_y: int, end_x: int, end_y: int, 
                   color: Tuple[int, int, int], width: int = 1):
@@ -120,4 +138,7 @@ class PygameRenderer(Renderer):
             color: RGB color tuple
             width: Line width (default: 1)
         """
-        pygame.draw.line(self.surface, color, (start_x, start_y), (end_x, end_y), width)
+        if self._current_target is None:
+            return
+            
+        pygame.draw.line(self._current_target, color, (start_x, start_y), (end_x, end_y), width)

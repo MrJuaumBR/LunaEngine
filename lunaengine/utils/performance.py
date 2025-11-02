@@ -41,14 +41,49 @@ class PerformanceMonitor:
         self.frame_times = deque(maxlen=history_size)
         self.fps_history = deque(maxlen=history_size)
         self.last_frame_time = time.perf_counter()
+        self.current_fps = 0.0  # ADD THIS LINE - Store current FPS
         
         # Hardware info cache (won't change during runtime)
         self._hardware_info = None
         self._hardware_cache_time = 0
         self._cache_duration = 30.0  # Refresh hardware info every 30 seconds
+
+    def get_hardware_info(self) -> Dict[str, str]:
+        """Get system hardware information with caching"""
+        current_time = time.time()
+        if (self._hardware_info is not None and 
+            (current_time - self._hardware_cache_time) < self._cache_duration):
+            return self._hardware_info
+        
+        info = {}
+        try:
+            info['system'] = platform.system()
+            info['release'] = platform.release()
+            info['version'] = platform.version()
+            info['machine'] = platform.machine()
+            info['processor'] = platform.processor()
+            info['python_version'] = platform.python_version()
+            info['pygame_version'] = pygame.version.ver
+            
+            # CPU Info
+            info['cpu_cores'] = str(psutil.cpu_count(logical=False))
+            info['cpu_logical_cores'] = str(psutil.cpu_count(logical=True))
+            info['cpu_freq'] = f"{psutil.cpu_freq().max:.2f} MHz"
+            
+            # Memory Info
+            mem = psutil.virtual_memory()
+            info['memory_total_gb'] = f"{mem.total / (1024**3):.2f} GB"
+            info['memory_available_gb'] = f"{mem.available / (1024**3):.2f} GB"
+            
+        except Exception as e:
+            info['error'] = str(e)
+        
+        self._hardware_info = info
+        self._hardware_cache_time = current_time
+        return info
         
     def update_frame(self):
-        """Update frame timing - optimized version"""
+        """Update frame timing - FIXED VERSION"""
         current_time = time.perf_counter()
         frame_time = current_time - self.last_frame_time
         self.last_frame_time = current_time
@@ -56,29 +91,33 @@ class PerformanceMonitor:
         # Store frame time in milliseconds
         frame_time_ms = frame_time * 1000.0
         
-        # Calculate current FPS
-        current_fps = 1000.0 / frame_time_ms if frame_time_ms > 0 else 0
+        # Calculate current FPS - FIXED: Handle division by zero
+        if frame_time_ms > 0:
+            self.current_fps = 1000.0 / frame_time_ms
+        else:
+            self.current_fps = 0.0
         
         # Add to history
         self.frame_times.append(frame_time_ms)
-        self.fps_history.append(current_fps)
+        self.fps_history.append(self.current_fps)
         
-        return current_fps, frame_time_ms
+        return self.current_fps, frame_time_ms
     
     def get_stats(self) -> Dict[str, float]:
-        """Get FPS statistics with optimized calculations"""
+        """Get FPS statistics with optimized calculations - FIXED"""
         if not self.fps_history:
             return self._get_empty_stats()
         
-        current_fps = self.fps_history[-1] if self.fps_history else 0
+        # Use the stored current_fps instead of history
+        current_fps = self.current_fps
         
         # Calculate averages using efficient methods
         fps_list = list(self.fps_history)
         frame_times_list = list(self.frame_times)
         
-        avg_fps = sum(fps_list) / len(fps_list)
-        min_fps = min(fps_list)
-        max_fps = max(fps_list)
+        avg_fps = sum(fps_list) / len(fps_list) if fps_list else 0.0
+        min_fps = min(fps_list) if fps_list else 0.0
+        max_fps = max(fps_list) if fps_list else 0.0
         
         # Calculate percentiles efficiently
         if len(fps_list) > 10:  # Only calculate percentiles with sufficient data
@@ -92,10 +131,10 @@ class PerformanceMonitor:
             percentile_01 = min_fps
         
         return {
-            'current': current_fps,
-            'average': avg_fps,
-            'min': min_fps,
-            'max': max_fps,
+            'current_fps': current_fps,  # FIXED: Changed from 'current' to 'current_fps'
+            'average_fps': avg_fps,      # FIXED: Changed from 'average' to 'average_fps'
+            'min_fps': min_fps,          # FIXED: Changed from 'min' to 'min_fps'
+            'max_fps': max_fps,          # FIXED: Changed from 'max' to 'max_fps'
             'percentile_1': percentile_1,
             'percentile_01': percentile_01,
             'frame_time_ms': frame_times_list[-1] if frame_times_list else 0,
@@ -103,117 +142,17 @@ class PerformanceMonitor:
         }
     
     def _get_empty_stats(self) -> Dict[str, float]:
-        """Return empty stats structure"""
+        """Return empty stats structure - FIXED"""
         return {
-            'current': 0.0,
-            'average': 0.0,
-            'min': 0.0,
-            'max': 0.0,
+            'current_fps': 0.0,      # FIXED: Changed from 'current'
+            'average_fps': 0.0,      # FIXED: Changed from 'average'
+            'min_fps': 0.0,          # FIXED: Changed from 'min'
+            'max_fps': 0.0,          # FIXED: Changed from 'max'
             'percentile_1': 0.0,
             'percentile_01': 0.0,
             'frame_time_ms': 0.0,
             'frame_count': 0
         }
-    
-    def get_hardware_info(self) -> Dict[str, str]:
-        """Get hardware information (cached)"""
-        current_time = time.time()
-        
-        # Return cached info if still valid
-        if (self._hardware_info is not None and 
-            current_time - self._hardware_cache_time < self._cache_duration):
-            return self._hardware_info.copy()
-        
-        # Gather hardware info
-        hardware_info = {}
-        
-        try:
-            # System info
-            hardware_info['system'] = platform.system()
-            hardware_info['platform'] = platform.platform()
-            hardware_info['processor'] = platform.processor()
-            
-            # CPU info
-            if platform.system() == "Windows":
-                hardware_info['cpu_cores'] = str(self._get_windows_cpu_cores())
-            elif platform.system() == "Linux":
-                hardware_info['cpu_cores'] = str(self._get_linux_cpu_cores())
-            else:
-                hardware_info['cpu_cores'] = "Unknown"
-            
-            # Memory info
-            if platform.system() == "Windows":
-                hardware_info['memory_gb'] = self._get_windows_memory()
-            elif platform.system() == "Linux":
-                hardware_info['memory_gb'] = self._get_linux_memory()
-            else:
-                hardware_info['memory_gb'] = "Unknown"
-                
-            # Python info
-            hardware_info['python_version'] = platform.python_version()
-            hardware_info['pygame_version'] = pygame.version.ver
-            
-        except Exception as e:
-            # Fallback if any hardware detection fails
-            hardware_info['error'] = f"Hardware detection failed: {e}"
-            hardware_info['system'] = platform.system()
-            hardware_info['python_version'] = platform.python_version()
-        
-        # Cache the results
-        self._hardware_info = hardware_info.copy()
-        self._hardware_cache_time = current_time
-        
-        return hardware_info
-    
-    def _get_windows_cpu_cores(self) -> int:
-        """Get CPU cores on Windows"""
-        try:
-            
-            return psutil.cpu_count(logical=False) or 0
-        except (ImportError, AttributeError):
-            # Fallback without psutil
-            
-            return int(os.environ.get('NUMBER_OF_PROCESSORS', 1))
-    
-    def _get_linux_cpu_cores(self) -> int:
-        """Get CPU cores on Linux"""
-        try:
-            
-            return psutil.cpu_count(logical=False) or 0
-        except (ImportError, AttributeError):
-            # Fallback without psutil
-            try:
-                
-                return os.cpu_count() or 1
-            except:
-                return 1
-    
-    def _get_windows_memory(self) -> str:
-        """Get memory info on Windows"""
-        try:
-            memory_gb = psutil.virtual_memory().total / (1024**3)
-            return f"{memory_gb:.1f} GB"
-        except (ImportError, AttributeError):
-            return "Unknown"
-    
-    def _get_linux_memory(self) -> str:
-        """Get memory info on Linux"""
-        try:
-            
-            memory_gb = psutil.virtual_memory().total / (1024**3)
-            return f"{memory_gb:.1f} GB"
-        except (ImportError, AttributeError):
-            try:
-                # Parse /proc/meminfo as fallback
-                with open('/proc/meminfo', 'r') as f:
-                    for line in f:
-                        if line.startswith('MemTotal:'):
-                            memory_kb = int(line.split()[1])
-                            memory_gb = memory_kb / (1024**2)
-                            return f"{memory_gb:.1f} GB"
-            except:
-                pass
-            return "Unknown"
 
 class GarbageCollector:
     """Manages cleanup of unused resources"""

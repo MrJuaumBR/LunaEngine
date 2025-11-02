@@ -89,6 +89,7 @@ import pygame
 import numpy as np
 from typing import Optional, Callable, List, Tuple, Any
 from enum import Enum
+from abc import ABC, abstractmethod
 from .themes import ThemeManager, ThemeType
 
 class _UIDGenerator:
@@ -169,7 +170,7 @@ class FontManager:
         else:
             return pygame.font.Font(font_name, font_size)
 
-class UIElement:
+class UIElement(ABC):
     """
     Base class for all UI elements providing common functionality.
     
@@ -317,19 +318,36 @@ class UIElement:
             
         for child in self.children:
             child._update_with_mouse(mouse_pos, mouse_pressed, dt)
+
+
+    def render_pygame(self, renderer):
+        """
+        Render this element using Pygame backend.
+        Override this in subclasses for Pygame-specific rendering.
+        """
+        # Default implementation - render children only
+        for child in self.children:
+            child.render(renderer)
+    
+    def render_opengl(self, renderer):
+        """
+        Render this element using OpenGL backend.  
+        Override this in subclasses for OpenGL-specific rendering.
+        """
+        # Default implementation - render children only
+        for child in self.children:
+            child.render(renderer)
     
     def render(self, renderer):
-        """
-        Render the element to the screen.
-        
-        Args:
-            renderer: The renderer object used for drawing.
-        """
+        """Universal render method"""
         if not self.visible:
             return
             
-        for child in self.children:
-            child.render(renderer)
+        # Proper OpenGL detection
+        if hasattr(renderer, 'render_opengl'):
+            self.render_opengl(renderer)
+        else:
+            self.render_pygame(renderer)
     
     def on_click(self):
         """Called when element is clicked by the user."""
@@ -425,8 +443,8 @@ class TextLabel(UIElement):
             return self.custom_color
         return ThemeManager.get_theme(self.theme_type).label_text
         
-    def render(self, renderer):
-        """Render the text label."""
+    def render_pygame(self, renderer):
+        """Render using Pygame backend"""
         if not self.visible:
             return
             
@@ -434,15 +452,33 @@ class TextLabel(UIElement):
         text_color = self._get_text_color()
         
         text_surface = self.font.render(self.text, True, text_color)
+        
         renderer.draw_surface(text_surface, actual_x, actual_y)
         
-        super().render(renderer)
+        # Render children
+        super().render_pygame(renderer)
+            
+    def render_opengl(self, renderer):
+        """Render using OpenGL backend"""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        text_color = self._get_text_color()
+        
+        text_surface = self.font.render(self.text, True, text_color)
+        
+        # Use render_surface instead of draw_surface
+        if hasattr(renderer, 'render_surface'):
+            renderer.render_surface(text_surface, actual_x, actual_y)
+        
+        super().render_opengl(renderer)
 
 class ImageLabel(UIElement):
     def __init__(self, x: int, y: int, image_path: str, 
                  width: Optional[int] = None, height: Optional[int] = None,
                  root_point: Tuple[float, float] = (0, 0),
-                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+                 element_id: Optional[str] = None):
         self.image_path = image_path
         self._image = None
         self._load_image()
@@ -473,8 +509,8 @@ class ImageLabel(UIElement):
         self.image_path = image_path
         self._load_image()
         
-    def render(self, renderer):
-        """Render the image label."""
+    def render_pygame(self, renderer):
+        """Render using Pygame backend"""
         if not self.visible:
             return
             
@@ -486,7 +522,28 @@ class ImageLabel(UIElement):
         else:
             renderer.draw_surface(self._image, actual_x, actual_y)
             
-        super().render(renderer)
+        super().render_pygame(renderer)
+    
+    def render_opengl(self, renderer):
+        """Render using OpenGL backend"""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        
+        if self._image.get_width() != self.width or self._image.get_height() != self.height:
+            scaled_image = pygame.transform.scale(self._image, (self.width, self.height))
+            if hasattr(renderer, 'render_surface'):
+                renderer.render_surface(scaled_image, actual_x, actual_y)
+            else:
+                renderer.draw_surface(scaled_image, actual_x, actual_y)
+        else:
+            if hasattr(renderer, 'render_surface'):
+                renderer.render_surface(self._image, actual_x, actual_y)
+            else:
+                renderer.draw_surface(self._image, actual_x, actual_y)
+                
+        super().render_opengl(renderer)
 
 class Button(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int, text: str = "", 
@@ -592,8 +649,8 @@ class Button(UIElement):
         """
         return self._get_colors().button_text
             
-    def render(self, renderer):
-        """Render the button."""
+    def render_pygame(self, renderer):
+        """Render using Pygame backend"""
         if not self.visible:
             return
             
@@ -614,7 +671,39 @@ class Button(UIElement):
             text_y = actual_y + (self.height - text_surface.get_height()) // 2
             renderer.draw_surface(text_surface, text_x, text_y)
             
-        super().render(renderer)
+        # Render children
+        super().render_pygame(renderer)
+            
+    def render_opengl(self, renderer):
+        """Render using OpenGL backend"""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = self._get_colors()
+        
+        # First: Draw the border if applicable
+        if theme.button_border:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
+                            theme.button_border, fill=False, border_width=1)
+        
+        # SECOND: Draw the button background
+        color = self._get_color_for_state()
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color)
+        
+        # Finally: Draw the text on top
+        if self.text:
+            text_color = self._get_text_color()
+            text_surface = self.font.render(self.text, True, text_color)
+            text_x = actual_x + (self.width - text_surface.get_width()) // 2
+            text_y = actual_y + (self.height - text_surface.get_height()) // 2
+            
+            if hasattr(renderer, 'render_surface'):
+                renderer.render_surface(text_surface, text_x, text_y)
+            else:
+                renderer.draw_surface(text_surface, text_x, text_y)
+                    
+        super().render_opengl(renderer)
 
 class ImageButton(UIElement):
     def __init__(self, x: int, y: int, image_path: str, 
@@ -693,8 +782,8 @@ class ImageButton(UIElement):
             return (0, 0, 0, 50)  # Semi-transparent black
         return None
             
-    def render(self, renderer):
-        """Render the image button."""
+    def render_pygame(self, renderer):
+        """Render using Pygame backend"""
         if not self.visible:
             return
             
@@ -710,7 +799,32 @@ class ImageButton(UIElement):
         if overlay_color:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, overlay_color)
             
-        super().render(renderer)
+        super().render_pygame(renderer)
+    
+    def render_opengl(self, renderer):
+        """Render using OpenGL backend"""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        
+        if self._image.get_width() != self.width or self._image.get_height() != self.height:
+            scaled_image = pygame.transform.scale(self._image, (self.width, self.height))
+            if hasattr(renderer, 'render_surface'):
+                renderer.render_surface(scaled_image, actual_x, actual_y)
+            else:
+                renderer.draw_surface(scaled_image, actual_x, actual_y)
+        else:
+            if hasattr(renderer, 'render_surface'):
+                renderer.render_surface(self._image, actual_x, actual_y)
+            else:
+                renderer.draw_surface(self._image, actual_x, actual_y)
+        
+        overlay_color = self._get_overlay_color()
+        if overlay_color:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, overlay_color)
+                
+        super().render_opengl(renderer)
 
 class TextBox(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int, 
@@ -893,8 +1007,8 @@ class TextBox(UIElement):
         text_width = self.font.size(text_before_cursor)[0]
         return actual_x + 5 + text_width, actual_y + 5
     
-    def render(self, renderer):
-        """Render the text box - FIXED"""
+    def render_pygame(self, renderer):
+        """Render using Pygame backend"""
         if not self.visible:
             return
         
@@ -910,30 +1024,8 @@ class TextBox(UIElement):
             border_color = theme.text_primary if self.focused else theme.dropdown_border
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, fill=False)
         
-        # Draw text using cached surface
-        if self._text_surface is not None:
-            text_y = actual_y + (self.height - self._text_rect.height) // 2
-            # Clip text if too long
-            if self._text_rect.width > self.width - 10:
-                # Create a subsurface for the visible portion
-                clip_width = self.width - 10
-                # Calculate scroll offset based on cursor position
-                if self.focused and self.text:
-                    cursor_x = self.font.size(self.text[:self.cursor_pos])[0]
-                    if cursor_x > clip_width:
-                        scroll_offset = cursor_x - clip_width + 10
-                        source_rect = pygame.Rect(scroll_offset, 0, clip_width, self._text_rect.height)
-                        clipped_surface = self._text_surface.subsurface(source_rect)
-                        renderer.draw_surface(clipped_surface, actual_x + 5, text_y)
-                    else:
-                        renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
-                else:
-                    # Just show the beginning of the text
-                    source_rect = pygame.Rect(0, 0, clip_width, self._text_rect.height)
-                    clipped_surface = self._text_surface.subsurface(source_rect)
-                    renderer.draw_surface(clipped_surface, actual_x + 5, text_y)
-            else:
-                renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
+        # Draw text
+        self._render_text_content(renderer, actual_x, actual_y, theme)
         
         # Draw cursor
         if self.focused and self.cursor_visible:
@@ -941,9 +1033,73 @@ class TextBox(UIElement):
             cursor_height = self.height - 10
             renderer.draw_rect(cursor_x, cursor_y, 2, cursor_height, theme.dropdown_text)
         
-        # Reset the flag após o redesenho
         self._needs_redraw = False
-        super().render(renderer)
+        super().render_pygame(renderer)
+    
+    def render_opengl(self, renderer):
+        """Render using OpenGL backend"""
+        if not self.visible:
+            return
+        
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Draw background
+        bg_color = self._get_background_color()
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        
+        # Draw border
+        if theme.dropdown_border:
+            border_color = theme.text_primary if self.focused else theme.dropdown_border
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, fill=False)
+        
+        # Draw text
+        self._render_text_content(renderer, actual_x, actual_y, theme, opengl=True)
+        
+        # Draw cursor
+        if self.focused and self.cursor_visible:
+            cursor_x, cursor_y = self._get_cursor_position(actual_x, actual_y)
+            cursor_height = self.height - 10
+            renderer.draw_rect(cursor_x, cursor_y, 2, cursor_height, theme.dropdown_text)
+        
+        self._needs_redraw = False
+        super().render_opengl(renderer)
+    
+    def _render_text_content(self, renderer, actual_x: int, actual_y: int, theme, opengl=False):
+        """Helper method to render text content"""
+        if self._text_surface is not None:
+            text_y = actual_y + (self.height - self._text_rect.height) // 2
+            
+            # Clip text if too long
+            if self._text_rect.width > self.width - 10:
+                clip_width = self.width - 10
+                if self.focused and self.text:
+                    cursor_x = self.font.size(self.text[:self.cursor_pos])[0]
+                    if cursor_x > clip_width:
+                        scroll_offset = cursor_x - clip_width + 10
+                        source_rect = pygame.Rect(scroll_offset, 0, clip_width, self._text_rect.height)
+                        clipped_surface = self._text_surface.subsurface(source_rect)
+                        if opengl and hasattr(renderer, 'render_surface'):
+                            renderer.render_surface(clipped_surface, actual_x + 5, text_y)
+                        else:
+                            renderer.draw_surface(clipped_surface, actual_x + 5, text_y)
+                    else:
+                        if opengl and hasattr(renderer, 'render_surface'):
+                            renderer.render_surface(self._text_surface, actual_x + 5, text_y)
+                        else:
+                            renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
+                else:
+                    source_rect = pygame.Rect(0, 0, clip_width, self._text_rect.height)
+                    clipped_surface = self._text_surface.subsurface(source_rect)
+                    if opengl and hasattr(renderer, 'render_surface'):
+                        renderer.render_surface(clipped_surface, actual_x + 5, text_y)
+                    else:
+                        renderer.draw_surface(clipped_surface, actual_x + 5, text_y)
+            else:
+                if opengl and hasattr(renderer, 'render_surface'):
+                    renderer.render_surface(self._text_surface, actual_x + 5, text_y)
+                else:
+                    renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
 
 class ProgressBar(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int,
@@ -976,8 +1132,8 @@ class ProgressBar(UIElement):
         """
         return (self.value - self.min_val) / (self.max_val - self.min_val) * 100
     
-    def render(self, renderer):
-        """Render the progress bar."""
+    def render_pygame(self, renderer):
+        """Render using Pygame backend"""
         if not self.visible:
             return
             
@@ -1004,7 +1160,41 @@ class ProgressBar(UIElement):
         text_y = actual_y + (self.height - text_surface.get_height()) // 2
         renderer.draw_surface(text_surface, text_x, text_y)
         
-        super().render(renderer)
+        super().render_pygame(renderer)
+    
+    def render_opengl(self, renderer):
+        """Render using OpenGL backend"""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Draw background
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.slider_track)
+        
+        # Draw progress
+        progress_width = int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
+        if progress_width > 0:
+            renderer.draw_rect(actual_x, actual_y, progress_width, self.height, theme.button_normal)
+        
+        # Draw border
+        if theme.border:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
+        
+        # Draw text
+        font = pygame.font.Font(None, 12)
+        text = f"{self.get_percentage():.1f}%"
+        text_surface = font.render(text, True, theme.slider_text)
+        text_x = actual_x + (self.width - text_surface.get_width()) // 2
+        text_y = actual_y + (self.height - text_surface.get_height()) // 2
+        
+        if hasattr(renderer, 'render_surface'):
+            renderer.render_surface(text_surface, text_x, text_y)
+        else:
+            renderer.draw_surface(text_surface, text_x, text_y)
+                
+        super().render_opengl(renderer)
 
 class UIDraggable(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int,
@@ -1045,8 +1235,8 @@ class UIDraggable(UIElement):
             
         super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
     
-    def render(self, renderer):
-        """Render the draggable element."""
+    def render_pygame(self, renderer):
+        """Render using Pygame backend"""
         if not self.visible:
             return
             
@@ -1064,7 +1254,28 @@ class UIDraggable(UIElement):
         if theme.button_border:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.button_border, fill=False)
         
-        super().render(renderer)
+        super().render_pygame(renderer)
+    
+    def render_opengl(self, renderer):
+        """Render using OpenGL backend"""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        color = theme.button_normal
+        if self.dragging:
+            color = theme.button_pressed
+        elif self.state == UIState.HOVERED:
+            color = theme.button_hover
+            
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color)
+        
+        if theme.button_border:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.button_border, fill=False)
+        
+        super().render_opengl(renderer)
 
 class UIGradient(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int,
@@ -1132,15 +1343,29 @@ class UIGradient(UIElement):
         self.colors = colors
         self._generate_gradient()
     
-    def render(self, renderer):
-        """Render the gradient element."""
+    def render_pygame(self, renderer):
+        """Render using Pygame backend"""
         if not self.visible:
             return
             
         actual_x, actual_y = self.get_actual_position()
         renderer.draw_surface(self._gradient_surface, actual_x, actual_y)
         
-        super().render(renderer)
+        super().render_pygame(renderer)
+    
+    def render_opengl(self, renderer):
+        """Render using OpenGL backend"""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        
+        if hasattr(renderer, 'render_surface'):
+            renderer.render_surface(self._gradient_surface, actual_x, actual_y)
+        else:
+            renderer.draw_surface(self._gradient_surface, actual_x, actual_y)
+                
+        super().render_opengl(renderer)
 
 class Select(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int,
@@ -1242,41 +1467,27 @@ class Select(UIElement):
             
         super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
     
-    def render(self, renderer):
-        """Render the select element."""
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
-        
-        # Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.dropdown_normal)
-        
-        # Draw border
-        if theme.dropdown_border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.dropdown_border, fill=False)
-        
-        # Draw arrows
+    def _render_select_content(self, renderer, actual_x: int, actual_y: int, theme, opengl=False):
+        """Helper method to render select content"""
         arrow_color = theme.dropdown_text
         
-        # Left arrow
+        # Left arrow points
         left_arrow_points = [
             (actual_x + self.arrow_width - 5, actual_y + self.height // 2 - 5),
             (actual_x + 5, actual_y + self.height // 2),
             (actual_x + self.arrow_width - 5, actual_y + self.height // 2 + 5)
         ]
         
-        # Right arrow
+        # Right arrow points
         right_arrow_points = [
             (actual_x + self.width - self.arrow_width + 5, actual_y + self.height // 2 - 5),
             (actual_x + self.width - 5, actual_y + self.height // 2),
             (actual_x + self.width - self.arrow_width + 5, actual_y + self.height // 2 + 5)
         ]
         
-        surface = renderer.get_surface()
-        pygame.draw.polygon(surface, arrow_color, left_arrow_points)
-        pygame.draw.polygon(surface, arrow_color, right_arrow_points)
+        # Draw arrows using polygon method compatible with both backends
+        self._draw_arrow_polygon(renderer, left_arrow_points, arrow_color)
+        self._draw_arrow_polygon(renderer, right_arrow_points, arrow_color)
         
         # Draw selected text
         if self.options:
@@ -1286,20 +1497,55 @@ class Select(UIElement):
             text_surface = self.font.render(text, True, theme.dropdown_text)
             text_x = actual_x + (self.width - text_surface.get_width()) // 2
             text_y = actual_y + (self.height - text_surface.get_height()) // 2
-            renderer.draw_surface(text_surface, text_x, text_y)
-        
-        super().render(renderer)
+            
+            if opengl and hasattr(renderer, 'render_surface'):
+                renderer.render_surface(text_surface, text_x, text_y)
+            else:
+                renderer.draw_surface(text_surface, text_x, text_y)
+    
+    def _draw_arrow_polygon(self, renderer, points, color):
+        """
+        Draw arrow polygon compatible with both Pygame and OpenGL.
+        """
+        # Same implementation as in Dropdown class
+        if hasattr(renderer, 'draw_polygon'):
+            renderer.draw_polygon(points, color)
+        elif hasattr(renderer, 'draw_line'):
+            for i in range(len(points)):
+                start_point = points[i]
+                end_point = points[(i + 1) % len(points)]
+                renderer.draw_line(start_point[0], start_point[1], 
+                                 end_point[0], end_point[1], color, 2)
+        else:
+            try:
+                arrow_surface = pygame.Surface((20, 10), pygame.SRCALPHA)
+                pygame.draw.polygon(arrow_surface, color, [
+                    (5, 0), (15, 0), (10, 5)
+                ])
+                
+                arrow_x = points[0][0] - 10
+                arrow_y = points[0][1] - 2
+                
+                if hasattr(renderer, 'render_surface'):
+                    renderer.render_surface(arrow_surface, arrow_x, arrow_y)
+                else:
+                    renderer.draw_surface(arrow_surface, arrow_x, arrow_y)
+            except:
+                arrow_rect = (points[0][0] - 5, points[0][1] - 2, 10, 5)
+                renderer.draw_rect(arrow_rect[0], arrow_rect[1], 
+                                 arrow_rect[2], arrow_rect[3], color)
 
 
 class Switch(UIElement):
     def __init__(self, x: int, y: int, width: int = 60, height: int = 30,
                  checked: bool = False, root_point: Tuple[float, float] = (0, 0),
                  theme: ThemeType = None,
-                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+                 element_id: Optional[str] = None):
         super().__init__(x, y, width, height, root_point, element_id)
         self.checked = checked
         self.animation_progress = 1.0 if checked else 0.0
         self.on_toggle = None
+        self._was_pressed = False
         
         self.theme_type = theme or ThemeManager.get_current_theme()
     
@@ -1338,6 +1584,7 @@ class Switch(UIElement):
         mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.width and 
                      actual_y <= mouse_pos[1] <= actual_y + self.height)
         
+        # Handle click with cooldown
         if mouse_pressed and mouse_over and not self._was_pressed:
             self.toggle()
             self._was_pressed = True
@@ -1349,7 +1596,7 @@ class Switch(UIElement):
         else:
             self.state = UIState.NORMAL
             
-        # Animate
+        # Smooth animation
         target_progress = 1.0 if self.checked else 0.0
         if self.animation_progress != target_progress:
             self.animation_progress += (target_progress - self.animation_progress) * 0.2
@@ -1358,32 +1605,84 @@ class Switch(UIElement):
             
         super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
     
-    def render(self, renderer):
-        """Render the switch."""
+    def _get_colors(self):
+        """Get colors from current theme for switch"""
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        if self.checked:
+            track_color = theme.switch_track_on
+            thumb_color = theme.switch_thumb_on
+        else:
+            track_color = theme.switch_track_off
+            thumb_color = theme.switch_thumb_off
+        
+        # Apply hover effect
+        if self.state == UIState.HOVERED:
+            if self.checked:
+                track_color = tuple(min(255, c + 20) for c in track_color)
+            else:
+                track_color = tuple(min(255, c + 20) for c in track_color)
+        
+        return track_color, thumb_color
+    
+    def render_pygame(self, renderer):
+        """Render using Pygame backend - CONSISTENT with OpenGL"""
         if not self.visible:
             return
             
         actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
+        track_color, thumb_color = self._get_colors()
         
-        # Draw track
-        track_color = theme.button_normal if self.checked else theme.slider_track
+        # Draw track with rounded corners effect
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, track_color)
         
-        # Draw thumb
-        thumb_size = int(self.height * 0.8)
-        thumb_margin = (self.height - thumb_size) // 2
-        thumb_x = actual_x + thumb_margin + int((self.width - thumb_size - thumb_margin * 2) * self.animation_progress)
+        # Draw thumb with smooth animation
+        thumb_size = max(10, int(self.height * 0.7))
+        thumb_margin = max(2, (self.height - thumb_size) // 2)
+        max_thumb_travel = max(10, self.width - thumb_size - (thumb_margin * 2))
+        
+        thumb_x = actual_x + thumb_margin + int(max_thumb_travel * self.animation_progress)
         thumb_y = actual_y + thumb_margin
         
-        thumb_color = theme.button_text if self.checked else theme.slider_thumb_normal
+        # Ensure thumb stays within bounds
+        thumb_x = max(actual_x + thumb_margin, 
+                     min(thumb_x, actual_x + self.width - thumb_size - thumb_margin))
+        
         renderer.draw_rect(thumb_x, thumb_y, thumb_size, thumb_size, thumb_color)
         
         # Draw border
-        if theme.border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
+        border_color = (150, 150, 150)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, fill=False)
         
-        super().render(renderer)
+        super().render_pygame(renderer)
+
+    def render_opengl(self, renderer):
+        """Render using OpenGL backend - CONSISTENT with Pygame"""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        track_color, thumb_color = self._get_colors()
+        
+        # PRIMEIRO: desenhar a borda
+        border_color = (150, 150, 150)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, 
+                        fill=False, border_width=1)
+        
+        # DEPOIS: desenhar o track
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, track_color)
+        
+        # FINALMENTE: desenhar o thumb
+        thumb_size = max(10, int(self.height * 0.7))
+        thumb_margin = max(2, (self.height - thumb_size) // 2)
+        max_thumb_travel = max(10, self.width - thumb_size - (thumb_margin * 2))
+        
+        thumb_x = actual_x + thumb_margin + int(max_thumb_travel * self.animation_progress)
+        thumb_y = actual_y + thumb_margin
+        
+        renderer.draw_rect(thumb_x, thumb_y, thumb_size, thumb_size, thumb_color)
+        
+        super().render_opengl(renderer)
 
 class ScrollingFrame(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int,
@@ -1414,8 +1713,8 @@ class ScrollingFrame(UIElement):
         # MUDANÇA AQUI: removido scroll_x
         self.scroll_y = max(0, min(max_scroll_y, self.scroll_y - scroll_y * 20))
     
-    def render(self, renderer):
-        """Render the scrolling frame."""
+    def render_pygame(self, renderer):
+        """Render using Pygame backend"""
         if not self.visible:
             return
             
@@ -1450,6 +1749,43 @@ class ScrollingFrame(UIElement):
         # Draw border
         if theme.border:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
+        
+        super().render_pygame(renderer)
+    
+    def render_opengl(self, renderer):
+        """Render using OpenGL backend"""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Draw background
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.background)
+        
+        # Setup clipping for content (OpenGL may handle this differently)
+        # For OpenGL, we rely on the renderer's built-in clipping
+        
+        # Render children with scroll offset
+        for child in self.children:
+            original_x, original_y = child.x, child.y
+            child.x = original_x - self.scroll_x
+            child.y = original_y - self.scroll_y
+            child.render(renderer)
+            child.x, child.y = original_x, original_y
+        
+        # Draw scrollbars if needed
+        if self.content_width > self.width:
+            self._draw_horizontal_scrollbar(renderer, actual_x, actual_y, theme)
+        
+        if self.content_height > self.height:
+            self._draw_vertical_scrollbar(renderer, actual_x, actual_y, theme)
+        
+        # Draw border
+        if theme.border:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
+        
+        super().render_opengl(renderer)
     
     def _draw_horizontal_scrollbar(self, renderer, x: int, y: int, theme):
         """Draw horizontal scrollbar."""
@@ -1541,7 +1877,8 @@ class Slider(UIElement):
                 
         super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
             
-    def render(self, renderer):
+    def render_pygame(self, renderer):
+        """Render using Pygame backend"""
         if not self.visible:
             return
             
@@ -1571,7 +1908,45 @@ class Slider(UIElement):
         renderer.draw_surface(text_surface, thumb_x - text_surface.get_width()//2, 
                             actual_y + self.height + 5)
         
-        super().render(renderer)
+        super().render_pygame(renderer)
+    
+    def render_opengl(self, renderer):
+        """Render using OpenGL backend"""
+        if not self.visible:
+            return
+            
+        theme = self._get_colors()
+        actual_x, actual_y = self.get_actual_position()
+        
+        # Draw track
+        renderer.draw_rect(actual_x, actual_y + self.height//2 - 2, 
+                         self.width, 4, theme.slider_track)
+        
+        # Draw thumb
+        thumb_x = actual_x + int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
+        
+        if self.state == UIState.PRESSED:
+            thumb_color = theme.slider_thumb_pressed
+        elif self.state == UIState.HOVERED:
+            thumb_color = theme.slider_thumb_hover
+        else:
+            thumb_color = theme.slider_thumb_normal
+            
+        renderer.draw_rect(thumb_x - 5, actual_y, 10, self.height, thumb_color)
+        
+        # Draw value text
+        font = pygame.font.Font(None, 12)
+        value_text = f"{self.value:.1f}"
+        text_surface = font.render(value_text, True, theme.slider_text)
+        
+        if hasattr(renderer, 'render_surface'):
+            renderer.render_surface(text_surface, thumb_x - text_surface.get_width()//2, 
+                                actual_y + self.height + 5)
+        else:
+            renderer.draw_surface(text_surface, thumb_x - text_surface.get_width()//2, 
+                                actual_y + self.height + 5)
+                
+        super().render_opengl(renderer)
 
 
 class Dropdown(UIElement):
@@ -1726,7 +2101,8 @@ class Dropdown(UIElement):
         
         return (scrollbar_x, scrollbar_y, self.scrollbar_width, scrollbar_height)
             
-    def render(self, renderer):
+    def render_pygame(self, renderer):
+        """Render using Pygame backend"""
         if not self.visible:
             return
             
@@ -1763,58 +2139,187 @@ class Dropdown(UIElement):
             (actual_x + self.width - 5, actual_y + self.height//2 - 3),
             (actual_x + self.width - 10, actual_y + self.height//2 + 3)
         ]
-        surface = renderer.get_surface()
-        pygame.draw.polygon(surface, arrow_color, arrow_points)
+        
+        # Pygame-specific arrow drawing
+        if hasattr(renderer, 'get_surface'):
+            surface = renderer.get_surface()
+            pygame.draw.polygon(surface, arrow_color, arrow_points)
+        else:
+            # Fallback for renderers without get_surface
+            self._draw_arrow_polygon(renderer, arrow_points, arrow_color)
         
         # Draw expanded options with scroll
         if self.expanded:
-            visible_options = self._get_visible_options()
-            total_options_height = self.max_visible_options * self._option_height
+            self._render_expanded_options(renderer, actual_x, actual_y, theme)
+        
+        super().render_pygame(renderer)
+    
+    
+    def render_opengl(self, renderer):
+        """Render using OpenGL backend"""
+        if not self.visible:
+            return
             
-            # Draw options background
-            options_bg_width = self.width - (self.scrollbar_width if len(self.options) > self.max_visible_options else 0)
-            renderer.draw_rect(actual_x, actual_y + self.height, options_bg_width, total_options_height, theme.dropdown_expanded)
+        theme = self._get_colors()
+        actual_x, actual_y = self.get_actual_position()
+        
+        # First: draw border
+        if theme.dropdown_border:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
+                            theme.dropdown_border, fill=False, border_width=1)
+        
+        # Then: draw main box
+        if self.state == UIState.NORMAL:
+            main_color = theme.dropdown_normal
+        else:
+            main_color = theme.dropdown_hover
             
-            # Draw individual options
-            for i, option_index in enumerate(visible_options):
-                option_y = actual_y + self.height + i * self._option_height
-                is_selected = option_index == self.selected_index
-                
-                if is_selected:
-                    option_color = theme.dropdown_option_selected
-                else:
-                    option_color = theme.dropdown_option_normal
-                
-                # Check hover
-                mouse_pos = pygame.mouse.get_pos()
-                option_rect = (actual_x, option_y, options_bg_width, self._option_height)
-                mouse_over_option = (option_rect[0] <= mouse_pos[0] <= option_rect[0] + option_rect[2] and 
-                                   option_rect[1] <= mouse_pos[1] <= option_rect[1] + option_rect[3])
-                
-                if mouse_over_option:
-                    option_color = theme.dropdown_option_hover
-                
-                renderer.draw_rect(actual_x, option_y, options_bg_width, self._option_height, option_color)
-                
-                if theme.dropdown_border:
-                    renderer.draw_rect(actual_x, option_y, options_bg_width, self._option_height, 
-                                     theme.dropdown_border, fill=False)
-                
-                option_text = self.options[option_index]
-                if len(option_text) > 20:  # Further truncate for scrollbar space
-                    option_text = option_text[:20] + "..."
-                text_surface = self.font.render(option_text, True, theme.dropdown_text)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, main_color)
+        
+        # Draw selected text
+        if self.options:
+            text = self.options[self.selected_index]
+            # Truncate text if too long
+            if len(text) > 15:
+                text = text[:15] + "..."
+            text_surface = self.font.render(text, True, theme.dropdown_text)
+            
+            if hasattr(renderer, 'render_surface'):
+                renderer.render_surface(text_surface, actual_x + 5, 
+                                    actual_y + (self.height - text_surface.get_height()) // 2)
+            else:
                 renderer.draw_surface(text_surface, actual_x + 5, 
-                                    option_y + (self._option_height - text_surface.get_height()) // 2)
-            
-            # Draw scrollbar if needed
-            if len(self.options) > self.max_visible_options:
-                scrollbar_rect = self._get_scrollbar_rect(actual_x, actual_y)
-                scrollbar_color = (150, 150, 150) if self.is_scrolling else (100, 100, 100)
-                renderer.draw_rect(scrollbar_rect[0], scrollbar_rect[1], 
-                                 scrollbar_rect[2], scrollbar_rect[3], scrollbar_color)
+                                    actual_y + (self.height - text_surface.get_height()) // 2)
+        
+        # Draw dropdown arrow - OpenGL compatible
+        arrow_color = theme.dropdown_text
+        arrow_points = [
+            (actual_x + self.width - 15, actual_y + self.height//2 - 3),
+            (actual_x + self.width - 5, actual_y + self.height//2 - 3),
+            (actual_x + self.width - 10, actual_y + self.height//2 + 3)
+        ]
+        
+        # Use polygon drawing method compatible with OpenGL
+        self._draw_arrow_polygon(renderer, arrow_points, arrow_color)
+        
+        # Draw expanded options with scroll
+        if self.expanded:
+            self._render_expanded_options(renderer, actual_x, actual_y, theme, opengl=True)
+        
+        super().render_opengl(renderer)
+    
+    def _draw_arrow_polygon(self, renderer, points, color):
+        """
+        Draw arrow polygon in a way compatible with both Pygame and OpenGL.
+        
+        Args:
+            renderer: The renderer object
+            points: List of (x, y) points for the polygon
+            color: RGB color tuple
+        """
+        # For OpenGL renderers, we need to draw the polygon differently
+        # This is a simplified approach - you might need to adjust based on your OpenGL renderer
+        
+        # Method 1: Try using renderer's polygon drawing if available
+        if hasattr(renderer, 'draw_polygon'):
+            renderer.draw_polygon(points, color)
+        # Method 2: Draw as individual triangles/lines
+        elif hasattr(renderer, 'draw_line'):
+            # Draw the arrow as connected lines
+            for i in range(len(points)):
+                start_point = points[i]
+                end_point = points[(i + 1) % len(points)]
+                renderer.draw_line(start_point[0], start_point[1], 
+                                 end_point[0], end_point[1], color, 2)
+        # Method 3: Fallback - create a small surface with the arrow
+        else:
+            try:
+                # Create a small surface for the arrow
+                arrow_surface = pygame.Surface((20, 10), pygame.SRCALPHA)
+                pygame.draw.polygon(arrow_surface, color, [
+                    (5, 0), (15, 0), (10, 5)
+                ])
                 
-        super().render(renderer)
+                # Calculate position for the arrow surface
+                arrow_x = points[0][0] - 10  # Center the arrow
+                arrow_y = points[0][1] - 2   # Adjust vertical position
+                
+                if hasattr(renderer, 'render_surface'):
+                    renderer.render_surface(arrow_surface, arrow_x, arrow_y)
+                else:
+                    renderer.draw_surface(arrow_surface, arrow_x, arrow_y)
+            except:
+                # Final fallback - just draw a simple rectangle as arrow indicator
+                arrow_rect = (points[0][0] - 5, points[0][1] - 2, 10, 5)
+                renderer.draw_rect(arrow_rect[0], arrow_rect[1], 
+                                 arrow_rect[2], arrow_rect[3], color)
+    
+    def _render_expanded_options(self, renderer, actual_x: int, actual_y: int, theme, opengl=False):
+        """Helper method to render expanded options - WITH OPTION SEPARATORS"""
+        visible_options = self._get_visible_options()
+        total_options_height = self.max_visible_options * self._option_height
+        
+        # Calculate width for options area
+        options_bg_width = self.width - (self.scrollbar_width if len(self.options) > self.max_visible_options else 0)
+        
+        # FIRST: Draw the main expanded options container border
+        if theme.dropdown_border:
+            renderer.draw_rect(actual_x, actual_y + self.height, options_bg_width, total_options_height, 
+                            theme.dropdown_border, fill=False, border_width=1)
+        
+        # SECOND: Draw the main expanded options background (inset by border)
+        renderer.draw_rect(actual_x, actual_y + self.height, options_bg_width, total_options_height, 
+                        theme.dropdown_expanded, fill=True, border_width=1)
+        
+        # THIRD: Draw individual options with subtle separators
+        for i, option_index in enumerate(visible_options):
+            option_y = actual_y + self.height + i * self._option_height
+            is_selected = option_index == self.selected_index
+            
+            # Determine option background color
+            if is_selected:
+                option_color = theme.dropdown_option_selected
+            else:
+                option_color = theme.dropdown_option_normal
+            
+            # Check hover state
+            mouse_pos = pygame.mouse.get_pos()
+            option_rect = (actual_x, option_y, options_bg_width, self._option_height)
+            mouse_over_option = (option_rect[0] <= mouse_pos[0] <= option_rect[0] + option_rect[2] and 
+                            option_rect[1] <= mouse_pos[1] <= option_rect[1] + option_rect[3])
+            
+            if mouse_over_option:
+                option_color = theme.dropdown_option_hover
+            
+            # Draw option background (full height, no individual borders)
+            renderer.draw_rect(actual_x, option_y, options_bg_width, self._option_height, option_color, fill=True, border_width=0)
+            
+            # Draw subtle separator line between options (except for the last one)
+            if i < len(visible_options) - 1 and theme.dropdown_border:
+                separator_y = option_y + self._option_height - 1
+                separator_color = (theme.dropdown_border[0]//2, theme.dropdown_border[1]//2, theme.dropdown_border[2]//2)
+                renderer.draw_rect(actual_x + 1, separator_y, options_bg_width - 2, 1, separator_color)
+            
+            # Draw option text
+            option_text = self.options[option_index]
+            if len(option_text) > 20:
+                option_text = option_text[:20] + "..."
+            text_surface = self.font.render(option_text, True, theme.dropdown_text)
+            
+            text_x = actual_x + 5 + 1  # Adjust for main container border
+            text_y = option_y + (self._option_height - text_surface.get_height()) // 2
+            
+            if opengl and hasattr(renderer, 'render_surface'):
+                renderer.render_surface(text_surface, text_x, text_y)
+            else:
+                renderer.draw_surface(text_surface, text_x, text_y)
+        
+        # FOURTH: Draw scrollbar if needed
+        if len(self.options) > self.max_visible_options:
+            scrollbar_rect = self._get_scrollbar_rect(actual_x, actual_y)
+            scrollbar_color = (150, 150, 150) if self.is_scrolling else (100, 100, 100)
+            renderer.draw_rect(scrollbar_rect[0], scrollbar_rect[1], 
+                            scrollbar_rect[2], scrollbar_rect[3], scrollbar_color)
     
     def add_option(self, option: str):
         """Add an option to the dropdown"""
