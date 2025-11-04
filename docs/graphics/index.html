@@ -70,6 +70,212 @@
                         <div class="card-header">
                             <h5 class="mb-0">
                                 <i class="bi bi-file-code me-2"></i>
+                                camera.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        
+                            <div class="alert alert-info docstring-content">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <div class="docstring-text">Camera System - 2D Camera with Smooth Movement and Effects</div>
+                            </div>
+            <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-cameramode">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    CameraMode
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Camera follow behavior modes</div></div><small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>FIXED: Any = 'fixed'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>FOLLOW: Any = 'follow'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>PLATFORMER: Any = 'platformer'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>TOPDOWN: Any = 'topdown'</code>
+                                </div>
+                        </div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-camerashaketype">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    CameraShakeType
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Types of camera shake effects</div></div><small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>POSITIONAL: Any = 'positional'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>ROTATIONAL: Any = 'rotational'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>TRAUMA: Any = 'trauma'</code>
+                                </div>
+                        </div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-parallaxlayer">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ParallaxLayer
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Otimizado: Camada de parallax com renderização eficiente</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxlayer-__init__">
+                                    <code>def __init__(self: Any, surface: pygame.Surface, speed_factor: float, tile_mode: bool, offset: Tuple[float, float]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Inicializa uma camada de parallax.<br><br>Args:<br> &nbsp; &nbsp;surface: Superfície pygame para a camada<br> &nbsp; &nbsp;speed_factor: Fator de velocidade (0.0 = estático, 1.0 = move com câmera)<br> &nbsp; &nbsp;tile_mode: Se True, a imagem se repete infinitamente<br> &nbsp; &nbsp;offset: Offset inicial da camada</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxlayer-update">
+                                    <code>def update(self: Any, camera_position: pygame.math.Vector2, camera_zoom: float, dt: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Atualiza a posição da camada baseado na posição da câmera.</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-parallaxbackground">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ParallaxBackground
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Sistema de parallax otimizado para múltiplas camadas</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-__init__">
+                                    <code>def __init__(self: Any, camera: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-add_layer">
+                                    <code>def add_layer(self: Any, surface: pygame.Surface, speed_factor: float, tile_mode: bool, offset: Tuple[float, float]) -> ParallaxLayer</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Adiciona uma camada ao sistema de parallax.<br><br>Args:<br> &nbsp; &nbsp;surface: Superfície pygame<br> &nbsp; &nbsp;speed_factor: Fator de velocidade do parallax<br> &nbsp; &nbsp;tile_mode: Se a imagem deve se repetir<br> &nbsp; &nbsp;offset: Offset inicial<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParallaxLayer: A camada criada</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-remove_layer">
+                                    <code>def remove_layer(self: Any, layer: ParallaxLayer) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Remove uma camada do sistema de parallax</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-clear_layers">
+                                    <code>def clear_layers(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Remove todas as camadas</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-update">
+                                    <code>def update(self: Any, dt: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Atualiza todas as camadas de parallax</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-render">
+                                    <code>def render(self: Any, renderer: Any) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Renderiza todas as camadas de parallax de forma otimizada.<br><br>Returns:<br> &nbsp; &nbsp;bool: True se o parallax foi renderizado, False caso contrário</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-_render_layer">
+                                    <code>def _render_layer(self: Any, renderer: Any, layer: ParallaxLayer) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Renderiza uma única camada de parallax de forma otimizada</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-_render_tiled_layer">
+                                    <code>def _render_tiled_layer(self: Any, renderer: Any, layer: ParallaxLayer, base_x: float, base_y: float, viewport_size: Tuple[int, int], zoom: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Renderiza camada em modo tile (repetição infinita)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-_render_single_layer">
+                                    <code>def _render_single_layer(self: Any, renderer: Any, layer: ParallaxLayer, base_x: float, base_y: float, viewport_size: Tuple[int, int], zoom: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Renderiza camada em modo único (uma única cópia)</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-camera">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Camera
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Advanced 2D Camera system with smooth movement and effects.</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-__init__">
+                                    <code>def __init__(self: Any, scene: Any, width: int, height: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize camera with viewport dimensions.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-position">
+                                    <code>def position(self: Any) -> pygame.math.Vector2</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get camera position with shake offset applied</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-position">
+                                    <code>def position(self: Any, value: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set camera base position (without shake)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-base_position">
+                                    <code>def base_position(self: Any) -> pygame.math.Vector2</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get camera base position without shake offset</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-set_target">
+                                    <code>def set_target(self: Any, target: Any, mode: CameraMode) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set camera target to follow.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-set_bounds">
+                                    <code>def set_bounds(self: Any, bounds: pygame.Rect) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set camera movement boundaries.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-update">
+                                    <code>def update(self: Any, dt: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update camera position and effects.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_update_renderer_camera_position">
+                                    <code>def _update_renderer_camera_position(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update camera position in both renderers</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_update_follow">
+                                    <code>def _update_follow(self: Any, dt: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update camera position based on follow mode</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_get_target_position">
+                                    <code>def _get_target_position(self: Any) -> pygame.math.Vector2</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Extract position from target object</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_update_platformer_mode">
+                                    <code>def _update_platformer_mode(self: Any, target_pos: pygame.math.Vector2) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Platformer-style camera with deadzone</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_update_topdown_mode">
+                                    <code>def _update_topdown_mode(self: Any, target_pos: pygame.math.Vector2) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Top-down RPG style camera</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_apply_smooth_movement">
+                                    <code>def _apply_smooth_movement(self: Any, dt: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Apply smooth interpolation to camera position</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_apply_zoom">
+                                    <code>def _apply_zoom(self: Any, dt: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Apply smooth zoom interpolation</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_apply_shake">
+                                    <code>def _apply_shake(self: Any, dt: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Apply camera shake effects</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_update_trauma_shake">
+                                    <code>def _update_trauma_shake(self: Any, dt: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update trauma-based shake</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_update_positional_shake">
+                                    <code>def _update_positional_shake(self: Any, dt: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update simple positional shake</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_apply_bounds">
+                                    <code>def _apply_bounds(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Constrain camera within boundaries</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-shake">
+                                    <code>def shake(self: Any, intensity: float, duration: float, shake_type: CameraShakeType) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Start camera shake effect.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-add_trauma">
+                                    <code>def add_trauma(self: Any, amount: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Add trauma for trauma-based shake.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-set_zoom">
+                                    <code>def set_zoom(self: Any, zoom: float, smooth: bool) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set camera zoom level.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-world_to_screen">
+                                    <code>def world_to_screen(self: Any, world_pos: Any) -> pygame.math.Vector2</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Convert world coordinates to screen coordinates.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-screen_to_world">
+                                    <code>def screen_to_world(self: Any, screen_pos: Any) -> pygame.math.Vector2</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Convert screen coordinates to world coordinates.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-screen_to_world_vector">
+                                    <code>def screen_to_world_vector(self: Any, screen_vec: Any) -> pygame.math.Vector2</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Convert screen vector to world vector (ignores camera position).</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-get_visible_rect">
+                                    <code>def get_visible_rect(self: Any) -> pygame.Rect</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the visible world area as a rectangle.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-is_visible">
+                                    <code>def is_visible(self: Any, world_pos: Any, margin: float) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Check if a world position is visible on screen.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-add_parallax_layer">
+                                    <code>def add_parallax_layer(self: Any, surface: pygame.Surface, speed_factor: float, tile_mode: bool, offset: Tuple[float, float]) -> ParallaxLayer</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Adiciona uma camada ao sistema de parallax da câmera.<br><br>Args:<br> &nbsp; &nbsp;surface: Superfície pygame para a camada<br> &nbsp; &nbsp;speed_factor: Fator de velocidade do parallax (0.0 = estático, 1.0 = move com câmera)<br> &nbsp; &nbsp;tile_mode: Se a imagem deve se repetir infinitamente<br> &nbsp; &nbsp;offset: Offset inicial da camada<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParallaxLayer: A camada criada</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-remove_parallax_layer">
+                                    <code>def remove_parallax_layer(self: Any, layer: ParallaxLayer) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Remove uma camada do sistema de parallax</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-clear_parallax_layers">
+                                    <code>def clear_parallax_layers(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Remove todas as camadas de parallax</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-render_parallax">
+                                    <code>def render_parallax(self: Any, renderer: Any) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Renderiza o sistema de parallax.<br><br>Returns:<br> &nbsp; &nbsp;bool: True se o parallax foi renderizado, False caso contrário</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-enable_parallax">
+                                    <code>def enable_parallax(self: Any, enabled: bool) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Habilita ou desabilita o sistema de parallax</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-get_parallax_layer_count">
+                                    <code>def get_parallax_layer_count(self: Any) -> int</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Retorna o número de camadas de parallax</div></div></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
                                 lighting.py
                             </h5>
                         </div>
@@ -153,6 +359,34 @@
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
+                                    <code>SNOW: Any = 'snow'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>SAND: Any = 'sand'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>EXHAUST: Any = 'exhaust'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>STARFIELD: Any = 'starfield'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>EXPLOSION: Any = 'explosion'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>ENERGY: Any = 'energy'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>PLASMA: Any = 'plasma'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
                                     <code>CUSTOM: Any = 'custom'</code>
                                 </div>
                         </div></div>
@@ -198,6 +432,10 @@
                         
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>PLATFORMER: Any = 'platformer'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>SPACESHOOTER: Any = 'spaceshooter'</code>
                                 </div>
                         </div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-particleconfig">
@@ -257,15 +495,24 @@
                                 </h6>
                 <div class="docstring-content mb-2"><div class="docstring-text">Particle System - Optimized version</div></div><div class="mt-3"><strong>Attributes:</strong>
                                 <div class="attribute-item ms-3 mt-1">
-                                    <code>PARTICLE_CONFIGS: Dict[ParticleType, ParticleConfig] = {ParticleType.FIRE: ParticleConfig(color_start=(255, 100, 0), color_end=(255, 255, 0), size_start=8.0, size_end=2.0, lifetime=1.5, speed=150.0, gravity=-100.0, spread=60.0, fade_out=True, grow=False), ParticleType.WATER: ParticleConfig(color_start=(0, 100, 255), color_end=(0, 200, 255), size_start=6.0, size_end=4.0, lifetime=2.0, speed=80.0, gravity=300.0, spread=30.0, damping=0.9, fade_out=True), ParticleType.SMOKE: ParticleConfig(color_start=(100, 100, 100), color_end=(50, 50, 50), size_start=4.0, size_end=12.0, lifetime=3.0, speed=60.0, gravity=-50.0, spread=120.0, fade_out=True, grow=True), ParticleType.DUST: ParticleConfig(color_start=(200, 200, 150), color_end=(150, 150, 100), size_start=3.0, size_end=1.0, lifetime=1.0, speed=40.0, gravity=50.0, spread=180.0, fade_out=True), ParticleType.SPARK: ParticleConfig(color_start=(255, 255, 200), color_end=(255, 100, 0), size_start=2.0, size_end=1.0, lifetime=0.5, speed=200.0, gravity=200.0, spread=15.0, fade_out=True)}</code>
+                                    <code>PARTICLE_CONFIGS: Dict[ParticleType, ParticleConfig] = {ParticleType.FIRE: ParticleConfig(color_start=(255, 100, 0), color_end=(255, 255, 0), size_start=8.0, size_end=2.0, lifetime=1.5, speed=150.0, gravity=-100.0, spread=60.0, fade_out=True, grow=False), ParticleType.WATER: ParticleConfig(color_start=(0, 100, 255), color_end=(0, 200, 255), size_start=6.0, size_end=4.0, lifetime=2.0, speed=80.0, gravity=300.0, spread=30.0, damping=0.9, fade_out=True), ParticleType.SMOKE: ParticleConfig(color_start=(100, 100, 100), color_end=(50, 50, 50), size_start=4.0, size_end=12.0, lifetime=3.0, speed=60.0, gravity=-50.0, spread=120.0, fade_out=True, grow=True), ParticleType.DUST: ParticleConfig(color_start=(200, 200, 150), color_end=(150, 150, 100), size_start=3.0, size_end=1.0, lifetime=1.0, speed=40.0, gravity=50.0, spread=180.0, fade_out=True), ParticleType.SPARK: ParticleConfig(color_start=(255, 255, 200), color_end=(255, 100, 0), size_start=2.0, size_end=1.0, lifetime=0.5, speed=200.0, gravity=200.0, spread=15.0, fade_out=True), ParticleType.SNOW: ParticleConfig(color_start=(250, 250, 255), color_end=(225, 225, 235), size_start=3.0, size_end=1.0, lifetime=1.0, speed=50.0, gravity=100.0, spread=180.0, fade_out=True), ParticleType.SAND: ParticleConfig(color_start=(230, 230, 0), color_end=(255, 255, 0), size_start=1.0, size_end=1.0, lifetime=5.0, speed=200.0, gravity=100.0, spread=180.0, fade_out=True), ParticleType.EXHAUST: ParticleConfig(color_start=(0, 100, 255), color_end=(255, 50, 0), size_start=4.0, size_end=1.0, lifetime=0.3, speed=100.0, gravity=0.0, spread=30.0, fade_out=True, grow=False), ParticleType.EXPLOSION: ParticleConfig(color_start=(255, 200, 0), color_end=(255, 50, 0), size_start=10.0, size_end=2.0, lifetime=1.0, speed=300.0, gravity=0.0, spread=360.0, fade_out=True, grow=False), ParticleType.ENERGY: ParticleConfig(color_start=(0, 255, 255), color_end=(0, 100, 255), size_start=6.0, size_end=2.0, lifetime=1.2, speed=150.0, gravity=0.0, spread=90.0, fade_out=True, grow=False), ParticleType.PLASMA: ParticleConfig(color_start=(255, 0, 255), color_end=(100, 0, 255), size_start=5.0, size_end=1.0, lifetime=0.8, speed=250.0, gravity=0.0, spread=45.0, fade_out=True, grow=False)}</code>
                                 </div>
                         </div><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-__init__">
                                     <code>def __init__(self: Any, max_particles: int) -> None</code>
                         </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-get_particles_names">
+                                    <code>def get_particles_names(self: Any, sort_name: bool, capitalize: bool) -> List[str]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get list of all registered particle names</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-get_physics_names">
+                                    <code>def get_physics_names(self: Any, sort_name: bool, capitalize: bool) -> List[str]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get a list of physics names</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-update_max_particles">
+                                    <code>def update_max_particles(self: Any, value: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Callback for the renderer update max_particles.<br>Preserves active particles during resize.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_init_arrays">
                                     <code>def _init_arrays(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize optimized NumPy arrays</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize optimized NumPy arrays using current max_particles</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-register_custom_particle">
                                     <code>def register_custom_particle(self: Any, name: str, config: ParticleConfig) -> bool</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Register a custom particle type for user-defined effects<br><br>Args:<br> &nbsp; &nbsp;name (str): Unique name for the custom particle type<br> &nbsp; &nbsp;config (ParticleConfig): Configuration for the custom particle<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if registration was successful<br> &nbsp; &nbsp;<br>Raises:<br> &nbsp; &nbsp;ValueError: If particle name is already registered</div></div></div>
@@ -295,19 +542,19 @@
                         <div class="docstring-content mt-1"><div class="docstring-text">Emit particles with optimizations</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_setup_particle_properties">
                                     <code>def _setup_particle_properties(self: Any, idx: int, config: ParticleConfig, physics_type: PhysicsType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Setup particle properties - optimized</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Setup particle properties optimized for different physics types</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-update">
-                                    <code>def update(self: Any, dt: float) -> None</code>
+                                    <code>def update(self: Any, dt: float, camera_position: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update particles with vectorized operations</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_update_properties">
                                     <code>def _update_properties(self: Any, indices: np.ndarray) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update particle properties using vectorized operations</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update particle properties using vectorized operations - FIXED COLOR BUG</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-clear">
                                     <code>def clear(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Clear all particles</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-render">
-                                    <code>def render(self: Any, surface: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render particles - CORRIGIDO para Pygame</div></div></div>
+                                    <code>def render(self: Any, surface: Any, camera_position: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render particles - Fixed for pygame</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-get_stats">
                                     <code>def get_stats(self: Any) -> Dict[str, Any]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get comprehensive system statistics<br><br>Returns:<br> &nbsp; &nbsp;Dict with system statistics</div></div></div></div></div>

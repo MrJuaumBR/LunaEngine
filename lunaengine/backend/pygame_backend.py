@@ -30,7 +30,7 @@ class PygameRenderer(Renderer):
     >>> renderer.initialize()
     >>> renderer.draw_rect(100, 100, 50, 50, (255, 0, 0))
     """
-    
+    camera_position: pygame.math.Vector2 = pygame.math.Vector2(0, 0)
     def __init__(self, width: int, height: int):
         """
         Initialize Pygame renderer with specified dimensions
@@ -43,6 +43,20 @@ class PygameRenderer(Renderer):
         self.height = height
         self.surface = None
         self._current_target = None
+        
+        self._max_particles = 5000
+        self.on_max_particles_change:list = [] # Will update every particle system
+        
+    @property
+    def max_particles(self):
+        return self._max_particles
+    
+    @max_particles.setter
+    def max_particles(self, value):
+        if value > self._max_particles:
+            for callback in self.on_max_particles_change:
+                callback(self.max_particles)
+        self._max_particles = value
         
     def initialize(self):
         """Initialize the renderer - create main surface"""

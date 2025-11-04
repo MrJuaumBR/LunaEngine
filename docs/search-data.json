@@ -15,7 +15,7 @@
       "description": "User interface components - Buttons, Layouts, Themes",
       "link": "ui/index.html",
       "files_count": 4,
-      "classes_count": 28,
+      "classes_count": 29,
       "functions_count": 0
     },
     {
@@ -23,8 +23,8 @@
       "title": "Graphics",
       "description": "Graphics and rendering - Sprites, Lighting, Particles",
       "link": "graphics/index.html",
-      "files_count": 4,
-      "classes_count": 10,
+      "files_count": 5,
+      "classes_count": 15,
       "functions_count": 0
     },
     {
@@ -246,6 +246,15 @@
       "element_id": "class-dropdown"
     },
     {
+      "name": "UiFrame",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-uiframe",
+      "methods_count": 13,
+      "element_id": "class-uiframe"
+    },
+    {
       "name": "UILayout",
       "module": "ui",
       "file": "layout.py",
@@ -345,6 +354,51 @@
       "element_id": "class-thememanager"
     },
     {
+      "name": "CameraMode",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Camera follow behavior modes",
+      "link": "graphics/index.html#class-cameramode",
+      "methods_count": 0,
+      "element_id": "class-cameramode"
+    },
+    {
+      "name": "CameraShakeType",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Types of camera shake effects",
+      "link": "graphics/index.html#class-camerashaketype",
+      "methods_count": 0,
+      "element_id": "class-camerashaketype"
+    },
+    {
+      "name": "ParallaxLayer",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Otimizado: Camada de parallax com renderiza\u00e7\u00e3o eficiente",
+      "link": "graphics/index.html#class-parallaxlayer",
+      "methods_count": 2,
+      "element_id": "class-parallaxlayer"
+    },
+    {
+      "name": "ParallaxBackground",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Sistema de parallax otimizado para m\u00faltiplas camadas",
+      "link": "graphics/index.html#class-parallaxbackground",
+      "methods_count": 9,
+      "element_id": "class-parallaxbackground"
+    },
+    {
+      "name": "Camera",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Advanced 2D Camera system with smooth movement and effects.",
+      "link": "graphics/index.html#class-camera",
+      "methods_count": 32,
+      "element_id": "class-camera"
+    },
+    {
       "name": "Light",
       "module": "graphics",
       "file": "lighting.py",
@@ -404,7 +458,7 @@
       "file": "particles.py",
       "description": "Particle System - Optimized version",
       "link": "graphics/index.html#class-particlesystem",
-      "methods_count": 17,
+      "methods_count": 20,
       "element_id": "class-particlesystem"
     },
     {
@@ -530,7 +584,7 @@
       "file": "opengl.py",
       "description": "No documentation",
       "link": "backend/index.html#class-openglrenderer",
-      "methods_count": 16,
+      "methods_count": 29,
       "element_id": "class-openglrenderer"
     },
     {
@@ -539,7 +593,7 @@
       "file": "pygame_backend.py",
       "description": "Pygame-based software renderer for LunaEngine<br><br>LOCATION: lunaengine/backend/pygame_backend.py<br><br>DESCRIPTION:<br>Provides a simple, reliable software renderer using Pygame&#x27;s built-in<br>drawing functions. Serves as a fallback when OpenGL is not available<br>or for development purposes.<br><br>FEATURES:<br>- Software-based 2D rendering<br>- Basic shape drawing (rectangles, circles, lines)<br>- Surface blitting and composition<br>- Cross-platform compatibility<br><br>LIBRARIES USED:<br>- pygame: Core graphics, surface management, and drawing primitives<br><br>INHERITS FROM:<br>- Renderer: Base renderer class from core module<br><br>USAGE:<br>&gt;&gt;&gt; renderer = PygameRenderer(800, 600)<br>&gt;&gt;&gt; renderer.initialize()<br>&gt;&gt;&gt; renderer.draw_rect(100, 100, 50, 50, (255, 0, 0))",
       "link": "backend/index.html#class-pygamerenderer",
-      "methods_count": 10,
+      "methods_count": 12,
       "element_id": "class-pygamerenderer"
     },
     {
@@ -955,7 +1009,7 @@
       "name": "update",
       "class": "Scene",
       "module": "core",
-      "description": "Update scene logic.<br><br>Called every frame to update game logic, animations, and interactions.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds since last frame",
+      "description": "Update scene logic.",
       "link": "core/index.html#method-scene-update",
       "is_method": true,
       "element_id": "method-scene-update"
@@ -2213,6 +2267,123 @@
     },
     {
       "name": "__init__",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Initialize a UI Frame container element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the frame in pixels.<br> &nbsp; &nbsp;height (int): Height of the frame in pixels.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for frame styling.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID. If None, generates automatic ID.",
+      "link": "ui/index.html#method-uiframe-__init__",
+      "is_method": true,
+      "element_id": "method-uiframe-__init__"
+    },
+    {
+      "name": "set_background_color",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Set the background color of the frame.<br><br>Args:<br> &nbsp; &nbsp;color (Optional[Tuple[int, int, int]]): RGB color tuple or None for transparent.",
+      "link": "ui/index.html#method-uiframe-set_background_color",
+      "is_method": true,
+      "element_id": "method-uiframe-set_background_color"
+    },
+    {
+      "name": "set_border",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Set the border properties of the frame.<br><br>Args:<br> &nbsp; &nbsp;color (Optional[Tuple[int, int, int]]): Border color or None for no border.<br> &nbsp; &nbsp;width (int): Border width in pixels.",
+      "link": "ui/index.html#method-uiframe-set_border",
+      "is_method": true,
+      "element_id": "method-uiframe-set_border"
+    },
+    {
+      "name": "set_padding",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Set the padding inside the frame.<br><br>Args:<br> &nbsp; &nbsp;padding (int): Padding in pixels.",
+      "link": "ui/index.html#method-uiframe-set_padding",
+      "is_method": true,
+      "element_id": "method-uiframe-set_padding"
+    },
+    {
+      "name": "add_child",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Add a child element to this frame with automatic positioning.<br><br>Args:<br> &nbsp; &nbsp;child (UIElement): The child UI element to add.",
+      "link": "ui/index.html#method-uiframe-add_child",
+      "is_method": true,
+      "element_id": "method-uiframe-add_child"
+    },
+    {
+      "name": "get_content_rect",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Get the rectangle area available for child elements (inside padding).<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int, int]: (x, y, width, height) of content area.",
+      "link": "ui/index.html#method-uiframe-get_content_rect",
+      "is_method": true,
+      "element_id": "method-uiframe-get_content_rect"
+    },
+    {
+      "name": "update_theme",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Update the theme for this frame and all its children.<br><br>Args:<br> &nbsp; &nbsp;theme_type (ThemeType): The new theme to apply.",
+      "link": "ui/index.html#method-uiframe-update_theme",
+      "is_method": true,
+      "element_id": "method-uiframe-update_theme"
+    },
+    {
+      "name": "_update_with_mouse",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Update frame and children with mouse interaction.<br><br>Args:<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position.<br> &nbsp; &nbsp;mouse_pressed (bool): Whether mouse button is pressed.<br> &nbsp; &nbsp;dt (float): Delta time in seconds.",
+      "link": "ui/index.html#method-uiframe-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-uiframe-_update_with_mouse"
+    },
+    {
+      "name": "render_pygame",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Render frame using Pygame backend",
+      "link": "ui/index.html#method-uiframe-render_pygame",
+      "is_method": true,
+      "element_id": "method-uiframe-render_pygame"
+    },
+    {
+      "name": "render_opengl",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Render frame using OpenGL backend",
+      "link": "ui/index.html#method-uiframe-render_opengl",
+      "is_method": true,
+      "element_id": "method-uiframe-render_opengl"
+    },
+    {
+      "name": "arrange_children_vertically",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Arrange child elements vertically within the frame.<br><br>Args:<br> &nbsp; &nbsp;spacing (int): Space between children in pixels.<br> &nbsp; &nbsp;align (str): Alignment (&quot;left&quot;, &quot;center&quot;, &quot;right&quot;).",
+      "link": "ui/index.html#method-uiframe-arrange_children_vertically",
+      "is_method": true,
+      "element_id": "method-uiframe-arrange_children_vertically"
+    },
+    {
+      "name": "arrange_children_horizontally",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Arrange child elements horizontally within the frame.<br><br>Args:<br> &nbsp; &nbsp;spacing (int): Space between children in pixels.<br> &nbsp; &nbsp;align (str): Alignment (&quot;top&quot;, &quot;center&quot;, &quot;bottom&quot;).",
+      "link": "ui/index.html#method-uiframe-arrange_children_horizontally",
+      "is_method": true,
+      "element_id": "method-uiframe-arrange_children_horizontally"
+    },
+    {
+      "name": "clear_children",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Remove all child elements from this frame.",
+      "link": "ui/index.html#method-uiframe-clear_children",
+      "is_method": true,
+      "element_id": "method-uiframe-clear_children"
+    },
+    {
+      "name": "__init__",
       "class": "UILayout",
       "module": "ui",
       "description": "Initialize a layout manager.<br><br>Args:<br> &nbsp; &nbsp;x (int): Starting X coordinate for the layout.<br> &nbsp; &nbsp;y (int): Starting Y coordinate for the layout.",
@@ -2438,6 +2609,393 @@
     },
     {
       "name": "__init__",
+      "class": "ParallaxLayer",
+      "module": "graphics",
+      "description": "Inicializa uma camada de parallax.<br><br>Args:<br> &nbsp; &nbsp;surface: Superf\u00edcie pygame para a camada<br> &nbsp; &nbsp;speed_factor: Fator de velocidade (0.0 = est\u00e1tico, 1.0 = move com c\u00e2mera)<br> &nbsp; &nbsp;tile_mode: Se True, a imagem se repete infinitamente<br> &nbsp; &nbsp;offset: Offset inicial da camada",
+      "link": "graphics/index.html#method-parallaxlayer-__init__",
+      "is_method": true,
+      "element_id": "method-parallaxlayer-__init__"
+    },
+    {
+      "name": "update",
+      "class": "ParallaxLayer",
+      "module": "graphics",
+      "description": "Atualiza a posi\u00e7\u00e3o da camada baseado na posi\u00e7\u00e3o da c\u00e2mera.",
+      "link": "graphics/index.html#method-parallaxlayer-update",
+      "is_method": true,
+      "element_id": "method-parallaxlayer-update"
+    },
+    {
+      "name": "__init__",
+      "class": "ParallaxBackground",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-parallaxbackground-__init__",
+      "is_method": true,
+      "element_id": "method-parallaxbackground-__init__"
+    },
+    {
+      "name": "add_layer",
+      "class": "ParallaxBackground",
+      "module": "graphics",
+      "description": "Adiciona uma camada ao sistema de parallax.<br><br>Args:<br> &nbsp; &nbsp;surface: Superf\u00edcie pygame<br> &nbsp; &nbsp;speed_factor: Fator de velocidade do parallax<br> &nbsp; &nbsp;tile_mode: Se a imagem deve se repetir<br> &nbsp; &nbsp;offset: Offset inicial<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParallaxLayer: A camada criada",
+      "link": "graphics/index.html#method-parallaxbackground-add_layer",
+      "is_method": true,
+      "element_id": "method-parallaxbackground-add_layer"
+    },
+    {
+      "name": "remove_layer",
+      "class": "ParallaxBackground",
+      "module": "graphics",
+      "description": "Remove uma camada do sistema de parallax",
+      "link": "graphics/index.html#method-parallaxbackground-remove_layer",
+      "is_method": true,
+      "element_id": "method-parallaxbackground-remove_layer"
+    },
+    {
+      "name": "clear_layers",
+      "class": "ParallaxBackground",
+      "module": "graphics",
+      "description": "Remove todas as camadas",
+      "link": "graphics/index.html#method-parallaxbackground-clear_layers",
+      "is_method": true,
+      "element_id": "method-parallaxbackground-clear_layers"
+    },
+    {
+      "name": "update",
+      "class": "ParallaxBackground",
+      "module": "graphics",
+      "description": "Atualiza todas as camadas de parallax",
+      "link": "graphics/index.html#method-parallaxbackground-update",
+      "is_method": true,
+      "element_id": "method-parallaxbackground-update"
+    },
+    {
+      "name": "render",
+      "class": "ParallaxBackground",
+      "module": "graphics",
+      "description": "Renderiza todas as camadas de parallax de forma otimizada.<br><br>Returns:<br> &nbsp; &nbsp;bool: True se o parallax foi renderizado, False caso contr\u00e1rio",
+      "link": "graphics/index.html#method-parallaxbackground-render",
+      "is_method": true,
+      "element_id": "method-parallaxbackground-render"
+    },
+    {
+      "name": "_render_layer",
+      "class": "ParallaxBackground",
+      "module": "graphics",
+      "description": "Renderiza uma \u00fanica camada de parallax de forma otimizada",
+      "link": "graphics/index.html#method-parallaxbackground-_render_layer",
+      "is_method": true,
+      "element_id": "method-parallaxbackground-_render_layer"
+    },
+    {
+      "name": "_render_tiled_layer",
+      "class": "ParallaxBackground",
+      "module": "graphics",
+      "description": "Renderiza camada em modo tile (repeti\u00e7\u00e3o infinita)",
+      "link": "graphics/index.html#method-parallaxbackground-_render_tiled_layer",
+      "is_method": true,
+      "element_id": "method-parallaxbackground-_render_tiled_layer"
+    },
+    {
+      "name": "_render_single_layer",
+      "class": "ParallaxBackground",
+      "module": "graphics",
+      "description": "Renderiza camada em modo \u00fanico (uma \u00fanica c\u00f3pia)",
+      "link": "graphics/index.html#method-parallaxbackground-_render_single_layer",
+      "is_method": true,
+      "element_id": "method-parallaxbackground-_render_single_layer"
+    },
+    {
+      "name": "__init__",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Initialize camera with viewport dimensions.",
+      "link": "graphics/index.html#method-camera-__init__",
+      "is_method": true,
+      "element_id": "method-camera-__init__"
+    },
+    {
+      "name": "position",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Get camera position with shake offset applied",
+      "link": "graphics/index.html#method-camera-position",
+      "is_method": true,
+      "element_id": "method-camera-position"
+    },
+    {
+      "name": "position",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Set camera base position (without shake)",
+      "link": "graphics/index.html#method-camera-position",
+      "is_method": true,
+      "element_id": "method-camera-position"
+    },
+    {
+      "name": "base_position",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Get camera base position without shake offset",
+      "link": "graphics/index.html#method-camera-base_position",
+      "is_method": true,
+      "element_id": "method-camera-base_position"
+    },
+    {
+      "name": "set_target",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Set camera target to follow.",
+      "link": "graphics/index.html#method-camera-set_target",
+      "is_method": true,
+      "element_id": "method-camera-set_target"
+    },
+    {
+      "name": "set_bounds",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Set camera movement boundaries.",
+      "link": "graphics/index.html#method-camera-set_bounds",
+      "is_method": true,
+      "element_id": "method-camera-set_bounds"
+    },
+    {
+      "name": "update",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Update camera position and effects.",
+      "link": "graphics/index.html#method-camera-update",
+      "is_method": true,
+      "element_id": "method-camera-update"
+    },
+    {
+      "name": "_update_renderer_camera_position",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Update camera position in both renderers",
+      "link": "graphics/index.html#method-camera-_update_renderer_camera_position",
+      "is_method": true,
+      "element_id": "method-camera-_update_renderer_camera_position"
+    },
+    {
+      "name": "_update_follow",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Update camera position based on follow mode",
+      "link": "graphics/index.html#method-camera-_update_follow",
+      "is_method": true,
+      "element_id": "method-camera-_update_follow"
+    },
+    {
+      "name": "_get_target_position",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Extract position from target object",
+      "link": "graphics/index.html#method-camera-_get_target_position",
+      "is_method": true,
+      "element_id": "method-camera-_get_target_position"
+    },
+    {
+      "name": "_update_platformer_mode",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Platformer-style camera with deadzone",
+      "link": "graphics/index.html#method-camera-_update_platformer_mode",
+      "is_method": true,
+      "element_id": "method-camera-_update_platformer_mode"
+    },
+    {
+      "name": "_update_topdown_mode",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Top-down RPG style camera",
+      "link": "graphics/index.html#method-camera-_update_topdown_mode",
+      "is_method": true,
+      "element_id": "method-camera-_update_topdown_mode"
+    },
+    {
+      "name": "_apply_smooth_movement",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Apply smooth interpolation to camera position",
+      "link": "graphics/index.html#method-camera-_apply_smooth_movement",
+      "is_method": true,
+      "element_id": "method-camera-_apply_smooth_movement"
+    },
+    {
+      "name": "_apply_zoom",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Apply smooth zoom interpolation",
+      "link": "graphics/index.html#method-camera-_apply_zoom",
+      "is_method": true,
+      "element_id": "method-camera-_apply_zoom"
+    },
+    {
+      "name": "_apply_shake",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Apply camera shake effects",
+      "link": "graphics/index.html#method-camera-_apply_shake",
+      "is_method": true,
+      "element_id": "method-camera-_apply_shake"
+    },
+    {
+      "name": "_update_trauma_shake",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Update trauma-based shake",
+      "link": "graphics/index.html#method-camera-_update_trauma_shake",
+      "is_method": true,
+      "element_id": "method-camera-_update_trauma_shake"
+    },
+    {
+      "name": "_update_positional_shake",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Update simple positional shake",
+      "link": "graphics/index.html#method-camera-_update_positional_shake",
+      "is_method": true,
+      "element_id": "method-camera-_update_positional_shake"
+    },
+    {
+      "name": "_apply_bounds",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Constrain camera within boundaries",
+      "link": "graphics/index.html#method-camera-_apply_bounds",
+      "is_method": true,
+      "element_id": "method-camera-_apply_bounds"
+    },
+    {
+      "name": "shake",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Start camera shake effect.",
+      "link": "graphics/index.html#method-camera-shake",
+      "is_method": true,
+      "element_id": "method-camera-shake"
+    },
+    {
+      "name": "add_trauma",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Add trauma for trauma-based shake.",
+      "link": "graphics/index.html#method-camera-add_trauma",
+      "is_method": true,
+      "element_id": "method-camera-add_trauma"
+    },
+    {
+      "name": "set_zoom",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Set camera zoom level.",
+      "link": "graphics/index.html#method-camera-set_zoom",
+      "is_method": true,
+      "element_id": "method-camera-set_zoom"
+    },
+    {
+      "name": "world_to_screen",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Convert world coordinates to screen coordinates.",
+      "link": "graphics/index.html#method-camera-world_to_screen",
+      "is_method": true,
+      "element_id": "method-camera-world_to_screen"
+    },
+    {
+      "name": "screen_to_world",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Convert screen coordinates to world coordinates.",
+      "link": "graphics/index.html#method-camera-screen_to_world",
+      "is_method": true,
+      "element_id": "method-camera-screen_to_world"
+    },
+    {
+      "name": "screen_to_world_vector",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Convert screen vector to world vector (ignores camera position).",
+      "link": "graphics/index.html#method-camera-screen_to_world_vector",
+      "is_method": true,
+      "element_id": "method-camera-screen_to_world_vector"
+    },
+    {
+      "name": "get_visible_rect",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Get the visible world area as a rectangle.",
+      "link": "graphics/index.html#method-camera-get_visible_rect",
+      "is_method": true,
+      "element_id": "method-camera-get_visible_rect"
+    },
+    {
+      "name": "is_visible",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Check if a world position is visible on screen.",
+      "link": "graphics/index.html#method-camera-is_visible",
+      "is_method": true,
+      "element_id": "method-camera-is_visible"
+    },
+    {
+      "name": "add_parallax_layer",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Adiciona uma camada ao sistema de parallax da c\u00e2mera.<br><br>Args:<br> &nbsp; &nbsp;surface: Superf\u00edcie pygame para a camada<br> &nbsp; &nbsp;speed_factor: Fator de velocidade do parallax (0.0 = est\u00e1tico, 1.0 = move com c\u00e2mera)<br> &nbsp; &nbsp;tile_mode: Se a imagem deve se repetir infinitamente<br> &nbsp; &nbsp;offset: Offset inicial da camada<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParallaxLayer: A camada criada",
+      "link": "graphics/index.html#method-camera-add_parallax_layer",
+      "is_method": true,
+      "element_id": "method-camera-add_parallax_layer"
+    },
+    {
+      "name": "remove_parallax_layer",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Remove uma camada do sistema de parallax",
+      "link": "graphics/index.html#method-camera-remove_parallax_layer",
+      "is_method": true,
+      "element_id": "method-camera-remove_parallax_layer"
+    },
+    {
+      "name": "clear_parallax_layers",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Remove todas as camadas de parallax",
+      "link": "graphics/index.html#method-camera-clear_parallax_layers",
+      "is_method": true,
+      "element_id": "method-camera-clear_parallax_layers"
+    },
+    {
+      "name": "render_parallax",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Renderiza o sistema de parallax.<br><br>Returns:<br> &nbsp; &nbsp;bool: True se o parallax foi renderizado, False caso contr\u00e1rio",
+      "link": "graphics/index.html#method-camera-render_parallax",
+      "is_method": true,
+      "element_id": "method-camera-render_parallax"
+    },
+    {
+      "name": "enable_parallax",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Habilita ou desabilita o sistema de parallax",
+      "link": "graphics/index.html#method-camera-enable_parallax",
+      "is_method": true,
+      "element_id": "method-camera-enable_parallax"
+    },
+    {
+      "name": "get_parallax_layer_count",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Retorna o n\u00famero de camadas de parallax",
+      "link": "graphics/index.html#method-camera-get_parallax_layer_count",
+      "is_method": true,
+      "element_id": "method-camera-get_parallax_layer_count"
+    },
+    {
+      "name": "__init__",
       "class": "Light",
       "module": "graphics",
       "description": "No documentation",
@@ -2491,10 +3049,37 @@
       "element_id": "method-particlesystem-__init__"
     },
     {
+      "name": "get_particles_names",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Get list of all registered particle names",
+      "link": "graphics/index.html#method-particlesystem-get_particles_names",
+      "is_method": true,
+      "element_id": "method-particlesystem-get_particles_names"
+    },
+    {
+      "name": "get_physics_names",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Get a list of physics names",
+      "link": "graphics/index.html#method-particlesystem-get_physics_names",
+      "is_method": true,
+      "element_id": "method-particlesystem-get_physics_names"
+    },
+    {
+      "name": "update_max_particles",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Callback for the renderer update max_particles.<br>Preserves active particles during resize.",
+      "link": "graphics/index.html#method-particlesystem-update_max_particles",
+      "is_method": true,
+      "element_id": "method-particlesystem-update_max_particles"
+    },
+    {
       "name": "_init_arrays",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Initialize optimized NumPy arrays",
+      "description": "Initialize optimized NumPy arrays using current max_particles",
       "link": "graphics/index.html#method-particlesystem-_init_arrays",
       "is_method": true,
       "element_id": "method-particlesystem-_init_arrays"
@@ -2584,7 +3169,7 @@
       "name": "_setup_particle_properties",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Setup particle properties - optimized",
+      "description": "Setup particle properties optimized for different physics types",
       "link": "graphics/index.html#method-particlesystem-_setup_particle_properties",
       "is_method": true,
       "element_id": "method-particlesystem-_setup_particle_properties"
@@ -2602,7 +3187,7 @@
       "name": "_update_properties",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Update particle properties using vectorized operations",
+      "description": "Update particle properties using vectorized operations - FIXED COLOR BUG",
       "link": "graphics/index.html#method-particlesystem-_update_properties",
       "is_method": true,
       "element_id": "method-particlesystem-_update_properties"
@@ -2620,7 +3205,7 @@
       "name": "render",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Render particles - CORRIGIDO para Pygame",
+      "description": "Render particles - Fixed for pygame",
       "link": "graphics/index.html#method-particlesystem-render",
       "is_method": true,
       "element_id": "method-particlesystem-render"
@@ -3175,6 +3760,33 @@
       "element_id": "method-openglrenderer-__init__"
     },
     {
+      "name": "max_particles",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-openglrenderer-max_particles",
+      "is_method": true,
+      "element_id": "method-openglrenderer-max_particles"
+    },
+    {
+      "name": "max_particles",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-openglrenderer-max_particles",
+      "is_method": true,
+      "element_id": "method-openglrenderer-max_particles"
+    },
+    {
+      "name": "max_particles",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-openglrenderer-max_particles",
+      "is_method": true,
+      "element_id": "method-openglrenderer-max_particles"
+    },
+    {
       "name": "initialize",
       "class": "OpenGLRenderer",
       "module": "backend",
@@ -3223,7 +3835,7 @@
       "name": "_ensure_particle_capacity",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Ensure particle buffers are large enough - DYNAMIC RESIZING",
+      "description": "Ensure particle buffers are large enough - DYNAMIC RESIZING<br><br>required_count * 1.01 = 101% of current size",
       "link": "backend/index.html#method-openglrenderer-_ensure_particle_capacity",
       "is_method": true,
       "element_id": "method-openglrenderer-_ensure_particle_capacity"
@@ -3232,10 +3844,19 @@
       "name": "enable_scissor",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Enable scissor test for clipping region",
+      "description": "Enable scissor test for clipping region.<br><br>In OpenGL, the coordinate system has origin at bottom-left,<br>while Pygame uses top-left origin. We need to convert coordinates.<br><br>Args:<br> &nbsp; &nbsp;x (int): X position from left (pygame coordinate system)<br> &nbsp; &nbsp;y (int): Y position from top (pygame coordinate system) &nbsp;<br> &nbsp; &nbsp;width (int): Width of scissor region<br> &nbsp; &nbsp;height (int): Height of scissor region",
       "link": "backend/index.html#method-openglrenderer-enable_scissor",
       "is_method": true,
       "element_id": "method-openglrenderer-enable_scissor"
+    },
+    {
+      "name": "disable_scissor",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Disable scissor test with debugging",
+      "link": "backend/index.html#method-openglrenderer-disable_scissor",
+      "is_method": true,
+      "element_id": "method-openglrenderer-disable_scissor"
     },
     {
       "name": "disable_scissor",
@@ -3274,6 +3895,78 @@
       "element_id": "method-openglrenderer-_draw_thick_line_optimized"
     },
     {
+      "name": "draw_circle",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Draw a circle with specified center, radius and color",
+      "link": "backend/index.html#method-openglrenderer-draw_circle",
+      "is_method": true,
+      "element_id": "method-openglrenderer-draw_circle"
+    },
+    {
+      "name": "_generate_filled_circle_geometry",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Generate vertices and indices for a filled circle",
+      "link": "backend/index.html#method-openglrenderer-_generate_filled_circle_geometry",
+      "is_method": true,
+      "element_id": "method-openglrenderer-_generate_filled_circle_geometry"
+    },
+    {
+      "name": "_generate_hollow_circle_geometry",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Generate vertices and indices for a hollow circle (outline)",
+      "link": "backend/index.html#method-openglrenderer-_generate_hollow_circle_geometry",
+      "is_method": true,
+      "element_id": "method-openglrenderer-_generate_hollow_circle_geometry"
+    },
+    {
+      "name": "draw_polygon",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Draw a polygon from a list of points",
+      "link": "backend/index.html#method-openglrenderer-draw_polygon",
+      "is_method": true,
+      "element_id": "method-openglrenderer-draw_polygon"
+    },
+    {
+      "name": "_generate_filled_polygon_geometry",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Generate vertices and indices for a filled polygon using triangle fan",
+      "link": "backend/index.html#method-openglrenderer-_generate_filled_polygon_geometry",
+      "is_method": true,
+      "element_id": "method-openglrenderer-_generate_filled_polygon_geometry"
+    },
+    {
+      "name": "_generate_hollow_polygon_geometry",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Generate vertices and indices for a hollow polygon (outline)",
+      "link": "backend/index.html#method-openglrenderer-_generate_hollow_polygon_geometry",
+      "is_method": true,
+      "element_id": "method-openglrenderer-_generate_hollow_polygon_geometry"
+    },
+    {
+      "name": "_upload_geometry",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Upload vertices and indices to GPU, return VAO, VBO, EBO",
+      "link": "backend/index.html#method-openglrenderer-_upload_geometry",
+      "is_method": true,
+      "element_id": "method-openglrenderer-_upload_geometry"
+    },
+    {
+      "name": "render_opengl",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "This function is used just for make it detectable in the profiler that is OpenGL.<br><br>! Never Remove it",
+      "link": "backend/index.html#method-openglrenderer-render_opengl",
+      "is_method": true,
+      "element_id": "method-openglrenderer-render_opengl"
+    },
+    {
       "name": "draw_surface",
       "class": "OpenGLRenderer",
       "module": "backend",
@@ -3292,15 +3985,6 @@
       "element_id": "method-openglrenderer-render_surface"
     },
     {
-      "name": "render_opengl",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "Marker method to identify this as OpenGL renderer",
-      "link": "backend/index.html#method-openglrenderer-render_opengl",
-      "is_method": true,
-      "element_id": "method-openglrenderer-render_opengl"
-    },
-    {
       "name": "render_particles",
       "class": "OpenGLRenderer",
       "module": "backend",
@@ -3310,6 +3994,24 @@
       "element_id": "method-openglrenderer-render_particles"
     },
     {
+      "name": "get_surface",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Get the main screen surface for compatibility with UI elements.<br><br>In OpenGL mode, this returns the pygame display surface which can be used<br>for fallback rendering when OpenGL is not available for certain operations.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The main display surface",
+      "link": "backend/index.html#method-openglrenderer-get_surface",
+      "is_method": true,
+      "element_id": "method-openglrenderer-get_surface"
+    },
+    {
+      "name": "cleanup",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Clean up OpenGL resources",
+      "link": "backend/index.html#method-openglrenderer-cleanup",
+      "is_method": true,
+      "element_id": "method-openglrenderer-cleanup"
+    },
+    {
       "name": "__init__",
       "class": "PygameRenderer",
       "module": "backend",
@@ -3317,6 +4019,24 @@
       "link": "backend/index.html#method-pygamerenderer-__init__",
       "is_method": true,
       "element_id": "method-pygamerenderer-__init__"
+    },
+    {
+      "name": "max_particles",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-pygamerenderer-max_particles",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-max_particles"
+    },
+    {
+      "name": "max_particles",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-pygamerenderer-max_particles",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-max_particles"
     },
     {
       "name": "initialize",
@@ -3490,7 +4210,7 @@
       "element_id": "method-codestatistics-print_statistics"
     }
   ],
-  "last_updated": "2025-11-02T16:21:39.183601",
+  "last_updated": "2025-11-04T18:05:16.963024",
   "pages": [
     {
       "name": "Quick Start",

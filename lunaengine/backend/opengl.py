@@ -272,6 +272,7 @@ class TextureShader(ShaderProgram):
         glBindVertexArray(0)
 
 class OpenGLRenderer:
+    camera_position:pygame.math.Vector2 = pygame.math.Vector2(0, 0)
     def __init__(self, width: int, height: int):
         self.width = width
         self.height = height
@@ -284,6 +285,26 @@ class OpenGLRenderer:
         self._max_particles = 1024  # Initial size
         self._particle_instance_data = np.zeros((self._max_particles, 4), dtype=np.float32)
         self._particle_color_data = np.zeros((self._max_particles, 4), dtype=np.float32)
+        self.on_max_particles_change:list = [] # Callbacks
+        
+        # Cache for reusable geometry
+        self._circle_cache = {}
+        self._polygon_cache = {}
+        
+    @property
+    def max_particles(self) -> int:
+        return self._max_particles
+    
+    @max_particles.setter
+    def max_particles(self, value: int):
+        if value > self._max_particles:
+            for callback in self.on_max_particles_change:
+                callback(value)
+        self._max_particles = value
+        
+    @max_particles.getter
+    def max_particles(self) -> int:
+        return self._max_particles
         
     def initialize(self):
         """Initialize OpenGL context and shaders"""
@@ -358,16 +379,18 @@ class OpenGLRenderer:
         return (r, g, b, a)
     
     def _ensure_particle_capacity(self, required_count: int):
-        """Ensure particle buffers are large enough - DYNAMIC RESIZING"""
-        if required_count <= self._max_particles:
+        """
+        Ensure particle buffers are large enough - DYNAMIC RESIZING
+        
+        required_count * 1.01 = 101% of current size
+        """
+        if required_count*1.01 <= self.max_particles:
             return
             
         # Calculate new size (next power of two for efficiency)
         new_size = 1
-        while new_size < required_count:
+        while new_size < required_count*1.01:
             new_size *= 2
-        
-        print(f"Resizing particle buffers from {self._max_particles} to {new_size}")
         
         # Resize numpy arrays
         self._particle_instance_data = np.zeros((new_size, 4), dtype=np.float32)
@@ -383,16 +406,41 @@ class OpenGLRenderer:
             
             glBindBuffer(GL_ARRAY_BUFFER, 0)
         
-        self._max_particles = new_size
+        self.max_particles = new_size
     
     def enable_scissor(self, x: int, y: int, width: int, height: int):
-        """Enable scissor test for clipping region"""
+        """
+        Enable scissor test for clipping region.
+        
+        In OpenGL, the coordinate system has origin at bottom-left,
+        while Pygame uses top-left origin. We need to convert coordinates.
+        
+        Args:
+            x (int): X position from left (pygame coordinate system)
+            y (int): Y position from top (pygame coordinate system)  
+            width (int): Width of scissor region
+            height (int): Height of scissor region
+        """
         if not self._initialized:
             return
             
         glEnable(GL_SCISSOR_TEST)
+        
         gl_scissor_y = self.height - (y + height)
-        glScissor(x, gl_scissor_y, width, height)
+        
+        gl_scissor_x = max(0, x)
+        gl_scissor_y = max(0, gl_scissor_y)
+        gl_scissor_width = min(width, self.width - gl_scissor_x)
+        gl_scissor_height = min(height, self.height - gl_scissor_y)
+        
+        glScissor(gl_scissor_x, gl_scissor_y, gl_scissor_width, gl_scissor_height)
+
+    def disable_scissor(self):
+        """Disable scissor test with debugging"""
+        if not self._initialized:
+            return
+            
+        glDisable(GL_SCISSOR_TEST)
 
     def disable_scissor(self):
         """Disable scissor test"""
@@ -404,28 +452,25 @@ class OpenGLRenderer:
         """Draw a colored rectangle"""
         if not self._initialized or not self.simple_shader.program:
             return
-            
+
         r_gl, g_gl, b_gl, a_gl = self._convert_color(color)
-        
+
         glUseProgram(self.simple_shader.program)
         glUniform2f(self.simple_shader._get_uniform_location("uScreenSize"), 
                 float(self.width), float(self.height))
-        
         if not fill:
             glUniform4f(self.simple_shader._get_uniform_location("uTransform"), 
                     float(x), float(y), float(width), float(height))
             glUniform4f(self.simple_shader._get_uniform_location("uColor"), 
                     r_gl, g_gl, b_gl, a_gl)
-            
             glBindVertexArray(self.simple_shader.vao)
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
             glBindVertexArray(0)
         else:
-            border_w = border_width
-            inset_x = x + border_w
-            inset_y = y + border_w
-            inset_width = width - (2 * border_w)
-            inset_height = height - (2 * border_w)
+            inset_x = x + border_width
+            inset_y = y + border_width
+            inset_width = width - (2 * border_width)
+            inset_height = height - (2 * border_width)
             
             if inset_width > 0 and inset_height > 0:
                 glUniform4f(self.simple_shader._get_uniform_location("uTransform"), 
@@ -436,7 +481,7 @@ class OpenGLRenderer:
                 glBindVertexArray(self.simple_shader.vao)
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
                 glBindVertexArray(0)
-        
+
         glUseProgram(0)
     
     def draw_line(self, start_x: int, start_y: int, end_x: int, end_y: int, color: tuple, width: int = 2):
@@ -446,21 +491,25 @@ class OpenGLRenderer:
             
         r_gl, g_gl, b_gl, a_gl = self._convert_color(color)
         
+        # Optimized handling for thin lines
         if width <= 1:
             if start_x == end_x:
+                # Vertical line
                 x = start_x
                 y = min(start_y, end_y)
                 height = abs(end_y - start_y)
                 self.draw_rect(x, y, 1, height, color, fill=True)
+                return
             elif start_y == end_y:
+                # Horizontal line
                 x = min(start_x, end_x)
                 y = start_y
                 width_line = abs(end_x - start_x)
                 self.draw_rect(x, y, width_line, 1, color, fill=True)
-            else:
-                self._draw_thick_line_optimized(start_x, start_y, end_x, end_y, color, width)
-        else:
-            self._draw_thick_line_optimized(start_x, start_y, end_x, end_y, color, width)
+                return
+        
+        # Use optimized thick line method for all other cases
+        self._draw_thick_line_optimized(start_x, start_y, end_x, end_y, color, width)
 
     def _draw_thick_line_optimized(self, start_x: int, start_y: int, end_x: int, end_y: int, color: tuple, width: int):
         """Optimized method for drawing thick lines"""
@@ -519,6 +568,251 @@ class OpenGLRenderer:
         glDeleteBuffers(1, [vbo])
         glDeleteBuffers(1, [ebo])
         glUseProgram(0)
+    
+    def draw_circle(self, center_x: int, center_y: int, radius: int, color: tuple, fill: bool = True, border_width: int = 1):
+        """Draw a circle with specified center, radius and color"""
+        if not self._initialized or not self.simple_shader.program:
+            return
+            
+        # Generate circle geometry with caching for performance
+        cache_key = (radius, fill, border_width)
+        if cache_key in self._circle_cache:
+            vao, vbo, ebo, vertex_count = self._circle_cache[cache_key]
+        else:
+            # Generate circle vertices
+            segments = max(16, min(64, radius // 2))  # Adaptive segment count
+            
+            if fill:
+                vertices, indices = self._generate_filled_circle_geometry(segments)
+            else:
+                vertices, indices = self._generate_hollow_circle_geometry(segments, border_width, radius)
+            
+            vao, vbo, ebo = self._upload_geometry(vertices, indices)
+            vertex_count = len(indices)
+            self._circle_cache[cache_key] = (vao, vbo, ebo, vertex_count)
+        
+        # Render the circle
+        r_gl, g_gl, b_gl, a_gl = self._convert_color(color)
+        
+        glUseProgram(self.simple_shader.program)
+        glUniform2f(self.simple_shader._get_uniform_location("uScreenSize"), 
+                float(self.width), float(self.height))
+        glUniform4f(self.simple_shader._get_uniform_location("uTransform"), 
+                float(center_x - radius), float(center_y - radius), 
+                float(radius * 2), float(radius * 2))
+        glUniform4f(self.simple_shader._get_uniform_location("uColor"), 
+                r_gl, g_gl, b_gl, a_gl)
+        
+        glBindVertexArray(vao)
+        glDrawElements(GL_TRIANGLES, vertex_count, GL_UNSIGNED_INT, None)
+        glBindVertexArray(0)
+        glUseProgram(0)
+    
+    def _generate_filled_circle_geometry(self, segments: int):
+        """Generate vertices and indices for a filled circle"""
+        vertices = [0.0, 0.0]  # Center point
+        
+        for i in range(int(segments + 1)):
+            angle = 2 * np.pi * i / int(segments)
+            vertices.extend([np.cos(angle) * 0.5 + 0.5, np.sin(angle) * 0.5 + 0.5])
+        
+        indices = []
+        for i in range(1, int(segments)):
+            indices.extend([0, i, i + 1])
+        indices.extend([0, int(segments), 1])  # Close the circle
+        
+        vertices = np.array(vertices, dtype=np.float32)
+        indices = np.array(indices, dtype=np.uint32)
+        
+        return vertices, indices
+    
+    def _generate_hollow_circle_geometry(self, segments: int, border_width: int, radius: int):
+        """Generate vertices and indices for a hollow circle (outline)"""
+        inner_radius = max(0.1, (radius - border_width) / radius * 0.5)
+        outer_radius = 0.5
+        
+        vertices = []
+        # Generate vertices for inner and outer circles
+        for i in range(segments + 1):
+            angle = 2 * np.pi * i / segments
+            # Outer vertex
+            vertices.extend([np.cos(angle) * outer_radius + 0.5, np.sin(angle) * outer_radius + 0.5])
+            # Inner vertex
+            vertices.extend([np.cos(angle) * inner_radius + 0.5, np.sin(angle) * inner_radius + 0.5])
+        
+        indices = []
+        for i in range(segments):
+            # Two triangles per segment
+            outer_current = i * 2
+            inner_current = i * 2 + 1
+            outer_next = (i + 1) * 2
+            inner_next = (i + 1) * 2 + 1
+            
+            # First triangle
+            indices.extend([outer_current, inner_current, outer_next])
+            # Second triangle
+            indices.extend([inner_current, inner_next, outer_next])
+        
+        vertices = np.array(vertices, dtype=np.float32)
+        indices = np.array(indices, dtype=np.uint32)
+        
+        return vertices, indices
+    
+    def draw_polygon(self, points: List[Tuple[int, int]], color: tuple, fill: bool = True, border_width: int = 1):
+        """Draw a polygon from a list of points"""
+        if not self._initialized or not self.simple_shader.program or len(points) < 3:
+            return
+            
+        # Generate polygon geometry with caching
+        cache_key = tuple(points) + (fill, border_width)
+        if cache_key in self._polygon_cache:
+            vao, vbo, ebo, vertex_count = self._polygon_cache[cache_key]
+        else:
+            if fill:
+                vertices, indices = self._generate_filled_polygon_geometry(points)
+            else:
+                vertices, indices = self._generate_hollow_polygon_geometry(points, border_width)
+            
+            vao, vbo, ebo = self._upload_geometry(vertices, indices)
+            vertex_count = len(indices)
+            self._polygon_cache[cache_key] = (vao, vbo, ebo, vertex_count)
+        
+        # Calculate bounding box for transform
+        min_x = min(p[0] for p in points)
+        min_y = min(p[1] for p in points)
+        max_x = max(p[0] for p in points)
+        max_y = max(p[1] for p in points)
+        width = max_x - min_x
+        height = max_y - min_y
+        
+        # Render the polygon
+        r_gl, g_gl, b_gl, a_gl = self._convert_color(color)
+        
+        glUseProgram(self.simple_shader.program)
+        glUniform2f(self.simple_shader._get_uniform_location("uScreenSize"), 
+                float(self.width), float(self.height))
+        glUniform4f(self.simple_shader._get_uniform_location("uTransform"), 
+                float(min_x), float(min_y), float(width), float(height))
+        glUniform4f(self.simple_shader._get_uniform_location("uColor"), 
+                r_gl, g_gl, b_gl, a_gl)
+        
+        glBindVertexArray(vao)
+        glDrawElements(GL_TRIANGLES, vertex_count, GL_UNSIGNED_INT, None)
+        glBindVertexArray(0)
+        glUseProgram(0)
+    
+    def _generate_filled_polygon_geometry(self, points: List[Tuple[int, int]]):
+        """Generate vertices and indices for a filled polygon using triangle fan"""
+        # Normalize points to 0-1 range based on bounding box
+        min_x = min(p[0] for p in points)
+        min_y = min(p[1] for p in points)
+        max_x = max(p[0] for p in points)
+        max_y = max(p[1] for p in points)
+        width = max(1, max_x - min_x)
+        height = max(1, max_y - min_y)
+        
+        vertices = []
+        for x, y in points:
+            # Normalize to 0-1 range
+            norm_x = (x - min_x) / width
+            norm_y = (y - min_y) / height
+            vertices.extend([norm_x, norm_y])
+        
+        # Simple triangle fan triangulation (works for convex polygons)
+        indices = []
+        for i in range(1, len(points) - 1):
+            indices.extend([0, i, i + 1])
+        
+        vertices = np.array(vertices, dtype=np.float32)
+        indices = np.array(indices, dtype=np.uint32)
+        
+        return vertices, indices
+    
+    def _generate_hollow_polygon_geometry(self, points: List[Tuple[int, int]], border_width: int):
+        """Generate vertices and indices for a hollow polygon (outline)"""
+        # This is a simplified approach - for complex polygons, consider using a library
+        min_x = min(p[0] for p in points)
+        min_y = min(p[1] for p in points)
+        max_x = max(p[0] for p in points)
+        max_y = max(p[1] for p in points)
+        width = max(1, max_x - min_x)
+        height = max(1, max_y - min_y)
+        
+        # Calculate offset for inner polygon
+        offset_x = border_width / width
+        offset_y = border_width / height
+        
+        vertices = []
+        # Generate outer and inner vertices
+        for x, y in points:
+            # Outer vertex (original)
+            norm_x = (x - min_x) / width
+            norm_y = (y - min_y) / height
+            vertices.extend([norm_x, norm_y])
+            
+            # Inner vertex (offset toward center)
+            # Simplified approach - for better results, calculate proper inward normals
+            center_x = 0.5
+            center_y = 0.5
+            dir_x = norm_x - center_x
+            dir_y = norm_y - center_y
+            length = max(0.001, np.sqrt(dir_x*dir_x + dir_y*dir_y))
+            dir_x /= length
+            dir_y /= length
+            
+            inner_x = norm_x - dir_x * offset_x
+            inner_y = norm_y - dir_y * offset_y
+            vertices.extend([inner_x, inner_y])
+        
+        indices = []
+        num_points = len(points)
+        for i in range(num_points):
+            next_i = (i + 1) % num_points
+            
+            # Indices for the quad between current and next segment
+            outer_current = i * 2
+            inner_current = i * 2 + 1
+            outer_next = next_i * 2
+            inner_next = next_i * 2 + 1
+            
+            # Two triangles per segment
+            indices.extend([outer_current, inner_current, outer_next])
+            indices.extend([inner_current, inner_next, outer_next])
+        
+        vertices = np.array(vertices, dtype=np.float32)
+        indices = np.array(indices, dtype=np.uint32)
+        
+        return vertices, indices
+    
+    def _upload_geometry(self, vertices: np.ndarray, indices: np.ndarray):
+        """Upload vertices and indices to GPU, return VAO, VBO, EBO"""
+        vao = glGenVertexArrays(1)
+        vbo = glGenBuffers(1)
+        ebo = glGenBuffers(1)
+        
+        glBindVertexArray(vao)
+        
+        glBindBuffer(GL_ARRAY_BUFFER, vbo)
+        glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
+        
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL_STATIC_DRAW)
+        
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * vertices.itemsize, ctypes.c_void_p(0))
+        glEnableVertexAttribArray(0)
+        
+        glBindBuffer(GL_ARRAY_BUFFER, 0)
+        glBindVertexArray(0)
+        
+        return vao, vbo, ebo
+    
+    def render_opengl(self, renderer):
+        """
+        This function is used just for make it detectable in the profiler that is OpenGL.
+        
+        ! Never Remove it
+        """
+        return True
         
     def draw_surface(self, surface: pygame.Surface, x: int, y: int):
         """Draw a pygame surface as texture"""
@@ -546,17 +840,13 @@ class OpenGLRenderer:
         glBindVertexArray(self.texture_shader.vao)
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
         glBindVertexArray(0)
-        glUseProgram(0)
         
-        glDeleteTextures(1, [texture_id])
-    
-    def render_opengl(self):
-        """Marker method to identify this as OpenGL renderer"""
-        return True
+        glDeleteTextures([texture_id])
+        glUseProgram(0)
     
     def render_particles(self, particle_data: Dict[str, Any]):
         """HIGHLY OPTIMIZED particle rendering with DYNAMIC BUFFER SIZING"""
-        if not self._initialized or particle_data['active_count'] == 0:
+        if not self._initialized or not particle_data or particle_data['active_count'] == 0:
             return
         
         active_count = particle_data['active_count']
@@ -607,3 +897,43 @@ class OpenGLRenderer:
         glBindVertexArray(0)
         
         glUseProgram(0)
+    
+    def get_surface(self):
+        """
+        Get the main screen surface for compatibility with UI elements.
+        
+        In OpenGL mode, this returns the pygame display surface which can be used
+        for fallback rendering when OpenGL is not available for certain operations.
+        
+        Returns:
+            pygame.Surface: The main display surface
+        """
+        return pygame.display.get_surface()
+    
+    def cleanup(self):
+        """Clean up OpenGL resources"""
+        if not self._initialized:
+            return
+            
+        if self.simple_shader and self.simple_shader.program:
+            glDeleteProgram(self.simple_shader.program)
+        if self.texture_shader and self.texture_shader.program:
+            glDeleteProgram(self.texture_shader.program)
+        if self.particle_shader and self.particle_shader.program:
+            glDeleteProgram(self.particle_shader.program)
+        
+        # Clean up cached geometry
+        for vao, vbo, ebo, _ in self._circle_cache.values():
+            glDeleteVertexArrays(1, [vao])
+            glDeleteBuffers(1, [vbo])
+            glDeleteBuffers(1, [ebo])
+        
+        for vao, vbo, ebo, _ in self._polygon_cache.values():
+            glDeleteVertexArrays(1, [vao])
+            glDeleteBuffers(1, [vbo])
+            glDeleteBuffers(1, [ebo])
+        
+        self._circle_cache.clear()
+        self._polygon_cache.clear()
+        
+        self._initialized = False

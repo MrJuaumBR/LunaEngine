@@ -14,6 +14,13 @@ class ParticleType(Enum):
     SMOKE = "smoke"
     DUST = "dust"
     SPARK = "spark"
+    SNOW = "snow"
+    SAND = "sand"
+    EXHAUST = "exhaust"
+    STARFIELD = "starfield"
+    EXPLOSION = "explosion"
+    ENERGY = "energy"
+    PLASMA = "plasma"
     CUSTOM = "custom"
 
 class ExitPoint(Enum):
@@ -27,6 +34,7 @@ class ExitPoint(Enum):
 class PhysicsType(Enum):
     TOPDOWN = "topdown"
     PLATFORMER = "platformer"
+    SPACESHOOTER = "spaceshooter"
 
 @dataclass
 class ParticleConfig:
@@ -103,10 +111,80 @@ class ParticleSystem:
             gravity=200.0,
             spread=15.0,
             fade_out=True
+        ),
+        ParticleType.SNOW: ParticleConfig(
+            color_start=(250, 250, 255),
+            color_end=(225, 225, 235),
+            size_start=3.0,
+            size_end=1.0,
+            lifetime=1.0,
+            speed=50.0,
+            gravity=100.0,
+            spread=180.0,
+            fade_out=True
+        ),
+        ParticleType.SAND: ParticleConfig(
+            color_start=(230, 230, 0),
+            color_end=(255, 255, 0),
+            size_start=1.0,
+            size_end=1.0,
+            lifetime=5.0,
+            speed=200.0,
+            gravity=100.0,
+            spread=180.0,
+            fade_out=True
+        ),
+        ParticleType.EXHAUST: ParticleConfig(
+            color_start=(0, 100, 255),
+            color_end=(255, 50, 0),
+            size_start=4.0,
+            size_end=1.0,
+            lifetime=0.3,
+            speed=100.0,
+            gravity=0.0,
+            spread=30.0,
+            fade_out=True,
+            grow=False
+        ),
+        ParticleType.EXPLOSION: ParticleConfig(
+            color_start=(255, 200, 0),
+            color_end=(255, 50, 0),
+            size_start=10.0,
+            size_end=2.0,
+            lifetime=1.0,
+            speed=300.0,
+            gravity=0.0,
+            spread=360.0,
+            fade_out=True,
+            grow=False
+        ),
+        ParticleType.ENERGY: ParticleConfig(
+            color_start=(0, 255, 255),
+            color_end=(0, 100, 255),
+            size_start=6.0,
+            size_end=2.0,
+            lifetime=1.2,
+            speed=150.0,
+            gravity=0.0,
+            spread=90.0,
+            fade_out=True,
+            grow=False
+        ),
+        ParticleType.PLASMA: ParticleConfig(
+            color_start=(255, 0, 255),
+            color_end=(100, 0, 255),
+            size_start=5.0,
+            size_end=1.0,
+            lifetime=0.8,
+            speed=250.0,
+            gravity=0.0,
+            spread=45.0,
+            fade_out=True,
+            grow=False
         )
     }
     
-    def __init__(self, max_particles: int = 2000):  # REDUZIDO para melhor performance
+    def __init__(self, max_particles: int):
         self.max_particles = max_particles
         self.active_particles = 0
         
@@ -114,19 +192,103 @@ class ParticleSystem:
         self._init_arrays()
         
         # Object pooling
-        self._free_indices = list(range(max_particles))
+        self._free_indices = list(range(self.max_particles))
         self._custom_configs: Dict[str, ParticleConfig] = {}
         
         # Pre-computed values
         self._pi_2 = 2.0 * math.pi
         self._deg_to_rad = math.pi / 180.0
         
-        # Cache para dados de renderização
+        # Render cache
         self._render_cache = None
+        self._cache_dirty = True
+        
+        # Camera Support
+        self._camera_position = np.array([0.0,0.0], dtype=np.float32)
+        
+    def get_particles_names(self, sort_name:bool=False, capitalize:bool=False) -> List[str]:
+        """Get list of all registered particle names"""
+        p = list(self.PARTICLE_CONFIGS.keys() | self._custom_configs.keys())
+        if sort_name:
+            p.sort(key=lambda x: x.name)
+        return [(str(x.name).capitalize() if capitalize else str(x.name)) for x in p]
+    
+    def get_physics_names(self, sort_name:bool=False, capitalize:bool=False) -> List[str]:
+        """
+        Get a list of physics names
+        """
+        p = list(PhysicsType.__dict__['_member_names_'])
+        if sort_name:
+            p.sort(key=lambda x: x)
+        return [(str(x).capitalize() if capitalize else str(x)) for x in p]
+
+    def update_max_particles(self, value: int):
+        """
+        Callback for the renderer update max_particles.
+        Preserves active particles during resize.
+        """
+        if value == self.max_particles:
+            return
+        
+        
+        # Save current active particles state
+        active_indices = np.where(self.active)[0]
+        active_count = len(active_indices)
+        
+        if active_count > value:
+            # Kill oldest particles first
+            kill_count = active_count - value
+            kill_indices = active_indices[:kill_count]
+            self.active[kill_indices] = False
+            active_indices = active_indices[kill_count:]
+            active_count = len(active_indices)
+        
+        # Create temporary arrays to save active particle data
+        temp_data = {}
+        if active_count > 0:
+            arrays_to_save = [
+                'positions', 'velocities', 'lifetimes', 'max_lifetimes',
+                'sizes', 'size_starts', 'size_ends', 'colors_start',
+                'colors_end', 'colors_current', 'alphas', 'gravities',
+                'dampings', 'fade_outs', 'grows'
+            ]
+            
+            for array_name in arrays_to_save:
+                array = getattr(self, array_name)
+                temp_data[array_name] = array[active_indices].copy()
+        
+        # Update max size
+        self.max_particles = value
+        
+        # Re-initialize arrays with new size
+        self._init_arrays()
+        
+        # Restore active particles to new arrays
+        if active_count > 0:
+            # Active particles will occupy the first indices
+            new_active_indices = np.arange(active_count)
+            
+            for array_name, data in temp_data.items():
+                array = getattr(self, array_name)
+                array[new_active_indices] = data
+            
+            # Mark as active
+            self.active[new_active_indices] = True
+            
+            # Update counter and free indices list
+            self.active_particles = active_count
+            self._free_indices = list(range(active_count, self.max_particles))
+            
+        else:
+            # No active particles, just reset
+            self.active_particles = 0
+            self._free_indices = list(range(self.max_particles))
+        
+        # Mark cache as dirty
         self._cache_dirty = True
     
     def _init_arrays(self):
-        """Initialize optimized NumPy arrays"""
+        """Initialize optimized NumPy arrays using current max_particles"""
         # Position and velocity
         self.positions = np.zeros((self.max_particles, 2), dtype=np.float32)
         self.velocities = np.zeros((self.max_particles, 2), dtype=np.float32)
@@ -154,7 +316,7 @@ class ParticleSystem:
         self.active = np.zeros(self.max_particles, dtype=bool)
         self.fade_outs = np.zeros(self.max_particles, dtype=bool)
         self.grows = np.zeros(self.max_particles, dtype=bool)
-    
+
     def register_custom_particle(self, name: str, config: ParticleConfig) -> bool:
         """
         Register a custom particle type for user-defined effects
@@ -181,7 +343,7 @@ class ParticleSystem:
             pass
         
         self._custom_configs[name] = config
-        print(f"Registered custom particle: '{name}'")  # Debug info
+        print(f"Registered custom particle: '{name}'")
         return True
 
     def get_custom_particle(self, name: str) -> Optional[ParticleConfig]:
@@ -224,7 +386,7 @@ class ParticleSystem:
         
         self._render_cache = {
             'active_count': len(active_indices),
-            'positions': self.positions[active_indices],
+            'positions': self.positions[active_indices] - self._camera_position,
             'sizes': self.sizes[active_indices],
             'colors': self.colors_current[active_indices],
             'alphas': self.alphas[active_indices]
@@ -349,7 +511,7 @@ class ParticleSystem:
         exit_offset = self._get_exit_offset(exit_point)
         
         # Limit emission rate to prevent overload
-        count = min(count, 100)  # Máximo de 100 partículas por emissão
+        count = min(count, 100)  # Maximum 100 particles per emission
         
         for _ in range(count):
             if not self._free_indices:
@@ -357,7 +519,7 @@ class ParticleSystem:
                 
             idx = self._free_indices.pop()
             self.active_particles += 1
-            self._cache_dirty = True  # Marcar cache como sujo
+            self._cache_dirty = True  # Mark cache as dirty
             
             # Set initial position
             pos_x, pos_y = self._get_exit_position(x, y, exit_point, exit_offset)
@@ -373,7 +535,9 @@ class ParticleSystem:
             self._setup_particle_properties(idx, config, physics_type)
     
     def _setup_particle_properties(self, idx: int, config: ParticleConfig, physics_type: PhysicsType):
-        """Setup particle properties - optimized"""
+        """
+        Setup particle properties optimized for different physics types
+        """
         self.lifetimes[idx] = config.lifetime
         self.max_lifetimes[idx] = config.lifetime
         self.sizes[idx] = config.size_start
@@ -385,18 +549,31 @@ class ParticleSystem:
         self.colors_current[idx] = config.color_start
         
         self.alphas[idx] = 255
-        self.gravities[idx] = config.gravity
         
+        # Physics-specific configurations
         if physics_type == PhysicsType.PLATFORMER:
-            self.gravities[idx] *= 1.5
-            self.dampings[idx] = [0.95, 0.95]
+            # Platformer physics: stronger gravity, more damping
+            self.gravities[idx] = config.gravity * 1.5
+            self.dampings[idx] = [0.95, 0.95]  # More air resistance
+            
+        elif physics_type == PhysicsType.SPACESHOOTER:
+            # Space shooter physics: zero gravity, minimal damping
+            self.gravities[idx] = 0.0  # No gravity in space
+            self.dampings[idx] = [0.99, 0.99]  # Minimal friction in vacuum
+            
+        else:  # TOPDOWN (default)
+            # Topdown physics: standard gravity and damping
+            self.gravities[idx] = config.gravity
+            self.dampings[idx] = [config.damping, config.damping]
         
         self.active[idx] = True
         self.fade_outs[idx] = config.fade_out
         self.grows[idx] = config.grow
     
-    def update(self, dt: float):
+    def update(self, dt: float, camera_position=None):
         """Update particles with vectorized operations"""
+        if camera_position is not None:
+            self._update_camera_position(camera_position)
         if self.active_particles == 0:
             return
         
@@ -432,7 +609,7 @@ class ParticleSystem:
         self._update_properties(active_indices)
     
     def _update_properties(self, indices: np.ndarray):
-        """Update particle properties using vectorized operations"""
+        """Update particle properties using vectorized operations - FIXED COLOR BUG"""
         life_ratios = 1.0 - (self.lifetimes[indices] / self.max_lifetimes[indices])
         
         # Update sizes for growing particles
@@ -445,12 +622,16 @@ class ParticleSystem:
                 life_ratios[grow_mask]
             )
         
-        # Update colors
-        color_diffs = self.colors_end[indices] - self.colors_start[indices]
-        self.colors_current[indices] = (
-            self.colors_start[indices] + 
-            (color_diffs * life_ratios[:, np.newaxis])
-        ).astype(np.uint8)
+        # FIXED COLOR TRANSITION BUG - Use proper interpolation
+        # Convert to float for accurate interpolation, then back to uint8
+        colors_start_float = self.colors_start[indices].astype(np.float32)
+        colors_end_float = self.colors_end[indices].astype(np.float32)
+        
+        # Proper color interpolation
+        interpolated_colors = colors_start_float + (colors_end_float - colors_start_float) * life_ratios[:, np.newaxis]
+        
+        # Clamp to valid color range and convert back to uint8
+        self.colors_current[indices] = np.clip(interpolated_colors, 0, 255).astype(np.uint8)
         
         # Update alpha for fade out
         fade_mask = self.fade_outs[indices]
@@ -467,10 +648,13 @@ class ParticleSystem:
         self.active_particles = 0
         self._cache_dirty = True
     
-    def render(self, surface):
+    def render(self, surface, camera_position=None):
         """
-        Render particles - CORRIGIDO para Pygame
+        Render particles - Fixed for pygame
         """
+        if camera_position is not None:
+            self._update_camera_position(camera_position)
+        
         if self.active_particles == 0:
             return
         
@@ -485,19 +669,18 @@ class ParticleSystem:
             color = tuple(self.colors_current[idx])
             alpha = self.alphas[idx]
             
-            # Culling básico
+            # Culling
             if (x < -size * 2 or x > surface.get_width() + size * 2 or 
                 y < -size * 2 or y > surface.get_height() + size * 2):
                 continue
             
-            # CORREÇÃO: Desenhar diretamente na surface
             if alpha < 255:
-                # Para alpha, criar surface temporária
+                # Transparent
                 temp_surface = pygame.Surface((size * 2, size * 2), pygame.SRCALPHA)
                 pygame.draw.circle(temp_surface, (*color, alpha), (size, size), size)
                 surface.blit(temp_surface, (x - size, y - size))
             else:
-                # Para opaco, desenhar diretamente
+                # Opaque
                 pygame.draw.circle(surface, color, (x, y), size)
             
     def get_stats(self) -> Dict[str, Any]:

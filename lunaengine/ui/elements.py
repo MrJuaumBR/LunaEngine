@@ -80,6 +80,10 @@ MAIN CLASSES:
 16. Dropdown:
     - Dropdown menu for selecting from a list of options
     - Supports scrolling for long lists and custom themes
+    
+17. Frame:
+    - Container element for grouping UI elements
+    - Supports nested frames and theme-based styling
 
 This module forms the core of LunaEngine's UI system, providing a flexible and
 themeable foundation for building complex user interfaces in Pygame applications.
@@ -2614,3 +2618,222 @@ class Dropdown(UIElement):
     def set_on_selection_changed(self, callback: Callable[[int, str], None]):
         """Set callback for when selection changes"""
         self.on_selection_changed = callback
+        
+class UiFrame(UIElement):
+    def __init__(self, x: int, y: int, width: int, height: int, 
+                 root_point: Tuple[float, float] = (0, 0), 
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):
+        """
+        Initialize a UI Frame container element.
+        
+        Args:
+            x (int): X coordinate position.
+            y (int): Y coordinate position.
+            width (int): Width of the frame in pixels.
+            height (int): Height of the frame in pixels.
+            root_point (Tuple[float, float]): Anchor point for positioning.
+            theme (ThemeType): Theme to use for frame styling.
+            element_id (Optional[str]): Custom element ID. If None, generates automatic ID.
+        """
+        super().__init__(x, y, width, height, root_point, element_id)
+        
+        self.theme_type = theme or ThemeManager.get_current_theme()
+        self.background_color = None  # None means transparent background
+        self.border_color = None      # None means no border
+        self.border_width = 1
+        self.padding = 5  # Padding inside the frame
+        
+    def set_background_color(self, color: Optional[Tuple[int, int, int]]):
+        """
+        Set the background color of the frame.
+        
+        Args:
+            color (Optional[Tuple[int, int, int]]): RGB color tuple or None for transparent.
+        """
+        self.background_color = color
+        
+    def set_border(self, color: Optional[Tuple[int, int, int]], width: int = 1):
+        """
+        Set the border properties of the frame.
+        
+        Args:
+            color (Optional[Tuple[int, int, int]]): Border color or None for no border.
+            width (int): Border width in pixels.
+        """
+        self.border_color = color
+        self.border_width = width
+        
+    def set_padding(self, padding: int):
+        """
+        Set the padding inside the frame.
+        
+        Args:
+            padding (int): Padding in pixels.
+        """
+        self.padding = padding
+        
+    def add_child(self, child: UIElement):
+        """
+        Add a child element to this frame with automatic positioning.
+        
+        Args:
+            child (UIElement): The child UI element to add.
+        """
+        super().add_child(child)
+        
+    def get_content_rect(self) -> Tuple[int, int, int, int]:
+        """
+        Get the rectangle area available for child elements (inside padding).
+        
+        Returns:
+            Tuple[int, int, int, int]: (x, y, width, height) of content area.
+        """
+        actual_x, actual_y = self.get_actual_position()
+        content_x = actual_x + self.padding
+        content_y = actual_y + self.padding
+        content_width = self.width - (self.padding * 2)
+        content_height = self.height - (self.padding * 2)
+        
+        return (content_x, content_y, content_width, content_height)
+        
+    def update_theme(self, theme_type: ThemeType):
+        """
+        Update the theme for this frame and all its children.
+        
+        Args:
+            theme_type (ThemeType): The new theme to apply.
+        """
+        self.theme_type = theme_type
+        super().update_theme(theme_type)
+    
+    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
+        """
+        Update frame and children with mouse interaction.
+        
+        Args:
+            mouse_pos (Tuple[int, int]): Current mouse position.
+            mouse_pressed (bool): Whether mouse button is pressed.
+            dt (float): Delta time in seconds.
+        """
+        if not self.visible or not self.enabled:
+            self.state = UIState.DISABLED
+            # Still update children but with disabled state
+            for child in self.children:
+                child._update_with_mouse(mouse_pos, mouse_pressed, dt)
+            return
+            
+        # Frame itself doesn't have interactive states beyond enabled/disabled
+        self.state = UIState.NORMAL
+        
+        # Update all children with the same mouse state
+        for child in self.children:
+            child._update_with_mouse(mouse_pos, mouse_pressed, dt)
+    
+    def render_pygame(self, renderer):
+        """Render frame using Pygame backend"""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Draw background
+        if self.background_color is not None:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.background_color)
+        else:
+            # Use theme background if no custom color
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.background)
+        
+        # Draw border
+        if self.border_color is not None:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
+                             self.border_color, fill=False, border_width=self.border_width)
+        elif theme.border:
+            # Use theme border if no custom border
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
+                             theme.border, fill=False, border_width=self.border_width)
+        
+        # Render children
+        super().render_pygame(renderer)
+    
+    def render_opengl(self, renderer):
+        """Render frame using OpenGL backend"""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Draw border first (if any)
+        border_color = self.border_color or (theme.border if theme.border else None)
+        if border_color:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
+                             border_color, fill=False, border_width=self.border_width)
+        
+        # Draw background
+        bg_color = self.background_color or theme.background
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        
+        # Render children
+        super().render_opengl(renderer)
+    
+    def arrange_children_vertically(self, spacing: int = 5, align: str = "left"):
+        """
+        Arrange child elements vertically within the frame.
+        
+        Args:
+            spacing (int): Space between children in pixels.
+            align (str): Alignment ("left", "center", "right").
+        """
+        content_x, content_y, content_width, content_height = self.get_content_rect()
+        current_y = content_y
+        
+        for child in self.children:
+            # Set X position based on alignment
+            if align == "center":
+                child.x = content_x + (content_width - child.width) // 2
+            elif align == "right":
+                child.x = content_x + content_width - child.width
+            else:  # left
+                child.x = content_x
+                
+            # Set Y position
+            child.y = current_y
+            child.root_point = (0, 0)  # Reset to top-left anchor for vertical arrangement
+            
+            # Update current Y position
+            current_y += child.height + spacing
+    
+    def arrange_children_horizontally(self, spacing: int = 5, align: str = "top"):
+        """
+        Arrange child elements horizontally within the frame.
+        
+        Args:
+            spacing (int): Space between children in pixels.
+            align (str): Alignment ("top", "center", "bottom").
+        """
+        content_x, content_y, content_width, content_height = self.get_content_rect()
+        current_x = content_x
+        
+        for child in self.children:
+            # Set Y position based on alignment
+            if align == "center":
+                child.y = content_y + (content_height - child.height) // 2
+            elif align == "bottom":
+                child.y = content_y + content_height - child.height
+            else:  # top
+                child.y = content_y
+                
+            # Set X position
+            child.x = current_x
+            child.root_point = (0, 0)  # Reset to top-left anchor for horizontal arrangement
+            
+            # Update current X position
+            current_x += child.width + spacing
+    
+    def clear_children(self):
+        """Remove all child elements from this frame."""
+        for child in self.children:
+            child.parent = None
+        self.children.clear()

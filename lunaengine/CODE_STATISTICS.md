@@ -2,11 +2,11 @@
 
 ## Overview
 
-- **Total Files**: 28
-- **Total Lines**: 9479
-- **Code Lines**: 5683
-- **Comment Lines**: 1999
-- **Blank Lines**: 1797
+- **Total Files**: 29
+- **Total Lines**: 10881
+- **Code Lines**: 6492
+- **Comment Lines**: 2343
+- **Blank Lines**: 2046
 
 ## Theme Statistics
 
@@ -14,7 +14,7 @@
 
 ## Code Density
 
-- **Code Density**: 60.0%
+- **Code Density**: 59.7%
 - Balanced code and comments
 
 ## Project Structure
@@ -35,6 +35,7 @@
 │   └── 🐍 window.py
 ├── 📁 graphics/
 │   ├── 🐍 __init__.py
+│   ├── 🐍 camera.py
 │   ├── 🐍 lighting.py
 │   ├── 🐍 particles.py
 │   ├── 🐍 shadows.py
@@ -61,8 +62,8 @@
 
 | Extension | Count | Percentage |
 |-----------|-------|------------|
-| `.md` | 1 | 3.6% |
-| `.py` | 27 | 96.4% |
+| `.md` | 1 | 3.4% |
+| `.py` | 28 | 96.6% |
 
 ## Files by Directory
 
@@ -70,7 +71,7 @@
 |-----------|------------|
 | `backend` | 3 |
 | `core` | 5 |
-| `graphics` | 5 |
+| `graphics` | 6 |
 | `root` | 2 |
 | `tools` | 3 |
 | `ui` | 5 |
@@ -80,19 +81,20 @@
 
 | File | Total Lines | Code | Comments | Blank | Size (KB) |
 |------|------------|------|----------|-------|-----------|
-| `ui\elements.py` | 2616 | 1540 | 551 | 525 | 106.4 |
+| `ui\elements.py` | 2839 | 1637 | 635 | 567 | 115.1 |
 | `ui\themes.py` | 2178 | 1676 | 122 | 380 | 79.3 |
-| `backend\opengl.py` | 609 | 405 | 69 | 135 | 23.5 |
-| `core\engine.py` | 572 | 288 | 172 | 112 | 22.0 |
-| `graphics\particles.py` | 536 | 358 | 94 | 84 | 19.3 |
+| `backend\opengl.py` | 939 | 608 | 129 | 202 | 36.6 |
+| `graphics\particles.py` | 719 | 491 | 122 | 106 | 25.8 |
+| `graphics\camera.py` | 639 | 354 | 170 | 115 | 25.5 |
+| `core\engine.py` | 575 | 289 | 173 | 113 | 22.1 |
 | `tools\code_stats.py` | 369 | 249 | 55 | 65 | 15.1 |
 | `graphics\spritesheet.py` | 362 | 135 | 157 | 70 | 13.3 |
 | `tools\image_conversion_tool.py` | 308 | 195 | 51 | 62 | 12.7 |
 | `utils\image_converter.py` | 249 | 177 | 24 | 48 | 9.4 |
 | `ui\layout.py` | 213 | 82 | 91 | 40 | 7.2 |
 | `utils\performance.py` | 191 | 108 | 48 | 35 | 7.4 |
-| `core\scene.py` | 168 | 36 | 93 | 39 | 5.3 |
-| `backend\pygame_backend.py` | 144 | 42 | 75 | 27 | 4.7 |
+| `core\scene.py` | 174 | 41 | 94 | 39 | 5.7 |
+| `backend\pygame_backend.py` | 158 | 54 | 75 | 29 | 5.3 |
 | `core\window.py` | 124 | 35 | 67 | 22 | 3.9 |
 | `CODE_STATISTICS.md` | 110 | 88 | 8 | 14 | 3.3 |
 | `core\renderer.py` | 104 | 26 | 59 | 19 | 3.2 |
@@ -102,8 +104,8 @@
 | `utils\threading.py` | 87 | 43 | 29 | 15 | 2.6 |
 | `ui\__init__.py` | 56 | 17 | 26 | 13 | 1.9 |
 | `utils\math_utils.py` | 55 | 16 | 29 | 10 | 2.0 |
+| `graphics\__init__.py` | 43 | 15 | 21 | 7 | 1.4 |
 | `utils\__init__.py` | 42 | 14 | 21 | 7 | 1.4 |
-| `graphics\__init__.py` | 39 | 11 | 21 | 7 | 1.3 |
 | `core\__init__.py` | 27 | 6 | 15 | 6 | 0.7 |
 | `backend\__init__.py` | 24 | 5 | 13 | 6 | 0.8 |
 | `__init__.py` | 14 | 8 | 3 | 3 | 0.3 |

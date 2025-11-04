@@ -99,9 +99,6 @@ class TestScene(Scene):
                 obj["width"], obj["height"], 
                 obj["color"]
             )
-        
-        if not self.engine.use_opengl:
-            self.particle_system.render(renderer.get_surface())
 
 def main():
     """Test function to verify both rendering modes"""

@@ -421,6 +421,9 @@ class LunaEngine:
             if self.current_scene:
                 self.current_scene.render(self.renderer)
             
+            # 3. Render particles
+            self._render_particles()
+            
             # 4. Render UI elements
             self._render_ui_elements(self.renderer)
             

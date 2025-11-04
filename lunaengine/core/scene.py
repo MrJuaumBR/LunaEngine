@@ -29,11 +29,11 @@ USAGE PATTERN:
 
 from abc import ABC, abstractmethod
 from typing import Dict, List, Any, Optional, TYPE_CHECKING
+from ..ui import UIElement
+from ..graphics import Camera, ParticleConfig, ParticleSystem, ParticleType
 
 if TYPE_CHECKING:
     from ..core.engine import LunaEngine
-
-from ..ui.elements import UIElement
 
 class Scene(ABC):
     """
@@ -58,6 +58,13 @@ class Scene(ABC):
         self.ui_elements: List[UIElement] = []
         self._initialized = False
         self.engine: LunaEngine = engine
+        
+        # Camera Start
+        self.camera: Camera = Camera(self, engine.width, engine.height)
+        
+        # Particle System
+        self.particle_system: ParticleSystem = ParticleSystem(self.engine.renderer.max_particles)
+        self.engine.renderer.on_max_particles_change.append(self.particle_system.update_max_particles)
         
     def on_enter(self, previous_scene: Optional[str] = None) -> None:
         """
@@ -84,13 +91,12 @@ class Scene(ABC):
     def update(self, dt: float) -> None:
         """
         Update scene logic.
-        
-        Called every frame to update game logic, animations, and interactions.
-        
-        Args:
-            dt (float): Delta time in seconds since last frame
         """
-        pass
+        # Update Camera
+        self.camera.update(dt)
+        
+        # Update particle system with camera position
+        self.particle_system.update(dt, self.camera.position)
         
     def render(self, renderer) -> None:
         """

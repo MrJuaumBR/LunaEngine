@@ -22,14 +22,13 @@ class ParticleDemoScene(Scene):
     
     def __init__(self, engine: LunaEngine):
         super().__init__(engine)
-        self.particle_system = ParticleSystem(max_particles=5000)
         self.demo_state = {
             'active_particles': 0,
             'fps': 0,
             'memory_usage': 0,
             'emission_rate': 50,
-            'selected_particle': "fire",  # Usar string diretamente
-            'selected_exit': "center",
+            'selected_particle': "plasma",  # Uses string
+            'selected_exit': "top",
             'selected_physics': "topdown", 
             'spread': 45.0,
             'auto_emit': True,
@@ -42,6 +41,8 @@ class ParticleDemoScene(Scene):
         
         # Register some custom particles
         self.setup_custom_particles()
+        
+        self.particle_system.get_physics_names()
         
     def setup_custom_particles(self):
         """Setup custom particle types for testing"""
@@ -95,9 +96,8 @@ class ParticleDemoScene(Scene):
         section1_title = TextLabel(20, 110, "Particle Type", 20, (255, 255, 0))
         self.add_ui_element(section1_title)
         
-        # Particle type selector - CORRIGIDO: usar strings diretamente
-        particle_types = ["fire", "water", "smoke", "dust", "spark", "magic", "electric"]
-        self.particle_dropdown = Dropdown(20, 140, 150, 30, particle_types)
+        # Particle type selector
+        self.particle_dropdown = Dropdown(20, 140, 150, 30, self.particle_system.get_particles_names(True,True))
         self.particle_dropdown.set_on_selection_changed(
             lambda i, v: self.update_state('selected_particle', v)
         )
@@ -140,9 +140,8 @@ class ParticleDemoScene(Scene):
         )
         self.add_ui_element(self.exit_dropdown)
         
-        # Physics type selector - CORRIGIDO: usar strings
-        physics_types = ["topdown", "platformer"]
-        self.physics_dropdown = Dropdown(20, 400, 150, 30, physics_types)
+        # Physics type selector
+        self.physics_dropdown = Dropdown(20, 400, 150, 30, self.particle_system.get_physics_names(True, True))
         self.physics_dropdown.set_on_selection_changed(
             lambda i, v: self.update_state('selected_physics', v)
         )
@@ -177,6 +176,7 @@ class ParticleDemoScene(Scene):
 
     def update_state(self, key, value):
         """Update demo state and refresh displays"""
+        if key in ['particle_type', 'physics_type']: value = str(value).lower()
         self.demo_state[key] = value
         print(f"Updated {key} to {value}")  # DEBUG
         
@@ -186,25 +186,33 @@ class ParticleDemoScene(Scene):
 
     def emit_manual(self):
         """Emit particles manually from center"""
+        particle_type = ParticleType[self.demo_state['selected_particle'].upper()]
+        exit_point = ExitPoint[self.demo_state['selected_exit'].upper()]
+        physics_type = PhysicsType[self.demo_state['selected_physics'].upper()]
+        
         self.particle_system.emit(
             x=512, y=384,
-            particle_type=self.demo_state['selected_particle'],
+            particle_type=particle_type,
             count=100,
-            exit_point=ExitPoint(self.demo_state['selected_exit']),
-            physics_type=PhysicsType(self.demo_state['selected_physics']),
+            exit_point=exit_point,
+            physics_type=physics_type,
             spread=self.demo_state['spread']
         )
         print(f"Emitted 100 {self.demo_state['selected_particle']} particles")
 
     def emit_burst(self):
         """Emit a burst of particles from all emitter positions"""
+        particle_type = ParticleType[self.demo_state['selected_particle'].upper()]
+        exit_point = ExitPoint[self.demo_state['selected_exit'].upper()]
+        physics_type = PhysicsType[self.demo_state['selected_physics'].upper()]
+        
         for x, y in self.emitter_positions:
             self.particle_system.emit(
                 x=x, y=y,
-                particle_type=self.demo_state['selected_particle'],
+                particle_type=particle_type,
                 count=50,
-                exit_point=ExitPoint(self.demo_state['selected_exit']),
-                physics_type=PhysicsType(self.demo_state['selected_physics']),
+                exit_point=exit_point,
+                physics_type=physics_type,
                 spread=self.demo_state['spread']
             )
         print(f"Emitted burst of {self.demo_state['selected_particle']} particles")
@@ -225,13 +233,16 @@ class ParticleDemoScene(Scene):
         
         # Auto emission from fixed positions
         if self.demo_state['auto_emit']:
+            particle_type = ParticleType[self.demo_state['selected_particle'].upper()]
+            exit_point = ExitPoint[self.demo_state['selected_exit'].upper()]
+            physics_type = PhysicsType[self.demo_state['selected_physics'].upper()]
             for x, y in self.emitter_positions:
                 self.particle_system.emit(
                     x=x, y=y,
-                    particle_type=self.demo_state['selected_particle'],
+                    particle_type=particle_type,
                     count=int(self.demo_state['emission_rate'] * dt),
-                    exit_point=ExitPoint(self.demo_state['selected_exit']),
-                    physics_type=PhysicsType(self.demo_state['selected_physics']),
+                    exit_point=exit_point,
+                    physics_type=physics_type,
                     spread=self.demo_state['spread']
                 )
         
@@ -260,13 +271,10 @@ class ParticleDemoScene(Scene):
         
         # Draw center marker
         renderer.draw_rect(510, 382, 4, 4, (255, 255, 0))
-        
-        if not self.engine.use_opengl:
-            self.particle_system.render(renderer.get_surface())
 
 def main():
     """Main function"""
-    # Teste com OpenGL ativado
+    # Test
     engine = LunaEngine("LunaEngine - Particle System Demo", 1024, 768, use_opengl=True)
     engine.fps = 144
     
