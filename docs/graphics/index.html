@@ -234,12 +234,24 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-set_zoom">
                                     <code>def set_zoom(self: Any, zoom: float, smooth: bool) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set camera zoom level.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-convert_size_zoom">
+                                    <code>def convert_size_zoom(self: Any, size: tuple) -> tuple</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-convert_size_zoom_list">
+                                    <code>def convert_size_zoom_list(self: Any, sizes: tuple, return_type: Literal['list', 'nparray', 'ndarray']) -> None</code>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-world_to_screen">
-                                    <code>def world_to_screen(self: Any, world_pos: Any) -> pygame.math.Vector2</code>
+                                    <code>def world_to_screen(self: Any, world_pos: Any, vector_type: bool) -> pygame.math.Vector2</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Convert world coordinates to screen coordinates.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-world_to_screen_list">
+                                    <code>def world_to_screen_list(self: Any, world_positions: list, vector_type: bool, return_type: Literal['list', 'nparray', 'ndarray']) -> None</code>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-screen_to_world">
                                     <code>def screen_to_world(self: Any, screen_pos: Any) -> pygame.math.Vector2</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Convert screen coordinates to world coordinates.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-screen_to_world_list">
+                                    <code>def screen_to_world_list(self: Any, screen_positions: list) -> list</code>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-screen_to_world_vector">
                                     <code>def screen_to_world_vector(self: Any, screen_vec: Any) -> pygame.math.Vector2</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Convert screen vector to world vector (ignores camera position).</div></div></div>
@@ -553,7 +565,7 @@
                                     <code>def clear(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Clear all particles</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-render">
-                                    <code>def render(self: Any, surface: Any, camera_position: Any) -> None</code>
+                                    <code>def render(self: Any, surface: Any, camera: 'Camera') -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render particles - Fixed for pygame</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-get_stats">
                                     <code>def get_stats(self: Any) -> Dict[str, Any]</code>

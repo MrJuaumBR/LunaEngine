@@ -150,9 +150,6 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-max_particles">
                                     <code>def max_particles(self: Any, value: int) -> None</code>
                         </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-max_particles">
-                                    <code>def max_particles(self: Any) -> int</code>
-                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-initialize">
                                     <code>def initialize(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize OpenGL context and shaders</div></div></div>
@@ -162,6 +159,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-end_frame">
                                     <code>def end_frame(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">End rendering frame</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-get_surface">
+                                    <code>def get_surface(self: Any) -> pygame.Surface</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the main screen surface for compatibility with UI elements.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The main display surface</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-set_surface">
+                                    <code>def set_surface(self: Any, surface: pygame.Surface) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set custom surface for rendering using Framebuffer Objects.<br><br>Args:<br> &nbsp; &nbsp;surface: Pygame surface to use as render target</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_surface_to_texture">
                                     <code>def _surface_to_texture(self: Any, surface: pygame.Surface) -> int</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Convert pygame surface to OpenGL texture</div></div></div>
@@ -170,28 +173,25 @@
                         <div class="docstring-content mt-1"><div class="docstring-text">Convert color from 0-255 range to 0.0-1.0 range</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_ensure_particle_capacity">
                                     <code>def _ensure_particle_capacity(self: Any, required_count: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Ensure particle buffers are large enough - DYNAMIC RESIZING<br><br>required_count * 1.01 = 101% of current size</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Ensure particle buffers are large enough - DYNAMIC RESIZING</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-enable_scissor">
                                     <code>def enable_scissor(self: Any, x: int, y: int, width: int, height: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Enable scissor test for clipping region.<br><br>In OpenGL, the coordinate system has origin at bottom-left,<br>while Pygame uses top-left origin. We need to convert coordinates.<br><br>Args:<br> &nbsp; &nbsp;x (int): X position from left (pygame coordinate system)<br> &nbsp; &nbsp;y (int): Y position from top (pygame coordinate system) &nbsp;<br> &nbsp; &nbsp;width (int): Width of scissor region<br> &nbsp; &nbsp;height (int): Height of scissor region</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-disable_scissor">
-                                    <code>def disable_scissor(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Disable scissor test with debugging</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Enable scissor test for clipping region.<br><br>Args:<br> &nbsp; &nbsp;x (int): X position from left (pygame coordinate system)<br> &nbsp; &nbsp;y (int): Y position from top (pygame coordinate system) &nbsp;<br> &nbsp; &nbsp;width (int): Width of scissor region<br> &nbsp; &nbsp;height (int): Height of scissor region</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-disable_scissor">
                                     <code>def disable_scissor(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Disable scissor test</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_rect">
-                                    <code>def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: tuple, fill: bool, border_width: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a colored rectangle</div></div></div>
+                                    <code>def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: tuple, fill: bool, border_width: int, surface: Optional[pygame.Surface]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a colored rectangle.<br><br>Args:<br> &nbsp; &nbsp;x: X coordinate of top-left corner<br> &nbsp; &nbsp;y: Y coordinate of top-left corner<br> &nbsp; &nbsp;width: Rectangle width<br> &nbsp; &nbsp;height: Rectangle height<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the rectangle<br> &nbsp; &nbsp;border_width: Border width for unfilled rectangles<br> &nbsp; &nbsp;surface: Target surface</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_line">
-                                    <code>def draw_line(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: tuple, width: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a line between two points with specified width</div></div></div>
+                                    <code>def draw_line(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: tuple, width: int, surface: Optional[pygame.Surface]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a line between two points with specified width.<br><br>Args:<br> &nbsp; &nbsp;start_x: Start X coordinate<br> &nbsp; &nbsp;start_y: Start Y coordinate<br> &nbsp; &nbsp;end_x: End X coordinate<br> &nbsp; &nbsp;end_y: End Y coordinate<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;width: Line width<br> &nbsp; &nbsp;surface: Target surface</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_draw_thick_line_optimized">
                                     <code>def _draw_thick_line_optimized(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: tuple, width: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Optimized method for drawing thick lines</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_circle">
-                                    <code>def draw_circle(self: Any, center_x: int, center_y: int, radius: int, color: tuple, fill: bool, border_width: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a circle with specified center, radius and color</div></div></div>
+                                    <code>def draw_circle(self: Any, center_x: int, center_y: int, radius: int, color: tuple, fill: bool, border_width: int, surface: Optional[pygame.Surface]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a circle with specified center, radius and color.<br><br>Args:<br> &nbsp; &nbsp;center_x: Center X coordinate<br> &nbsp; &nbsp;center_y: Center Y coordinate<br> &nbsp; &nbsp;radius: Circle radius<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the circle<br> &nbsp; &nbsp;border_width: Border width for hollow circles<br> &nbsp; &nbsp;surface: Target surface</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_generate_filled_circle_geometry">
                                     <code>def _generate_filled_circle_geometry(self: Any, segments: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Generate vertices and indices for a filled circle</div></div></div>
@@ -199,8 +199,8 @@
                                     <code>def _generate_hollow_circle_geometry(self: Any, segments: int, border_width: int, radius: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Generate vertices and indices for a hollow circle (outline)</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_polygon">
-                                    <code>def draw_polygon(self: Any, points: List[Tuple[int, int]], color: tuple, fill: bool, border_width: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a polygon from a list of points</div></div></div>
+                                    <code>def draw_polygon(self: Any, points: List[Tuple[int, int]], color: tuple, fill: bool, border_width: int, surface: Optional[pygame.Surface]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a polygon from a list of points.<br><br>Args:<br> &nbsp; &nbsp;points: List of (x, y) points defining the polygon<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the polygon<br> &nbsp; &nbsp;border_width: Border width for hollow polygons,<br> &nbsp; &nbsp;surface: Target surface</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_generate_filled_polygon_geometry">
                                     <code>def _generate_filled_polygon_geometry(self: Any, points: List[Tuple[int, int]]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Generate vertices and indices for a filled polygon using triangle fan</div></div></div>
@@ -215,16 +215,19 @@
                         <div class="docstring-content mt-1"><div class="docstring-text">This function is used just for make it detectable in the profiler that is OpenGL.<br><br>! Never Remove it</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_surface">
                                     <code>def draw_surface(self: Any, surface: pygame.Surface, x: int, y: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a pygame surface as texture</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a pygame surface at specified coordinates.<br>Uses blit internally for consistency.<br><br>Args:<br> &nbsp; &nbsp;surface: Pygame surface to draw<br> &nbsp; &nbsp;x: X coordinate<br> &nbsp; &nbsp;y: Y coordinate</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-render_surface">
                                     <code>def render_surface(self: Any, surface: pygame.Surface, x: int, y: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw a pygame surface as texture</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-render_particles">
-                                    <code>def render_particles(self: Any, particle_data: Dict[str, Any]) -> None</code>
+                                    <code>def render_particles(self: Any, particle_data: Dict[str, Any], camera: 'Camera') -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">HIGHLY OPTIMIZED particle rendering with DYNAMIC BUFFER SIZING</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-get_surface">
-                                    <code>def get_surface(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the main screen surface for compatibility with UI elements.<br><br>In OpenGL mode, this returns the pygame display surface which can be used<br>for fallback rendering when OpenGL is not available for certain operations.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The main display surface</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-blit">
+                                    <code>def blit(self: Any, source_surface: pygame.Surface, dest_rect: pygame.Rect, area: Optional[pygame.Rect], special_flags: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Blit a source surface onto the current render target.<br>Works similarly to pygame.Surface.blit().<br><br>Args:<br> &nbsp; &nbsp;source_surface: Surface to blit from<br> &nbsp; &nbsp;dest_rect: Destination rectangle (x, y, width, height) or (x, y)<br> &nbsp; &nbsp;area: Source area to blit from (None for entire surface)<br> &nbsp; &nbsp;special_flags: Additional blitting flags (currently unused)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-blit_surface">
+                                    <code>def blit_surface(self: Any, source_surface: pygame.Surface, dest_pos: Tuple[int, int], area: Optional[pygame.Rect]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Alternative blit function with position tuple instead of rect.<br><br>Args:<br> &nbsp; &nbsp;source_surface: Surface to blit from<br> &nbsp; &nbsp;dest_pos: Destination position (x, y)<br> &nbsp; &nbsp;area: Source area to blit from</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-cleanup">
                                     <code>def cleanup(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Clean up OpenGL resources</div></div></div></div></div>
@@ -287,7 +290,31 @@
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw a circle<br><br>ARGS:<br> &nbsp; &nbsp;x: Center X coordinate<br> &nbsp; &nbsp;y: Center Y coordinate<br> &nbsp; &nbsp;radius: Circle radius<br> &nbsp; &nbsp;color: RGB color tuple</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-draw_line">
                                     <code>def draw_line(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: Tuple[int, int, int], width: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a line<br><br>ARGS:<br> &nbsp; &nbsp;start_x: Starting X coordinate<br> &nbsp; &nbsp;start_y: Starting Y coordinate<br> &nbsp; &nbsp;end_x: Ending X coordinate<br> &nbsp; &nbsp;end_y: Ending Y coordinate<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;width: Line width (default: 1)</div></div></div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a line<br><br>ARGS:<br> &nbsp; &nbsp;start_x: Starting X coordinate<br> &nbsp; &nbsp;start_y: Starting Y coordinate<br> &nbsp; &nbsp;end_x: Ending X coordinate<br> &nbsp; &nbsp;end_y: Ending Y coordinate<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;width: Line width (default: 1)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-draw_polygon">
+                                    <code>def draw_polygon(self: Any, points: List[Tuple[int, int]], color: Tuple[int, int, int], fill: bool, border_width: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a polygon<br><br>ARGS:<br> &nbsp; &nbsp;points: List of (x, y) coordinates of polygon vertices<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the polygon (default: True)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-blit">
+                                    <code>def blit(self: Any, source_surface: pygame.Surface, dest_rect: pygame.Rect, area: Optional[pygame.Rect], special_flags: int) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-cleanup">
+                                    <code>def cleanup(self: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-enable_scissor">
+                                    <code>def enable_scissor(self: Any, x: Any, y: Any, width: Any, height: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-disable_scissor">
+                                    <code>def disable_scissor(self: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-render_particles">
+                                    <code>def render_particles(self: Any, particle_data: Any, camera: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-render_surface">
+                                    <code>def render_surface(self: Any, surface: Any, x: Any, y: Any) -> None</code>
+                        </div></div></div>
                         </div>
                     </div>
                 </div>

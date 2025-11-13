@@ -5,7 +5,7 @@ Camera System - 2D Camera with Smooth Movement and Effects
 
 import pygame, math
 import numpy as np
-from typing import Optional, Tuple, Callable, List, TYPE_CHECKING
+from typing import Optional, Tuple, Callable, List, TYPE_CHECKING, Literal
 from enum import Enum
 
 # Type hints
@@ -521,7 +521,22 @@ class Camera:
         if not smooth:
             self.zoom = self.target_zoom
     
-    def world_to_screen(self, world_pos) -> pygame.math.Vector2:
+    def convert_size_zoom(self, size: tuple) -> tuple:
+        x = type(size)
+        if x == tuple or x == list:
+            return (size[0] / self.zoom, size[1] / self.zoom)
+        elif x == int or x == float or x == np.float32:
+            return (size / self.zoom)
+        elif x == pygame.math.Vector2:
+            return pygame.math.Vector2(size.x / self.zoom, size.y / self.zoom)
+    
+    def convert_size_zoom_list(self, sizes: tuple, return_type:Literal['list', 'nparray', 'ndarray']='list'):
+        if return_type == 'list' or return_type == None:
+            return [self.convert_size_zoom(s) for s in sizes]
+        elif return_type == 'nparray' or return_type == 'ndarray':
+            return np.array([self.convert_size_zoom(s) for s in sizes])
+    
+    def world_to_screen(self, world_pos, vector_type:bool=True) -> pygame.math.Vector2:
         """
         Convert world coordinates to screen coordinates.
         """
@@ -539,7 +554,13 @@ class Camera:
         translated = (world_vec - self.position) * self.zoom
         screen_pos = translated + screen_center
         
-        return screen_pos
+        return screen_pos if vector_type else screen_pos.xy
+    
+    def world_to_screen_list(self, world_positions:list, vector_type:bool=True, return_type:Literal['list', 'nparray', 'ndarray']='list'):
+        if return_type == 'list' or return_type == None:
+            return [self.world_to_screen(pos, vector_type) for pos in world_positions]
+        elif return_type == 'nparray' or return_type == 'ndarray':
+            return np.array([self.world_to_screen(pos, vector_type) for pos in world_positions])
     
     def screen_to_world(self, screen_pos) -> pygame.math.Vector2:
         """
@@ -559,6 +580,9 @@ class Camera:
         world_pos = translated + self.position
         
         return world_pos
+    
+    def screen_to_world_list(self, screen_positions:list) -> list:
+        return [self.screen_to_world(pos) for pos in screen_positions]
     
     def screen_to_world_vector(self, screen_vec) -> pygame.math.Vector2:
         """

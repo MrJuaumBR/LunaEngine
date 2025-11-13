@@ -27,7 +27,7 @@ game development, performance optimization, and resource management.
 
 from .image_converter import ImageConverter, EmbeddedImage
 from .performance import PerformanceMonitor, GarbageCollector
-from .math_utils import clamp, lerp, normalize_vector, angle_between_points, distance
+from .math_utils import clamp, lerp, normalize_vector, angle_between_points, distance, rgba_brightness, individual_rgba_brightness
 
 __all__ = [
     "ImageConverter",
@@ -38,5 +38,7 @@ __all__ = [
     "lerp",
     "normalize_vector",
     "angle_between_points",
-    "distance"
+    "distance",
+    "rgba_brightness",
+    "individual_rgba_brightness"
 ]

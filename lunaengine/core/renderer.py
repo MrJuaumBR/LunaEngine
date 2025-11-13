@@ -14,11 +14,15 @@ KEY FEATURES:
 - Standardized drawing primitives (shapes, surfaces, lines)
 - Frame lifecycle management (begin/end frame)
 - Hardware abstraction for graphics operations
+- Particle system rendering with dynamic buffers
+- Scissor testing for clipping regions
+- Geometry caching for performance optimization
 
 LIBRARIES USED:
 - abc: Abstract base class functionality
 - pygame: Surface and rendering type definitions
 - typing: Type hints for method signatures
+- numpy: Array operations for particle systems
 
 IMPLEMENTATIONS:
 - PygameRenderer (backend/pygame_backend.py): Software-based fallback
@@ -27,28 +31,89 @@ IMPLEMENTATIONS:
 
 from abc import ABC, abstractmethod
 import pygame
-from typing import Tuple
+from typing import Tuple, Dict, Any, List, Optional
+import numpy as np
 
 class Renderer(ABC):
     """Abstract base class for all renderers in LunaEngine."""
     
+    # Camera position for coordinate transformations
+    camera_position: pygame.math.Vector2 = pygame.math.Vector2(0, 0)
+    
+    @property
+    @abstractmethod
+    def max_particles(self) -> int:
+        """
+        Get the maximum number of particles supported by the renderer.
+        
+        Returns:
+            int: Maximum number of particles
+        """
+        pass
+    
+    @max_particles.setter
+    @abstractmethod
+    def max_particles(self, value: int):
+        """
+        Set the maximum number of particles and trigger resize callbacks.
+        
+        Args:
+            value (int): New maximum particle count
+        """
+        pass
+    
     @abstractmethod
     def initialize(self):
-        """Initialize the renderer and required resources."""
+        """
+        Initialize the renderer and required resources.
+        
+        This method should set up the rendering context, create shaders (if applicable),
+        allocate buffers, and prepare the renderer for drawing operations.
+        """
         pass
         
     @abstractmethod
     def begin_frame(self):
-        """Begin a new rendering frame (clear screen, etc.)."""
+        """
+        Begin a new rendering frame.
+        
+        This typically involves clearing the screen, resetting render states,
+        and preparing for new drawing commands.
+        """
         pass
         
     @abstractmethod
     def end_frame(self):
-        """End the current rendering frame (swap buffers, etc.)."""
-        pass
+        """
+        End the current rendering frame.
         
+        This typically involves swapping buffers, finalizing rendering operations,
+        and preparing for display.
+        """
+        pass
+    
     @abstractmethod
-    def draw_surface(self, surface: pygame.Surface, x: int, y: int):
+    def get_surface(self) -> pygame.Surface:
+        """
+        Get the main rendering surface.
+        
+        Returns:
+            pygame.Surface: The current rendering surface
+        """
+        pass
+    
+    @abstractmethod
+    def set_surface(self, surface: pygame.Surface):
+        """
+        Set a custom surface for rendering.
+        
+        Args:
+            surface (pygame.Surface): Surface to use as render target
+        """
+        pass
+    
+    @abstractmethod
+    def draw_surface(self, x: int, y: int, surface: pygame.Surface = None):
         """
         Draw a pygame surface at specified coordinates.
         
@@ -58,39 +123,57 @@ class Renderer(ABC):
             y (int): Y coordinate
         """
         pass
-        
+    
     @abstractmethod
-    def draw_rect(self, x: int, y: int, width: int, height: int, color: Tuple[int, int, int]):
+    def render_surface(self, surface: pygame.Surface, x: int, y: int):
         """
-        Draw a rectangle.
+        Alternative method for drawing surfaces (OpenGL compatibility).
         
         Args:
+            surface (pygame.Surface): The surface to draw
             x (int): X coordinate
             y (int): Y coordinate
-            width (int): Rectangle width
-            height (int): Rectangle height
-            color (Tuple[int, int, int]): RGB color tuple
         """
         pass
         
     @abstractmethod
-    def draw_circle(self, x: int, y: int, radius: int, color: Tuple[int, int, int]):
+    def draw_rect(self, x: int, y: int, width: int, height: int, 
+                  color: Tuple[int, int, int], fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None):
         """
-        Draw a circle.
+        Draw a colored rectangle.
         
         Args:
-            x (int): Center X coordinate
-            y (int): Center Y coordinate
+            x (int): X coordinate of top-left corner
+            y (int): Y coordinate of top-left corner
+            width (int): Rectangle width
+            height (int): Rectangle height
+            color (Tuple[int, int, int]): RGB color tuple
+            fill (bool): Whether to fill the rectangle (default: True)
+            border_width (int): Border width for unfilled rectangles (default: 1)
+        """
+        pass
+        
+    @abstractmethod
+    def draw_circle(self, center_x: int, center_y: int, radius: int, 
+                    color: Tuple[int, int, int], fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None):
+        """
+        Draw a circle with specified center, radius and color.
+        
+        Args:
+            center_x (int): Center X coordinate
+            center_y (int): Center Y coordinate
             radius (int): Circle radius
             color (Tuple[int, int, int]): RGB color tuple
+            fill (bool): Whether to fill the circle (default: True)
+            border_width (int): Border width for hollow circles (default: 1)
         """
         pass
         
     @abstractmethod
     def draw_line(self, start_x: int, start_y: int, end_x: int, end_y: int, 
-                  color: Tuple[int, int, int], width: int = 1):
+                  color: Tuple[int, int, int], width: int = 1, surface: Optional[pygame.Surface] = None):
         """
-        Draw a line.
+        Draw a line between two points with specified width.
         
         Args:
             start_x (int): Start X coordinate
@@ -102,3 +185,90 @@ class Renderer(ABC):
         """
         pass
     
+    @abstractmethod
+    def draw_polygon(self, points: List[Tuple[int, int]], color: Tuple[int, int, int], 
+                     fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None):
+        """
+        Draw a polygon from a list of points.
+        
+        Args:
+            points (List[Tuple[int, int]]): List of (x, y) points defining the polygon
+            color (Tuple[int, int, int]): RGB color tuple
+            fill (bool): Whether to fill the polygon (default: True)
+            border_width (int): Border width for hollow polygons (default: 1)
+        """
+        pass
+    
+    @abstractmethod
+    def enable_scissor(self, x: int, y: int, width: int, height: int):
+        """
+        Enable scissor test for clipping region.
+        
+        Args:
+            x (int): X position from left (pygame coordinate system)
+            y (int): Y position from top (pygame coordinate system)  
+            width (int): Width of scissor region
+            height (int): Height of scissor region
+        """
+        pass
+    
+    @abstractmethod
+    def disable_scissor(self):
+        """
+        Disable scissor test.
+        """
+        pass
+    
+    @abstractmethod
+    def render_particles(self, particle_data: Dict[str, Any], camera: Any):
+        """
+        Render particle systems with optimized batch processing.
+        
+        Args:
+            particle_data (Dict[str, Any]): Particle system data containing:
+                - positions: Array of particle positions
+                - sizes: Array of particle sizes
+                - colors: Array of particle colors
+                - alphas: Array of particle alpha values
+                - active_count: Number of active particles
+            camera (Any): Camera object for coordinate transformations
+        """
+        pass
+    
+    @abstractmethod
+    def render_opengl(self, renderer) -> bool:
+        """
+        OpenGL-specific rendering method for profiling detection.
+        
+        Args:
+            renderer: Renderer instance
+            
+        Returns:
+            bool: Always returns True for OpenGL detection
+        """
+        pass
+    
+    @abstractmethod
+    def cleanup(self):
+        """
+        Clean up rendering resources and shutdown the renderer.
+        
+        This method should release all allocated resources, delete shaders,
+        buffers, and perform any necessary cleanup operations.
+        """
+        pass
+    
+    @abstractmethod
+    def blit(self, source_surface: pygame.Surface, dest_rect: pygame.Rect, area: Optional[pygame.Rect] = None, 
+         special_flags: int = 0):
+        """
+        Blit a source surface onto the current render target.
+        Works similarly to pygame.Surface.blit().
+        
+        Args:
+            source_surface: Surface to blit from
+            dest_rect: Destination rectangle (x, y, width, height) or (x, y)
+            area: Source area to blit from (None for entire surface)
+            special_flags: Additional blitting flags (currently unused)
+        """
+        pass

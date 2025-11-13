@@ -5,8 +5,8 @@
       "title": "Core",
       "description": "Core engine systems - Engine, Window, Renderer",
       "link": "core/index.html",
-      "files_count": 4,
-      "classes_count": 4,
+      "files_count": 5,
+      "classes_count": 10,
       "functions_count": 0
     },
     {
@@ -34,7 +34,7 @@
       "link": "utils/index.html",
       "files_count": 4,
       "classes_count": 6,
-      "functions_count": 5
+      "functions_count": 7
     },
     {
       "name": "backend",
@@ -57,12 +57,66 @@
   ],
   "classes": [
     {
+      "name": "AudioState",
+      "module": "core",
+      "file": "audio.py",
+      "description": "Enumeration for audio playback states.",
+      "link": "core/index.html#class-audiostate",
+      "methods_count": 0,
+      "element_id": "class-audiostate"
+    },
+    {
+      "name": "AudioEvent",
+      "module": "core",
+      "file": "audio.py",
+      "description": "Enumeration for audio events.",
+      "link": "core/index.html#class-audioevent",
+      "methods_count": 0,
+      "element_id": "class-audioevent"
+    },
+    {
+      "name": "AudioChannel",
+      "module": "core",
+      "file": "audio.py",
+      "description": "Individual audio channel with full control.<br><br>Attributes:<br> &nbsp; &nbsp;channel_id (int): Pygame mixer channel number<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): The sound object<br> &nbsp; &nbsp;volume (float): Current volume (0.0 to 1.0)<br> &nbsp; &nbsp;speed (float): Playback speed multiplier<br> &nbsp; &nbsp;loop (bool): Whether to loop the sound<br> &nbsp; &nbsp;state (AudioState): Current playback state",
+      "link": "core/index.html#class-audiochannel",
+      "methods_count": 14,
+      "element_id": "class-audiochannel"
+    },
+    {
+      "name": "SoundEffect",
+      "module": "core",
+      "file": "audio.py",
+      "description": "Sound effect that can be played on multiple channels simultaneously.<br><br>Attributes:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): The sound object<br> &nbsp; &nbsp;channels (List[AudioChannel]): Channels currently playing this sound",
+      "link": "core/index.html#class-soundeffect",
+      "methods_count": 3,
+      "element_id": "class-soundeffect"
+    },
+    {
+      "name": "AudioSystem",
+      "module": "core",
+      "file": "audio.py",
+      "description": "Advanced audio system with multi-channel support and real speed control.<br><br>Attributes:<br> &nbsp; &nbsp;music_volume (float): Global music volume<br> &nbsp; &nbsp;sfx_volume (float): Global sound effects volume<br> &nbsp; &nbsp;channels (List[AudioChannel]): All available audio channels<br> &nbsp; &nbsp;sound_effects (Dict[str, SoundEffect]): Loaded sound effects<br> &nbsp; &nbsp;music_channel (AudioChannel): Dedicated music channel",
+      "link": "core/index.html#class-audiosystem",
+      "methods_count": 16,
+      "element_id": "class-audiosystem"
+    },
+    {
+      "name": "mouse_buttons_schem",
+      "module": "core",
+      "file": "engine.py",
+      "description": "No documentation",
+      "link": "core/index.html#class-mouse_buttons_schem",
+      "methods_count": 0,
+      "element_id": "class-mouse_buttons_schem"
+    },
+    {
       "name": "LunaEngine",
       "module": "core",
       "file": "engine.py",
       "description": "Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene",
       "link": "core/index.html#class-lunaengine",
-      "methods_count": 23,
+      "methods_count": 28,
       "element_id": "class-lunaengine"
     },
     {
@@ -71,7 +125,7 @@
       "file": "renderer.py",
       "description": "Abstract base class for all renderers in LunaEngine.",
       "link": "core/index.html#class-renderer",
-      "methods_count": 7,
+      "methods_count": 19,
       "element_id": "class-renderer"
     },
     {
@@ -395,7 +449,7 @@
       "file": "camera.py",
       "description": "Advanced 2D Camera system with smooth movement and effects.",
       "link": "graphics/index.html#class-camera",
-      "methods_count": 32,
+      "methods_count": 36,
       "element_id": "class-camera"
     },
     {
@@ -584,7 +638,7 @@
       "file": "opengl.py",
       "description": "No documentation",
       "link": "backend/index.html#class-openglrenderer",
-      "methods_count": 29,
+      "methods_count": 30,
       "element_id": "class-openglrenderer"
     },
     {
@@ -593,7 +647,7 @@
       "file": "pygame_backend.py",
       "description": "Pygame-based software renderer for LunaEngine<br><br>LOCATION: lunaengine/backend/pygame_backend.py<br><br>DESCRIPTION:<br>Provides a simple, reliable software renderer using Pygame&#x27;s built-in<br>drawing functions. Serves as a fallback when OpenGL is not available<br>or for development purposes.<br><br>FEATURES:<br>- Software-based 2D rendering<br>- Basic shape drawing (rectangles, circles, lines)<br>- Surface blitting and composition<br>- Cross-platform compatibility<br><br>LIBRARIES USED:<br>- pygame: Core graphics, surface management, and drawing primitives<br><br>INHERITS FROM:<br>- Renderer: Base renderer class from core module<br><br>USAGE:<br>&gt;&gt;&gt; renderer = PygameRenderer(800, 600)<br>&gt;&gt;&gt; renderer.initialize()<br>&gt;&gt;&gt; renderer.draw_rect(100, 100, 50, 50, (255, 0, 0))",
       "link": "backend/index.html#class-pygamerenderer",
-      "methods_count": 12,
+      "methods_count": 20,
       "element_id": "class-pygamerenderer"
     },
     {
@@ -653,6 +707,24 @@
       "element_id": "func-angle_between_points"
     },
     {
+      "name": "rgba_brightness",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "No documentation",
+      "link": "utils/index.html#func-rgba_brightness",
+      "is_method": false,
+      "element_id": "func-rgba_brightness"
+    },
+    {
+      "name": "individual_rgba_brightness",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "No documentation",
+      "link": "utils/index.html#func-individual_rgba_brightness",
+      "is_method": false,
+      "element_id": "func-individual_rgba_brightness"
+    },
+    {
       "name": "main",
       "module": "tools",
       "file": "code_stats.py",
@@ -708,6 +780,303 @@
     }
   ],
   "methods": [
+    {
+      "name": "__init__",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Initialize an audio channel.<br><br>Args:<br> &nbsp; &nbsp;channel_id (int): Pygame mixer channel number",
+      "link": "core/index.html#method-audiochannel-__init__",
+      "is_method": true,
+      "element_id": "method-audiochannel-__init__"
+    },
+    {
+      "name": "play",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Play a sound on this channel.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): Sound to play<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if playback started successfully",
+      "link": "core/index.html#method-audiochannel-play",
+      "is_method": true,
+      "element_id": "method-audiochannel-play"
+    },
+    {
+      "name": "stop",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Stop playback on this channel.",
+      "link": "core/index.html#method-audiochannel-stop",
+      "is_method": true,
+      "element_id": "method-audiochannel-stop"
+    },
+    {
+      "name": "pause",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Pause playback on this channel.",
+      "link": "core/index.html#method-audiochannel-pause",
+      "is_method": true,
+      "element_id": "method-audiochannel-pause"
+    },
+    {
+      "name": "resume",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Resume playback on this channel.",
+      "link": "core/index.html#method-audiochannel-resume",
+      "is_method": true,
+      "element_id": "method-audiochannel-resume"
+    },
+    {
+      "name": "set_volume",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Set channel volume.<br><br>Args:<br> &nbsp; &nbsp;volume (float): Volume level (0.0 to 1.0)",
+      "link": "core/index.html#method-audiochannel-set_volume",
+      "is_method": true,
+      "element_id": "method-audiochannel-set_volume"
+    },
+    {
+      "name": "set_speed",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Set playback speed using pitch adjustment.<br><br>Note: This is a simulated effect since pygame doesn&#x27;t support native speed control.<br>We adjust the playback rate by manipulating the sound buffer.<br><br>Args:<br> &nbsp; &nbsp;speed (float): Speed multiplier (0.5 for half speed, 2.0 for double)",
+      "link": "core/index.html#method-audiochannel-set_speed",
+      "is_method": true,
+      "element_id": "method-audiochannel-set_speed"
+    },
+    {
+      "name": "fade_in",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Fade in the channel volume.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds<br> &nbsp; &nbsp;target_volume (float, optional): Target volume. Defaults to 1.0.",
+      "link": "core/index.html#method-audiochannel-fade_in",
+      "is_method": true,
+      "element_id": "method-audiochannel-fade_in"
+    },
+    {
+      "name": "fade_out",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Fade out the channel volume.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds",
+      "link": "core/index.html#method-audiochannel-fade_out",
+      "is_method": true,
+      "element_id": "method-audiochannel-fade_out"
+    },
+    {
+      "name": "_fade_volume",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Internal method to handle volume fading.<br><br>Args:<br> &nbsp; &nbsp;start_volume (float): Starting volume<br> &nbsp; &nbsp;end_volume (float): Ending volume<br> &nbsp; &nbsp;duration (float): Fade duration in seconds<br> &nbsp; &nbsp;fade_state (AudioState): Current fade state",
+      "link": "core/index.html#method-audiochannel-_fade_volume",
+      "is_method": true,
+      "element_id": "method-audiochannel-_fade_volume"
+    },
+    {
+      "name": "is_playing",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Check if the channel is playing.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if playing, False otherwise",
+      "link": "core/index.html#method-audiochannel-is_playing",
+      "is_method": true,
+      "element_id": "method-audiochannel-is_playing"
+    },
+    {
+      "name": "is_paused",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Check if the channel is paused.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if paused, False otherwise",
+      "link": "core/index.html#method-audiochannel-is_paused",
+      "is_method": true,
+      "element_id": "method-audiochannel-is_paused"
+    },
+    {
+      "name": "on_event",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Decorator to register event handlers.<br><br>Args:<br> &nbsp; &nbsp;event_type (AudioEvent): The event type to listen for<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Callable: The decorator function",
+      "link": "core/index.html#method-audiochannel-on_event",
+      "is_method": true,
+      "element_id": "method-audiochannel-on_event"
+    },
+    {
+      "name": "_trigger_event",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Trigger all handlers for the given event type.",
+      "link": "core/index.html#method-audiochannel-_trigger_event",
+      "is_method": true,
+      "element_id": "method-audiochannel-_trigger_event"
+    },
+    {
+      "name": "__init__",
+      "class": "SoundEffect",
+      "module": "core",
+      "description": "Initialize a sound effect.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): The sound object",
+      "link": "core/index.html#method-soundeffect-__init__",
+      "is_method": true,
+      "element_id": "method-soundeffect-__init__"
+    },
+    {
+      "name": "play",
+      "class": "SoundEffect",
+      "module": "core",
+      "description": "Play the sound effect on an available channel.<br><br>Args:<br> &nbsp; &nbsp;audio_system (AudioSystem): The audio system to get channels from<br> &nbsp; &nbsp;volume (float, optional): Volume level. Defaults to 1.0.<br> &nbsp; &nbsp;speed (float, optional): Playback speed. Defaults to 1.0.<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[AudioChannel]: The channel playing the sound, or None if failed",
+      "link": "core/index.html#method-soundeffect-play",
+      "is_method": true,
+      "element_id": "method-soundeffect-play"
+    },
+    {
+      "name": "stop_all",
+      "class": "SoundEffect",
+      "module": "core",
+      "description": "Stop all instances of this sound effect.",
+      "link": "core/index.html#method-soundeffect-stop_all",
+      "is_method": true,
+      "element_id": "method-soundeffect-stop_all"
+    },
+    {
+      "name": "__init__",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Initialize the advanced audio system.<br><br>Args:<br> &nbsp; &nbsp;num_channels (int, optional): Number of audio channels. Defaults to 16.",
+      "link": "core/index.html#method-audiosystem-__init__",
+      "is_method": true,
+      "element_id": "method-audiosystem-__init__"
+    },
+    {
+      "name": "get_available_channel",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Get an available audio channel.<br><br>Returns:<br> &nbsp; &nbsp;Optional[AudioChannel]: Available channel, or None if all busy",
+      "link": "core/index.html#method-audiosystem-get_available_channel",
+      "is_method": true,
+      "element_id": "method-audiosystem-get_available_channel"
+    },
+    {
+      "name": "load_sound_effect",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Load a sound effect from file.<br><br>Args:<br> &nbsp; &nbsp;name (str): Unique name for the sound effect<br> &nbsp; &nbsp;file_path (str): Path to the sound file<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if loaded successfully",
+      "link": "core/index.html#method-audiosystem-load_sound_effect",
+      "is_method": true,
+      "element_id": "method-audiosystem-load_sound_effect"
+    },
+    {
+      "name": "load_music",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Load a music track (store path for later use).<br><br>Args:<br> &nbsp; &nbsp;name (str): Unique name for the music track<br> &nbsp; &nbsp;file_path (str): Path to the music file<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if file exists",
+      "link": "core/index.html#method-audiosystem-load_music",
+      "is_method": true,
+      "element_id": "method-audiosystem-load_music"
+    },
+    {
+      "name": "play_sound",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Play a sound effect on an available channel.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the sound effect<br> &nbsp; &nbsp;volume (float, optional): Volume level. Uses SFX volume if None.<br> &nbsp; &nbsp;speed (float, optional): Playback speed. Defaults to 1.0.<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[AudioChannel]: The channel playing the sound",
+      "link": "core/index.html#method-audiosystem-play_sound",
+      "is_method": true,
+      "element_id": "method-audiosystem-play_sound"
+    },
+    {
+      "name": "play_music",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Play a music track on the dedicated music channel.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the music track<br> &nbsp; &nbsp;volume (float, optional): Volume level. Uses music volume if None.<br> &nbsp; &nbsp;speed (float, optional): Playback speed. Defaults to 1.0.<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to True.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if playback started successfully",
+      "link": "core/index.html#method-audiosystem-play_music",
+      "is_method": true,
+      "element_id": "method-audiosystem-play_music"
+    },
+    {
+      "name": "stop_music",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Stop the currently playing music.",
+      "link": "core/index.html#method-audiosystem-stop_music",
+      "is_method": true,
+      "element_id": "method-audiosystem-stop_music"
+    },
+    {
+      "name": "pause_music",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Pause the currently playing music.",
+      "link": "core/index.html#method-audiosystem-pause_music",
+      "is_method": true,
+      "element_id": "method-audiosystem-pause_music"
+    },
+    {
+      "name": "resume_music",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Resume the paused music.",
+      "link": "core/index.html#method-audiosystem-resume_music",
+      "is_method": true,
+      "element_id": "method-audiosystem-resume_music"
+    },
+    {
+      "name": "set_music_volume",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Set global music volume.<br><br>Args:<br> &nbsp; &nbsp;volume (float): Volume level (0.0 to 1.0)",
+      "link": "core/index.html#method-audiosystem-set_music_volume",
+      "is_method": true,
+      "element_id": "method-audiosystem-set_music_volume"
+    },
+    {
+      "name": "set_sfx_volume",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Set global sound effects volume.<br><br>Args:<br> &nbsp; &nbsp;volume (float): Volume level (0.0 to 1.0)",
+      "link": "core/index.html#method-audiosystem-set_sfx_volume",
+      "is_method": true,
+      "element_id": "method-audiosystem-set_sfx_volume"
+    },
+    {
+      "name": "fade_in_music",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Fade in a music track.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the music track<br> &nbsp; &nbsp;duration (float, optional): Fade duration. Defaults to 2.0.<br> &nbsp; &nbsp;target_volume (float, optional): Target volume. Uses music volume if None.<br> &nbsp; &nbsp;speed (float, optional): Playback speed. Defaults to 1.0.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if fade started successfully",
+      "link": "core/index.html#method-audiosystem-fade_in_music",
+      "is_method": true,
+      "element_id": "method-audiosystem-fade_in_music"
+    },
+    {
+      "name": "fade_out_music",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Fade out the current music.<br><br>Args:<br> &nbsp; &nbsp;duration (float, optional): Fade duration. Defaults to 2.0.",
+      "link": "core/index.html#method-audiosystem-fade_out_music",
+      "is_method": true,
+      "element_id": "method-audiosystem-fade_out_music"
+    },
+    {
+      "name": "stop_all_sounds",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Stop all playing sound effects.",
+      "link": "core/index.html#method-audiosystem-stop_all_sounds",
+      "is_method": true,
+      "element_id": "method-audiosystem-stop_all_sounds"
+    },
+    {
+      "name": "get_channel_info",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Get information about all channels.<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, Any]: Channel information",
+      "link": "core/index.html#method-audiosystem-get_channel_info",
+      "is_method": true,
+      "element_id": "method-audiosystem-get_channel_info"
+    },
+    {
+      "name": "cleanup",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Clean up audio resources.",
+      "link": "core/index.html#method-audiosystem-cleanup",
+      "is_method": true,
+      "element_id": "method-audiosystem-cleanup"
+    },
     {
       "name": "__init__",
       "class": "LunaEngine",
@@ -817,6 +1186,51 @@
       "element_id": "method-lunaengine-run"
     },
     {
+      "name": "update_mouse",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Update mouse position and button state",
+      "link": "core/index.html#method-lunaengine-update_mouse",
+      "is_method": true,
+      "element_id": "method-lunaengine-update_mouse"
+    },
+    {
+      "name": "visibility_change",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/index.html#method-lunaengine-visibility_change",
+      "is_method": true,
+      "element_id": "method-lunaengine-visibility_change"
+    },
+    {
+      "name": "mouse_pos",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/index.html#method-lunaengine-mouse_pos",
+      "is_method": true,
+      "element_id": "method-lunaengine-mouse_pos"
+    },
+    {
+      "name": "mouse_pressed",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/index.html#method-lunaengine-mouse_pressed",
+      "is_method": true,
+      "element_id": "method-lunaengine-mouse_pressed"
+    },
+    {
+      "name": "mouse_wheel",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/index.html#method-lunaengine-mouse_wheel",
+      "is_method": true,
+      "element_id": "method-lunaengine-mouse_wheel"
+    },
+    {
       "name": "_render_opengl_mode",
       "class": "LunaEngine",
       "module": "core",
@@ -853,15 +1267,6 @@
       "element_id": "method-lunaengine-_render_ui_elements"
     },
     {
-      "name": "_render_particles_opengl",
-      "class": "LunaEngine",
-      "module": "core",
-      "description": "Render particles using OpenGL - FIXED",
-      "link": "core/index.html#method-lunaengine-_render_particles_opengl",
-      "is_method": true,
-      "element_id": "method-lunaengine-_render_particles_opengl"
-    },
-    {
       "name": "_render_ui_direct",
       "class": "LunaEngine",
       "module": "core",
@@ -871,13 +1276,22 @@
       "element_id": "method-lunaengine-_render_ui_direct"
     },
     {
-      "name": "_render_particles",
+      "name": "render_particles",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Render particles using the appropriate method",
-      "link": "core/index.html#method-lunaengine-_render_particles",
+      "description": "No documentation",
+      "link": "core/index.html#method-lunaengine-render_particles",
       "is_method": true,
-      "element_id": "method-lunaengine-_render_particles"
+      "element_id": "method-lunaengine-render_particles"
+    },
+    {
+      "name": "_render_particles_opengl",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Render particles using OpenGL - FIXED",
+      "link": "core/index.html#method-lunaengine-_render_particles_opengl",
+      "is_method": true,
+      "element_id": "method-lunaengine-_render_particles_opengl"
     },
     {
       "name": "_handle_mouse_scroll",
@@ -916,10 +1330,28 @@
       "element_id": "method-lunaengine-shutdown"
     },
     {
+      "name": "max_particles",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Get the maximum number of particles supported by the renderer.<br><br>Returns:<br> &nbsp; &nbsp;int: Maximum number of particles",
+      "link": "core/index.html#method-renderer-max_particles",
+      "is_method": true,
+      "element_id": "method-renderer-max_particles"
+    },
+    {
+      "name": "max_particles",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Set the maximum number of particles and trigger resize callbacks.<br><br>Args:<br> &nbsp; &nbsp;value (int): New maximum particle count",
+      "link": "core/index.html#method-renderer-max_particles",
+      "is_method": true,
+      "element_id": "method-renderer-max_particles"
+    },
+    {
       "name": "initialize",
       "class": "Renderer",
       "module": "core",
-      "description": "Initialize the renderer and required resources.",
+      "description": "Initialize the renderer and required resources.<br><br>This method should set up the rendering context, create shaders (if applicable),<br>allocate buffers, and prepare the renderer for drawing operations.",
       "link": "core/index.html#method-renderer-initialize",
       "is_method": true,
       "element_id": "method-renderer-initialize"
@@ -928,7 +1360,7 @@
       "name": "begin_frame",
       "class": "Renderer",
       "module": "core",
-      "description": "Begin a new rendering frame (clear screen, etc.).",
+      "description": "Begin a new rendering frame.<br><br>This typically involves clearing the screen, resetting render states,<br>and preparing for new drawing commands.",
       "link": "core/index.html#method-renderer-begin_frame",
       "is_method": true,
       "element_id": "method-renderer-begin_frame"
@@ -937,10 +1369,28 @@
       "name": "end_frame",
       "class": "Renderer",
       "module": "core",
-      "description": "End the current rendering frame (swap buffers, etc.).",
+      "description": "End the current rendering frame.<br><br>This typically involves swapping buffers, finalizing rendering operations,<br>and preparing for display.",
       "link": "core/index.html#method-renderer-end_frame",
       "is_method": true,
       "element_id": "method-renderer-end_frame"
+    },
+    {
+      "name": "get_surface",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Get the main rendering surface.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The current rendering surface",
+      "link": "core/index.html#method-renderer-get_surface",
+      "is_method": true,
+      "element_id": "method-renderer-get_surface"
+    },
+    {
+      "name": "set_surface",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Set a custom surface for rendering.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Surface to use as render target",
+      "link": "core/index.html#method-renderer-set_surface",
+      "is_method": true,
+      "element_id": "method-renderer-set_surface"
     },
     {
       "name": "draw_surface",
@@ -952,10 +1402,19 @@
       "element_id": "method-renderer-draw_surface"
     },
     {
+      "name": "render_surface",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Alternative method for drawing surfaces (OpenGL compatibility).<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): The surface to draw<br> &nbsp; &nbsp;x (int): X coordinate<br> &nbsp; &nbsp;y (int): Y coordinate",
+      "link": "core/index.html#method-renderer-render_surface",
+      "is_method": true,
+      "element_id": "method-renderer-render_surface"
+    },
+    {
       "name": "draw_rect",
       "class": "Renderer",
       "module": "core",
-      "description": "Draw a rectangle.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate<br> &nbsp; &nbsp;y (int): Y coordinate<br> &nbsp; &nbsp;width (int): Rectangle width<br> &nbsp; &nbsp;height (int): Rectangle height<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple",
+      "description": "Draw a colored rectangle.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate of top-left corner<br> &nbsp; &nbsp;y (int): Y coordinate of top-left corner<br> &nbsp; &nbsp;width (int): Rectangle width<br> &nbsp; &nbsp;height (int): Rectangle height<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the rectangle (default: True)<br> &nbsp; &nbsp;border_width (int): Border width for unfilled rectangles (default: 1)",
       "link": "core/index.html#method-renderer-draw_rect",
       "is_method": true,
       "element_id": "method-renderer-draw_rect"
@@ -964,7 +1423,7 @@
       "name": "draw_circle",
       "class": "Renderer",
       "module": "core",
-      "description": "Draw a circle.<br><br>Args:<br> &nbsp; &nbsp;x (int): Center X coordinate<br> &nbsp; &nbsp;y (int): Center Y coordinate<br> &nbsp; &nbsp;radius (int): Circle radius<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple",
+      "description": "Draw a circle with specified center, radius and color.<br><br>Args:<br> &nbsp; &nbsp;center_x (int): Center X coordinate<br> &nbsp; &nbsp;center_y (int): Center Y coordinate<br> &nbsp; &nbsp;radius (int): Circle radius<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the circle (default: True)<br> &nbsp; &nbsp;border_width (int): Border width for hollow circles (default: 1)",
       "link": "core/index.html#method-renderer-draw_circle",
       "is_method": true,
       "element_id": "method-renderer-draw_circle"
@@ -973,10 +1432,73 @@
       "name": "draw_line",
       "class": "Renderer",
       "module": "core",
-      "description": "Draw a line.<br><br>Args:<br> &nbsp; &nbsp;start_x (int): Start X coordinate<br> &nbsp; &nbsp;start_y (int): Start Y coordinate<br> &nbsp; &nbsp;end_x (int): End X coordinate<br> &nbsp; &nbsp;end_y (int): End Y coordinate<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;width (int): Line width (default: 1)",
+      "description": "Draw a line between two points with specified width.<br><br>Args:<br> &nbsp; &nbsp;start_x (int): Start X coordinate<br> &nbsp; &nbsp;start_y (int): Start Y coordinate<br> &nbsp; &nbsp;end_x (int): End X coordinate<br> &nbsp; &nbsp;end_y (int): End Y coordinate<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;width (int): Line width (default: 1)",
       "link": "core/index.html#method-renderer-draw_line",
       "is_method": true,
       "element_id": "method-renderer-draw_line"
+    },
+    {
+      "name": "draw_polygon",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Draw a polygon from a list of points.<br><br>Args:<br> &nbsp; &nbsp;points (List[Tuple[int, int]]): List of (x, y) points defining the polygon<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the polygon (default: True)<br> &nbsp; &nbsp;border_width (int): Border width for hollow polygons (default: 1)",
+      "link": "core/index.html#method-renderer-draw_polygon",
+      "is_method": true,
+      "element_id": "method-renderer-draw_polygon"
+    },
+    {
+      "name": "enable_scissor",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Enable scissor test for clipping region.<br><br>Args:<br> &nbsp; &nbsp;x (int): X position from left (pygame coordinate system)<br> &nbsp; &nbsp;y (int): Y position from top (pygame coordinate system) &nbsp;<br> &nbsp; &nbsp;width (int): Width of scissor region<br> &nbsp; &nbsp;height (int): Height of scissor region",
+      "link": "core/index.html#method-renderer-enable_scissor",
+      "is_method": true,
+      "element_id": "method-renderer-enable_scissor"
+    },
+    {
+      "name": "disable_scissor",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Disable scissor test.",
+      "link": "core/index.html#method-renderer-disable_scissor",
+      "is_method": true,
+      "element_id": "method-renderer-disable_scissor"
+    },
+    {
+      "name": "render_particles",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Render particle systems with optimized batch processing.<br><br>Args:<br> &nbsp; &nbsp;particle_data (Dict[str, Any]): Particle system data containing:<br> &nbsp; &nbsp; &nbsp; &nbsp;- positions: Array of particle positions<br> &nbsp; &nbsp; &nbsp; &nbsp;- sizes: Array of particle sizes<br> &nbsp; &nbsp; &nbsp; &nbsp;- colors: Array of particle colors<br> &nbsp; &nbsp; &nbsp; &nbsp;- alphas: Array of particle alpha values<br> &nbsp; &nbsp; &nbsp; &nbsp;- active_count: Number of active particles<br> &nbsp; &nbsp;camera (Any): Camera object for coordinate transformations",
+      "link": "core/index.html#method-renderer-render_particles",
+      "is_method": true,
+      "element_id": "method-renderer-render_particles"
+    },
+    {
+      "name": "render_opengl",
+      "class": "Renderer",
+      "module": "core",
+      "description": "OpenGL-specific rendering method for profiling detection.<br><br>Args:<br> &nbsp; &nbsp;renderer: Renderer instance<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: Always returns True for OpenGL detection",
+      "link": "core/index.html#method-renderer-render_opengl",
+      "is_method": true,
+      "element_id": "method-renderer-render_opengl"
+    },
+    {
+      "name": "cleanup",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Clean up rendering resources and shutdown the renderer.<br><br>This method should release all allocated resources, delete shaders,<br>buffers, and perform any necessary cleanup operations.",
+      "link": "core/index.html#method-renderer-cleanup",
+      "is_method": true,
+      "element_id": "method-renderer-cleanup"
+    },
+    {
+      "name": "blit",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Blit a source surface onto the current render target.<br>Works similarly to pygame.Surface.blit().<br><br>Args:<br> &nbsp; &nbsp;source_surface: Surface to blit from<br> &nbsp; &nbsp;dest_rect: Destination rectangle (x, y, width, height) or (x, y)<br> &nbsp; &nbsp;area: Source area to blit from (None for entire surface)<br> &nbsp; &nbsp;special_flags: Additional blitting flags (currently unused)",
+      "link": "core/index.html#method-renderer-blit",
+      "is_method": true,
+      "element_id": "method-renderer-blit"
     },
     {
       "name": "__init__",
@@ -2896,6 +3418,24 @@
       "element_id": "method-camera-set_zoom"
     },
     {
+      "name": "convert_size_zoom",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-camera-convert_size_zoom",
+      "is_method": true,
+      "element_id": "method-camera-convert_size_zoom"
+    },
+    {
+      "name": "convert_size_zoom_list",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-camera-convert_size_zoom_list",
+      "is_method": true,
+      "element_id": "method-camera-convert_size_zoom_list"
+    },
+    {
       "name": "world_to_screen",
       "class": "Camera",
       "module": "graphics",
@@ -2905,6 +3445,15 @@
       "element_id": "method-camera-world_to_screen"
     },
     {
+      "name": "world_to_screen_list",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-camera-world_to_screen_list",
+      "is_method": true,
+      "element_id": "method-camera-world_to_screen_list"
+    },
+    {
       "name": "screen_to_world",
       "class": "Camera",
       "module": "graphics",
@@ -2912,6 +3461,15 @@
       "link": "graphics/index.html#method-camera-screen_to_world",
       "is_method": true,
       "element_id": "method-camera-screen_to_world"
+    },
+    {
+      "name": "screen_to_world_list",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-camera-screen_to_world_list",
+      "is_method": true,
+      "element_id": "method-camera-screen_to_world_list"
     },
     {
       "name": "screen_to_world_vector",
@@ -3778,15 +4336,6 @@
       "element_id": "method-openglrenderer-max_particles"
     },
     {
-      "name": "max_particles",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/index.html#method-openglrenderer-max_particles",
-      "is_method": true,
-      "element_id": "method-openglrenderer-max_particles"
-    },
-    {
       "name": "initialize",
       "class": "OpenGLRenderer",
       "module": "backend",
@@ -3814,6 +4363,24 @@
       "element_id": "method-openglrenderer-end_frame"
     },
     {
+      "name": "get_surface",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Get the main screen surface for compatibility with UI elements.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The main display surface",
+      "link": "backend/index.html#method-openglrenderer-get_surface",
+      "is_method": true,
+      "element_id": "method-openglrenderer-get_surface"
+    },
+    {
+      "name": "set_surface",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Set custom surface for rendering using Framebuffer Objects.<br><br>Args:<br> &nbsp; &nbsp;surface: Pygame surface to use as render target",
+      "link": "backend/index.html#method-openglrenderer-set_surface",
+      "is_method": true,
+      "element_id": "method-openglrenderer-set_surface"
+    },
+    {
       "name": "_surface_to_texture",
       "class": "OpenGLRenderer",
       "module": "backend",
@@ -3835,7 +4402,7 @@
       "name": "_ensure_particle_capacity",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Ensure particle buffers are large enough - DYNAMIC RESIZING<br><br>required_count * 1.01 = 101% of current size",
+      "description": "Ensure particle buffers are large enough - DYNAMIC RESIZING",
       "link": "backend/index.html#method-openglrenderer-_ensure_particle_capacity",
       "is_method": true,
       "element_id": "method-openglrenderer-_ensure_particle_capacity"
@@ -3844,19 +4411,10 @@
       "name": "enable_scissor",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Enable scissor test for clipping region.<br><br>In OpenGL, the coordinate system has origin at bottom-left,<br>while Pygame uses top-left origin. We need to convert coordinates.<br><br>Args:<br> &nbsp; &nbsp;x (int): X position from left (pygame coordinate system)<br> &nbsp; &nbsp;y (int): Y position from top (pygame coordinate system) &nbsp;<br> &nbsp; &nbsp;width (int): Width of scissor region<br> &nbsp; &nbsp;height (int): Height of scissor region",
+      "description": "Enable scissor test for clipping region.<br><br>Args:<br> &nbsp; &nbsp;x (int): X position from left (pygame coordinate system)<br> &nbsp; &nbsp;y (int): Y position from top (pygame coordinate system) &nbsp;<br> &nbsp; &nbsp;width (int): Width of scissor region<br> &nbsp; &nbsp;height (int): Height of scissor region",
       "link": "backend/index.html#method-openglrenderer-enable_scissor",
       "is_method": true,
       "element_id": "method-openglrenderer-enable_scissor"
-    },
-    {
-      "name": "disable_scissor",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "Disable scissor test with debugging",
-      "link": "backend/index.html#method-openglrenderer-disable_scissor",
-      "is_method": true,
-      "element_id": "method-openglrenderer-disable_scissor"
     },
     {
       "name": "disable_scissor",
@@ -3871,7 +4429,7 @@
       "name": "draw_rect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a colored rectangle",
+      "description": "Draw a colored rectangle.<br><br>Args:<br> &nbsp; &nbsp;x: X coordinate of top-left corner<br> &nbsp; &nbsp;y: Y coordinate of top-left corner<br> &nbsp; &nbsp;width: Rectangle width<br> &nbsp; &nbsp;height: Rectangle height<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the rectangle<br> &nbsp; &nbsp;border_width: Border width for unfilled rectangles<br> &nbsp; &nbsp;surface: Target surface",
       "link": "backend/index.html#method-openglrenderer-draw_rect",
       "is_method": true,
       "element_id": "method-openglrenderer-draw_rect"
@@ -3880,7 +4438,7 @@
       "name": "draw_line",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a line between two points with specified width",
+      "description": "Draw a line between two points with specified width.<br><br>Args:<br> &nbsp; &nbsp;start_x: Start X coordinate<br> &nbsp; &nbsp;start_y: Start Y coordinate<br> &nbsp; &nbsp;end_x: End X coordinate<br> &nbsp; &nbsp;end_y: End Y coordinate<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;width: Line width<br> &nbsp; &nbsp;surface: Target surface",
       "link": "backend/index.html#method-openglrenderer-draw_line",
       "is_method": true,
       "element_id": "method-openglrenderer-draw_line"
@@ -3898,7 +4456,7 @@
       "name": "draw_circle",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a circle with specified center, radius and color",
+      "description": "Draw a circle with specified center, radius and color.<br><br>Args:<br> &nbsp; &nbsp;center_x: Center X coordinate<br> &nbsp; &nbsp;center_y: Center Y coordinate<br> &nbsp; &nbsp;radius: Circle radius<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the circle<br> &nbsp; &nbsp;border_width: Border width for hollow circles<br> &nbsp; &nbsp;surface: Target surface",
       "link": "backend/index.html#method-openglrenderer-draw_circle",
       "is_method": true,
       "element_id": "method-openglrenderer-draw_circle"
@@ -3925,7 +4483,7 @@
       "name": "draw_polygon",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a polygon from a list of points",
+      "description": "Draw a polygon from a list of points.<br><br>Args:<br> &nbsp; &nbsp;points: List of (x, y) points defining the polygon<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the polygon<br> &nbsp; &nbsp;border_width: Border width for hollow polygons,<br> &nbsp; &nbsp;surface: Target surface",
       "link": "backend/index.html#method-openglrenderer-draw_polygon",
       "is_method": true,
       "element_id": "method-openglrenderer-draw_polygon"
@@ -3970,7 +4528,7 @@
       "name": "draw_surface",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a pygame surface as texture",
+      "description": "Draw a pygame surface at specified coordinates.<br>Uses blit internally for consistency.<br><br>Args:<br> &nbsp; &nbsp;surface: Pygame surface to draw<br> &nbsp; &nbsp;x: X coordinate<br> &nbsp; &nbsp;y: Y coordinate",
       "link": "backend/index.html#method-openglrenderer-draw_surface",
       "is_method": true,
       "element_id": "method-openglrenderer-draw_surface"
@@ -3994,13 +4552,22 @@
       "element_id": "method-openglrenderer-render_particles"
     },
     {
-      "name": "get_surface",
+      "name": "blit",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Get the main screen surface for compatibility with UI elements.<br><br>In OpenGL mode, this returns the pygame display surface which can be used<br>for fallback rendering when OpenGL is not available for certain operations.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The main display surface",
-      "link": "backend/index.html#method-openglrenderer-get_surface",
+      "description": "Blit a source surface onto the current render target.<br>Works similarly to pygame.Surface.blit().<br><br>Args:<br> &nbsp; &nbsp;source_surface: Surface to blit from<br> &nbsp; &nbsp;dest_rect: Destination rectangle (x, y, width, height) or (x, y)<br> &nbsp; &nbsp;area: Source area to blit from (None for entire surface)<br> &nbsp; &nbsp;special_flags: Additional blitting flags (currently unused)",
+      "link": "backend/index.html#method-openglrenderer-blit",
       "is_method": true,
-      "element_id": "method-openglrenderer-get_surface"
+      "element_id": "method-openglrenderer-blit"
+    },
+    {
+      "name": "blit_surface",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Alternative blit function with position tuple instead of rect.<br><br>Args:<br> &nbsp; &nbsp;source_surface: Surface to blit from<br> &nbsp; &nbsp;dest_pos: Destination position (x, y)<br> &nbsp; &nbsp;area: Source area to blit from",
+      "link": "backend/index.html#method-openglrenderer-blit_surface",
+      "is_method": true,
+      "element_id": "method-openglrenderer-blit_surface"
     },
     {
       "name": "cleanup",
@@ -4120,6 +4687,78 @@
       "element_id": "method-pygamerenderer-draw_line"
     },
     {
+      "name": "draw_polygon",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "Draw a polygon<br><br>ARGS:<br> &nbsp; &nbsp;points: List of (x, y) coordinates of polygon vertices<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the polygon (default: True)",
+      "link": "backend/index.html#method-pygamerenderer-draw_polygon",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-draw_polygon"
+    },
+    {
+      "name": "blit",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-pygamerenderer-blit",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-blit"
+    },
+    {
+      "name": "cleanup",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-pygamerenderer-cleanup",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-cleanup"
+    },
+    {
+      "name": "enable_scissor",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-pygamerenderer-enable_scissor",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-enable_scissor"
+    },
+    {
+      "name": "disable_scissor",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-pygamerenderer-disable_scissor",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-disable_scissor"
+    },
+    {
+      "name": "render_opengl",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-pygamerenderer-render_opengl",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-render_opengl"
+    },
+    {
+      "name": "render_particles",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-pygamerenderer-render_particles",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-render_particles"
+    },
+    {
+      "name": "render_surface",
+      "class": "PygameRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-pygamerenderer-render_surface",
+      "is_method": true,
+      "element_id": "method-pygamerenderer-render_surface"
+    },
+    {
       "name": "__init__",
       "class": "CodeStatistics",
       "module": "tools",
@@ -4210,7 +4849,7 @@
       "element_id": "method-codestatistics-print_statistics"
     }
   ],
-  "last_updated": "2025-11-04T18:05:16.963024",
+  "last_updated": "2025-11-13T16:32:41.738087",
   "pages": [
     {
       "name": "Quick Start",

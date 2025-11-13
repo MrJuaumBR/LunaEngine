@@ -21,7 +21,8 @@ from .engine import LunaEngine
 from .scene import Scene
 from .renderer import Renderer
 from .window import Window
+from .audio import AudioSystem, AudioEvent, AudioState, AudioChannel, SoundEffect
 
 engine = LunaEngine
 
-__all__ = ["LunaEngine", "engine", "Scene", "Renderer", "Window"]
+__all__ = ["LunaEngine", "engine", "Scene", "Renderer", "Window", "AudioSystem", "AudioEvent", "AudioState"]

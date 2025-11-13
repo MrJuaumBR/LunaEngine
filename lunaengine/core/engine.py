@@ -31,10 +31,23 @@ DEPENDENCIES:
 
 import pygame, threading
 import numpy as np
-from typing import Dict, List, Callable, Optional, Type
+from typing import Dict, List, Callable, Optional, Type, TYPE_CHECKING
 from ..ui.elements import *
 from .scene import Scene
 from ..utils.performance import PerformanceMonitor, GarbageCollector
+from ..backend.pygame_backend import PygameRenderer
+from dataclasses import dataclass
+
+if TYPE_CHECKING:
+    from . import Renderer
+
+@dataclass
+class mouse_buttons_schem(dict):
+    left:bool = False
+    middle:bool = False
+    right:bool = False
+    extra_button_1:bool = False
+    extra_button_2:bool = False
 
 class LunaEngine:
     """
@@ -52,7 +65,9 @@ class LunaEngine:
         scenes (Dict[str, Scene]): Registered scenes
         current_scene (Scene): Currently active scene
     """
-    
+    _mouse_pos:tuple[int,int] = (0,0)
+    _mouse_buttons:mouse_buttons_schem = mouse_buttons_schem()
+    _mouse_wheel:float = 0
     def __init__(self, title: str = "LunaEngine Game", width: int = 800, height: int = 600, use_opengl: bool = False):
         """
         Initialize the LunaEngine.
@@ -80,13 +95,11 @@ class LunaEngine:
         
         # Choose rendering backend
         self.use_opengl = use_opengl
-        from ..backend.pygame_backend import PygameRenderer
-        self.ui_renderer = PygameRenderer(width, height)
         if use_opengl:
             from ..backend.opengl import OpenGLRenderer
-            self.renderer = OpenGLRenderer(width, height)
+            self.renderer: Renderer = OpenGLRenderer(width, height)
         else:
-            self.renderer = self.ui_renderer
+            self.renderer:Renderer = PygameRenderer(width, height)
         
         self.screen = None
         
@@ -126,9 +139,8 @@ class LunaEngine:
         if self.use_opengl and not renderer_success:
             print("OpenGL renderer failed to initialize, falling back to Pygame")
             self.use_opengl = False
-            self.renderer = self.ui_renderer
+            self.renderer: Renderer = self.ui_renderer
         
-        self.ui_renderer.initialize()
         self.running = True
         print("Engine initialization complete")
         
@@ -312,6 +324,7 @@ class LunaEngine:
             
             dt = self.clock.tick(self.fps) / 1000.0
             
+            self.update_mouse()
             # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -335,9 +348,7 @@ class LunaEngine:
                 self.current_scene.update(dt)
             
             # Update UI elements
-            mouse_pos = pygame.mouse.get_pos()
-            mouse_pressed = pygame.mouse.get_pressed()[mouse_btn_left]
-            self._update_ui_elements(mouse_pos, mouse_pressed, dt)
+            self._update_ui_elements(self.mouse_pos, self._mouse_buttons, dt)
             
             # CORRECTED: Unified rendering pipeline
             if self.use_opengl:
@@ -351,6 +362,38 @@ class LunaEngine:
             self.garbage_collector.cleanup()
         
         self.shutdown()
+        
+    def update_mouse(self):
+        """Update mouse position and button state"""
+        self._mouse_pos = pygame.mouse.get_pos()
+        m_pressed = pygame.mouse.get_pressed(num_buttons=5)
+        self._mouse_buttons.left = m_pressed[0]
+        self._mouse_buttons.middle = m_pressed[1]
+        self._mouse_buttons.right = m_pressed[2]
+        if len(m_pressed) >= 5:
+            self._mouse_buttons.extra_button_1 = m_pressed[3]
+            self._mouse_buttons.extra_button_2 = m_pressed[4]
+            
+        if self._mouse_wheel != 0:
+            self._mouse_wheel *= 0.6
+            
+    def visibility_change(self, element: UIElement, visible: bool):
+        if type(element) in [list, tuple]:
+            [self.visibility_change(e, visible) for e in element]
+        else:
+            element.visible = visible
+            
+    @property
+    def mouse_pos(self):
+        return self._mouse_pos
+    
+    @property
+    def mouse_pressed(self):
+        return [self._mouse_buttons.left, self._mouse_buttons.middle, self._mouse_buttons.right, self._mouse_buttons.extra_button_1, self._mouse_buttons.extra_button_2]
+    
+    @property
+    def mouse_wheel(self):
+        return self._mouse_wheel
 
     def _render_opengl_mode(self):
         """Rendering pipeline for OpenGL mode - CORRECTED"""
@@ -363,7 +406,7 @@ class LunaEngine:
                 self.current_scene.render(self.renderer)
             
             # 3. Render particles using OpenGL
-            self._render_particles_opengl()
+            self.render_particles()
             
             # 4. Render UI elements using OpenGL
             self._render_ui_elements_opengl()
@@ -421,8 +464,8 @@ class LunaEngine:
             if self.current_scene:
                 self.current_scene.render(self.renderer)
             
-            # 3. Render particles
-            self._render_particles()
+            # 3. Render particles using Pygame
+            self.render_particles()
             
             # 4. Render UI elements
             self._render_ui_elements(self.renderer)
@@ -464,19 +507,6 @@ class LunaEngine:
         for dropdown in open_dropdowns:
             dropdown.render(renderer)
 
-    def _render_particles_opengl(self):
-        """Render particles using OpenGL - FIXED"""
-        if (self.current_scene and 
-            hasattr(self.current_scene, 'particle_system') and
-            hasattr(self.renderer, 'render_particles')):
-            
-            try:
-                particle_data = self.current_scene.particle_system.get_render_data()
-                if particle_data['active_count'] > 0:
-                    self.renderer.render_particles(particle_data)
-            except Exception as e:
-                print(f"OpenGL particle rendering error: {e}")
-
     def _render_ui_direct(self):
         """Render UI directly to screen in Pygame mode"""
         # Set UI renderer to use main screen
@@ -486,26 +516,31 @@ class LunaEngine:
         # Render UI elements
         self._render_ui_elements(self.ui_renderer)
 
-    def _render_particles(self):
-        """Render particles using the appropriate method"""
-        if not self.current_scene or not hasattr(self.current_scene, 'particle_system'):
-            return
-        
-        # Para OpenGL, usar renderização otimizada
-        if hasattr(self.renderer, 'render_particles'):
+    def render_particles(self):
+        if self.use_opengl:
+            self._render_particles_opengl()
+        else:
+            self.current_scene.particle_system.render(self.renderer.get_surface(), self.current_scene.camera)
+            
+    def _render_particles_opengl(self):
+        """Render particles using OpenGL - FIXED"""
+        if (self.current_scene and 
+            hasattr(self.current_scene, 'particle_system') and
+            hasattr(self.renderer, 'render_particles')):
             particle_data = self.current_scene.particle_system.get_render_data()
             if particle_data['active_count'] > 0:
-                self.renderer.render_particles(particle_data)
-        else:
-            # Fallback para PygameRenderer
-            self.current_scene.particle_system.render(self.renderer.get_surface())
+                self.renderer.render_particles(particle_data, camera=self.current_scene.camera)
+            try:
+                pass
+            except Exception as e:
+                print(f"OpenGL particle rendering error: {e}")
 
     def _handle_mouse_scroll(self, event):
         """Handle mouse wheel scrolling for UI elements - OPTIMIZED"""
         if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
             return
             
-        mouse_pos = pygame.mouse.get_pos()
+        self._mouse_wheel = event.y
         
         for ui_element in self.current_scene.ui_elements:
             if not hasattr(ui_element, 'handle_scroll'):
@@ -518,14 +553,14 @@ class LunaEngine:
                 expanded_height = (ui_element.height + 
                                  ui_element.max_visible_options * ui_element._option_height)
                 mouse_over = (
-                    actual_x <= mouse_pos[0] <= actual_x + ui_element.width and 
-                    actual_y <= mouse_pos[1] <= actual_y + expanded_height
+                    actual_x <= self.mouse_pos[0] <= actual_x + ui_element.width and 
+                    actual_y <= self.mouse_pos[1] <= actual_y + expanded_height
                 )
             else:
                 # Normal behavior for other elements
                 mouse_over = (
-                    actual_x <= mouse_pos[0] <= actual_x + ui_element.width and 
-                    actual_y <= mouse_pos[1] <= actual_y + ui_element.height
+                    actual_x <= self.mouse_pos[0] <= actual_x + ui_element.width and 
+                    actual_y <= self.mouse_pos[1] <= actual_y + ui_element.height
                 )
             
             if mouse_over:
@@ -545,7 +580,7 @@ class LunaEngine:
                 # Remove the 'break' to allow multiple elements to receive events if needed
                 break  # Only one element can be focused at a time
 
-    def _update_ui_elements(self, mouse_pos, mouse_pressed, dt):
+    def _update_ui_elements(self, mouse_pos, mouse_pressed: mouse_buttons_schem, dt):
         """Update UI elements with mouse interaction - OPTIMIZED"""
         if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
             return
@@ -562,11 +597,11 @@ class LunaEngine:
         
         # Update regular elements first
         for ui_element in regular_elements:
-            ui_element._update_with_mouse(mouse_pos, mouse_pressed, dt)
+            ui_element._update_with_mouse(mouse_pos, mouse_pressed.left, dt)
         
         # Update dropdowns last (for proper focus handling)
         for dropdown in dropdowns:
-            dropdown._update_with_mouse(mouse_pos, mouse_pressed, dt)
+            dropdown._update_with_mouse(mouse_pos, mouse_pressed.left, dt)
     
     def shutdown(self):
         """Cleanup resources"""

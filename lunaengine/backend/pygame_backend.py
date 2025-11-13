@@ -1,5 +1,5 @@
 import pygame
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List
 from ..core.renderer import Renderer
 
 class PygameRenderer(Renderer):
@@ -156,3 +156,44 @@ class PygameRenderer(Renderer):
             return
             
         pygame.draw.line(self._current_target, color, (start_x, start_y), (end_x, end_y), width)
+        
+    def draw_polygon(self, points: List[Tuple[int, int]], color: Tuple[int, int, int], fill: bool = True, border_width: int = 1):
+        """
+        Draw a polygon
+        
+        ARGS:
+            points: List of (x, y) coordinates of polygon vertices
+            color: RGB color tuple
+            fill: Whether to fill the polygon (default: True)
+        """
+        if self._current_target is None:
+            return
+            
+        if fill:
+            pygame.draw.polygon(self._current_target, color, points)
+        else:
+            pygame.draw.polygon(self._current_target, color, points, border_width)
+        
+    def blit(self, source_surface: pygame.Surface, dest_rect: pygame.Rect, area: Optional[pygame.Rect] = None, special_flags: int = 0):
+        if self._current_target is not None:
+            self._current_target.blit(source_surface, dest_rect, area, special_flags)
+            
+    def cleanup(self):
+        return super().cleanup()
+    
+    def enable_scissor(self, x, y, width, height):
+        if self._current_target is not None:
+            self._current_target.set_clip(pygame.Rect(x, y, width, height))
+            
+    def disable_scissor(self):
+        if self._current_target is not None:
+            self._current_target.set_clip(None)
+            
+    def render_opengl(self, renderer):
+        return super().render_opengl(renderer)
+    
+    def render_particles(self, particle_data, camera):
+        return super().render_particles(particle_data, camera)
+    
+    def render_surface(self, surface, x, y):
+        return super().render_surface(surface, x, y)

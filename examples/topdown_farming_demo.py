@@ -12,6 +12,7 @@ from lunaengine.core import LunaEngine, Scene
 from lunaengine.ui.elements import *
 from lunaengine.graphics.camera import Camera, CameraMode
 from lunaengine.graphics.particles import ParticleSystem, ParticleConfig, ExitPoint, PhysicsType
+from lunaengine.utils import distance
 import pygame
 
 class TopDownFarmingGame(Scene):
@@ -58,6 +59,7 @@ class TopDownFarmingGame(Scene):
         self.setup_particles()
         
         # Generate world (BEFORE setting up camera)
+        self.setup_parallax()
         self.generate_world()
         
         # Configure camera (AFTER generating world)
@@ -78,11 +80,18 @@ class TopDownFarmingGame(Scene):
         self.camera.target_position = np.array(self.player['position'], dtype=float)
         
         self.camera.mode = CameraMode.TOPDOWN
-        self.camera.smooth_speed = 0.1  # Reduced for more responsive camera
-        self.camera.lead_factor = 0.2   # Reduced lead factor
+        self.camera.smooth_speed = 0.1
+        self.camera.lead_factor = 0.2
+        
+        # Set zoom limits to prevent extreme zoom
+        self.camera.zoom = 1.0
+        self.camera.target_zoom = 1.0
+        self.camera.min_zoom = 0.5  # Add minimum zoom
+        self.camera.max_zoom = 2.0  # Add maximum zoom
         
         # Set camera to follow player
         self.camera.set_target(self.player, CameraMode.TOPDOWN)
+
     
     def setup_particles(self):
         """Setup particles for visual effects"""
@@ -117,6 +126,17 @@ class TopDownFarmingGame(Scene):
     
     def generate_world(self):
         """Generate game world with trees, rocks, farm plots, etc."""
+        
+        grass_dark = (80, 160, 80)
+        grass_light = (100, 180, 100)
+        
+        self.bg_surface = pygame.Surface((self.world_size[0], self.world_size[1]), pygame.SRCALPHA)
+        # Generate world tiles
+        for x in range(0, self.world_size[0], 100):
+            for y in range(0, self.world_size[1], 100):
+                grass_color = grass_dark if (x // 100 + y // 100) % 2 == 0 else grass_light
+                pygame.draw.rect(self.bg_surface, grass_color, (x, y, 100, 100))
+                # self.engine.renderer.draw_rect(x, y, 100, 100, grass_color, surface=self.bg_surface)
         
         # Create player in center
         self.player = {
@@ -164,17 +184,94 @@ class TopDownFarmingGame(Scene):
                     'growth_timer': 0
                 })
         
-        # Generate market
+        # Place market and seed shop next to each other
+        shop_y = self.world_size[1] // 2
         self.market_stall = {
-            'position': [self.world_size[0] - 200, self.world_size[1] // 2],
+            'position': [self.world_size[0] - 250, shop_y],  # Moved closer together
             'size': 80
         }
         
-        # Generate seed shop
         self.seed_shop = {
-            'position': [200, self.world_size[1] - 200],
+            'position': [self.world_size[0] - 450, shop_y],  # Placed next to market
             'size': 80
         }
+
+    
+    def setup_parallax(self):
+        """Setup optimized parallax background"""
+        # Clear any existing layers
+        self.camera.clear_parallax_layers()
+        
+        # Create optimized parallax surfaces
+        sky_surface = self.create_sky_surface()
+        far_mountains = self.create_far_mountains_surface()
+        near_hills = self.create_near_hills_surface()
+        
+        # Add layers with optimized settings
+        self.camera.add_parallax_layer(sky_surface, 0.05, tile_mode=True)
+        self.camera.add_parallax_layer(far_mountains, 0.2, tile_mode=True)
+        self.camera.add_parallax_layer(near_hills, 0.4, tile_mode=True)
+        
+        # Enable parallax
+        self.camera.enable_parallax(True)
+
+    def create_sky_surface(self):
+        """Create sky background (very slow moving)"""
+        surface = pygame.Surface((800, 600))
+        # Gradient sky
+        for y in range(600):
+            # Blue gradient from dark to light
+            blue_value = 100 + int(100 * (y / 600))
+            color = (50, 50, blue_value)
+            pygame.draw.line(surface, color, (0, y), (800, y))
+        
+        # Add some clouds
+        cloud_color = (200, 200, 220, 180)
+        pygame.draw.ellipse(surface, cloud_color, (100, 80, 200, 60))
+        pygame.draw.ellipse(surface, cloud_color, (500, 120, 150, 50))
+        pygame.draw.ellipse(surface, cloud_color, (300, 150, 180, 40))
+        
+        return surface
+
+    def create_far_mountains_surface(self):
+        """Create far mountains surface"""
+        surface = pygame.Surface((1200, 400), pygame.SRCALPHA)
+        surface.fill((0, 0, 0, 0))
+        
+        # Draw distant mountains
+        mountain_color = (60, 60, 90, 200)
+        for i in range(4):
+            x = i * 300
+            height = 150 + (i % 2) * 50
+            points = [
+                (x, 400),
+                (x + 150, 400 - height),
+                (x + 300, 400)
+            ]
+            pygame.draw.polygon(surface, mountain_color, points)
+        
+        return surface
+
+    def create_near_hills_surface(self):
+        """Create near hills surface"""
+        surface = pygame.Surface((800, 300), pygame.SRCALPHA)
+        surface.fill((0, 0, 0, 0))
+        
+        # Draw hills
+        hill_color = (50, 80, 50, 220)
+        for i in range(3):
+            x = i * 250 - 50
+            pygame.draw.ellipse(surface, hill_color, (x, 200, 400, 200))
+        
+        # Add some simple trees
+        tree_color = (40, 70, 40, 240)
+        for x in [100, 300, 500, 700]:
+            # Tree trunk
+            pygame.draw.rect(surface, tree_color, (x, 250, 8, 50))
+            # Tree top
+            pygame.draw.circle(surface, tree_color, (x + 4, 240), 20)
+        
+        return surface
     
     def setup_ui(self):
         """Setup user interface as a toolbar at the bottom"""
@@ -242,6 +339,58 @@ class TopDownFarmingGame(Scene):
         
         # Update initial selection
         self.select_tool('axe')
+        
+        self.seed_shop_ui = self.create_seed_shop_ui()
+        self.seed_shop_open = False
+    
+    def create_seed_shop_ui(self):
+        """Create seed shop purchase UI"""
+        # Create a modal background
+        shop_background = UiFrame(200, 150, 600, 400)
+        shop_background.visible = False
+        
+        # Title
+        title = TextLabel(500, 170, "SEED SHOP", 28, (255, 255, 200), root_point=(0.5, 0))
+        title.visible = False
+        
+        # Seed selection buttons
+        wheat_btn = Button(300, 220, 200, 50, "Wheat Seeds - $10")
+        wheat_btn.visible = False
+        wheat_btn.set_on_click(lambda: self.purchase_seeds('wheat', 10))
+        
+        corn_btn = Button(300, 290, 200, 50, "Corn Seeds - $15") 
+        corn_btn.visible = False
+        corn_btn.set_on_click(lambda: self.purchase_seeds('corn', 15))
+        
+        # Quantity selection
+        self.seed_quantity = 5
+        quantity_label = TextLabel(300, 360, f"Quantity: {self.seed_quantity}", 20, (200, 230, 255))
+        quantity_label.visible = False
+        
+        quantity_up = Button(450, 355, 40, 30, "+")
+        quantity_up.visible = False
+        quantity_up.set_on_click(lambda: self.change_seed_quantity(1, quantity_label))
+        
+        quantity_down = Button(500, 355, 40, 30, "-")
+        quantity_down.visible = False
+        quantity_down.set_on_click(lambda: self.change_seed_quantity(-1, quantity_label))
+        
+        # Close button
+        close_btn = Button(400, 420, 150, 40, "Close Shop")
+        close_btn.visible = False
+        close_btn.set_on_click(self.close_seed_shop)
+        
+        # Store UI elements
+        shop_elements = [
+            shop_background, title, wheat_btn, corn_btn, 
+            quantity_label, quantity_up, quantity_down, close_btn
+        ]
+        
+        # Add to scene but keep hidden initially
+        for element in shop_elements:
+            self.add_ui_element(element)
+        
+        return shop_elements
     
     def select_tool(self, tool):
         """Select tool"""
@@ -277,6 +426,13 @@ class TopDownFarmingGame(Scene):
             elif key == pygame.K_e:
                 self.select_seed('corn')
     
+    def get_interaction_distance(self):
+        """Get maximum interaction distance based on zoom"""
+        base_distance = 80  # Base interaction distance
+        # Adjust distance based on zoom (closer zoom = smaller interaction area)
+        zoom_factor = 1.0 / self.camera.zoom
+        return base_distance * zoom_factor
+    
     def update_player_movement(self, dt):
         """Update player movement"""
         keys = pygame.key.get_pressed()
@@ -294,6 +450,14 @@ class TopDownFarmingGame(Scene):
         if keys[pygame.K_d]:
             self.player['velocity'][0] = 1
         
+        # Get Mouse wheel with controlled zoom
+        if self.engine.mouse_wheel != 0:
+            zoom_speed = 0.05  # Reduced zoom speed for smoother control
+            new_zoom = self.camera.zoom + (self.engine.mouse_wheel * zoom_speed)
+            # Clamp zoom between min and max values
+            new_zoom = max(self.camera.min_zoom, min(self.camera.max_zoom, new_zoom))
+            self.camera.set_zoom(new_zoom, smooth=True)
+        
         # Normalize diagonal movement
         if self.player['velocity'][0] != 0 and self.player['velocity'][1] != 0:
             self.player['velocity'][0] *= 0.7071
@@ -309,34 +473,35 @@ class TopDownFarmingGame(Scene):
     
     def handle_interaction(self):
         """Handle player interactions with world"""
-        mouse_pos = pygame.mouse.get_pos()
-        world_mouse_pos = self.camera.screen_to_world(mouse_pos)
         
-        # Check mouse click
-        mouse_pressed = pygame.mouse.get_pressed()[0]
-        
-        if mouse_pressed:
+        if self.engine._mouse_buttons.left:
             # Interact based on selected tool
             tool = self.game_state['selected_tool']
+            ppos = self.player['position']
+            mpos = self.camera.screen_to_world(self.engine.mouse_pos)
             
             if tool == 'axe':
-                self.chop_tree(world_mouse_pos)
+                self.chop_tree(ppos, mpos)
             elif tool == 'pickaxe':
-                self.mine_rock(world_mouse_pos)
+                self.mine_rock(ppos, mpos)
             elif tool == 'scythe':
-                self.harvest_crop(world_mouse_pos)
+                self.chop_grass(ppos, mpos)
             elif tool == 'seeds':
-                self.plant_seed(world_mouse_pos)
+                self.plant_seed(ppos, mpos)
             
             # Shop interactions (regardless of tool)
-            self.interact_with_market(world_mouse_pos)
-            self.interact_with_seed_shop(world_mouse_pos)
+            self.interact_with_market(ppos, mpos)
+            self.interact_with_seed_shop(ppos, mpos)
     
-    def chop_tree(self, position):
-        """Chop nearby tree"""
+    def chop_tree(self, position, mouse_pos):
+        """Chop nearby tree with distance limit"""
+        interaction_distance = self.get_interaction_distance()
+        
         for tree in self.trees[:]:
-            distance = math.sqrt((tree['position'][0] - position[0])**2 + (tree['position'][1] - position[1])**2)
-            if distance < tree['size']:
+            dis = distance(tree['position'], position)
+            mdis = distance(tree['position'], mouse_pos)
+            
+            if dis < interaction_distance and mdis < tree['size'] + 20:
                 tree['health'] -= 1
                 
                 # Emit particles
@@ -354,12 +519,17 @@ class TopDownFarmingGame(Scene):
                     print("Tree chopped! +2 Wood")
                 
                 break
+
     
-    def mine_rock(self, position):
-        """Mine nearby rock"""
+    def mine_rock(self, position, mouse_pos):
+        """Mine nearby rock with distance limit"""
+        interaction_distance = self.get_interaction_distance()
+        
         for rock in self.rocks[:]:
-            distance = math.sqrt((rock['position'][0] - position[0])**2 + (rock['position'][1] - position[1])**2)
-            if distance < rock['size']:
+            dis = distance(rock['position'], position)
+            mdis = distance(rock['position'], mouse_pos)
+            # Check if within interaction distance AND close enough to the rock
+            if dis < interaction_distance and mdis < rock['size'] + 20:
                 rock['health'] -= 1
                 
                 # Emit particles
@@ -378,14 +548,18 @@ class TopDownFarmingGame(Scene):
                 
                 break
     
-    def plant_seed(self, position):
-        """Plant seed in empty plot"""
+    def plant_seed(self, position, mouse_pos):
+        """Plant seed in empty plot with distance limit"""
         if self.game_state['seeds'][self.game_state['selected_seed']] <= 0:
             return
             
+        interaction_distance = self.get_interaction_distance()
+        
         for plot in self.farm_plots:
-            distance = math.sqrt((plot['position'][0] - position[0])**2 + (plot['position'][1] - position[1])**2)
-            if distance < plot['size'] and not plot['occupied']:
+            dis = distance(plot['position'], position)
+            mdis = distance(plot['position'], mouse_pos)
+            # Check if within interaction distance AND close enough to the plot
+            if dis < interaction_distance and mdis < plot['size']+20 and not plot['occupied']:
                 plot['occupied'] = True
                 plot['crop_type'] = self.game_state['selected_seed']
                 plot['growth_stage'] = 1
@@ -404,12 +578,17 @@ class TopDownFarmingGame(Scene):
                 
                 print(f"Planted {self.game_state['selected_seed']} seed!")
                 break
+
     
-    def harvest_crop(self, position):
-        """Harvest mature crop"""
+    def harvest_crop(self, position, mouse_pos):
+        """Harvest mature crop with distance limit"""
+        interaction_distance = self.get_interaction_distance()
+        
         for plot in self.farm_plots:
-            distance = math.sqrt((plot['position'][0] - position[0])**2 + (plot['position'][1] - position[1])**2)
-            if distance < plot['size'] and plot['occupied'] and plot['growth_stage'] == 3:
+            dis = distance(plot['position'], position)
+            mdis = distance(plot['position'], mouse_pos)
+            # Check if within interaction distance AND close enough to the plot
+            if distance < interaction_distance and mdis < plot['size'] + 20 and plot['occupied'] and plot['growth_stage'] == 3:
                 crop_type = plot['crop_type']
                 self.game_state['inventory'][crop_type] += 3  # 3 units per harvest
                 
@@ -431,15 +610,17 @@ class TopDownFarmingGame(Scene):
                 print(f"Harvested {crop_type}! +3 {crop_type}")
                 break
     
-    def interact_with_market(self, position):
+    def interact_with_market(self, position, mouse_pos):
         """Sell resources at market"""
         if not self.market_stall:
             return
-            
-        distance = math.sqrt((self.market_stall['position'][0] - position[0])**2 + 
-                           (self.market_stall['position'][1] - position[1])**2)
         
-        if distance < self.market_stall['size']:
+        
+        dis = distance(self.market_stall['position'], position)
+        mdis = distance(self.market_stall['position'], mouse_pos)
+        interaction_distance = self.get_interaction_distance()
+        
+        if dis < interaction_distance and mdis < self.market_stall['size'] + 20:
             # Selling prices
             prices = {
                 'wood': 5,
@@ -459,27 +640,42 @@ class TopDownFarmingGame(Scene):
                 self.game_state['money'] += total_sale
                 print(f"Sold all resources for ${total_sale}!")
     
-    def interact_with_seed_shop(self, position):
-        """Buy seeds at shop"""
+    def show_seed_shop_ui(self):
+        """Show seed shop UI"""
+        self.seed_shop_open = True
+        self.engine.visibility_change(self.seed_shop_ui, True)
+
+    def close_seed_shop(self):
+        """Close seed shop UI"""
+        self.seed_shop_open = False
+        self.engine.visibility_change(self.seed_shop_ui, False)
+
+    def change_seed_quantity(self, change, label):
+        """Change seed purchase quantity"""
+        self.seed_quantity = max(1, min(20, self.seed_quantity + change))
+        label.set_text(f"Quantity: {self.seed_quantity}")
+
+    def purchase_seeds(self, seed_type, price_per_seed):
+        """Purchase seeds of specified type"""
+        total_cost = price_per_seed * self.seed_quantity
+        
+        if self.game_state['money'] >= total_cost:
+            self.game_state['seeds'][seed_type] += self.seed_quantity
+            self.game_state['money'] -= total_cost
+            print(f"Purchased {self.seed_quantity} {seed_type} seeds for ${total_cost}!")
+            self.close_seed_shop()
+        else:
+            print(f"Not enough money! Need ${total_cost}, but only have ${self.game_state['money']}.")
+
+    def interact_with_seed_shop(self, position, mouse_pos):
+        """Buy seeds at shop with UI"""
         if not self.seed_shop:
             return
             
-        distance = math.sqrt((self.seed_shop['position'][0] - position[0])**2 + 
-                           (self.seed_shop['position'][1] - position[1])**2)
-        
-        if distance < self.seed_shop['size']:
-            # Buying prices
-            prices = {
-                'wheat': 10,
-                'corn': 15
-            }
-            
-            # Buy 5 seeds of each type if enough money
-            for seed_type in ['wheat', 'corn']:
-                if self.game_state['money'] >= prices[seed_type] * 5:
-                    self.game_state['seeds'][seed_type] += 5
-                    self.game_state['money'] -= prices[seed_type] * 5
-                    print(f"Bought 5 {seed_type} seeds!")
+        dis = distance(self.seed_shop['position'], position)
+        mdis = distance(self.seed_shop['position'], mouse_pos)
+        if (not self.seed_shop_open) and dis < self.get_interaction_distance() and mdis < self.seed_shop['size'] + 20:
+            self.show_seed_shop_ui()
     
     def update_crops(self, dt):
         """Update crop growth"""
@@ -548,35 +744,21 @@ class TopDownFarmingGame(Scene):
         self.update_ui()
     
     def apply_camera_offset(self, position):
-        """Apply camera offset to convert world coordinates to screen coordinates"""
+        """Apply camera offset to convert world coordinates to screen coordinates - FIXED"""
         if isinstance(position, (list, tuple)):
-            return self.camera.world_to_screen(position).xy
+            screen_pos = self.camera.world_to_screen(position)
+            return (screen_pos.x, screen_pos.y)
         elif hasattr(position, 'x') and hasattr(position, 'y'):
-            return self.camera.world_to_screen(position.x, position.y).xy
+            screen_pos = self.camera.world_to_screen((position.x, position.y))
+            return (screen_pos.x, screen_pos.y)
         return position
     
     def render(self, renderer):
         """Render the game with camera support"""
-        # Background color based on time of day
-        day_time = self.game_state['day_time']
-        if day_time < 0.25:  # Morning
-            bg_color = (100, 150, 200)  # Soft blue
-        elif day_time < 0.5:  # Noon
-            bg_color = (120, 180, 220)  # Bright blue
-        elif day_time < 0.75:  # Evening
-            bg_color = (220, 140, 80)   # Warm orange
-        else:  # Night
-            bg_color = (20, 30, 60)     # Deep blue
         
-        # Draw world background (fixed to world coordinates)
-        grass_dark = (80, 160, 80)
-        grass_light = (100, 180, 100)
+        self.camera.render_parallax(renderer)
         
-        for x in range(0, self.world_size[0], 100):
-            for y in range(0, self.world_size[1], 100):
-                grass_color = grass_dark if (x // 100 + y // 100) % 2 == 0 else grass_light
-                screen_x, screen_y = self.apply_camera_offset((x, y))
-                renderer.draw_rect(screen_x, screen_y, 100, 100, grass_color)
+        renderer.blit(pygame.transform.scale(self.bg_surface, self.camera.convert_size_zoom(self.world_size)), self.apply_camera_offset((0, 0)))
         
         # Render farm plots WITH CAMERA OFFSET
         for plot in self.farm_plots:
@@ -595,8 +777,8 @@ class TopDownFarmingGame(Scene):
             else:
                 plot_color = (120, 80, 40)  # Rich brown - empty
             
-            renderer.draw_rect(screen_x - size//2, screen_y - size//2, size, size, plot_color)
             renderer.draw_rect(screen_x - size//2, screen_y - size//2, size, size, (80, 50, 20), fill=False)
+            renderer.draw_rect(screen_x - size//2, screen_y - size//2, size, size, plot_color)
         
         # Render trees WITH CAMERA OFFSET
         for tree in self.trees:
@@ -647,7 +829,7 @@ class TopDownFarmingGame(Scene):
         
         # Render player
         screen_x, screen_y = self.apply_camera_offset(self.player['position'])
-        size = self.player['size']
+        size = self.camera.convert_size_zoom(self.player['size'])
         
         # Player color based on selected tool
         tool_colors = {
@@ -656,9 +838,8 @@ class TopDownFarmingGame(Scene):
             'scythe': (100, 180, 100),   # Green
             'seeds': (220, 200, 100)     # Yellow
         }
-        player_color = tool_colors.get(self.game_state['selected_tool'], (100, 150, 220))
         
-        renderer.draw_circle(screen_x, screen_y, size//2, player_color)
+        renderer.draw_circle(screen_x, screen_y, size//2, (70, 130, 200))
         
         # Direction indicator
         if self.player['velocity'][0] != 0 or self.player['velocity'][1] != 0:

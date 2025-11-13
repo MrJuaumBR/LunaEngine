@@ -573,7 +573,7 @@ class ParticleSystem:
     def update(self, dt: float, camera_position=None):
         """Update particles with vectorized operations"""
         if camera_position is not None:
-            self._update_camera_position(camera_position)
+            self._camera_position = camera_position
         if self.active_particles == 0:
             return
         
@@ -648,12 +648,12 @@ class ParticleSystem:
         self.active_particles = 0
         self._cache_dirty = True
     
-    def render(self, surface, camera_position=None):
+    def render(self, surface, camera: 'Camera'):
         """
         Render particles - Fixed for pygame
         """
-        if camera_position is not None:
-            self._update_camera_position(camera_position)
+        if camera is not None:
+            self._camera_position = camera.position
         
         if self.active_particles == 0:
             return
@@ -664,8 +664,8 @@ class ParticleSystem:
             if not self.active[idx] or self.alphas[idx] == 0:
                 continue
             
-            x, y = int(self.positions[idx][0]), int(self.positions[idx][1])
-            size = max(1, int(self.sizes[idx]))
+            x, y = camera.world_to_screen(self.positions[idx]).xy
+            size = camera.convert_size_zoom(self.sizes[idx])[0]
             color = tuple(self.colors_current[idx])
             alpha = self.alphas[idx]
             

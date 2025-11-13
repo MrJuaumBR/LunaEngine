@@ -144,10 +144,10 @@ class PerformanceMonitor:
     def _get_empty_stats(self) -> Dict[str, float]:
         """Return empty stats structure - FIXED"""
         return {
-            'current_fps': 0.0,      # FIXED: Changed from 'current'
-            'average_fps': 0.0,      # FIXED: Changed from 'average'
-            'min_fps': 0.0,          # FIXED: Changed from 'min'
-            'max_fps': 0.0,          # FIXED: Changed from 'max'
+            'current_fps': 0.0,
+            'average_fps': 0.0,
+            'min_fps': 0.0,
+            'max_fps': 0.0,
             'percentile_1': 0.0,
             'percentile_01': 0.0,
             'frame_time_ms': 0.0,
@@ -160,7 +160,7 @@ class GarbageCollector:
     def __init__(self):
         self.unused_fonts = set()
         self.unused_surfaces = set()
-        self.cleanup_interval = 300  # Cleanup every 300 frames
+        self.cleanup_interval = 300
         self.frame_count = 0
         
     def mark_font_unused(self, font):

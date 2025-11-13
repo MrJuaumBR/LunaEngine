@@ -33,7 +33,7 @@ from ..ui import UIElement
 from ..graphics import Camera, ParticleConfig, ParticleSystem, ParticleType
 
 if TYPE_CHECKING:
-    from ..core.engine import LunaEngine
+    from ..core import LunaEngine, Renderer
 
 class Scene(ABC):
     """
@@ -98,7 +98,7 @@ class Scene(ABC):
         # Update particle system with camera position
         self.particle_system.update(dt, self.camera.position)
         
-    def render(self, renderer) -> None:
+    def render(self, renderer: 'Renderer') -> None:
         """
         Render the scene.
         

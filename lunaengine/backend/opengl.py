@@ -4,7 +4,7 @@ OpenGL-based hardware-accelerated renderer for LunaEngine - DYNAMIC PARTICLE BUF
 
 import pygame
 import numpy as np
-from typing import Tuple, Dict, Any, List
+from typing import Tuple, Dict, Any, List, TYPE_CHECKING, Optional
 
 # Check if OpenGL is available
 try:
@@ -14,6 +14,9 @@ try:
 except ImportError:
     OPENGL_AVAILABLE = False
     print("OpenGL not available - falling back to software rendering")
+    
+if TYPE_CHECKING:
+    from ..graphics import Camera
 
 class ShaderProgram:
     """Generic shader program for 2D rendering with caching"""
@@ -291,6 +294,9 @@ class OpenGLRenderer:
         self._circle_cache = {}
         self._polygon_cache = {}
         
+        # Current render target
+        self._current_target = None
+        
     @property
     def max_particles(self) -> int:
         return self._max_particles
@@ -301,10 +307,6 @@ class OpenGLRenderer:
             for callback in self.on_max_particles_change:
                 callback(value)
         self._max_particles = value
-        
-    @max_particles.getter
-    def max_particles(self) -> int:
-        return self._max_particles
         
     def initialize(self):
         """Initialize OpenGL context and shaders"""
@@ -346,6 +348,42 @@ class OpenGLRenderer:
             return
         pygame.display.flip()
     
+    def get_surface(self) -> pygame.Surface:
+        """
+        Get the main screen surface for compatibility with UI elements.
+        
+        Returns:
+            pygame.Surface: The main display surface
+        """
+        return pygame.display.get_surface()
+    
+    def set_surface(self, surface: pygame.Surface):
+        """
+        Set custom surface for rendering using Framebuffer Objects.
+        
+        Args:
+            surface: Pygame surface to use as render target
+        """
+        if surface == self._current_target:
+            return
+        if surface is None: # Is None, then return to default framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER, 0)
+            self.width, self.height = self.get_surface().get_size()
+        else:
+            texture_id = self._surface_to_texture(surface)
+            fbo = glGenFramebuffers(1)
+            glBindFramebuffer(GL_FRAMEBUFFER, fbo)
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture_id, 0)
+            
+            if glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE:
+                print("Framebuffer not complete!")
+                glBindFramebuffer(GL_FRAMEBUFFER, 0)
+                return
+            
+            self.width, self.height = surface.get_size()
+            
+        self._current_target = surface
+    
     def _surface_to_texture(self, surface: pygame.Surface) -> int:
         """Convert pygame surface to OpenGL texture"""
         flipped_surface = pygame.transform.flip(surface, False, True)
@@ -381,8 +419,6 @@ class OpenGLRenderer:
     def _ensure_particle_capacity(self, required_count: int):
         """
         Ensure particle buffers are large enough - DYNAMIC RESIZING
-        
-        required_count * 1.01 = 101% of current size
         """
         if required_count*1.01 <= self.max_particles:
             return
@@ -412,9 +448,6 @@ class OpenGLRenderer:
         """
         Enable scissor test for clipping region.
         
-        In OpenGL, the coordinate system has origin at bottom-left,
-        while Pygame uses top-left origin. We need to convert coordinates.
-        
         Args:
             x (int): X position from left (pygame coordinate system)
             y (int): Y position from top (pygame coordinate system)  
@@ -436,23 +469,33 @@ class OpenGLRenderer:
         glScissor(gl_scissor_x, gl_scissor_y, gl_scissor_width, gl_scissor_height)
 
     def disable_scissor(self):
-        """Disable scissor test with debugging"""
-        if not self._initialized:
-            return
-            
-        glDisable(GL_SCISSOR_TEST)
-
-    def disable_scissor(self):
         """Disable scissor test"""
         if not self._initialized:
             return
         glDisable(GL_SCISSOR_TEST)
     
-    def draw_rect(self, x: int, y: int, width: int, height: int, color: tuple, fill: bool = True, border_width: int = 1):
-        """Draw a colored rectangle"""
+    def draw_rect(self, x: int, y: int, width: int, height: int, 
+                  color: tuple, fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None):
+        """
+        Draw a colored rectangle.
+        
+        Args:
+            x: X coordinate of top-left corner
+            y: Y coordinate of top-left corner
+            width: Rectangle width
+            height: Rectangle height
+            color: RGB color tuple
+            fill: Whether to fill the rectangle
+            border_width: Border width for unfilled rectangles
+            surface: Target surface
+        """
         if not self._initialized or not self.simple_shader.program:
             return
-
+        
+        if surface:
+            old_surface = self._current_target
+            self.set_surface(surface)
+        
         r_gl, g_gl, b_gl, a_gl = self._convert_color(color)
 
         glUseProgram(self.simple_shader.program)
@@ -483,14 +526,31 @@ class OpenGLRenderer:
                 glBindVertexArray(0)
 
         glUseProgram(0)
+        
+        if surface:
+            self.set_surface(old_surface)
     
-    def draw_line(self, start_x: int, start_y: int, end_x: int, end_y: int, color: tuple, width: int = 2):
-        """Draw a line between two points with specified width"""
+    def draw_line(self, start_x: int, start_y: int, end_x: int, end_y: int, 
+                  color: tuple, width: int = 2, surface: Optional[pygame.Surface] = None):
+        """
+        Draw a line between two points with specified width.
+        
+        Args:
+            start_x: Start X coordinate
+            start_y: Start Y coordinate
+            end_x: End X coordinate
+            end_y: End Y coordinate
+            color: RGB color tuple
+            width: Line width
+            surface: Target surface
+        """
         if not self._initialized or not self.simple_shader.program:
             return
-            
-        r_gl, g_gl, b_gl, a_gl = self._convert_color(color)
         
+        if surface:
+            old_surface = self._current_target
+            self.set_surface(surface)
+                
         # Optimized handling for thin lines
         if width <= 1:
             if start_x == end_x:
@@ -510,6 +570,9 @@ class OpenGLRenderer:
         
         # Use optimized thick line method for all other cases
         self._draw_thick_line_optimized(start_x, start_y, end_x, end_y, color, width)
+        
+        if surface:
+            self.set_surface(old_surface)
 
     def _draw_thick_line_optimized(self, start_x: int, start_y: int, end_x: int, end_y: int, color: tuple, width: int):
         """Optimized method for drawing thick lines"""
@@ -569,10 +632,26 @@ class OpenGLRenderer:
         glDeleteBuffers(1, [ebo])
         glUseProgram(0)
     
-    def draw_circle(self, center_x: int, center_y: int, radius: int, color: tuple, fill: bool = True, border_width: int = 1):
-        """Draw a circle with specified center, radius and color"""
+    def draw_circle(self, center_x: int, center_y: int, radius: int, 
+                    color: tuple, fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None):
+        """
+        Draw a circle with specified center, radius and color.
+        
+        Args:
+            center_x: Center X coordinate
+            center_y: Center Y coordinate
+            radius: Circle radius
+            color: RGB color tuple
+            fill: Whether to fill the circle
+            border_width: Border width for hollow circles
+            surface: Target surface
+        """
         if not self._initialized or not self.simple_shader.program:
             return
+            
+        if surface:
+            old_surface = self._current_target
+            self.set_surface(surface)
             
         # Generate circle geometry with caching for performance
         cache_key = (radius, fill, border_width)
@@ -607,6 +686,9 @@ class OpenGLRenderer:
         glDrawElements(GL_TRIANGLES, vertex_count, GL_UNSIGNED_INT, None)
         glBindVertexArray(0)
         glUseProgram(0)
+        
+        if surface:
+            self.set_surface(old_surface)
     
     def _generate_filled_circle_geometry(self, segments: int):
         """Generate vertices and indices for a filled circle"""
@@ -658,10 +740,24 @@ class OpenGLRenderer:
         
         return vertices, indices
     
-    def draw_polygon(self, points: List[Tuple[int, int]], color: tuple, fill: bool = True, border_width: int = 1):
-        """Draw a polygon from a list of points"""
+    def draw_polygon(self, points: List[Tuple[int, int]], color: tuple, 
+                     fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None):
+        """
+        Draw a polygon from a list of points.
+        
+        Args:
+            points: List of (x, y) points defining the polygon
+            color: RGB color tuple
+            fill: Whether to fill the polygon
+            border_width: Border width for hollow polygons,
+            surface: Target surface
+        """
         if not self._initialized or not self.simple_shader.program or len(points) < 3:
             return
+            
+        if surface:
+            old_surface = self._current_target
+            self.set_surface(surface)
             
         # Generate polygon geometry with caching
         cache_key = tuple(points) + (fill, border_width)
@@ -700,6 +796,9 @@ class OpenGLRenderer:
         glDrawElements(GL_TRIANGLES, vertex_count, GL_UNSIGNED_INT, None)
         glBindVertexArray(0)
         glUseProgram(0)
+        
+        if surface:
+            self.set_surface(old_surface)
     
     def _generate_filled_polygon_geometry(self, points: List[Tuple[int, int]]):
         """Generate vertices and indices for a filled polygon using triangle fan"""
@@ -730,7 +829,6 @@ class OpenGLRenderer:
     
     def _generate_hollow_polygon_geometry(self, points: List[Tuple[int, int]], border_width: int):
         """Generate vertices and indices for a hollow polygon (outline)"""
-        # This is a simplified approach - for complex polygons, consider using a library
         min_x = min(p[0] for p in points)
         min_y = min(p[1] for p in points)
         max_x = max(p[0] for p in points)
@@ -751,7 +849,6 @@ class OpenGLRenderer:
             vertices.extend([norm_x, norm_y])
             
             # Inner vertex (offset toward center)
-            # Simplified approach - for better results, calculate proper inward normals
             center_x = 0.5
             center_y = 0.5
             dir_x = norm_x - center_x
@@ -815,8 +912,16 @@ class OpenGLRenderer:
         return True
         
     def draw_surface(self, surface: pygame.Surface, x: int, y: int):
-        """Draw a pygame surface as texture"""
-        self.render_surface(surface, x, y)
+        """
+        Draw a pygame surface at specified coordinates.
+        Uses blit internally for consistency.
+        
+        Args:
+            surface: Pygame surface to draw
+            x: X coordinate
+            y: Y coordinate
+        """
+        self.blit(surface, (x, y))
     
     def render_surface(self, surface: pygame.Surface, x: int, y: int):
         """Draw a pygame surface as texture"""
@@ -844,23 +949,22 @@ class OpenGLRenderer:
         glDeleteTextures([texture_id])
         glUseProgram(0)
     
-    def render_particles(self, particle_data: Dict[str, Any]):
+    def render_particles(self, particle_data: Dict[str, Any], camera: 'Camera'):
         """HIGHLY OPTIMIZED particle rendering with DYNAMIC BUFFER SIZING"""
         if not self._initialized or not particle_data or particle_data['active_count'] == 0:
             return
         
         active_count = particle_data['active_count']
         
-        # CRITICAL FIX: Ensure buffers are large enough
+        # Ensure particle capacity
         self._ensure_particle_capacity(active_count)
         
-        # OPTIMIZATION: Prepare all particle data in batch using numpy
-        positions = particle_data['positions'][:active_count]
-        sizes = particle_data['sizes'][:active_count]
+        positions = camera.world_to_screen_list(particle_data['positions'][:active_count], False, 'ndarray')
+        sizes = camera.convert_size_zoom_list(particle_data['sizes'][:active_count], 'ndarray')
         colors = particle_data['colors'][:active_count]
         alphas = particle_data['alphas'][:active_count]
         
-        # Batch update instance data - SAFE now with dynamic sizing
+        # Batch update instance data
         self._particle_instance_data[:active_count, 0] = positions[:, 0]  # x
         self._particle_instance_data[:active_count, 1] = positions[:, 1]  # y  
         self._particle_instance_data[:active_count, 2] = np.maximum(2.0, sizes)  # size
@@ -898,17 +1002,80 @@ class OpenGLRenderer:
         
         glUseProgram(0)
     
-    def get_surface(self):
+    def blit(self, source_surface: pygame.Surface, dest_rect: pygame.Rect, area: Optional[pygame.Rect] = None, 
+         special_flags: int = 0):
         """
-        Get the main screen surface for compatibility with UI elements.
+        Blit a source surface onto the current render target.
+        Works similarly to pygame.Surface.blit().
         
-        In OpenGL mode, this returns the pygame display surface which can be used
-        for fallback rendering when OpenGL is not available for certain operations.
-        
-        Returns:
-            pygame.Surface: The main display surface
+        Args:
+            source_surface: Surface to blit from
+            dest_rect: Destination rectangle (x, y, width, height) or (x, y)
+            area: Source area to blit from (None for entire surface)
+            special_flags: Additional blitting flags (currently unused)
         """
-        return pygame.display.get_surface()
+        if not self._initialized or not self.texture_shader.program:
+            return
+            
+        # Parse destination rectangle
+        if isinstance(dest_rect, pygame.Rect):
+            x, y, width, height = dest_rect
+        else:
+            x, y = dest_rect
+            width, height = source_surface.get_size()
+        
+        # Handle source area cropping
+        if area is not None:
+            # Create a subsurface from the specified area
+            source_surface = source_surface.subsurface(area)
+            # Reset destination size to match source area
+            width, height = area.width, area.height
+        
+        # Convert surface to OpenGL texture
+        texture_id = self._surface_to_texture(source_surface)
+        
+        # Set up rendering
+        glUseProgram(self.texture_shader.program)
+        
+        glUniform2f(self.texture_shader._get_uniform_location("uScreenSize"), 
+                float(self.width), float(self.height))
+        glUniform4f(self.texture_shader._get_uniform_location("uTransform"), 
+                float(x), float(y), float(width), float(height))
+        
+        glActiveTexture(GL_TEXTURE0)
+        glBindTexture(GL_TEXTURE_2D, texture_id)
+        glUniform1i(self.texture_shader._get_uniform_location("uTexture"), 0)
+        
+        # Set blending based on surface properties
+        if source_surface.get_flags() & pygame.SRCALPHA:
+            glEnable(GL_BLEND)
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        else:
+            glDisable(GL_BLEND)
+        
+        # Draw the textured quad
+        glBindVertexArray(self.texture_shader.vao)
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
+        glBindVertexArray(0)
+        
+        # Clean up
+        glDeleteTextures([texture_id])
+        glUseProgram(0)
+
+    def blit_surface(self, source_surface: pygame.Surface, dest_pos: Tuple[int, int], 
+                    area: Optional[pygame.Rect] = None):
+        """
+        Alternative blit function with position tuple instead of rect.
+        
+        Args:
+            source_surface: Surface to blit from
+            dest_pos: Destination position (x, y)
+            area: Source area to blit from
+        """
+        x, y = dest_pos
+        width, height = source_surface.get_size()
+        dest_rect = pygame.Rect(x, y, width, height)
+        self.blit(source_surface, dest_rect, area)
     
     def cleanup(self):
         """Clean up OpenGL resources"""
