@@ -30,7 +30,7 @@ USAGE PATTERN:
 from abc import ABC, abstractmethod
 from typing import Dict, List, Any, Optional, TYPE_CHECKING
 from ..ui import UIElement
-from ..graphics import Camera, ParticleConfig, ParticleSystem, ParticleType
+from ..graphics import Camera, ParticleConfig, ParticleSystem, ParticleType, ShadowSystem
 
 if TYPE_CHECKING:
     from ..core import LunaEngine, Renderer
@@ -65,6 +65,9 @@ class Scene(ABC):
         # Particle System
         self.particle_system: ParticleSystem = ParticleSystem(self.engine.renderer.max_particles)
         self.engine.renderer.on_max_particles_change.append(self.particle_system.update_max_particles)
+        
+        # Shadows System
+        self.shadow_system: ShadowSystem = ShadowSystem(self.engine.width, self.engine.height, engine)
         
     def on_enter(self, previous_scene: Optional[str] = None) -> None:
         """
@@ -107,7 +110,7 @@ class Scene(ABC):
         Args:
             renderer: The renderer to use for drawing operations
         """
-        pass
+        self.shadow_system.render_to_screen(renderer, self.camera.position.x, self.camera.position.y)
         
     def add_ui_element(self, ui_element: UIElement) -> None:
         """

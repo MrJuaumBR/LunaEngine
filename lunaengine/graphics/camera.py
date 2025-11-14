@@ -461,7 +461,7 @@ class Camera:
         """Update trauma-based shake"""
         if self.shake_trauma > 0:
             self.shake_trauma = max(0, self.shake_trauma - dt * 1.5)
-            intensity = self.shake_trauma * self.shake_trama
+            intensity = self.shake_trauma ** 2
             
             self.offset.x = (np.random.random() - 0.5) * 2 * intensity * self.shake_intensity * 20
             self.offset.y = (np.random.random() - 0.5) * 2 * intensity * self.shake_intensity * 20

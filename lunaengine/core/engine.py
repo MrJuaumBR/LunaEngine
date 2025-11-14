@@ -32,22 +32,69 @@ DEPENDENCIES:
 import pygame, threading
 import numpy as np
 from typing import Dict, List, Callable, Optional, Type, TYPE_CHECKING
-from ..ui.elements import *
+from ..ui import *
 from .scene import Scene
-from ..utils.performance import PerformanceMonitor, GarbageCollector
-from ..backend.pygame_backend import PygameRenderer
+from ..utils import PerformanceMonitor, GarbageCollector
+from ..backend import PygameRenderer
 from dataclasses import dataclass
 
 if TYPE_CHECKING:
     from . import Renderer
-
+    
 @dataclass
-class mouse_buttons_schem(dict):
+class mbttons_pressed(dict):
     left:bool = False
     middle:bool = False
     right:bool = False
     extra_button_1:bool = False
     extra_button_2:bool = False
+
+@dataclass
+class InputState:
+    """
+    Tracks input state with proper click detection
+    """
+    mouse_pos: tuple = (0, 0)
+    mouse_buttons_pressed: mbttons_pressed = None
+    mouse_just_pressed: bool = False
+    mouse_just_released: bool = False
+    mouse_wheel: float = 0
+    consumed_events: set = None
+    
+    def __post_init__(self):
+        if self.mouse_buttons_pressed is None:
+            self.mouse_buttons_pressed = mbttons_pressed()
+            
+        if self.consumed_events is None:
+            self.consumed_events = set()
+    
+    def update(self, mouse_pos: tuple, mouse_pressed:tuple, mouse_wheel: float = 0):
+        """Update input state with proper click detection"""
+        
+        self.mouse_buttons_pressed.left = mouse_pressed[0]
+        self.mouse_buttons_pressed.middle = mouse_pressed[1]
+        self.mouse_buttons_pressed.right = mouse_pressed[2]
+        self.mouse_buttons_pressed.extra_button_1 = mouse_pressed[3]
+        self.mouse_buttons_pressed.extra_button_2 = mouse_pressed[4]
+        self.mouse_pos = mouse_pos
+        
+        if mouse_wheel != 0:
+            self.mouse_wheel += mouse_wheel
+            
+        if self.mouse_wheel != 0:
+            self.mouse_wheel *= 0.6
+        
+    def consume_event(self, element_id):
+        """Mark an event as consumed by a specific element"""
+        self.consumed_events.add(element_id)
+    
+    def is_event_consumed(self, element_id):
+        """Check if event was already consumed"""
+        return element_id in self.consumed_events
+    
+    def clear_consumed(self):
+        """Clear consumed events for new frame"""
+        self.consumed_events.clear()
 
 class LunaEngine:
     """
@@ -65,10 +112,7 @@ class LunaEngine:
         scenes (Dict[str, Scene]): Registered scenes
         current_scene (Scene): Currently active scene
     """
-    _mouse_pos:tuple[int,int] = (0,0)
-    _mouse_buttons:mouse_buttons_schem = mouse_buttons_schem()
-    _mouse_wheel:float = 0
-    def __init__(self, title: str = "LunaEngine Game", width: int = 800, height: int = 600, use_opengl: bool = False):
+    def __init__(self, title: str = "LunaEngine Game", width: int = 800, height: int = 600, use_opengl: bool = True):
         """
         Initialize the LunaEngine.
         
@@ -88,12 +132,14 @@ class LunaEngine:
         self.current_scene: Optional[Scene] = None
         self.previous_scene_name: Optional[str] = None
         self._event_handlers = {}
+        self.input_state = InputState()
         
         # Performance monitoring
         self.performance_monitor = PerformanceMonitor()
         self.garbage_collector = GarbageCollector()
         
         # Choose rendering backend
+        
         self.use_opengl = use_opengl
         if use_opengl:
             from ..backend.opengl import OpenGLRenderer
@@ -315,16 +361,16 @@ class LunaEngine:
         """Main game loop - CORRECTED"""
         self.initialize()
         
-        # Pre-cache frequently used values
-        mouse_btn_left = 0
-        
         while self.running:
             # Update performance monitoring
             self.performance_monitor.update_frame()
             
             dt = self.clock.tick(self.fps) / 1000.0
             
+            self.input_state.clear_consumed()
+            
             self.update_mouse()
+            
             # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -348,7 +394,7 @@ class LunaEngine:
                 self.current_scene.update(dt)
             
             # Update UI elements
-            self._update_ui_elements(self.mouse_pos, self._mouse_buttons, dt)
+            self._update_ui_elements(dt)
             
             # CORRECTED: Unified rendering pipeline
             if self.use_opengl:
@@ -364,18 +410,12 @@ class LunaEngine:
         self.shutdown()
         
     def update_mouse(self):
-        """Update mouse position and button state"""
-        self._mouse_pos = pygame.mouse.get_pos()
+        """Update mouse position and button state with proper click detection"""
+        mouse_pos = pygame.mouse.get_pos()
         m_pressed = pygame.mouse.get_pressed(num_buttons=5)
-        self._mouse_buttons.left = m_pressed[0]
-        self._mouse_buttons.middle = m_pressed[1]
-        self._mouse_buttons.right = m_pressed[2]
-        if len(m_pressed) >= 5:
-            self._mouse_buttons.extra_button_1 = m_pressed[3]
-            self._mouse_buttons.extra_button_2 = m_pressed[4]
-            
-        if self._mouse_wheel != 0:
-            self._mouse_wheel *= 0.6
+        
+        # Update input state with proper click detection
+        self.input_state.update(mouse_pos, m_pressed)
             
     def visibility_change(self, element: UIElement, visible: bool):
         if type(element) in [list, tuple]:
@@ -384,16 +424,16 @@ class LunaEngine:
             element.visible = visible
             
     @property
-    def mouse_pos(self):
-        return self._mouse_pos
+    def mouse_pos(self) -> tuple:
+        return self.input_state.mouse_pos
     
     @property
-    def mouse_pressed(self):
-        return [self._mouse_buttons.left, self._mouse_buttons.middle, self._mouse_buttons.right, self._mouse_buttons.extra_button_1, self._mouse_buttons.extra_button_2]
+    def mouse_pressed(self) -> list:
+        return [self.input_state.mouse_buttons_pressed.values() for i in range(5)]
     
     @property
-    def mouse_wheel(self):
-        return self._mouse_wheel
+    def mouse_wheel(self) -> float:
+        return self.input_state.mouse_wheel
 
     def _render_opengl_mode(self):
         """Rendering pipeline for OpenGL mode - CORRECTED"""
@@ -406,7 +446,7 @@ class LunaEngine:
                 self.current_scene.render(self.renderer)
             
             # 3. Render particles using OpenGL
-            self.render_particles()
+            self.render_scene()
             
             # 4. Render UI elements using OpenGL
             self._render_ui_elements_opengl()
@@ -465,7 +505,7 @@ class LunaEngine:
                 self.current_scene.render(self.renderer)
             
             # 3. Render particles using Pygame
-            self.render_particles()
+            self.render_scene()
             
             # 4. Render UI elements
             self._render_ui_elements(self.renderer)
@@ -516,10 +556,12 @@ class LunaEngine:
         # Render UI elements
         self._render_ui_elements(self.ui_renderer)
 
-    def render_particles(self):
+    def render_scene(self):
         if self.use_opengl:
+            # Particles
             self._render_particles_opengl()
         else:
+            # Particles
             self.current_scene.particle_system.render(self.renderer.get_surface(), self.current_scene.camera)
             
     def _render_particles_opengl(self):
@@ -540,7 +582,7 @@ class LunaEngine:
         if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
             return
             
-        self._mouse_wheel = event.y
+        self.input_state.mouse_wheel += event.y
         
         for ui_element in self.current_scene.ui_elements:
             if not hasattr(ui_element, 'handle_scroll'):
@@ -580,28 +622,69 @@ class LunaEngine:
                 # Remove the 'break' to allow multiple elements to receive events if needed
                 break  # Only one element can be focused at a time
 
-    def _update_ui_elements(self, mouse_pos, mouse_pressed: mouse_buttons_schem, dt):
-        """Update UI elements with mouse interaction - OPTIMIZED"""
+    def _update_ui_elements(self, dt):
+        """
+        Update UI elements with improved input handling and event consumption
+        
+        Args:
+            dt (float): Delta time in seconds
+        """
         if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
             return
-            
-        # Pre-sort elements for optimal processing
-        regular_elements = []
-        dropdowns = []
+        
+        # Find expanded dropdowns first
+        expanded_dropdowns = []
+        other_elements = []
         
         for ui_element in self.current_scene.ui_elements:
-            if isinstance(ui_element, Dropdown):
-                dropdowns.append(ui_element)
+            if isinstance(ui_element, Dropdown) and ui_element.expanded:
+                expanded_dropdowns.append(ui_element)
             else:
-                regular_elements.append(ui_element)
+                other_elements.append(ui_element)
         
-        # Update regular elements first
-        for ui_element in regular_elements:
-            ui_element._update_with_mouse(mouse_pos, mouse_pressed.left, dt)
+        # If there are expanded dropdowns, they get priority
+        if expanded_dropdowns:
+            # Only process the topmost expanded dropdown and its children
+            top_dropdown = expanded_dropdowns[-1]  # Last one is topmost
+            self._process_ui_element_tree(top_dropdown, dt)
+            
+            # Other elements are disabled for interaction when dropdown is open
+            for element in other_elements:
+                if hasattr(element, '_update_with_mouse'):
+                    element._update_with_mouse(
+                        self.input_state.mouse_pos, 
+                        False,  # Force not pressed when dropdown is open
+                        dt,
+                    )
+        else:
+            # Normal processing - no expanded dropdowns
+            for ui_element in self.current_scene.ui_elements:
+                if hasattr(ui_element, '_update_with_mouse'):
+                    ui_element._update_with_mouse(
+                        self.input_state.mouse_pos,
+                        self.input_state.mouse_buttons_pressed.left,
+                        dt
+                    )
+
+    def _process_ui_element_tree(self, root_element, dt):
+        """
+        Process a UI element and all its children with proper event consumption
         
-        # Update dropdowns last (for proper focus handling)
-        for dropdown in dropdowns:
-            dropdown._update_with_mouse(mouse_pos, mouse_pressed.left, dt)
+        Args:
+            root_element (UIElement): The root element to process
+            dt (float): Delta time in seconds
+        """
+        # Process the element itself
+        if hasattr(root_element, '_update_with_mouse'):
+            root_element._update_with_mouse(
+                self.input_state.mouse_pos,
+                self.input_state.mouse_buttons_pressed.left,
+                dt
+            )
+        
+        # Process all children recursively
+        for child in getattr(root_element, 'children', []):
+            self._process_ui_element_tree(child, dt)
     
     def shutdown(self):
         """Cleanup resources"""

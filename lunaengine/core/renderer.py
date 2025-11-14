@@ -200,6 +200,13 @@ class Renderer(ABC):
         pass
     
     @abstractmethod
+    def draw_text(self, text:str, x:int, y:int, color:Tuple[int, int, int], font:pygame.font.FontType, surface: Optional[pygame.Surface] = None):
+        """
+        Draw text using pygame font rendering
+        """
+        pass
+    
+    @abstractmethod
     def enable_scissor(self, x: int, y: int, width: int, height: int):
         """
         Enable scissor test for clipping region.

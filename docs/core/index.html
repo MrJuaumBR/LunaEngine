@@ -284,10 +284,10 @@
                                 <div class="docstring-text">LunaEngine Main Engine - Core Game Loop and Management System<br><br>LOCATION: lunaengine/core/engine.py<br><br>DESCRIPTION:<br>The central engine class that orchestrates the entire game lifecycle. Manages<br>scene transitions, rendering pipeline, event handling, performance monitoring,<br>and UI system integration. This is the primary interface for game developers.<br><br>KEY RESPONSIBILITIES:<br>- Game loop execution with fixed timestep<br>- Scene management and lifecycle control<br>- Event distribution to scenes and UI elements<br>- Performance monitoring and optimization<br>- Theme management across the entire application<br>- Resource initialization and cleanup<br><br>LIBRARIES USED:<br>- pygame: Window management, event handling, timing, and surface operations<br>- numpy: Mathematical operations for game calculations<br>- threading: Background task management (if needed)<br>- typing: Type hints for better code documentation<br><br>DEPENDENCIES:<br>- ..backend.pygame_backend: Default rendering backend<br>- ..ui.elements: UI component system<br>- ..utils.performance: Performance monitoring utilities<br>- .scene: Scene management base class</div>
                             </div>
             <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-mouse_buttons_schem">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-mbttons_pressed">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
-                                    mouse_buttons_schem
+                                    mbttons_pressed
                                 </h6>
                 <small class="text-muted">Inherits from: dict</small><div class="mt-3"><strong>Attributes:</strong>
                                 <div class="attribute-item ms-3 mt-1">
@@ -310,24 +310,57 @@
                                     <code>extra_button_2: bool = False</code>
                                 </div>
                         </div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-inputstate">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    InputState
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Tracks input state with proper click detection</div></div><div class="mt-3"><strong>Attributes:</strong>
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>mouse_pos: tuple = (0, 0)</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>mouse_buttons_pressed: mbttons_pressed = None</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>mouse_just_pressed: bool = False</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>mouse_just_released: bool = False</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>mouse_wheel: float = 0</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>consumed_events: set = None</code>
+                                </div>
+                        </div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-inputstate-__post_init__">
+                                    <code>def __post_init__(self: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-inputstate-update">
+                                    <code>def update(self: Any, mouse_pos: tuple, mouse_pressed: tuple, mouse_wheel: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update input state with proper click detection</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-inputstate-consume_event">
+                                    <code>def consume_event(self: Any, element_id: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Mark an event as consumed by a specific element</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-inputstate-is_event_consumed">
+                                    <code>def is_event_consumed(self: Any, element_id: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Check if event was already consumed</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-inputstate-clear_consumed">
+                                    <code>def clear_consumed(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Clear consumed events for new frame</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-lunaengine">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     LunaEngine
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene</div></div><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>_mouse_pos: tuple[int, int] = (0, 0)</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>_mouse_buttons: mouse_buttons_schem = mouse_buttons_schem()</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>_mouse_wheel: float = 0</code>
-                                </div>
-                        </div><div class="mt-3"><strong>Methods:</strong>
+                <div class="docstring-content mb-2"><div class="docstring-text">Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene</div></div><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-__init__">
                                     <code>def __init__(self: Any, title: str, width: int, height: int, use_opengl: bool) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize the LunaEngine.<br><br>Args:<br> &nbsp; &nbsp;title (str): The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int): The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int): The height of the game window (default: 600)<br> &nbsp; &nbsp;use_opengl (bool): Use OpenGL for rendering (default: False)</div></div></div>
@@ -366,18 +399,18 @@
                         <div class="docstring-content mt-1"><div class="docstring-text">Main game loop - CORRECTED</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-update_mouse">
                                     <code>def update_mouse(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update mouse position and button state</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update mouse position and button state with proper click detection</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-visibility_change">
                                     <code>def visibility_change(self: Any, element: UIElement, visible: bool) -> None</code>
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-mouse_pos">
-                                    <code>def mouse_pos(self: Any) -> None</code>
+                                    <code>def mouse_pos(self: Any) -> tuple</code>
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-mouse_pressed">
-                                    <code>def mouse_pressed(self: Any) -> None</code>
+                                    <code>def mouse_pressed(self: Any) -> list</code>
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-mouse_wheel">
-                                    <code>def mouse_wheel(self: Any) -> None</code>
+                                    <code>def mouse_wheel(self: Any) -> float</code>
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_render_opengl_mode">
                                     <code>def _render_opengl_mode(self: Any) -> None</code>
@@ -394,8 +427,8 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_render_ui_direct">
                                     <code>def _render_ui_direct(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render UI directly to screen in Pygame mode</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-render_particles">
-                                    <code>def render_particles(self: Any) -> None</code>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-render_scene">
+                                    <code>def render_scene(self: Any) -> None</code>
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_render_particles_opengl">
                                     <code>def _render_particles_opengl(self: Any) -> None</code>
@@ -407,8 +440,11 @@
                                     <code>def _handle_keyboard_event(self: Any, event: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Handle keyboard events for focused UI elements - OPTIMIZED</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_update_ui_elements">
-                                    <code>def _update_ui_elements(self: Any, mouse_pos: Any, mouse_pressed: mouse_buttons_schem, dt: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update UI elements with mouse interaction - OPTIMIZED</div></div></div>
+                                    <code>def _update_ui_elements(self: Any, dt: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update UI elements with improved input handling and event consumption<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_process_ui_element_tree">
+                                    <code>def _process_ui_element_tree(self: Any, root_element: Any, dt: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Process a UI element and all its children with proper event consumption<br><br>Args:<br> &nbsp; &nbsp;root_element (UIElement): The root element to process<br> &nbsp; &nbsp;dt (float): Delta time in seconds</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-shutdown">
                                     <code>def shutdown(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Cleanup resources</div></div></div></div></div>
@@ -480,6 +516,9 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_polygon">
                                     <code>def draw_polygon(self: Any, points: List[Tuple[int, int]], color: Tuple[int, int, int], fill: bool, border_width: int, surface: Optional[pygame.Surface]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw a polygon from a list of points.<br><br>Args:<br> &nbsp; &nbsp;points (List[Tuple[int, int]]): List of (x, y) points defining the polygon<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the polygon (default: True)<br> &nbsp; &nbsp;border_width (int): Border width for hollow polygons (default: 1)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_text">
+                                    <code>def draw_text(self: Any, text: str, x: int, y: int, color: Tuple[int, int, int], font: pygame.font.FontType, surface: Optional[pygame.Surface]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw text using pygame font rendering</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-enable_scissor">
                                     <code>def enable_scissor(self: Any, x: int, y: int, width: int, height: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Enable scissor test for clipping region.<br><br>Args:<br> &nbsp; &nbsp;x (int): X position from left (pygame coordinate system)<br> &nbsp; &nbsp;y (int): Y position from top (pygame coordinate system) &nbsp;<br> &nbsp; &nbsp;width (int): Width of scissor region<br> &nbsp; &nbsp;height (int): Height of scissor region</div></div></div>

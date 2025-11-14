@@ -385,21 +385,45 @@ class OpenGLRenderer:
         self._current_target = surface
     
     def _surface_to_texture(self, surface: pygame.Surface) -> int:
-        """Convert pygame surface to OpenGL texture"""
-        flipped_surface = pygame.transform.flip(surface, False, True)
-        rgb_surface = pygame.image.tostring(flipped_surface, 'RGBA', True)
+        """
+        Convert pygame surface to OpenGL texture with proper color format.
+        
+        Args:
+            surface: Pygame surface to convert
+            
+        Returns:
+            int: OpenGL texture ID
+        """
+        # Ensure surface has correct format for OpenGL
+        if surface.get_bytesize() != 4 or not (surface.get_flags() & pygame.SRCALPHA):
+            # Convert to RGBA format with alpha channel
+            converted_surface = pygame.Surface(surface.get_size(), pygame.SRCALPHA, 32)
+            converted_surface.blit(surface, (0, 0))
+            surface = converted_surface
+        
+        # Get surface dimensions
         width, height = surface.get_size()
         
+        # Convert surface to string in RGBA format
+        # IMPORTANT: No flip here - let the shader handle coordinates correctly
+        image_data = pygame.image.tostring(surface, 'RGBA', False)
+        
+        # Generate and bind texture
         texture_id = glGenTextures(1)
         glBindTexture(GL_TEXTURE_2D, texture_id)
         
+        # Set texture parameters
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
         
+        # Upload texture data
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, 
-                    GL_RGBA, GL_UNSIGNED_BYTE, rgb_surface)
+                    GL_RGBA, GL_UNSIGNED_BYTE, image_data)
+        
+        # Generate mipmaps for better quality
+        glGenerateMipmap(GL_TEXTURE_2D)
         
         return texture_id
     
@@ -574,6 +598,17 @@ class OpenGLRenderer:
         if surface:
             self.set_surface(old_surface)
 
+    def draw_text(self, text: str, x: int, y: int, color: tuple, font:pygame.font.FontType, surface: Optional[pygame.Surface] = None):
+        """
+        Draw text using pygame font rendering - FIX FOR TEXT ISSUES
+        """
+        if surface:
+            text_surface = font.render(text, True, color)
+            surface.blit(text_surface, (x, y))
+        else:
+            text_surface = font.render(text, True, color)
+            self.blit(text_surface, (x, y))
+    
     def _draw_thick_line_optimized(self, start_x: int, start_y: int, end_x: int, end_y: int, color: tuple, width: int):
         """Optimized method for drawing thick lines"""
         if start_x == end_x and start_y == end_y:
@@ -710,12 +745,12 @@ class OpenGLRenderer:
     
     def _generate_hollow_circle_geometry(self, segments: int, border_width: int, radius: int):
         """Generate vertices and indices for a hollow circle (outline)"""
-        inner_radius = max(0.1, (radius - border_width) / radius * 0.5)
+        inner_radius = max(0.1, (radius - border_width) / (radius+1) * 0.5)
         outer_radius = 0.5
         
         vertices = []
         # Generate vertices for inner and outer circles
-        for i in range(segments + 1):
+        for i in range(int(segments + 1)):
             angle = 2 * np.pi * i / segments
             # Outer vertex
             vertices.extend([np.cos(angle) * outer_radius + 0.5, np.sin(angle) * outer_radius + 0.5])
@@ -723,7 +758,7 @@ class OpenGLRenderer:
             vertices.extend([np.cos(angle) * inner_radius + 0.5, np.sin(angle) * inner_radius + 0.5])
         
         indices = []
-        for i in range(segments):
+        for i in range(int(segments)):
             # Two triangles per segment
             outer_current = i * 2
             inner_current = i * 2 + 1
@@ -1022,7 +1057,8 @@ class OpenGLRenderer:
             x, y, width, height = dest_rect
         else:
             x, y = dest_rect
-            width, height = source_surface.get_size()
+            if type(source_surface) == pygame.Surface:
+                width, height = source_surface.get_size()
         
         # Handle source area cropping
         if area is not None:

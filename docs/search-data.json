@@ -6,7 +6,7 @@
       "description": "Core engine systems - Engine, Window, Renderer",
       "link": "core/index.html",
       "files_count": 5,
-      "classes_count": 10,
+      "classes_count": 11,
       "functions_count": 0
     },
     {
@@ -23,8 +23,8 @@
       "title": "Graphics",
       "description": "Graphics and rendering - Sprites, Lighting, Particles",
       "link": "graphics/index.html",
-      "files_count": 5,
-      "classes_count": 15,
+      "files_count": 4,
+      "classes_count": 17,
       "functions_count": 0
     },
     {
@@ -102,13 +102,22 @@
       "element_id": "class-audiosystem"
     },
     {
-      "name": "mouse_buttons_schem",
+      "name": "mbttons_pressed",
       "module": "core",
       "file": "engine.py",
       "description": "No documentation",
-      "link": "core/index.html#class-mouse_buttons_schem",
+      "link": "core/index.html#class-mbttons_pressed",
       "methods_count": 0,
-      "element_id": "class-mouse_buttons_schem"
+      "element_id": "class-mbttons_pressed"
+    },
+    {
+      "name": "InputState",
+      "module": "core",
+      "file": "engine.py",
+      "description": "Tracks input state with proper click detection",
+      "link": "core/index.html#class-inputstate",
+      "methods_count": 5,
+      "element_id": "class-inputstate"
     },
     {
       "name": "LunaEngine",
@@ -116,7 +125,7 @@
       "file": "engine.py",
       "description": "Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene",
       "link": "core/index.html#class-lunaengine",
-      "methods_count": 28,
+      "methods_count": 29,
       "element_id": "class-lunaengine"
     },
     {
@@ -125,7 +134,7 @@
       "file": "renderer.py",
       "description": "Abstract base class for all renderers in LunaEngine.",
       "link": "core/index.html#class-renderer",
-      "methods_count": 19,
+      "methods_count": 20,
       "element_id": "class-renderer"
     },
     {
@@ -179,7 +188,7 @@
       "file": "elements.py",
       "description": "Base class for all UI elements providing common functionality.<br><br>Attributes:<br> &nbsp; &nbsp;element_id (str): Unique identifier for this element in format ui_{type}_{counter}<br> &nbsp; &nbsp;x (int): X coordinate position<br> &nbsp; &nbsp;y (int): Y coordinate position<br> &nbsp; &nbsp;width (int): Width of the element in pixels<br> &nbsp; &nbsp;height (int): Height of the element in pixels<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning<br> &nbsp; &nbsp;state (UIState): Current state of the element<br> &nbsp; &nbsp;visible (bool): Whether element is visible<br> &nbsp; &nbsp;enabled (bool): Whether element is enabled<br> &nbsp; &nbsp;children (List[UIElement]): Child elements<br> &nbsp; &nbsp;parent (UIElement): Parent element",
       "link": "ui/index.html#class-uielement",
-      "methods_count": 13,
+      "methods_count": 14,
       "element_id": "class-uielement"
     },
     {
@@ -206,7 +215,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/index.html#class-button",
-      "methods_count": 10,
+      "methods_count": 11,
       "element_id": "class-button"
     },
     {
@@ -251,7 +260,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/index.html#class-uigradient",
-      "methods_count": 6,
+      "methods_count": 7,
       "element_id": "class-uigradient"
     },
     {
@@ -453,24 +462,6 @@
       "element_id": "class-camera"
     },
     {
-      "name": "Light",
-      "module": "graphics",
-      "file": "lighting.py",
-      "description": "No documentation",
-      "link": "graphics/index.html#class-light",
-      "methods_count": 1,
-      "element_id": "class-light"
-    },
-    {
-      "name": "LightSystem",
-      "module": "graphics",
-      "file": "lighting.py",
-      "description": "No documentation",
-      "link": "graphics/index.html#class-lightsystem",
-      "methods_count": 4,
-      "element_id": "class-lightsystem"
-    },
-    {
       "name": "ParticleType",
       "module": "graphics",
       "file": "particles.py",
@@ -516,12 +507,48 @@
       "element_id": "class-particlesystem"
     },
     {
-      "name": "ShadowSystem",
+      "name": "ShadowTechnique",
       "module": "graphics",
       "file": "shadows.py",
       "description": "No documentation",
+      "link": "graphics/index.html#class-shadowtechnique",
+      "methods_count": 0,
+      "element_id": "class-shadowtechnique"
+    },
+    {
+      "name": "PerformanceLevel",
+      "module": "graphics",
+      "file": "shadows.py",
+      "description": "No documentation",
+      "link": "graphics/index.html#class-performancelevel",
+      "methods_count": 0,
+      "element_id": "class-performancelevel"
+    },
+    {
+      "name": "Light",
+      "module": "graphics",
+      "file": "shadows.py",
+      "description": "Light source for shadow casting",
+      "link": "graphics/index.html#class-light",
+      "methods_count": 2,
+      "element_id": "class-light"
+    },
+    {
+      "name": "ShadowCaster",
+      "module": "graphics",
+      "file": "shadows.py",
+      "description": "Object that can cast shadows",
+      "link": "graphics/index.html#class-shadowcaster",
+      "methods_count": 4,
+      "element_id": "class-shadowcaster"
+    },
+    {
+      "name": "ShadowSystem",
+      "module": "graphics",
+      "file": "shadows.py",
+      "description": "Optimized shadow system for OpenGL rendering with stable performance",
       "link": "graphics/index.html#class-shadowsystem",
-      "methods_count": 5,
+      "methods_count": 20,
       "element_id": "class-shadowsystem"
     },
     {
@@ -530,16 +557,16 @@
       "file": "spritesheet.py",
       "description": "Main sprite sheet class for managing and extracting sprites from texture atlases.<br><br>This class handles loading sprite sheets with alpha support and provides<br>multiple methods for extracting individual sprites or sprite sequences.<br><br>Attributes:<br> &nbsp; &nbsp;sheet (pygame.Surface): The loaded sprite sheet surface with alpha<br> &nbsp; &nbsp;filename (str): Path to the sprite sheet file<br> &nbsp; &nbsp;width (int): Width of the sprite sheet<br> &nbsp; &nbsp;height (int): Height of the sprite sheet",
       "link": "graphics/index.html#class-spritesheet",
-      "methods_count": 4,
+      "methods_count": 5,
       "element_id": "class-spritesheet"
     },
     {
       "name": "Animation",
       "module": "graphics",
       "file": "spritesheet.py",
-      "description": "Time-based animation system for sprite sequences.<br><br>This class automatically extracts frames from a sprite sheet based on<br>the provided parameters and manages animation timing.<br><br>Attributes:<br> &nbsp; &nbsp;spritesheet (SpriteSheet): The source sprite sheet<br> &nbsp; &nbsp;frames (List[pygame.Surface]): List of animation frames<br> &nbsp; &nbsp;frame_count (int): Total number of frames in the animation<br> &nbsp; &nbsp;current_frame_index (int): Current frame index in the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;frame_duration (float): Duration of each frame in seconds<br> &nbsp; &nbsp;last_update_time (float): Last time the animation was updated<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;playing (bool): Whether the animation is currently playing",
+      "description": "Time-based animation system for sprite sequences with fade effects.<br><br>This class automatically extracts frames from a sprite sheet based on<br>the provided parameters and manages animation timing with alpha transitions.<br><br>Attributes:<br> &nbsp; &nbsp;spritesheet (SpriteSheet): The source sprite sheet<br> &nbsp; &nbsp;frames (List[pygame.Surface]): List of animation frames<br> &nbsp; &nbsp;frame_count (int): Total number of frames in the animation<br> &nbsp; &nbsp;current_frame_index (int): Current frame index in the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;frame_duration (float): Duration of each frame in seconds<br> &nbsp; &nbsp;last_update_time (float): Last time the animation was updated<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;playing (bool): Whether the animation is currently playing<br> &nbsp; &nbsp;fade_in_duration (float): Duration of fade-in effect in seconds<br> &nbsp; &nbsp;fade_out_duration (float): Duration of fade-out effect in seconds<br> &nbsp; &nbsp;fade_alpha (int): Current alpha value for fade effects (0-255)<br> &nbsp; &nbsp;fade_mode (str): Current fade mode: &#x27;in&#x27;, &#x27;out&#x27;, or None",
       "link": "graphics/index.html#class-animation",
-      "methods_count": 12,
+      "methods_count": 17,
       "element_id": "class-animation"
     },
     {
@@ -638,7 +665,7 @@
       "file": "opengl.py",
       "description": "No documentation",
       "link": "backend/index.html#class-openglrenderer",
-      "methods_count": 30,
+      "methods_count": 31,
       "element_id": "class-openglrenderer"
     },
     {
@@ -1078,6 +1105,51 @@
       "element_id": "method-audiosystem-cleanup"
     },
     {
+      "name": "__post_init__",
+      "class": "InputState",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/index.html#method-inputstate-__post_init__",
+      "is_method": true,
+      "element_id": "method-inputstate-__post_init__"
+    },
+    {
+      "name": "update",
+      "class": "InputState",
+      "module": "core",
+      "description": "Update input state with proper click detection",
+      "link": "core/index.html#method-inputstate-update",
+      "is_method": true,
+      "element_id": "method-inputstate-update"
+    },
+    {
+      "name": "consume_event",
+      "class": "InputState",
+      "module": "core",
+      "description": "Mark an event as consumed by a specific element",
+      "link": "core/index.html#method-inputstate-consume_event",
+      "is_method": true,
+      "element_id": "method-inputstate-consume_event"
+    },
+    {
+      "name": "is_event_consumed",
+      "class": "InputState",
+      "module": "core",
+      "description": "Check if event was already consumed",
+      "link": "core/index.html#method-inputstate-is_event_consumed",
+      "is_method": true,
+      "element_id": "method-inputstate-is_event_consumed"
+    },
+    {
+      "name": "clear_consumed",
+      "class": "InputState",
+      "module": "core",
+      "description": "Clear consumed events for new frame",
+      "link": "core/index.html#method-inputstate-clear_consumed",
+      "is_method": true,
+      "element_id": "method-inputstate-clear_consumed"
+    },
+    {
       "name": "__init__",
       "class": "LunaEngine",
       "module": "core",
@@ -1189,7 +1261,7 @@
       "name": "update_mouse",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Update mouse position and button state",
+      "description": "Update mouse position and button state with proper click detection",
       "link": "core/index.html#method-lunaengine-update_mouse",
       "is_method": true,
       "element_id": "method-lunaengine-update_mouse"
@@ -1276,13 +1348,13 @@
       "element_id": "method-lunaengine-_render_ui_direct"
     },
     {
-      "name": "render_particles",
+      "name": "render_scene",
       "class": "LunaEngine",
       "module": "core",
       "description": "No documentation",
-      "link": "core/index.html#method-lunaengine-render_particles",
+      "link": "core/index.html#method-lunaengine-render_scene",
       "is_method": true,
-      "element_id": "method-lunaengine-render_particles"
+      "element_id": "method-lunaengine-render_scene"
     },
     {
       "name": "_render_particles_opengl",
@@ -1315,10 +1387,19 @@
       "name": "_update_ui_elements",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Update UI elements with mouse interaction - OPTIMIZED",
+      "description": "Update UI elements with improved input handling and event consumption<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds",
       "link": "core/index.html#method-lunaengine-_update_ui_elements",
       "is_method": true,
       "element_id": "method-lunaengine-_update_ui_elements"
+    },
+    {
+      "name": "_process_ui_element_tree",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Process a UI element and all its children with proper event consumption<br><br>Args:<br> &nbsp; &nbsp;root_element (UIElement): The root element to process<br> &nbsp; &nbsp;dt (float): Delta time in seconds",
+      "link": "core/index.html#method-lunaengine-_process_ui_element_tree",
+      "is_method": true,
+      "element_id": "method-lunaengine-_process_ui_element_tree"
     },
     {
       "name": "shutdown",
@@ -1445,6 +1526,15 @@
       "link": "core/index.html#method-renderer-draw_polygon",
       "is_method": true,
       "element_id": "method-renderer-draw_polygon"
+    },
+    {
+      "name": "draw_text",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Draw text using pygame font rendering",
+      "link": "core/index.html#method-renderer-draw_text",
+      "is_method": true,
+      "element_id": "method-renderer-draw_text"
     },
     {
       "name": "enable_scissor",
@@ -1744,6 +1834,15 @@
       "element_id": "method-uielement-add_child"
     },
     {
+      "name": "_update_with_mouse",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Improved mouse interaction with proper click detection and event consumption<br><br>Args:<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position (x, y)<br> &nbsp; &nbsp;mouse_pressed (bool): Whether mouse button is currently pressed<br> &nbsp; &nbsp;dt (float): Delta time in seconds<br> &nbsp; &nbsp;input_state: The input state manager for event consumption",
+      "link": "ui/index.html#method-uielement-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-uielement-_update_with_mouse"
+    },
+    {
       "name": "update",
       "class": "UIElement",
       "module": "ui",
@@ -1940,6 +2039,15 @@
       "link": "ui/index.html#method-button-__init__",
       "is_method": true,
       "element_id": "method-button-__init__"
+    },
+    {
+      "name": "set_text",
+      "class": "Button",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-button-set_text",
+      "is_method": true,
+      "element_id": "method-button-set_text"
     },
     {
       "name": "font",
@@ -2287,10 +2395,19 @@
       "name": "_generate_gradient",
       "class": "UIGradient",
       "module": "ui",
-      "description": "Generate the gradient surface.",
+      "description": "Generate the gradient surface with cross-platform consistency",
       "link": "ui/index.html#method-uigradient-_generate_gradient",
       "is_method": true,
       "element_id": "method-uigradient-_generate_gradient"
+    },
+    {
+      "name": "_interpolate_colors_linear",
+      "class": "UIGradient",
+      "module": "ui",
+      "description": "Linear color interpolation for consistent cross-platform results<br><br>Args:<br> &nbsp; &nbsp;ratio (float): Interpolation ratio (0-1)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: Interpolated color",
+      "link": "ui/index.html#method-uigradient-_interpolate_colors_linear",
+      "is_method": true,
+      "element_id": "method-uigradient-_interpolate_colors_linear"
     },
     {
       "name": "_interpolate_colors",
@@ -3554,51 +3671,6 @@
     },
     {
       "name": "__init__",
-      "class": "Light",
-      "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/index.html#method-light-__init__",
-      "is_method": true,
-      "element_id": "method-light-__init__"
-    },
-    {
-      "name": "__init__",
-      "class": "LightSystem",
-      "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/index.html#method-lightsystem-__init__",
-      "is_method": true,
-      "element_id": "method-lightsystem-__init__"
-    },
-    {
-      "name": "add_light",
-      "class": "LightSystem",
-      "module": "graphics",
-      "description": "Add a light to the system",
-      "link": "graphics/index.html#method-lightsystem-add_light",
-      "is_method": true,
-      "element_id": "method-lightsystem-add_light"
-    },
-    {
-      "name": "remove_light",
-      "class": "LightSystem",
-      "module": "graphics",
-      "description": "Remove a light from the system",
-      "link": "graphics/index.html#method-lightsystem-remove_light",
-      "is_method": true,
-      "element_id": "method-lightsystem-remove_light"
-    },
-    {
-      "name": "calculate_lighting",
-      "class": "LightSystem",
-      "module": "graphics",
-      "description": "Calculate lighting for a surface",
-      "link": "graphics/index.html#method-lightsystem-calculate_lighting",
-      "is_method": true,
-      "element_id": "method-lightsystem-calculate_lighting"
-    },
-    {
-      "name": "__init__",
       "class": "ParticleSystem",
       "module": "graphics",
       "description": "No documentation",
@@ -3779,6 +3851,60 @@
     },
     {
       "name": "__init__",
+      "class": "Light",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-light-__init__",
+      "is_method": true,
+      "element_id": "method-light-__init__"
+    },
+    {
+      "name": "get_hash",
+      "class": "Light",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-light-get_hash",
+      "is_method": true,
+      "element_id": "method-light-get_hash"
+    },
+    {
+      "name": "__init__",
+      "class": "ShadowCaster",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-shadowcaster-__init__",
+      "is_method": true,
+      "element_id": "method-shadowcaster-__init__"
+    },
+    {
+      "name": "_calculate_bounds",
+      "class": "ShadowCaster",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-shadowcaster-_calculate_bounds",
+      "is_method": true,
+      "element_id": "method-shadowcaster-_calculate_bounds"
+    },
+    {
+      "name": "get_hash",
+      "class": "ShadowCaster",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-shadowcaster-get_hash",
+      "is_method": true,
+      "element_id": "method-shadowcaster-get_hash"
+    },
+    {
+      "name": "bounds",
+      "class": "ShadowCaster",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/index.html#method-shadowcaster-bounds",
+      "is_method": true,
+      "element_id": "method-shadowcaster-bounds"
+    },
+    {
+      "name": "__init__",
       "class": "ShadowSystem",
       "module": "graphics",
       "description": "No documentation",
@@ -3787,40 +3913,175 @@
       "element_id": "method-shadowsystem-__init__"
     },
     {
-      "name": "add_occluder",
+      "name": "add_light",
       "class": "ShadowSystem",
       "module": "graphics",
-      "description": "Add an object that casts shadows",
-      "link": "graphics/index.html#method-shadowsystem-add_occluder",
+      "description": "Add a light source to the shadow system",
+      "link": "graphics/index.html#method-shadowsystem-add_light",
       "is_method": true,
-      "element_id": "method-shadowsystem-add_occluder"
+      "element_id": "method-shadowsystem-add_light"
     },
     {
-      "name": "remove_occluder",
+      "name": "add_shadow_caster",
       "class": "ShadowSystem",
       "module": "graphics",
-      "description": "Remove an occluder",
-      "link": "graphics/index.html#method-shadowsystem-remove_occluder",
+      "description": "Add an object that can cast shadows",
+      "link": "graphics/index.html#method-shadowsystem-add_shadow_caster",
       "is_method": true,
-      "element_id": "method-shadowsystem-remove_occluder"
+      "element_id": "method-shadowsystem-add_shadow_caster"
     },
     {
-      "name": "calculate_shadows",
+      "name": "add_rectangle_caster",
       "class": "ShadowSystem",
       "module": "graphics",
-      "description": "Calculate shadows for a light source",
-      "link": "graphics/index.html#method-shadowsystem-calculate_shadows",
+      "description": "Add a rectangular shadow caster",
+      "link": "graphics/index.html#method-shadowsystem-add_rectangle_caster",
       "is_method": true,
-      "element_id": "method-shadowsystem-calculate_shadows"
+      "element_id": "method-shadowsystem-add_rectangle_caster"
     },
     {
-      "name": "_draw_shadow_polygon",
+      "name": "add_circle_caster",
       "class": "ShadowSystem",
       "module": "graphics",
-      "description": "Draw shadow polygon for an occluder",
-      "link": "graphics/index.html#method-shadowsystem-_draw_shadow_polygon",
+      "description": "Add a circular shadow caster (approximated as polygon)",
+      "link": "graphics/index.html#method-shadowsystem-add_circle_caster",
       "is_method": true,
-      "element_id": "method-shadowsystem-_draw_shadow_polygon"
+      "element_id": "method-shadowsystem-add_circle_caster"
+    },
+    {
+      "name": "clear_lights",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Remove all light sources",
+      "link": "graphics/index.html#method-shadowsystem-clear_lights",
+      "is_method": true,
+      "element_id": "method-shadowsystem-clear_lights"
+    },
+    {
+      "name": "clear_shadow_casters",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Remove all shadow casting objects",
+      "link": "graphics/index.html#method-shadowsystem-clear_shadow_casters",
+      "is_method": true,
+      "element_id": "method-shadowsystem-clear_shadow_casters"
+    },
+    {
+      "name": "_calculate_scene_hash",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Calculate hash of current scene state",
+      "link": "graphics/index.html#method-shadowsystem-_calculate_scene_hash",
+      "is_method": true,
+      "element_id": "method-shadowsystem-_calculate_scene_hash"
+    },
+    {
+      "name": "_get_visible_lights",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Get lights that are visible in the current viewport",
+      "link": "graphics/index.html#method-shadowsystem-_get_visible_lights",
+      "is_method": true,
+      "element_id": "method-shadowsystem-_get_visible_lights"
+    },
+    {
+      "name": "_get_visible_shadow_casters",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Get shadow casters that are visible in the current viewport",
+      "link": "graphics/index.html#method-shadowsystem-_get_visible_shadow_casters",
+      "is_method": true,
+      "element_id": "method-shadowsystem-_get_visible_shadow_casters"
+    },
+    {
+      "name": "_get_current_viewport",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Get current camera viewport in world coordinates",
+      "link": "graphics/index.html#method-shadowsystem-_get_current_viewport",
+      "is_method": true,
+      "element_id": "method-shadowsystem-_get_current_viewport"
+    },
+    {
+      "name": "_world_to_screen",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Convert world coordinates to screen coordinates",
+      "link": "graphics/index.html#method-shadowsystem-_world_to_screen",
+      "is_method": true,
+      "element_id": "method-shadowsystem-_world_to_screen"
+    },
+    {
+      "name": "_get_current_zoom",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Get current camera zoom",
+      "link": "graphics/index.html#method-shadowsystem-_get_current_zoom",
+      "is_method": true,
+      "element_id": "method-shadowsystem-_get_current_zoom"
+    },
+    {
+      "name": "_geometry_fast_technique",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Fast and stable shadow technique for OpenGL - FIXED",
+      "link": "graphics/index.html#method-shadowsystem-_geometry_fast_technique",
+      "is_method": true,
+      "element_id": "method-shadowsystem-_geometry_fast_technique"
+    },
+    {
+      "name": "_draw_simple_shadow",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Draw simple shadow using vertex extrusion - FIXED",
+      "link": "graphics/index.html#method-shadowsystem-_draw_simple_shadow",
+      "is_method": true,
+      "element_id": "method-shadowsystem-_draw_simple_shadow"
+    },
+    {
+      "name": "_update_performance_stats",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Update performance statistics",
+      "link": "graphics/index.html#method-shadowsystem-_update_performance_stats",
+      "is_method": true,
+      "element_id": "method-shadowsystem-_update_performance_stats"
+    },
+    {
+      "name": "render",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Stable shadow rendering for OpenGL",
+      "link": "graphics/index.html#method-shadowsystem-render",
+      "is_method": true,
+      "element_id": "method-shadowsystem-render"
+    },
+    {
+      "name": "render_to_screen",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Render shadows directly to screen using the provided renderer - FIXED",
+      "link": "graphics/index.html#method-shadowsystem-render_to_screen",
+      "is_method": true,
+      "element_id": "method-shadowsystem-render_to_screen"
+    },
+    {
+      "name": "get_stats",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Get performance and rendering statistics",
+      "link": "graphics/index.html#method-shadowsystem-get_stats",
+      "is_method": true,
+      "element_id": "method-shadowsystem-get_stats"
+    },
+    {
+      "name": "cleanup",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "Clean up resources",
+      "link": "graphics/index.html#method-shadowsystem-cleanup",
+      "is_method": true,
+      "element_id": "method-shadowsystem-cleanup"
     },
     {
       "name": "__init__",
@@ -3835,7 +4096,7 @@
       "name": "get_sprite_at_rect",
       "class": "SpriteSheet",
       "module": "graphics",
-      "description": "Extract a sprite from a specific rectangular region.<br><br>Args:<br> &nbsp; &nbsp;rect (pygame.Rect): Rectangle defining the sprite region (x, y, width, height)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface with alpha<br> &nbsp; &nbsp;<br>Raises:<br> &nbsp; &nbsp;ValueError: If the rect is outside the sprite sheet bounds",
+      "description": "Extract a sprite from a specific rectangular region.<br><br>Args:<br> &nbsp; &nbsp;rect (pygame.Rect): Rectangle defining the sprite region (x, y, width, height)<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface with alpha<br><br>Raises:<br> &nbsp; &nbsp;ValueError: If the rect is outside the sprite sheet bounds",
       "link": "graphics/index.html#method-spritesheet-get_sprite_at_rect",
       "is_method": true,
       "element_id": "method-spritesheet-get_sprite_at_rect"
@@ -3844,7 +4105,7 @@
       "name": "get_sprites_at_regions",
       "class": "SpriteSheet",
       "module": "graphics",
-      "description": "Extract multiple sprites from a list of rectangular regions.<br><br>Args:<br> &nbsp; &nbsp;regions (List[pygame.Rect]): List of rectangles defining sprite regions<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[pygame.Surface]: List of extracted sprite surfaces",
+      "description": "Extract multiple sprites from a list of rectangular regions.<br><br>Args:<br> &nbsp; &nbsp;regions (List[pygame.Rect]): List of rectangles defining sprite regions<br><br>Returns:<br> &nbsp; &nbsp;List[pygame.Surface]: List of extracted sprite surfaces",
       "link": "graphics/index.html#method-spritesheet-get_sprites_at_regions",
       "is_method": true,
       "element_id": "method-spritesheet-get_sprites_at_regions"
@@ -3853,16 +4114,25 @@
       "name": "get_sprite_grid",
       "class": "SpriteSheet",
       "module": "graphics",
-      "description": "Extract a sprite from a grid-based sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;cell_size (Tuple[int, int]): Width and height of each grid cell<br> &nbsp; &nbsp;grid_pos (Tuple[int, int]): Grid coordinates (col, row)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface",
+      "description": "Extract a sprite from a grid-based sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;cell_size (Tuple[int, int]): Width and height of each grid cell<br> &nbsp; &nbsp;grid_pos (Tuple[int, int]): Grid coordinates (col, row)<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface",
       "link": "graphics/index.html#method-spritesheet-get_sprite_grid",
       "is_method": true,
       "element_id": "method-spritesheet-get_sprite_grid"
     },
     {
+      "name": "get_surface_drawn_area",
+      "class": "SpriteSheet",
+      "module": "graphics",
+      "description": "Get the bounding rectangle of the non-transparent (drawn) area of a surface.<br><br>This function analyzes the alpha channel of the surface to find the smallest<br>rectangle that contains all non-transparent pixels, creating a tight hitbox.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Surface to analyze (must have alpha channel)<br> &nbsp; &nbsp;threshold (int): Alpha threshold value (0-255). Pixels with alpha &gt;= threshold<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;are considered drawn. Default is 1 (any non-fully-transparent).<br><br>Returns:<br> &nbsp; &nbsp;pygame.Rect: Tight bounding rectangle around the non-transparent area.<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Returns empty Rect (0,0,0,0) if surface is fully transparent.<br><br>Raises:<br> &nbsp; &nbsp;ValueError: If surface doesn&#x27;t have per-pixel alpha",
+      "link": "graphics/index.html#method-spritesheet-get_surface_drawn_area",
+      "is_method": true,
+      "element_id": "method-spritesheet-get_surface_drawn_area"
+    },
+    {
       "name": "__init__",
       "class": "Animation",
       "module": "graphics",
-      "description": "Initialize the animation and automatically extract frames from sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;spritesheet_file (str): Path to the sprite sheet file<br> &nbsp; &nbsp;size (Tuple[int, int]): Size of each sprite (width, height)<br> &nbsp; &nbsp;start_pos (Tuple[int, int]): Starting position in the sprite sheet (x, y)<br> &nbsp; &nbsp;frame_count (int): Number of frames to extract for the animation<br> &nbsp; &nbsp;padding (Tuple[int, int]): Padding between sprites (x, y)<br> &nbsp; &nbsp;margin (Tuple[int, int]): Margin around the sprite sheet (x, y)<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop",
+      "description": "Initialize the animation and automatically extract frames from sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;spritesheet_file (str): Path to the sprite sheet file<br> &nbsp; &nbsp;size (Tuple[int, int]): Size of each sprite (width, height)<br> &nbsp; &nbsp;start_pos (Tuple[int, int]): Starting position in the sprite sheet (x, y)<br> &nbsp; &nbsp;frame_count (int): Number of frames to extract for the animation<br> &nbsp; &nbsp;padding (Tuple[int, int]): Padding between sprites (x, y)<br> &nbsp; &nbsp;margin (Tuple[int, int]): Margin around the sprite sheet (x, y)<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;fade_in_duration (float): Duration of fade-in effect in seconds<br> &nbsp; &nbsp;fade_out_duration (float): Duration of fade-out effect in seconds",
       "link": "graphics/index.html#method-animation-__init__",
       "is_method": true,
       "element_id": "method-animation-__init__"
@@ -3884,42 +4154,6 @@
       "link": "graphics/index.html#method-animation-_apply_scaling",
       "is_method": true,
       "element_id": "method-animation-_apply_scaling"
-    },
-    {
-      "name": "update",
-      "class": "Animation",
-      "module": "graphics",
-      "description": "Update the animation based on elapsed time.<br><br>This method uses time-based animation rather than frame-based,<br>making it frame-rate independent.",
-      "link": "graphics/index.html#method-animation-update",
-      "is_method": true,
-      "element_id": "method-animation-update"
-    },
-    {
-      "name": "get_current_frame",
-      "class": "Animation",
-      "module": "graphics",
-      "description": "Get the current animation frame.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The current frame surface",
-      "link": "graphics/index.html#method-animation-get_current_frame",
-      "is_method": true,
-      "element_id": "method-animation-get_current_frame"
-    },
-    {
-      "name": "reset",
-      "class": "Animation",
-      "module": "graphics",
-      "description": "Reset the animation to the first frame.",
-      "link": "graphics/index.html#method-animation-reset",
-      "is_method": true,
-      "element_id": "method-animation-reset"
-    },
-    {
-      "name": "is_finished",
-      "class": "Animation",
-      "module": "graphics",
-      "description": "Check if a non-looping animation has finished.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if the animation has finished, False otherwise",
-      "link": "graphics/index.html#method-animation-is_finished",
-      "is_method": true,
-      "element_id": "method-animation-is_finished"
     },
     {
       "name": "set_duration",
@@ -3965,6 +4199,87 @@
       "link": "graphics/index.html#method-animation-get_progress",
       "is_method": true,
       "element_id": "method-animation-get_progress"
+    },
+    {
+      "name": "_apply_fade_effect",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Apply current fade alpha to a surface.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Original surface<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: Surface with fade effect applied",
+      "link": "graphics/index.html#method-animation-_apply_fade_effect",
+      "is_method": true,
+      "element_id": "method-animation-_apply_fade_effect"
+    },
+    {
+      "name": "update_fade",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Update fade-in and fade-out effects based on elapsed time.",
+      "link": "graphics/index.html#method-animation-update_fade",
+      "is_method": true,
+      "element_id": "method-animation-update_fade"
+    },
+    {
+      "name": "update",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Update the animation based on elapsed time including fade effects.<br><br>This method uses time-based animation rather than frame-based,<br>making it frame-rate independent.",
+      "link": "graphics/index.html#method-animation-update",
+      "is_method": true,
+      "element_id": "method-animation-update"
+    },
+    {
+      "name": "get_current_frame",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Get the current animation frame with fade effects applied.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The current frame surface with fade alpha",
+      "link": "graphics/index.html#method-animation-get_current_frame",
+      "is_method": true,
+      "element_id": "method-animation-get_current_frame"
+    },
+    {
+      "name": "start_fade_in",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Start a fade-in effect.<br><br>Args:<br> &nbsp; &nbsp;duration (float, optional): Override fade-in duration. If None, uses initialized value.",
+      "link": "graphics/index.html#method-animation-start_fade_in",
+      "is_method": true,
+      "element_id": "method-animation-start_fade_in"
+    },
+    {
+      "name": "start_fade_out",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Start a fade-out effect.<br><br>Args:<br> &nbsp; &nbsp;duration (float, optional): Override fade-out duration. If None, uses initialized value.",
+      "link": "graphics/index.html#method-animation-start_fade_out",
+      "is_method": true,
+      "element_id": "method-animation-start_fade_out"
+    },
+    {
+      "name": "set_fade_alpha",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Manually set the fade alpha value.<br><br>Args:<br> &nbsp; &nbsp;alpha (int): Alpha value from 0 (transparent) to 255 (opaque)",
+      "link": "graphics/index.html#method-animation-set_fade_alpha",
+      "is_method": true,
+      "element_id": "method-animation-set_fade_alpha"
+    },
+    {
+      "name": "is_fade_complete",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Check if the current fade effect is complete.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if no fade effect is active or fade is complete",
+      "link": "graphics/index.html#method-animation-is_fade_complete",
+      "is_method": true,
+      "element_id": "method-animation-is_fade_complete"
+    },
+    {
+      "name": "reset",
+      "class": "Animation",
+      "module": "graphics",
+      "description": "Reset the animation to the first frame and reset fade effects.",
+      "link": "graphics/index.html#method-animation-reset",
+      "is_method": true,
+      "element_id": "method-animation-reset"
     },
     {
       "name": "image_to_python_code",
@@ -4384,7 +4699,7 @@
       "name": "_surface_to_texture",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Convert pygame surface to OpenGL texture",
+      "description": "Convert pygame surface to OpenGL texture with proper color format.<br><br>Args:<br> &nbsp; &nbsp;surface: Pygame surface to convert<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;int: OpenGL texture ID",
       "link": "backend/index.html#method-openglrenderer-_surface_to_texture",
       "is_method": true,
       "element_id": "method-openglrenderer-_surface_to_texture"
@@ -4442,6 +4757,15 @@
       "link": "backend/index.html#method-openglrenderer-draw_line",
       "is_method": true,
       "element_id": "method-openglrenderer-draw_line"
+    },
+    {
+      "name": "draw_text",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Draw text using pygame font rendering - FIX FOR TEXT ISSUES",
+      "link": "backend/index.html#method-openglrenderer-draw_text",
+      "is_method": true,
+      "element_id": "method-openglrenderer-draw_text"
     },
     {
       "name": "_draw_thick_line_optimized",
@@ -4849,7 +5173,7 @@
       "element_id": "method-codestatistics-print_statistics"
     }
   ],
-  "last_updated": "2025-11-13T16:32:41.738087",
+  "last_updated": "2025-11-14T16:58:17.742140",
   "pages": [
     {
       "name": "Quick Start",

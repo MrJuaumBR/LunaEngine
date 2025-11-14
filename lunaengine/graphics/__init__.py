@@ -28,6 +28,7 @@ dynamic lighting, particle effects, and professional sprite animation.
 from .spritesheet import SpriteSheet, Animation
 from .particles import ParticleSystem, ParticleConfig, ParticleType, PhysicsType, ExitPoint
 from .camera import Camera, CameraMode, CameraShakeType
+from .shadows import ShadowSystem, ShadowCaster, PerformanceLevel, Light, ShadowTechnique
 
 __all__ = [
     "SpriteSheet",
@@ -39,5 +40,10 @@ __all__ = [
     "ExitPoint",
     "Camera",
     "CameraMode",
-    "CameraShakeType"
+    "CameraShakeType",
+    "ShadowSystem",
+    "ShadowCaster",
+    "PerformanceLevel",
+    "Light",
+    "ShadowTechnique"
 ]

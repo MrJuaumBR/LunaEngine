@@ -12,7 +12,7 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from lunaengine.ui.elements import *
+from lunaengine.ui import *
 from lunaengine.core import LunaEngine, Scene
 import pygame
 

@@ -91,10 +91,13 @@ themeable foundation for building complex user interfaces in Pygame applications
 
 import pygame
 import numpy as np
-from typing import Optional, Callable, List, Tuple, Any
+from typing import Optional, Callable, List, Tuple, Any, TYPE_CHECKING
 from enum import Enum
 from abc import ABC, abstractmethod
 from .themes import ThemeManager, ThemeType
+
+if TYPE_CHECKING:
+    from lunaengine.core import Renderer
 
 class _UIDGenerator:
     """
@@ -271,7 +274,51 @@ class UIElement(ABC):
         """
         child.parent = self
         self.children.append(child)
+    
+    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float, input_state):
+        """
+        Improved mouse interaction with proper click detection and event consumption
         
+        Args:
+            mouse_pos (Tuple[int, int]): Current mouse position (x, y)
+            mouse_pressed (bool): Whether mouse button is currently pressed
+            dt (float): Delta time in seconds
+            input_state: The input state manager for event consumption
+        """
+        if not self.visible or not self.enabled:
+            self.state = UIState.DISABLED
+            return
+            
+        # Check if event was already consumed by another element
+        if input_state.is_event_consumed(self.element_id):
+            self.state = UIState.NORMAL
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.width and 
+                    actual_y <= mouse_pos[1] <= actual_y + self.height)
+        
+        if mouse_over:
+            # Handle click with proper press/release detection
+            if input_state.mouse_just_pressed:
+                self.state = UIState.PRESSED
+                # Mark event as consumed to prevent other elements from using it
+                input_state.consume_event(self.element_id)
+                self.on_click()
+            elif input_state.mouse_pressed and self.state == UIState.PRESSED:
+                # Keep pressed state while mouse is held down
+                self.state = UIState.PRESSED
+            else:
+                self.state = UIState.HOVERED
+                self.on_hover()
+        else:
+            self.state = UIState.NORMAL
+        
+        # Update children with the same improved logic
+        for child in self.children:
+            if hasattr(child, '_update_with_mouse'):
+                child._update_with_mouse(mouse_pos, mouse_pressed, dt)
+    
     def update(self, dt: float):
         """
         Update element state.
@@ -462,7 +509,7 @@ class TextLabel(UIElement):
         # Render children
         super().render_pygame(renderer)
             
-    def render_opengl(self, renderer):
+    def render_opengl(self, renderer:'Renderer'):
         """Render using OpenGL backend"""
         if not self.visible:
             return
@@ -470,11 +517,7 @@ class TextLabel(UIElement):
         actual_x, actual_y = self.get_actual_position()
         text_color = self._get_text_color()
         
-        text_surface = self.font.render(self.text, True, text_color)
-        
-        # Use render_surface instead of draw_surface
-        if hasattr(renderer, 'render_surface'):
-            renderer.render_surface(text_surface, actual_x, actual_y)
+        renderer.draw_text(self.text, actual_x, actual_y, text_color, self.font)
         
         super().render_opengl(renderer)
 
@@ -564,7 +607,10 @@ class Button(UIElement):
         self._was_pressed = False
         
         self.theme_type = theme or ThemeManager.get_current_theme()
-        
+    
+    def set_text(self, text:str):
+        self.text = text
+    
     @property
     def font(self):
         """Get the font object (lazy loading)."""
@@ -678,7 +724,7 @@ class Button(UIElement):
         # Render children
         super().render_pygame(renderer)
             
-    def render_opengl(self, renderer):
+    def render_opengl(self, renderer:'Renderer'):
         """Render using OpenGL backend"""
         if not self.visible:
             return
@@ -698,14 +744,12 @@ class Button(UIElement):
         # Finally: Draw the text on top
         if self.text:
             text_color = self._get_text_color()
-            text_surface = self.font.render(self.text, True, text_color)
-            text_x = actual_x + (self.width - text_surface.get_width()) // 2
-            text_y = actual_y + (self.height - text_surface.get_height()) // 2
             
-            if hasattr(renderer, 'render_surface'):
-                renderer.render_surface(text_surface, text_x, text_y)
-            else:
-                renderer.draw_surface(text_surface, text_x, text_y)
+            txt_size = self.font.size(self.text)
+            text_x = actual_x + (self.width - txt_size[0]) // 2
+            text_y = actual_y + (self.height - txt_size[1]) // 2
+            
+            renderer.draw_text(self.text, text_x, text_y, text_color, self.font)
                     
         super().render_opengl(renderer)
 
@@ -1352,19 +1396,52 @@ class UIGradient(UIElement):
         self._generate_gradient()
     
     def _generate_gradient(self):
-        """Generate the gradient surface."""
-        self._gradient_surface = pygame.Surface((self.width, self.height))
+        """Generate the gradient surface with cross-platform consistency"""
+        self._gradient_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+        
+        # Use numpy for consistent color interpolation across platforms
+        colors_array = np.array(self.colors, dtype=np.float32)
         
         if self.direction == "horizontal":
             for x in range(self.width):
                 ratio = x / (self.width - 1) if self.width > 1 else 0
-                color = self._interpolate_colors(ratio)
+                # Use linear interpolation for consistent results
+                color = self._interpolate_colors_linear(ratio)
                 pygame.draw.line(self._gradient_surface, color, (x, 0), (x, self.height))
         else:  # vertical
             for y in range(self.height):
                 ratio = y / (self.height - 1) if self.height > 1 else 0
-                color = self._interpolate_colors(ratio)
+                color = self._interpolate_colors_linear(ratio)
                 pygame.draw.line(self._gradient_surface, color, (0, y), (self.width, y))
+
+    def _interpolate_colors_linear(self, ratio: float) -> Tuple[int, int, int]:
+        """
+        Linear color interpolation for consistent cross-platform results
+        
+        Args:
+            ratio (float): Interpolation ratio (0-1)
+            
+        Returns:
+            Tuple[int, int, int]: Interpolated color
+        """
+        if len(self.colors) == 1:
+            return self.colors[0]
+        
+        # Calculate the exact segment and ratio
+        exact_position = ratio * (len(self.colors) - 1)
+        segment_index = int(exact_position)
+        segment_ratio = exact_position - segment_index
+        
+        if segment_index >= len(self.colors) - 1:
+            return self.colors[-1]
+        
+        color1 = np.array(self.colors[segment_index], dtype=np.float32)
+        color2 = np.array(self.colors[segment_index + 1], dtype=np.float32)
+        
+        # Linear interpolation
+        interpolated = color1 + (color2 - color1) * segment_ratio
+        
+        return tuple(np.clip(interpolated, 0, 255).astype(int))
     
     def _interpolate_colors(self, ratio: float) -> Tuple[int, int, int]:
         """

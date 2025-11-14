@@ -155,6 +155,9 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-add_child">
                                     <code>def add_child(self: Any, child: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Add a child element to this UI element.<br><br>Args:<br> &nbsp; &nbsp;child: The child UI element to add.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-_update_with_mouse">
+                                    <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float, input_state: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Improved mouse interaction with proper click detection and event consumption<br><br>Args:<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position (x, y)<br> &nbsp; &nbsp;mouse_pressed (bool): Whether mouse button is currently pressed<br> &nbsp; &nbsp;dt (float): Delta time in seconds<br> &nbsp; &nbsp;input_state: The input state manager for event consumption</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-update">
                                     <code>def update(self: Any, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update element state.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds since last update.</div></div></div>
@@ -207,7 +210,7 @@
                                     <code>def render_pygame(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-render_opengl">
-                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                                    <code>def render_opengl(self: Any, renderer: 'Renderer') -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-imagelabel">
                                 <h6 class="text-success mb-2">
@@ -239,6 +242,9 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-__init__">
                                     <code>def __init__(self: Any, x: int, y: int, width: int, height: int, text: str, font_size: int, font_name: Optional[str], root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
                         </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-set_text">
+                                    <code>def set_text(self: Any, text: str) -> None</code>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-font">
                                     <code>def font(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the font object (lazy loading).</div></div></div>
@@ -264,7 +270,7 @@
                                     <code>def render_pygame(self: Any, renderer: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render using Pygame backend</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-render_opengl">
-                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                                    <code>def render_opengl(self: Any, renderer: 'Renderer') -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render using OpenGL backend</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-imagebutton">
                                 <h6 class="text-success mb-2">
@@ -385,7 +391,10 @@
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uigradient-_generate_gradient">
                                     <code>def _generate_gradient(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Generate the gradient surface.</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Generate the gradient surface with cross-platform consistency</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uigradient-_interpolate_colors_linear">
+                                    <code>def _interpolate_colors_linear(self: Any, ratio: float) -> Tuple[int, int, int]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Linear color interpolation for consistent cross-platform results<br><br>Args:<br> &nbsp; &nbsp;ratio (float): Interpolation ratio (0-1)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: Interpolated color</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uigradient-_interpolate_colors">
                                     <code>def _interpolate_colors(self: Any, ratio: float) -> Tuple[int, int, int]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Interpolate between gradient colors.<br><br>Args:<br> &nbsp; &nbsp;ratio (float): Interpolation ratio (0-1).<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: Interpolated color.</div></div></div>
