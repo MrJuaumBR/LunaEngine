@@ -3556,7 +3556,7 @@
       "name": "world_to_screen",
       "class": "Camera",
       "module": "graphics",
-      "description": "Convert world coordinates to screen coordinates.",
+      "description": "Convert world coordinates to screen coordinates<br><br>Parameters:<br> &nbsp; &nbsp;world_pos: pygame.math.Vector2 or Tuple<br> &nbsp; &nbsp;vector_type: bool = True<br>Returns:<br> &nbsp; &nbsp;pygame.math.Vector2 or Tuple",
       "link": "graphics/index.html#method-camera-world_to_screen",
       "is_method": true,
       "element_id": "method-camera-world_to_screen"
@@ -3574,7 +3574,7 @@
       "name": "screen_to_world",
       "class": "Camera",
       "module": "graphics",
-      "description": "Convert screen coordinates to world coordinates.",
+      "description": "Converts the screen position to world position<br><br>Worlds position are like: 0,0 is the center of the world<br><br>Parameters:<br> &nbsp; &nbsp;screen_pos: pygame.math.Vector2 or Tuple<br>Returns:<br> &nbsp; &nbsp;pygame.math.Vector2",
       "link": "graphics/index.html#method-camera-screen_to_world",
       "is_method": true,
       "element_id": "method-camera-screen_to_world"
@@ -3790,7 +3790,7 @@
       "name": "emit",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Emit particles with optimizations",
+      "description": "Emit particles with optimizations<br><br>Parameters:<br> &nbsp; &nbsp;x: The x position of the emitter (int or float)<br> &nbsp; &nbsp;y: The y position of the emitter (int or float)<br> &nbsp; &nbsp;particle_type: The particle type identifier<br> &nbsp; &nbsp;count: The number of particles to emit (default: 1)<br> &nbsp; &nbsp;exit_point: The exit point of the particle (default: ExitPoint.CENTER)<br> &nbsp; &nbsp;physics_type: The physics type of the particle (default: PhysicsType.TOPDOWN)<br> &nbsp; &nbsp;spread: The spread of the particle (default: None) is in degrees<br> &nbsp; &nbsp;angle: The angle of the particle (default: 0.0)<br> &nbsp; &nbsp;custom_config: Optional custom configuration",
       "link": "graphics/index.html#method-particlesystem-emit",
       "is_method": true,
       "element_id": "method-particlesystem-emit"
@@ -3835,7 +3835,7 @@
       "name": "render",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Render particles - Fixed for pygame",
+      "description": "Render particles - Fixed coordinate conversion<br>! This method is only used by PyGame renderer",
       "link": "graphics/index.html#method-particlesystem-render",
       "is_method": true,
       "element_id": "method-particlesystem-render"
@@ -4870,7 +4870,7 @@
       "name": "render_particles",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "HIGHLY OPTIMIZED particle rendering with DYNAMIC BUFFER SIZING",
+      "description": "HIGHLY OPTIMIZED particle rendering with CORRECTED coordinate conversion",
       "link": "backend/index.html#method-openglrenderer-render_particles",
       "is_method": true,
       "element_id": "method-openglrenderer-render_particles"
@@ -5173,7 +5173,7 @@
       "element_id": "method-codestatistics-print_statistics"
     }
   ],
-  "last_updated": "2025-11-14T16:58:17.742140",
+  "last_updated": "2025-11-15T15:56:06.283508",
   "pages": [
     {
       "name": "Quick Start",

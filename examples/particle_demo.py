@@ -10,6 +10,7 @@ import pygame
 from lunaengine.core import LunaEngine, Scene
 from lunaengine.ui.elements import *
 from lunaengine.graphics.particles import *
+from lunaengine.graphics.camera import Camera, CameraMode
 
 class ParticleDemoScene(Scene):
     """Interactive particle system demo scene"""
@@ -27,7 +28,7 @@ class ParticleDemoScene(Scene):
             'fps': 0,
             'memory_usage': 0,
             'emission_rate': 50,
-            'selected_particle': "plasma",  # Uses string
+            'selected_particle': "dust",  # Uses string
             'selected_exit': "top",
             'selected_physics': "topdown", 
             'spread': 45.0,
@@ -35,7 +36,7 @@ class ParticleDemoScene(Scene):
             'show_metrics': True,
         }
         self.emitter_positions = [
-            (200, 200), (600, 200), (400, 400), (200, 600), (600, 600)
+            (-200, -200), (-200, 200), (0, 50), (200, -200), (200, 200)
         ]
         self.setup_ui()
         
@@ -77,6 +78,11 @@ class ParticleDemoScene(Scene):
 
     def setup_ui(self):
         """Setup all UI controls and displays"""
+        self.camera.mode = CameraMode.FIXED
+        print(self.camera.viewport_width, self.camera.viewport_height)
+        
+        print(self.camera.world_to_screen((0,0)))
+        print(self.camera.screen_to_world((0,0)))
         
         # Title
         title = TextLabel(512, 20, "LunaEngine - Particle System Demo", 32, root_point=(0.5, 0))
@@ -190,7 +196,8 @@ class ParticleDemoScene(Scene):
         exit_point = ExitPoint[self.demo_state['selected_exit'].upper()]
         physics_type = PhysicsType[self.demo_state['selected_physics'].upper()]
         
-        px,py = 512, 384
+        # Emit at world center (0,0)
+        px,py = 0, 0
         print(self.camera.world_to_screen((px, py)))
         
         self.particle_system.emit(
@@ -268,13 +275,15 @@ class ParticleDemoScene(Scene):
         # Draw background
         renderer.draw_rect(0, 0, 1024, 768, (20, 20, 30))
         
-        # Draw emitter position markers
+        # Draw emitter position markers (in world coordinates, so convert to screen)
         for x, y in self.emitter_positions:
-            renderer.draw_rect(x-2, y-2, 4, 4, (255, 255, 255))
-            renderer.draw_rect(x-1, y-1, 2, 2, (100, 200, 255))
+            screen_pos = self.camera.world_to_screen((x,y))
+            renderer.draw_rect(screen_pos.x-2, screen_pos.y-2, 4, 4, (255, 255, 255))
+            renderer.draw_rect(screen_pos.x-1, screen_pos.y-1, 2, 2, (100, 200, 255))
         
-        # Draw center marker
-        renderer.draw_rect(510, 382, 4, 4, (255, 255, 0))
+        # Draw center marker (world (0,0) is the center)
+        center_screen = self.camera.world_to_screen((0, 0))
+        renderer.draw_rect(center_screen.x-2, center_screen.y-2, 4, 4, (255, 255, 0))
 
 def main():
     """Main function"""

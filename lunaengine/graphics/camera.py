@@ -536,22 +536,32 @@ class Camera:
         elif return_type == 'nparray' or return_type == 'ndarray':
             return np.array([self.convert_size_zoom(s) for s in sizes])
     
-    def world_to_screen(self, world_pos, vector_type:bool=True) -> pygame.math.Vector2:
+    def world_to_screen(self, world_pos:pygame.math.Vector2, vector_type:bool=True) -> pygame.math.Vector2:
         """
-        Convert world coordinates to screen coordinates - SIMPLIFIED VERSION
-        """
-        if isinstance(world_pos, (list, tuple, np.ndarray)):
-            world_vec = pygame.math.Vector2(world_pos[0], world_pos[1])
-        elif isinstance(world_pos, pygame.math.Vector2):
-            world_vec = world_pos
-        else:
-            raise ValueError("world_pos must be tuple, list, numpy array or pygame.Vector2")
+        Convert world coordinates to screen coordinates
         
-        if self._position == pygame.math.Vector2(0, 0):
-            return world_vec if vector_type else world_vec.xy
+        Parameters:
+            world_pos: pygame.math.Vector2 or Tuple
+            vector_type: bool = True
+        Returns:
+            pygame.math.Vector2 or Tuple
+        """
+        if type(world_pos) in [list, tuple, np.ndarray]:
+            world_pos = pygame.math.Vector2(world_pos[0], world_pos[1])
+        elif type(world_pos) == pygame.math.Vector2: pass
         else:
-            screen_pos = world_vec - self._position
-            return screen_pos if vector_type else screen_pos.xy
+            raise ValueError(f"Invalid world position type: {type(world_pos)}")
+        if self.mode == CameraMode.FIXED:
+            screenX = world_pos.x - self.position.x + (self.viewport_width / 2)
+            screenY = world_pos.y - self.position.y + (self.viewport_height / 2)
+        elif self.mode == CameraMode.TOPDOWN:
+            screenX = (world_pos.x - self.position.x) * self.zoom + (self.viewport_width / 2)
+            screenY = (world_pos.y - self.position.y) * self.zoom + (self.viewport_height / 2)
+        elif self.mode == CameraMode.PLATFORMER:
+            screenX = (world_pos.x - self.position.x) * self.zoom
+            screenY = (world_pos.y - self.position.y) * self.zoom
+            
+        return pygame.math.Vector2(screenX, screenY) if vector_type else (screenX, screenY)
     
     def world_to_screen_list(self, world_positions:list, vector_type:bool=True, return_type:Literal['list', 'nparray', 'ndarray']='list'):
         if return_type == 'list' or return_type == None:
@@ -559,9 +569,16 @@ class Camera:
         elif return_type == 'nparray' or return_type == 'ndarray':
             return np.array([self.world_to_screen(pos, vector_type) for pos in world_positions])
     
-    def screen_to_world(self, screen_pos) -> pygame.math.Vector2:
+    def screen_to_world(self, screen_pos:pygame.math.Vector2) -> pygame.math.Vector2:
         """
-        Convert screen coordinates to world coordinates.
+        Converts the screen position to world position
+        
+        Worlds position are like: 0,0 is the center of the world
+        
+        Parameters:
+            screen_pos: pygame.math.Vector2 or Tuple
+        Returns:
+            pygame.math.Vector2
         """
         if isinstance(screen_pos, (list, tuple, np.ndarray)):
             screen_vec = pygame.math.Vector2(screen_pos[0], screen_pos[1])
@@ -572,9 +589,13 @@ class Camera:
             
         screen_center = pygame.math.Vector2(self.viewport_width / 2, self.viewport_height / 2)
         
-        # Reverse camera transformation: screen to world
-        translated = (screen_vec - screen_center) / self.zoom
-        world_pos = translated + self.position
+        # Correção para todos os modos
+        if self.mode == CameraMode.FIXED:
+            world_pos = (screen_vec - screen_center) + self.position
+        elif self.mode == CameraMode.TOPDOWN:
+            world_pos = (screen_vec - screen_center) / self.zoom + self.position
+        elif self.mode == CameraMode.PLATFORMER:
+            world_pos = screen_vec / self.zoom + self.position
         
         return world_pos
     

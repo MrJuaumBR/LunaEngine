@@ -241,14 +241,14 @@
                                     <code>def convert_size_zoom_list(self: Any, sizes: tuple, return_type: Literal['list', 'nparray', 'ndarray']) -> None</code>
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-world_to_screen">
-                                    <code>def world_to_screen(self: Any, world_pos: Any, vector_type: bool) -> pygame.math.Vector2</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Convert world coordinates to screen coordinates.</div></div></div>
+                                    <code>def world_to_screen(self: Any, world_pos: pygame.math.Vector2, vector_type: bool) -> pygame.math.Vector2</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Convert world coordinates to screen coordinates<br><br>Parameters:<br> &nbsp; &nbsp;world_pos: pygame.math.Vector2 or Tuple<br> &nbsp; &nbsp;vector_type: bool = True<br>Returns:<br> &nbsp; &nbsp;pygame.math.Vector2 or Tuple</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-world_to_screen_list">
                                     <code>def world_to_screen_list(self: Any, world_positions: list, vector_type: bool, return_type: Literal['list', 'nparray', 'ndarray']) -> None</code>
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-screen_to_world">
-                                    <code>def screen_to_world(self: Any, screen_pos: Any) -> pygame.math.Vector2</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Convert screen coordinates to world coordinates.</div></div></div>
+                                    <code>def screen_to_world(self: Any, screen_pos: pygame.math.Vector2) -> pygame.math.Vector2</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Converts the screen position to world position<br><br>Worlds position are like: 0,0 is the center of the world<br><br>Parameters:<br> &nbsp; &nbsp;screen_pos: pygame.math.Vector2 or Tuple<br>Returns:<br> &nbsp; &nbsp;pygame.math.Vector2</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-screen_to_world_list">
                                     <code>def screen_to_world_list(self: Any, screen_positions: list) -> list</code>
                         </div>
@@ -505,7 +505,7 @@
                         <div class="docstring-content mt-1"><div class="docstring-text">Calculate initial velocity vector with spread</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-emit">
                                     <code>def emit(self: Any, x: float, y: float, particle_type: Union[ParticleType, str], count: int, exit_point: ExitPoint, physics_type: PhysicsType, spread: Optional[float], angle: float, custom_config: Optional[ParticleConfig]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Emit particles with optimizations</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Emit particles with optimizations<br><br>Parameters:<br> &nbsp; &nbsp;x: The x position of the emitter (int or float)<br> &nbsp; &nbsp;y: The y position of the emitter (int or float)<br> &nbsp; &nbsp;particle_type: The particle type identifier<br> &nbsp; &nbsp;count: The number of particles to emit (default: 1)<br> &nbsp; &nbsp;exit_point: The exit point of the particle (default: ExitPoint.CENTER)<br> &nbsp; &nbsp;physics_type: The physics type of the particle (default: PhysicsType.TOPDOWN)<br> &nbsp; &nbsp;spread: The spread of the particle (default: None) is in degrees<br> &nbsp; &nbsp;angle: The angle of the particle (default: 0.0)<br> &nbsp; &nbsp;custom_config: Optional custom configuration</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_setup_particle_properties">
                                     <code>def _setup_particle_properties(self: Any, idx: int, config: ParticleConfig, physics_type: PhysicsType) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Setup particle properties optimized for different physics types</div></div></div>
@@ -520,7 +520,7 @@
                         <div class="docstring-content mt-1"><div class="docstring-text">Clear all particles</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-render">
                                     <code>def render(self: Any, surface: Any, camera: 'Camera') -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render particles - Fixed for pygame</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render particles - Fixed coordinate conversion<br>! This method is only used by PyGame renderer</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-get_stats">
                                     <code>def get_stats(self: Any) -> Dict[str, Any]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get comprehensive system statistics<br><br>Returns:<br> &nbsp; &nbsp;Dict with system statistics</div></div></div></div></div>

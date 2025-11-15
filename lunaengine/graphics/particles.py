@@ -498,7 +498,20 @@ class ParticleSystem:
         )
     
     def emit(self, x: float, y: float, particle_type: Union[ParticleType, str], count: int = 1, exit_point: ExitPoint = ExitPoint.CENTER, physics_type: PhysicsType = PhysicsType.TOPDOWN, spread: Optional[float] = None, angle: float = 0.0, custom_config: Optional[ParticleConfig] = None):
-        """Emit particles with optimizations"""
+        """
+        Emit particles with optimizations
+        
+        Parameters:
+            x: The x position of the emitter (int or float)
+            y: The y position of the emitter (int or float)
+            particle_type: The particle type identifier
+            count: The number of particles to emit (default: 1)
+            exit_point: The exit point of the particle (default: ExitPoint.CENTER)
+            physics_type: The physics type of the particle (default: PhysicsType.TOPDOWN)
+            spread: The spread of the particle (default: None) is in degrees
+            angle: The angle of the particle (default: 0.0)
+            custom_config: Optional custom configuration
+        """
         config = self._resolve_particle_config(particle_type, custom_config)
         if not config:
             return
