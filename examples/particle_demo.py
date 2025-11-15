@@ -190,8 +190,11 @@ class ParticleDemoScene(Scene):
         exit_point = ExitPoint[self.demo_state['selected_exit'].upper()]
         physics_type = PhysicsType[self.demo_state['selected_physics'].upper()]
         
+        px,py = 512, 384
+        print(self.camera.world_to_screen((px, py)))
+        
         self.particle_system.emit(
-            x=512, y=384,
+            x=px, y=py,
             particle_type=particle_type,
             count=100,
             exit_point=exit_point,
@@ -237,6 +240,7 @@ class ParticleDemoScene(Scene):
             exit_point = ExitPoint[self.demo_state['selected_exit'].upper()]
             physics_type = PhysicsType[self.demo_state['selected_physics'].upper()]
             for x, y in self.emitter_positions:
+                # print(f'X: {x} > {pos_x}, Y: {y} > {pos_y}')
                 self.particle_system.emit(
                     x=x, y=y,
                     particle_type=particle_type,

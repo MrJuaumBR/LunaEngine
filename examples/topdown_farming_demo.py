@@ -437,7 +437,7 @@ class TopDownFarmingGame(Scene):
 
     def handle_interaction(self):
         """Handle player interactions with world"""
-        if self.engine.input_state.mouse_buttons_pressed['left']:
+        if self.engine.input_state.mouse_buttons_pressed.left:
             tool = self.game_state['selected_tool']
             ppos = self.player['position']
             mpos = self.camera.screen_to_world(self.engine.mouse_pos)
@@ -684,7 +684,7 @@ class TopDownFarmingGame(Scene):
             renderer.draw_circle(screen_x, screen_y, size//2, rock_color)
         
         # Render player
-        screen_x, screen_y = self.apply_camera_offset(self.player['position'])
+        screen_x, screen_y = self.apply_camera_offset((self.player['position'][0]-self.engine.width//2,self.player['position'][1]-self.engine.height//2))
         size = self.player['size'] * self.camera.zoom
         
         renderer.draw_circle(screen_x, screen_y, size//2, (170, 150, 240))

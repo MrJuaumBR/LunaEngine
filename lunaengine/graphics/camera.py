@@ -538,7 +538,7 @@ class Camera:
     
     def world_to_screen(self, world_pos, vector_type:bool=True) -> pygame.math.Vector2:
         """
-        Convert world coordinates to screen coordinates.
+        Convert world coordinates to screen coordinates - SIMPLIFIED VERSION
         """
         if isinstance(world_pos, (list, tuple, np.ndarray)):
             world_vec = pygame.math.Vector2(world_pos[0], world_pos[1])
@@ -547,14 +547,11 @@ class Camera:
         else:
             raise ValueError("world_pos must be tuple, list, numpy array or pygame.Vector2")
         
-        # Apply camera transformation: world to screen
-        screen_center = pygame.math.Vector2(self.viewport_width / 2, self.viewport_height / 2)
-        
-        # Translate based on camera position and offset, then scale by zoom
-        translated = (world_vec - self.position) * self.zoom
-        screen_pos = translated + screen_center
-        
-        return screen_pos if vector_type else screen_pos.xy
+        if self._position == pygame.math.Vector2(0, 0):
+            return world_vec if vector_type else world_vec.xy
+        else:
+            screen_pos = world_vec - self._position
+            return screen_pos if vector_type else screen_pos.xy
     
     def world_to_screen_list(self, world_positions:list, vector_type:bool=True, return_type:Literal['list', 'nparray', 'ndarray']='list'):
         if return_type == 'list' or return_type == None:

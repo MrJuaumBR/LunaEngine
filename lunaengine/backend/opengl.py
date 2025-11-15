@@ -985,7 +985,7 @@ class OpenGLRenderer:
         glUseProgram(0)
     
     def render_particles(self, particle_data: Dict[str, Any], camera: 'Camera'):
-        """HIGHLY OPTIMIZED particle rendering with DYNAMIC BUFFER SIZING"""
+        """HIGHLY OPTIMIZED particle rendering with CORRECTED coordinate conversion"""
         if not self._initialized or not particle_data or particle_data['active_count'] == 0:
             return
         
@@ -994,18 +994,23 @@ class OpenGLRenderer:
         # Ensure particle capacity
         self._ensure_particle_capacity(active_count)
         
-        positions = camera.world_to_screen_list(particle_data['positions'][:active_count], False, 'ndarray')
+        world_positions = particle_data['positions'][:active_count]
+        
+        screen_positions = np.zeros((active_count, 2), dtype=np.float32)
+        for i, world_pos in enumerate(world_positions):
+            screen_pos = camera.world_to_screen(world_pos)
+            screen_positions[i] = [screen_pos.x, screen_pos.y]
+        
         sizes = camera.convert_size_zoom_list(particle_data['sizes'][:active_count], 'ndarray')
         colors = particle_data['colors'][:active_count]
         alphas = particle_data['alphas'][:active_count]
         
         # Batch update instance data
-        self._particle_instance_data[:active_count, 0] = positions[:, 0]  # x
-        self._particle_instance_data[:active_count, 1] = positions[:, 1]  # y  
+        self._particle_instance_data[:active_count, 0] = screen_positions[:, 0]  # x
+        self._particle_instance_data[:active_count, 1] = screen_positions[:, 1]  # y  
         self._particle_instance_data[:active_count, 2] = np.maximum(2.0, sizes)  # size
         self._particle_instance_data[:active_count, 3] = alphas / 255.0  # alpha
         
-        # Batch update color data - SAFE now with dynamic sizing
         self._particle_color_data[:active_count, 0] = colors[:, 0] / 255.0  # r
         self._particle_color_data[:active_count, 1] = colors[:, 1] / 255.0  # g
         self._particle_color_data[:active_count, 2] = colors[:, 2] / 255.0  # b

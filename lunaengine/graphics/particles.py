@@ -386,7 +386,7 @@ class ParticleSystem:
         
         self._render_cache = {
             'active_count': len(active_indices),
-            'positions': self.positions[active_indices] - self._camera_position,
+            'positions': self.positions[active_indices],
             'sizes': self.sizes[active_indices],
             'colors': self.colors_current[active_indices],
             'alphas': self.alphas[active_indices]
@@ -497,11 +497,7 @@ class ParticleSystem:
             math.sin(angle_rad) * actual_speed
         )
     
-    def emit(self, x: float, y: float, particle_type: Union[ParticleType, str],
-             count: int = 1, exit_point: ExitPoint = ExitPoint.CENTER,
-             physics_type: PhysicsType = PhysicsType.TOPDOWN,
-             spread: Optional[float] = None, angle: float = 0.0,
-             custom_config: Optional[ParticleConfig] = None):
+    def emit(self, x: float, y: float, particle_type: Union[ParticleType, str], count: int = 1, exit_point: ExitPoint = ExitPoint.CENTER, physics_type: PhysicsType = PhysicsType.TOPDOWN, spread: Optional[float] = None, angle: float = 0.0, custom_config: Optional[ParticleConfig] = None):
         """Emit particles with optimizations"""
         config = self._resolve_particle_config(particle_type, custom_config)
         if not config:
@@ -650,7 +646,8 @@ class ParticleSystem:
     
     def render(self, surface, camera: 'Camera'):
         """
-        Render particles - Fixed for pygame
+        Render particles - Fixed coordinate conversion
+        ! This method is only used by PyGame renderer
         """
         if camera is not None:
             self._camera_position = camera.position
@@ -664,24 +661,31 @@ class ParticleSystem:
             if not self.active[idx] or self.alphas[idx] == 0:
                 continue
             
-            x, y = camera.world_to_screen(self.positions[idx]).xy
-            size = camera.convert_size_zoom(self.sizes[idx])[0]
+            screen_pos = camera.world_to_screen(self.positions[idx])
+            x, y = screen_pos.x, screen_pos.y
+            
+            size = camera.convert_size_zoom(self.sizes[idx])
+            if isinstance(size, (tuple, list)):
+                size = size[0]
+            elif isinstance(size, pygame.math.Vector2):
+                size = size.x
+            
             color = tuple(self.colors_current[idx])
             alpha = self.alphas[idx]
             
-            # Culling
-            if (x < -size * 2 or x > surface.get_width() + size * 2 or 
-                y < -size * 2 or y > surface.get_height() + size * 2):
+            margin = size * 3
+            if (x < -margin or x > surface.get_width() + margin or 
+                y < -margin or y > surface.get_height() + margin):
                 continue
             
             if alpha < 255:
                 # Transparent
-                temp_surface = pygame.Surface((size * 2, size * 2), pygame.SRCALPHA)
-                pygame.draw.circle(temp_surface, (*color, alpha), (size, size), size)
-                surface.blit(temp_surface, (x - size, y - size))
+                temp_surface = pygame.Surface((int(size * 2), int(size * 2)), pygame.SRCALPHA)
+                pygame.draw.circle(temp_surface, (*color, alpha), (int(size), int(size)), int(size))
+                surface.blit(temp_surface, (int(x - size), int(y - size)))
             else:
                 # Opaque
-                pygame.draw.circle(surface, color, (x, y), size)
+                pygame.draw.circle(surface, color, (int(x), int(y)), int(size))
             
     def get_stats(self) -> Dict[str, Any]:
         """
