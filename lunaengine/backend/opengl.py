@@ -427,17 +427,32 @@ class OpenGLRenderer:
         
         return texture_id
     
-    def _convert_color(self, color: tuple) -> Tuple[float, float, float, float]:
-        """Convert color from 0-255 range to 0.0-1.0 range"""
+    def _convert_color(self, color: Tuple[int, int, int, float]) -> Tuple[float, float, float, float]:
+        """
+        Convert color tuple to normalized RGBA values
+        
+        R(0-255) -> R(0.0-1.0)
+        
+        B(0-255) -> B(0.0-1.0)
+        
+        G(0-255) -> G(0.0-1.0)
+        
+        A(0.0-1.0) -> A(0.0-1.0)
+        """
         if len(color) == 3:
             r, g, b = color
-            a = 255
+            a = 1.0
         else:
             r, g, b, a = color
+        
+        # Add compatibility with older engine version wich used 0~255
+        if a > 1.0:
+            a = a / 255
+        if a < 0.0:
+            a = 0.0
         r = max(0, min(255, int(r))) / 255.0
         g = max(0, min(255, int(g))) / 255.0
         b = max(0, min(255, int(b))) / 255.0
-        a = max(0, min(255, int(a))) / 255.0
         return (r, g, b, a)
     
     def _ensure_particle_capacity(self, required_count: int):
@@ -499,7 +514,7 @@ class OpenGLRenderer:
         glDisable(GL_SCISSOR_TEST)
     
     def draw_rect(self, x: int, y: int, width: int, height: int, 
-                  color: tuple, fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None):
+                  color: tuple, fill: bool = True, anchor_point: tuple = (0.0, 0.0), border_width: int = 1, surface: Optional[pygame.Surface] = None):
         """
         Draw a colored rectangle.
         
@@ -510,11 +525,14 @@ class OpenGLRenderer:
             height: Rectangle height
             color: RGB color tuple
             fill: Whether to fill the rectangle
+            anchor_point: Anchor point for the rectangle
             border_width: Border width for unfilled rectangles
             surface: Target surface
         """
         if not self._initialized or not self.simple_shader.program:
             return
+        
+        x, y = x - int(anchor_point[0] * width), y - int(anchor_point[1] * height)
         
         if surface:
             old_surface = self._current_target
@@ -1117,6 +1135,11 @@ class OpenGLRenderer:
         width, height = source_surface.get_size()
         dest_rect = pygame.Rect(x, y, width, height)
         self.blit(source_surface, dest_rect, area)
+        
+    def fill_screen(self, color:Tuple[int, int, int, float]):
+        c_r, c_g, c_b, c_a = self._convert_color(color)
+        glClearColor(c_r, c_g, c_b, c_a)
+        glClear(GL_COLOR_BUFFER_BIT)
     
     def cleanup(self):
         """Clean up OpenGL resources"""

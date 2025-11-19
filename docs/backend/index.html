@@ -169,8 +169,8 @@
                                     <code>def _surface_to_texture(self: Any, surface: pygame.Surface) -> int</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Convert pygame surface to OpenGL texture with proper color format.<br><br>Args:<br> &nbsp; &nbsp;surface: Pygame surface to convert<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;int: OpenGL texture ID</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_convert_color">
-                                    <code>def _convert_color(self: Any, color: tuple) -> Tuple[float, float, float, float]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Convert color from 0-255 range to 0.0-1.0 range</div></div></div>
+                                    <code>def _convert_color(self: Any, color: Tuple[int, int, int, float]) -> Tuple[float, float, float, float]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Convert color tuple to normalized RGBA values<br><br>R(0-255) -&gt; R(0.0-1.0)<br><br>B(0-255) -&gt; B(0.0-1.0)<br><br>G(0-255) -&gt; G(0.0-1.0)<br><br>A(0.0-1.0) -&gt; A(0.0-1.0)</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_ensure_particle_capacity">
                                     <code>def _ensure_particle_capacity(self: Any, required_count: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Ensure particle buffers are large enough - DYNAMIC RESIZING</div></div></div>
@@ -181,8 +181,8 @@
                                     <code>def disable_scissor(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Disable scissor test</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_rect">
-                                    <code>def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: tuple, fill: bool, border_width: int, surface: Optional[pygame.Surface]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a colored rectangle.<br><br>Args:<br> &nbsp; &nbsp;x: X coordinate of top-left corner<br> &nbsp; &nbsp;y: Y coordinate of top-left corner<br> &nbsp; &nbsp;width: Rectangle width<br> &nbsp; &nbsp;height: Rectangle height<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the rectangle<br> &nbsp; &nbsp;border_width: Border width for unfilled rectangles<br> &nbsp; &nbsp;surface: Target surface</div></div></div>
+                                    <code>def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: tuple, fill: bool, anchor_point: tuple, border_width: int, surface: Optional[pygame.Surface]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a colored rectangle.<br><br>Args:<br> &nbsp; &nbsp;x: X coordinate of top-left corner<br> &nbsp; &nbsp;y: Y coordinate of top-left corner<br> &nbsp; &nbsp;width: Rectangle width<br> &nbsp; &nbsp;height: Rectangle height<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the rectangle<br> &nbsp; &nbsp;anchor_point: Anchor point for the rectangle<br> &nbsp; &nbsp;border_width: Border width for unfilled rectangles<br> &nbsp; &nbsp;surface: Target surface</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_line">
                                     <code>def draw_line(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: tuple, width: int, surface: Optional[pygame.Surface]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw a line between two points with specified width.<br><br>Args:<br> &nbsp; &nbsp;start_x: Start X coordinate<br> &nbsp; &nbsp;start_y: Start Y coordinate<br> &nbsp; &nbsp;end_x: End X coordinate<br> &nbsp; &nbsp;end_y: End Y coordinate<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;width: Line width<br> &nbsp; &nbsp;surface: Target surface</div></div></div>
@@ -231,6 +231,9 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-blit_surface">
                                     <code>def blit_surface(self: Any, source_surface: pygame.Surface, dest_pos: Tuple[int, int], area: Optional[pygame.Rect]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Alternative blit function with position tuple instead of rect.<br><br>Args:<br> &nbsp; &nbsp;source_surface: Surface to blit from<br> &nbsp; &nbsp;dest_pos: Destination position (x, y)<br> &nbsp; &nbsp;area: Source area to blit from</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-fill_screen">
+                                    <code>def fill_screen(self: Any, color: Tuple[int, int, int, float]) -> None</code>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-cleanup">
                                     <code>def cleanup(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Clean up OpenGL resources</div></div></div></div></div>
@@ -318,6 +321,58 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-pygamerenderer-render_surface">
                                     <code>def render_surface(self: Any, surface: Any, x: Any, y: Any) -> None</code>
                         </div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                types.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        <h6>Classes:</h6>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-events">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    EVENTS
+                                </h6>
+                <div class="mt-3"><strong>Attributes:</strong>
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>QUIT: Any = pygame.QUIT</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>KEYDOWN: Any = pygame.KEYDOWN</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>KEYUP: Any = pygame.KEYUP</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>MOUSEWHEEL: Any = pygame.MOUSEWHEEL</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>MOUSEMOTION: Any = pygame.MOUSEMOTION</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>MOUSEBUTTONDOWN: Any = pygame.MOUSEBUTTONDOWN</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>MOUSEBUTTONUP: Any = pygame.MOUSEBUTTONUP</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>JOYAXISMOTION: Any = pygame.JOYAXISMOTION</code>
+                                </div>
+                        </div></div>
                         </div>
                     </div>
                 </div>

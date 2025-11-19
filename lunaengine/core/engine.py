@@ -35,7 +35,7 @@ from typing import Dict, List, Callable, Optional, Type, TYPE_CHECKING
 from ..ui import *
 from .scene import Scene
 from ..utils import PerformanceMonitor, GarbageCollector
-from ..backend import PygameRenderer
+from ..backend import PygameRenderer, EVENTS
 from dataclasses import dataclass
 
 if TYPE_CHECKING:
@@ -300,7 +300,7 @@ class LunaEngine:
         themes = self.get_all_themes()
         return list(themes.keys())
 
-    def set_global_theme(self, theme_name: str) -> bool:
+    def set_global_theme(self, theme: str) -> bool:
         """
         Set the global theme for the entire engine and update all UI elements
         
@@ -312,13 +312,18 @@ class LunaEngine:
         """
         from ..ui.themes import ThemeManager, ThemeType
         
-        themes = self.get_all_themes()
+        if type(theme) is ThemeType: theme_name = theme.value
+        else: theme_name = theme
+        
+        themes = self.get_theme_names()
         if theme_name in themes:
-            theme_data = themes[theme_name]
-            ThemeManager.set_current_theme(theme_data['enum'])
+            theme_data = ThemeManager.get_theme_type_by_name(theme_name)
+            print(theme_name, theme_data)
+            ThemeManager.set_current_theme(theme_data)
             
             # Update all UI elements in current scene
-            self._update_all_ui_themes(theme_data['enum'])
+            self._update_all_ui_themes(theme_data)
+            
             return True
         
         return False
@@ -373,15 +378,15 @@ class LunaEngine:
             
             # Handle events
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == EVENTS.QUIT:
                     self.running = False
                 
                 # Process both KEYDOWN and KEYUP for better text input
-                elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
+                elif event.type in [EVENTS.KEYDOWN, EVENTS.KEYUP]:
                     self._handle_keyboard_event(event)
                 
                 # Handle mouse wheel scrolling
-                elif event.type == pygame.MOUSEWHEEL:
+                elif event.type == EVENTS.MOUSEWHEEL:
                     self._handle_mouse_scroll(event)
                 
                 # Call registered event handlers
@@ -436,7 +441,7 @@ class LunaEngine:
         return self.input_state.mouse_wheel
 
     def _render_opengl_mode(self):
-        """Rendering pipeline for OpenGL mode - CORRECTED"""
+        """Rendering pipeline for OpenGL mode"""
         try:
             # 1. Start OpenGL frame
             self.renderer.begin_frame()

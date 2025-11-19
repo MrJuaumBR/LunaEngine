@@ -77,7 +77,7 @@
         
                             <div class="alert alert-info docstring-content">
                                 <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Advanced Audio System - Multi-Channel Audio with Real Speed Control<br><br>LOCATION: lunaengine/core/audio.py<br><br>DESCRIPTION:<br>Advanced audio system with individual channel control, real speed adjustment,<br>and enhanced effects. Uses pygame.mixer.Channel for precise control.<br><br>KEY FEATURES:<br>- Multi-channel audio management<br>- Real playback speed control using pitch shifting<br>- Individual volume per channel<br>- Advanced fade effects with custom curves<br>- Event system with detailed callbacks<br>- Music and SFX with separate channel groups</div>
+                                <div class="docstring-text">Advanced Audio System - Enhanced with Dynamic Control and Smooth Transitions<br><br>LOCATION: lunaengine/core/audio.py</div>
                             </div>
             <h6>Classes:</h6>
                             <div class="class-item mb-3 p-3 border rounded" id="class-audiostate">
@@ -104,6 +104,14 @@
                         
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>FADING_OUT: Any = 'fading_out'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>SPEED_CHANGING: Any = 'speed_changing'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>VOLUME_CHANGING: Any = 'volume_changing'</code>
                                 </div>
                         </div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-audioevent">
@@ -147,52 +155,81 @@
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>VOLUME_CHANGE: Any = 'volume_change'</code>
                                 </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>SPEED_CHANGE_START: Any = 'speed_change_start'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>SPEED_CHANGE_COMPLETE: Any = 'speed_change_complete'</code>
+                                </div>
                         </div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-audiochannel">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     AudioChannel
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Individual audio channel with full control.<br><br>Attributes:<br> &nbsp; &nbsp;channel_id (int): Pygame mixer channel number<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): The sound object<br> &nbsp; &nbsp;volume (float): Current volume (0.0 to 1.0)<br> &nbsp; &nbsp;speed (float): Playback speed multiplier<br> &nbsp; &nbsp;loop (bool): Whether to loop the sound<br> &nbsp; &nbsp;state (AudioState): Current playback state</div></div><div class="mt-3"><strong>Methods:</strong>
+                <div class="docstring-content mb-2"><div class="docstring-text">Enhanced audio channel with dynamic control and smooth transitions.<br><br>NEW FEATURES:<br>- Dynamic speed changes without stopping playback<br>- Smooth transitions for volume and speed<br>- Audio duration information<br>- Improved state management</div></div><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-__init__">
                                     <code>def __init__(self: Any, channel_id: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize an audio channel.<br><br>Args:<br> &nbsp; &nbsp;channel_id (int): Pygame mixer channel number</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize an enhanced audio channel.<br><br>Args:<br> &nbsp; &nbsp;channel_id (int): Pygame mixer channel number</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-get_duration">
+                                    <code>def get_duration(self: Any) -> float</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the duration of the loaded sound in seconds.<br><br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds, or 0.0 if no sound loaded</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-get_playback_position">
+                                    <code>def get_playback_position(self: Any) -> float</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get current playback position in seconds.<br><br>Note: This is an approximation since pygame doesn&#x27;t provide exact position.<br><br>Returns:<br> &nbsp; &nbsp;float: Current playback position in seconds</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-play">
                                     <code>def play(self: Any, sound: pygame.mixer.Sound, loop: bool) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Play a sound on this channel.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): Sound to play<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if playback started successfully</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-stop">
-                                    <code>def stop(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Stop playback on this channel.</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Play a sound on this channel with enhanced state management.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): Sound to play<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if playback started successfully</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-pause">
                                     <code>def pause(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Pause playback on this channel.</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Pause playback on this channel with state verification.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-resume">
                                     <code>def resume(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Resume playback on this channel.</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Resume playback on this channel with state verification.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-set_volume">
-                                    <code>def set_volume(self: Any, volume: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set channel volume.<br><br>Args:<br> &nbsp; &nbsp;volume (float): Volume level (0.0 to 1.0)</div></div></div>
+                                    <code>def set_volume(self: Any, volume: float, duration: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set channel volume with optional smooth transition.<br><br>Args:<br> &nbsp; &nbsp;volume (float): Volume level (0.0 to 1.0)<br> &nbsp; &nbsp;duration (float): Transition duration in seconds. 0 for immediate change.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-set_speed">
-                                    <code>def set_speed(self: Any, speed: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set playback speed using pitch adjustment.<br><br>Note: This is a simulated effect since pygame doesn&#x27;t support native speed control.<br>We adjust the playback rate by manipulating the sound buffer.<br><br>Args:<br> &nbsp; &nbsp;speed (float): Speed multiplier (0.5 for half speed, 2.0 for double)</div></div></div>
+                                    <code>def set_speed(self: Any, speed: float, duration: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Change the speed of the sound playback.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_change_speed_immediate">
+                                    <code>def _change_speed_immediate(self: Any, speed: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Change playback speed immediately using pitch adjustment.<br><br>Args:<br> &nbsp; &nbsp;speed (float): Target speed multiplier</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_smooth_speed_transition">
+                                    <code>def _smooth_speed_transition(self: Any, start: float, end: float, duration: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Smoothly transition between speeds.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_transition_speed">
+                                    <code>def _transition_speed(self: Any, target_speed: float, duration: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Smoothly transition between speeds.<br><br>Args:<br> &nbsp; &nbsp;target_speed (float): Target speed multiplier<br> &nbsp; &nbsp;duration (float): Transition duration in seconds</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_smooth_speed_change">
+                                    <code>def _smooth_speed_change(self: Any, start_speed: float, end_speed: float, duration: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Smoothly change speed over time.<br><br>Args:<br> &nbsp; &nbsp;start_speed (float): Starting speed<br> &nbsp; &nbsp;end_speed (float): Target speed<br> &nbsp; &nbsp;duration (float): Transition duration in seconds</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_transition_volume">
+                                    <code>def _transition_volume(self: Any, start_volume: float, end_volume: float, duration: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Enhanced volume transition with better state management.<br><br>Args:<br> &nbsp; &nbsp;start_volume (float): Starting volume<br> &nbsp; &nbsp;end_volume (float): Ending volume<br> &nbsp; &nbsp;duration (float): Transition duration in seconds</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-fade_in">
                                     <code>def fade_in(self: Any, duration: float, target_volume: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Fade in the channel volume.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds<br> &nbsp; &nbsp;target_volume (float, optional): Target volume. Defaults to 1.0.</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Enhanced fade in with better state management.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds<br> &nbsp; &nbsp;target_volume (float, optional): Target volume. Defaults to 1.0.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-fade_out">
                                     <code>def fade_out(self: Any, duration: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Fade out the channel volume.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_fade_volume">
-                                    <code>def _fade_volume(self: Any, start_volume: float, end_volume: float, duration: float, fade_state: AudioState) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Internal method to handle volume fading.<br><br>Args:<br> &nbsp; &nbsp;start_volume (float): Starting volume<br> &nbsp; &nbsp;end_volume (float): Ending volume<br> &nbsp; &nbsp;duration (float): Fade duration in seconds<br> &nbsp; &nbsp;fade_state (AudioState): Current fade state</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Enhanced fade out with better state management.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_fade_volume_out">
+                                    <code>def _fade_volume_out(self: Any, start_volume: float, end_volume: float, duration: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Special fade out that stops playback after completion.<br><br>Args:<br> &nbsp; &nbsp;start_volume (float): Starting volume<br> &nbsp; &nbsp;end_volume (float): Ending volume<br> &nbsp; &nbsp;duration (float): Fade duration in seconds</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-stop">
+                                    <code>def stop(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Enhanced stop with thread management.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-is_playing">
                                     <code>def is_playing(self: Any) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Check if the channel is playing.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if playing, False otherwise</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Enhanced play state check.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if playing, False otherwise</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-is_paused">
                                     <code>def is_paused(self: Any) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Check if the channel is paused.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if paused, False otherwise</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Enhanced pause state check.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if paused, False otherwise</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-on_event">
                                     <code>def on_event(self: Any, event_type: AudioEvent) -> Callable</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator to register event handlers.<br><br>Args:<br> &nbsp; &nbsp;event_type (AudioEvent): The event type to listen for<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Callable: The decorator function</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator to register event handlers.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_trigger_event">
                                     <code>def _trigger_event(self: Any, event_type: AudioEvent) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Trigger all handlers for the given event type.</div></div></div></div></div>
@@ -201,10 +238,16 @@
                                     <i class="bi bi-box me-2"></i>
                                     SoundEffect
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Sound effect that can be played on multiple channels simultaneously.<br><br>Attributes:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): The sound object<br> &nbsp; &nbsp;channels (List[AudioChannel]): Channels currently playing this sound</div></div><div class="mt-3"><strong>Methods:</strong>
+                <div class="docstring-content mb-2"><div class="docstring-text">Enhanced sound effect with duration information.</div></div><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-soundeffect-__init__">
                                     <code>def __init__(self: Any, sound: pygame.mixer.Sound) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a sound effect.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): The sound object</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a sound effect with duration tracking.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): The sound object</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-soundeffect-_calculate_duration">
+                                    <code>def _calculate_duration(self: Any, sound: pygame.mixer.Sound) -> float</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Calculate sound duration.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): Sound to calculate duration for<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-soundeffect-get_duration">
+                                    <code>def get_duration(self: Any) -> float</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the duration of this sound effect.<br><br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-soundeffect-play">
                                     <code>def play(self: Any, audio_system: 'AudioSystem', volume: float, speed: float, loop: bool) -> Optional[AudioChannel]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Play the sound effect on an available channel.<br><br>Args:<br> &nbsp; &nbsp;audio_system (AudioSystem): The audio system to get channels from<br> &nbsp; &nbsp;volume (float, optional): Volume level. Defaults to 1.0.<br> &nbsp; &nbsp;speed (float, optional): Playback speed. Defaults to 1.0.<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[AudioChannel]: The channel playing the sound, or None if failed</div></div></div>
@@ -264,7 +307,16 @@
                         <div class="docstring-content mt-1"><div class="docstring-text">Get information about all channels.<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, Any]: Channel information</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-cleanup">
                                     <code>def cleanup(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Clean up audio resources.</div></div></div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Clean up audio resources.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-get_sound_duration">
+                                    <code>def get_sound_duration(self: Any, name: str) -> float</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the duration of a loaded sound effect.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the sound effect<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds, or 0.0 if not found</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-get_music_duration">
+                                    <code>def get_music_duration(self: Any, name: str) -> float</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the duration of a loaded music track.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the music track<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds, or 0.0 if not found</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-get_current_music_position">
+                                    <code>def get_current_music_position(self: Any) -> float</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get current playback position of music.<br><br>Returns:<br> &nbsp; &nbsp;float: Current position in seconds</div></div></div></div></div>
                         </div>
                     </div>
                 </div>
@@ -383,7 +435,7 @@
                                     <code>def get_theme_names(self: Any) -> List[str]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get list of all available theme names<br><br>Returns:<br> &nbsp; &nbsp;List[str]: List of theme names</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-set_global_theme">
-                                    <code>def set_global_theme(self: Any, theme_name: str) -> bool</code>
+                                    <code>def set_global_theme(self: Any, theme: str) -> bool</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set the global theme for the entire engine and update all UI elements<br><br>Args:<br> &nbsp; &nbsp;theme_name (str): Name of the theme to set<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if theme was set successfully, False otherwise</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_update_all_ui_themes">
                                     <code>def _update_all_ui_themes(self: Any, theme_enum: Any) -> None</code>
@@ -414,7 +466,7 @@
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_render_opengl_mode">
                                     <code>def _render_opengl_mode(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Rendering pipeline for OpenGL mode - CORRECTED</div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Rendering pipeline for OpenGL mode</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_render_ui_elements_opengl">
                                     <code>def _render_ui_elements_opengl(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render UI elements using OpenGL renderer - SKIP elements with ScrollingFrame parent</div></div></div>
@@ -448,6 +500,20 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-shutdown">
                                     <code>def shutdown(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Cleanup resources</div></div></div></div></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="file-card mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-code me-2"></i>
+                                network.py
+                            </h5>
+                        </div>
+                        <div class="card-body">
+        
                         </div>
                     </div>
                 </div>
@@ -505,8 +571,8 @@
                                     <code>def render_surface(self: Any, surface: pygame.Surface, x: int, y: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Alternative method for drawing surfaces (OpenGL compatibility).<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): The surface to draw<br> &nbsp; &nbsp;x (int): X coordinate<br> &nbsp; &nbsp;y (int): Y coordinate</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_rect">
-                                    <code>def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: Tuple[int, int, int], fill: bool, border_width: int, surface: Optional[pygame.Surface]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a colored rectangle.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate of top-left corner<br> &nbsp; &nbsp;y (int): Y coordinate of top-left corner<br> &nbsp; &nbsp;width (int): Rectangle width<br> &nbsp; &nbsp;height (int): Rectangle height<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the rectangle (default: True)<br> &nbsp; &nbsp;border_width (int): Border width for unfilled rectangles (default: 1)</div></div></div>
+                                    <code>def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: Tuple[int, int, int, float], fill: bool, anchor_point: Tuple[float, float], border_width: int, surface: Optional[pygame.Surface]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a colored rectangle.<br><br>R,G,B,A = (0~255, 0~255, 0~255, 0.0~1.0)<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate of top-left corner<br> &nbsp; &nbsp;y (int): Y coordinate of top-left corner<br> &nbsp; &nbsp;width (int): Rectangle width<br> &nbsp; &nbsp;height (int): Rectangle height<br> &nbsp; &nbsp;color (Tuple[int, int, int, float]): RGBA color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the rectangle (default: True)<br> &nbsp; &nbsp;anchor_point (Tuple[float, float]): Anchor point for the rectangle<br> &nbsp; &nbsp;border_width (int): Border width for unfilled rectangles (default: 1)</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_circle">
                                     <code>def draw_circle(self: Any, center_x: int, center_y: int, radius: int, color: Tuple[int, int, int], fill: bool, border_width: int, surface: Optional[pygame.Surface]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw a circle with specified center, radius and color.<br><br>Args:<br> &nbsp; &nbsp;center_x (int): Center X coordinate<br> &nbsp; &nbsp;center_y (int): Center Y coordinate<br> &nbsp; &nbsp;radius (int): Circle radius<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the circle (default: True)<br> &nbsp; &nbsp;border_width (int): Border width for hollow circles (default: 1)</div></div></div>
@@ -536,7 +602,10 @@
                         <div class="docstring-content mt-1"><div class="docstring-text">Clean up rendering resources and shutdown the renderer.<br><br>This method should release all allocated resources, delete shaders,<br>buffers, and perform any necessary cleanup operations.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-blit">
                                     <code>def blit(self: Any, source_surface: pygame.Surface, dest_rect: pygame.Rect, area: Optional[pygame.Rect], special_flags: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Blit a source surface onto the current render target.<br>Works similarly to pygame.Surface.blit().<br><br>Args:<br> &nbsp; &nbsp;source_surface: Surface to blit from<br> &nbsp; &nbsp;dest_rect: Destination rectangle (x, y, width, height) or (x, y)<br> &nbsp; &nbsp;area: Source area to blit from (None for entire surface)<br> &nbsp; &nbsp;special_flags: Additional blitting flags (currently unused)</div></div></div></div></div>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Blit a source surface onto the current render target.<br>Works similarly to pygame.Surface.blit().<br><br>Args:<br> &nbsp; &nbsp;source_surface: Surface to blit from<br> &nbsp; &nbsp;dest_rect: Destination rectangle (x, y, width, height) or (x, y)<br> &nbsp; &nbsp;area: Source area to blit from (None for entire surface)<br> &nbsp; &nbsp;special_flags: Additional blitting flags (currently unused)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-fill_screen">
+                                    <code>def fill_screen(self: Any, color: Tuple[int, int, int, float]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Fill the screen background with the color<br><br>R,G,B,A = (0~255, 0~255, 0~255, 0.0~1.0)<br><br>Args:<br> &nbsp; &nbsp;color (Tuple[int, int, int, float]): RGBA color tuple</div></div></div></div></div>
                         </div>
                     </div>
                 </div>

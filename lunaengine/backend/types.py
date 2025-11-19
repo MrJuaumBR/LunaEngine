@@ -1,0 +1,11 @@
+import pygame.locals
+
+class EVENTS:
+    QUIT = pygame.QUIT
+    KEYDOWN = pygame.KEYDOWN
+    KEYUP = pygame.KEYUP
+    MOUSEWHEEL = pygame.MOUSEWHEEL
+    MOUSEMOTION = pygame.MOUSEMOTION
+    MOUSEBUTTONDOWN = pygame.MOUSEBUTTONDOWN
+    MOUSEBUTTONUP = pygame.MOUSEBUTTONUP
+    JOYAXISMOTION = pygame.JOYAXISMOTION

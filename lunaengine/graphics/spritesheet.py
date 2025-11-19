@@ -87,6 +87,10 @@ class SpriteSheet:
         Raises:
             ValueError: If the rect is outside the sprite sheet bounds
         """
+        # Accepts tuples on rect
+        if isinstance(rect, tuple) and len(rect) == 4:
+            rect = pygame.Rect(*rect)
+        
         # Validate rect bounds
         if (
             rect.x < 0
@@ -227,6 +231,7 @@ class Animation:
         fade_out_duration (float): Duration of fade-out effect in seconds
         fade_alpha (int): Current alpha value for fade effects (0-255)
         fade_mode (str): Current fade mode: 'in', 'out', or None
+        flip (Tuple[bool, bool]): Flip flags for horizontal and vertical flipping
     """
 
     def __init__(
@@ -242,6 +247,7 @@ class Animation:
         loop: bool = True,
         fade_in_duration: float = 0.0,
         fade_out_duration: float = 0.0,
+        flip: tuple = (False, False),
     ):
         """
         Initialize the animation and automatically extract frames from sprite sheet.
@@ -258,8 +264,12 @@ class Animation:
             loop (bool): Whether the animation should loop
             fade_in_duration (float): Duration of fade-in effect in seconds
             fade_out_duration (float): Duration of fade-out effect in seconds
+            flip (Tuple[bool, bool]): Flip the animation horizontally and vertically
         """
-        self.spritesheet = SpriteSheet(spritesheet_file)
+        if type(spritesheet_file) == str:
+            self.spritesheet = SpriteSheet(spritesheet_file)
+        elif type(spritesheet_file) == SpriteSheet:
+            self.spritesheet = spritesheet_file
         self.size = size
         self.start_pos = start_pos
         self.frame_count = frame_count
@@ -269,6 +279,7 @@ class Animation:
         self.duration = duration
         self.loop = loop
         self.playing = True
+        self.flip = flip
 
         # Fade effect properties
         self.fade_in_duration = fade_in_duration
@@ -313,6 +324,10 @@ class Animation:
             rect = pygame.Rect(current_x, current_y, sprite_width, sprite_height)
             try:
                 frame = self.spritesheet.get_sprite_at_rect(rect)
+                if self.flip[0]:
+                    frame = pygame.transform.flip(frame, True, False)
+                if self.flip[1]:
+                    frame = pygame.transform.flip(frame, False, True)
                 frames.append(frame)
             except ValueError as e:
                 print(f"Warning: Could not extract frame {i} at {rect}: {e}")

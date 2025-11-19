@@ -54,24 +54,24 @@ def angle_between_points(point1: Tuple[float, float], point2: Tuple[float, float
     """Calculate angle between two points in radians"""
     return math.atan2(point2[1] - point1[1], point2[0] - point1[0])
 
-def rgba_brightness(rgba: Tuple[int, int, int, int]) -> float:
+def rgba_brightness(rgba: Tuple[int, int, int, float]) -> float:
     if len(rgba) >= 4:
         r,g,b,a = rgba
     elif len(rgba) == 3:
         r,g,b = rgba
-        a = 255
+        a = 1.0
     else:
         print("Invalid RGBA format. Expected (r, g, b, a) or (r, g, b)")
         return 0.0
-    return ((r/255 + g/255 + b/255)/3) * (a/255)
+    return ((r/255 + g/255 + b/255)/3) * a
 
-def individual_rgba_brightness(rgba: Tuple[int, int, int, int]) -> Tuple[float, float, float, float]:
+def individual_rgba_brightness(rgba: Tuple[int, int, int, float]) -> Tuple[float, float, float, float]:
     if len(rgba) >= 4:
         r,g,b,a = rgba
     elif len(rgba) == 3:
         r,g,b = rgba
-        a = 255
+        a = 1.0
     else:
         print("Invalid RGBA format. Expected (r, g, b, a) or (r, g, b)")
         return (0.0, 0.0, 0.0, 0.0)
-    return (r/255, g/255, b/255, a/255)
+    return (r/255, g/255, b/255, a)

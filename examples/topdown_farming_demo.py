@@ -439,7 +439,7 @@ class TopDownFarmingGame(Scene):
 
     def handle_interaction(self):
         """Handle player interactions with world"""
-        if self.engine.input_state.mouse_buttons_pressed['left']:
+        if self.engine.input_state.mouse_buttons_pressed.left:
             tool = self.game_state['selected_tool']
             ppos = self.player['position']
             mpos = self.camera.screen_to_world(self.engine.mouse_pos)

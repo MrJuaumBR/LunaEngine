@@ -18,7 +18,8 @@ LIBRARIES USED:
 
 from .opengl import OpenGLRenderer, TextureShader, ParticleShader, ShaderProgram
 from .pygame_backend import PygameRenderer
+from .types import EVENTS
 
 __all__ = [
-    "OpenGLRenderer", "TextureShader", "ParticleShader", "ShaderProgram", "PygameRenderer"
+    "OpenGLRenderer", "TextureShader", "ParticleShader", "ShaderProgram", "PygameRenderer", "EVENTS"
 ]

@@ -5,7 +5,7 @@
       "title": "Core",
       "description": "Core engine systems - Engine, Window, Renderer",
       "link": "core/index.html",
-      "files_count": 5,
+      "files_count": 6,
       "classes_count": 11,
       "functions_count": 0
     },
@@ -41,8 +41,8 @@
       "title": "Backend",
       "description": "Renderer backends - OpenGL, Pygame",
       "link": "backend/index.html",
-      "files_count": 2,
-      "classes_count": 6,
+      "files_count": 3,
+      "classes_count": 7,
       "functions_count": 0
     },
     {
@@ -78,18 +78,18 @@
       "name": "AudioChannel",
       "module": "core",
       "file": "audio.py",
-      "description": "Individual audio channel with full control.<br><br>Attributes:<br> &nbsp; &nbsp;channel_id (int): Pygame mixer channel number<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): The sound object<br> &nbsp; &nbsp;volume (float): Current volume (0.0 to 1.0)<br> &nbsp; &nbsp;speed (float): Playback speed multiplier<br> &nbsp; &nbsp;loop (bool): Whether to loop the sound<br> &nbsp; &nbsp;state (AudioState): Current playback state",
+      "description": "Enhanced audio channel with dynamic control and smooth transitions.<br><br>NEW FEATURES:<br>- Dynamic speed changes without stopping playback<br>- Smooth transitions for volume and speed<br>- Audio duration information<br>- Improved state management",
       "link": "core/index.html#class-audiochannel",
-      "methods_count": 14,
+      "methods_count": 21,
       "element_id": "class-audiochannel"
     },
     {
       "name": "SoundEffect",
       "module": "core",
       "file": "audio.py",
-      "description": "Sound effect that can be played on multiple channels simultaneously.<br><br>Attributes:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): The sound object<br> &nbsp; &nbsp;channels (List[AudioChannel]): Channels currently playing this sound",
+      "description": "Enhanced sound effect with duration information.",
       "link": "core/index.html#class-soundeffect",
-      "methods_count": 3,
+      "methods_count": 5,
       "element_id": "class-soundeffect"
     },
     {
@@ -98,7 +98,7 @@
       "file": "audio.py",
       "description": "Advanced audio system with multi-channel support and real speed control.<br><br>Attributes:<br> &nbsp; &nbsp;music_volume (float): Global music volume<br> &nbsp; &nbsp;sfx_volume (float): Global sound effects volume<br> &nbsp; &nbsp;channels (List[AudioChannel]): All available audio channels<br> &nbsp; &nbsp;sound_effects (Dict[str, SoundEffect]): Loaded sound effects<br> &nbsp; &nbsp;music_channel (AudioChannel): Dedicated music channel",
       "link": "core/index.html#class-audiosystem",
-      "methods_count": 16,
+      "methods_count": 19,
       "element_id": "class-audiosystem"
     },
     {
@@ -134,7 +134,7 @@
       "file": "renderer.py",
       "description": "Abstract base class for all renderers in LunaEngine.",
       "link": "core/index.html#class-renderer",
-      "methods_count": 20,
+      "methods_count": 21,
       "element_id": "class-renderer"
     },
     {
@@ -287,7 +287,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/index.html#class-scrollingframe",
-      "methods_count": 9,
+      "methods_count": 10,
       "element_id": "class-scrollingframe"
     },
     {
@@ -413,7 +413,7 @@
       "file": "themes.py",
       "description": "Manages complete UI themes",
       "link": "ui/index.html#class-thememanager",
-      "methods_count": 10,
+      "methods_count": 11,
       "element_id": "class-thememanager"
     },
     {
@@ -564,7 +564,7 @@
       "name": "Animation",
       "module": "graphics",
       "file": "spritesheet.py",
-      "description": "Time-based animation system for sprite sequences with fade effects.<br><br>This class automatically extracts frames from a sprite sheet based on<br>the provided parameters and manages animation timing with alpha transitions.<br><br>Attributes:<br> &nbsp; &nbsp;spritesheet (SpriteSheet): The source sprite sheet<br> &nbsp; &nbsp;frames (List[pygame.Surface]): List of animation frames<br> &nbsp; &nbsp;frame_count (int): Total number of frames in the animation<br> &nbsp; &nbsp;current_frame_index (int): Current frame index in the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;frame_duration (float): Duration of each frame in seconds<br> &nbsp; &nbsp;last_update_time (float): Last time the animation was updated<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;playing (bool): Whether the animation is currently playing<br> &nbsp; &nbsp;fade_in_duration (float): Duration of fade-in effect in seconds<br> &nbsp; &nbsp;fade_out_duration (float): Duration of fade-out effect in seconds<br> &nbsp; &nbsp;fade_alpha (int): Current alpha value for fade effects (0-255)<br> &nbsp; &nbsp;fade_mode (str): Current fade mode: &#x27;in&#x27;, &#x27;out&#x27;, or None",
+      "description": "Time-based animation system for sprite sequences with fade effects.<br><br>This class automatically extracts frames from a sprite sheet based on<br>the provided parameters and manages animation timing with alpha transitions.<br><br>Attributes:<br> &nbsp; &nbsp;spritesheet (SpriteSheet): The source sprite sheet<br> &nbsp; &nbsp;frames (List[pygame.Surface]): List of animation frames<br> &nbsp; &nbsp;frame_count (int): Total number of frames in the animation<br> &nbsp; &nbsp;current_frame_index (int): Current frame index in the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;frame_duration (float): Duration of each frame in seconds<br> &nbsp; &nbsp;last_update_time (float): Last time the animation was updated<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;playing (bool): Whether the animation is currently playing<br> &nbsp; &nbsp;fade_in_duration (float): Duration of fade-in effect in seconds<br> &nbsp; &nbsp;fade_out_duration (float): Duration of fade-out effect in seconds<br> &nbsp; &nbsp;fade_alpha (int): Current alpha value for fade effects (0-255)<br> &nbsp; &nbsp;fade_mode (str): Current fade mode: &#x27;in&#x27;, &#x27;out&#x27;, or None<br> &nbsp; &nbsp;flip (Tuple[bool, bool]): Flip flags for horizontal and vertical flipping",
       "link": "graphics/index.html#class-animation",
       "methods_count": 17,
       "element_id": "class-animation"
@@ -665,7 +665,7 @@
       "file": "opengl.py",
       "description": "No documentation",
       "link": "backend/index.html#class-openglrenderer",
-      "methods_count": 31,
+      "methods_count": 32,
       "element_id": "class-openglrenderer"
     },
     {
@@ -676,6 +676,15 @@
       "link": "backend/index.html#class-pygamerenderer",
       "methods_count": 20,
       "element_id": "class-pygamerenderer"
+    },
+    {
+      "name": "EVENTS",
+      "module": "backend",
+      "file": "types.py",
+      "description": "No documentation",
+      "link": "backend/index.html#class-events",
+      "methods_count": 0,
+      "element_id": "class-events"
     },
     {
       "name": "CodeStatistics",
@@ -811,34 +820,43 @@
       "name": "__init__",
       "class": "AudioChannel",
       "module": "core",
-      "description": "Initialize an audio channel.<br><br>Args:<br> &nbsp; &nbsp;channel_id (int): Pygame mixer channel number",
+      "description": "Initialize an enhanced audio channel.<br><br>Args:<br> &nbsp; &nbsp;channel_id (int): Pygame mixer channel number",
       "link": "core/index.html#method-audiochannel-__init__",
       "is_method": true,
       "element_id": "method-audiochannel-__init__"
     },
     {
+      "name": "get_duration",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Get the duration of the loaded sound in seconds.<br><br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds, or 0.0 if no sound loaded",
+      "link": "core/index.html#method-audiochannel-get_duration",
+      "is_method": true,
+      "element_id": "method-audiochannel-get_duration"
+    },
+    {
+      "name": "get_playback_position",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Get current playback position in seconds.<br><br>Note: This is an approximation since pygame doesn&#x27;t provide exact position.<br><br>Returns:<br> &nbsp; &nbsp;float: Current playback position in seconds",
+      "link": "core/index.html#method-audiochannel-get_playback_position",
+      "is_method": true,
+      "element_id": "method-audiochannel-get_playback_position"
+    },
+    {
       "name": "play",
       "class": "AudioChannel",
       "module": "core",
-      "description": "Play a sound on this channel.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): Sound to play<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if playback started successfully",
+      "description": "Play a sound on this channel with enhanced state management.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): Sound to play<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if playback started successfully",
       "link": "core/index.html#method-audiochannel-play",
       "is_method": true,
       "element_id": "method-audiochannel-play"
     },
     {
-      "name": "stop",
-      "class": "AudioChannel",
-      "module": "core",
-      "description": "Stop playback on this channel.",
-      "link": "core/index.html#method-audiochannel-stop",
-      "is_method": true,
-      "element_id": "method-audiochannel-stop"
-    },
-    {
       "name": "pause",
       "class": "AudioChannel",
       "module": "core",
-      "description": "Pause playback on this channel.",
+      "description": "Pause playback on this channel with state verification.",
       "link": "core/index.html#method-audiochannel-pause",
       "is_method": true,
       "element_id": "method-audiochannel-pause"
@@ -847,7 +865,7 @@
       "name": "resume",
       "class": "AudioChannel",
       "module": "core",
-      "description": "Resume playback on this channel.",
+      "description": "Resume playback on this channel with state verification.",
       "link": "core/index.html#method-audiochannel-resume",
       "is_method": true,
       "element_id": "method-audiochannel-resume"
@@ -856,7 +874,7 @@
       "name": "set_volume",
       "class": "AudioChannel",
       "module": "core",
-      "description": "Set channel volume.<br><br>Args:<br> &nbsp; &nbsp;volume (float): Volume level (0.0 to 1.0)",
+      "description": "Set channel volume with optional smooth transition.<br><br>Args:<br> &nbsp; &nbsp;volume (float): Volume level (0.0 to 1.0)<br> &nbsp; &nbsp;duration (float): Transition duration in seconds. 0 for immediate change.",
       "link": "core/index.html#method-audiochannel-set_volume",
       "is_method": true,
       "element_id": "method-audiochannel-set_volume"
@@ -865,16 +883,61 @@
       "name": "set_speed",
       "class": "AudioChannel",
       "module": "core",
-      "description": "Set playback speed using pitch adjustment.<br><br>Note: This is a simulated effect since pygame doesn&#x27;t support native speed control.<br>We adjust the playback rate by manipulating the sound buffer.<br><br>Args:<br> &nbsp; &nbsp;speed (float): Speed multiplier (0.5 for half speed, 2.0 for double)",
+      "description": "Change the speed of the sound playback.",
       "link": "core/index.html#method-audiochannel-set_speed",
       "is_method": true,
       "element_id": "method-audiochannel-set_speed"
     },
     {
+      "name": "_change_speed_immediate",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Change playback speed immediately using pitch adjustment.<br><br>Args:<br> &nbsp; &nbsp;speed (float): Target speed multiplier",
+      "link": "core/index.html#method-audiochannel-_change_speed_immediate",
+      "is_method": true,
+      "element_id": "method-audiochannel-_change_speed_immediate"
+    },
+    {
+      "name": "_smooth_speed_transition",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Smoothly transition between speeds.",
+      "link": "core/index.html#method-audiochannel-_smooth_speed_transition",
+      "is_method": true,
+      "element_id": "method-audiochannel-_smooth_speed_transition"
+    },
+    {
+      "name": "_transition_speed",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Smoothly transition between speeds.<br><br>Args:<br> &nbsp; &nbsp;target_speed (float): Target speed multiplier<br> &nbsp; &nbsp;duration (float): Transition duration in seconds",
+      "link": "core/index.html#method-audiochannel-_transition_speed",
+      "is_method": true,
+      "element_id": "method-audiochannel-_transition_speed"
+    },
+    {
+      "name": "_smooth_speed_change",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Smoothly change speed over time.<br><br>Args:<br> &nbsp; &nbsp;start_speed (float): Starting speed<br> &nbsp; &nbsp;end_speed (float): Target speed<br> &nbsp; &nbsp;duration (float): Transition duration in seconds",
+      "link": "core/index.html#method-audiochannel-_smooth_speed_change",
+      "is_method": true,
+      "element_id": "method-audiochannel-_smooth_speed_change"
+    },
+    {
+      "name": "_transition_volume",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Enhanced volume transition with better state management.<br><br>Args:<br> &nbsp; &nbsp;start_volume (float): Starting volume<br> &nbsp; &nbsp;end_volume (float): Ending volume<br> &nbsp; &nbsp;duration (float): Transition duration in seconds",
+      "link": "core/index.html#method-audiochannel-_transition_volume",
+      "is_method": true,
+      "element_id": "method-audiochannel-_transition_volume"
+    },
+    {
       "name": "fade_in",
       "class": "AudioChannel",
       "module": "core",
-      "description": "Fade in the channel volume.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds<br> &nbsp; &nbsp;target_volume (float, optional): Target volume. Defaults to 1.0.",
+      "description": "Enhanced fade in with better state management.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds<br> &nbsp; &nbsp;target_volume (float, optional): Target volume. Defaults to 1.0.",
       "link": "core/index.html#method-audiochannel-fade_in",
       "is_method": true,
       "element_id": "method-audiochannel-fade_in"
@@ -883,25 +946,34 @@
       "name": "fade_out",
       "class": "AudioChannel",
       "module": "core",
-      "description": "Fade out the channel volume.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds",
+      "description": "Enhanced fade out with better state management.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds",
       "link": "core/index.html#method-audiochannel-fade_out",
       "is_method": true,
       "element_id": "method-audiochannel-fade_out"
     },
     {
-      "name": "_fade_volume",
+      "name": "_fade_volume_out",
       "class": "AudioChannel",
       "module": "core",
-      "description": "Internal method to handle volume fading.<br><br>Args:<br> &nbsp; &nbsp;start_volume (float): Starting volume<br> &nbsp; &nbsp;end_volume (float): Ending volume<br> &nbsp; &nbsp;duration (float): Fade duration in seconds<br> &nbsp; &nbsp;fade_state (AudioState): Current fade state",
-      "link": "core/index.html#method-audiochannel-_fade_volume",
+      "description": "Special fade out that stops playback after completion.<br><br>Args:<br> &nbsp; &nbsp;start_volume (float): Starting volume<br> &nbsp; &nbsp;end_volume (float): Ending volume<br> &nbsp; &nbsp;duration (float): Fade duration in seconds",
+      "link": "core/index.html#method-audiochannel-_fade_volume_out",
       "is_method": true,
-      "element_id": "method-audiochannel-_fade_volume"
+      "element_id": "method-audiochannel-_fade_volume_out"
+    },
+    {
+      "name": "stop",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "Enhanced stop with thread management.",
+      "link": "core/index.html#method-audiochannel-stop",
+      "is_method": true,
+      "element_id": "method-audiochannel-stop"
     },
     {
       "name": "is_playing",
       "class": "AudioChannel",
       "module": "core",
-      "description": "Check if the channel is playing.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if playing, False otherwise",
+      "description": "Enhanced play state check.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if playing, False otherwise",
       "link": "core/index.html#method-audiochannel-is_playing",
       "is_method": true,
       "element_id": "method-audiochannel-is_playing"
@@ -910,7 +982,7 @@
       "name": "is_paused",
       "class": "AudioChannel",
       "module": "core",
-      "description": "Check if the channel is paused.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if paused, False otherwise",
+      "description": "Enhanced pause state check.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if paused, False otherwise",
       "link": "core/index.html#method-audiochannel-is_paused",
       "is_method": true,
       "element_id": "method-audiochannel-is_paused"
@@ -919,7 +991,7 @@
       "name": "on_event",
       "class": "AudioChannel",
       "module": "core",
-      "description": "Decorator to register event handlers.<br><br>Args:<br> &nbsp; &nbsp;event_type (AudioEvent): The event type to listen for<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Callable: The decorator function",
+      "description": "Decorator to register event handlers.",
       "link": "core/index.html#method-audiochannel-on_event",
       "is_method": true,
       "element_id": "method-audiochannel-on_event"
@@ -937,10 +1009,28 @@
       "name": "__init__",
       "class": "SoundEffect",
       "module": "core",
-      "description": "Initialize a sound effect.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): The sound object",
+      "description": "Initialize a sound effect with duration tracking.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): The sound object",
       "link": "core/index.html#method-soundeffect-__init__",
       "is_method": true,
       "element_id": "method-soundeffect-__init__"
+    },
+    {
+      "name": "_calculate_duration",
+      "class": "SoundEffect",
+      "module": "core",
+      "description": "Calculate sound duration.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): Sound to calculate duration for<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds",
+      "link": "core/index.html#method-soundeffect-_calculate_duration",
+      "is_method": true,
+      "element_id": "method-soundeffect-_calculate_duration"
+    },
+    {
+      "name": "get_duration",
+      "class": "SoundEffect",
+      "module": "core",
+      "description": "Get the duration of this sound effect.<br><br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds",
+      "link": "core/index.html#method-soundeffect-get_duration",
+      "is_method": true,
+      "element_id": "method-soundeffect-get_duration"
     },
     {
       "name": "play",
@@ -1103,6 +1193,33 @@
       "link": "core/index.html#method-audiosystem-cleanup",
       "is_method": true,
       "element_id": "method-audiosystem-cleanup"
+    },
+    {
+      "name": "get_sound_duration",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Get the duration of a loaded sound effect.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the sound effect<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds, or 0.0 if not found",
+      "link": "core/index.html#method-audiosystem-get_sound_duration",
+      "is_method": true,
+      "element_id": "method-audiosystem-get_sound_duration"
+    },
+    {
+      "name": "get_music_duration",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Get the duration of a loaded music track.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the music track<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds, or 0.0 if not found",
+      "link": "core/index.html#method-audiosystem-get_music_duration",
+      "is_method": true,
+      "element_id": "method-audiosystem-get_music_duration"
+    },
+    {
+      "name": "get_current_music_position",
+      "class": "AudioSystem",
+      "module": "core",
+      "description": "Get current playback position of music.<br><br>Returns:<br> &nbsp; &nbsp;float: Current position in seconds",
+      "link": "core/index.html#method-audiosystem-get_current_music_position",
+      "is_method": true,
+      "element_id": "method-audiosystem-get_current_music_position"
     },
     {
       "name": "__post_init__",
@@ -1306,7 +1423,7 @@
       "name": "_render_opengl_mode",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Rendering pipeline for OpenGL mode - CORRECTED",
+      "description": "Rendering pipeline for OpenGL mode",
       "link": "core/index.html#method-lunaengine-_render_opengl_mode",
       "is_method": true,
       "element_id": "method-lunaengine-_render_opengl_mode"
@@ -1495,7 +1612,7 @@
       "name": "draw_rect",
       "class": "Renderer",
       "module": "core",
-      "description": "Draw a colored rectangle.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate of top-left corner<br> &nbsp; &nbsp;y (int): Y coordinate of top-left corner<br> &nbsp; &nbsp;width (int): Rectangle width<br> &nbsp; &nbsp;height (int): Rectangle height<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the rectangle (default: True)<br> &nbsp; &nbsp;border_width (int): Border width for unfilled rectangles (default: 1)",
+      "description": "Draw a colored rectangle.<br><br>R,G,B,A = (0~255, 0~255, 0~255, 0.0~1.0)<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate of top-left corner<br> &nbsp; &nbsp;y (int): Y coordinate of top-left corner<br> &nbsp; &nbsp;width (int): Rectangle width<br> &nbsp; &nbsp;height (int): Rectangle height<br> &nbsp; &nbsp;color (Tuple[int, int, int, float]): RGBA color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the rectangle (default: True)<br> &nbsp; &nbsp;anchor_point (Tuple[float, float]): Anchor point for the rectangle<br> &nbsp; &nbsp;border_width (int): Border width for unfilled rectangles (default: 1)",
       "link": "core/index.html#method-renderer-draw_rect",
       "is_method": true,
       "element_id": "method-renderer-draw_rect"
@@ -1589,6 +1706,15 @@
       "link": "core/index.html#method-renderer-blit",
       "is_method": true,
       "element_id": "method-renderer-blit"
+    },
+    {
+      "name": "fill_screen",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Fill the screen background with the color<br><br>R,G,B,A = (0~255, 0~255, 0~255, 0.0~1.0)<br><br>Args:<br> &nbsp; &nbsp;color (Tuple[int, int, int, float]): RGBA color tuple",
+      "link": "core/index.html#method-renderer-fill_screen",
+      "is_method": true,
+      "element_id": "method-renderer-fill_screen"
     },
     {
       "name": "__init__",
@@ -2635,6 +2761,15 @@
       "element_id": "method-scrollingframe-__init__"
     },
     {
+      "name": "clear_children",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-scrollingframe-clear_children",
+      "is_method": true,
+      "element_id": "method-scrollingframe-clear_children"
+    },
+    {
       "name": "_update_with_mouse",
       "class": "ScrollingFrame",
       "module": "ui",
@@ -3173,6 +3308,15 @@
       "link": "ui/index.html#method-thememanager-get_theme_by_name",
       "is_method": true,
       "element_id": "method-thememanager-get_theme_by_name"
+    },
+    {
+      "name": "get_theme_type_by_name",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get theme type by name string",
+      "link": "ui/index.html#method-thememanager-get_theme_type_by_name",
+      "is_method": true,
+      "element_id": "method-thememanager-get_theme_type_by_name"
     },
     {
       "name": "get_theme",
@@ -4132,7 +4276,7 @@
       "name": "__init__",
       "class": "Animation",
       "module": "graphics",
-      "description": "Initialize the animation and automatically extract frames from sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;spritesheet_file (str): Path to the sprite sheet file<br> &nbsp; &nbsp;size (Tuple[int, int]): Size of each sprite (width, height)<br> &nbsp; &nbsp;start_pos (Tuple[int, int]): Starting position in the sprite sheet (x, y)<br> &nbsp; &nbsp;frame_count (int): Number of frames to extract for the animation<br> &nbsp; &nbsp;padding (Tuple[int, int]): Padding between sprites (x, y)<br> &nbsp; &nbsp;margin (Tuple[int, int]): Margin around the sprite sheet (x, y)<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;fade_in_duration (float): Duration of fade-in effect in seconds<br> &nbsp; &nbsp;fade_out_duration (float): Duration of fade-out effect in seconds",
+      "description": "Initialize the animation and automatically extract frames from sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;spritesheet_file (str): Path to the sprite sheet file<br> &nbsp; &nbsp;size (Tuple[int, int]): Size of each sprite (width, height)<br> &nbsp; &nbsp;start_pos (Tuple[int, int]): Starting position in the sprite sheet (x, y)<br> &nbsp; &nbsp;frame_count (int): Number of frames to extract for the animation<br> &nbsp; &nbsp;padding (Tuple[int, int]): Padding between sprites (x, y)<br> &nbsp; &nbsp;margin (Tuple[int, int]): Margin around the sprite sheet (x, y)<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;fade_in_duration (float): Duration of fade-in effect in seconds<br> &nbsp; &nbsp;fade_out_duration (float): Duration of fade-out effect in seconds<br> &nbsp; &nbsp;flip (Tuple[bool, bool]): Flip the animation horizontally and vertically",
       "link": "graphics/index.html#method-animation-__init__",
       "is_method": true,
       "element_id": "method-animation-__init__"
@@ -4708,7 +4852,7 @@
       "name": "_convert_color",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Convert color from 0-255 range to 0.0-1.0 range",
+      "description": "Convert color tuple to normalized RGBA values<br><br>R(0-255) -&gt; R(0.0-1.0)<br><br>B(0-255) -&gt; B(0.0-1.0)<br><br>G(0-255) -&gt; G(0.0-1.0)<br><br>A(0.0-1.0) -&gt; A(0.0-1.0)",
       "link": "backend/index.html#method-openglrenderer-_convert_color",
       "is_method": true,
       "element_id": "method-openglrenderer-_convert_color"
@@ -4744,7 +4888,7 @@
       "name": "draw_rect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a colored rectangle.<br><br>Args:<br> &nbsp; &nbsp;x: X coordinate of top-left corner<br> &nbsp; &nbsp;y: Y coordinate of top-left corner<br> &nbsp; &nbsp;width: Rectangle width<br> &nbsp; &nbsp;height: Rectangle height<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the rectangle<br> &nbsp; &nbsp;border_width: Border width for unfilled rectangles<br> &nbsp; &nbsp;surface: Target surface",
+      "description": "Draw a colored rectangle.<br><br>Args:<br> &nbsp; &nbsp;x: X coordinate of top-left corner<br> &nbsp; &nbsp;y: Y coordinate of top-left corner<br> &nbsp; &nbsp;width: Rectangle width<br> &nbsp; &nbsp;height: Rectangle height<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the rectangle<br> &nbsp; &nbsp;anchor_point: Anchor point for the rectangle<br> &nbsp; &nbsp;border_width: Border width for unfilled rectangles<br> &nbsp; &nbsp;surface: Target surface",
       "link": "backend/index.html#method-openglrenderer-draw_rect",
       "is_method": true,
       "element_id": "method-openglrenderer-draw_rect"
@@ -4892,6 +5036,15 @@
       "link": "backend/index.html#method-openglrenderer-blit_surface",
       "is_method": true,
       "element_id": "method-openglrenderer-blit_surface"
+    },
+    {
+      "name": "fill_screen",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-openglrenderer-fill_screen",
+      "is_method": true,
+      "element_id": "method-openglrenderer-fill_screen"
     },
     {
       "name": "cleanup",
@@ -5173,7 +5326,7 @@
       "element_id": "method-codestatistics-print_statistics"
     }
   ],
-  "last_updated": "2025-11-15T15:56:06.283508",
+  "last_updated": "2025-11-17T20:39:06.320465",
   "pages": [
     {
       "name": "Quick Start",

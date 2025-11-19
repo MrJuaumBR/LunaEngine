@@ -554,7 +554,7 @@ class Camera:
         if self.mode == CameraMode.FIXED:
             screenX = world_pos.x - self.position.x + (self.viewport_width / 2)
             screenY = world_pos.y - self.position.y + (self.viewport_height / 2)
-        elif self.mode == CameraMode.TOPDOWN:
+        elif self.mode == CameraMode.TOPDOWN or self.mode == CameraMode.FOLLOW:
             screenX = (world_pos.x - self.position.x) * self.zoom + (self.viewport_width / 2)
             screenY = (world_pos.y - self.position.y) * self.zoom + (self.viewport_height / 2)
         elif self.mode == CameraMode.PLATFORMER:
@@ -592,7 +592,7 @@ class Camera:
         # Correção para todos os modos
         if self.mode == CameraMode.FIXED:
             world_pos = (screen_vec - screen_center) + self.position
-        elif self.mode == CameraMode.TOPDOWN:
+        elif self.mode == CameraMode.TOPDOWN or self.mode == CameraMode.FOLLOW:
             world_pos = (screen_vec - screen_center) / self.zoom + self.position
         elif self.mode == CameraMode.PLATFORMER:
             world_pos = screen_vec / self.zoom + self.position

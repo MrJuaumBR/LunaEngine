@@ -138,17 +138,20 @@ class Renderer(ABC):
         
     @abstractmethod
     def draw_rect(self, x: int, y: int, width: int, height: int, 
-                  color: Tuple[int, int, int], fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None):
+                  color: Tuple[int, int, int, float], fill: bool = True, anchor_point: Tuple[float, float] = (0.0, 0.0), border_width: int = 1, surface: Optional[pygame.Surface] = None):
         """
         Draw a colored rectangle.
+        
+        R,G,B,A = (0~255, 0~255, 0~255, 0.0~1.0)
         
         Args:
             x (int): X coordinate of top-left corner
             y (int): Y coordinate of top-left corner
             width (int): Rectangle width
             height (int): Rectangle height
-            color (Tuple[int, int, int]): RGB color tuple
+            color (Tuple[int, int, int, float]): RGBA color tuple
             fill (bool): Whether to fill the rectangle (default: True)
+            anchor_point (Tuple[float, float]): Anchor point for the rectangle
             border_width (int): Border width for unfilled rectangles (default: 1)
         """
         pass
@@ -279,3 +282,26 @@ class Renderer(ABC):
             special_flags: Additional blitting flags (currently unused)
         """
         pass
+    
+    @abstractmethod
+    def fill_screen(self, color: Tuple[int, int, int, float]):
+        """
+        Fill the screen background with the color
+        
+        R,G,B,A = (0~255, 0~255, 0~255, 0.0~1.0)
+        
+        Args:
+            color (Tuple[int, int, int, float]): RGBA color tuple
+        """
+        if len(color) == 4:
+            r, g, b, a = color
+        elif len(color) == 3:
+            r, g, b = color
+            a = 1
+        else:
+            print("Invalid RGBA format. Expected (r, g, b, a) or (r, g, b)")
+            return
+        
+        win_w, win_h = pygame.display.get_window_size()
+        self.draw_rect(0,0,win_w, win_h, (r, g, b, a), fill=True, surface=self.screen)
+            

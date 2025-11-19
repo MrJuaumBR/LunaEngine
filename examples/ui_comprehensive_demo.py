@@ -197,7 +197,7 @@ class ComprehensiveUIDemo(Scene):
     def render(self, renderer):
         """Render scene background"""
         
-        renderer.draw_rect(0, 0, 1024, 720, ThemeManager.get_color('background'))
+        renderer.fill_screen(ThemeManager.get_color('background'))
         
         # Draw section backgrounds
         renderer.draw_rect(20, 100, 480, 400, ThemeManager.get_color('background2'))

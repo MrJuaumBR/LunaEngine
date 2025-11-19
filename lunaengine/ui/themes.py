@@ -149,12 +149,17 @@ class ThemeType(Enum):
     EIGHTIES = "80s"
     CLOUDS = "clouds"
     
-    QUEEN = "queen"
-    KING = "king"
+    # Platforms themes
     ROBLOX = "roblox"
     DISCORD = "discord"
     GMAIL = "gmail"
     YOUTUBE = "youtube"
+    STEAM_DARK = "steam_dark"
+    STEAM_LIGHT = "steam_light"
+    
+    QUEEN = "queen"
+    KING = "king"
+    
     MATRIX = "matrix"
     BUILDER = "builder"
     GALAXY_DARK = "galaxy_dark"
@@ -166,8 +171,8 @@ class ThemeType(Enum):
     OCEAN = "ocean"
     LAVENDER = "lavender"
     CHOCOLATE = "chocolate"
+    KIWI = "kiwi"
     
-    # New Dark/Light themes
     DEEP_SPACE = "deep_space"
     NORD_DARK = "nord_dark"
     NORD_LIGHT = "nord_light"
@@ -177,6 +182,19 @@ class ThemeType(Enum):
     MONOKAI = "monokai"
     GRUVBOX_DARK = "gruvbox_dark"
     GRUVBOX_LIGHT = "gruvbox_light"
+    
+    # Ninja themes
+    NINJA_DARK = "ninja_dark"
+    NINJA_LIGHT = "ninja_light"
+    
+    # Country Themes
+    BRAZIL = "brazil"
+    JAPAN = "japan"
+    USA = "usa"
+    EUROPEAN = "european"
+    
+    DYNASTY = "dynasty"
+    VIKINGS = "vikings"
 
 
 class ThemeManager:
@@ -2114,6 +2132,446 @@ class ThemeManager:
             border=(215, 153, 33),
             border2=(180, 125, 20)
         )
+        
+        # BRAZIL THEME - Green and yellow colors
+        cls._themes[ThemeType.BRAZIL] = UITheme(
+            button_normal=(0, 156, 59),
+            button_hover=(0, 136, 39),
+            button_pressed=(0, 116, 19),
+            button_disabled=(100, 130, 110),
+            button_text=(255, 223, 0),
+            button_border=(255, 223, 0),
+            
+            dropdown_normal=(0, 100, 40),
+            dropdown_hover=(0, 120, 50),
+            dropdown_expanded=(0, 110, 45),
+            dropdown_text=(255, 223, 0),
+            dropdown_option_normal=(0, 80, 30),
+            dropdown_option_hover=(0, 90, 35),
+            dropdown_option_selected=(0, 100, 40),
+            dropdown_border=(255, 223, 0),
+            
+            slider_track=(0, 80, 30),
+            slider_thumb_normal=(255, 223, 0),
+            slider_thumb_hover=(255, 243, 20),
+            slider_thumb_pressed=(235, 203, 0),
+            slider_text=(255, 223, 0),
+            
+            label_text=(255, 223, 0),
+            
+            background=(0, 50, 20),
+            background2=(0, 35, 12),
+            text_primary=(255, 223, 0),
+            text_secondary=(200, 180, 0),
+            
+            switch_track_on=(0, 156, 59),
+            switch_track_off=(0, 80, 30),
+            switch_thumb_on=(255, 223, 0),
+            switch_thumb_off=(200, 180, 0),
+            
+            border=(255, 223, 0),
+            border2=(200, 180, 0)
+        )
+        
+        # JAPAN THEME - Red and white colors
+        cls._themes[ThemeType.JAPAN] = UITheme(
+            button_normal=(188, 0, 45),
+            button_hover=(168, 0, 25),
+            button_pressed=(148, 0, 15),
+            button_disabled=(150, 100, 110),
+            button_text=(255, 255, 255),
+            button_border=(255, 255, 255),
+            
+            dropdown_normal=(220, 220, 220),
+            dropdown_hover=(200, 200, 200),
+            dropdown_expanded=(210, 210, 210),
+            dropdown_text=(188, 0, 45),
+            dropdown_option_normal=(240, 240, 240),
+            dropdown_option_hover=(230, 230, 230),
+            dropdown_option_selected=(220, 220, 220),
+            dropdown_border=(188, 0, 45),
+            
+            slider_track=(200, 200, 200),
+            slider_thumb_normal=(188, 0, 45),
+            slider_thumb_hover=(208, 20, 65),
+            slider_thumb_pressed=(168, 0, 25),
+            slider_text=(188, 0, 45),
+            
+            label_text=(188, 0, 45),
+            
+            background=(255, 255, 255),
+            background2=(245, 245, 245),
+            text_primary=(188, 0, 45),
+            text_secondary=(150, 0, 30),
+            
+            switch_track_on=(188, 0, 45),
+            switch_track_off=(200, 200, 200),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(240, 240, 240),
+            
+            border=(188, 0, 45),
+            border2=(150, 0, 30)
+        )
+        
+        # USA THEME - Red, white and blue colors
+        cls._themes[ThemeType.USA] = UITheme(
+            button_normal=(179, 25, 66),
+            button_hover=(159, 5, 46),
+            button_pressed=(139, 0, 26),
+            button_disabled=(140, 100, 110),
+            button_text=(255, 255, 255),
+            button_border=(60, 59, 110),
+            
+            dropdown_normal=(60, 59, 110),
+            dropdown_hover=(80, 79, 130),
+            dropdown_expanded=(70, 69, 120),
+            dropdown_text=(255, 255, 255),
+            dropdown_option_normal=(40, 39, 90),
+            dropdown_option_hover=(50, 49, 100),
+            dropdown_option_selected=(60, 59, 110),
+            dropdown_border=(179, 25, 66),
+            
+            slider_track=(100, 100, 140),
+            slider_thumb_normal=(179, 25, 66),
+            slider_thumb_hover=(199, 45, 86),
+            slider_thumb_pressed=(159, 5, 46),
+            slider_text=(255, 255, 255),
+            
+            label_text=(255, 255, 255),
+            
+            background=(10, 30, 80),
+            background2=(5, 20, 60),
+            text_primary=(255, 255, 255),
+            text_secondary=(200, 200, 220),
+            
+            switch_track_on=(179, 25, 66),
+            switch_track_off=(60, 59, 110),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(200, 200, 220),
+            
+            border=(179, 25, 66),
+            border2=(140, 15, 50)
+        )
+        
+        # EUROPEAN THEME - Blue and gold colors
+        cls._themes[ThemeType.EUROPEAN] = UITheme(
+            button_normal=(0, 51, 153),
+            button_hover=(0, 71, 173),
+            button_pressed=(0, 31, 133),
+            button_disabled=(80, 100, 150),
+            button_text=(255, 204, 0),
+            button_border=(255, 204, 0),
+            
+            dropdown_normal=(0, 51, 153),
+            dropdown_hover=(0, 71, 173),
+            dropdown_expanded=(0, 61, 163),
+            dropdown_text=(255, 204, 0),
+            dropdown_option_normal=(0, 31, 123),
+            dropdown_option_hover=(0, 41, 143),
+            dropdown_option_selected=(0, 51, 153),
+            dropdown_border=(255, 204, 0),
+            
+            slider_track=(0, 31, 103),
+            slider_thumb_normal=(255, 204, 0),
+            slider_thumb_hover=(255, 224, 20),
+            slider_thumb_pressed=(235, 184, 0),
+            slider_text=(255, 204, 0),
+            
+            label_text=(255, 204, 0),
+            
+            background=(0, 20, 80),
+            background2=(0, 10, 50),
+            text_primary=(255, 204, 0),
+            text_secondary=(255, 153, 0),
+            
+            switch_track_on=(0, 51, 153),
+            switch_track_off=(0, 31, 103),
+            switch_thumb_on=(255, 204, 0),
+            switch_thumb_off=(200, 160, 0),
+            
+            border=(255, 204, 0),
+            border2=(200, 160, 0)
+        )
+        
+        # KIWI THEME - Green and brown colors
+        cls._themes[ThemeType.KIWI] = UITheme(
+            button_normal=(111, 168, 86),
+            button_hover=(91, 148, 66),
+            button_pressed=(71, 128, 46),
+            button_disabled=(120, 140, 110),
+            button_text=(255, 255, 255),
+            button_border=(139, 69, 19),
+            
+            dropdown_normal=(85, 107, 47),
+            dropdown_hover=(105, 127, 67),
+            dropdown_expanded=(95, 117, 57),
+            dropdown_text=(255, 255, 255),
+            dropdown_option_normal=(65, 87, 27),
+            dropdown_option_hover=(75, 97, 37),
+            dropdown_option_selected=(85, 107, 47),
+            dropdown_border=(139, 69, 19),
+            
+            slider_track=(60, 80, 30),
+            slider_thumb_normal=(160, 82, 45),
+            slider_thumb_hover=(180, 102, 65),
+            slider_thumb_pressed=(140, 62, 25),
+            slider_text=(255, 255, 255),
+            
+            label_text=(240, 255, 240),
+            
+            background=(34, 85, 34),
+            background2=(20, 60, 20),
+            text_primary=(240, 255, 240),
+            text_secondary=(200, 230, 200),
+            
+            switch_track_on=(111, 168, 86),
+            switch_track_off=(60, 80, 30),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(200, 230, 200),
+            
+            border=(139, 69, 19),
+            border2=(110, 50, 10)
+        )
+        
+        # NINJA DARK THEME - Stealth black and red
+        cls._themes[ThemeType.NINJA_DARK] = UITheme(
+            button_normal=(40, 40, 40),
+            button_hover=(60, 60, 60),
+            button_pressed=(20, 20, 20),
+            button_disabled=(80, 80, 80),
+            button_text=(220, 20, 60),
+            button_border=(220, 20, 60),
+            
+            dropdown_normal=(20, 20, 20),
+            dropdown_hover=(40, 40, 40),
+            dropdown_expanded=(30, 30, 30),
+            dropdown_text=(220, 20, 60),
+            dropdown_option_normal=(10, 10, 10),
+            dropdown_option_hover=(15, 15, 15),
+            dropdown_option_selected=(20, 20, 20),
+            dropdown_border=(220, 20, 60),
+            
+            slider_track=(40, 40, 40),
+            slider_thumb_normal=(220, 20, 60),
+            slider_thumb_hover=(240, 40, 80),
+            slider_thumb_pressed=(200, 0, 40),
+            slider_text=(220, 20, 60),
+            
+            label_text=(220, 20, 60),
+            
+            background=(0, 0, 0),
+            background2=(10, 10, 10),
+            text_primary=(220, 20, 60),
+            text_secondary=(180, 10, 40),
+            
+            switch_track_on=(220, 20, 60),
+            switch_track_off=(40, 40, 40),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(100, 100, 100),
+            
+            border=(220, 20, 60),
+            border2=(180, 10, 40)
+        )
+        
+        # NINJA LIGHT THEME - Light stealth theme
+        cls._themes[ThemeType.NINJA_LIGHT] = UITheme(
+            button_normal=(220, 220, 220),
+            button_hover=(200, 200, 200),
+            button_pressed=(180, 180, 180),
+            button_disabled=(230, 230, 230),
+            button_text=(220, 20, 60),
+            button_border=(150, 150, 150),
+            
+            dropdown_normal=(240, 240, 240),
+            dropdown_hover=(220, 220, 220),
+            dropdown_expanded=(230, 230, 230),
+            dropdown_text=(220, 20, 60),
+            dropdown_option_normal=(250, 250, 250),
+            dropdown_option_hover=(245, 245, 245),
+            dropdown_option_selected=(240, 240, 240),
+            dropdown_border=(150, 150, 150),
+            
+            slider_track=(200, 200, 200),
+            slider_thumb_normal=(220, 20, 60),
+            slider_thumb_hover=(240, 40, 80),
+            slider_thumb_pressed=(200, 0, 40),
+            slider_text=(220, 20, 60),
+            
+            label_text=(220, 20, 60),
+            
+            background=(255, 255, 255),
+            background2=(245, 245, 245),
+            text_primary=(220, 20, 60),
+            text_secondary=(180, 10, 40),
+            
+            switch_track_on=(220, 20, 60),
+            switch_track_off=(200, 200, 200),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(240, 240, 240),
+            
+            border=(150, 150, 150),
+            border2=(120, 120, 120)
+        )
+        
+        # STEAM DARK THEME - Steam platform dark theme
+        cls._themes[ThemeType.STEAM_DARK] = UITheme(
+            button_normal=(27, 40, 56),
+            button_hover=(47, 60, 76),
+            button_pressed=(17, 30, 46),
+            button_disabled=(70, 80, 90),
+            button_text=(200, 200, 200),
+            button_border=(90, 120, 140),
+            
+            dropdown_normal=(34, 49, 63),
+            dropdown_hover=(44, 59, 73),
+            dropdown_expanded=(39, 54, 68),
+            dropdown_text=(200, 200, 200),
+            dropdown_option_normal=(24, 39, 53),
+            dropdown_option_hover=(29, 44, 58),
+            dropdown_option_selected=(34, 49, 63),
+            dropdown_border=(90, 120, 140),
+            
+            slider_track=(50, 65, 79),
+            slider_thumb_normal=(102, 192, 244),
+            slider_thumb_hover=(122, 212, 255),
+            slider_thumb_pressed=(82, 172, 224),
+            slider_text=(200, 200, 200),
+            
+            label_text=(200, 200, 200),
+            
+            background=(18, 27, 34),
+            background2=(12, 18, 24),
+            text_primary=(200, 200, 200),
+            text_secondary=(150, 150, 150),
+            
+            switch_track_on=(102, 192, 244),
+            switch_track_off=(50, 65, 79),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(120, 140, 160),
+            
+            border=(90, 120, 140),
+            border2=(70, 100, 120)
+        )
+        
+        # STEAM LIGHT THEME - Steam platform light theme
+        cls._themes[ThemeType.STEAM_LIGHT] = UITheme(
+            button_normal=(236, 240, 241),
+            button_hover=(216, 220, 221),
+            button_pressed=(196, 200, 201),
+            button_disabled=(220, 225, 228),
+            button_text=(44, 62, 80),
+            button_border=(149, 165, 166),
+            
+            dropdown_normal=(220, 225, 228),
+            dropdown_hover=(200, 205, 208),
+            dropdown_expanded=(210, 215, 218),
+            dropdown_text=(44, 62, 80),
+            dropdown_option_normal=(240, 245, 248),
+            dropdown_option_hover=(230, 235, 238),
+            dropdown_option_selected=(220, 225, 228),
+            dropdown_border=(149, 165, 166),
+            
+            slider_track=(200, 205, 208),
+            slider_thumb_normal=(52, 152, 219),
+            slider_thumb_hover=(72, 172, 239),
+            slider_thumb_pressed=(32, 132, 199),
+            slider_text=(44, 62, 80),
+            
+            label_text=(44, 62, 80),
+            
+            background=(245, 245, 245),
+            background2=(235, 235, 235),
+            text_primary=(44, 62, 80),
+            text_secondary=(85, 105, 125),
+            
+            switch_track_on=(52, 152, 219),
+            switch_track_off=(200, 205, 208),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(240, 245, 248),
+            
+            border=(149, 165, 166),
+            border2=(130, 145, 146)
+        )
+        
+        # DYNASTY THEME - Imperial Chinese style
+        cls._themes[ThemeType.DYNASTY] = UITheme(
+            button_normal=(205, 92, 92),
+            button_hover=(185, 72, 72),
+            button_pressed=(165, 52, 52),
+            button_disabled=(150, 120, 120),
+            button_text=(255, 215, 0),
+            button_border=(139, 0, 0),
+            
+            dropdown_normal=(160, 50, 50),
+            dropdown_hover=(180, 70, 70),
+            dropdown_expanded=(170, 60, 60),
+            dropdown_text=(255, 215, 0),
+            dropdown_option_normal=(140, 30, 30),
+            dropdown_option_hover=(150, 40, 40),
+            dropdown_option_selected=(160, 50, 50),
+            dropdown_border=(139, 0, 0),
+            
+            slider_track=(120, 30, 30),
+            slider_thumb_normal=(255, 215, 0),
+            slider_thumb_hover=(255, 235, 20),
+            slider_thumb_pressed=(235, 195, 0),
+            slider_text=(255, 215, 0),
+            
+            label_text=(255, 215, 0),
+            
+            background=(80, 20, 20),
+            background2=(60, 10, 10),
+            text_primary=(255, 215, 0),
+            text_secondary=(255, 165, 0),
+            
+            switch_track_on=(205, 92, 92),
+            switch_track_off=(120, 30, 30),
+            switch_thumb_on=(255, 215, 0),
+            switch_thumb_off=(200, 160, 0),
+            
+            border=(139, 0, 0),
+            border2=(110, 0, 0)
+        )
+        
+        # VIKINGS THEME - Norse warrior style
+        cls._themes[ThemeType.VIKINGS] = UITheme(
+            button_normal=(65, 105, 225),
+            button_hover=(45, 85, 205),
+            button_pressed=(25, 65, 185),
+            button_disabled=(100, 120, 180),
+            button_text=(255, 255, 255),
+            button_border=(139, 69, 19),
+            
+            dropdown_normal=(47, 79, 79),
+            dropdown_hover=(67, 99, 99),
+            dropdown_expanded=(57, 89, 89),
+            dropdown_text=(255, 255, 255),
+            dropdown_option_normal=(37, 69, 69),
+            dropdown_option_hover=(42, 74, 74),
+            dropdown_option_selected=(47, 79, 79),
+            dropdown_border=(139, 69, 19),
+            
+            slider_track=(30, 60, 90),
+            slider_thumb_normal=(160, 82, 45),
+            slider_thumb_hover=(180, 102, 65),
+            slider_thumb_pressed=(140, 62, 25),
+            slider_text=(255, 255, 255),
+            
+            label_text=(255, 255, 255),
+            
+            background=(25, 40, 65),
+            background2=(15, 25, 40),
+            text_primary=(255, 255, 255),
+            text_secondary=(200, 220, 240),
+            
+            switch_track_on=(65, 105, 225),
+            switch_track_off=(30, 60, 90),
+            switch_thumb_on=(255, 255, 255),
+            switch_thumb_off=(160, 180, 220),
+            
+            border=(139, 69, 19),
+            border2=(110, 50, 10)
+        )
 
     @classmethod
     def get_theme_by_name(cls, name: str) -> UITheme:
@@ -2121,6 +2579,16 @@ class ThemeManager:
         if not cls._themes:
             cls.initialize_default_themes()
         return cls._themes.get(name, cls._themes[ThemeType.PRIMARY])
+    
+    @classmethod
+    def get_theme_type_by_name(cls, name: str) -> ThemeType:
+        """Get theme type by name string"""
+        if not cls._themes:
+            cls.initialize_default_themes()
+        for theme_type in ThemeType:
+            if theme_type.value.lower() == name.lower():
+                return theme_type
+        return ThemeType.PRIMARY
     
     @classmethod
     def get_theme(cls, theme_type: ThemeType) -> UITheme:

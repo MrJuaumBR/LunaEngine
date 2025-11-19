@@ -1928,6 +1928,9 @@ class ScrollingFrame(UIElement):
         self.scroll_drag_start = (0, 0)
         
         self.theme_type = theme or ThemeManager.get_current_theme()
+        
+    def clear_children(self):
+        self.children.clear()
 
     def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
         """Update scrolling frame with proper scroll handling"""

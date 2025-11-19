@@ -31,6 +31,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, List, Any, Optional, TYPE_CHECKING
 from ..ui import UIElement
 from ..graphics import Camera, ParticleConfig, ParticleSystem, ParticleType, ShadowSystem
+from ..core.audio import AudioSystem
 
 if TYPE_CHECKING:
     from ..core import LunaEngine, Renderer
@@ -68,6 +69,9 @@ class Scene(ABC):
         
         # Shadows System
         self.shadow_system: ShadowSystem = ShadowSystem(self.engine.width, self.engine.height, engine)
+        
+        # Audio System
+        self.audio_system: AudioSystem = AudioSystem(num_channels=16)
         
     def on_enter(self, previous_scene: Optional[str] = None) -> None:
         """

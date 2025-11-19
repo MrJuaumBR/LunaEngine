@@ -488,6 +488,9 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-__init__">
                                     <code>def __init__(self: Any, x: int, y: int, width: int, height: int, content_width: int, content_height: int, root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
                         </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-clear_children">
+                                    <code>def clear_children(self: Any) -> None</code>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update scrolling frame with proper scroll handling</div></div></div>
@@ -1042,14 +1045,6 @@
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
-                                    <code>QUEEN: Any = 'queen'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>KING: Any = 'king'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
                                     <code>ROBLOX: Any = 'roblox'</code>
                                 </div>
                         
@@ -1063,6 +1058,22 @@
                         
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>YOUTUBE: Any = 'youtube'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>STEAM_DARK: Any = 'steam_dark'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>STEAM_LIGHT: Any = 'steam_light'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>QUEEN: Any = 'queen'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>KING: Any = 'king'</code>
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
@@ -1102,6 +1113,10 @@
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
+                                    <code>KIWI: Any = 'kiwi'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
                                     <code>DEEP_SPACE: Any = 'deep_space'</code>
                                 </div>
                         
@@ -1136,6 +1151,38 @@
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>GRUVBOX_LIGHT: Any = 'gruvbox_light'</code>
                                 </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>NINJA_DARK: Any = 'ninja_dark'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>NINJA_LIGHT: Any = 'ninja_light'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>BRAZIL: Any = 'brazil'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>JAPAN: Any = 'japan'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>USA: Any = 'usa'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>EUROPEAN: Any = 'european'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>DYNASTY: Any = 'dynasty'</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>VIKINGS: Any = 'vikings'</code>
+                                </div>
                         </div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-thememanager">
                                 <h6 class="text-success mb-2">
@@ -1157,6 +1204,9 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-thememanager-get_theme_by_name">
                                     <code>def get_theme_by_name(cls: Any, name: str) -> UITheme</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get theme by name string</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-thememanager-get_theme_type_by_name">
+                                    <code>def get_theme_type_by_name(cls: Any, name: str) -> ThemeType</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get theme type by name string</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-thememanager-get_theme">
                                     <code>def get_theme(cls: Any, theme_type: ThemeType) -> UITheme</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get complete theme by type</div></div></div>
