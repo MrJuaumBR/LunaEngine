@@ -10,11 +10,18 @@ for creating interactive graphical interfaces in Pygame. It includes basic compo
 like buttons, labels, and text fields, as well as more complex elements like dropdown
 menus, progress bars, and scrollable containers.
 
+NEW FEATURES:
+- DialogBox: RPG-style dialog boxes with multiple styles and animations
+- Tooltip: Intelligent tooltip system with screen boundary detection
+- TextBox improvements: Continuous backspace and max_length support
+- Animation system for DialogBox (typewriter effect, fade-in, etc.)
+
 LIBRARIES USED:
 - pygame: For graphical rendering and event handling
 - numpy: For mathematical calculations (primarily in gradients)
 - typing: For type hints and type annotations
 - enum: For enum definitions (UI states)
+- time: For animation timing
 
 MAIN CLASSES:
 
@@ -84,17 +91,22 @@ MAIN CLASSES:
 17. Frame:
     - Container element for grouping UI elements
     - Supports nested frames and theme-based styling
+    
+18. DialogBox:
+    - RPG-style dialog boxes with multiple styles and animations
+    - Supports multiple lines of text and custom themes
 
 This module forms the core of LunaEngine's UI system, providing a flexible and
 themeable foundation for building complex user interfaces in Pygame applications.
 """
 
-import pygame
+import pygame, time
 import numpy as np
-from typing import Optional, Callable, List, Tuple, Any, TYPE_CHECKING
+from typing import Optional, Callable, List, Tuple, Any, TYPE_CHECKING, Dict, Literal
 from enum import Enum
 from abc import ABC, abstractmethod
 from .themes import ThemeManager, ThemeType
+
 
 if TYPE_CHECKING:
     from lunaengine.core import Renderer
@@ -219,6 +231,7 @@ class UIElement(ABC):
         self.enabled = True
         self.children = []
         self.parent = None
+        self.z_index = 0  # For rendering order
         
         # Generate unique ID using element type name
         element_type = self.__class__.__name__.lower()
@@ -274,6 +287,31 @@ class UIElement(ABC):
         """
         child.parent = self
         self.children.append(child)
+
+    def set_tooltip(self, tooltip: 'Tooltip'):
+        """
+        Set tooltip for this element using a Tooltip instance.
+        
+        Args:
+            tooltip (Tooltip): Tooltip instance to associate with this element
+        """
+        UITooltipManager.register_tooltip(self, tooltip)
+    
+    def set_simple_tooltip(self, text: str, **kwargs):
+        """
+        Quick method to set a simple tooltip with text.
+        
+        Args:
+            text (str): Tooltip text
+            **kwargs: Additional arguments for TooltipConfig
+        """
+        config = TooltipConfig(text=text, **kwargs)
+        tooltip = Tooltip(config)
+        self.set_tooltip(tooltip)
+    
+    def remove_tooltip(self):
+        """Remove tooltip from this element."""
+        UITooltipManager.unregister_tooltip(self)
     
     def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float, input_state):
         """
@@ -318,6 +356,7 @@ class UIElement(ABC):
         for child in self.children:
             if hasattr(child, '_update_with_mouse'):
                 child._update_with_mouse(mouse_pos, mouse_pressed, dt)
+        
     
     def update(self, dt: float):
         """
@@ -408,6 +447,382 @@ class UIElement(ABC):
         """Called when mouse hovers over the element."""
         pass
 
+
+class TooltipConfig:
+    """
+    Configuration class for tooltip appearance and behavior.
+    Allows easy customization of tooltips without passing multiple parameters.
+    """
+    
+    def __init__(self, 
+                 text: str = "",
+                 font_size: int = 14,
+                 padding: int = 8,
+                 corner_radius: int = 4,
+                 offset_x: int = 10,
+                 offset_y: int = 10,
+                 show_delay: float = 0.5,
+                 max_width: int = 300,
+                 theme: ThemeType = None):
+        """
+        Initialize tooltip configuration.
+        
+        Args:
+            text (str): Tooltip text content
+            font_size (int): Font size for tooltip text
+            padding (int): Padding around text
+            corner_radius (int): Border radius for rounded corners
+            offset_x (int): Horizontal offset from target element
+            offset_y (int): Vertical offset from target element
+            show_delay (float): Delay in seconds before showing tooltip
+            max_width (int): Maximum width before text wraps
+            theme (ThemeType): Custom theme for tooltip
+        """
+        self.text = text
+        self.font_size = font_size
+        self.padding = padding
+        self.corner_radius = corner_radius
+        self.offset_x = offset_x
+        self.offset_y = offset_y
+        self.show_delay = show_delay
+        self.max_width = max_width
+        self.theme = theme
+
+class Tooltip(UIElement):
+    """
+    Tooltip element that displays helpful information when hovering over UI elements.
+    Automatically adjusts position to stay within screen boundaries.
+    """
+    
+    def __init__(self, config: TooltipConfig = None, element_id: Optional[str] = None):
+        """
+        Initialize a tooltip with configuration.
+        
+        Args:
+            config (TooltipConfig): Configuration object for tooltip appearance
+            element_id (Optional[str]): Custom element ID
+        """
+        self.config = config or TooltipConfig()
+        FontManager.initialize()
+        
+        # Calculate initial size based on text and configuration
+        self.font = FontManager.get_font(None, self.config.font_size)
+        self._calculate_size()
+        
+        super().__init__(0, 0, self.width, self.height, (0, 0), element_id)
+        self.theme_type = self.config.theme or ThemeManager.get_current_theme()
+        self.target_element = None
+        self._visible = False
+        self._hover_time = 0.0
+    
+    def _calculate_size(self):
+        """Calculate tooltip size based on text and configuration."""
+        if not self.config.text:
+            self.width = 100
+            self.height = 30
+            return
+            
+        # Wrap text to fit max width
+        wrapped_lines = self._wrap_text(self.config.text)
+        
+        # Calculate maximum line width
+        max_line_width = 0
+        for line in wrapped_lines:
+            line_width = self.font.size(line)[0]
+            max_line_width = max(max_line_width, line_width)
+        
+        # Set dimensions with padding
+        self.width = min(self.config.max_width, max_line_width + self.config.padding * 2)
+        self.height = len(wrapped_lines) * self.font.get_height() + self.config.padding * 2
+    
+    def _wrap_text(self, text: str) -> List[str]:
+        """
+        Wrap text to fit within max width.
+        
+        Args:
+            text (str): Text to wrap
+            
+        Returns:
+            List[str]: List of wrapped lines
+        """
+        if not text:
+            return [""]
+            
+        words = text.split(' ')
+        lines = []
+        current_line = []
+        
+        for word in words:
+            test_line = ' '.join(current_line + [word])
+            test_width = self.font.size(test_line)[0]
+            
+            if test_width <= (self.config.max_width - self.config.padding * 2):
+                current_line.append(word)
+            else:
+                if current_line:
+                    lines.append(' '.join(current_line))
+                current_line = [word]
+        
+        if current_line:
+            lines.append(' '.join(current_line))
+            
+        return lines
+    
+    def set_text(self, text: str):
+        """
+        Update tooltip text and recalculate size.
+        
+        Args:
+            text (str): New tooltip text
+        """
+        self.config.text = text
+        self._calculate_size()
+    
+    def set_config(self, config: TooltipConfig):
+        """
+        Update tooltip configuration.
+        
+        Args:
+            config (TooltipConfig): New configuration
+        """
+        self.config = config
+        self.theme_type = config.theme or ThemeManager.get_current_theme()
+        self._calculate_size()
+    
+    def set_target(self, element: UIElement):
+        """
+        Set the target element for this tooltip.
+        
+        Args:
+            element (UIElement): Element to attach tooltip to
+        """
+        self.target_element = element
+    
+    def update_tooltip(self, mouse_pos: Tuple[int, int], dt: float, 
+                      screen_width: int, screen_height: int) -> bool:
+        """
+        Update tooltip state and position.
+        
+        Args:
+            mouse_pos (Tuple[int, int]): Current mouse position
+            dt (float): Delta time in seconds
+            screen_width (int): Screen width for boundary checking
+            screen_height (int): Screen height for boundary checking
+            
+        Returns:
+            bool: True if tooltip should be visible, False otherwise
+        """
+        if not self.target_element or not self.config.text:
+            self._visible = False
+            self._hover_time = 0.0
+            return False
+        
+        # Check if mouse is over target element
+        actual_x, actual_y = self.target_element.get_actual_position()
+        
+        # Needs to account for root_point        
+        mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.target_element.width and 
+                     actual_y <= mouse_pos[1] <= actual_y + self.target_element.height)
+        
+        if mouse_over:
+            self._hover_time += dt
+            if self._hover_time >= self.config.show_delay:
+                self._visible = True
+                self._update_position(screen_width, screen_height, mouse_pos)
+            else:
+                self._visible = False
+        else:
+            self._visible = False
+            self._hover_time = 0.0
+        
+        return self._visible
+    
+    def _update_position(self, screen_width: int, screen_height: int, mouse_pos: Tuple[int, int]):
+        """
+        Update tooltip position to follow mouse and stay within screen bounds.
+        
+        Args:
+            screen_width (int): Screen width for boundary checking
+            screen_height (int): Screen height for boundary checking
+            mouse_pos (Tuple[int, int]): Current mouse position
+        """
+        # Default position (bottom-right of mouse)
+        x = mouse_pos[0] + self.config.offset_x
+        y = mouse_pos[1] + self.config.offset_y
+        
+        # Adjust if going off-screen right
+        if x + self.width > screen_width:
+            x = mouse_pos[0] - self.width - self.config.offset_x
+        
+        # Adjust if going off-screen bottom
+        if y + self.height > screen_height:
+            y = mouse_pos[1] - self.height - self.config.offset_y
+        
+        # Ensure minimum position
+        x = max(0, min(x, screen_width - self.width))
+        y = max(0, min(y, screen_height - self.height))
+        
+        self.x = x
+        self.y = y
+    
+    def render_pygame(self, renderer):
+        """Render tooltip using Pygame backend"""
+        if not self._visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Draw background with rounded corners
+        if self.config.corner_radius > 0:
+            pygame.draw.rect(renderer.get_surface(), theme.tooltip_background, 
+                            (actual_x, actual_y, self.width, self.height),
+                            border_radius=self.config.corner_radius)
+        else:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.tooltip_background)
+        
+        # Draw border
+        if theme.tooltip_border:
+            if self.config.corner_radius > 0:
+                pygame.draw.rect(renderer.get_surface(), theme.tooltip_border,
+                               (actual_x, actual_y, self.width, self.height),
+                               width=1, border_radius=self.config.corner_radius)
+            else:
+                renderer.draw_rect(actual_x, actual_y, self.width, self.height,
+                                 theme.tooltip_border, fill=False)
+        
+        # Draw wrapped text
+        self._render_wrapped_text(renderer, actual_x, actual_y, theme)
+    
+    def render_opengl(self, renderer):
+        """Render tooltip using OpenGL backend"""
+        if not self._visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Draw border
+        if theme.tooltip_border:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
+                             theme.tooltip_border, fill=False)
+        
+        # Draw background (simplified rectangle for OpenGL)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.tooltip_background)
+        
+        # Draw wrapped text
+        self._render_wrapped_text(renderer, actual_x, actual_y, theme, opengl=True)
+    
+    def _render_wrapped_text(self, renderer, x: int, y: int, theme, opengl=False):
+        """Render wrapped text inside tooltip."""
+        if not self.config.text:
+            return
+            
+        lines = self._wrap_text(self.config.text)
+        line_height = self.font.get_height()
+        
+        for i, line in enumerate(lines):
+            text_surface = self.font.render(line, True, theme.tooltip_text)
+            text_x = x + (self.width - text_surface.get_width()) // 2
+            text_y = y + self.config.padding + i * line_height
+            
+            if opengl and hasattr(renderer, 'render_surface'):
+                renderer.render_surface(text_surface, text_x, text_y)
+            else:
+                renderer.draw_surface(text_surface, text_x, text_y)
+
+class UITooltipManager:
+    """
+    Manages tooltips globally to ensure proper display and positioning.
+    Supports multiple tooltips for different UI elements.
+    """
+    
+    _instance = None
+    _tooltips: Dict[str, Tooltip] = {}  # element_id -> Tooltip mapping
+    _active_tooltip: Optional[Tooltip] = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(UITooltipManager, cls).__new__(cls)
+        return cls._instance
+    
+    @classmethod
+    def register_tooltip(cls, element: UIElement, tooltip: Tooltip):
+        """
+        Register a tooltip for a UI element.
+        
+        Args:
+            element (UIElement): The UI element that triggers the tooltip
+            tooltip (Tooltip): The tooltip to show
+        """
+        tooltip.set_target(element)
+        cls._tooltips[element.element_id] = tooltip
+    
+    @classmethod
+    def unregister_tooltip(cls, element: UIElement):
+        """
+        Unregister tooltip for a UI element.
+        
+        Args:
+            element (UIElement): The UI element to remove tooltip from
+        """
+        if element.element_id in cls._tooltips:
+            del cls._tooltips[element.element_id]
+    
+    @classmethod
+    def update(cls, engine: 'LunaEngine', dt: float):
+        """
+        Update all tooltips and determine which one should be active.
+        
+        Args:
+            engine (LunaEngine): The main engine instance
+            dt (float): Delta time in seconds
+        """
+        cls._active_tooltip = None
+        
+        # Find the tooltip that should be active (prioritize by hover time)
+        best_tooltip = None
+        best_hover_time = 0
+        
+        for tooltip in cls._tooltips.values():
+            if engine.current_scene and engine.current_scene.has_element(tooltip.target_element):
+                if tooltip.update_tooltip(engine.mouse_pos, dt, engine.width, engine.height):
+                    if tooltip._hover_time > best_hover_time:
+                        best_tooltip = tooltip
+                        best_hover_time = tooltip._hover_time
+        
+        cls._active_tooltip = best_tooltip
+    
+    @classmethod
+    def get_tooltip_to_render(cls, engine: 'LunaEngine') -> List[Tooltip]:
+        """
+        Get the currently active tooltip to render.
+        
+        Args:
+            engine (LunaEngine): The main engine instance
+            
+        Returns:
+            List[Tooltip]: List containing the active tooltip, or empty if none
+        """
+        l = []
+        for tooltip in cls._tooltips.values():
+            if engine.current_scene and engine.current_scene.has_element(tooltip.target_element):
+                if tooltip._visible:
+                    l.append(tooltip)
+                    
+        return l
+    
+    @classmethod
+    def render(cls, renderer):
+        """Render the active tooltip."""
+        if cls._active_tooltip:
+            cls._active_tooltip.render(renderer)
+    
+    @classmethod
+    def clear_all(cls):
+        """Clear all registered tooltips."""
+        cls._tooltips.clear()
+        cls._active_tooltip = None
 
 class TextLabel(UIElement):
     """UI element for displaying text labels."""
@@ -879,7 +1294,8 @@ class TextBox(UIElement):
                  text: str = "", font_size: int = 20, font_name: Optional[str] = None,
                  root_point: Tuple[float, float] = (0, 0),
                  theme: ThemeType = None,
-                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+                 max_length: int = 0,  # NOVO: 0 means no limit
+                 element_id: Optional[str] = None):
         super().__init__(x, y, width, height, root_point, element_id)
         self.placeholder_text = text
         self.text = ""
@@ -893,6 +1309,10 @@ class TextBox(UIElement):
         self.cursor_timer = 0.0
         self.focused = False
         self._needs_redraw = True
+        self.max_length = max_length
+        self._backspace_timer = 0.0 
+        self._backspace_initial_delay = 0.5
+        self._backspace_repeat_delay = 0.05
         
         self.theme_type = theme or ThemeManager.get_current_theme()
         
@@ -948,7 +1368,7 @@ class TextBox(UIElement):
             self._update_text_surface()
     
     def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """Update text box with mouse interaction - OPTIMIZED"""
+        """Update text box with mouse interaction - IMPROVED with backspace support"""
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             self.focused = False
@@ -973,6 +1393,30 @@ class TextBox(UIElement):
         else:
             self.state = UIState.HOVERED if mouse_over else UIState.NORMAL
         
+        # Handle continuous backspace when focused
+        if self.focused:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_BACKSPACE]:
+                self._backspace_timer += dt
+                
+                # Check if we should delete a character
+                should_delete = False
+                if self._backspace_timer >= self._backspace_initial_delay:
+                    # After initial delay, delete every repeat delay
+                    if self._backspace_timer >= self._backspace_initial_delay + self._backspace_repeat_delay:
+                        should_delete = True
+                        self._backspace_timer = self._backspace_initial_delay  # Reset to initial for continuous repeat
+                elif self._backspace_timer == dt:  # First frame of press
+                    should_delete = True
+                
+                if should_delete and self.text and self.cursor_pos > 0:
+                    self.text = self.text[:self.cursor_pos-1] + self.text[self.cursor_pos:]
+                    self.cursor_pos -= 1
+                    self._update_text_surface()
+                    self._needs_redraw = True
+            else:
+                self._backspace_timer = 0.0
+        
         # Update cursor blink only when focused
         if self.focused:
             self.cursor_timer += dt
@@ -990,7 +1434,7 @@ class TextBox(UIElement):
     
     def handle_key_input(self, event):
         """
-        Handle keyboard input when focused - OPTIMIZED
+        Handle keyboard input when focused - UPDATED with max_length support
         
         Args:
             event: Pygame keyboard event.
@@ -1031,11 +1475,16 @@ class TextBox(UIElement):
             cursor_moved = True
             
         elif event.unicode and event.unicode.isprintable():
-            # Insert character at cursor position
-            self.text = self.text[:self.cursor_pos] + event.unicode + self.text[self.cursor_pos:]
-            self.cursor_pos += len(event.unicode)
-            text_changed = True
-            cursor_moved = True
+            # NEW: Check max_length before inserting
+            if self.max_length > 0 and len(self.text) >= self.max_length:
+                # At max length, don't add more characters
+                pass
+            else:
+                # Insert character at cursor position
+                self.text = self.text[:self.cursor_pos] + event.unicode + self.text[self.cursor_pos:]
+                self.cursor_pos += len(event.unicode)
+                text_changed = True
+                cursor_moved = True
         
         # Update rendering if needed
         if text_changed:
@@ -1203,6 +1652,329 @@ class TextBox(UIElement):
                 renderer.render_surface(self._text_surface, actual_x + 5, text_y)
             else:
                 renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
+                
+class DialogBox(UIElement):
+    """
+    RPG-style dialog box with multiple display styles and text animations.
+    Supports typewriter effect, fade-in, and character-by-character display.
+    """
+    
+    def __init__(self, x: int, y: int, width: int, height: int,
+                 style: Literal['default', 'rpg','pokemon','modern'] = "default",  # "default", "rpg", "pokemon", "modern"
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):
+        """
+        Initialize a dialog box.
+        
+        Args:
+            x (int): X coordinate position
+            y (int): Y coordinate position
+            width (int): Width of dialog box
+            height (int): Height of dialog box
+            style (str): Visual style ("default", "rpg", "pokemon", "modern")
+            theme (ThemeType): Theme to use for styling
+            element_id (Optional[str]): Custom element ID
+        """
+        super().__init__(x, y, width, height, (0, 0), element_id)
+        self.style = style
+        self.theme_type = theme or ThemeManager.get_current_theme()
+        
+        # Text properties
+        self.text = ""
+        self.displayed_text = ""
+        self.speaker_name = ""
+        self.font_size = 20
+        self.font = FontManager.get_font(None, self.font_size)
+        self.name_font = FontManager.get_font(None, self.font_size - 2)
+        
+        # Animation properties
+        self.animation_type = "typewriter"  # "typewriter", "fade", "instant"
+        self.animation_speed = 30  # characters per second for typewriter
+        self.animation_progress = 0.0
+        self.is_animating = False
+        self.is_complete = False
+        
+        # Visual properties based on style
+        self.padding = 20
+        self.name_padding = 10
+        self.corner_radius = 8 if style in ["modern", "pokemon"] else 0
+        self.show_continue_indicator = True
+        self.continue_indicator_blink = True
+        self.continue_timer = 0.0
+        
+        # Callbacks
+        self.on_complete_callback = None
+        self.on_advance_callback = None
+        
+        # NEW: Track if we're waiting for user input after animation completes
+        self.waiting_for_advance = False
+    
+    def set_text(self, text: str, speaker_name: str = "", instant: bool = False):
+        """
+        Set dialog text and optionally a speaker name.
+        
+        Args:
+            text (str): The dialog text to display
+            speaker_name (str): Name of the speaker (optional)
+            instant (bool): Whether to display text instantly
+        """
+        self.text = text
+        self.speaker_name = speaker_name
+        self.displayed_text = ""
+        self.animation_progress = 0.0
+        self.is_animating = not instant
+        self.is_complete = instant
+        self.waiting_for_advance = False  # Reset waiting state
+        
+        if instant:
+            self.displayed_text = text
+            self.waiting_for_advance = True
+        else:
+            self.displayed_text = ""
+    
+    def set_animation(self, animation_type: str, speed: int = 30):
+        """
+        Set text animation type and speed.
+        
+        Args:
+            animation_type (str): "typewriter", "fade", or "instant"
+            speed (int): Animation speed (characters per second for typewriter)
+        """
+        self.animation_type = animation_type
+        self.animation_speed = speed
+    
+    def skip_animation(self):
+        """Skip current text animation and show complete text."""
+        if self.is_animating:
+            self.is_animating = False
+            self.is_complete = True
+            self.displayed_text = self.text
+            self.waiting_for_advance = True  # Now waiting for user to advance
+            if self.on_complete_callback:
+                self.on_complete_callback()
+    
+    def advance(self):
+        """
+        Advance to next dialog or close if complete.
+        Returns True if there's more dialog, False if done.
+        """
+        if self.is_animating:
+            self.skip_animation()
+            return True
+        elif self.waiting_for_advance:
+            self.waiting_for_advance = False
+            self.is_complete = False
+            self.displayed_text = ""
+            if self.on_advance_callback:
+                self.on_advance_callback()
+            return False
+        return True
+    
+    def set_on_complete(self, callback: Callable):
+        """Set callback for when text animation completes."""
+        self.on_complete_callback = callback
+    
+    def set_on_advance(self, callback: Callable):
+        """Set callback for when dialog is advanced."""
+        self.on_advance_callback = callback
+    
+    def update(self, dt: float):
+        """Update dialog box animations."""
+        if not self.visible:
+            return
+            
+        # Update text animation
+        if self.is_animating and self.animation_type == "typewriter":
+            self.animation_progress += dt * self.animation_speed
+            chars_to_show = min(len(self.text), int(self.animation_progress))
+            self.displayed_text = self.text[:chars_to_show]
+            
+            if chars_to_show >= len(self.text):
+                self.is_animating = False
+                self.is_complete = True
+                self.waiting_for_advance = True  # Now waiting for user input
+                if self.on_complete_callback:
+                    self.on_complete_callback()
+        
+        # Update continue indicator blink - only blink when waiting for advance
+        if self.show_continue_indicator and self.waiting_for_advance:
+            self.continue_timer += dt
+            if self.continue_timer >= 0.5:  # Blink every 0.5 seconds (faster)
+                self.continue_timer = 0.0
+                self.continue_indicator_blink = not self.continue_indicator_blink
+    
+    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
+        """Handle mouse interaction for dialog box."""
+        if not self.visible or not self.enabled:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.width and 
+                     actual_y <= mouse_pos[1] <= actual_y + self.height)
+        
+        # Only advance on mouse click when we're waiting for advance
+        if mouse_over and mouse_pressed and self.waiting_for_advance:
+            self.advance()
+        
+        self.state = UIState.HOVERED if mouse_over else UIState.NORMAL
+        
+        self.update(dt)
+    
+    def render_pygame(self, renderer):
+        """Render dialog box using Pygame backend."""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Draw main dialog box
+        if self.corner_radius > 0:
+            pygame.draw.rect(renderer.get_surface(), theme.dialog_background,
+                           (actual_x, actual_y, self.width, self.height),
+                           border_radius=self.corner_radius)
+        else:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.dialog_background)
+        
+        # Draw border
+        if theme.dialog_border:
+            if self.corner_radius > 0:
+                pygame.draw.rect(renderer.get_surface(), theme.dialog_border,
+                               (actual_x, actual_y, self.width, self.height),
+                               width=2, border_radius=self.corner_radius)
+            else:
+                renderer.draw_rect(actual_x, actual_y, self.width, self.height,
+                                 theme.dialog_border, fill=False, border_width=2)
+        
+        # Draw speaker name box if provided
+        if self.speaker_name:
+            name_width = self.name_font.size(self.speaker_name)[0] + self.name_padding * 2
+            name_height = self.name_font.get_height() + self.name_padding
+            name_x = actual_x + 10
+            name_y = actual_y - name_height // 2
+            
+            # Name box
+            pygame.draw.rect(renderer.get_surface(), theme.dialog_name_bg,
+                           (name_x, name_y, name_width, name_height))
+            
+            # Name text
+            name_surface = self.name_font.render(self.speaker_name, True, theme.dialog_name_text)
+            renderer.draw_surface(name_surface, name_x + self.name_padding, name_y + self.name_padding // 2)
+        
+        # Draw text with word wrapping
+        text_area_width = self.width - self.padding * 2
+        text_area_height = self.height - self.padding * 2
+        text_x = actual_x + self.padding
+        text_y = actual_y + self.padding
+        
+        self._render_wrapped_text(renderer, text_x, text_y, text_area_width, text_area_height, theme)
+        
+        # Draw continue indicator if waiting for advance
+        if self.show_continue_indicator and self.waiting_for_advance and self.continue_indicator_blink:
+            indicator_size = 10
+            indicator_x = actual_x + self.width - self.padding - indicator_size
+            indicator_y = actual_y + self.height - self.padding - indicator_size
+            
+            pygame.draw.polygon(renderer.get_surface(), theme.dialog_continue_indicator, [
+                (indicator_x, indicator_y),
+                (indicator_x + indicator_size, indicator_y),
+                (indicator_x + indicator_size // 2, indicator_y + indicator_size)
+            ])
+    
+    def render_opengl(self, renderer):
+        """Render dialog box using OpenGL backend."""
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+
+        # Draw border
+        if theme.dialog_border:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height,
+                             theme.dialog_border, fill=False, border_width=2)
+
+        # Draw main dialog box (simplified for OpenGL)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.dialog_background)
+
+        # Draw speaker name
+        if self.speaker_name:
+            name_width = self.name_font.size(self.speaker_name)[0] + self.name_padding * 2
+            name_height = self.name_font.get_height() + self.name_padding
+            name_x = actual_x + 10
+            name_y = actual_y - name_height // 2
+            
+            renderer.draw_rect(name_x, name_y, name_width, name_height, theme.dialog_name_bg)
+            
+            name_surface = self.name_font.render(self.speaker_name, True, theme.dialog_name_text)
+            if hasattr(renderer, 'render_surface'):
+                renderer.render_surface(name_surface, name_x + self.name_padding, name_y + self.name_padding // 2)
+            else:
+                renderer.draw_surface(name_surface, name_x + self.name_padding, name_y + self.name_padding // 2)
+        
+        # Draw text
+        text_area_width = self.width - self.padding * 2
+        text_area_height = self.height - self.padding * 2
+        text_x = actual_x + self.padding
+        text_y = actual_y + self.padding
+        
+        self._render_wrapped_text(renderer, text_x, text_y, text_area_width, text_area_height, theme, opengl=True)
+        
+        # Continue indicator
+        if self.show_continue_indicator and self.waiting_for_advance and self.continue_indicator_blink:
+            indicator_size = 10
+            indicator_x = actual_x + self.width - self.padding - indicator_size
+            indicator_y = actual_y + self.height - self.padding - indicator_size
+            
+            # Draw triangle for continue indicator
+            points = [
+                (indicator_x, indicator_y),
+                (indicator_x + indicator_size, indicator_y),
+                (indicator_x + indicator_size // 2, indicator_y + indicator_size)
+            ]
+            
+            if hasattr(renderer, 'draw_polygon'):
+                renderer.draw_polygon(points, theme.dialog_continue_indicator)
+            else:
+                # Fallback: draw a rectangle
+                renderer.draw_rect(indicator_x, indicator_y, indicator_size, indicator_size, 
+                                 theme.dialog_continue_indicator)
+    
+    def _render_wrapped_text(self, renderer, x: int, y: int, width: int, height: int, theme, opengl=False):
+        """Render text with word wrapping."""
+        if not self.displayed_text:
+            return
+            
+        words = self.displayed_text.split(' ')
+        lines = []
+        current_line = []
+        
+        for word in words:
+            test_line = ' '.join(current_line + [word])
+            test_width = self.font.size(test_line)[0]
+            
+            if test_width <= width:
+                current_line.append(word)
+            else:
+                if current_line:
+                    lines.append(' '.join(current_line))
+                current_line = [word] if self.font.size(word)[0] <= width else [word[:len(word)//2]]
+        
+        if current_line:
+            lines.append(' '.join(current_line))
+        
+        # Render lines
+        line_height = self.font.get_height()
+        max_lines = height // line_height
+        
+        for i, line in enumerate(lines[:max_lines]):
+            line_y = y + i * line_height
+            
+            if opengl:
+                renderer.draw_text(line, x, line_y, theme.dialog_text, self.font)
+            else:
+                text_surface = self.font.render(line, True, theme.dialog_text)
+                renderer.draw_surface(text_surface, x, line_y)
 
 class ProgressBar(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int,
@@ -2337,6 +3109,16 @@ class Dropdown(UIElement):
             FontManager.initialize()
             self._font = FontManager.get_font(self.font_name, self.font_size)
         return self._font
+    
+    def set_options(self, options: List[str], selected_index: int = 0):
+        self.options = options
+        self.selected_index = max(0, min(selected_index, len(options) - 1))
+        
+        # Reset dropdown
+        self.expanded = False
+        self.scroll_offset = 0
+        self.is_scrolling = False
+        self._just_opened = False
         
     def set_theme(self, theme_type: ThemeType):
         """Set dropdown theme"""

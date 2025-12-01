@@ -17,7 +17,9 @@ A modern, optimized 2D game engine built with Python and Pygame featuring advanc
 
 # Code
 [See this file](./lunaengine/CODE_STATISTICS.md)
+
 [TestPyPi](https://test.pypi.org/project/lunaengine/)
+
 [PyPi](https://pypi.org/project/lunaengine/)
 
 ## 🚀 Quick Start
@@ -29,7 +31,7 @@ A modern, optimized 2D game engine built with Python and Pygame featuring advanc
 pip install -r requirements.txt
 
 # Run a basic example
-python examples/basic_game.py
+python examples/ui_comprehensive_demo.py
 ```
 
 ## Requirements
@@ -71,4 +73,31 @@ twine upload --config-file .pypirc --repository pypi dist/*
 
 ## OpenGL
 - Require OpenGL 3.3+
-- ``LunaEngine("Game Title", screen_width, screen_height, use_opengl=True)``
+- OpenGL come actvated by default
+
+## Network
+*Example usage of server scripts:*
+```py
+def auto_save_script(server: Server):
+    """Example server script for auto-saving"""
+    # This would save game state periodically
+    save_data = {
+        'timestamp': time.time(),
+        'player_count': len(server.clients),
+        'game_state': 'running'
+    }
+    print(f"Auto-save: {save_data}")
+    return save_data
+
+def day_night_cycle_script(server: Server):
+    """Example server script for day/night cycle"""
+    # Calculate current cycle phase (0-1)
+    cycle_time = time.time() % 3600  # 1 hour cycle
+    cycle_phase = cycle_time / 3600
+    
+    # Broadcast cycle update to all clients
+    cycle_msg = GameStateMessage({'day_night_cycle': cycle_phase})
+    server.broadcast(cycle_msg)
+    
+    return {'cycle_phase': cycle_phase, 'cycle_time': cycle_time}
+```

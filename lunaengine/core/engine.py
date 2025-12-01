@@ -107,12 +107,13 @@ class LunaEngine:
         title (str): Window title
         width (int): Window width
         height (int): Window height
+        fullscreen (bool): Whether to start in fullscreen mode
         running (bool): Whether the engine is running
         clock (pygame.time.Clock): Game clock for FPS control
         scenes (Dict[str, Scene]): Registered scenes
         current_scene (Scene): Currently active scene
     """
-    def __init__(self, title: str = "LunaEngine Game", width: int = 800, height: int = 600, use_opengl: bool = True):
+    def __init__(self, title: str = "LunaEngine Game", width: int = 800, height: int = 600, use_opengl: bool = True, fullscreen: bool = False):
         """
         Initialize the LunaEngine.
         
@@ -120,11 +121,14 @@ class LunaEngine:
             title (str): The title of the game window (default: "LunaEngine Game")
             width (int): The width of the game window (default: 800)
             height (int): The height of the game window (default: 600)
-            use_opengl (bool): Use OpenGL for rendering (default: False)
+            use_opengl (bool): Use OpenGL for rendering (default: True)
+            fullscreen (bool): Start in fullscreen mode (default: False)
         """
         self.title = title
         self.width = width
         self.height = height
+        self.fullscreen = fullscreen
+        self.monitor_size:pygame.display._VidInfo = None
         self.running = False
         self.clock = pygame.time.Clock()
         self.fps = 60
@@ -141,17 +145,18 @@ class LunaEngine:
         # Choose rendering backend
         
         self.use_opengl = use_opengl
-        if use_opengl:
-            from ..backend.opengl import OpenGLRenderer
-            self.renderer: Renderer = OpenGLRenderer(width, height)
-        else:
-            self.renderer:Renderer = PygameRenderer(width, height)
+        self.renderer: Renderer = None
         
         self.screen = None
+        
+        # Automatically initialize
+        self.initialize()
         
     def initialize(self):
         """Initialize the engine and create the game window."""
         pygame.init()
+        
+        self.monitor_size:pygame.display._VidInfo = pygame.display.Info()
         
         # Initialize font system early
         FontManager.initialize()
@@ -166,29 +171,42 @@ class LunaEngine:
             pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
             
             try:
-                self.screen = pygame.display.set_mode((self.width, self.height), pygame.OPENGL | pygame.DOUBLEBUF)
-                print("OpenGL display created successfully")
+                code = pygame.OPENGL | pygame.DOUBLEBUF
+                if self.fullscreen:
+                    self.width, self.height = self.monitor_size.current_w, self.monitor_size.current_h
+                    code |= pygame.FULLSCREEN | pygame.SCALED
+                    print(f"Setting fullscreen mode: {self.width}x{self.height}")
+                self.screen = pygame.display.set_mode(size=(self.width, self.height), flags=code)
             except Exception as e:
                 print(f"Failed to create OpenGL display: {e}")
                 print("Falling back to Pygame rendering")
                 self.use_opengl = False
-                self.screen = pygame.display.set_mode((self.width, self.height))
+                self.screen = pygame.display.set_mode(size=(self.width, self.height))
         else:
-            self.screen = pygame.display.set_mode((self.width, self.height))
+            self.screen = pygame.display.set_mode(size=(self.width, self.height), flags=(pygame.FULLSCREEN if self.fullscreen else 0))
         
         pygame.display.set_caption(self.title)
         
+        # Create renderers
+        if self.use_opengl:
+            from ..backend.opengl import OpenGLRenderer
+            self.renderer: Renderer = OpenGLRenderer(self.width, self.height)
+        else:
+            self.renderer:Renderer = PygameRenderer(self.width, self.height)
+        
+        self.update_camera_renderer()
+        
         # Initialize both renderers
-        print("Initializing renderers...")
         renderer_success = self.renderer.initialize()
         
-        if self.use_opengl and not renderer_success:
-            print("OpenGL renderer failed to initialize, falling back to Pygame")
-            self.use_opengl = False
-            self.renderer: Renderer = self.ui_renderer
         
         self.running = True
         print("Engine initialization complete")
+        
+    def update_camera_renderer(self):
+        for scene in self.scenes.values():
+            if hasattr(scene, 'camera'):
+                scene.camera.renderer = self.renderer
         
     def add_scene(self, name: str, scene_class: Type[Scene], *args, **kwargs):
         """
@@ -364,7 +382,8 @@ class LunaEngine:
 
     def run(self):
         """Main game loop - CORRECTED"""
-        self.initialize()
+        if self.renderer is None:
+            self.initialize()
         
         while self.running:
             # Update performance monitoring
@@ -375,6 +394,7 @@ class LunaEngine:
             self.input_state.clear_consumed()
             
             self.update_mouse()
+            UITooltipManager.update(self, dt)
             
             # Handle events
             for event in pygame.event.get():
@@ -488,7 +508,8 @@ class LunaEngine:
                 regular_elements.append(ui_element)
         
         # Render in correct z-order
-        for ui_element in regular_elements + closed_dropdowns:
+        
+        for ui_element in sorted(regular_elements + closed_dropdowns + UITooltipManager.get_tooltip_to_render(engine=self), key=lambda e: e.z_index):
             ui_element.render(self.renderer)
         
         for dropdown in open_dropdowns:

@@ -5,7 +5,7 @@
       "title": "Core",
       "description": "Core engine systems - Engine, Window, Renderer",
       "link": "core/index.html",
-      "files_count": 6,
+      "files_count": 5,
       "classes_count": 11,
       "functions_count": 0
     },
@@ -15,7 +15,7 @@
       "description": "User interface components - Buttons, Layouts, Themes",
       "link": "ui/index.html",
       "files_count": 4,
-      "classes_count": 29,
+      "classes_count": 33,
       "functions_count": 0
     },
     {
@@ -34,15 +34,15 @@
       "link": "utils/index.html",
       "files_count": 4,
       "classes_count": 6,
-      "functions_count": 7
+      "functions_count": 9
     },
     {
       "name": "backend",
       "title": "Backend",
       "description": "Renderer backends - OpenGL, Pygame",
       "link": "backend/index.html",
-      "files_count": 3,
-      "classes_count": 7,
+      "files_count": 4,
+      "classes_count": 28,
       "functions_count": 0
     },
     {
@@ -123,9 +123,9 @@
       "name": "LunaEngine",
       "module": "core",
       "file": "engine.py",
-      "description": "Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene",
+      "description": "Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether to start in fullscreen mode<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene",
       "link": "core/index.html#class-lunaengine",
-      "methods_count": 29,
+      "methods_count": 30,
       "element_id": "class-lunaengine"
     },
     {
@@ -143,7 +143,7 @@
       "file": "scene.py",
       "description": "Base class for all game scenes.<br><br>Provides lifecycle methods and UI element management. <br>All custom scenes should inherit from this class.<br><br>Attributes:<br> &nbsp; &nbsp;ui_elements (List[UIElement]): List of UI elements in this scene<br> &nbsp; &nbsp;_initialized (bool): Whether the scene has been initialized<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine",
       "link": "core/index.html#class-scene",
-      "methods_count": 11,
+      "methods_count": 13,
       "element_id": "class-scene"
     },
     {
@@ -188,8 +188,35 @@
       "file": "elements.py",
       "description": "Base class for all UI elements providing common functionality.<br><br>Attributes:<br> &nbsp; &nbsp;element_id (str): Unique identifier for this element in format ui_{type}_{counter}<br> &nbsp; &nbsp;x (int): X coordinate position<br> &nbsp; &nbsp;y (int): Y coordinate position<br> &nbsp; &nbsp;width (int): Width of the element in pixels<br> &nbsp; &nbsp;height (int): Height of the element in pixels<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning<br> &nbsp; &nbsp;state (UIState): Current state of the element<br> &nbsp; &nbsp;visible (bool): Whether element is visible<br> &nbsp; &nbsp;enabled (bool): Whether element is enabled<br> &nbsp; &nbsp;children (List[UIElement]): Child elements<br> &nbsp; &nbsp;parent (UIElement): Parent element",
       "link": "ui/index.html#class-uielement",
-      "methods_count": 14,
+      "methods_count": 17,
       "element_id": "class-uielement"
+    },
+    {
+      "name": "TooltipConfig",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "Configuration class for tooltip appearance and behavior.<br>Allows easy customization of tooltips without passing multiple parameters.",
+      "link": "ui/index.html#class-tooltipconfig",
+      "methods_count": 1,
+      "element_id": "class-tooltipconfig"
+    },
+    {
+      "name": "Tooltip",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "Tooltip element that displays helpful information when hovering over UI elements.<br>Automatically adjusts position to stay within screen boundaries.",
+      "link": "ui/index.html#class-tooltip",
+      "methods_count": 11,
+      "element_id": "class-tooltip"
+    },
+    {
+      "name": "UITooltipManager",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "Manages tooltips globally to ensure proper display and positioning.<br>Supports multiple tooltips for different UI elements.",
+      "link": "ui/index.html#class-uitooltipmanager",
+      "methods_count": 7,
+      "element_id": "class-uitooltipmanager"
     },
     {
       "name": "TextLabel",
@@ -235,6 +262,15 @@
       "link": "ui/index.html#class-textbox",
       "methods_count": 12,
       "element_id": "class-textbox"
+    },
+    {
+      "name": "DialogBox",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "RPG-style dialog box with multiple display styles and text animations.<br>Supports typewriter effect, fade-in, and character-by-character display.",
+      "link": "ui/index.html#class-dialogbox",
+      "methods_count": 12,
+      "element_id": "class-dialogbox"
     },
     {
       "name": "ProgressBar",
@@ -305,7 +341,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/index.html#class-dropdown",
-      "methods_count": 16,
+      "methods_count": 17,
       "element_id": "class-dropdown"
     },
     {
@@ -413,7 +449,7 @@
       "file": "themes.py",
       "description": "Manages complete UI themes",
       "link": "ui/index.html#class-thememanager",
-      "methods_count": 11,
+      "methods_count": 24,
       "element_id": "class-thememanager"
     },
     {
@@ -624,6 +660,195 @@
       "element_id": "class-threadpool"
     },
     {
+      "name": "NetworkEventType",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Types of network events",
+      "link": "backend/index.html#class-networkeventtype",
+      "methods_count": 0,
+      "element_id": "class-networkeventtype"
+    },
+    {
+      "name": "NetworkEvent",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Network event container",
+      "link": "backend/index.html#class-networkevent",
+      "methods_count": 1,
+      "element_id": "class-networkevent"
+    },
+    {
+      "name": "NetworkMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Base class for network messages with serialization capabilities",
+      "link": "backend/index.html#class-networkmessage",
+      "methods_count": 2,
+      "element_id": "class-networkmessage"
+    },
+    {
+      "name": "ClientInfo",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Client information container with enhanced tracking",
+      "link": "backend/index.html#class-clientinfo",
+      "methods_count": 1,
+      "element_id": "class-clientinfo"
+    },
+    {
+      "name": "Client",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Represents a connected client in the network system with ping tracking",
+      "link": "backend/index.html#class-client",
+      "methods_count": 4,
+      "element_id": "class-client"
+    },
+    {
+      "name": "ServerScript",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Server script for automated tasks like auto-save, day/night cycle, etc.",
+      "link": "backend/index.html#class-serverscript",
+      "methods_count": 3,
+      "element_id": "class-serverscript"
+    },
+    {
+      "name": "Server",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Network server for handling multiple client connections with enhanced features<br><br>Parameters:<br> &nbsp; &nbsp;host: Server host address (default: &#x27;localhost&#x27;)<br> &nbsp; &nbsp;port: Server port (default: 5555)<br> &nbsp; &nbsp;max_clients: Maximum number of simultaneous clients (default: 8)<br> &nbsp; &nbsp;password[Optional]: Optional password for client authentication (default: None)",
+      "link": "backend/index.html#class-server",
+      "methods_count": 27,
+      "element_id": "class-server"
+    },
+    {
+      "name": "NetworkClient",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Network client for connecting to server with enhanced features",
+      "link": "backend/index.html#class-networkclient",
+      "methods_count": 11,
+      "element_id": "class-networkclient"
+    },
+    {
+      "name": "HostClient",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Hybrid client that can also act as a server for other clients<br>Perfect for player-hosted multiplayer games with enhanced features",
+      "link": "backend/index.html#class-hostclient",
+      "methods_count": 22,
+      "element_id": "class-hostclient"
+    },
+    {
+      "name": "NetworkDiscovery",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Simple network discovery for finding local hosts",
+      "link": "backend/index.html#class-networkdiscovery",
+      "methods_count": 3,
+      "element_id": "class-networkdiscovery"
+    },
+    {
+      "name": "HeartbeatMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Heartbeat message for connection monitoring with ping measurement",
+      "link": "backend/index.html#class-heartbeatmessage",
+      "methods_count": 1,
+      "element_id": "class-heartbeatmessage"
+    },
+    {
+      "name": "AuthMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Authentication message for password-protected servers",
+      "link": "backend/index.html#class-authmessage",
+      "methods_count": 1,
+      "element_id": "class-authmessage"
+    },
+    {
+      "name": "AuthResultMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Authentication result message",
+      "link": "backend/index.html#class-authresultmessage",
+      "methods_count": 1,
+      "element_id": "class-authresultmessage"
+    },
+    {
+      "name": "KickMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Kick message for removing clients from server",
+      "link": "backend/index.html#class-kickmessage",
+      "methods_count": 1,
+      "element_id": "class-kickmessage"
+    },
+    {
+      "name": "PlayerPositionMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Player position update message",
+      "link": "backend/index.html#class-playerpositionmessage",
+      "methods_count": 1,
+      "element_id": "class-playerpositionmessage"
+    },
+    {
+      "name": "ChatMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Chat message with better duplicate prevention",
+      "link": "backend/index.html#class-chatmessage",
+      "methods_count": 1,
+      "element_id": "class-chatmessage"
+    },
+    {
+      "name": "GameStateMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Game state synchronization message",
+      "link": "backend/index.html#class-gamestatemessage",
+      "methods_count": 1,
+      "element_id": "class-gamestatemessage"
+    },
+    {
+      "name": "ServerScriptMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Server script execution result message",
+      "link": "backend/index.html#class-serverscriptmessage",
+      "methods_count": 1,
+      "element_id": "class-serverscriptmessage"
+    },
+    {
+      "name": "ServerShutdownMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Message sent to all clients when server is shutting down",
+      "link": "backend/index.html#class-servershutdownmessage",
+      "methods_count": 1,
+      "element_id": "class-servershutdownmessage"
+    },
+    {
+      "name": "HostMigrationMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Message for host migration scenarios",
+      "link": "backend/index.html#class-hostmigrationmessage",
+      "methods_count": 1,
+      "element_id": "class-hostmigrationmessage"
+    },
+    {
+      "name": "NetworkMessages",
+      "module": "backend",
+      "file": "network.py",
+      "description": "No documentation",
+      "link": "backend/index.html#class-networkmessages",
+      "methods_count": 0,
+      "element_id": "class-networkmessages"
+    },
+    {
       "name": "ShaderProgram",
       "module": "backend",
       "file": "opengl.py",
@@ -746,7 +971,7 @@
       "name": "rgba_brightness",
       "module": "utils",
       "file": "math_utils.py",
-      "description": "No documentation",
+      "description": "This function is used to calculate the overall brightness of an RGBA color<br><br>Parameters:<br> &nbsp; &nbsp;rgba (Tuple[int, int, int, float]): A tuple representing the RGBA color<br>Returns:<br> &nbsp; &nbsp;float: A float representing the brightness of the color",
       "link": "utils/index.html#func-rgba_brightness",
       "is_method": false,
       "element_id": "func-rgba_brightness"
@@ -755,10 +980,28 @@
       "name": "individual_rgba_brightness",
       "module": "utils",
       "file": "math_utils.py",
-      "description": "No documentation",
+      "description": "This function is used to calculate the individual brightness of each color channel (R, G, B, A)<br><br>Parameters:<br> &nbsp; &nbsp;rgba (Tuple[int, int, int, float]): A tuple representing the RGBA color<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float, float, float]: A tuple representing the normalized RGBA values",
       "link": "utils/index.html#func-individual_rgba_brightness",
       "is_method": false,
       "element_id": "func-individual_rgba_brightness"
+    },
+    {
+      "name": "humanize_number",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "This function is used to format a number into a human-readable string<br>Like: 1K, 1M, 1B, etc.<br>Also: 1.5K, 2.34M, etc.<br>Parameters:<br> &nbsp; &nbsp;number (float): A float representing the number to be formatted<br> &nbsp; &nbsp;decimal_places (int): Number of decimal places to include<br>Returns:<br> &nbsp; &nbsp;str: A string representing the formatted number",
+      "link": "utils/index.html#func-humanize_number",
+      "is_method": false,
+      "element_id": "func-humanize_number"
+    },
+    {
+      "name": "humanize_time",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "This function is used to format a time duration in seconds into a human-readable string<br>Like: 1h 30m, 2d 5h, etc.<br><br>Parameters:<br> &nbsp; &nbsp;seconds (float): A float representing the time duration in seconds<br>Returns:<br> &nbsp; &nbsp;str: A string representing the formatted time duration",
+      "link": "utils/index.html#func-humanize_time",
+      "is_method": false,
+      "element_id": "func-humanize_time"
     },
     {
       "name": "main",
@@ -1270,7 +1513,7 @@
       "name": "__init__",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Initialize the LunaEngine.<br><br>Args:<br> &nbsp; &nbsp;title (str): The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int): The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int): The height of the game window (default: 600)<br> &nbsp; &nbsp;use_opengl (bool): Use OpenGL for rendering (default: False)",
+      "description": "Initialize the LunaEngine.<br><br>Args:<br> &nbsp; &nbsp;title (str): The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int): The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int): The height of the game window (default: 600)<br> &nbsp; &nbsp;use_opengl (bool): Use OpenGL for rendering (default: True)<br> &nbsp; &nbsp;fullscreen (bool): Start in fullscreen mode (default: False)",
       "link": "core/index.html#method-lunaengine-__init__",
       "is_method": true,
       "element_id": "method-lunaengine-__init__"
@@ -1283,6 +1526,15 @@
       "link": "core/index.html#method-lunaengine-initialize",
       "is_method": true,
       "element_id": "method-lunaengine-initialize"
+    },
+    {
+      "name": "update_camera_renderer",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/index.html#method-lunaengine-update_camera_renderer",
+      "is_method": true,
+      "element_id": "method-lunaengine-update_camera_renderer"
     },
     {
       "name": "add_scene",
@@ -1807,6 +2059,24 @@
       "element_id": "method-scene-get_all_ui_elements"
     },
     {
+      "name": "has_element_by_id",
+      "class": "Scene",
+      "module": "core",
+      "description": "Check if a UI element with the given ID exists in the scene.<br><br>Args:<br> &nbsp; &nbsp;element_id (str): The unique ID of the element to check<br>Returns:<br> &nbsp; &nbsp;bool: True if element exists, False otherwise",
+      "link": "core/index.html#method-scene-has_element_by_id",
+      "is_method": true,
+      "element_id": "method-scene-has_element_by_id"
+    },
+    {
+      "name": "has_element",
+      "class": "Scene",
+      "module": "core",
+      "description": "Check if a specific UI element exists in the scene.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to check<br>Returns:<br> &nbsp; &nbsp;bool: True if element exists, False otherwise",
+      "link": "core/index.html#method-scene-has_element",
+      "is_method": true,
+      "element_id": "method-scene-has_element"
+    },
+    {
       "name": "clear_ui_elements",
       "class": "Scene",
       "module": "core",
@@ -1960,6 +2230,33 @@
       "element_id": "method-uielement-add_child"
     },
     {
+      "name": "set_tooltip",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Set tooltip for this element using a Tooltip instance.<br><br>Args:<br> &nbsp; &nbsp;tooltip (Tooltip): Tooltip instance to associate with this element",
+      "link": "ui/index.html#method-uielement-set_tooltip",
+      "is_method": true,
+      "element_id": "method-uielement-set_tooltip"
+    },
+    {
+      "name": "set_simple_tooltip",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Quick method to set a simple tooltip with text.<br><br>Args:<br> &nbsp; &nbsp;text (str): Tooltip text<br> &nbsp; &nbsp;**kwargs: Additional arguments for TooltipConfig",
+      "link": "ui/index.html#method-uielement-set_simple_tooltip",
+      "is_method": true,
+      "element_id": "method-uielement-set_simple_tooltip"
+    },
+    {
+      "name": "remove_tooltip",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Remove tooltip from this element.",
+      "link": "ui/index.html#method-uielement-remove_tooltip",
+      "is_method": true,
+      "element_id": "method-uielement-remove_tooltip"
+    },
+    {
       "name": "_update_with_mouse",
       "class": "UIElement",
       "module": "ui",
@@ -2039,6 +2336,177 @@
       "link": "ui/index.html#method-uielement-on_hover",
       "is_method": true,
       "element_id": "method-uielement-on_hover"
+    },
+    {
+      "name": "__init__",
+      "class": "TooltipConfig",
+      "module": "ui",
+      "description": "Initialize tooltip configuration.<br><br>Args:<br> &nbsp; &nbsp;text (str): Tooltip text content<br> &nbsp; &nbsp;font_size (int): Font size for tooltip text<br> &nbsp; &nbsp;padding (int): Padding around text<br> &nbsp; &nbsp;corner_radius (int): Border radius for rounded corners<br> &nbsp; &nbsp;offset_x (int): Horizontal offset from target element<br> &nbsp; &nbsp;offset_y (int): Vertical offset from target element<br> &nbsp; &nbsp;show_delay (float): Delay in seconds before showing tooltip<br> &nbsp; &nbsp;max_width (int): Maximum width before text wraps<br> &nbsp; &nbsp;theme (ThemeType): Custom theme for tooltip",
+      "link": "ui/index.html#method-tooltipconfig-__init__",
+      "is_method": true,
+      "element_id": "method-tooltipconfig-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Initialize a tooltip with configuration.<br><br>Args:<br> &nbsp; &nbsp;config (TooltipConfig): Configuration object for tooltip appearance<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID",
+      "link": "ui/index.html#method-tooltip-__init__",
+      "is_method": true,
+      "element_id": "method-tooltip-__init__"
+    },
+    {
+      "name": "_calculate_size",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Calculate tooltip size based on text and configuration.",
+      "link": "ui/index.html#method-tooltip-_calculate_size",
+      "is_method": true,
+      "element_id": "method-tooltip-_calculate_size"
+    },
+    {
+      "name": "_wrap_text",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Wrap text to fit within max width.<br><br>Args:<br> &nbsp; &nbsp;text (str): Text to wrap<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[str]: List of wrapped lines",
+      "link": "ui/index.html#method-tooltip-_wrap_text",
+      "is_method": true,
+      "element_id": "method-tooltip-_wrap_text"
+    },
+    {
+      "name": "set_text",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Update tooltip text and recalculate size.<br><br>Args:<br> &nbsp; &nbsp;text (str): New tooltip text",
+      "link": "ui/index.html#method-tooltip-set_text",
+      "is_method": true,
+      "element_id": "method-tooltip-set_text"
+    },
+    {
+      "name": "set_config",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Update tooltip configuration.<br><br>Args:<br> &nbsp; &nbsp;config (TooltipConfig): New configuration",
+      "link": "ui/index.html#method-tooltip-set_config",
+      "is_method": true,
+      "element_id": "method-tooltip-set_config"
+    },
+    {
+      "name": "set_target",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Set the target element for this tooltip.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): Element to attach tooltip to",
+      "link": "ui/index.html#method-tooltip-set_target",
+      "is_method": true,
+      "element_id": "method-tooltip-set_target"
+    },
+    {
+      "name": "update_tooltip",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Update tooltip state and position.<br><br>Args:<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position<br> &nbsp; &nbsp;dt (float): Delta time in seconds<br> &nbsp; &nbsp;screen_width (int): Screen width for boundary checking<br> &nbsp; &nbsp;screen_height (int): Screen height for boundary checking<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if tooltip should be visible, False otherwise",
+      "link": "ui/index.html#method-tooltip-update_tooltip",
+      "is_method": true,
+      "element_id": "method-tooltip-update_tooltip"
+    },
+    {
+      "name": "_update_position",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Update tooltip position to follow mouse and stay within screen bounds.<br><br>Args:<br> &nbsp; &nbsp;screen_width (int): Screen width for boundary checking<br> &nbsp; &nbsp;screen_height (int): Screen height for boundary checking<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position",
+      "link": "ui/index.html#method-tooltip-_update_position",
+      "is_method": true,
+      "element_id": "method-tooltip-_update_position"
+    },
+    {
+      "name": "render_pygame",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Render tooltip using Pygame backend",
+      "link": "ui/index.html#method-tooltip-render_pygame",
+      "is_method": true,
+      "element_id": "method-tooltip-render_pygame"
+    },
+    {
+      "name": "render_opengl",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Render tooltip using OpenGL backend",
+      "link": "ui/index.html#method-tooltip-render_opengl",
+      "is_method": true,
+      "element_id": "method-tooltip-render_opengl"
+    },
+    {
+      "name": "_render_wrapped_text",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Render wrapped text inside tooltip.",
+      "link": "ui/index.html#method-tooltip-_render_wrapped_text",
+      "is_method": true,
+      "element_id": "method-tooltip-_render_wrapped_text"
+    },
+    {
+      "name": "__new__",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-uitooltipmanager-__new__",
+      "is_method": true,
+      "element_id": "method-uitooltipmanager-__new__"
+    },
+    {
+      "name": "register_tooltip",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Register a tooltip for a UI element.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element that triggers the tooltip<br> &nbsp; &nbsp;tooltip (Tooltip): The tooltip to show",
+      "link": "ui/index.html#method-uitooltipmanager-register_tooltip",
+      "is_method": true,
+      "element_id": "method-uitooltipmanager-register_tooltip"
+    },
+    {
+      "name": "unregister_tooltip",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Unregister tooltip for a UI element.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to remove tooltip from",
+      "link": "ui/index.html#method-uitooltipmanager-unregister_tooltip",
+      "is_method": true,
+      "element_id": "method-uitooltipmanager-unregister_tooltip"
+    },
+    {
+      "name": "update",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Update all tooltips and determine which one should be active.<br><br>Args:<br> &nbsp; &nbsp;engine (LunaEngine): The main engine instance<br> &nbsp; &nbsp;dt (float): Delta time in seconds",
+      "link": "ui/index.html#method-uitooltipmanager-update",
+      "is_method": true,
+      "element_id": "method-uitooltipmanager-update"
+    },
+    {
+      "name": "get_tooltip_to_render",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Get the currently active tooltip to render.<br><br>Args:<br> &nbsp; &nbsp;engine (LunaEngine): The main engine instance<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[Tooltip]: List containing the active tooltip, or empty if none",
+      "link": "ui/index.html#method-uitooltipmanager-get_tooltip_to_render",
+      "is_method": true,
+      "element_id": "method-uitooltipmanager-get_tooltip_to_render"
+    },
+    {
+      "name": "render",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Render the active tooltip.",
+      "link": "ui/index.html#method-uitooltipmanager-render",
+      "is_method": true,
+      "element_id": "method-uitooltipmanager-render"
+    },
+    {
+      "name": "clear_all",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Clear all registered tooltips.",
+      "link": "ui/index.html#method-uitooltipmanager-clear_all",
+      "is_method": true,
+      "element_id": "method-uitooltipmanager-clear_all"
     },
     {
       "name": "__init__",
@@ -2377,7 +2845,7 @@
       "name": "_update_with_mouse",
       "class": "TextBox",
       "module": "ui",
-      "description": "Update text box with mouse interaction - OPTIMIZED",
+      "description": "Update text box with mouse interaction - IMPROVED with backspace support",
       "link": "ui/index.html#method-textbox-_update_with_mouse",
       "is_method": true,
       "element_id": "method-textbox-_update_with_mouse"
@@ -2386,7 +2854,7 @@
       "name": "handle_key_input",
       "class": "TextBox",
       "module": "ui",
-      "description": "Handle keyboard input when focused - OPTIMIZED<br><br>Args:<br> &nbsp; &nbsp;event: Pygame keyboard event.",
+      "description": "Handle keyboard input when focused - UPDATED with max_length support<br><br>Args:<br> &nbsp; &nbsp;event: Pygame keyboard event.",
       "link": "ui/index.html#method-textbox-handle_key_input",
       "is_method": true,
       "element_id": "method-textbox-handle_key_input"
@@ -2426,6 +2894,114 @@
       "link": "ui/index.html#method-textbox-_render_text_content",
       "is_method": true,
       "element_id": "method-textbox-_render_text_content"
+    },
+    {
+      "name": "__init__",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "Initialize a dialog box.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position<br> &nbsp; &nbsp;y (int): Y coordinate position<br> &nbsp; &nbsp;width (int): Width of dialog box<br> &nbsp; &nbsp;height (int): Height of dialog box<br> &nbsp; &nbsp;style (str): Visual style (&quot;default&quot;, &quot;rpg&quot;, &quot;pokemon&quot;, &quot;modern&quot;)<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for styling<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID",
+      "link": "ui/index.html#method-dialogbox-__init__",
+      "is_method": true,
+      "element_id": "method-dialogbox-__init__"
+    },
+    {
+      "name": "set_text",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "Set dialog text and optionally a speaker name.<br><br>Args:<br> &nbsp; &nbsp;text (str): The dialog text to display<br> &nbsp; &nbsp;speaker_name (str): Name of the speaker (optional)<br> &nbsp; &nbsp;instant (bool): Whether to display text instantly",
+      "link": "ui/index.html#method-dialogbox-set_text",
+      "is_method": true,
+      "element_id": "method-dialogbox-set_text"
+    },
+    {
+      "name": "set_animation",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "Set text animation type and speed.<br><br>Args:<br> &nbsp; &nbsp;animation_type (str): &quot;typewriter&quot;, &quot;fade&quot;, or &quot;instant&quot;<br> &nbsp; &nbsp;speed (int): Animation speed (characters per second for typewriter)",
+      "link": "ui/index.html#method-dialogbox-set_animation",
+      "is_method": true,
+      "element_id": "method-dialogbox-set_animation"
+    },
+    {
+      "name": "skip_animation",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "Skip current text animation and show complete text.",
+      "link": "ui/index.html#method-dialogbox-skip_animation",
+      "is_method": true,
+      "element_id": "method-dialogbox-skip_animation"
+    },
+    {
+      "name": "advance",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "Advance to next dialog or close if complete.<br>Returns True if there&#x27;s more dialog, False if done.",
+      "link": "ui/index.html#method-dialogbox-advance",
+      "is_method": true,
+      "element_id": "method-dialogbox-advance"
+    },
+    {
+      "name": "set_on_complete",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "Set callback for when text animation completes.",
+      "link": "ui/index.html#method-dialogbox-set_on_complete",
+      "is_method": true,
+      "element_id": "method-dialogbox-set_on_complete"
+    },
+    {
+      "name": "set_on_advance",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "Set callback for when dialog is advanced.",
+      "link": "ui/index.html#method-dialogbox-set_on_advance",
+      "is_method": true,
+      "element_id": "method-dialogbox-set_on_advance"
+    },
+    {
+      "name": "update",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "Update dialog box animations.",
+      "link": "ui/index.html#method-dialogbox-update",
+      "is_method": true,
+      "element_id": "method-dialogbox-update"
+    },
+    {
+      "name": "_update_with_mouse",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "Handle mouse interaction for dialog box.",
+      "link": "ui/index.html#method-dialogbox-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-dialogbox-_update_with_mouse"
+    },
+    {
+      "name": "render_pygame",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "Render dialog box using Pygame backend.",
+      "link": "ui/index.html#method-dialogbox-render_pygame",
+      "is_method": true,
+      "element_id": "method-dialogbox-render_pygame"
+    },
+    {
+      "name": "render_opengl",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "Render dialog box using OpenGL backend.",
+      "link": "ui/index.html#method-dialogbox-render_opengl",
+      "is_method": true,
+      "element_id": "method-dialogbox-render_opengl"
+    },
+    {
+      "name": "_render_wrapped_text",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "Render text with word wrapping.",
+      "link": "ui/index.html#method-dialogbox-_render_wrapped_text",
+      "is_method": true,
+      "element_id": "method-dialogbox-_render_wrapped_text"
     },
     {
       "name": "__init__",
@@ -2914,6 +3490,15 @@
       "element_id": "method-dropdown-font"
     },
     {
+      "name": "set_options",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-dropdown-set_options",
+      "is_method": true,
+      "element_id": "method-dropdown-set_options"
+    },
+    {
       "name": "set_theme",
       "class": "Dropdown",
       "module": "ui",
@@ -3292,13 +3877,130 @@
       "element_id": "method-theme-__init__"
     },
     {
-      "name": "initialize_default_themes",
+      "name": "_get_themes_file_path",
       "class": "ThemeManager",
       "module": "ui",
-      "description": "Initialize all complete UI themes",
-      "link": "ui/index.html#method-thememanager-initialize_default_themes",
+      "description": "Get the path to themes.json file (cross-platform)",
+      "link": "ui/index.html#method-thememanager-_get_themes_file_path",
       "is_method": true,
-      "element_id": "method-thememanager-initialize_default_themes"
+      "element_id": "method-thememanager-_get_themes_file_path"
+    },
+    {
+      "name": "_load_themes_from_json",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Load themes from JSON file",
+      "link": "ui/index.html#method-thememanager-_load_themes_from_json",
+      "is_method": true,
+      "element_id": "method-thememanager-_load_themes_from_json"
+    },
+    {
+      "name": "_create_fallback_theme",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Create a simple fallback theme if JSON loading fails",
+      "link": "ui/index.html#method-thememanager-_create_fallback_theme",
+      "is_method": true,
+      "element_id": "method-thememanager-_create_fallback_theme"
+    },
+    {
+      "name": "ensure_themes_loaded",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Ensure themes are loaded from JSON",
+      "link": "ui/index.html#method-thememanager-ensure_themes_loaded",
+      "is_method": true,
+      "element_id": "method-thememanager-ensure_themes_loaded"
+    },
+    {
+      "name": "get_theme_by_name",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get theme by name string",
+      "link": "ui/index.html#method-thememanager-get_theme_by_name",
+      "is_method": true,
+      "element_id": "method-thememanager-get_theme_by_name"
+    },
+    {
+      "name": "get_theme_type_by_name",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get theme type by name string",
+      "link": "ui/index.html#method-thememanager-get_theme_type_by_name",
+      "is_method": true,
+      "element_id": "method-thememanager-get_theme_type_by_name"
+    },
+    {
+      "name": "get_theme",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get complete theme by type",
+      "link": "ui/index.html#method-thememanager-get_theme",
+      "is_method": true,
+      "element_id": "method-thememanager-get_theme"
+    },
+    {
+      "name": "set_theme",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Set or override a theme",
+      "link": "ui/index.html#method-thememanager-set_theme",
+      "is_method": true,
+      "element_id": "method-thememanager-set_theme"
+    },
+    {
+      "name": "set_current_theme",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Set the current default theme",
+      "link": "ui/index.html#method-thememanager-set_current_theme",
+      "is_method": true,
+      "element_id": "method-thememanager-set_current_theme"
+    },
+    {
+      "name": "get_current_theme",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get current default theme",
+      "link": "ui/index.html#method-thememanager-get_current_theme",
+      "is_method": true,
+      "element_id": "method-thememanager-get_current_theme"
+    },
+    {
+      "name": "get_themes",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get all available themes",
+      "link": "ui/index.html#method-thememanager-get_themes",
+      "is_method": true,
+      "element_id": "method-thememanager-get_themes"
+    },
+    {
+      "name": "get_theme_types",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get all available theme types",
+      "link": "ui/index.html#method-thememanager-get_theme_types",
+      "is_method": true,
+      "element_id": "method-thememanager-get_theme_types"
+    },
+    {
+      "name": "get_theme_names",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get all available theme names",
+      "link": "ui/index.html#method-thememanager-get_theme_names",
+      "is_method": true,
+      "element_id": "method-thememanager-get_theme_names"
+    },
+    {
+      "name": "get_color",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Get a specific color from the current theme",
+      "link": "ui/index.html#method-thememanager-get_color",
+      "is_method": true,
+      "element_id": "method-thememanager-get_color"
     },
     {
       "name": "get_theme_by_name",
@@ -4687,6 +5389,762 @@
       "element_id": "method-threadpool-_worker"
     },
     {
+      "name": "__post_init__",
+      "class": "NetworkEvent",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-networkevent-__post_init__",
+      "is_method": true,
+      "element_id": "method-networkevent-__post_init__"
+    },
+    {
+      "name": "to_bytes",
+      "class": "NetworkMessage",
+      "module": "backend",
+      "description": "Convert message to bytes for transmission",
+      "link": "backend/index.html#method-networkmessage-to_bytes",
+      "is_method": true,
+      "element_id": "method-networkmessage-to_bytes"
+    },
+    {
+      "name": "from_bytes",
+      "class": "NetworkMessage",
+      "module": "backend",
+      "description": "Create message from bytes",
+      "link": "backend/index.html#method-networkmessage-from_bytes",
+      "is_method": true,
+      "element_id": "method-networkmessage-from_bytes"
+    },
+    {
+      "name": "__post_init__",
+      "class": "ClientInfo",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-clientinfo-__post_init__",
+      "is_method": true,
+      "element_id": "method-clientinfo-__post_init__"
+    },
+    {
+      "name": "__init__",
+      "class": "Client",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-client-__init__",
+      "is_method": true,
+      "element_id": "method-client-__init__"
+    },
+    {
+      "name": "update_heartbeat",
+      "class": "Client",
+      "module": "backend",
+      "description": "Update the last heartbeat time",
+      "link": "backend/index.html#method-client-update_heartbeat",
+      "is_method": true,
+      "element_id": "method-client-update_heartbeat"
+    },
+    {
+      "name": "update_ping",
+      "class": "Client",
+      "module": "backend",
+      "description": "Update client ping",
+      "link": "backend/index.html#method-client-update_ping",
+      "is_method": true,
+      "element_id": "method-client-update_ping"
+    },
+    {
+      "name": "is_timeout",
+      "class": "Client",
+      "module": "backend",
+      "description": "Check if client has timed out",
+      "link": "backend/index.html#method-client-is_timeout",
+      "is_method": true,
+      "element_id": "method-client-is_timeout"
+    },
+    {
+      "name": "__init__",
+      "class": "ServerScript",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-serverscript-__init__",
+      "is_method": true,
+      "element_id": "method-serverscript-__init__"
+    },
+    {
+      "name": "should_execute",
+      "class": "ServerScript",
+      "module": "backend",
+      "description": "Check if script should execute based on interval",
+      "link": "backend/index.html#method-serverscript-should_execute",
+      "is_method": true,
+      "element_id": "method-serverscript-should_execute"
+    },
+    {
+      "name": "execute",
+      "class": "ServerScript",
+      "module": "backend",
+      "description": "Execute the script callback",
+      "link": "backend/index.html#method-serverscript-execute",
+      "is_method": true,
+      "element_id": "method-serverscript-execute"
+    },
+    {
+      "name": "__init__",
+      "class": "Server",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-server-__init__",
+      "is_method": true,
+      "element_id": "method-server-__init__"
+    },
+    {
+      "name": "toggle_scripts_execution",
+      "class": "Server",
+      "module": "backend",
+      "description": "Enable or disable server scripts execution<br><br>Args:<br> &nbsp; &nbsp;enabled: Whether to enable or disable scripts<br> &nbsp; &nbsp;key: Specific script name to toggle, if None toggles all scripts",
+      "link": "backend/index.html#method-server-toggle_scripts_execution",
+      "is_method": true,
+      "element_id": "method-server-toggle_scripts_execution"
+    },
+    {
+      "name": "disconnect_client",
+      "class": "Server",
+      "module": "backend",
+      "description": "Gracefully disconnect a specific client<br><br>Args:<br> &nbsp; &nbsp;client_id: ID of client to disconnect<br> &nbsp; &nbsp;reason: Reason for disconnection<br> &nbsp; &nbsp;send_message: Whether to send a disconnect message to the client",
+      "link": "backend/index.html#method-server-disconnect_client",
+      "is_method": true,
+      "element_id": "method-server-disconnect_client"
+    },
+    {
+      "name": "disconnect",
+      "class": "Server",
+      "module": "backend",
+      "description": "Disconnect all clients and shutdown the server gracefully<br><br>Args:<br> &nbsp; &nbsp;reason: Reason for disconnection<br> &nbsp; &nbsp;delay: Time to wait before forcing shutdown",
+      "link": "backend/index.html#method-server-disconnect",
+      "is_method": true,
+      "element_id": "method-server-disconnect"
+    },
+    {
+      "name": "graceful_shutdown",
+      "class": "Server",
+      "module": "backend",
+      "description": "Gracefully shutdown the server, notifying all clients first<br><br>Args:<br> &nbsp; &nbsp;reason: Reason for shutdown<br> &nbsp; &nbsp;delay: Time to wait before forcing shutdown",
+      "link": "backend/index.html#method-server-graceful_shutdown",
+      "is_method": true,
+      "element_id": "method-server-graceful_shutdown"
+    },
+    {
+      "name": "emergency_shutdown",
+      "class": "Server",
+      "module": "backend",
+      "description": "Immediately shutdown the server without notifying clients",
+      "link": "backend/index.html#method-server-emergency_shutdown",
+      "is_method": true,
+      "element_id": "method-server-emergency_shutdown"
+    },
+    {
+      "name": "start",
+      "class": "Server",
+      "module": "backend",
+      "description": "Start the server",
+      "link": "backend/index.html#method-server-start",
+      "is_method": true,
+      "element_id": "method-server-start"
+    },
+    {
+      "name": "stop",
+      "class": "Server",
+      "module": "backend",
+      "description": "Stop the server",
+      "link": "backend/index.html#method-server-stop",
+      "is_method": true,
+      "element_id": "method-server-stop"
+    },
+    {
+      "name": "add_script",
+      "class": "Server",
+      "module": "backend",
+      "description": "Add a server script for automated tasks<br><br>Args:<br> &nbsp; &nbsp;name: Unique name for the script<br> &nbsp; &nbsp;interval: Execution interval in seconds<br> &nbsp; &nbsp;callback: Function to call (will receive server instance as first argument)<br> &nbsp; &nbsp;enabled: Whether the script is enabled<br> &nbsp; &nbsp;one_shot: If True, script will only run once",
+      "link": "backend/index.html#method-server-add_script",
+      "is_method": true,
+      "element_id": "method-server-add_script"
+    },
+    {
+      "name": "remove_script",
+      "class": "Server",
+      "module": "backend",
+      "description": "Remove a server script",
+      "link": "backend/index.html#method-server-remove_script",
+      "is_method": true,
+      "element_id": "method-server-remove_script"
+    },
+    {
+      "name": "enable_script",
+      "class": "Server",
+      "module": "backend",
+      "description": "Enable a server script",
+      "link": "backend/index.html#method-server-enable_script",
+      "is_method": true,
+      "element_id": "method-server-enable_script"
+    },
+    {
+      "name": "disable_script",
+      "class": "Server",
+      "module": "backend",
+      "description": "Disable a server script",
+      "link": "backend/index.html#method-server-disable_script",
+      "is_method": true,
+      "element_id": "method-server-disable_script"
+    },
+    {
+      "name": "_run_scripts",
+      "class": "Server",
+      "module": "backend",
+      "description": "Execute server scripts at their intervals",
+      "link": "backend/index.html#method-server-_run_scripts",
+      "is_method": true,
+      "element_id": "method-server-_run_scripts"
+    },
+    {
+      "name": "_accept_connections",
+      "class": "Server",
+      "module": "backend",
+      "description": "Accept incoming client connections with password verification",
+      "link": "backend/index.html#method-server-_accept_connections",
+      "is_method": true,
+      "element_id": "method-server-_accept_connections"
+    },
+    {
+      "name": "_handle_client",
+      "class": "Server",
+      "module": "backend",
+      "description": "Handle communication with a single client with ping measurement<br><br>Parameters:<br> &nbsp; &nbsp;client_socket: Socket connected to the client<br> &nbsp; &nbsp;client: Client instance representing the connected client",
+      "link": "backend/index.html#method-server-_handle_client",
+      "is_method": true,
+      "element_id": "method-server-_handle_client"
+    },
+    {
+      "name": "_disconnect_client",
+      "class": "Server",
+      "module": "backend",
+      "description": "Disconnect a client",
+      "link": "backend/index.html#method-server-_disconnect_client",
+      "is_method": true,
+      "element_id": "method-server-_disconnect_client"
+    },
+    {
+      "name": "kick_client",
+      "class": "Server",
+      "module": "backend",
+      "description": "Kick a client from the server<br><br>Args:<br> &nbsp; &nbsp;client_id: ID of client to kick<br> &nbsp; &nbsp;reason: Reason for kicking (sent to client)",
+      "link": "backend/index.html#method-server-kick_client",
+      "is_method": true,
+      "element_id": "method-server-kick_client"
+    },
+    {
+      "name": "get_client_ping",
+      "class": "Server",
+      "module": "backend",
+      "description": "Get ping of a specific client in milliseconds",
+      "link": "backend/index.html#method-server-get_client_ping",
+      "is_method": true,
+      "element_id": "method-server-get_client_ping"
+    },
+    {
+      "name": "get_average_ping",
+      "class": "Server",
+      "module": "backend",
+      "description": "Get average ping of all connected clients",
+      "link": "backend/index.html#method-server-get_average_ping",
+      "is_method": true,
+      "element_id": "method-server-get_average_ping"
+    },
+    {
+      "name": "get_server_stats",
+      "class": "Server",
+      "module": "backend",
+      "description": "Get server statistics",
+      "link": "backend/index.html#method-server-get_server_stats",
+      "is_method": true,
+      "element_id": "method-server-get_server_stats"
+    },
+    {
+      "name": "_queue_event",
+      "class": "Server",
+      "module": "backend",
+      "description": "Add event to processing queue",
+      "link": "backend/index.html#method-server-_queue_event",
+      "is_method": true,
+      "element_id": "method-server-_queue_event"
+    },
+    {
+      "name": "_process_events",
+      "class": "Server",
+      "module": "backend",
+      "description": "Process queued events",
+      "link": "backend/index.html#method-server-_process_events",
+      "is_method": true,
+      "element_id": "method-server-_process_events"
+    },
+    {
+      "name": "_handle_event",
+      "class": "Server",
+      "module": "backend",
+      "description": "Handle a network event",
+      "link": "backend/index.html#method-server-_handle_event",
+      "is_method": true,
+      "element_id": "method-server-_handle_event"
+    },
+    {
+      "name": "_check_timeouts",
+      "class": "Server",
+      "module": "backend",
+      "description": "Check for timed out clients",
+      "link": "backend/index.html#method-server-_check_timeouts",
+      "is_method": true,
+      "element_id": "method-server-_check_timeouts"
+    },
+    {
+      "name": "broadcast",
+      "class": "Server",
+      "module": "backend",
+      "description": "Broadcast message to all connected clients",
+      "link": "backend/index.html#method-server-broadcast",
+      "is_method": true,
+      "element_id": "method-server-broadcast"
+    },
+    {
+      "name": "send_to_client",
+      "class": "Server",
+      "module": "backend",
+      "description": "Send message to specific client",
+      "link": "backend/index.html#method-server-send_to_client",
+      "is_method": true,
+      "element_id": "method-server-send_to_client"
+    },
+    {
+      "name": "on_event",
+      "class": "Server",
+      "module": "backend",
+      "description": "Decorator to register event handlers",
+      "link": "backend/index.html#method-server-on_event",
+      "is_method": true,
+      "element_id": "method-server-on_event"
+    },
+    {
+      "name": "__init__",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-networkclient-__init__",
+      "is_method": true,
+      "element_id": "method-networkclient-__init__"
+    },
+    {
+      "name": "_receive_messages",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "Receive messages from server with shutdown handling",
+      "link": "backend/index.html#method-networkclient-_receive_messages",
+      "is_method": true,
+      "element_id": "method-networkclient-_receive_messages"
+    },
+    {
+      "name": "connect",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "Connect to server with optional password",
+      "link": "backend/index.html#method-networkclient-connect",
+      "is_method": true,
+      "element_id": "method-networkclient-connect"
+    },
+    {
+      "name": "disconnect",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "Disconnect from server",
+      "link": "backend/index.html#method-networkclient-disconnect",
+      "is_method": true,
+      "element_id": "method-networkclient-disconnect"
+    },
+    {
+      "name": "get_ping",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "Get current ping to server in milliseconds",
+      "link": "backend/index.html#method-networkclient-get_ping",
+      "is_method": true,
+      "element_id": "method-networkclient-get_ping"
+    },
+    {
+      "name": "send",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "Send message to server",
+      "link": "backend/index.html#method-networkclient-send",
+      "is_method": true,
+      "element_id": "method-networkclient-send"
+    },
+    {
+      "name": "_send_heartbeats",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "Send periodic heartbeats to server for ping measurement",
+      "link": "backend/index.html#method-networkclient-_send_heartbeats",
+      "is_method": true,
+      "element_id": "method-networkclient-_send_heartbeats"
+    },
+    {
+      "name": "_queue_event",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "Add event to processing queue",
+      "link": "backend/index.html#method-networkclient-_queue_event",
+      "is_method": true,
+      "element_id": "method-networkclient-_queue_event"
+    },
+    {
+      "name": "_process_events",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "Process queued events",
+      "link": "backend/index.html#method-networkclient-_process_events",
+      "is_method": true,
+      "element_id": "method-networkclient-_process_events"
+    },
+    {
+      "name": "_handle_event",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "Handle a network event",
+      "link": "backend/index.html#method-networkclient-_handle_event",
+      "is_method": true,
+      "element_id": "method-networkclient-_handle_event"
+    },
+    {
+      "name": "on_event",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "Decorator to register event handlers",
+      "link": "backend/index.html#method-networkclient-on_event",
+      "is_method": true,
+      "element_id": "method-networkclient-on_event"
+    },
+    {
+      "name": "__init__",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-hostclient-__init__",
+      "is_method": true,
+      "element_id": "method-hostclient-__init__"
+    },
+    {
+      "name": "toggle_server_scripts",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Enable or disable server scripts execution (host mode only)<br><br>Args:<br> &nbsp; &nbsp;enabled: Whether to enable or disable scripts<br> &nbsp; &nbsp;key: Specific script name to toggle, if None toggles all scripts",
+      "link": "backend/index.html#method-hostclient-toggle_server_scripts",
+      "is_method": true,
+      "element_id": "method-hostclient-toggle_server_scripts"
+    },
+    {
+      "name": "disconnect",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Disconnect from network with optional peer notification<br><br>Args:<br> &nbsp; &nbsp;reason: Reason for disconnection<br> &nbsp; &nbsp;notify_peers: Whether to notify peers before disconnecting (host mode only)",
+      "link": "backend/index.html#method-hostclient-disconnect",
+      "is_method": true,
+      "element_id": "method-hostclient-disconnect"
+    },
+    {
+      "name": "_kick_all_peers",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Kick all connected peers (host mode only)<br><br>Args:<br> &nbsp; &nbsp;reason: Reason for kicking all peers",
+      "link": "backend/index.html#method-hostclient-_kick_all_peers",
+      "is_method": true,
+      "element_id": "method-hostclient-_kick_all_peers"
+    },
+    {
+      "name": "emergency_disconnect",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Immediately disconnect without notifying peers<br>Use this only in emergency situations",
+      "link": "backend/index.html#method-hostclient-emergency_disconnect",
+      "is_method": true,
+      "element_id": "method-hostclient-emergency_disconnect"
+    },
+    {
+      "name": "set_auto_kick_on_leave",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Enable or disable auto-kick when host leaves<br><br>Args:<br> &nbsp; &nbsp;enabled: Whether to automatically kick peers when host disconnects",
+      "link": "backend/index.html#method-hostclient-set_auto_kick_on_leave",
+      "is_method": true,
+      "element_id": "method-hostclient-set_auto_kick_on_leave"
+    },
+    {
+      "name": "start_as_host",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Start as host (server + client) with password protection",
+      "link": "backend/index.html#method-hostclient-start_as_host",
+      "is_method": true,
+      "element_id": "method-hostclient-start_as_host"
+    },
+    {
+      "name": "connect_as_client",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Connect as client to existing host with password",
+      "link": "backend/index.html#method-hostclient-connect_as_client",
+      "is_method": true,
+      "element_id": "method-hostclient-connect_as_client"
+    },
+    {
+      "name": "add_server_script",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Add a server script (host only)",
+      "link": "backend/index.html#method-hostclient-add_server_script",
+      "is_method": true,
+      "element_id": "method-hostclient-add_server_script"
+    },
+    {
+      "name": "remove_server_script",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Remove a server script (host only)",
+      "link": "backend/index.html#method-hostclient-remove_server_script",
+      "is_method": true,
+      "element_id": "method-hostclient-remove_server_script"
+    },
+    {
+      "name": "kick_peer",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Kick a peer from the server (host only)",
+      "link": "backend/index.html#method-hostclient-kick_peer",
+      "is_method": true,
+      "element_id": "method-hostclient-kick_peer"
+    },
+    {
+      "name": "get_peer_ping",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Get ping of a specific peer (host only)",
+      "link": "backend/index.html#method-hostclient-get_peer_ping",
+      "is_method": true,
+      "element_id": "method-hostclient-get_peer_ping"
+    },
+    {
+      "name": "get_server_stats",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Get server statistics (host only)",
+      "link": "backend/index.html#method-hostclient-get_server_stats",
+      "is_method": true,
+      "element_id": "method-hostclient-get_server_stats"
+    },
+    {
+      "name": "get_ping",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Get current ping to host (client mode only)",
+      "link": "backend/index.html#method-hostclient-get_ping",
+      "is_method": true,
+      "element_id": "method-hostclient-get_ping"
+    },
+    {
+      "name": "send_to_all",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Send message to all connected peers (if host) and to host (if client)",
+      "link": "backend/index.html#method-hostclient-send_to_all",
+      "is_method": true,
+      "element_id": "method-hostclient-send_to_all"
+    },
+    {
+      "name": "send_to_peer",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Send message to specific peer (host only)",
+      "link": "backend/index.html#method-hostclient-send_to_peer",
+      "is_method": true,
+      "element_id": "method-hostclient-send_to_peer"
+    },
+    {
+      "name": "get_peer_count",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Get number of connected peers (host only)",
+      "link": "backend/index.html#method-hostclient-get_peer_count",
+      "is_method": true,
+      "element_id": "method-hostclient-get_peer_count"
+    },
+    {
+      "name": "get_peer_list",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Get list of connected peer IDs (host only)",
+      "link": "backend/index.html#method-hostclient-get_peer_list",
+      "is_method": true,
+      "element_id": "method-hostclient-get_peer_list"
+    },
+    {
+      "name": "_queue_event",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Add event to processing queue",
+      "link": "backend/index.html#method-hostclient-_queue_event",
+      "is_method": true,
+      "element_id": "method-hostclient-_queue_event"
+    },
+    {
+      "name": "_process_events",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Process queued events",
+      "link": "backend/index.html#method-hostclient-_process_events",
+      "is_method": true,
+      "element_id": "method-hostclient-_process_events"
+    },
+    {
+      "name": "_handle_event",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Handle a network event",
+      "link": "backend/index.html#method-hostclient-_handle_event",
+      "is_method": true,
+      "element_id": "method-hostclient-_handle_event"
+    },
+    {
+      "name": "on_event",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Decorator to register event handlers",
+      "link": "backend/index.html#method-hostclient-on_event",
+      "is_method": true,
+      "element_id": "method-hostclient-on_event"
+    },
+    {
+      "name": "__init__",
+      "class": "NetworkDiscovery",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-networkdiscovery-__init__",
+      "is_method": true,
+      "element_id": "method-networkdiscovery-__init__"
+    },
+    {
+      "name": "broadcast_presence",
+      "class": "NetworkDiscovery",
+      "module": "backend",
+      "description": "Broadcast host presence on local network",
+      "link": "backend/index.html#method-networkdiscovery-broadcast_presence",
+      "is_method": true,
+      "element_id": "method-networkdiscovery-broadcast_presence"
+    },
+    {
+      "name": "discover_hosts",
+      "class": "NetworkDiscovery",
+      "module": "backend",
+      "description": "Discover hosts on local network",
+      "link": "backend/index.html#method-networkdiscovery-discover_hosts",
+      "is_method": true,
+      "element_id": "method-networkdiscovery-discover_hosts"
+    },
+    {
+      "name": "__init__",
+      "class": "HeartbeatMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-heartbeatmessage-__init__",
+      "is_method": true,
+      "element_id": "method-heartbeatmessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "AuthMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-authmessage-__init__",
+      "is_method": true,
+      "element_id": "method-authmessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "AuthResultMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-authresultmessage-__init__",
+      "is_method": true,
+      "element_id": "method-authresultmessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "KickMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-kickmessage-__init__",
+      "is_method": true,
+      "element_id": "method-kickmessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "PlayerPositionMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-playerpositionmessage-__init__",
+      "is_method": true,
+      "element_id": "method-playerpositionmessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "ChatMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-chatmessage-__init__",
+      "is_method": true,
+      "element_id": "method-chatmessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "GameStateMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-gamestatemessage-__init__",
+      "is_method": true,
+      "element_id": "method-gamestatemessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "ServerScriptMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-serverscriptmessage-__init__",
+      "is_method": true,
+      "element_id": "method-serverscriptmessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "ServerShutdownMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-servershutdownmessage-__init__",
+      "is_method": true,
+      "element_id": "method-servershutdownmessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "HostMigrationMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-hostmigrationmessage-__init__",
+      "is_method": true,
+      "element_id": "method-hostmigrationmessage-__init__"
+    },
+    {
       "name": "__init__",
       "class": "ShaderProgram",
       "module": "backend",
@@ -5326,7 +6784,7 @@
       "element_id": "method-codestatistics-print_statistics"
     }
   ],
-  "last_updated": "2025-11-17T20:39:06.320465",
+  "last_updated": "2025-12-01T18:55:26.760616",
   "pages": [
     {
       "name": "Quick Start",

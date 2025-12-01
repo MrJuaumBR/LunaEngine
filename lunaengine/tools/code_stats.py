@@ -14,7 +14,7 @@ class CodeStatistics:
         self.root_dir = Path(root_dir)
         self.exclude_dirs = {'__pycache__', '.git', 'build', 'dist', 'venv', 'env', '.vscode', '.idea'}
         self.exclude_files = {'*.pyc', '*.pyo', '*.pyd', '*.so', '*.dll'}
-        self.file_extensions = {'.py', '.txt', '.md', '.toml', '.cfg', '.ini'}
+        self.file_extensions = {'.py', '.txt', '.md', '.toml', '.cfg', '.ini','.json'}
         
     def count_themes_in_engine(self) -> Dict:
         """

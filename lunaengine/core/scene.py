@@ -175,6 +175,28 @@ class Scene(ABC):
             List[UIElement]: All UI elements in the scene
         """
         return self.ui_elements.copy()
+    
+    def has_element_by_id(self, element_id: str) -> bool:
+        """
+        Check if a UI element with the given ID exists in the scene.
+        
+        Args:
+            element_id (str): The unique ID of the element to check
+        Returns:
+            bool: True if element exists, False otherwise
+        """
+        return any(hasattr(ui_element, 'element_id') and ui_element.element_id == element_id for ui_element in self.ui_elements)
+    
+    def has_element(self, element: UIElement) -> bool:
+        """
+        Check if a specific UI element exists in the scene.
+        
+        Args:
+            element (UIElement): The UI element to check
+        Returns:
+            bool: True if element exists, False otherwise
+        """
+        return element in self.ui_elements
         
     def clear_ui_elements(self) -> None:
         """Remove all UI elements from the scene."""

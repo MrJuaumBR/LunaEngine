@@ -35,7 +35,7 @@ for name, obj in inspect.getmembers(elements):
         _ui_element_classes.append(name)
 
 # Add base classes and managers
-_base_classes = ['UIElement', 'UIState', 'FontManager']
+_base_classes = ['UIElement', 'UIState', 'FontManager', 'TooltipConfig', 'Tooltip', 'UITooltipManager']
 
 # Import layout classes
 _layout_classes = ['UILayout', 'VerticalLayout', 'HorizontalLayout', 'GridLayout', 'JustifiedLayout']

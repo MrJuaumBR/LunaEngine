@@ -412,13 +412,16 @@
                                     <i class="bi bi-box me-2"></i>
                                     LunaEngine
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene</div></div><div class="mt-3"><strong>Methods:</strong>
+                <div class="docstring-content mb-2"><div class="docstring-text">Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether to start in fullscreen mode<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene</div></div><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-__init__">
-                                    <code>def __init__(self: Any, title: str, width: int, height: int, use_opengl: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the LunaEngine.<br><br>Args:<br> &nbsp; &nbsp;title (str): The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int): The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int): The height of the game window (default: 600)<br> &nbsp; &nbsp;use_opengl (bool): Use OpenGL for rendering (default: False)</div></div></div>
+                                    <code>def __init__(self: Any, title: str, width: int, height: int, use_opengl: bool, fullscreen: bool) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the LunaEngine.<br><br>Args:<br> &nbsp; &nbsp;title (str): The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int): The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int): The height of the game window (default: 600)<br> &nbsp; &nbsp;use_opengl (bool): Use OpenGL for rendering (default: True)<br> &nbsp; &nbsp;fullscreen (bool): Start in fullscreen mode (default: False)</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-initialize">
                                     <code>def initialize(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize the engine and create the game window.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-update_camera_renderer">
+                                    <code>def update_camera_renderer(self: Any) -> None</code>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-add_scene">
                                     <code>def add_scene(self: Any, name: str, scene_class: Type[Scene], *args: Any, **kwargs: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Add a scene to the engine by class (the engine will instantiate it).<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene<br> &nbsp; &nbsp;scene_class (Type[Scene]): The scene class to instantiate<br> &nbsp; &nbsp;*args: Arguments to pass to scene constructor<br> &nbsp; &nbsp;**kwargs: Keyword arguments to pass to scene constructor</div></div></div>
@@ -500,20 +503,6 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-shutdown">
                                     <code>def shutdown(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Cleanup resources</div></div></div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                network.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
                         </div>
                     </div>
                 </div>
@@ -661,6 +650,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-get_all_ui_elements">
                                     <code>def get_all_ui_elements(self: Any) -> List[UIElement]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get all UI elements in the scene.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: All UI elements in the scene</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-has_element_by_id">
+                                    <code>def has_element_by_id(self: Any, element_id: str) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Check if a UI element with the given ID exists in the scene.<br><br>Args:<br> &nbsp; &nbsp;element_id (str): The unique ID of the element to check<br>Returns:<br> &nbsp; &nbsp;bool: True if element exists, False otherwise</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-has_element">
+                                    <code>def has_element(self: Any, element: UIElement) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Check if a specific UI element exists in the scene.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to check<br>Returns:<br> &nbsp; &nbsp;bool: True if element exists, False otherwise</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-clear_ui_elements">
                                     <code>def clear_ui_elements(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Remove all UI elements from the scene.</div></div></div></div></div>

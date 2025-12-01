@@ -9,6 +9,8 @@ backends and graphics system implementations for the LunaEngine.
 MODULES PROVIDED:
 - opengl: OpenGL-based renderer for hardware-accelerated graphics
 - pygame_backend: Pygame-based fallback renderer for compatibility
+- types: Common types and event definitions
+- network: Networking components for client-server architecture (experimental)
 
 LIBRARIES USED:
 - pygame: Core graphics and window management
@@ -19,7 +21,9 @@ LIBRARIES USED:
 from .opengl import OpenGLRenderer, TextureShader, ParticleShader, ShaderProgram
 from .pygame_backend import PygameRenderer
 from .types import EVENTS
+from .network import Client, ClientInfo, Server, NetworkClient, NetworkEventType, NetworkEvent, NetworkMessage, NetworkDiscovery, NetworkMessages
 
 __all__ = [
-    "OpenGLRenderer", "TextureShader", "ParticleShader", "ShaderProgram", "PygameRenderer", "EVENTS"
+    "OpenGLRenderer", "TextureShader", "ParticleShader", "ShaderProgram", "PygameRenderer", "EVENTS", "Client", "Server",
+    "ClientInfo", "NetworkClient", "NetworkEventType", "NetworkEvent", "NetworkMessage", "NetworkDiscovery", "NetworkMessages"
 ]

@@ -167,10 +167,16 @@
                 <div class="docstring-content mt-2"><div class="docstring-text">Calculate angle between two points in radians</div></div></div>
                         <div class="function-item mb-3 p-3 border rounded" id="func-rgba_brightness">
                             <code>def rgba_brightness(rgba: Tuple[int, int, int, float]) -> float</code>
-                </div>
+                <div class="docstring-content mt-2"><div class="docstring-text">This function is used to calculate the overall brightness of an RGBA color<br><br>Parameters:<br> &nbsp; &nbsp;rgba (Tuple[int, int, int, float]): A tuple representing the RGBA color<br>Returns:<br> &nbsp; &nbsp;float: A float representing the brightness of the color</div></div></div>
                         <div class="function-item mb-3 p-3 border rounded" id="func-individual_rgba_brightness">
                             <code>def individual_rgba_brightness(rgba: Tuple[int, int, int, float]) -> Tuple[float, float, float, float]</code>
-                </div>
+                <div class="docstring-content mt-2"><div class="docstring-text">This function is used to calculate the individual brightness of each color channel (R, G, B, A)<br><br>Parameters:<br> &nbsp; &nbsp;rgba (Tuple[int, int, int, float]): A tuple representing the RGBA color<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float, float, float]: A tuple representing the normalized RGBA values</div></div></div>
+                        <div class="function-item mb-3 p-3 border rounded" id="func-humanize_number">
+                            <code>def humanize_number(self: Any, number: float, decimal_places: int) -> str</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">This function is used to format a number into a human-readable string<br>Like: 1K, 1M, 1B, etc.<br>Also: 1.5K, 2.34M, etc.<br>Parameters:<br> &nbsp; &nbsp;number (float): A float representing the number to be formatted<br> &nbsp; &nbsp;decimal_places (int): Number of decimal places to include<br>Returns:<br> &nbsp; &nbsp;str: A string representing the formatted number</div></div></div>
+                        <div class="function-item mb-3 p-3 border rounded" id="func-humanize_time">
+                            <code>def humanize_time(self: Any, seconds: float) -> str</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">This function is used to format a time duration in seconds into a human-readable string<br>Like: 1h 30m, 2d 5h, etc.<br><br>Parameters:<br> &nbsp; &nbsp;seconds (float): A float representing the time duration in seconds<br>Returns:<br> &nbsp; &nbsp;str: A string representing the formatted time duration</div></div></div>
                         </div>
                     </div>
                 </div>
