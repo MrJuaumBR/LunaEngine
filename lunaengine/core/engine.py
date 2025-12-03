@@ -336,7 +336,6 @@ class LunaEngine:
         themes = self.get_theme_names()
         if theme_name in themes:
             theme_data = ThemeManager.get_theme_type_by_name(theme_name)
-            print(theme_name, theme_data)
             ThemeManager.set_current_theme(theme_data)
             
             # Update all UI elements in current scene
