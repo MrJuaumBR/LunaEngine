@@ -24,7 +24,7 @@ with consistent styling and responsive layouts across different game scenes.
 """
 
 import inspect
-from . import elements, layout, themes, styles
+from . import elements, layout, themes, styles, tween
 
 # Automatically discover all UIElement subclasses
 _ui_element_classes = []
@@ -46,11 +46,15 @@ _theme_classes = ['ThemeManager', 'ThemeType', 'UITheme']
 # Import style classes  
 _style_classes = ['UIStyle', 'Theme']
 
+# Add tween module
+_tween_classes = ['EasingType', 'TweenProperty', 'Tween', 'AnimationHandler', 'TweenGroup', 'TweenSequence', 'TweenParallel']
+
 # Combine all exports
-__all__ = _base_classes + _ui_element_classes + _layout_classes + _theme_classes + _style_classes
+__all__ = _base_classes + _ui_element_classes + _layout_classes + _theme_classes + _style_classes +  _tween_classes
 
 # Import everything for direct access
 from .elements import *
 from .layout import *
 from .themes import *
 from .styles import *
+from .tween import *

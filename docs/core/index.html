@@ -449,6 +449,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-get_hardware_info">
                                     <code>def get_hardware_info(self: Any) -> dict</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get hardware information</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-scalesize">
+                                    <code>def ScaleSize(self: Any, width: float, height: float) -> Tuple[float, float] | Tuple[int, int]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Scale size is a function that will convert scales size to a pixel size<br><br>e.g.:<br>- 1.0, 1.0 = Full Screen<br>- 0.5, 0.5 = Half Screen<br>- 0.5, 1.0 = Half Screen Width, Full Screen Height<br><br>Args:<br> &nbsp; &nbsp;width (float): Width scale<br> &nbsp; &nbsp;height (float): Height scale<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float]|Tuple[int, int]: Pixel size</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-scalepos">
+                                    <code>def ScalePos(self: Any, x: float, y: float) -> Tuple[float, float] | Tuple[int, int]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Scale position is a function that will convert scales position to a pixel position<br><br>e.g.:<br>- 1.0, 1.0 = Bottom Right<br>- 0.0, 0.0 = Top Left<br>- 0.5, 0.5 = Center<br><br>Args:<br> &nbsp; &nbsp;x (float): X position<br> &nbsp; &nbsp;y (float): Y position<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float]|Tuple[int, int]: Pixel position</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-run">
                                     <code>def run(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Main game loop - CORRECTED</div></div></div>

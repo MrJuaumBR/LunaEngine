@@ -893,11 +893,10 @@ def generate_quick_start():
                     </div>
                     <div class="card-body">
                         <pre><code># Clone the repository
-git clone https://github.com/MrJuaumBR/LunaEngine.git
-cd LunaEngine
+pip install lunaengine
 
-# Install dependencies
-pip install -r requirements.txt
+git clone https://github.com/your-username/lunaengine.git
+cd lunaengine
 
 # Run the Snake Game example
 python examples/snake_demo.py</code></pre>
@@ -925,6 +924,7 @@ python examples/snake_demo.py</code></pre>
                         <ol>
                             <li>Explore the modules in the documentation</li>
                             <li>Check out examples in the <code>examples/</code> folder</li>
+                            <li>We now have a games repository: <a href="https://github.com/MrJuaumBR/LunaEngine-Games">LunaEngine-Games</a></li>
                             <li>Experiment with UI, graphics, and utilities</li>
                             <li>Consult specific module documentation</li>
                             <li>Join our <a href="contact.html">community</a> for help and support</li>

@@ -42,7 +42,18 @@ and alignment of elements, reducing manual coordinate calculations.
 """
 
 from typing import List
+from enum import Enum
 from .elements import UIElement
+
+class AnimationTypes(Enum):
+    LINEAR = 'LINEAR'
+    BOUNCE = 'BOUNCE'
+    ELASTIC = 'ELASTIC'
+    BACK = 'BACK'
+    EASE_IN = 'EASE_IN'
+    EASE_OUT = 'EASE_OUT'
+    EASE_IN_OUT = 'EASE_IN_OUT'
+    EASE = 'EASE_IN_OUT'
 
 class UILayout:
     """Base class for UI layout managers."""
@@ -211,3 +222,10 @@ class JustifiedLayout(UILayout):
                 element.x = self.x
                 element.y = current_y
                 current_y += element.height + spacing
+                
+class Animation:
+    duration:float
+    start_time:float
+    end_time:float
+    animation_type:AnimationTypes
+    

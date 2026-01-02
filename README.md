@@ -2,6 +2,8 @@
 
 A modern, optimized 2D game engine built with Python and Pygame featuring advanced UI systems, procedural lighting, and embedded asset management.
 
+<b>! We will no longer support pygame renderer, only openGL</b>
+
 ## 📋 Features
 
 | Feature | Description | Status |
@@ -12,11 +14,11 @@ A modern, optimized 2D game engine built with Python and Pygame featuring advanc
 | **Themes** | The engine have pre-built themes | ✅ Functional |
 | **Lighting System** | Dynamic lights and shadows | 🔄 WIP |
 | **Particle Effects** | Particle system | 🔄 WIP |
-| **Image Embedding** | Convert assets to Python code | ⚠️ Buggy |
-| **Modular Architecture** | Easy to extend and customize | |
+| **Image Embedding** | Convert assets to Python code | ⚠️ Useless |
+| **Modular Architecture** | Easy to extend and customize | :) |
 
-# Code
-[See this file](./lunaengine/CODE_STATISTICS.md)
+# Code Statistics
+[See this file](https://github.com/MrJuaumBR/LunaEngine/blob/main/lunaengine/CODE_STATISTICS.md)
 
 [TestPyPi](https://test.pypi.org/project/lunaengine/)
 
@@ -26,6 +28,14 @@ A modern, optimized 2D game engine built with Python and Pygame featuring advanc
 
 ### Installation
 
+```bash
+# First of all, install python 3.9+ (Not tested on older versions)
+# Then you can install either from pypy or testpypi
+pip install lunaengine
+pip install -i https://test.pypi.org/simple/ lunaengine
+```
+
+*Ignore*
 ```bash
 # Install dependencies
 pip install -r requirements.txt
@@ -101,3 +111,22 @@ def day_night_cycle_script(server: Server):
     
     return {'cycle_phase': cycle_phase, 'cycle_time': cycle_time}
 ```
+
+<picture>
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcset="
+      https://api.star-history.com/svg?repos=MrJuaumBR/LunaEngine&type=Date&theme=dark
+    "
+  />
+  <source
+    media="(prefers-color-scheme: light)"
+    srcset="
+      https://api.star-history.com/svg?repos=MrJuaumBR/LunaEngine&type=Date
+    "
+  />
+  <img
+    alt="Star History Chart"
+    src="https://api.star-history.com/svg?repos=MrJuaumBR/LunaEngine&type=Date"
+  />
+</picture>

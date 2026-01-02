@@ -227,23 +227,23 @@ class ThemeManager:
                 if response.status == 200:
                     data = response.read()
                     themes_data = json.loads(data.decode('utf-8'))
-                    print(f"✅ Themes downloaded successfully from GitHub ({len(themes_data)} themes)")
+                    print(f"Themes downloaded successfully from GitHub ({len(themes_data)} themes)")
                     return themes_data
                 else:
-                    print(f"❌ Download failed: Status {response.status}")
+                    print(f"/ Download failed: Status {response.status}")
                     return None
                     
         except urllib.error.URLError as e:
-            print(f"❌ URL error downloading from GitHub: {e}")
+            print(f"/ URL error downloading from GitHub: {e}")
             return None
         except urllib.error.HTTPError as e:
-            print(f"❌ HTTP error downloading from GitHub: {e.code} - {e.reason}")
+            print(f"/ HTTP error downloading from GitHub: {e.code} - {e.reason}")
             return None
         except json.JSONDecodeError as e:
-            print(f"❌ Error decoding JSON from GitHub: {e}")
+            print(f"/ Error decoding JSON from GitHub: {e}")
             return None
         except Exception as e:
-            print(f"❌ Unexpected error downloading from GitHub: {e}")
+            print(f"/ Unexpected error downloading from GitHub: {e}")
             return None
     
     @classmethod
@@ -258,11 +258,11 @@ class ThemeManager:
             with open(cache_path, 'w', encoding='utf-8') as f:
                 json.dump(themes_data, f, indent=2)
             
-            print(f"💾 Themes saved to local cache: {cache_path}")
+            print(f"Themes saved to local cache: {cache_path}")
             return True
             
         except Exception as e:
-            print(f"⚠️  Could not save local cache: {e}")
+            print(f"! Could not save local cache: {e}")
             return False
     
     @classmethod
@@ -277,9 +277,9 @@ class ThemeManager:
             try:
                 with open(themes_file, 'r', encoding='utf-8') as f:
                     themes_data = json.load(f)
-                print(f"📁 Themes loaded from local file: {themes_file}")
+                print(f"Themes loaded from local file: {themes_file}")
             except Exception as e:
-                print(f"⚠️  Error loading local file: {e}")
+                print(f"! Error loading local file: {e}")
                 themes_data = None
         
         # 2. If not found locally, try to download from GitHub
@@ -295,7 +295,7 @@ class ThemeManager:
             cls._process_themes_data(themes_data)
         else:
             # 5. Fallback to default theme
-            print("⚠️  Could not load themes. Using fallback theme.")
+            print("! Could not load themes. Using fallback theme.")
             cls._create_fallback_theme()
     
     @classmethod
@@ -313,7 +313,7 @@ class ThemeManager:
                         break
                 
                 if theme_type is None:
-                    print(f"⚠️  Unknown theme type: '{theme_name}'")
+                    print(f"! Unknown theme type: '{theme_name}'")
                     continue
                 
                 # Convert list to tuple for color values and handle None values
@@ -332,14 +332,14 @@ class ThemeManager:
                 loaded_count += 1
                 
             except Exception as e:
-                print(f"❌ Error processing theme '{theme_name}': {e}")
+                print(f"/ Error processing theme '{theme_name}': {e}")
         
         cls._themes_loaded = True
-        print(f"✅ {loaded_count} themes loaded successfully")
+        print(f"{loaded_count} themes loaded successfully")
         
         # Ensure DEFAULT theme is loaded
         if ThemeType.DEFAULT not in cls._themes:
-            print("⚠️  DEFAULT theme not found. Creating fallback...")
+            print("! DEFAULT theme not found. Creating fallback...")
             cls._create_fallback_theme()
     
     @classmethod
@@ -388,7 +388,7 @@ class ThemeManager:
         )
         cls._themes[ThemeType.DEFAULT] = fallback_theme
         cls._themes_loaded = True
-        print("✅ Fallback theme created")
+        print("Fallback theme created")
     
     @classmethod
     def ensure_themes_loaded(cls):
@@ -469,7 +469,7 @@ class ThemeManager:
         cls._themes.clear()
         cls._themes_loaded = False
         cls.ensure_themes_loaded()
-        print("🔄 Themes reloaded")
+        print("Themes reloaded.")
     
     @classmethod
     def get_loaded_count(cls) -> int:

@@ -31,7 +31,7 @@ DEPENDENCIES:
 
 import pygame, threading
 import numpy as np
-from typing import Dict, List, Callable, Optional, Type, TYPE_CHECKING
+from typing import Dict, List, Tuple, Callable, Optional, Type, TYPE_CHECKING
 from ..ui import *
 from .scene import Scene
 from ..utils import PerformanceMonitor, GarbageCollector
@@ -151,6 +151,7 @@ class LunaEngine:
         
         # Automatically initialize
         self.initialize()
+        self.animation_handler = AnimationHandler(self)
         
     def initialize(self):
         """Initialize the engine and create the game window."""
@@ -378,6 +379,44 @@ class LunaEngine:
     def get_hardware_info(self) -> dict:
         """Get hardware information"""
         return self.performance_monitor.get_hardware_info()
+    
+    def ScaleSize(self, width: float, height: float) -> Tuple[float, float]|Tuple[int, int]:
+        """
+        Scale size is a function that will convert scales size to a pixel size
+        
+        e.g.:
+        - 1.0, 1.0 = Full Screen
+        - 0.5, 0.5 = Half Screen
+        - 0.5, 1.0 = Half Screen Width, Full Screen Height
+        
+        Args:
+            width (float): Width scale
+            height (float): Height scale
+        Returns:
+            Tuple[float, float]|Tuple[int, int]: Pixel size
+        """
+        size = self.screen.get_size()
+        size = (size[0] * width, size[1] * height)
+        return size
+    
+    def ScalePos(self, x: float, y: float) -> Tuple[float, float]|Tuple[int, int]:
+        """
+        Scale position is a function that will convert scales position to a pixel position
+        
+        e.g.:
+        - 1.0, 1.0 = Bottom Right
+        - 0.0, 0.0 = Top Left
+        - 0.5, 0.5 = Center
+        
+        Args:
+            x (float): X position
+            y (float): Y position
+        Returns:
+            Tuple[float, float]|Tuple[int, int]: Pixel position
+        """
+        size = self.screen.get_size()
+        size = (size[0] * x, size[1] * y)
+        return size
 
     def run(self):
         """Main game loop - CORRECTED"""
@@ -413,9 +452,13 @@ class LunaEngine:
                     for handler in self._event_handlers[event.type]:
                         handler(event)
             
+            
             # Update current scene
             if self.current_scene:
                 self.current_scene.update(dt)
+                
+            # Update all animations
+            self.animation_handler.update(dt)
             
             # Update UI elements
             self._update_ui_elements(dt)

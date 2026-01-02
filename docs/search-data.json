@@ -14,8 +14,8 @@
       "title": "Ui",
       "description": "User interface components - Buttons, Layouts, Themes",
       "link": "ui/index.html",
-      "files_count": 4,
-      "classes_count": 33,
+      "files_count": 5,
+      "classes_count": 42,
       "functions_count": 0
     },
     {
@@ -125,7 +125,7 @@
       "file": "engine.py",
       "description": "Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether to start in fullscreen mode<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene",
       "link": "core/index.html#class-lunaengine",
-      "methods_count": 30,
+      "methods_count": 32,
       "element_id": "class-lunaengine"
     },
     {
@@ -354,6 +354,15 @@
       "element_id": "class-uiframe"
     },
     {
+      "name": "AnimationTypes",
+      "module": "ui",
+      "file": "layout.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-animationtypes",
+      "methods_count": 0,
+      "element_id": "class-animationtypes"
+    },
+    {
       "name": "UILayout",
       "module": "ui",
       "file": "layout.py",
@@ -399,6 +408,15 @@
       "element_id": "class-justifiedlayout"
     },
     {
+      "name": "Animation",
+      "module": "ui",
+      "file": "layout.py",
+      "description": "No documentation",
+      "link": "ui/index.html#class-animation",
+      "methods_count": 0,
+      "element_id": "class-animation"
+    },
+    {
       "name": "UIState",
       "module": "ui",
       "file": "styles.py",
@@ -438,7 +456,7 @@
       "name": "ThemeType",
       "module": "ui",
       "file": "themes.py",
-      "description": "No documentation",
+      "description": "Enumeration of all available theme types",
       "link": "ui/index.html#class-themetype",
       "methods_count": 0,
       "element_id": "class-themetype"
@@ -447,10 +465,73 @@
       "name": "ThemeManager",
       "module": "ui",
       "file": "themes.py",
-      "description": "Manages complete UI themes",
+      "description": "Manages complete UI themes with local/remote loading",
       "link": "ui/index.html#class-thememanager",
-      "methods_count": 24,
+      "methods_count": 20,
       "element_id": "class-thememanager"
+    },
+    {
+      "name": "EasingType",
+      "module": "ui",
+      "file": "tween.py",
+      "description": "Easing function types inspired by Roblox Studio.",
+      "link": "ui/index.html#class-easingtype",
+      "methods_count": 0,
+      "element_id": "class-easingtype"
+    },
+    {
+      "name": "TweenProperty",
+      "module": "ui",
+      "file": "tween.py",
+      "description": "Represents a property to be animated with its start and end values.",
+      "link": "ui/index.html#class-tweenproperty",
+      "methods_count": 0,
+      "element_id": "class-tweenproperty"
+    },
+    {
+      "name": "Tween",
+      "module": "ui",
+      "file": "tween.py",
+      "description": "Main tween class for animating object properties.<br><br>Provides Roblox Studio-like API for creating and controlling animations.",
+      "link": "ui/index.html#class-tween",
+      "methods_count": 27,
+      "element_id": "class-tween"
+    },
+    {
+      "name": "AnimationHandler",
+      "module": "ui",
+      "file": "tween.py",
+      "description": "Global animation handler for managing all tweens in the engine.<br><br>Integrates with LunaEngine to provide centralized animation control.",
+      "link": "ui/index.html#class-animationhandler",
+      "methods_count": 18,
+      "element_id": "class-animationhandler"
+    },
+    {
+      "name": "TweenGroup",
+      "module": "ui",
+      "file": "tween.py",
+      "description": "Base class for groups of tweens (sequential or parallel).",
+      "link": "ui/index.html#class-tweengroup",
+      "methods_count": 5,
+      "element_id": "class-tweengroup"
+    },
+    {
+      "name": "TweenSequence",
+      "module": "ui",
+      "file": "tween.py",
+      "description": "Plays tweens in sequence (one after another).",
+      "link": "ui/index.html#class-tweensequence",
+      "methods_count": 2,
+      "element_id": "class-tweensequence"
+    },
+    {
+      "name": "TweenParallel",
+      "module": "ui",
+      "file": "tween.py",
+      "description": "Plays tweens in parallel (all at the same time).",
+      "link": "ui/index.html#class-tweenparallel",
+      "methods_count": 2,
+      "element_id": "class-tweenparallel"
     },
     {
       "name": "CameraMode",
@@ -1616,6 +1697,24 @@
       "link": "core/index.html#method-lunaengine-get_hardware_info",
       "is_method": true,
       "element_id": "method-lunaengine-get_hardware_info"
+    },
+    {
+      "name": "ScaleSize",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Scale size is a function that will convert scales size to a pixel size<br><br>e.g.:<br>- 1.0, 1.0 = Full Screen<br>- 0.5, 0.5 = Half Screen<br>- 0.5, 1.0 = Half Screen Width, Full Screen Height<br><br>Args:<br> &nbsp; &nbsp;width (float): Width scale<br> &nbsp; &nbsp;height (float): Height scale<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float]|Tuple[int, int]: Pixel size",
+      "link": "core/index.html#method-lunaengine-scalesize",
+      "is_method": true,
+      "element_id": "method-lunaengine-scalesize"
+    },
+    {
+      "name": "ScalePos",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Scale position is a function that will convert scales position to a pixel position<br><br>e.g.:<br>- 1.0, 1.0 = Bottom Right<br>- 0.0, 0.0 = Top Left<br>- 0.5, 0.5 = Center<br><br>Args:<br> &nbsp; &nbsp;x (float): X position<br> &nbsp; &nbsp;y (float): Y position<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float]|Tuple[int, int]: Pixel position",
+      "link": "core/index.html#method-lunaengine-scalepos",
+      "is_method": true,
+      "element_id": "method-lunaengine-scalepos"
     },
     {
       "name": "run",
@@ -3886,19 +3985,46 @@
       "element_id": "method-thememanager-_get_themes_file_path"
     },
     {
+      "name": "_download_from_github",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Download themes.json from GitHub",
+      "link": "ui/index.html#method-thememanager-_download_from_github",
+      "is_method": true,
+      "element_id": "method-thememanager-_download_from_github"
+    },
+    {
+      "name": "_save_themes_to_cache",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Save downloaded themes to local cache",
+      "link": "ui/index.html#method-thememanager-_save_themes_to_cache",
+      "is_method": true,
+      "element_id": "method-thememanager-_save_themes_to_cache"
+    },
+    {
       "name": "_load_themes_from_json",
       "class": "ThemeManager",
       "module": "ui",
-      "description": "Load themes from JSON file",
+      "description": "Load themes from JSON file or GitHub",
       "link": "ui/index.html#method-thememanager-_load_themes_from_json",
       "is_method": true,
       "element_id": "method-thememanager-_load_themes_from_json"
     },
     {
+      "name": "_process_themes_data",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Process themes data from dictionary",
+      "link": "ui/index.html#method-thememanager-_process_themes_data",
+      "is_method": true,
+      "element_id": "method-thememanager-_process_themes_data"
+    },
+    {
       "name": "_create_fallback_theme",
       "class": "ThemeManager",
       "module": "ui",
-      "description": "Create a simple fallback theme if JSON loading fails",
+      "description": "Create a simple fallback theme if loading fails",
       "link": "ui/index.html#method-thememanager-_create_fallback_theme",
       "is_method": true,
       "element_id": "method-thememanager-_create_fallback_theme"
@@ -3907,7 +4033,7 @@
       "name": "ensure_themes_loaded",
       "class": "ThemeManager",
       "module": "ui",
-      "description": "Ensure themes are loaded from JSON",
+      "description": "Ensure themes are loaded from JSON or GitHub",
       "link": "ui/index.html#method-thememanager-ensure_themes_loaded",
       "is_method": true,
       "element_id": "method-thememanager-ensure_themes_loaded"
@@ -4003,94 +4129,517 @@
       "element_id": "method-thememanager-get_color"
     },
     {
-      "name": "get_theme_by_name",
+      "name": "reload_themes",
       "class": "ThemeManager",
       "module": "ui",
-      "description": "Get theme by name string",
-      "link": "ui/index.html#method-thememanager-get_theme_by_name",
+      "description": "Force reload themes from source",
+      "link": "ui/index.html#method-thememanager-reload_themes",
       "is_method": true,
-      "element_id": "method-thememanager-get_theme_by_name"
+      "element_id": "method-thememanager-reload_themes"
     },
     {
-      "name": "get_theme_type_by_name",
+      "name": "get_loaded_count",
       "class": "ThemeManager",
       "module": "ui",
-      "description": "Get theme type by name string",
-      "link": "ui/index.html#method-thememanager-get_theme_type_by_name",
+      "description": "Get number of loaded themes",
+      "link": "ui/index.html#method-thememanager-get_loaded_count",
       "is_method": true,
-      "element_id": "method-thememanager-get_theme_type_by_name"
+      "element_id": "method-thememanager-get_loaded_count"
     },
     {
-      "name": "get_theme",
+      "name": "is_theme_available",
       "class": "ThemeManager",
       "module": "ui",
-      "description": "Get complete theme by type",
-      "link": "ui/index.html#method-thememanager-get_theme",
+      "description": "Check if a theme is available by name",
+      "link": "ui/index.html#method-thememanager-is_theme_available",
       "is_method": true,
-      "element_id": "method-thememanager-get_theme"
+      "element_id": "method-thememanager-is_theme_available"
     },
     {
-      "name": "set_theme",
-      "class": "ThemeManager",
+      "name": "__init__",
+      "class": "Tween",
       "module": "ui",
-      "description": "Set or override a theme",
-      "link": "ui/index.html#method-thememanager-set_theme",
+      "description": "Initialize a new tween animation.<br><br>Args:<br> &nbsp; &nbsp;target: The object to animate (UIElement or any object with properties)",
+      "link": "ui/index.html#method-tween-__init__",
       "is_method": true,
-      "element_id": "method-thememanager-set_theme"
+      "element_id": "method-tween-__init__"
     },
     {
-      "name": "set_current_theme",
-      "class": "ThemeManager",
+      "name": "create",
+      "class": "Tween",
       "module": "ui",
-      "description": "Set the current default theme",
-      "link": "ui/index.html#method-thememanager-set_current_theme",
+      "description": "Factory method to create a new tween (Roblox Studio style).<br><br>Args:<br> &nbsp; &nbsp;target: Object to animate<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: New tween instance",
+      "link": "ui/index.html#method-tween-create",
       "is_method": true,
-      "element_id": "method-thememanager-set_current_theme"
+      "element_id": "method-tween-create"
     },
     {
-      "name": "get_current_theme",
-      "class": "ThemeManager",
+      "name": "to",
+      "class": "Tween",
       "module": "ui",
-      "description": "Get current default theme",
-      "link": "ui/index.html#method-thememanager-get_current_theme",
+      "description": "Set target values for the animation (Roblox Studio style).<br><br>Args:<br> &nbsp; &nbsp;**kwargs: Properties to animate with their target values<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Special parameters: duration, easing<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Example: x=100, y=200, duration=1.0, easing=EasingType.QUAD_IN_OUT<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining",
+      "link": "ui/index.html#method-tween-to",
       "is_method": true,
-      "element_id": "method-thememanager-get_current_theme"
+      "element_id": "method-tween-to"
     },
     {
-      "name": "get_themes",
-      "class": "ThemeManager",
+      "name": "play",
+      "class": "Tween",
       "module": "ui",
-      "description": "Get all available themes",
-      "link": "ui/index.html#method-thememanager-get_themes",
+      "description": "Start playing the animation.<br><br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining",
+      "link": "ui/index.html#method-tween-play",
       "is_method": true,
-      "element_id": "method-thememanager-get_themes"
+      "element_id": "method-tween-play"
     },
     {
-      "name": "get_theme_types",
-      "class": "ThemeManager",
+      "name": "pause",
+      "class": "Tween",
       "module": "ui",
-      "description": "Get all available theme types",
-      "link": "ui/index.html#method-thememanager-get_theme_types",
+      "description": "Pause the animation.<br><br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining",
+      "link": "ui/index.html#method-tween-pause",
       "is_method": true,
-      "element_id": "method-thememanager-get_theme_types"
+      "element_id": "method-tween-pause"
     },
     {
-      "name": "get_theme_names",
-      "class": "ThemeManager",
+      "name": "resume",
+      "class": "Tween",
       "module": "ui",
-      "description": "Get all available theme names",
-      "link": "ui/index.html#method-thememanager-get_theme_names",
+      "description": "Resume a paused animation.<br><br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining",
+      "link": "ui/index.html#method-tween-resume",
       "is_method": true,
-      "element_id": "method-thememanager-get_theme_names"
+      "element_id": "method-tween-resume"
     },
     {
-      "name": "get_color",
-      "class": "ThemeManager",
+      "name": "cancel",
+      "class": "Tween",
       "module": "ui",
-      "description": "Get a specific color from the current theme",
-      "link": "ui/index.html#method-thememanager-get_color",
+      "description": "Cancel the animation and reset properties to initial state.<br><br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining",
+      "link": "ui/index.html#method-tween-cancel",
       "is_method": true,
-      "element_id": "method-thememanager-get_color"
+      "element_id": "method-tween-cancel"
+    },
+    {
+      "name": "stop",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Stop the animation.<br><br>Args:<br> &nbsp; &nbsp;reset: If True, reset properties to initial values<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining",
+      "link": "ui/index.html#method-tween-stop",
+      "is_method": true,
+      "element_id": "method-tween-stop"
+    },
+    {
+      "name": "set_duration",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Change the duration of the animation.<br><br>Args:<br> &nbsp; &nbsp;duration: New duration in seconds (must be positive)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining<br> &nbsp; &nbsp;<br>Raises:<br> &nbsp; &nbsp;ValueError: If duration is not positive",
+      "link": "ui/index.html#method-tween-set_duration",
+      "is_method": true,
+      "element_id": "method-tween-set_duration"
+    },
+    {
+      "name": "_get_elapsed_time",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Get elapsed time since animation started.<br><br>Returns:<br> &nbsp; &nbsp;float: Elapsed time in seconds",
+      "link": "ui/index.html#method-tween-_get_elapsed_time",
+      "is_method": true,
+      "element_id": "method-tween-_get_elapsed_time"
+    },
+    {
+      "name": "get_progress",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Get current animation progress as a percentage (0.0 to 1.0).<br><br>Returns:<br> &nbsp; &nbsp;float: Animation progress (0.0 = start, 1.0 = end)",
+      "link": "ui/index.html#method-tween-get_progress",
+      "is_method": true,
+      "element_id": "method-tween-get_progress"
+    },
+    {
+      "name": "get_progress_percentage",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Get current animation progress as a percentage (0 to 100).<br><br>Returns:<br> &nbsp; &nbsp;float: Animation progress percentage (0 to 100)",
+      "link": "ui/index.html#method-tween-get_progress_percentage",
+      "is_method": true,
+      "element_id": "method-tween-get_progress_percentage"
+    },
+    {
+      "name": "update",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Update the animation state.<br><br>Args:<br> &nbsp; &nbsp;dt: Delta time in seconds (optional, uses real time if None)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation is complete, False otherwise",
+      "link": "ui/index.html#method-tween-update",
+      "is_method": true,
+      "element_id": "method-tween-update"
+    },
+    {
+      "name": "_update_property",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Update a specific property based on animation progress.<br><br>Args:<br> &nbsp; &nbsp;prop_name: Name of the property<br> &nbsp; &nbsp;prop: TweenProperty object<br> &nbsp; &nbsp;progress: Eased animation progress (0.0 to 1.0)",
+      "link": "ui/index.html#method-tween-_update_property",
+      "is_method": true,
+      "element_id": "method-tween-_update_property"
+    },
+    {
+      "name": "_complete_animation",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Mark animation as complete and fire callbacks.",
+      "link": "ui/index.html#method-tween-_complete_animation",
+      "is_method": true,
+      "element_id": "method-tween-_complete_animation"
+    },
+    {
+      "name": "_apply_easing",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Apply easing function to raw progress.<br><br>Args:<br> &nbsp; &nbsp;t: Raw progress (0.0 to 1.0)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Eased progress",
+      "link": "ui/index.html#method-tween-_apply_easing",
+      "is_method": true,
+      "element_id": "method-tween-_apply_easing"
+    },
+    {
+      "name": "_bounce_out",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Bounce out easing function.<br><br>Args:<br> &nbsp; &nbsp;t: Input value (0.0 to 1.0)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Bounced value",
+      "link": "ui/index.html#method-tween-_bounce_out",
+      "is_method": true,
+      "element_id": "method-tween-_bounce_out"
+    },
+    {
+      "name": "set_easing",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Set the easing function for the animation.<br><br>Args:<br> &nbsp; &nbsp;easing: EasingType enum or string name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining",
+      "link": "ui/index.html#method-tween-set_easing",
+      "is_method": true,
+      "element_id": "method-tween-set_easing"
+    },
+    {
+      "name": "set_loops",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Set number of loops and yoyo mode.<br><br>Args:<br> &nbsp; &nbsp;loops: Number of loops (0 = no loop, -1 = infinite)<br> &nbsp; &nbsp;yoyo: If True, reverse animation on each loop<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining",
+      "link": "ui/index.html#method-tween-set_loops",
+      "is_method": true,
+      "element_id": "method-tween-set_loops"
+    },
+    {
+      "name": "set_callbacks",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Set lifecycle callbacks for the animation.<br><br>Args:<br> &nbsp; &nbsp;on_start: Called when animation starts<br> &nbsp; &nbsp;on_update: Called each frame with (tween, progress)<br> &nbsp; &nbsp;on_complete: Called when animation completes<br> &nbsp; &nbsp;on_loop: Called after each loop with loop number<br> &nbsp; &nbsp;on_stop: Called when animation is stopped<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining",
+      "link": "ui/index.html#method-tween-set_callbacks",
+      "is_method": true,
+      "element_id": "method-tween-set_callbacks"
+    },
+    {
+      "name": "update_all",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Update all active tweens.<br><br>Args:<br> &nbsp; &nbsp;dt: Delta time in seconds (optional)",
+      "link": "ui/index.html#method-tween-update_all",
+      "is_method": true,
+      "element_id": "method-tween-update_all"
+    },
+    {
+      "name": "cancel_all",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Cancel all active tweens.",
+      "link": "ui/index.html#method-tween-cancel_all",
+      "is_method": true,
+      "element_id": "method-tween-cancel_all"
+    },
+    {
+      "name": "pause_all",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Pause all active tweens.",
+      "link": "ui/index.html#method-tween-pause_all",
+      "is_method": true,
+      "element_id": "method-tween-pause_all"
+    },
+    {
+      "name": "resume_all",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Resume all paused tweens.",
+      "link": "ui/index.html#method-tween-resume_all",
+      "is_method": true,
+      "element_id": "method-tween-resume_all"
+    },
+    {
+      "name": "get_active_count",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Get number of active tweens.<br><br>Returns:<br> &nbsp; &nbsp;int: Number of active tweens",
+      "link": "ui/index.html#method-tween-get_active_count",
+      "is_method": true,
+      "element_id": "method-tween-get_active_count"
+    },
+    {
+      "name": "sequence",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Create a sequence of tweens (executes one after another).<br><br>Args:<br> &nbsp; &nbsp;tweens: List of tweens to execute sequentially<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;TweenSequence: Sequence controller",
+      "link": "ui/index.html#method-tween-sequence",
+      "is_method": true,
+      "element_id": "method-tween-sequence"
+    },
+    {
+      "name": "parallel",
+      "class": "Tween",
+      "module": "ui",
+      "description": "Create a parallel group of tweens (executes all simultaneously).<br><br>Args:<br> &nbsp; &nbsp;tweens: List of tweens to execute in parallel<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;TweenParallel: Parallel group controller",
+      "link": "ui/index.html#method-tween-parallel",
+      "is_method": true,
+      "element_id": "method-tween-parallel"
+    },
+    {
+      "name": "__init__",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Initialize the animation handler.<br><br>Args:<br> &nbsp; &nbsp;engine: Reference to LunaEngine instance (optional)",
+      "link": "ui/index.html#method-animationhandler-__init__",
+      "is_method": true,
+      "element_id": "method-animationhandler-__init__"
+    },
+    {
+      "name": "add",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Add a tween to the handler with a name.<br><br>Args:<br> &nbsp; &nbsp;name: Unique name for the animation<br> &nbsp; &nbsp;tween: Tween instance<br> &nbsp; &nbsp;auto_play: If True, start playing immediately<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: The added tween",
+      "link": "ui/index.html#method-animationhandler-add",
+      "is_method": true,
+      "element_id": "method-animationhandler-add"
+    },
+    {
+      "name": "get",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Get a tween by name.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[Tween]: Tween instance or None if not found",
+      "link": "ui/index.html#method-animationhandler-get",
+      "is_method": true,
+      "element_id": "method-animationhandler-get"
+    },
+    {
+      "name": "remove",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Remove a tween by name.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;stop: If True, stop the animation before removing<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation was found and removed",
+      "link": "ui/index.html#method-animationhandler-remove",
+      "is_method": true,
+      "element_id": "method-animationhandler-remove"
+    },
+    {
+      "name": "pause",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Pause a specific animation.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation was found and paused",
+      "link": "ui/index.html#method-animationhandler-pause",
+      "is_method": true,
+      "element_id": "method-animationhandler-pause"
+    },
+    {
+      "name": "resume",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Resume a specific animation.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation was found and resumed",
+      "link": "ui/index.html#method-animationhandler-resume",
+      "is_method": true,
+      "element_id": "method-animationhandler-resume"
+    },
+    {
+      "name": "stop",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Stop a specific animation.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;reset: If True, reset properties to initial values<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation was found and stopped",
+      "link": "ui/index.html#method-animationhandler-stop",
+      "is_method": true,
+      "element_id": "method-animationhandler-stop"
+    },
+    {
+      "name": "cancel",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Cancel a specific animation (stops and resets).<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation was found and canceled",
+      "link": "ui/index.html#method-animationhandler-cancel",
+      "is_method": true,
+      "element_id": "method-animationhandler-cancel"
+    },
+    {
+      "name": "is_playing",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Check if an animation is currently playing.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation exists and is playing",
+      "link": "ui/index.html#method-animationhandler-is_playing",
+      "is_method": true,
+      "element_id": "method-animationhandler-is_playing"
+    },
+    {
+      "name": "is_paused",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Check if an animation is paused.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation exists and is paused",
+      "link": "ui/index.html#method-animationhandler-is_paused",
+      "is_method": true,
+      "element_id": "method-animationhandler-is_paused"
+    },
+    {
+      "name": "update",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Update all animations managed by this handler.<br><br>Args:<br> &nbsp; &nbsp;dt: Delta time in seconds",
+      "link": "ui/index.html#method-animationhandler-update",
+      "is_method": true,
+      "element_id": "method-animationhandler-update"
+    },
+    {
+      "name": "_cleanup_completed",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Remove completed animations from the named dictionary.",
+      "link": "ui/index.html#method-animationhandler-_cleanup_completed",
+      "is_method": true,
+      "element_id": "method-animationhandler-_cleanup_completed"
+    },
+    {
+      "name": "pause_all",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Pause all animations.",
+      "link": "ui/index.html#method-animationhandler-pause_all",
+      "is_method": true,
+      "element_id": "method-animationhandler-pause_all"
+    },
+    {
+      "name": "resume_all",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Resume all animations.",
+      "link": "ui/index.html#method-animationhandler-resume_all",
+      "is_method": true,
+      "element_id": "method-animationhandler-resume_all"
+    },
+    {
+      "name": "stop_all",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Stop all animations.",
+      "link": "ui/index.html#method-animationhandler-stop_all",
+      "is_method": true,
+      "element_id": "method-animationhandler-stop_all"
+    },
+    {
+      "name": "cancel_all",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Cancel all animations (stop and reset).",
+      "link": "ui/index.html#method-animationhandler-cancel_all",
+      "is_method": true,
+      "element_id": "method-animationhandler-cancel_all"
+    },
+    {
+      "name": "get_active_count",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Get number of active animations.<br><br>Returns:<br> &nbsp; &nbsp;int: Number of active animations",
+      "link": "ui/index.html#method-animationhandler-get_active_count",
+      "is_method": true,
+      "element_id": "method-animationhandler-get_active_count"
+    },
+    {
+      "name": "clear",
+      "class": "AnimationHandler",
+      "module": "ui",
+      "description": "Clear all animations from the handler.",
+      "link": "ui/index.html#method-animationhandler-clear",
+      "is_method": true,
+      "element_id": "method-animationhandler-clear"
+    },
+    {
+      "name": "__init__",
+      "class": "TweenGroup",
+      "module": "ui",
+      "description": "Initialize a tween group.<br><br>Args:<br> &nbsp; &nbsp;tweens: List of tweens in the group",
+      "link": "ui/index.html#method-tweengroup-__init__",
+      "is_method": true,
+      "element_id": "method-tweengroup-__init__"
+    },
+    {
+      "name": "play",
+      "class": "TweenGroup",
+      "module": "ui",
+      "description": "Start playing the tween group.",
+      "link": "ui/index.html#method-tweengroup-play",
+      "is_method": true,
+      "element_id": "method-tweengroup-play"
+    },
+    {
+      "name": "_play_current",
+      "class": "TweenGroup",
+      "module": "ui",
+      "description": "Start playing the current tween in the group.",
+      "link": "ui/index.html#method-tweengroup-_play_current",
+      "is_method": true,
+      "element_id": "method-tweengroup-_play_current"
+    },
+    {
+      "name": "update",
+      "class": "TweenGroup",
+      "module": "ui",
+      "description": "Update the tween group.<br><br>Args:<br> &nbsp; &nbsp;dt: Delta time<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if group is complete",
+      "link": "ui/index.html#method-tweengroup-update",
+      "is_method": true,
+      "element_id": "method-tweengroup-update"
+    },
+    {
+      "name": "cancel",
+      "class": "TweenGroup",
+      "module": "ui",
+      "description": "Cancel the tween group.",
+      "link": "ui/index.html#method-tweengroup-cancel",
+      "is_method": true,
+      "element_id": "method-tweengroup-cancel"
+    },
+    {
+      "name": "_play_current",
+      "class": "TweenSequence",
+      "module": "ui",
+      "description": "Start playing the current tween in sequence.",
+      "link": "ui/index.html#method-tweensequence-_play_current",
+      "is_method": true,
+      "element_id": "method-tweensequence-_play_current"
+    },
+    {
+      "name": "update",
+      "class": "TweenSequence",
+      "module": "ui",
+      "description": "Update the tween sequence.<br><br>Args:<br> &nbsp; &nbsp;dt: Delta time<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if sequence is complete",
+      "link": "ui/index.html#method-tweensequence-update",
+      "is_method": true,
+      "element_id": "method-tweensequence-update"
+    },
+    {
+      "name": "play",
+      "class": "TweenParallel",
+      "module": "ui",
+      "description": "Start playing all tweens in parallel.",
+      "link": "ui/index.html#method-tweenparallel-play",
+      "is_method": true,
+      "element_id": "method-tweenparallel-play"
+    },
+    {
+      "name": "update",
+      "class": "TweenParallel",
+      "module": "ui",
+      "description": "Update all tweens in parallel.<br><br>Args:<br> &nbsp; &nbsp;dt: Delta time<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if all tweens are complete",
+      "link": "ui/index.html#method-tweenparallel-update",
+      "is_method": true,
+      "element_id": "method-tweenparallel-update"
     },
     {
       "name": "__init__",
@@ -6784,7 +7333,7 @@
       "element_id": "method-codestatistics-print_statistics"
     }
   ],
-  "last_updated": "2025-12-01T18:55:26.760616",
+  "last_updated": "2026-01-02T12:21:24.397296",
   "pages": [
     {
       "name": "Quick Start",
