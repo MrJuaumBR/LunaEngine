@@ -439,21 +439,24 @@ class OpenGLRenderer:
         
         A(0.0-1.0) -> A(0.0-1.0)
         """
-        if len(color) == 3:
-            r, g, b = color
-            a = 1.0
+        if color:
+            if len(color) == 3:
+                r, g, b = color
+                a = 1.0
+            else:
+                r, g, b, a = color
+            
+            # Add compatibility with older engine version wich used 0~255
+            if a > 1.0:
+                a = a / 255
+            if a < 0.0:
+                a = 0.0
+            r = max(0, min(255, int(r))) / 255.0
+            g = max(0, min(255, int(g))) / 255.0
+            b = max(0, min(255, int(b))) / 255.0
+            return (r, g, b, a)
         else:
-            r, g, b, a = color
-        
-        # Add compatibility with older engine version wich used 0~255
-        if a > 1.0:
-            a = a / 255
-        if a < 0.0:
-            a = 0.0
-        r = max(0, min(255, int(r))) / 255.0
-        g = max(0, min(255, int(g))) / 255.0
-        b = max(0, min(255, int(b))) / 255.0
-        return (r, g, b, a)
+            raise(Exception("Invalid color format. Expected (r, g, b, a) or (r, g, b). got: {}".format(color)))
     
     def _ensure_particle_capacity(self, required_count: int):
         """
@@ -615,11 +618,17 @@ class OpenGLRenderer:
         
         if surface:
             self.set_surface(old_surface)
+            
+    def draw_lines(self, points:List[Tuple[Tuple[int, int], Tuple[int, int]]], color: Tuple[int, int, int, float]|Tuple[int,int,int], width: int = 2, surface: Optional[pygame.Surface] = None):
+        for point in points:
+            start_point, end_point = point
+            self.draw_line(start_point[0], start_point[1], end_point[0], end_point[1], color, width, surface)
 
-    def draw_text(self, text: str, x: int, y: int, color: tuple, font:pygame.font.FontType, surface: Optional[pygame.Surface] = None):
+    def draw_text(self, text: str, x: int, y: int, color: tuple, font:pygame.font.FontType, surface: Optional[pygame.Surface] = None, anchor_point: tuple = (0.0, 0.0)):
         """
-        Draw text using pygame font rendering - FIX FOR TEXT ISSUES
+        Draw text using pygame font rendering
         """
+        x, y = x - int(anchor_point[0] * font.size(text)[0]), y - int(anchor_point[1] * font.size(text)[1])
         if surface:
             text_surface = font.render(text, True, color)
             surface.blit(text_surface, (x, y))

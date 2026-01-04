@@ -15,7 +15,7 @@
       "description": "User interface components - Buttons, Layouts, Themes",
       "link": "ui/index.html",
       "files_count": 5,
-      "classes_count": 42,
+      "classes_count": 44,
       "functions_count": 0
     },
     {
@@ -42,8 +42,8 @@
       "description": "Renderer backends - OpenGL, Pygame",
       "link": "backend/index.html",
       "files_count": 4,
-      "classes_count": 28,
-      "functions_count": 0
+      "classes_count": 31,
+      "functions_count": 3
     },
     {
       "name": "tools",
@@ -134,7 +134,7 @@
       "file": "renderer.py",
       "description": "Abstract base class for all renderers in LunaEngine.",
       "link": "core/index.html#class-renderer",
-      "methods_count": 21,
+      "methods_count": 22,
       "element_id": "class-renderer"
     },
     {
@@ -143,7 +143,7 @@
       "file": "scene.py",
       "description": "Base class for all game scenes.<br><br>Provides lifecycle methods and UI element management. <br>All custom scenes should inherit from this class.<br><br>Attributes:<br> &nbsp; &nbsp;ui_elements (List[UIElement]): List of UI elements in this scene<br> &nbsp; &nbsp;_initialized (bool): Whether the scene has been initialized<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine",
       "link": "core/index.html#class-scene",
-      "methods_count": 13,
+      "methods_count": 15,
       "element_id": "class-scene"
     },
     {
@@ -188,7 +188,7 @@
       "file": "elements.py",
       "description": "Base class for all UI elements providing common functionality.<br><br>Attributes:<br> &nbsp; &nbsp;element_id (str): Unique identifier for this element in format ui_{type}_{counter}<br> &nbsp; &nbsp;x (int): X coordinate position<br> &nbsp; &nbsp;y (int): Y coordinate position<br> &nbsp; &nbsp;width (int): Width of the element in pixels<br> &nbsp; &nbsp;height (int): Height of the element in pixels<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning<br> &nbsp; &nbsp;state (UIState): Current state of the element<br> &nbsp; &nbsp;visible (bool): Whether element is visible<br> &nbsp; &nbsp;enabled (bool): Whether element is enabled<br> &nbsp; &nbsp;children (List[UIElement]): Child elements<br> &nbsp; &nbsp;parent (UIElement): Parent element",
       "link": "ui/index.html#class-uielement",
-      "methods_count": 17,
+      "methods_count": 23,
       "element_id": "class-uielement"
     },
     {
@@ -224,7 +224,7 @@
       "file": "elements.py",
       "description": "UI element for displaying text labels.",
       "link": "ui/index.html#class-textlabel",
-      "methods_count": 8,
+      "methods_count": 9,
       "element_id": "class-textlabel"
     },
     {
@@ -242,7 +242,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/index.html#class-button",
-      "methods_count": 11,
+      "methods_count": 14,
       "element_id": "class-button"
     },
     {
@@ -260,7 +260,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/index.html#class-textbox",
-      "methods_count": 12,
+      "methods_count": 14,
       "element_id": "class-textbox"
     },
     {
@@ -278,7 +278,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/index.html#class-progressbar",
-      "methods_count": 5,
+      "methods_count": 11,
       "element_id": "class-progressbar"
     },
     {
@@ -323,7 +323,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/index.html#class-scrollingframe",
-      "methods_count": 10,
+      "methods_count": 12,
       "element_id": "class-scrollingframe"
     },
     {
@@ -350,8 +350,26 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/index.html#class-uiframe",
-      "methods_count": 13,
+      "methods_count": 14,
       "element_id": "class-uiframe"
+    },
+    {
+      "name": "NumberSelector",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "UI element that allows a user to select a number within a specified range <br>using increment and decrement controls.<br><br>This element manages its value internally, ensuring it stays within <br>the defined min_value and max_value. It also handles formatting with <br>a minimum number of digits (min_length) using padding.<br><br>Attributes:<br> &nbsp; &nbsp;min_value (int): The lowest allowed value.<br> &nbsp; &nbsp;max_value (int): The highest allowed value.<br> &nbsp; &nbsp;min_length (int): Minimum number of digits for display padding (e.g., 5 -&gt; &#x27;05&#x27;).<br> &nbsp; &nbsp;max_length (int): Maximum number of digits allowed.<br> &nbsp; &nbsp;<br>Internal Attributes:<br> &nbsp; &nbsp;_value (int): The current selected value.<br> &nbsp; &nbsp;_font (pygame.font.Font): Cached font object used for rendering the number.<br> &nbsp; &nbsp;_up_rect (pygame.Rect): Rectangular area for the increment button (relative position).<br> &nbsp; &nbsp;_down_rect (pygame.Rect): Rectangular area for the decrement button (relative position).<br> &nbsp; &nbsp;_is_up_pressed (bool): True if the increment button is currently pressed.<br> &nbsp; &nbsp;_is_down_pressed (bool): True if the decrement button is currently pressed.<br> &nbsp; &nbsp;_last_mouse_pos_rel (Tuple[int, int]): Last mouse position relative to the element (for state update).",
+      "link": "ui/index.html#class-numberselector",
+      "methods_count": 11,
+      "element_id": "class-numberselector"
+    },
+    {
+      "name": "Checkbox",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "A binary state control element that allows a user to select a boolean value (checked or unchecked).<br><br>The Checkbox is typically rendered as a small square box that can be toggled by clicking.<br><br>Attributes:<br> &nbsp; &nbsp;checked (bool): The current state of the checkbox (True if checked, False otherwise).<br> &nbsp; &nbsp;label (Optional[str]): The text label to display next to the checkbox.<br> &nbsp; &nbsp;label_position (str): Position of the label relative to the box (&#x27;right&#x27; or &#x27;left&#x27;).<br> &nbsp; &nbsp;box_size (int): The size (width and height) of the square checkbox box.<br> &nbsp; &nbsp;<br>Internal Attributes:<br> &nbsp; &nbsp;_font (pygame.font.Font): Cached font object for rendering the label.",
+      "link": "ui/index.html#class-checkbox",
+      "methods_count": 7,
+      "element_id": "class-checkbox"
     },
     {
       "name": "AnimationTypes",
@@ -744,7 +762,7 @@
       "name": "NetworkEventType",
       "module": "backend",
       "file": "network.py",
-      "description": "Types of network events",
+      "description": "Enumeration of network event types.",
       "link": "backend/index.html#class-networkeventtype",
       "methods_count": 0,
       "element_id": "class-networkeventtype"
@@ -753,181 +771,208 @@
       "name": "NetworkEvent",
       "module": "backend",
       "file": "network.py",
-      "description": "Network event container",
+      "description": "Represents a network event with associated data.",
       "link": "backend/index.html#class-networkevent",
-      "methods_count": 1,
+      "methods_count": 0,
       "element_id": "class-networkevent"
+    },
+    {
+      "name": "HostClientMode",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Operating modes for HostClient.",
+      "link": "backend/index.html#class-hostclientmode",
+      "methods_count": 0,
+      "element_id": "class-hostclientmode"
+    },
+    {
+      "name": "ConnectionQuality",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Connection quality levels.",
+      "link": "backend/index.html#class-connectionquality",
+      "methods_count": 0,
+      "element_id": "class-connectionquality"
+    },
+    {
+      "name": "NetworkMetrics",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Container for network performance metrics.",
+      "link": "backend/index.html#class-networkmetrics",
+      "methods_count": 1,
+      "element_id": "class-networkmetrics"
     },
     {
       "name": "NetworkMessage",
       "module": "backend",
       "file": "network.py",
-      "description": "Base class for network messages with serialization capabilities",
+      "description": "Base class for all network messages.",
       "link": "backend/index.html#class-networkmessage",
-      "methods_count": 2,
+      "methods_count": 4,
       "element_id": "class-networkmessage"
+    },
+    {
+      "name": "ChatMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Message for chat communication.",
+      "link": "backend/index.html#class-chatmessage",
+      "methods_count": 1,
+      "element_id": "class-chatmessage"
+    },
+    {
+      "name": "PlayerPositionMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Message for player position updates.",
+      "link": "backend/index.html#class-playerpositionmessage",
+      "methods_count": 1,
+      "element_id": "class-playerpositionmessage"
+    },
+    {
+      "name": "GameStateMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Message for complete game state synchronization.",
+      "link": "backend/index.html#class-gamestatemessage",
+      "methods_count": 1,
+      "element_id": "class-gamestatemessage"
+    },
+    {
+      "name": "PlayerInfoMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Message for player information updates.",
+      "link": "backend/index.html#class-playerinfomessage",
+      "methods_count": 1,
+      "element_id": "class-playerinfomessage"
+    },
+    {
+      "name": "PlayersListMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Message for sending list of all players.",
+      "link": "backend/index.html#class-playerslistmessage",
+      "methods_count": 1,
+      "element_id": "class-playerslistmessage"
+    },
+    {
+      "name": "WelcomeMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Welcome message for new clients.",
+      "link": "backend/index.html#class-welcomemessage",
+      "methods_count": 1,
+      "element_id": "class-welcomemessage"
     },
     {
       "name": "ClientInfo",
       "module": "backend",
       "file": "network.py",
-      "description": "Client information container with enhanced tracking",
+      "description": "Information about a connected client.",
       "link": "backend/index.html#class-clientinfo",
       "methods_count": 1,
       "element_id": "class-clientinfo"
     },
     {
-      "name": "Client",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Represents a connected client in the network system with ping tracking",
-      "link": "backend/index.html#class-client",
-      "methods_count": 4,
-      "element_id": "class-client"
-    },
-    {
       "name": "ServerScript",
       "module": "backend",
       "file": "network.py",
-      "description": "Server script for automated tasks like auto-save, day/night cycle, etc.",
+      "description": "Represents a server-side script that runs periodically.",
       "link": "backend/index.html#class-serverscript",
-      "methods_count": 3,
+      "methods_count": 2,
       "element_id": "class-serverscript"
+    },
+    {
+      "name": "PerformanceMonitor",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Monitors network performance metrics.",
+      "link": "backend/index.html#class-performancemonitor",
+      "methods_count": 6,
+      "element_id": "class-performancemonitor"
+    },
+    {
+      "name": "RegionDetector",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Detects geographic region/country based on IP address.",
+      "link": "backend/index.html#class-regiondetector",
+      "methods_count": 3,
+      "element_id": "class-regiondetector"
     },
     {
       "name": "Server",
       "module": "backend",
       "file": "network.py",
-      "description": "Network server for handling multiple client connections with enhanced features<br><br>Parameters:<br> &nbsp; &nbsp;host: Server host address (default: &#x27;localhost&#x27;)<br> &nbsp; &nbsp;port: Server port (default: 5555)<br> &nbsp; &nbsp;max_clients: Maximum number of simultaneous clients (default: 8)<br> &nbsp; &nbsp;password[Optional]: Optional password for client authentication (default: None)",
+      "description": "Network server for multiplayer games.",
       "link": "backend/index.html#class-server",
-      "methods_count": 27,
+      "methods_count": 23,
       "element_id": "class-server"
     },
     {
       "name": "NetworkClient",
       "module": "backend",
       "file": "network.py",
-      "description": "Network client for connecting to server with enhanced features",
+      "description": "Network client for connecting to servers.",
       "link": "backend/index.html#class-networkclient",
-      "methods_count": 11,
+      "methods_count": 12,
       "element_id": "class-networkclient"
     },
     {
       "name": "HostClient",
       "module": "backend",
       "file": "network.py",
-      "description": "Hybrid client that can also act as a server for other clients<br>Perfect for player-hosted multiplayer games with enhanced features",
+      "description": "Hybrid host-client that can act as both server and client.",
       "link": "backend/index.html#class-hostclient",
-      "methods_count": 22,
+      "methods_count": 15,
       "element_id": "class-hostclient"
     },
     {
       "name": "NetworkDiscovery",
       "module": "backend",
       "file": "network.py",
-      "description": "Simple network discovery for finding local hosts",
+      "description": "Discovers network games on local network.",
       "link": "backend/index.html#class-networkdiscovery",
       "methods_count": 3,
       "element_id": "class-networkdiscovery"
     },
     {
-      "name": "HeartbeatMessage",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Heartbeat message for connection monitoring with ping measurement",
-      "link": "backend/index.html#class-heartbeatmessage",
-      "methods_count": 1,
-      "element_id": "class-heartbeatmessage"
-    },
-    {
-      "name": "AuthMessage",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Authentication message for password-protected servers",
-      "link": "backend/index.html#class-authmessage",
-      "methods_count": 1,
-      "element_id": "class-authmessage"
-    },
-    {
-      "name": "AuthResultMessage",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Authentication result message",
-      "link": "backend/index.html#class-authresultmessage",
-      "methods_count": 1,
-      "element_id": "class-authresultmessage"
-    },
-    {
-      "name": "KickMessage",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Kick message for removing clients from server",
-      "link": "backend/index.html#class-kickmessage",
-      "methods_count": 1,
-      "element_id": "class-kickmessage"
-    },
-    {
-      "name": "PlayerPositionMessage",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Player position update message",
-      "link": "backend/index.html#class-playerpositionmessage",
-      "methods_count": 1,
-      "element_id": "class-playerpositionmessage"
-    },
-    {
-      "name": "ChatMessage",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Chat message with better duplicate prevention",
-      "link": "backend/index.html#class-chatmessage",
-      "methods_count": 1,
-      "element_id": "class-chatmessage"
-    },
-    {
-      "name": "GameStateMessage",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Game state synchronization message",
-      "link": "backend/index.html#class-gamestatemessage",
-      "methods_count": 1,
-      "element_id": "class-gamestatemessage"
-    },
-    {
-      "name": "ServerScriptMessage",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Server script execution result message",
-      "link": "backend/index.html#class-serverscriptmessage",
-      "methods_count": 1,
-      "element_id": "class-serverscriptmessage"
-    },
-    {
-      "name": "ServerShutdownMessage",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Message sent to all clients when server is shutting down",
-      "link": "backend/index.html#class-servershutdownmessage",
-      "methods_count": 1,
-      "element_id": "class-servershutdownmessage"
-    },
-    {
-      "name": "HostMigrationMessage",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Message for host migration scenarios",
-      "link": "backend/index.html#class-hostmigrationmessage",
-      "methods_count": 1,
-      "element_id": "class-hostmigrationmessage"
-    },
-    {
       "name": "NetworkMessages",
       "module": "backend",
       "file": "network.py",
-      "description": "No documentation",
+      "description": "Factory for common network messages.",
       "link": "backend/index.html#class-networkmessages",
-      "methods_count": 0,
+      "methods_count": 4,
       "element_id": "class-networkmessages"
+    },
+    {
+      "name": "SmoothPositionMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Mensagem para atualiza\u00e7\u00e3o suave de posi\u00e7\u00e3o com timestamp",
+      "link": "backend/index.html#class-smoothpositionmessage",
+      "methods_count": 1,
+      "element_id": "class-smoothpositionmessage"
+    },
+    {
+      "name": "PlayerInputMessage",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Mensagem para envio de inputs do jogador (mais eficiente)",
+      "link": "backend/index.html#class-playerinputmessage",
+      "methods_count": 1,
+      "element_id": "class-playerinputmessage"
+    },
+    {
+      "name": "NetworkInterpolator",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Interpola posi\u00e7\u00f5es para movimento suave",
+      "link": "backend/index.html#class-networkinterpolator",
+      "methods_count": 4,
+      "element_id": "class-networkinterpolator"
     },
     {
       "name": "ShaderProgram",
@@ -971,7 +1016,7 @@
       "file": "opengl.py",
       "description": "No documentation",
       "link": "backend/index.html#class-openglrenderer",
-      "methods_count": 32,
+      "methods_count": 33,
       "element_id": "class-openglrenderer"
     },
     {
@@ -1083,6 +1128,33 @@
       "link": "utils/index.html#func-humanize_time",
       "is_method": false,
       "element_id": "func-humanize_time"
+    },
+    {
+      "name": "get_local_ip",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Get the local IP address of this machine.",
+      "link": "backend/index.html#func-get_local_ip",
+      "is_method": false,
+      "element_id": "func-get_local_ip"
+    },
+    {
+      "name": "is_port_available",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Check if a port is available for binding.",
+      "link": "backend/index.html#func-is_port_available",
+      "is_method": false,
+      "element_id": "func-is_port_available"
+    },
+    {
+      "name": "find_available_port",
+      "module": "backend",
+      "file": "network.py",
+      "description": "Find an available port in the specified range.",
+      "link": "backend/index.html#func-find_available_port",
+      "is_method": false,
+      "element_id": "func-find_available_port"
     },
     {
       "name": "main",
@@ -1987,6 +2059,15 @@
       "element_id": "method-renderer-draw_line"
     },
     {
+      "name": "draw_lines",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Draw multiple lines beetween the points specified.<br><br>Args:<br> &nbsp; &nbsp;points (List[Tuple[int, int]]): List of (x, y) points defining the lines<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;width (int): Line width (default: 1)<br> &nbsp; &nbsp;surface (Optional[pygame.Surface]): Surface to draw",
+      "link": "core/index.html#method-renderer-draw_lines",
+      "is_method": true,
+      "element_id": "method-renderer-draw_lines"
+    },
+    {
       "name": "draw_polygon",
       "class": "Renderer",
       "module": "core",
@@ -2149,6 +2230,24 @@
       "element_id": "method-scene-get_ui_elements_by_type"
     },
     {
+      "name": "get_ui_elements_by_group",
+      "class": "Scene",
+      "module": "core",
+      "description": "Get all UI elements in the scene.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: All UI elements in the scene",
+      "link": "core/index.html#method-scene-get_ui_elements_by_group",
+      "is_method": true,
+      "element_id": "method-scene-get_ui_elements_by_group"
+    },
+    {
+      "name": "toggle_element_group",
+      "class": "Scene",
+      "module": "core",
+      "description": "Toggle the visibility of UI elements in a specific group.<br><br>Args:<br> &nbsp; &nbsp;group (str): The group to toggle",
+      "link": "core/index.html#method-scene-toggle_element_group",
+      "is_method": true,
+      "element_id": "method-scene-toggle_element_group"
+    },
+    {
       "name": "get_all_ui_elements",
       "class": "Scene",
       "module": "core",
@@ -2293,6 +2392,51 @@
       "element_id": "method-uielement-__init__"
     },
     {
+      "name": "add_group",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-uielement-add_group",
+      "is_method": true,
+      "element_id": "method-uielement-add_group"
+    },
+    {
+      "name": "remove_group",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-uielement-remove_group",
+      "is_method": true,
+      "element_id": "method-uielement-remove_group"
+    },
+    {
+      "name": "clear_groups",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-uielement-clear_groups",
+      "is_method": true,
+      "element_id": "method-uielement-clear_groups"
+    },
+    {
+      "name": "has_group",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-uielement-has_group",
+      "is_method": true,
+      "element_id": "method-uielement-has_group"
+    },
+    {
+      "name": "__str__",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-uielement-__str__",
+      "is_method": true,
+      "element_id": "method-uielement-__str__"
+    },
+    {
       "name": "get_id",
       "class": "UIElement",
       "module": "ui",
@@ -2327,6 +2471,15 @@
       "link": "ui/index.html#method-uielement-add_child",
       "is_method": true,
       "element_id": "method-uielement-add_child"
+    },
+    {
+      "name": "remove_child",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "Remove a child element from this UI element.<br><br>Args:<br> &nbsp; &nbsp;child: The child UI element to remove.",
+      "link": "ui/index.html#method-uielement-remove_child",
+      "is_method": true,
+      "element_id": "method-uielement-remove_child"
     },
     {
       "name": "set_tooltip",
@@ -2626,6 +2779,15 @@
       "element_id": "method-textlabel-update_theme"
     },
     {
+      "name": "set_text_color",
+      "class": "TextLabel",
+      "module": "ui",
+      "description": "Set the text color.<br><br>Args:<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple.",
+      "link": "ui/index.html#method-textlabel-set_text_color",
+      "is_method": true,
+      "element_id": "method-textlabel-set_text_color"
+    },
+    {
       "name": "font",
       "class": "TextLabel",
       "module": "ui",
@@ -2734,6 +2896,24 @@
       "element_id": "method-button-__init__"
     },
     {
+      "name": "set_background_color",
+      "class": "Button",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-button-set_background_color",
+      "is_method": true,
+      "element_id": "method-button-set_background_color"
+    },
+    {
+      "name": "set_text_color",
+      "class": "Button",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-button-set_text_color",
+      "is_method": true,
+      "element_id": "method-button-set_text_color"
+    },
+    {
       "name": "set_text",
       "class": "Button",
       "module": "ui",
@@ -2741,6 +2921,15 @@
       "link": "ui/index.html#method-button-set_text",
       "is_method": true,
       "element_id": "method-button-set_text"
+    },
+    {
+      "name": "update_theme",
+      "class": "Button",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-button-update_theme",
+      "is_method": true,
+      "element_id": "method-button-update_theme"
     },
     {
       "name": "font",
@@ -2950,6 +3139,24 @@
       "element_id": "method-textbox-_update_with_mouse"
     },
     {
+      "name": "focus",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "This will focus the textbox, like as of the user pass the mouse and click on it",
+      "link": "ui/index.html#method-textbox-focus",
+      "is_method": true,
+      "element_id": "method-textbox-focus"
+    },
+    {
+      "name": "unfocus",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "This will unfocus the textbox, like as of the user pass the mouse and click on it",
+      "link": "ui/index.html#method-textbox-unfocus",
+      "is_method": true,
+      "element_id": "method-textbox-unfocus"
+    },
+    {
       "name": "handle_key_input",
       "class": "TextBox",
       "module": "ui",
@@ -3110,6 +3317,60 @@
       "link": "ui/index.html#method-progressbar-__init__",
       "is_method": true,
       "element_id": "method-progressbar-__init__"
+    },
+    {
+      "name": "set_background_color",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-progressbar-set_background_color",
+      "is_method": true,
+      "element_id": "method-progressbar-set_background_color"
+    },
+    {
+      "name": "set_foreground_color",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-progressbar-set_foreground_color",
+      "is_method": true,
+      "element_id": "method-progressbar-set_foreground_color"
+    },
+    {
+      "name": "set_font_color",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-progressbar-set_font_color",
+      "is_method": true,
+      "element_id": "method-progressbar-set_font_color"
+    },
+    {
+      "name": "set_font",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-progressbar-set_font",
+      "is_method": true,
+      "element_id": "method-progressbar-set_font"
+    },
+    {
+      "name": "set_border_color",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-progressbar-set_border_color",
+      "is_method": true,
+      "element_id": "method-progressbar-set_border_color"
+    },
+    {
+      "name": "update_theme",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-progressbar-update_theme",
+      "is_method": true,
+      "element_id": "method-progressbar-update_theme"
     },
     {
       "name": "set_value",
@@ -3436,6 +3697,24 @@
       "element_id": "method-scrollingframe-__init__"
     },
     {
+      "name": "set_background_color",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-scrollingframe-set_background_color",
+      "is_method": true,
+      "element_id": "method-scrollingframe-set_background_color"
+    },
+    {
+      "name": "update_theme",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-scrollingframe-update_theme",
+      "is_method": true,
+      "element_id": "method-scrollingframe-update_theme"
+    },
+    {
       "name": "clear_children",
       "class": "ScrollingFrame",
       "module": "ui",
@@ -3742,6 +4021,15 @@
       "element_id": "method-uiframe-set_background_color"
     },
     {
+      "name": "set_border_color",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Set the border color of the frame.<br><br>Args:<br> &nbsp; &nbsp;color (Optional[Tuple[int, int, int]]): RGB color tuple or None for no border.",
+      "link": "ui/index.html#method-uiframe-set_border_color",
+      "is_method": true,
+      "element_id": "method-uiframe-set_border_color"
+    },
+    {
       "name": "set_border",
       "class": "UiFrame",
       "module": "ui",
@@ -3839,6 +4127,168 @@
       "link": "ui/index.html#method-uiframe-clear_children",
       "is_method": true,
       "element_id": "method-uiframe-clear_children"
+    },
+    {
+      "name": "__init__",
+      "class": "NumberSelector",
+      "module": "ui",
+      "description": "Initialize the NumberSelector element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the number selector.<br> &nbsp; &nbsp;height (int): Height of the number selector.<br> &nbsp; &nbsp;min_value (int): Minimum selectable value.<br> &nbsp; &nbsp;max_value (int): Maximum selectable value.<br> &nbsp; &nbsp;value (int): Initial value for the number selector.<br> &nbsp; &nbsp;min_length (int): Minimum number of digits for display padding (defaults to 1).<br> &nbsp; &nbsp;max_length (int): Maximum number of digits allowed (defaults to 10).<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for styling.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.",
+      "link": "ui/index.html#method-numberselector-__init__",
+      "is_method": true,
+      "element_id": "method-numberselector-__init__"
+    },
+    {
+      "name": "value",
+      "class": "NumberSelector",
+      "module": "ui",
+      "description": "Get the current selected value.<br><br>Returns:<br> &nbsp; &nbsp;int: The current numeric value.",
+      "link": "ui/index.html#method-numberselector-value",
+      "is_method": true,
+      "element_id": "method-numberselector-value"
+    },
+    {
+      "name": "value",
+      "class": "NumberSelector",
+      "module": "ui",
+      "description": "Set the value, ensuring it stays within min/max bounds.<br><br>Args:<br> &nbsp; &nbsp;new_value (int): The new value to set.",
+      "link": "ui/index.html#method-numberselector-value",
+      "is_method": true,
+      "element_id": "method-numberselector-value"
+    },
+    {
+      "name": "_format_value",
+      "class": "NumberSelector",
+      "module": "ui",
+      "description": "Formats the current value with padding based on min_length.<br><br>Returns:<br> &nbsp; &nbsp;str: The formatted string representation of the value (e.g., &#x27;007&#x27;).",
+      "link": "ui/index.html#method-numberselector-_format_value",
+      "is_method": true,
+      "element_id": "method-numberselector-_format_value"
+    },
+    {
+      "name": "increment",
+      "class": "NumberSelector",
+      "module": "ui",
+      "description": "Increments the value, respecting max_value.",
+      "link": "ui/index.html#method-numberselector-increment",
+      "is_method": true,
+      "element_id": "method-numberselector-increment"
+    },
+    {
+      "name": "decrement",
+      "class": "NumberSelector",
+      "module": "ui",
+      "description": "Decrements the value, respecting min_value.",
+      "link": "ui/index.html#method-numberselector-decrement",
+      "is_method": true,
+      "element_id": "method-numberselector-decrement"
+    },
+    {
+      "name": "_setup_control_areas",
+      "class": "NumberSelector",
+      "module": "ui",
+      "description": "Defines the rectangular areas for the increment (up) and decrement (down) buttons.<br>These are relative to the element&#x27;s top-left corner (0, 0).",
+      "link": "ui/index.html#method-numberselector-_setup_control_areas",
+      "is_method": true,
+      "element_id": "method-numberselector-_setup_control_areas"
+    },
+    {
+      "name": "_get_button_colors",
+      "class": "NumberSelector",
+      "module": "ui",
+      "description": "Determines the colors for the buttons based on the current state and theme.<br><br>Args:<br> &nbsp; &nbsp;theme: The current theme object from ThemeManager.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple: (up_color, down_color, text_color, border_color, background_color)",
+      "link": "ui/index.html#method-numberselector-_get_button_colors",
+      "is_method": true,
+      "element_id": "method-numberselector-_get_button_colors"
+    },
+    {
+      "name": "_update_with_mouse",
+      "class": "NumberSelector",
+      "module": "ui",
+      "description": "Update element state and handle increment/decrement on click.<br><br>Args:<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position (x, y).<br> &nbsp; &nbsp;mouse_pressed (bool): Whether mouse button is currently pressed.<br> &nbsp; &nbsp;dt (float): Delta time in seconds.",
+      "link": "ui/index.html#method-numberselector-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-numberselector-_update_with_mouse"
+    },
+    {
+      "name": "render_pygame",
+      "class": "NumberSelector",
+      "module": "ui",
+      "description": "Render the NumberSelector using Pygame backend.<br><br>Args:<br> &nbsp; &nbsp;renderer: The Pygame renderer object.",
+      "link": "ui/index.html#method-numberselector-render_pygame",
+      "is_method": true,
+      "element_id": "method-numberselector-render_pygame"
+    },
+    {
+      "name": "render_opengl",
+      "class": "NumberSelector",
+      "module": "ui",
+      "description": "Render the NumberSelector using OpenGL backend.<br><br>Args:<br> &nbsp; &nbsp;renderer: The OpenGL renderer object.",
+      "link": "ui/index.html#method-numberselector-render_opengl",
+      "is_method": true,
+      "element_id": "method-numberselector-render_opengl"
+    },
+    {
+      "name": "__init__",
+      "class": "Checkbox",
+      "module": "ui",
+      "description": "Initialize the Checkbox element.<br><br>The width and height define the overall bounding box, including the label.<br>The actual checkbox box size is calculated based on the height.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Total width of the element (box + label).<br> &nbsp; &nbsp;height (int): Total height of the element (usually the box size).<br> &nbsp; &nbsp;checked (bool): Initial state of the checkbox.<br> &nbsp; &nbsp;theme_type (ThemeType): Theme type for styling.<br> &nbsp; &nbsp;label (Optional[str]): Text label displayed next to the box.<br> &nbsp; &nbsp;label_position (str): Where to place the label (&#x27;right&#x27; or &#x27;left&#x27;).<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.",
+      "link": "ui/index.html#method-checkbox-__init__",
+      "is_method": true,
+      "element_id": "method-checkbox-__init__"
+    },
+    {
+      "name": "set_on_toggle",
+      "class": "Checkbox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/index.html#method-checkbox-set_on_toggle",
+      "is_method": true,
+      "element_id": "method-checkbox-set_on_toggle"
+    },
+    {
+      "name": "_get_colors",
+      "class": "Checkbox",
+      "module": "ui",
+      "description": "Determines the colors for the checkbox based on the current state and theme.<br><br>Args:<br> &nbsp; &nbsp;theme: The current theme object from ThemeManager.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple: (box_color, check_color, border_color, label_color)",
+      "link": "ui/index.html#method-checkbox-_get_colors",
+      "is_method": true,
+      "element_id": "method-checkbox-_get_colors"
+    },
+    {
+      "name": "toggle",
+      "class": "Checkbox",
+      "module": "ui",
+      "description": "Toggles the state of the checkbox (True -&gt; False, False -&gt; True).",
+      "link": "ui/index.html#method-checkbox-toggle",
+      "is_method": true,
+      "element_id": "method-checkbox-toggle"
+    },
+    {
+      "name": "_update_with_mouse",
+      "class": "Checkbox",
+      "module": "ui",
+      "description": "Update element state and handle toggle on click.<br><br>Args:<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position (x, y).<br> &nbsp; &nbsp;mouse_pressed (bool): Whether mouse button is currently pressed.<br> &nbsp; &nbsp;dt (float): Delta time in seconds.",
+      "link": "ui/index.html#method-checkbox-_update_with_mouse",
+      "is_method": true,
+      "element_id": "method-checkbox-_update_with_mouse"
+    },
+    {
+      "name": "render_pygame",
+      "class": "Checkbox",
+      "module": "ui",
+      "description": "Render the Checkbox and its label using Pygame backend.<br><br>Args:<br> &nbsp; &nbsp;renderer: The Pygame renderer object.",
+      "link": "ui/index.html#method-checkbox-render_pygame",
+      "is_method": true,
+      "element_id": "method-checkbox-render_pygame"
+    },
+    {
+      "name": "render_opengl",
+      "class": "Checkbox",
+      "module": "ui",
+      "description": "Render the Checkbox and its label using OpenGL backend.<br><br>Args:<br> &nbsp; &nbsp;renderer: The OpenGL renderer object.",
+      "link": "ui/index.html#method-checkbox-render_opengl",
+      "is_method": true,
+      "element_id": "method-checkbox-render_opengl"
     },
     {
       "name": "__init__",
@@ -5938,91 +6388,118 @@
       "element_id": "method-threadpool-_worker"
     },
     {
-      "name": "__post_init__",
-      "class": "NetworkEvent",
+      "name": "get_quality",
+      "class": "NetworkMetrics",
+      "module": "backend",
+      "description": "Determine connection quality based on metrics.",
+      "link": "backend/index.html#method-networkmetrics-get_quality",
+      "is_method": true,
+      "element_id": "method-networkmetrics-get_quality"
+    },
+    {
+      "name": "__init__",
+      "class": "NetworkMessage",
       "module": "backend",
       "description": "No documentation",
-      "link": "backend/index.html#method-networkevent-__post_init__",
+      "link": "backend/index.html#method-networkmessage-__init__",
       "is_method": true,
-      "element_id": "method-networkevent-__post_init__"
+      "element_id": "method-networkmessage-__init__"
     },
     {
-      "name": "to_bytes",
+      "name": "serialize",
       "class": "NetworkMessage",
       "module": "backend",
-      "description": "Convert message to bytes for transmission",
-      "link": "backend/index.html#method-networkmessage-to_bytes",
+      "description": "Convert message to bytes for transmission.",
+      "link": "backend/index.html#method-networkmessage-serialize",
       "is_method": true,
-      "element_id": "method-networkmessage-to_bytes"
+      "element_id": "method-networkmessage-serialize"
     },
     {
-      "name": "from_bytes",
+      "name": "deserialize",
       "class": "NetworkMessage",
       "module": "backend",
-      "description": "Create message from bytes",
-      "link": "backend/index.html#method-networkmessage-from_bytes",
+      "description": "Create message from bytes.",
+      "link": "backend/index.html#method-networkmessage-deserialize",
       "is_method": true,
-      "element_id": "method-networkmessage-from_bytes"
+      "element_id": "method-networkmessage-deserialize"
     },
     {
-      "name": "__post_init__",
+      "name": "__str__",
+      "class": "NetworkMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-networkmessage-__str__",
+      "is_method": true,
+      "element_id": "method-networkmessage-__str__"
+    },
+    {
+      "name": "__init__",
+      "class": "ChatMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-chatmessage-__init__",
+      "is_method": true,
+      "element_id": "method-chatmessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "PlayerPositionMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-playerpositionmessage-__init__",
+      "is_method": true,
+      "element_id": "method-playerpositionmessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "GameStateMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-gamestatemessage-__init__",
+      "is_method": true,
+      "element_id": "method-gamestatemessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "PlayerInfoMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-playerinfomessage-__init__",
+      "is_method": true,
+      "element_id": "method-playerinfomessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "PlayersListMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-playerslistmessage-__init__",
+      "is_method": true,
+      "element_id": "method-playerslistmessage-__init__"
+    },
+    {
+      "name": "__init__",
+      "class": "WelcomeMessage",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-welcomemessage-__init__",
+      "is_method": true,
+      "element_id": "method-welcomemessage-__init__"
+    },
+    {
+      "name": "connection_time",
       "class": "ClientInfo",
       "module": "backend",
-      "description": "No documentation",
-      "link": "backend/index.html#method-clientinfo-__post_init__",
+      "description": "Get connection duration in seconds.",
+      "link": "backend/index.html#method-clientinfo-connection_time",
       "is_method": true,
-      "element_id": "method-clientinfo-__post_init__"
-    },
-    {
-      "name": "__init__",
-      "class": "Client",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/index.html#method-client-__init__",
-      "is_method": true,
-      "element_id": "method-client-__init__"
-    },
-    {
-      "name": "update_heartbeat",
-      "class": "Client",
-      "module": "backend",
-      "description": "Update the last heartbeat time",
-      "link": "backend/index.html#method-client-update_heartbeat",
-      "is_method": true,
-      "element_id": "method-client-update_heartbeat"
-    },
-    {
-      "name": "update_ping",
-      "class": "Client",
-      "module": "backend",
-      "description": "Update client ping",
-      "link": "backend/index.html#method-client-update_ping",
-      "is_method": true,
-      "element_id": "method-client-update_ping"
-    },
-    {
-      "name": "is_timeout",
-      "class": "Client",
-      "module": "backend",
-      "description": "Check if client has timed out",
-      "link": "backend/index.html#method-client-is_timeout",
-      "is_method": true,
-      "element_id": "method-client-is_timeout"
-    },
-    {
-      "name": "__init__",
-      "class": "ServerScript",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/index.html#method-serverscript-__init__",
-      "is_method": true,
-      "element_id": "method-serverscript-__init__"
+      "element_id": "method-clientinfo-connection_time"
     },
     {
       "name": "should_execute",
       "class": "ServerScript",
       "module": "backend",
-      "description": "Check if script should execute based on interval",
+      "description": "Check if script should execute now.",
       "link": "backend/index.html#method-serverscript-should_execute",
       "is_method": true,
       "element_id": "method-serverscript-should_execute"
@@ -6031,10 +6508,91 @@
       "name": "execute",
       "class": "ServerScript",
       "module": "backend",
-      "description": "Execute the script callback",
+      "description": "Execute the script.",
       "link": "backend/index.html#method-serverscript-execute",
       "is_method": true,
       "element_id": "method-serverscript-execute"
+    },
+    {
+      "name": "__init__",
+      "class": "PerformanceMonitor",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-performancemonitor-__init__",
+      "is_method": true,
+      "element_id": "method-performancemonitor-__init__"
+    },
+    {
+      "name": "update_ping",
+      "class": "PerformanceMonitor",
+      "module": "backend",
+      "description": "Update ping measurement.",
+      "link": "backend/index.html#method-performancemonitor-update_ping",
+      "is_method": true,
+      "element_id": "method-performancemonitor-update_ping"
+    },
+    {
+      "name": "update_packet_loss",
+      "class": "PerformanceMonitor",
+      "module": "backend",
+      "description": "Update packet loss measurement.",
+      "link": "backend/index.html#method-performancemonitor-update_packet_loss",
+      "is_method": true,
+      "element_id": "method-performancemonitor-update_packet_loss"
+    },
+    {
+      "name": "update_bandwidth",
+      "class": "PerformanceMonitor",
+      "module": "backend",
+      "description": "Update bandwidth measurements.",
+      "link": "backend/index.html#method-performancemonitor-update_bandwidth",
+      "is_method": true,
+      "element_id": "method-performancemonitor-update_bandwidth"
+    },
+    {
+      "name": "get_metrics",
+      "class": "PerformanceMonitor",
+      "module": "backend",
+      "description": "Get current network metrics.",
+      "link": "backend/index.html#method-performancemonitor-get_metrics",
+      "is_method": true,
+      "element_id": "method-performancemonitor-get_metrics"
+    },
+    {
+      "name": "get_summary",
+      "class": "PerformanceMonitor",
+      "module": "backend",
+      "description": "Get a summary of all performance metrics.",
+      "link": "backend/index.html#method-performancemonitor-get_summary",
+      "is_method": true,
+      "element_id": "method-performancemonitor-get_summary"
+    },
+    {
+      "name": "detect_region",
+      "class": "RegionDetector",
+      "module": "backend",
+      "description": "Detect geographic region based on IP address.<br><br>Args:<br> &nbsp; &nbsp;ip_address: IP address to check. If None, uses local public IP.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Detected region/country name or &#x27;Unknown&#x27;",
+      "link": "backend/index.html#method-regiondetector-detect_region",
+      "is_method": true,
+      "element_id": "method-regiondetector-detect_region"
+    },
+    {
+      "name": "get_public_ip",
+      "class": "RegionDetector",
+      "module": "backend",
+      "description": "Get the public IP address of the current machine.",
+      "link": "backend/index.html#method-regiondetector-get_public_ip",
+      "is_method": true,
+      "element_id": "method-regiondetector-get_public_ip"
+    },
+    {
+      "name": "get_local_region",
+      "class": "RegionDetector",
+      "module": "backend",
+      "description": "Attempt to determine region from local network settings.",
+      "link": "backend/index.html#method-regiondetector-get_local_region",
+      "is_method": true,
+      "element_id": "method-regiondetector-get_local_region"
     },
     {
       "name": "__init__",
@@ -6046,55 +6604,10 @@
       "element_id": "method-server-__init__"
     },
     {
-      "name": "toggle_scripts_execution",
-      "class": "Server",
-      "module": "backend",
-      "description": "Enable or disable server scripts execution<br><br>Args:<br> &nbsp; &nbsp;enabled: Whether to enable or disable scripts<br> &nbsp; &nbsp;key: Specific script name to toggle, if None toggles all scripts",
-      "link": "backend/index.html#method-server-toggle_scripts_execution",
-      "is_method": true,
-      "element_id": "method-server-toggle_scripts_execution"
-    },
-    {
-      "name": "disconnect_client",
-      "class": "Server",
-      "module": "backend",
-      "description": "Gracefully disconnect a specific client<br><br>Args:<br> &nbsp; &nbsp;client_id: ID of client to disconnect<br> &nbsp; &nbsp;reason: Reason for disconnection<br> &nbsp; &nbsp;send_message: Whether to send a disconnect message to the client",
-      "link": "backend/index.html#method-server-disconnect_client",
-      "is_method": true,
-      "element_id": "method-server-disconnect_client"
-    },
-    {
-      "name": "disconnect",
-      "class": "Server",
-      "module": "backend",
-      "description": "Disconnect all clients and shutdown the server gracefully<br><br>Args:<br> &nbsp; &nbsp;reason: Reason for disconnection<br> &nbsp; &nbsp;delay: Time to wait before forcing shutdown",
-      "link": "backend/index.html#method-server-disconnect",
-      "is_method": true,
-      "element_id": "method-server-disconnect"
-    },
-    {
-      "name": "graceful_shutdown",
-      "class": "Server",
-      "module": "backend",
-      "description": "Gracefully shutdown the server, notifying all clients first<br><br>Args:<br> &nbsp; &nbsp;reason: Reason for shutdown<br> &nbsp; &nbsp;delay: Time to wait before forcing shutdown",
-      "link": "backend/index.html#method-server-graceful_shutdown",
-      "is_method": true,
-      "element_id": "method-server-graceful_shutdown"
-    },
-    {
-      "name": "emergency_shutdown",
-      "class": "Server",
-      "module": "backend",
-      "description": "Immediately shutdown the server without notifying clients",
-      "link": "backend/index.html#method-server-emergency_shutdown",
-      "is_method": true,
-      "element_id": "method-server-emergency_shutdown"
-    },
-    {
       "name": "start",
       "class": "Server",
       "module": "backend",
-      "description": "Start the server",
+      "description": "Start the server.",
       "link": "backend/index.html#method-server-start",
       "is_method": true,
       "element_id": "method-server-start"
@@ -6103,160 +6616,115 @@
       "name": "stop",
       "class": "Server",
       "module": "backend",
-      "description": "Stop the server",
+      "description": "Stop the server and disconnect all clients.",
       "link": "backend/index.html#method-server-stop",
       "is_method": true,
       "element_id": "method-server-stop"
     },
     {
-      "name": "add_script",
+      "name": "_accept_thread",
       "class": "Server",
       "module": "backend",
-      "description": "Add a server script for automated tasks<br><br>Args:<br> &nbsp; &nbsp;name: Unique name for the script<br> &nbsp; &nbsp;interval: Execution interval in seconds<br> &nbsp; &nbsp;callback: Function to call (will receive server instance as first argument)<br> &nbsp; &nbsp;enabled: Whether the script is enabled<br> &nbsp; &nbsp;one_shot: If True, script will only run once",
-      "link": "backend/index.html#method-server-add_script",
+      "description": "Thread for accepting new client connections.",
+      "link": "backend/index.html#method-server-_accept_thread",
       "is_method": true,
-      "element_id": "method-server-add_script"
+      "element_id": "method-server-_accept_thread"
     },
     {
-      "name": "remove_script",
+      "name": "_receive_thread",
       "class": "Server",
       "module": "backend",
-      "description": "Remove a server script",
-      "link": "backend/index.html#method-server-remove_script",
+      "description": "Thread for receiving data from clients.",
+      "link": "backend/index.html#method-server-_receive_thread",
       "is_method": true,
-      "element_id": "method-server-remove_script"
+      "element_id": "method-server-_receive_thread"
     },
     {
-      "name": "enable_script",
+      "name": "_process_received_data",
       "class": "Server",
       "module": "backend",
-      "description": "Enable a server script",
-      "link": "backend/index.html#method-server-enable_script",
+      "description": "Process received data from a client.",
+      "link": "backend/index.html#method-server-_process_received_data",
       "is_method": true,
-      "element_id": "method-server-enable_script"
+      "element_id": "method-server-_process_received_data"
     },
     {
-      "name": "disable_script",
+      "name": "_authenticate_client",
       "class": "Server",
       "module": "backend",
-      "description": "Disable a server script",
-      "link": "backend/index.html#method-server-disable_script",
+      "description": "Authenticate a client.",
+      "link": "backend/index.html#method-server-_authenticate_client",
       "is_method": true,
-      "element_id": "method-server-disable_script"
+      "element_id": "method-server-_authenticate_client"
     },
     {
-      "name": "_run_scripts",
+      "name": "_processing_thread",
       "class": "Server",
       "module": "backend",
-      "description": "Execute server scripts at their intervals",
-      "link": "backend/index.html#method-server-_run_scripts",
+      "description": "Thread for processing events and running scripts.",
+      "link": "backend/index.html#method-server-_processing_thread",
       "is_method": true,
-      "element_id": "method-server-_run_scripts"
-    },
-    {
-      "name": "_accept_connections",
-      "class": "Server",
-      "module": "backend",
-      "description": "Accept incoming client connections with password verification",
-      "link": "backend/index.html#method-server-_accept_connections",
-      "is_method": true,
-      "element_id": "method-server-_accept_connections"
-    },
-    {
-      "name": "_handle_client",
-      "class": "Server",
-      "module": "backend",
-      "description": "Handle communication with a single client with ping measurement<br><br>Parameters:<br> &nbsp; &nbsp;client_socket: Socket connected to the client<br> &nbsp; &nbsp;client: Client instance representing the connected client",
-      "link": "backend/index.html#method-server-_handle_client",
-      "is_method": true,
-      "element_id": "method-server-_handle_client"
-    },
-    {
-      "name": "_disconnect_client",
-      "class": "Server",
-      "module": "backend",
-      "description": "Disconnect a client",
-      "link": "backend/index.html#method-server-_disconnect_client",
-      "is_method": true,
-      "element_id": "method-server-_disconnect_client"
-    },
-    {
-      "name": "kick_client",
-      "class": "Server",
-      "module": "backend",
-      "description": "Kick a client from the server<br><br>Args:<br> &nbsp; &nbsp;client_id: ID of client to kick<br> &nbsp; &nbsp;reason: Reason for kicking (sent to client)",
-      "link": "backend/index.html#method-server-kick_client",
-      "is_method": true,
-      "element_id": "method-server-kick_client"
-    },
-    {
-      "name": "get_client_ping",
-      "class": "Server",
-      "module": "backend",
-      "description": "Get ping of a specific client in milliseconds",
-      "link": "backend/index.html#method-server-get_client_ping",
-      "is_method": true,
-      "element_id": "method-server-get_client_ping"
-    },
-    {
-      "name": "get_average_ping",
-      "class": "Server",
-      "module": "backend",
-      "description": "Get average ping of all connected clients",
-      "link": "backend/index.html#method-server-get_average_ping",
-      "is_method": true,
-      "element_id": "method-server-get_average_ping"
-    },
-    {
-      "name": "get_server_stats",
-      "class": "Server",
-      "module": "backend",
-      "description": "Get server statistics",
-      "link": "backend/index.html#method-server-get_server_stats",
-      "is_method": true,
-      "element_id": "method-server-get_server_stats"
-    },
-    {
-      "name": "_queue_event",
-      "class": "Server",
-      "module": "backend",
-      "description": "Add event to processing queue",
-      "link": "backend/index.html#method-server-_queue_event",
-      "is_method": true,
-      "element_id": "method-server-_queue_event"
-    },
-    {
-      "name": "_process_events",
-      "class": "Server",
-      "module": "backend",
-      "description": "Process queued events",
-      "link": "backend/index.html#method-server-_process_events",
-      "is_method": true,
-      "element_id": "method-server-_process_events"
+      "element_id": "method-server-_processing_thread"
     },
     {
       "name": "_handle_event",
       "class": "Server",
       "module": "backend",
-      "description": "Handle a network event",
+      "description": "Handle a network event.",
       "link": "backend/index.html#method-server-_handle_event",
       "is_method": true,
       "element_id": "method-server-_handle_event"
     },
     {
+      "name": "_run_scripts",
+      "class": "Server",
+      "module": "backend",
+      "description": "Execute server scripts.",
+      "link": "backend/index.html#method-server-_run_scripts",
+      "is_method": true,
+      "element_id": "method-server-_run_scripts"
+    },
+    {
+      "name": "_send_heartbeats",
+      "class": "Server",
+      "module": "backend",
+      "description": "Send heartbeat messages to all clients.",
+      "link": "backend/index.html#method-server-_send_heartbeats",
+      "is_method": true,
+      "element_id": "method-server-_send_heartbeats"
+    },
+    {
       "name": "_check_timeouts",
       "class": "Server",
       "module": "backend",
-      "description": "Check for timed out clients",
+      "description": "Check for client timeouts.",
       "link": "backend/index.html#method-server-_check_timeouts",
       "is_method": true,
       "element_id": "method-server-_check_timeouts"
     },
     {
+      "name": "_disconnect_client",
+      "class": "Server",
+      "module": "backend",
+      "description": "Disconnect a client.",
+      "link": "backend/index.html#method-server-_disconnect_client",
+      "is_method": true,
+      "element_id": "method-server-_disconnect_client"
+    },
+    {
+      "name": "_queue_event",
+      "class": "Server",
+      "module": "backend",
+      "description": "Queue an event for processing.",
+      "link": "backend/index.html#method-server-_queue_event",
+      "is_method": true,
+      "element_id": "method-server-_queue_event"
+    },
+    {
       "name": "broadcast",
       "class": "Server",
       "module": "backend",
-      "description": "Broadcast message to all connected clients",
+      "description": "Broadcast a message to all connected clients.",
       "link": "backend/index.html#method-server-broadcast",
       "is_method": true,
       "element_id": "method-server-broadcast"
@@ -6265,7 +6733,7 @@
       "name": "send_to_client",
       "class": "Server",
       "module": "backend",
-      "description": "Send message to specific client",
+      "description": "Send a message to a specific client.",
       "link": "backend/index.html#method-server-send_to_client",
       "is_method": true,
       "element_id": "method-server-send_to_client"
@@ -6274,10 +6742,64 @@
       "name": "on_event",
       "class": "Server",
       "module": "backend",
-      "description": "Decorator to register event handlers",
+      "description": "Decorator for registering event handlers.",
       "link": "backend/index.html#method-server-on_event",
       "is_method": true,
       "element_id": "method-server-on_event"
+    },
+    {
+      "name": "on_message",
+      "class": "Server",
+      "module": "backend",
+      "description": "Decorator for registering message handlers.",
+      "link": "backend/index.html#method-server-on_message",
+      "is_method": true,
+      "element_id": "method-server-on_message"
+    },
+    {
+      "name": "add_server_script",
+      "class": "Server",
+      "module": "backend",
+      "description": "Add a server script.",
+      "link": "backend/index.html#method-server-add_server_script",
+      "is_method": true,
+      "element_id": "method-server-add_server_script"
+    },
+    {
+      "name": "remove_server_script",
+      "class": "Server",
+      "module": "backend",
+      "description": "Remove a server script.",
+      "link": "backend/index.html#method-server-remove_server_script",
+      "is_method": true,
+      "element_id": "method-server-remove_server_script"
+    },
+    {
+      "name": "toggle_server_scripts",
+      "class": "Server",
+      "module": "backend",
+      "description": "Enable or disable all server scripts.",
+      "link": "backend/index.html#method-server-toggle_server_scripts",
+      "is_method": true,
+      "element_id": "method-server-toggle_server_scripts"
+    },
+    {
+      "name": "get_server_stats",
+      "class": "Server",
+      "module": "backend",
+      "description": "Get server statistics.",
+      "link": "backend/index.html#method-server-get_server_stats",
+      "is_method": true,
+      "element_id": "method-server-get_server_stats"
+    },
+    {
+      "name": "kick_client",
+      "class": "Server",
+      "module": "backend",
+      "description": "Kick a client from the server.",
+      "link": "backend/index.html#method-server-kick_client",
+      "is_method": true,
+      "element_id": "method-server-kick_client"
     },
     {
       "name": "__init__",
@@ -6289,19 +6811,10 @@
       "element_id": "method-networkclient-__init__"
     },
     {
-      "name": "_receive_messages",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "Receive messages from server with shutdown handling",
-      "link": "backend/index.html#method-networkclient-_receive_messages",
-      "is_method": true,
-      "element_id": "method-networkclient-_receive_messages"
-    },
-    {
       "name": "connect",
       "class": "NetworkClient",
       "module": "backend",
-      "description": "Connect to server with optional password",
+      "description": "Connect to the server.",
       "link": "backend/index.html#method-networkclient-connect",
       "is_method": true,
       "element_id": "method-networkclient-connect"
@@ -6310,73 +6823,91 @@
       "name": "disconnect",
       "class": "NetworkClient",
       "module": "backend",
-      "description": "Disconnect from server",
+      "description": "Disconnect from the server.",
       "link": "backend/index.html#method-networkclient-disconnect",
       "is_method": true,
       "element_id": "method-networkclient-disconnect"
     },
     {
-      "name": "get_ping",
+      "name": "_receive_thread",
       "class": "NetworkClient",
       "module": "backend",
-      "description": "Get current ping to server in milliseconds",
-      "link": "backend/index.html#method-networkclient-get_ping",
+      "description": "Thread for receiving data from server.",
+      "link": "backend/index.html#method-networkclient-_receive_thread",
       "is_method": true,
-      "element_id": "method-networkclient-get_ping"
+      "element_id": "method-networkclient-_receive_thread"
     },
     {
-      "name": "send",
+      "name": "_process_received_data",
       "class": "NetworkClient",
       "module": "backend",
-      "description": "Send message to server",
-      "link": "backend/index.html#method-networkclient-send",
+      "description": "Process received data from server.",
+      "link": "backend/index.html#method-networkclient-_process_received_data",
       "is_method": true,
-      "element_id": "method-networkclient-send"
+      "element_id": "method-networkclient-_process_received_data"
     },
     {
-      "name": "_send_heartbeats",
+      "name": "_send_thread",
       "class": "NetworkClient",
       "module": "backend",
-      "description": "Send periodic heartbeats to server for ping measurement",
-      "link": "backend/index.html#method-networkclient-_send_heartbeats",
+      "description": "Thread for sending data to server.",
+      "link": "backend/index.html#method-networkclient-_send_thread",
       "is_method": true,
-      "element_id": "method-networkclient-_send_heartbeats"
+      "element_id": "method-networkclient-_send_thread"
     },
     {
-      "name": "_queue_event",
+      "name": "_processing_thread",
       "class": "NetworkClient",
       "module": "backend",
-      "description": "Add event to processing queue",
-      "link": "backend/index.html#method-networkclient-_queue_event",
+      "description": "Thread for processing events.",
+      "link": "backend/index.html#method-networkclient-_processing_thread",
       "is_method": true,
-      "element_id": "method-networkclient-_queue_event"
-    },
-    {
-      "name": "_process_events",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "Process queued events",
-      "link": "backend/index.html#method-networkclient-_process_events",
-      "is_method": true,
-      "element_id": "method-networkclient-_process_events"
+      "element_id": "method-networkclient-_processing_thread"
     },
     {
       "name": "_handle_event",
       "class": "NetworkClient",
       "module": "backend",
-      "description": "Handle a network event",
+      "description": "Handle a network event.",
       "link": "backend/index.html#method-networkclient-_handle_event",
       "is_method": true,
       "element_id": "method-networkclient-_handle_event"
     },
     {
+      "name": "_queue_event",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "Queue an event for processing.",
+      "link": "backend/index.html#method-networkclient-_queue_event",
+      "is_method": true,
+      "element_id": "method-networkclient-_queue_event"
+    },
+    {
+      "name": "send",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "Send a message to the server.",
+      "link": "backend/index.html#method-networkclient-send",
+      "is_method": true,
+      "element_id": "method-networkclient-send"
+    },
+    {
       "name": "on_event",
       "class": "NetworkClient",
       "module": "backend",
-      "description": "Decorator to register event handlers",
+      "description": "Decorator for registering event handlers.",
       "link": "backend/index.html#method-networkclient-on_event",
       "is_method": true,
       "element_id": "method-networkclient-on_event"
+    },
+    {
+      "name": "on_message",
+      "class": "NetworkClient",
+      "module": "backend",
+      "description": "Decorator for registering message handlers.",
+      "link": "backend/index.html#method-networkclient-on_message",
+      "is_method": true,
+      "element_id": "method-networkclient-on_message"
     },
     {
       "name": "__init__",
@@ -6388,55 +6919,10 @@
       "element_id": "method-hostclient-__init__"
     },
     {
-      "name": "toggle_server_scripts",
-      "class": "HostClient",
-      "module": "backend",
-      "description": "Enable or disable server scripts execution (host mode only)<br><br>Args:<br> &nbsp; &nbsp;enabled: Whether to enable or disable scripts<br> &nbsp; &nbsp;key: Specific script name to toggle, if None toggles all scripts",
-      "link": "backend/index.html#method-hostclient-toggle_server_scripts",
-      "is_method": true,
-      "element_id": "method-hostclient-toggle_server_scripts"
-    },
-    {
-      "name": "disconnect",
-      "class": "HostClient",
-      "module": "backend",
-      "description": "Disconnect from network with optional peer notification<br><br>Args:<br> &nbsp; &nbsp;reason: Reason for disconnection<br> &nbsp; &nbsp;notify_peers: Whether to notify peers before disconnecting (host mode only)",
-      "link": "backend/index.html#method-hostclient-disconnect",
-      "is_method": true,
-      "element_id": "method-hostclient-disconnect"
-    },
-    {
-      "name": "_kick_all_peers",
-      "class": "HostClient",
-      "module": "backend",
-      "description": "Kick all connected peers (host mode only)<br><br>Args:<br> &nbsp; &nbsp;reason: Reason for kicking all peers",
-      "link": "backend/index.html#method-hostclient-_kick_all_peers",
-      "is_method": true,
-      "element_id": "method-hostclient-_kick_all_peers"
-    },
-    {
-      "name": "emergency_disconnect",
-      "class": "HostClient",
-      "module": "backend",
-      "description": "Immediately disconnect without notifying peers<br>Use this only in emergency situations",
-      "link": "backend/index.html#method-hostclient-emergency_disconnect",
-      "is_method": true,
-      "element_id": "method-hostclient-emergency_disconnect"
-    },
-    {
-      "name": "set_auto_kick_on_leave",
-      "class": "HostClient",
-      "module": "backend",
-      "description": "Enable or disable auto-kick when host leaves<br><br>Args:<br> &nbsp; &nbsp;enabled: Whether to automatically kick peers when host disconnects",
-      "link": "backend/index.html#method-hostclient-set_auto_kick_on_leave",
-      "is_method": true,
-      "element_id": "method-hostclient-set_auto_kick_on_leave"
-    },
-    {
       "name": "start_as_host",
       "class": "HostClient",
       "module": "backend",
-      "description": "Start as host (server + client) with password protection",
+      "description": "Start as host (server + local client).",
       "link": "backend/index.html#method-hostclient-start_as_host",
       "is_method": true,
       "element_id": "method-hostclient-start_as_host"
@@ -6445,70 +6931,34 @@
       "name": "connect_as_client",
       "class": "HostClient",
       "module": "backend",
-      "description": "Connect as client to existing host with password",
+      "description": "Connect to a host as client.",
       "link": "backend/index.html#method-hostclient-connect_as_client",
       "is_method": true,
       "element_id": "method-hostclient-connect_as_client"
     },
     {
-      "name": "add_server_script",
+      "name": "_setup_event_forwarding",
       "class": "HostClient",
       "module": "backend",
-      "description": "Add a server script (host only)",
-      "link": "backend/index.html#method-hostclient-add_server_script",
+      "description": "Setup event forwarding from server/client to unified handlers.",
+      "link": "backend/index.html#method-hostclient-_setup_event_forwarding",
       "is_method": true,
-      "element_id": "method-hostclient-add_server_script"
+      "element_id": "method-hostclient-_setup_event_forwarding"
     },
     {
-      "name": "remove_server_script",
+      "name": "_handle_event",
       "class": "HostClient",
       "module": "backend",
-      "description": "Remove a server script (host only)",
-      "link": "backend/index.html#method-hostclient-remove_server_script",
+      "description": "Handle events from server or client.",
+      "link": "backend/index.html#method-hostclient-_handle_event",
       "is_method": true,
-      "element_id": "method-hostclient-remove_server_script"
-    },
-    {
-      "name": "kick_peer",
-      "class": "HostClient",
-      "module": "backend",
-      "description": "Kick a peer from the server (host only)",
-      "link": "backend/index.html#method-hostclient-kick_peer",
-      "is_method": true,
-      "element_id": "method-hostclient-kick_peer"
-    },
-    {
-      "name": "get_peer_ping",
-      "class": "HostClient",
-      "module": "backend",
-      "description": "Get ping of a specific peer (host only)",
-      "link": "backend/index.html#method-hostclient-get_peer_ping",
-      "is_method": true,
-      "element_id": "method-hostclient-get_peer_ping"
-    },
-    {
-      "name": "get_server_stats",
-      "class": "HostClient",
-      "module": "backend",
-      "description": "Get server statistics (host only)",
-      "link": "backend/index.html#method-hostclient-get_server_stats",
-      "is_method": true,
-      "element_id": "method-hostclient-get_server_stats"
-    },
-    {
-      "name": "get_ping",
-      "class": "HostClient",
-      "module": "backend",
-      "description": "Get current ping to host (client mode only)",
-      "link": "backend/index.html#method-hostclient-get_ping",
-      "is_method": true,
-      "element_id": "method-hostclient-get_ping"
+      "element_id": "method-hostclient-_handle_event"
     },
     {
       "name": "send_to_all",
       "class": "HostClient",
       "module": "backend",
-      "description": "Send message to all connected peers (if host) and to host (if client)",
+      "description": "Send message to all peers.",
       "link": "backend/index.html#method-hostclient-send_to_all",
       "is_method": true,
       "element_id": "method-hostclient-send_to_all"
@@ -6517,64 +6967,82 @@
       "name": "send_to_peer",
       "class": "HostClient",
       "module": "backend",
-      "description": "Send message to specific peer (host only)",
+      "description": "Send message to specific peer.",
       "link": "backend/index.html#method-hostclient-send_to_peer",
       "is_method": true,
       "element_id": "method-hostclient-send_to_peer"
     },
     {
-      "name": "get_peer_count",
+      "name": "disconnect",
       "class": "HostClient",
       "module": "backend",
-      "description": "Get number of connected peers (host only)",
-      "link": "backend/index.html#method-hostclient-get_peer_count",
+      "description": "Disconnect from network.",
+      "link": "backend/index.html#method-hostclient-disconnect",
       "is_method": true,
-      "element_id": "method-hostclient-get_peer_count"
-    },
-    {
-      "name": "get_peer_list",
-      "class": "HostClient",
-      "module": "backend",
-      "description": "Get list of connected peer IDs (host only)",
-      "link": "backend/index.html#method-hostclient-get_peer_list",
-      "is_method": true,
-      "element_id": "method-hostclient-get_peer_list"
-    },
-    {
-      "name": "_queue_event",
-      "class": "HostClient",
-      "module": "backend",
-      "description": "Add event to processing queue",
-      "link": "backend/index.html#method-hostclient-_queue_event",
-      "is_method": true,
-      "element_id": "method-hostclient-_queue_event"
-    },
-    {
-      "name": "_process_events",
-      "class": "HostClient",
-      "module": "backend",
-      "description": "Process queued events",
-      "link": "backend/index.html#method-hostclient-_process_events",
-      "is_method": true,
-      "element_id": "method-hostclient-_process_events"
-    },
-    {
-      "name": "_handle_event",
-      "class": "HostClient",
-      "module": "backend",
-      "description": "Handle a network event",
-      "link": "backend/index.html#method-hostclient-_handle_event",
-      "is_method": true,
-      "element_id": "method-hostclient-_handle_event"
+      "element_id": "method-hostclient-disconnect"
     },
     {
       "name": "on_event",
       "class": "HostClient",
       "module": "backend",
-      "description": "Decorator to register event handlers",
+      "description": "Decorator for registering event handlers.",
       "link": "backend/index.html#method-hostclient-on_event",
       "is_method": true,
       "element_id": "method-hostclient-on_event"
+    },
+    {
+      "name": "on_message",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Decorator for registering message handlers.",
+      "link": "backend/index.html#method-hostclient-on_message",
+      "is_method": true,
+      "element_id": "method-hostclient-on_message"
+    },
+    {
+      "name": "get_peer_count",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Get number of connected peers.",
+      "link": "backend/index.html#method-hostclient-get_peer_count",
+      "is_method": true,
+      "element_id": "method-hostclient-get_peer_count"
+    },
+    {
+      "name": "kick_peer",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Kick a peer (host only).",
+      "link": "backend/index.html#method-hostclient-kick_peer",
+      "is_method": true,
+      "element_id": "method-hostclient-kick_peer"
+    },
+    {
+      "name": "toggle_server_scripts",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Toggle server scripts (host only).",
+      "link": "backend/index.html#method-hostclient-toggle_server_scripts",
+      "is_method": true,
+      "element_id": "method-hostclient-toggle_server_scripts"
+    },
+    {
+      "name": "add_server_script",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Add a server script (host only).",
+      "link": "backend/index.html#method-hostclient-add_server_script",
+      "is_method": true,
+      "element_id": "method-hostclient-add_server_script"
+    },
+    {
+      "name": "get_server_stats",
+      "class": "HostClient",
+      "module": "backend",
+      "description": "Get server statistics (host only).",
+      "link": "backend/index.html#method-hostclient-get_server_stats",
+      "is_method": true,
+      "element_id": "method-hostclient-get_server_stats"
     },
     {
       "name": "__init__",
@@ -6589,7 +7057,7 @@
       "name": "broadcast_presence",
       "class": "NetworkDiscovery",
       "module": "backend",
-      "description": "Broadcast host presence on local network",
+      "description": "Broadcast game presence on local network.",
       "link": "backend/index.html#method-networkdiscovery-broadcast_presence",
       "is_method": true,
       "element_id": "method-networkdiscovery-broadcast_presence"
@@ -6598,100 +7066,100 @@
       "name": "discover_hosts",
       "class": "NetworkDiscovery",
       "module": "backend",
-      "description": "Discover hosts on local network",
+      "description": "Discover available hosts on local network.",
       "link": "backend/index.html#method-networkdiscovery-discover_hosts",
       "is_method": true,
       "element_id": "method-networkdiscovery-discover_hosts"
     },
     {
-      "name": "__init__",
-      "class": "HeartbeatMessage",
+      "name": "create_chat",
+      "class": "NetworkMessages",
       "module": "backend",
-      "description": "No documentation",
-      "link": "backend/index.html#method-heartbeatmessage-__init__",
+      "description": "Create a chat message.",
+      "link": "backend/index.html#method-networkmessages-create_chat",
       "is_method": true,
-      "element_id": "method-heartbeatmessage-__init__"
+      "element_id": "method-networkmessages-create_chat"
+    },
+    {
+      "name": "create_player_position",
+      "class": "NetworkMessages",
+      "module": "backend",
+      "description": "Create a player position message.",
+      "link": "backend/index.html#method-networkmessages-create_player_position",
+      "is_method": true,
+      "element_id": "method-networkmessages-create_player_position"
+    },
+    {
+      "name": "create_game_state",
+      "class": "NetworkMessages",
+      "module": "backend",
+      "description": "Create a game state synchronization message.",
+      "link": "backend/index.html#method-networkmessages-create_game_state",
+      "is_method": true,
+      "element_id": "method-networkmessages-create_game_state"
+    },
+    {
+      "name": "create_player_info",
+      "class": "NetworkMessages",
+      "module": "backend",
+      "description": "Create a player information message.",
+      "link": "backend/index.html#method-networkmessages-create_player_info",
+      "is_method": true,
+      "element_id": "method-networkmessages-create_player_info"
     },
     {
       "name": "__init__",
-      "class": "AuthMessage",
+      "class": "SmoothPositionMessage",
       "module": "backend",
       "description": "No documentation",
-      "link": "backend/index.html#method-authmessage-__init__",
+      "link": "backend/index.html#method-smoothpositionmessage-__init__",
       "is_method": true,
-      "element_id": "method-authmessage-__init__"
+      "element_id": "method-smoothpositionmessage-__init__"
     },
     {
       "name": "__init__",
-      "class": "AuthResultMessage",
+      "class": "PlayerInputMessage",
       "module": "backend",
       "description": "No documentation",
-      "link": "backend/index.html#method-authresultmessage-__init__",
+      "link": "backend/index.html#method-playerinputmessage-__init__",
       "is_method": true,
-      "element_id": "method-authresultmessage-__init__"
+      "element_id": "method-playerinputmessage-__init__"
     },
     {
       "name": "__init__",
-      "class": "KickMessage",
+      "class": "NetworkInterpolator",
       "module": "backend",
       "description": "No documentation",
-      "link": "backend/index.html#method-kickmessage-__init__",
+      "link": "backend/index.html#method-networkinterpolator-__init__",
       "is_method": true,
-      "element_id": "method-kickmessage-__init__"
+      "element_id": "method-networkinterpolator-__init__"
     },
     {
-      "name": "__init__",
-      "class": "PlayerPositionMessage",
+      "name": "add_position",
+      "class": "NetworkInterpolator",
       "module": "backend",
-      "description": "No documentation",
-      "link": "backend/index.html#method-playerpositionmessage-__init__",
+      "description": "Adiciona uma nova posi\u00e7\u00e3o ao buffer",
+      "link": "backend/index.html#method-networkinterpolator-add_position",
       "is_method": true,
-      "element_id": "method-playerpositionmessage-__init__"
+      "element_id": "method-networkinterpolator-add_position"
     },
     {
-      "name": "__init__",
-      "class": "ChatMessage",
+      "name": "get_interpolated_position",
+      "class": "NetworkInterpolator",
       "module": "backend",
-      "description": "No documentation",
-      "link": "backend/index.html#method-chatmessage-__init__",
+      "description": "Obt\u00e9m posi\u00e7\u00e3o interpolada para o tempo atual",
+      "link": "backend/index.html#method-networkinterpolator-get_interpolated_position",
       "is_method": true,
-      "element_id": "method-chatmessage-__init__"
+      "element_id": "method-networkinterpolator-get_interpolated_position"
     },
     {
-      "name": "__init__",
-      "class": "GameStateMessage",
+      "name": "clear",
+      "class": "NetworkInterpolator",
       "module": "backend",
-      "description": "No documentation",
-      "link": "backend/index.html#method-gamestatemessage-__init__",
+      "description": "Limpa o buffer",
+      "link": "backend/index.html#method-networkinterpolator-clear",
       "is_method": true,
-      "element_id": "method-gamestatemessage-__init__"
-    },
-    {
-      "name": "__init__",
-      "class": "ServerScriptMessage",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/index.html#method-serverscriptmessage-__init__",
-      "is_method": true,
-      "element_id": "method-serverscriptmessage-__init__"
-    },
-    {
-      "name": "__init__",
-      "class": "ServerShutdownMessage",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/index.html#method-servershutdownmessage-__init__",
-      "is_method": true,
-      "element_id": "method-servershutdownmessage-__init__"
-    },
-    {
-      "name": "__init__",
-      "class": "HostMigrationMessage",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/index.html#method-hostmigrationmessage-__init__",
-      "is_method": true,
-      "element_id": "method-hostmigrationmessage-__init__"
+      "element_id": "method-networkinterpolator-clear"
     },
     {
       "name": "__init__",
@@ -6910,10 +7378,19 @@
       "element_id": "method-openglrenderer-draw_line"
     },
     {
+      "name": "draw_lines",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/index.html#method-openglrenderer-draw_lines",
+      "is_method": true,
+      "element_id": "method-openglrenderer-draw_lines"
+    },
+    {
       "name": "draw_text",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw text using pygame font rendering - FIX FOR TEXT ISSUES",
+      "description": "Draw text using pygame font rendering",
       "link": "backend/index.html#method-openglrenderer-draw_text",
       "is_method": true,
       "element_id": "method-openglrenderer-draw_text"
@@ -7333,7 +7810,7 @@
       "element_id": "method-codestatistics-print_statistics"
     }
   ],
-  "last_updated": "2026-01-02T12:21:24.397296",
+  "last_updated": "2026-01-04T16:00:08.216667",
   "pages": [
     {
       "name": "Quick Start",

@@ -206,7 +206,6 @@ class UIElement(ABC):
         children (List[UIElement]): Child elements
         parent (UIElement): Parent element
     """
-    
     def __init__(self, x: int, y: int, width: int, height: int, root_point: Tuple[float, float] = (0, 0),
                  element_id: Optional[str] = None):
         """
@@ -232,11 +231,28 @@ class UIElement(ABC):
         self.children = []
         self.parent = None
         self.z_index = 0  # For rendering order
+        self.groups:List[str] = []
         
         # Generate unique ID using element type name
-        element_type = self.__class__.__name__.lower()
-        self.element_id = element_id if element_id else _uid_generator.generate_id(element_type)
+        self.element_type = self.__class__.__name__.lower()
+        self.element_id = element_id if element_id else _uid_generator.generate_id(self.element_type)
     
+    def add_group(self, group:str):
+        if group not in self.groups:
+            self.groups.append(str(group).lower())
+    def remove_group(self, group:str):
+        if group in self.groups:
+            self.groups.remove(str(group).lower())
+    
+    def clear_groups(self):
+        self.groups = []
+        
+    def has_group(self, group:str) -> bool:
+        return str(group).lower() in self.groups
+    
+    def __str__(self) -> str:
+        return str(self.element_type)
+            
     def get_id(self) -> str:
         """
         Get the unique ID of this UI element.
@@ -287,6 +303,16 @@ class UIElement(ABC):
         """
         child.parent = self
         self.children.append(child)
+        
+    def remove_child(self, child):
+        """
+        Remove a child element from this UI element.
+        
+        Args:
+            child: The child UI element to remove.
+        """
+        self.children.remove(child)
+        child.parent = None
 
     def set_tooltip(self, tooltip: 'Tooltip'):
         """
@@ -365,7 +391,9 @@ class UIElement(ABC):
         Args:
             dt (float): Delta time in seconds since last update.
         """
-        pass
+        for child in self.children:
+            if hasattr(child, 'update'):
+                child.update(dt)
     
     def update_theme(self, theme_type: ThemeType):
         """
@@ -621,7 +649,11 @@ class Tooltip(UIElement):
         actual_x, actual_y = self.target_element.get_actual_position()
         
         # Needs to account for root_point        
-        mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.target_element.width and 
+        if self.target_element.parent:
+            mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.target_element.parent.width and 
+                     actual_y <= mouse_pos[1] <= actual_y + self.target_element.parent.height)
+        else:
+            mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.target_element.width and 
                      actual_y <= mouse_pos[1] <= actual_y + self.target_element.height)
         
         if mouse_over:
@@ -865,6 +897,15 @@ class TextLabel(UIElement):
         """Update theme for text label."""
         return super().update_theme(theme_type)
     
+    def set_text_color(self, color: Tuple[int, int, int]):
+        """
+        Set the text color.
+        
+        Args:
+            color (Tuple[int, int, int]): RGB color tuple.
+        """
+        self.custom_color = color
+    
     @property
     def font(self):
         """
@@ -1022,9 +1063,29 @@ class Button(UIElement):
         self._was_pressed = False
         
         self.theme_type = theme or ThemeManager.get_current_theme()
+        
+        self.background_color = ThemeManager.get_theme(self.theme_type).button_normal
+        self.text_color = ThemeManager.get_theme(self.theme_type).button_text
     
+    def set_background_color(self, color:Tuple[int, int, int]):
+        if color is None:
+            self.background_color = ThemeManager.get_theme(self.theme_type).button_normal
+            return
+        self.background_color = color
+        
+    def set_text_color(self, color:Tuple[int, int, int]):
+        if color is None:
+            self.text_color = ThemeManager.get_theme(self.theme_type).button_text
+            return
+        self.text_color = color
+        
     def set_text(self, text:str):
         self.text = text
+    
+    def update_theme(self, theme_type):
+        super().update_theme(theme_type)
+        self.background_color = ThemeManager.get_theme(self.theme_type).button_normal
+        self.text_color = ThemeManager.get_theme(self.theme_type).button_text
     
     @property
     def font(self):
@@ -1097,7 +1158,7 @@ class Button(UIElement):
         theme = self._get_colors()
         
         if self.state == UIState.NORMAL:
-            return theme.button_normal
+            return self.background_color
         elif self.state == UIState.HOVERED:
             return theme.button_hover
         elif self.state == UIState.PRESSED:
@@ -1112,7 +1173,7 @@ class Button(UIElement):
         Returns:
             Tuple[int, int, int]: RGB color tuple for the text.
         """
-        return self._get_colors().button_text
+        return self.text_color
             
     def render_pygame(self, renderer):
         """Render using Pygame backend"""
@@ -1159,12 +1220,8 @@ class Button(UIElement):
         # Finally: Draw the text on top
         if self.text:
             text_color = self._get_text_color()
-            
-            txt_size = self.font.size(self.text)
-            text_x = actual_x + (self.width - txt_size[0]) // 2
-            text_y = actual_y + (self.height - txt_size[1]) // 2
-            
-            renderer.draw_text(self.text, text_x, text_y, text_color, self.font)
+            center_x, center_y =  actual_x + self.width // 2, actual_y + self.height // 2
+            renderer.draw_text(self.text, center_x, center_y, text_color, self.font, anchor_point=(0.5, 0.5))
                     
         super().render_opengl(renderer)
 
@@ -1431,6 +1488,22 @@ class TextBox(UIElement):
             self._needs_redraw = True
         
         super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
+    
+    def focus(self):
+        """
+        This will focus the textbox, like as of the user pass the mouse and click on it
+        """
+        self.focused = True
+        self.state = UIState.PRESSED
+        self._needs_redraw = True
+        
+    def unfocus(self):
+        """
+        This will unfocus the textbox, like as of the user pass the mouse and click on it
+        """
+        self.focused = False
+        self.state = UIState.NORMAL
+        self._needs_redraw = True
     
     def handle_key_input(self, event):
         """
@@ -1988,6 +2061,42 @@ class ProgressBar(UIElement):
         self.value = value
         
         self.theme_type = theme or ThemeManager.get_current_theme()
+        
+        self.draw_value:bool = False
+        self.font_size:int = int(self.height * 0.8)
+        self.font_draw:str = None
+        
+        theme = ThemeManager.get_theme(self.theme_type)
+        self.background_color = theme.slider_track
+        self.foreground_color = theme.button_normal
+        self.font_color = theme.slider_text
+        self.border_color = theme.border
+        
+    def set_background_color(self, color):
+        self.background_color = color
+        
+    def set_foreground_color(self, color):
+        self.foreground_color = color
+        
+    def set_font_color(self, color):
+        self.font_color = color
+        
+    def set_font(self, font_name:str, font_size:int):
+        self.font_size = font_size
+        self.font_draw = font_name
+        self.font_draw = True
+    
+    def set_border_color(self, color):
+        self.border_color = color
+        
+    def update_theme(self, theme_type):
+        super().update_theme(theme_type)
+        theme = ThemeManager.get_theme(self.theme_type)
+        self.background_color = theme.slider_track
+        self.foreground_color = theme.button_normal
+        self.font_color = theme.slider_text
+        self.border_color = theme.border
+        
     
     def set_value(self, value: float):
         """
@@ -2047,27 +2156,20 @@ class ProgressBar(UIElement):
         
         # Draw border
         if theme.border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.border_color, fill=False)
         
         # Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.slider_track)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.background_color)
         
         # Draw progress
         progress_width = int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
         if progress_width > 0:
-            renderer.draw_rect(actual_x, actual_y, progress_width, self.height, theme.button_normal)
+            renderer.draw_rect(actual_x, actual_y, progress_width, self.height, self.foreground_color)
         
         # Draw text
-        font = pygame.font.Font(None, 12)
-        text = f"{self.get_percentage():.1f}%"
-        text_surface = font.render(text, True, theme.slider_text)
-        text_x = actual_x + (self.width - text_surface.get_width()) // 2
-        text_y = actual_y + (self.height - text_surface.get_height()) // 2
-        
-        if hasattr(renderer, 'render_surface'):
-            renderer.render_surface(text_surface, text_x, text_y)
-        else:
-            renderer.draw_surface(text_surface, text_x, text_y)
+        if self.draw_value:
+            font = FontManager.get_font(self.font_draw, self.font_size)
+            renderer.draw_text(f"{self.get_percentage():.1f}%", actual_x, actual_y, self.font_color, font, anchor_point=(0.5, 0.5))
                 
         super().render_opengl(renderer)
 
@@ -2700,6 +2802,14 @@ class ScrollingFrame(UIElement):
         self.scroll_drag_start = (0, 0)
         
         self.theme_type = theme or ThemeManager.get_current_theme()
+        self.background_color = ThemeManager.get_theme(self.theme_type).background
+        
+    def set_background_color(self, color: Tuple[int, int, int]):
+        self.background_color = color
+        
+    def update_theme(self, theme_type):
+        super().update_theme(theme_type)
+        self.background_color = ThemeManager.get_theme(self.theme_type).background
         
     def clear_children(self):
         self.children.clear()
@@ -2776,7 +2886,7 @@ class ScrollingFrame(UIElement):
         theme = ThemeManager.get_theme(self.theme_type)
         
         # Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.background)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.background_color)
         
         # Setup clipping for content
         original_clip = renderer.get_surface().get_clip()
@@ -2826,7 +2936,7 @@ class ScrollingFrame(UIElement):
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
         
         # THEN: Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.background)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.background_color)
         
         # Clips content
         if hasattr(renderer, 'enable_scissor'):
@@ -3515,6 +3625,15 @@ class UiFrame(UIElement):
         """
         self.background_color = color
         
+    def set_border_color(self, color: Optional[Tuple[int, int, int]]):
+        """
+        Set the border color of the frame.
+        
+        Args:
+            color (Optional[Tuple[int, int, int]]): RGB color tuple or None for no border.
+        """
+        self.border_color = color
+        
     def set_border(self, color: Optional[Tuple[int, int, int]], width: int = 1):
         """
         Set the border properties of the frame.
@@ -3577,20 +3696,11 @@ class UiFrame(UIElement):
             mouse_pos (Tuple[int, int]): Current mouse position.
             mouse_pressed (bool): Whether mouse button is pressed.
             dt (float): Delta time in seconds.
-        """
-        if not self.visible or not self.enabled:
-            self.state = UIState.DISABLED
-            # Still update children but with disabled state
-            for child in self.children:
-                child._update_with_mouse(mouse_pos, mouse_pressed, dt)
-            return
-            
-        # Frame itself doesn't have interactive states beyond enabled/disabled
-        self.state = UIState.NORMAL
-        
-        # Update all children with the same mouse state
+        """ 
+        # Can't be super because of hover and click effects
         for child in self.children:
-            child._update_with_mouse(mouse_pos, mouse_pressed, dt)
+            if hasattr(child, '_update_with_mouse'):
+                child._update_with_mouse(mouse_pos, mouse_pressed, dt)
     
     def render_pygame(self, renderer):
         """Render frame using Pygame backend"""
@@ -3699,3 +3809,629 @@ class UiFrame(UIElement):
         for child in self.children:
             child.parent = None
         self.children.clear()
+        
+class NumberSelector(UIElement):
+    """
+    UI element that allows a user to select a number within a specified range 
+    using increment and decrement controls.
+    
+    This element manages its value internally, ensuring it stays within 
+    the defined min_value and max_value. It also handles formatting with 
+    a minimum number of digits (min_length) using padding.
+    
+    Attributes:
+        min_value (int): The lowest allowed value.
+        max_value (int): The highest allowed value.
+        min_length (int): Minimum number of digits for display padding (e.g., 5 -> '05').
+        max_length (int): Maximum number of digits allowed.
+        
+    Internal Attributes:
+        _value (int): The current selected value.
+        _font (pygame.font.Font): Cached font object used for rendering the number.
+        _up_rect (pygame.Rect): Rectangular area for the increment button (relative position).
+        _down_rect (pygame.Rect): Rectangular area for the decrement button (relative position).
+        _is_up_pressed (bool): True if the increment button is currently pressed.
+        _is_down_pressed (bool): True if the decrement button is currently pressed.
+        _last_mouse_pos_rel (Tuple[int, int]): Last mouse position relative to the element (for state update).
+    """
+    
+    def __init__(self, x: int, y: int, width: int, height: int, min_value: int, max_value: int, 
+                 value: int, min_length: int = 1, max_length: int = 10,
+                 root_point: Tuple[float, float] = (0, 0),theme: ThemeType = None, element_id: Optional[str] = None):
+        """
+        Initialize the NumberSelector element.
+        
+        Args:
+            x (int): X coordinate position.
+            y (int): Y coordinate position.
+            width (int): Width of the number selector.
+            height (int): Height of the number selector.
+            min_value (int): Minimum selectable value.
+            max_value (int): Maximum selectable value.
+            value (int): Initial value for the number selector.
+            min_length (int): Minimum number of digits for display padding (defaults to 1).
+            max_length (int): Maximum number of digits allowed (defaults to 10).
+            root_point (Tuple[float, float]): Anchor point for positioning.
+            theme (ThemeType): Theme to use for styling.
+            element_id (Optional[str]): Custom element ID.
+        """
+        # Initialize base UIElement
+        super().__init__(x, y, width, height, root_point, element_id)
+        
+        # Store properties
+        self.min_value = min_value
+        self.max_value = max_value
+        self.min_length = min_length
+        self.max_length = max_length
+        self.theme_type = theme or ThemeManager.get_current_theme()
+        self.font_size = int(height * 0.6) # Dynamic font size based on element height
+        
+        # Clamp and set initial value
+        self._value = max(self.min_value, min(self.max_value, value))
+        self._font = FontManager.get_font(None, self.font_size) # Use FontManager
+        
+        # Internal state for mouse interaction
+        self._is_up_pressed = False
+        self._is_down_pressed = False
+        self._up_rect = None
+        self._down_rect = None
+        self._last_mouse_pos_rel = (0, 0)
+        
+        # Setup the control button areas
+        self._setup_control_areas()
+        
+    @property
+    def value(self) -> int:
+        """
+        Get the current selected value.
+        
+        Returns:
+            int: The current numeric value.
+        """
+        return self._value
+
+    @value.setter
+    def value(self, new_value: int):
+        """
+        Set the value, ensuring it stays within min/max bounds.
+        
+        Args:
+            new_value (int): The new value to set.
+        """
+        self._value = max(self.min_value, min(self.max_value, new_value))
+
+    def _format_value(self) -> str:
+        """
+        Formats the current value with padding based on min_length.
+        
+        Returns:
+            str: The formatted string representation of the value (e.g., '007').
+        """
+        # Uses zfill for optimal performance
+        padding = max(1, self.min_length)
+        return str(self.value).zfill(padding)
+
+    def increment(self):
+        """Increments the value, respecting max_value."""
+        if self._value < self.max_value:
+            self.value += 1
+            
+    def decrement(self):
+        """Decrements the value, respecting min_value."""
+        if self._value > self.min_value:
+            self.value -= 1
+            
+    def _setup_control_areas(self):
+        """
+        Defines the rectangular areas for the increment (up) and decrement (down) buttons.
+        These are relative to the element's top-left corner (0, 0).
+        """
+        # Use 1/4 of the total width for the control area, or the full height if smaller
+        control_width = min(self.height, self.width // 4) 
+        
+        # Control area is located on the right side of the element
+        control_x = self.width - control_width
+        
+        # Down button (Bottom half of control area)
+        self._down_rect = pygame.Rect(
+            control_x,
+            self.height // 2,
+            control_width,
+            self.height // 2
+        )
+        
+        # Up button (Top half of control area)
+        self._up_rect = pygame.Rect(
+            control_x,
+            0,
+            control_width,
+            self.height // 2
+        )
+        
+    def _get_button_colors(self, theme):
+        """
+        Determines the colors for the buttons based on the current state and theme.
+        
+        Args:
+            theme: The current theme object from ThemeManager.
+            
+        Returns:
+            Tuple: (up_color, down_color, text_color, border_color, background_color)
+        """
+        # Default colors from theme
+        up_color = theme.button_normal
+        down_color = theme.button_normal
+        text_color = theme.button_text
+        border_color = theme.button_border
+        background_color = theme.background
+        
+        # Check for hover state over specific buttons
+        if self.state == UIState.HOVERED or self.state == UIState.PRESSED:
+            up_over = self._up_rect.collidepoint(self._last_mouse_pos_rel)
+            down_over = self._down_rect.collidepoint(self._last_mouse_pos_rel)
+            
+            if up_over:
+                up_color = theme.button_hover
+            if down_over:
+                down_color = theme.button_hover
+
+            # Check for pressed state
+            if self._is_up_pressed:
+                up_color = theme.button_pressed
+            if self._is_down_pressed:
+                down_color = theme.button_pressed
+            
+        return up_color, down_color, text_color, border_color, background_color
+
+    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
+        """
+        Update element state and handle increment/decrement on click.
+        
+        Args:
+            mouse_pos (Tuple[int, int]): Current mouse position (x, y).
+            mouse_pressed (bool): Whether mouse button is currently pressed.
+            dt (float): Delta time in seconds.
+        """
+        if not self.visible or not self.enabled:
+            self.state = UIState.DISABLED
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        
+        # Mouse position relative to the element
+        mouse_rel_x = mouse_pos[0] - actual_x
+        mouse_rel_y = mouse_pos[1] - actual_y
+        self._last_mouse_pos_rel = (mouse_rel_x, mouse_rel_y)
+        
+        mouse_over_main = (0 <= mouse_rel_x <= self.width and 0 <= mouse_rel_y <= self.height)
+        
+        self._is_up_pressed = False
+        self._is_down_pressed = False
+        
+        if mouse_over_main:
+            self.state = UIState.HOVERED
+            
+            up_over = self._up_rect.collidepoint(self._last_mouse_pos_rel)
+            down_over = self._down_rect.collidepoint(self._last_mouse_pos_rel)
+            
+            # The logic relies on a single-frame "just pressed" state which is not available 
+            # in the base UIElement._update_with_mouse signature.
+            # We use _was_pressed to simulate a single action per click (Regra 1: optimization/functionality).
+            if not hasattr(self, '_was_pressed'):
+                 self._was_pressed = False
+            
+            if mouse_pressed:
+                if up_over:
+                    self._is_up_pressed = True
+                    self.state = UIState.PRESSED
+                    if not self._was_pressed:
+                        self.increment()
+                        self._was_pressed = True
+                
+                elif down_over:
+                    self._is_down_pressed = True
+                    self.state = UIState.PRESSED
+                    if not self._was_pressed:
+                        self.decrement()
+                        self._was_pressed = True
+                else:
+                    self._was_pressed = False
+            else:
+                self.state = UIState.HOVERED
+                self._was_pressed = False # Reset for the next click
+                
+        else:
+            self.state = UIState.NORMAL
+            self._was_pressed = False
+
+    def render_pygame(self, renderer):
+        """
+        Render the NumberSelector using Pygame backend.
+        
+        Args:
+            renderer: The Pygame renderer object.
+        """
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        up_color, down_color, text_color, border_color, background_color = self._get_button_colors(theme)
+        surface = renderer.get_surface() # Assuming get_surface is available for direct pygame calls
+        
+        # 1. Draw main background rectangle (for the number display)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, background_color)
+        
+        # 2. Draw the UP button area
+        up_rect_abs = pygame.Rect(actual_x + self._up_rect.x, actual_y + self._up_rect.y, 
+                                  self._up_rect.width, self._up_rect.height)
+        renderer.draw_rect(up_rect_abs.x, up_rect_abs.y, up_rect_abs.width, up_rect_abs.height, up_color)
+        
+        # 3. Draw the DOWN button area
+        down_rect_abs = pygame.Rect(actual_x + self._down_rect.x, actual_y + self._down_rect.y, 
+                                    self._down_rect.width, self._down_rect.height)
+        renderer.draw_rect(down_rect_abs.x, down_rect_abs.y, down_rect_abs.width, down_rect_abs.height, down_color)
+        
+        # 4. Draw the border around the main element
+        if border_color:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, fill=False)
+
+        # 5. Draw the value text
+        formatted_value = self._format_value()
+        text_surface = self._font.render(formatted_value, True, text_color)
+        
+        # Center the text in the left part of the selector (excluding buttons)
+        text_area_width = self.width - self._up_rect.width
+        text_x = actual_x + (text_area_width - text_surface.get_width()) // 2
+        text_y = actual_y + (self.height - text_surface.get_height()) // 2
+        
+        renderer.draw_surface(text_surface, text_x, text_y)
+        
+        # 6. Draw increment/decrement symbols (triangles)
+        
+        # Up triangle (Centered in up button area)
+        center_up = up_rect_abs.center
+        triangle_size = min(up_rect_abs.width, up_rect_abs.height) // 3
+        up_triangle_points = [
+            (center_up[0], center_up[1] - triangle_size), # Top point
+            (center_up[0] - triangle_size, center_up[1] + triangle_size // 2), # Bottom-left
+            (center_up[0] + triangle_size, center_up[1] + triangle_size // 2)  # Bottom-right
+        ]
+        pygame.draw.polygon(surface, text_color, up_triangle_points)
+
+        # Down triangle (Centered in down button area)
+        center_down = down_rect_abs.center
+        down_triangle_points = [
+            (center_down[0], center_down[1] + triangle_size), # Bottom point
+            (center_down[0] - triangle_size, center_down[1] - triangle_size // 2), # Top-left
+            (center_down[0] + triangle_size, center_down[1] - triangle_size // 2)  # Top-right
+        ]
+        pygame.draw.polygon(surface, text_color, down_triangle_points)
+
+    def render_opengl(self, renderer):
+        """
+        Render the NumberSelector using OpenGL backend.
+        
+        Args:
+            renderer: The OpenGL renderer object.
+        """
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        up_color, down_color, text_color, border_color, background_color = self._get_button_colors(theme)
+        
+        # 1. Draw the border around the main element
+        if border_color:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, fill=False)
+        
+        # 2. Draw main background rectangle
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, background_color)
+        
+        # 3. Draw UP button area
+        renderer.draw_rect(actual_x + self._up_rect.x, actual_y + self._up_rect.y, 
+                           self._up_rect.width, self._up_rect.height, up_color)
+        
+        # 4. Draw DOWN button area
+        renderer.draw_rect(actual_x + self._down_rect.x, actual_y + self._down_rect.y, 
+                           self._down_rect.width, self._down_rect.height, down_color)
+
+        # 5. Draw the value text
+        formatted_value = self._format_value()
+        
+        # Center text in the number area
+        text_area_width = self.width - self._up_rect.width
+        center_x = actual_x + text_area_width // 2
+        center_y = actual_y + self.height // 2
+
+        renderer.draw_text(formatted_value, center_x, center_y, text_color, self._font, anchor_point=(0.5, 0.5))
+        
+        # 6. Draw increment/decrement symbols (Triangles)
+        up_rect_abs = (actual_x + self._up_rect.x, actual_y + self._up_rect.y, self._up_rect.width, self._up_rect.height)
+        center_up = (up_rect_abs[0] + up_rect_abs[2] // 2, up_rect_abs[1] + up_rect_abs[3] // 2)
+        triangle_size = min(up_rect_abs[2], up_rect_abs[3]) // 3
+        up_triangle_points = [
+            (center_up[0], center_up[1] - triangle_size), 
+            (center_up[0] - triangle_size, center_up[1] + triangle_size // 2),
+            (center_up[0] + triangle_size, center_up[1] + triangle_size // 2)
+        ]
+        renderer.draw_polygon(up_triangle_points, text_color)
+        
+        down_rect_abs = (actual_x + self._down_rect.x, actual_y + self._down_rect.y, self._down_rect.width, self._down_rect.height)
+        center_down = (down_rect_abs[0] + down_rect_abs[2] // 2, down_rect_abs[1] + down_rect_abs[3] // 2)
+        down_triangle_points = [
+            (center_down[0], center_down[1] + triangle_size),
+            (center_down[0] - triangle_size, center_down[1] - triangle_size // 2),
+            (center_down[0] + triangle_size, center_down[1] - triangle_size // 2)
+        ]
+        renderer.draw_polygon(down_triangle_points, text_color)
+        
+class Checkbox(UIElement):
+    """
+    A binary state control element that allows a user to select a boolean value (checked or unchecked).
+    
+    The Checkbox is typically rendered as a small square box that can be toggled by clicking.
+    
+    Attributes:
+        checked (bool): The current state of the checkbox (True if checked, False otherwise).
+        label (Optional[str]): The text label to display next to the checkbox.
+        label_position (str): Position of the label relative to the box ('right' or 'left').
+        box_size (int): The size (width and height) of the square checkbox box.
+        
+    Internal Attributes:
+        _font (pygame.font.Font): Cached font object for rendering the label.
+    """
+    on_toggle: Callable[[bool], None]
+    
+    def __init__(self, x: int, y: int, width: int, height: int, checked: bool,
+                 label: Optional[str] = None, label_position: str = 'right',
+                 root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None):
+        """
+        Initialize the Checkbox element.
+        
+        The width and height define the overall bounding box, including the label.
+        The actual checkbox box size is calculated based on the height.
+        
+        Args:
+            x (int): X coordinate position.
+            y (int): Y coordinate position.
+            width (int): Total width of the element (box + label).
+            height (int): Total height of the element (usually the box size).
+            checked (bool): Initial state of the checkbox.
+            theme_type (ThemeType): Theme type for styling.
+            label (Optional[str]): Text label displayed next to the box.
+            label_position (str): Where to place the label ('right' or 'left').
+            root_point (Tuple[float, float]): Anchor point for positioning.
+            element_id (Optional[str]): Custom element ID.
+        """
+        # Initialize base UIElement
+        super().__init__(x, y, width, height, root_point, element_id)
+        
+        # Store properties
+        self.checked = checked
+        self.label = label
+        self.label_position = label_position.lower()
+        self.theme_type = theme or ThemeManager.get_current_theme()
+        
+        # The box size is determined by the element's height to keep it square and proportional
+        self.box_size = height 
+        
+        # Dynamic font size for the label
+        self.font_size = int(height * 0.8) 
+        self._font = FontManager.get_font(None, self.font_size) # Use FontManager
+
+    def set_on_toggle(self, callback: Callable[[bool], None]):
+        self.on_toggle = callback
+    
+    def _get_colors(self) -> Tuple[Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int]]:
+        """
+        Determines the colors for the checkbox based on the current state and theme.
+        
+        Args:
+            theme: The current theme object from ThemeManager.
+            
+        Returns:
+            Tuple: (box_color, check_color, border_color, label_color)
+        """
+        theme = ThemeManager.get_theme(self.theme_type)
+        # Default colors from theme
+        box_color = theme.background
+        border_color = theme.button_border
+        check_color = theme.button_pressed
+        label_color = theme.button_text
+        
+        # Apply hover/pressed effects
+        if self.state == UIState.HOVERED:
+            # Subtle change for hover on the border or box
+            border_color = theme.button_hover
+        elif self.state == UIState.PRESSED:
+            # Change for pressed state
+            box_color = theme.button_text
+        elif self.state == UIState.DISABLED:
+            box_color = theme.button_disabled
+        if border_color is None:
+            print(f"Border color is None\n{self.theme_type}\n{theme.button_border}")
+            border_color = (0,0,0)
+        return box_color, check_color, border_color, label_color
+
+    def toggle(self):
+        """
+        Toggles the state of the checkbox (True -> False, False -> True).
+        """
+        self.checked = not self.checked
+        if self.on_toggle:
+            if callable(self.on_toggle):
+                self.on_toggle(self.checked)
+
+    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
+        """
+        Update element state and handle toggle on click.
+        
+        Args:
+            mouse_pos (Tuple[int, int]): Current mouse position (x, y).
+            mouse_pressed (bool): Whether mouse button is currently pressed.
+            dt (float): Delta time in seconds.
+        """
+        if not self.visible or not self.enabled:
+            self.state = UIState.DISABLED
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        
+        # Mouse position relative to the element
+        mouse_rel_x = mouse_pos[0] - actual_x
+        mouse_rel_y = mouse_pos[1] - actual_y
+        
+        mouse_over_main = (0 <= mouse_rel_x <= self.width and 0 <= mouse_rel_y <= self.height)
+        
+        # The logic relies on a single-frame "just pressed" state.
+        if not hasattr(self, '_was_pressed'):
+             self._was_pressed = False
+            
+        if mouse_over_main:
+            self.state = UIState.HOVERED
+            
+            if mouse_pressed:
+                self.state = UIState.PRESSED
+                if not self._was_pressed:
+                    self.toggle()
+                    self._was_pressed = True
+            else:
+                self.state = UIState.HOVERED
+                self._was_pressed = False # Reset for the next click
+                
+        else:
+            self.state = UIState.NORMAL
+            self._was_pressed = False
+
+    def render_pygame(self, renderer):
+        """
+        Render the Checkbox and its label using Pygame backend.
+        
+        Args:
+            renderer: The Pygame renderer object.
+        """
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        box_color, check_color, border_color, label_color = self._get_colors(theme)
+        surface = renderer.get_surface() # Assuming get_surface is available
+
+        # 1. Determine Box Position
+        box_x = actual_x
+        label_text_surface = None
+        
+        if self.label:
+            label_text_surface = self._font.render(self.label, True, label_color)
+            if self.label_position == 'right':
+                box_x = actual_x # Box is on the left
+                label_x = actual_x + self.box_size + 5 # 5 pixel padding
+            else: # 'left'
+                # Box is on the right, position determined by total width - box size
+                box_x = actual_x + self.width - self.box_size 
+                label_x = actual_x
+        
+        box_rect = pygame.Rect(box_x, actual_y, self.box_size, self.box_size)
+        
+        # 2. Draw the main box background
+        renderer.draw_rect(box_rect.x, box_rect.y, box_rect.width, box_rect.height, box_color)
+
+        # 3. Draw the border
+        renderer.draw_rect(box_rect.x, box_rect.y, box_rect.width, box_rect.height, border_color, fill=False, border_width=2)
+        
+        # 4. Draw the checkmark if checked
+        if self.checked:
+            # Use a simple cross line or a checkmark polygon for the mark
+            # Draw a diagonal line (X shape) in the middle of the box
+            padding = self.box_size // 4
+            inner_rect = box_rect.inflate(-padding * 2, -padding * 2)
+            
+            # Draw a diagonal 'V' (checkmark) for better appearance
+            check_points = [
+                (inner_rect.left, inner_rect.center[1]), 
+                (inner_rect.center[0], inner_rect.bottom), 
+                (inner_rect.right, inner_rect.top)
+            ]
+            # Adjust to a small checkmark for clean look
+            check_points = [
+                (box_rect.left + self.box_size * 0.2, box_rect.top + self.box_size * 0.5), # Tip 1
+                (box_rect.left + self.box_size * 0.4, box_rect.bottom - self.box_size * 0.2), # Corner
+                (box_rect.right - self.box_size * 0.2, box_rect.top + self.box_size * 0.2) # Tip 2
+            ]
+            pygame.draw.lines(surface, check_color, False, check_points, 3)
+
+        # 5. Draw the label
+        if label_text_surface:
+            # Center the label vertically next to the box
+            label_y = actual_y + (self.height - label_text_surface.get_height()) // 2
+            
+            # Adjust label_x if the label is on the left
+            if self.label_position == 'left':
+                label_x = box_rect.x - label_text_surface.get_width() - 5
+                
+            renderer.draw_surface(label_text_surface, label_x, label_y)
+
+    def render_opengl(self, renderer):
+        """
+        Render the Checkbox and its label using OpenGL backend.
+        
+        Args:
+            renderer: The OpenGL renderer object.
+        """
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        box_color, check_color, border_color, label_color = self._get_colors()
+        
+        # 1. Determine Box Position
+        box_x = actual_x
+        label_surface = None
+        
+        if self.label:
+            # Assume OpenGL renderer has a way to measure text or you pre-render
+            label_width, label_height = self._font.size(self.label)
+            
+            if self.label_position == 'right':
+                box_x = actual_x # Box is on the left
+                label_x = actual_x + self.box_size + 5
+            else: # 'left'
+                box_x = actual_x + self.width - self.box_size
+                label_x = actual_x
+
+        # 2. Draw the border
+        renderer.draw_rect(box_x, actual_y, self.box_size, self.box_size, border_color, border_width=2)
+        
+        # 3. Draw the main box background
+        renderer.draw_rect(box_x, actual_y, self.box_size, self.box_size, box_color)
+        
+        # 4. Draw the checkmark if checked
+        if self.checked:
+            # Since OpenGL triangle drawing details are unknown, we use a simple generic line draw
+            
+            # Simple X mark (for illustration, assuming draw_line exists)
+            padding = self.box_size // 4
+            x1, y1 = box_x + padding, actual_y + padding
+            x2, y2 = box_x + self.box_size - padding, actual_y + self.box_size - padding
+            
+            # Checkmark points:
+            check_points = [
+                ((box_x + self.box_size * 0.2, actual_y + self.box_size * 0.5), (box_x + self.box_size * 0.4, actual_y + self.box_size * 0.8)), 
+                ((box_x + self.box_size * 0.4, actual_y + self.box_size * 0.8), (box_x + self.box_size * 0.8, actual_y + self.box_size * 0.2)), 
+            ]
+            renderer.draw_lines(check_points, check_color, width=3)
+
+
+        # 5. Draw the label
+        if self.label:
+            label_y = actual_y + self.height // 2 # Center vertically
+            
+            if self.label_position == 'left':
+                label_x = box_x - label_width - 5
+            
+            # Assumes the OpenGL renderer supports text drawing with center anchoring (0, 0.5)
+            # or bottom left anchoring and we calculate the Y offset for vertical center.
+            renderer.draw_text(self.label, label_x, label_y, label_color, self._font, anchor_point=(0.0, 0.5))

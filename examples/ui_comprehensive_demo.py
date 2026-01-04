@@ -29,6 +29,9 @@ class ComprehensiveUIDemo(Scene):
             'switch_state': False,
             'select_index': 0,
             'dialog_active': False,
+            # NEW STATES FOR NEW ELEMENTS
+            'number_selector_value': 10,
+            'checkbox_state': True,
         }
         self.animations = {}
         self.animation_handler = AnimationHandler(engine)
@@ -53,12 +56,18 @@ class ComprehensiveUIDemo(Scene):
         self.animation_handler.cancel_all()
         
     def setup_ui(self):
+        """Sets up all UI elements for the demo scene."""
+        self.engine.set_global_theme(ThemeType.DEFAULT)
+        
+        # --- TITLE ---
         title = TextLabel(512, 30, "LunaEngine - UI Demo", 36, root_point=(0.5, 0))
         self.add_ui_element(title)
         
+        # --- SECTION 1: Interactive Elements ---
         section1_title = TextLabel(50, 100, "Interactive Elements", 20, (255, 255, 0))
         self.add_ui_element(section1_title)
         
+        # Button Example
         button1 = Button(50, 130, 150, 40, "Click Me")
         button1.set_on_click(lambda: self.update_state('button_clicks', self.demo_state['button_clicks'] + 1))
         button1.set_simple_tooltip("This button counts your clicks!")
@@ -67,6 +76,7 @@ class ComprehensiveUIDemo(Scene):
         self.button_counter = TextLabel(220, 140, "Clicks: 0", 16)
         self.add_ui_element(self.button_counter)
         
+        # Slider Example
         slider = Slider(50, 175, 200, 30, 0, 100, 50)
         slider.on_value_changed = lambda v: self.update_state('slider_value', v)
         slider.set_simple_tooltip("Drag to change the value")
@@ -75,30 +85,52 @@ class ComprehensiveUIDemo(Scene):
         self.slider_display = TextLabel(260, 180, "Value: 50.0", 14)
         self.add_ui_element(self.slider_display)
         
-        section2_title = TextLabel(50, 240, "Selection Elements", 20, (255, 255, 0))
+        # NEW: NumberSelector Example
+        number_selector = NumberSelector(50, 215, 75, 25, 0, 99, self.demo_state['number_selector_value'], min_length=2)
+        number_selector.on_value_changed = lambda v: self.update_state('number_selector_value', v)
+        number_selector.set_simple_tooltip("Select a number from 00 to 99")
+        self.add_ui_element(number_selector)
+
+        self.number_selector_display = TextLabel(210, 220, "Number: 10", 14)
+        self.add_ui_element(self.number_selector_display)
+        
+        # --- SECTION 2: Selection Elements (Shifted Down) ---
+        section2_title = TextLabel(50, 260, "Selection Elements", 20, (255, 255, 0))
         self.add_ui_element(section2_title)
         
-        dropdown = Dropdown(50, 260, 200, 30, ["Option 1", "Option 2", "Option 3"])
+        # Dropdown Example
+        dropdown = Dropdown(50, 290, 200, 30, ["Option 1", "Option 2", "Option 3"])
         dropdown.set_on_selection_changed(lambda i, v: self.update_state('dropdown_selection', v))
         dropdown.set_simple_tooltip("Click to expand and select an option")
         self.add_ui_element(dropdown)
         
-        theme_dropdown = Dropdown(50, 300, 150, 30, ThemeManager.get_theme_names(), font_size=19)
+        # Theme Dropdown Example
+        theme_dropdown = Dropdown(50, 330, 150, 30, ThemeManager.get_theme_names(), font_size=19)
         theme_dropdown.set_on_selection_changed(lambda i, v: self.engine.set_global_theme(v))
         theme_dropdown.set_simple_tooltip("Change the global theme")
         self.add_ui_element(theme_dropdown)
         
-        self.dropdown_display = TextLabel(260, 260, "Selected: Option 1", 14)
+        self.dropdown_display = TextLabel(260, 290, "Selected: Option 1", 14)
         self.add_ui_element(self.dropdown_display)
         
-        switch = Switch(50, 340, 60, 30)
+        # Switch Example
+        switch = Switch(50, 370, 60, 30)
         switch.set_on_toggle(lambda s: self.update_state('switch_state', s))
         switch.set_simple_tooltip("Toggle switch on/off")
         self.add_ui_element(switch)
         
-        self.switch_display = TextLabel(120, 350, "Switch: OFF", 14)
+        self.switch_display = TextLabel(120, 380, "Switch: OFF", 14)
         self.add_ui_element(self.switch_display)
         
+        checkbox = Checkbox(50, 410, 200, 25, self.demo_state['checkbox_state'], label="Enable Feature X")
+        checkbox.set_on_toggle(lambda s: self.update_state('checkbox_state', s))
+        checkbox.set_simple_tooltip("Toggle this feature on/off")
+        self.add_ui_element(checkbox)
+        
+        self.checkbox_display = TextLabel(260, 415, "Feature X: ON", 14)
+        self.add_ui_element(self.checkbox_display)
+
+        # --- SECTION 3: Visual Elements ---
         section3_title = TextLabel(550, 100, "Visual Elements", 20, (255, 255, 0))
         self.add_ui_element(section3_title)
         
@@ -121,6 +153,7 @@ class ComprehensiveUIDemo(Scene):
         gradient.set_simple_tooltip("Beautiful gradient with multiple colors")
         self.add_ui_element(gradient)
         
+        # --- SECTION 4: Advanced Elements ---
         section4_title = TextLabel(550, 285, "Advanced Elements", 20, (255, 255, 0))
         self.add_ui_element(section4_title)
         
@@ -144,106 +177,107 @@ class ComprehensiveUIDemo(Scene):
             item_label = TextLabel(10, i * 25, f"Item {i + 1}", 14)
             scroll_frame.add_child(item_label)
         
-        section5_title = TextLabel(50, 400, "Animation Examples", 20, (255, 255, 0))
+        # --- SECTION 5: Animation Examples (Shifted Down) ---
+        section5_title = TextLabel(50, 450, "Animation Examples", 20, (255, 255, 0))
         self.add_ui_element(section5_title)
         
         # Animation controls
-        animation_controls = TextLabel(50, 420, "Animation Controls:", 16, (200, 200, 255))
+        animation_controls = TextLabel(50, 470, "Animation Controls:", 16, (200, 200, 255))
         self.add_ui_element(animation_controls)
         
         # Linear Animation Example
-        linear_label = TextLabel(50, 440, "Linear Animation:", 14, (100, 255, 100))
+        linear_label = TextLabel(50, 490, "Linear Animation:", 14, (100, 255, 100))
         self.add_ui_element(linear_label)
         
-        self.linear_box = UiFrame(50, 460, 15, 15)
+        self.linear_box = UiFrame(50, 510, 15, 15)
         self.linear_box.set_background_color((100, 255, 100))
         self.add_ui_element(self.linear_box)
         
         # Bounce Animation Example
-        bounce_label = TextLabel(50, 480, "Bounce Animation:", 14, (255, 200, 50))
+        bounce_label = TextLabel(50, 530, "Bounce Animation:", 14, (255, 200, 50))
         self.add_ui_element(bounce_label)
         
-        self.bounce_box = UiFrame(50, 500, 15, 15)
+        self.bounce_box = UiFrame(50, 550, 15, 15)
         self.bounce_box.set_background_color((255, 200, 50))
         self.add_ui_element(self.bounce_box)
         
         # Back Animation Example
-        back_label = TextLabel(50, 520, "Back Animation:", 14, (255, 100, 100))
+        back_label = TextLabel(50, 570, "Back Animation:", 14, (255, 100, 100))
         self.add_ui_element(back_label)
         
-        self.back_box = UiFrame(50, 540, 15, 15)
+        self.back_box = UiFrame(50, 590, 15, 15)
         self.back_box.set_background_color((255, 100, 100))
         self.add_ui_element(self.back_box)
         
         # Animation path indicators
-        self.linear_path = UiFrame(50, 465, 300, 5)
+        self.linear_path = UiFrame(50, 515, 300, 5)
         self.linear_path.z_index = -1
         self.add_ui_element(self.linear_path)
         
-        self.bounce_path = UiFrame(50, 505, 300, 5)
+        self.bounce_path = UiFrame(50, 555, 300, 5)
         self.bounce_path.z_index = -1
         self.add_ui_element(self.bounce_path)
         
-        self.back_path = UiFrame(50, 545, 300, 5)
+        self.back_path = UiFrame(50, 595, 300, 5)
         self.back_path.z_index = -1
         self.add_ui_element(self.back_path)
         
         # Animation progress displays
-        self.linear_progress = TextLabel(375, 465, "0%", 14, (100, 255, 100))
+        self.linear_progress = TextLabel(375, 515, "0%", 14, (100, 255, 100))
         self.add_ui_element(self.linear_progress)
         
-        self.bounce_progress = TextLabel(375, 505, "0%", 14, (255, 200, 50))
+        self.bounce_progress = TextLabel(375, 555, "0%", 14, (255, 200, 50))
         self.add_ui_element(self.bounce_progress)
         
-        self.back_progress = TextLabel(375, 545, "0%", 14, (255, 100, 100))
+        self.back_progress = TextLabel(375, 595, "0%", 14, (255, 100, 100))
         self.add_ui_element(self.back_progress)
         
         # Animation control buttons
-        pause_btn = Button(50, 565, 80, 30, "Pause All")
+        pause_btn = Button(50, 615, 80, 30, "Pause All")
         pause_btn.set_on_click(lambda: self.pause_animations())
         pause_btn.set_simple_tooltip("Pause all animations")
         self.add_ui_element(pause_btn)
         
-        resume_btn = Button(140, 565, 80, 30, "Resume All")
+        resume_btn = Button(140, 615, 80, 30, "Resume All")
         resume_btn.set_on_click(lambda: self.resume_animations())
         resume_btn.set_simple_tooltip("Resume all animations")
         self.add_ui_element(resume_btn)
         
-        reset_btn = Button(230, 565, 80, 30, "Reset All")
+        reset_btn = Button(230, 615, 80, 30, "Reset All")
         reset_btn.set_on_click(lambda: self.reset_animations())
         reset_btn.set_simple_tooltip("Reset all animations")
         self.add_ui_element(reset_btn)
         
         # Animation speed control
-        speed_label = TextLabel(50, 605, "Speed:", 14, (200, 200, 255))
+        speed_label = TextLabel(50, 655, "Speed:", 14, (200, 200, 255))
         self.add_ui_element(speed_label)
         
-        self.speed_slider = Slider(100, 600, 100, 20, 0.5, 3.0, 1.0)
+        self.speed_slider = Slider(100, 650, 100, 20, 0.5, 3.0, 1.0)
         self.speed_slider.on_value_changed = lambda v: self.update_animation_speed(v)
         self.speed_slider.set_simple_tooltip("Adjust animation speed (0.5x to 3.0x)")
         self.add_ui_element(self.speed_slider)
         
-        self.speed_display = TextLabel(300, 605, "1.0x", 12)
+        self.speed_display = TextLabel(300, 655, "1.0x", 12)
         self.add_ui_element(self.speed_display)
         
         # Loop control buttons
-        loop_btn = Button(50, 635, 80, 30, "3 Loops")
+        loop_btn = Button(50, 685, 80, 30, "3 Loops")
         loop_btn.set_on_click(lambda: self.set_animations_loops(3))
         loop_btn.set_simple_tooltip("Set all animations to loop 3 times")
         self.add_ui_element(loop_btn)
 
-        infinite_loop_btn = Button(140, 635, 100, 30, "Infinite")
+        infinite_loop_btn = Button(140, 685, 100, 30, "Infinite")
         infinite_loop_btn.set_on_click(lambda: self.set_animations_loops(-1))
         infinite_loop_btn.set_simple_tooltip("Set all animations to loop infinitely")
         self.add_ui_element(infinite_loop_btn)
 
-        no_loop_btn = Button(250, 635, 80, 30, "No Loop")
+        no_loop_btn = Button(250, 685, 80, 30, "No Loop")
         no_loop_btn.set_on_click(lambda: self.set_animations_loops(0))
         no_loop_btn.set_simple_tooltip("Disable looping for all animations")
         self.add_ui_element(no_loop_btn)
         
         # Loop count display
-        self.loop_display = TextLabel(50, 675, "Loops: Infinite", 14, (200, 200, 255))
+        self.loop_display = TextLabel(50, 725, "Loops: Infinite", 14, (200, 200, 255))
         self.add_ui_element(self.loop_display)
         
         # Dialog button
@@ -277,21 +311,6 @@ class ComprehensiveUIDemo(Scene):
         
         # Initialize animations
         self.setup_animations()
-        
-    def set_animations_loops(self, loops: int):
-        """Set loop count for all animations"""
-        for anim_name, tween in self.animations.items():
-            tween.set_loops(loops, yoyo=True)  # Keep yoyo effect
-        
-        if loops == -1:
-            loop_text = "Loops: Infinite"
-        elif loops == 0:
-            loop_text = "Loops: No Loop"
-        else:
-            loop_text = f"Loops: {loops}"
-        
-        self.loop_display.set_text(loop_text)
-        print(f"Set all animations to {loops if loops != -1 else 'infinite'} loops")
         
     def set_animations_loops(self, loops: int):
         """Set loop count for all animations"""
@@ -423,15 +442,20 @@ class ComprehensiveUIDemo(Scene):
         print("Animations reset and restarted")
     
     def update_state(self, key, value):
+        """Updates the demo state and prints feedback for interactive elements."""
         self.demo_state[key] = value
-        if key in ['dropdown_selection', 'switch_state']:
+        
+        # Print for debug/console feedback
+        if key in ['dropdown_selection', 'switch_state', 'number_selector_value', 'checkbox_state']:
             print(f"{key}: {value}")
     
     def add_progress(self, amount):
+        """Increments the progress bar value."""
         self.demo_state['progress_value'] = min(100, self.demo_state['progress_value'] + amount)
         self.progress_bar.set_value(self.demo_state['progress_value'])
     
     def show_dialog(self):
+        """Shows the RPG-style dialog box."""
         self.dialog_box.visible = True
         self.dialog_box.set_text(
             "Welcome to LunaEngine! This is an RPG-style dialog box with typewriter animation. Click to continue...",
@@ -441,16 +465,22 @@ class ComprehensiveUIDemo(Scene):
         self.demo_state['dialog_active'] = True
     
     def hide_dialog(self):
+        """Hides the RPG-style dialog box."""
         self.dialog_box.visible = False
         self.demo_state['dialog_active'] = False
     
     def update_ui_displays(self):
+        """Updates all TextLabels that reflect current UI state."""
         self.button_counter.set_text(f"Clicks: {self.demo_state['button_clicks']}")
         self.slider_display.set_text(f"Value: {self.demo_state['slider_value']:.1f}")
         self.dropdown_display.set_text(f"Selected: {self.demo_state['dropdown_selection']}")
         self.switch_display.set_text(f"Switch: {'ON' if self.demo_state['switch_state'] else 'OFF'}")
         self.progress_display.set_text(f"Progress: {self.demo_state['progress_value']}%")
         self.select_display.set_text(f"Choice: {self.demo_state['select_index'] + 1}")
+        
+        # NEW ELEMENT DISPLAYS
+        self.number_selector_display.set_text(f"Number: {self.demo_state['number_selector_value']:02d}")
+        self.checkbox_display.set_text(f"Feature X: {'ON' if self.demo_state['checkbox_state'] else 'OFF'}")
         
         self.fps_display.set_text(f"FPS: {self.engine.get_fps_stats()['current_fps']:.1f}")
     

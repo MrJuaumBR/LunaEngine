@@ -77,7 +77,7 @@
         
                             <div class="alert alert-info docstring-content">
                                 <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">lunaengine.backend.network module<br><br>DESCRIPTION:<br>Enhanced networking system with Host Client support - allowing a client to also<br>act as a server for peer-to-peer multiplayer games.<br><br>NEW FEATURES:<br>- HostClient class that combines server and client functionality<br>- Automatic port forwarding handling<br>- Local network discovery<br>- Seamless migration between client and host modes<br>- Server password protection<br>- Ping/latency measurement<br>- Client kick functionality<br>- Server script callbacks for automated tasks</div>
+                                <div class="docstring-text">Network backend module for LunaEngine.<br><br>This module provides comprehensive multiplayer networking functionality<br>including server, client, host-client hybrid, network discovery, and<br>performance monitoring.<br><br>Features:<br>- Server with password protection and scripting<br>- Network client with reconnection capabilities<br>- Host-Client hybrid for peer-to-peer gaming<br>- Network discovery for local game finding<br>- Performance monitoring and connection quality analysis<br>- Region detection based on IP geolocation<br>- Thread-safe message handling and event system</div>
                             </div>
             <h6>Classes:</h6>
                             <div class="class-item mb-3 p-3 border rounded" id="class-networkeventtype">
@@ -85,29 +85,45 @@
                                     <i class="bi bi-box me-2"></i>
                                     NetworkEventType
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Types of network events</div></div><small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
+                <div class="docstring-content mb-2"><div class="docstring-text">Enumeration of network event types.</div></div><small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
                                 <div class="attribute-item ms-3 mt-1">
-                                    <code>CONNECT: Any = 'connect'</code>
+                                    <code>CONNECT: Any = auto()</code>
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
-                                    <code>DISCONNECT: Any = 'disconnect'</code>
+                                    <code>DISCONNECT: Any = auto()</code>
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
-                                    <code>MESSAGE: Any = 'message'</code>
+                                    <code>MESSAGE: Any = auto()</code>
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
-                                    <code>ERROR: Any = 'error'</code>
+                                    <code>ERROR: Any = auto()</code>
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
-                                    <code>PING_UPDATE: Any = 'ping_update'</code>
+                                    <code>PING_UPDATE: Any = auto()</code>
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
-                                    <code>SERVER_SCRIPT: Any = 'server_script'</code>
+                                    <code>AUTH_SUCCESS: Any = auto()</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>AUTH_FAILED: Any = auto()</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>SERVER_SCRIPT: Any = auto()</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>QUALITY_UPDATE: Any = auto()</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>BANDWIDTH_UPDATE: Any = auto()</code>
                                 </div>
                         </div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-networkevent">
@@ -115,13 +131,9 @@
                                     <i class="bi bi-box me-2"></i>
                                     NetworkEvent
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Network event container</div></div><div class="mt-3"><strong>Attributes:</strong>
+                <div class="docstring-content mb-2"><div class="docstring-text">Represents a network event with associated data.</div></div><div class="mt-3"><strong>Attributes:</strong>
                                 <div class="attribute-item ms-3 mt-1">
                                     <code>event_type: NetworkEventType = None</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>data: Any = None</code>
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
@@ -129,447 +141,536 @@
                                 </div>
                         
                                 <div class="attribute-item ms-3 mt-1">
-                                    <code>timestamp: float = None</code>
+                                    <code>data: Any = None</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>timestamp: float = field(default_factory=time.time)</code>
+                                </div>
+                        </div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-hostclientmode">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    HostClientMode
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Operating modes for HostClient.</div></div><small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>DISCONNECTED: Any = auto()</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>HOST: Any = auto()</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>CLIENT: Any = auto()</code>
+                                </div>
+                        </div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-connectionquality">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ConnectionQuality
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Connection quality levels.</div></div><small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>EXCELLENT: Any = auto()</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>GOOD: Any = auto()</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>FAIR: Any = auto()</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>POOR: Any = auto()</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>UNUSABLE: Any = auto()</code>
+                                </div>
+                        </div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-networkmetrics">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    NetworkMetrics
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Container for network performance metrics.</div></div><div class="mt-3"><strong>Attributes:</strong>
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>ping: float = 0.0</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>jitter: float = 0.0</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>packet_loss: float = 0.0</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>bandwidth_up: float = 0.0</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>bandwidth_down: float = 0.0</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>uptime: float = 0.0</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>messages_sent: int = 0</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>messages_received: int = 0</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>last_update: float = field(default_factory=time.time)</code>
                                 </div>
                         </div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkevent-__post_init__">
-                                    <code>def __post_init__(self: Any) -> None</code>
-                        </div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkmetrics-get_quality">
+                                    <code>def get_quality(self: Any) -> ConnectionQuality</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Determine connection quality based on metrics.</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-networkmessage">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     NetworkMessage
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Base class for network messages with serialization capabilities</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkmessage-to_bytes">
-                                    <code>def to_bytes(self: Any) -> bytes</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Convert message to bytes for transmission</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkmessage-from_bytes">
-                                    <code>def from_bytes(cls: Any, data: bytes) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Create message from bytes</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-clientinfo">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    ClientInfo
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Client information container with enhanced tracking</div></div><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>client_id: int = None</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>address: tuple = None</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>username: str = 'Unknown'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>connected: bool = False</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>last_heartbeat: float = 0</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>ping: float = 0</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>last_ping_time: float = 0</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>join_time: float = None</code>
-                                </div>
-                        </div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-clientinfo-__post_init__">
-                                    <code>def __post_init__(self: Any) -> None</code>
-                        </div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-client">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    Client
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Represents a connected client in the network system with ping tracking</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-client-__init__">
-                                    <code>def __init__(self: Any, client_id: int, address: tuple, username: str) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-client-update_heartbeat">
-                                    <code>def update_heartbeat(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update the last heartbeat time</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-client-update_ping">
-                                    <code>def update_ping(self: Any, ping: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update client ping</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-client-is_timeout">
-                                    <code>def is_timeout(self: Any, timeout_seconds: float) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Check if client has timed out</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-serverscript">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    ServerScript
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Server script for automated tasks like auto-save, day/night cycle, etc.</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-serverscript-__init__">
-                                    <code>def __init__(self: Any, name: str, interval: float, callback: Callable, enabled: bool, one_shot: bool) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-serverscript-should_execute">
-                                    <code>def should_execute(self: Any) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Check if script should execute based on interval</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-serverscript-execute">
-                                    <code>def execute(self: Any, server: 'Server', *args: Any, **kwargs: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Execute the script callback</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-server">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    Server
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Network server for handling multiple client connections with enhanced features<br><br>Parameters:<br> &nbsp; &nbsp;host: Server host address (default: &#x27;localhost&#x27;)<br> &nbsp; &nbsp;port: Server port (default: 5555)<br> &nbsp; &nbsp;max_clients: Maximum number of simultaneous clients (default: 8)<br> &nbsp; &nbsp;password[Optional]: Optional password for client authentication (default: None)</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-__init__">
-                                    <code>def __init__(self: Any, host: str, port: int, max_clients: int, password: str) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-toggle_scripts_execution">
-                                    <code>def toggle_scripts_execution(self: Any, enabled: bool, key: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Enable or disable server scripts execution<br><br>Args:<br> &nbsp; &nbsp;enabled: Whether to enable or disable scripts<br> &nbsp; &nbsp;key: Specific script name to toggle, if None toggles all scripts</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-disconnect_client">
-                                    <code>def disconnect_client(self: Any, client_id: int, reason: str, send_message: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Gracefully disconnect a specific client<br><br>Args:<br> &nbsp; &nbsp;client_id: ID of client to disconnect<br> &nbsp; &nbsp;reason: Reason for disconnection<br> &nbsp; &nbsp;send_message: Whether to send a disconnect message to the client</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-disconnect">
-                                    <code>def disconnect(self: Any, reason: str, delay: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Disconnect all clients and shutdown the server gracefully<br><br>Args:<br> &nbsp; &nbsp;reason: Reason for disconnection<br> &nbsp; &nbsp;delay: Time to wait before forcing shutdown</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-graceful_shutdown">
-                                    <code>def graceful_shutdown(self: Any, reason: str, delay: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Gracefully shutdown the server, notifying all clients first<br><br>Args:<br> &nbsp; &nbsp;reason: Reason for shutdown<br> &nbsp; &nbsp;delay: Time to wait before forcing shutdown</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-emergency_shutdown">
-                                    <code>def emergency_shutdown(self: Any, reason: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Immediately shutdown the server without notifying clients</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-start">
-                                    <code>def start(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Start the server</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-stop">
-                                    <code>def stop(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Stop the server</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-add_script">
-                                    <code>def add_script(self: Any, name: str, interval: float, callback: Callable, enabled: bool, one_shot: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Add a server script for automated tasks<br><br>Args:<br> &nbsp; &nbsp;name: Unique name for the script<br> &nbsp; &nbsp;interval: Execution interval in seconds<br> &nbsp; &nbsp;callback: Function to call (will receive server instance as first argument)<br> &nbsp; &nbsp;enabled: Whether the script is enabled<br> &nbsp; &nbsp;one_shot: If True, script will only run once</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-remove_script">
-                                    <code>def remove_script(self: Any, name: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Remove a server script</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-enable_script">
-                                    <code>def enable_script(self: Any, name: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Enable a server script</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-disable_script">
-                                    <code>def disable_script(self: Any, name: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Disable a server script</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_run_scripts">
-                                    <code>def _run_scripts(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Execute server scripts at their intervals</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_accept_connections">
-                                    <code>def _accept_connections(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Accept incoming client connections with password verification</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_handle_client">
-                                    <code>def _handle_client(self: Any, client_socket: socket.socket, client: Client) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Handle communication with a single client with ping measurement<br><br>Parameters:<br> &nbsp; &nbsp;client_socket: Socket connected to the client<br> &nbsp; &nbsp;client: Client instance representing the connected client</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_disconnect_client">
-                                    <code>def _disconnect_client(self: Any, client_id: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Disconnect a client</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-kick_client">
-                                    <code>def kick_client(self: Any, client_id: int, reason: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Kick a client from the server<br><br>Args:<br> &nbsp; &nbsp;client_id: ID of client to kick<br> &nbsp; &nbsp;reason: Reason for kicking (sent to client)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-get_client_ping">
-                                    <code>def get_client_ping(self: Any, client_id: int) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get ping of a specific client in milliseconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-get_average_ping">
-                                    <code>def get_average_ping(self: Any) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get average ping of all connected clients</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-get_server_stats">
-                                    <code>def get_server_stats(self: Any) -> Dict[str, Any]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get server statistics</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_queue_event">
-                                    <code>def _queue_event(self: Any, event_type: NetworkEventType, data: Any, client_id: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Add event to processing queue</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_process_events">
-                                    <code>def _process_events(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Process queued events</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_handle_event">
-                                    <code>def _handle_event(self: Any, event: NetworkEvent) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Handle a network event</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_check_timeouts">
-                                    <code>def _check_timeouts(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Check for timed out clients</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-broadcast">
-                                    <code>def broadcast(self: Any, message: NetworkMessage, exclude_client_id: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Broadcast message to all connected clients</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-send_to_client">
-                                    <code>def send_to_client(self: Any, client_id: int, message: NetworkMessage) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Send message to specific client</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-on_event">
-                                    <code>def on_event(self: Any, event_type: NetworkEventType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator to register event handlers</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-networkclient">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    NetworkClient
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Network client for connecting to server with enhanced features</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-__init__">
-                                    <code>def __init__(self: Any, server_host: str, server_port: int) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-_receive_messages">
-                                    <code>def _receive_messages(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Receive messages from server with shutdown handling</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-connect">
-                                    <code>def connect(self: Any, username: str, password: str) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Connect to server with optional password</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-disconnect">
-                                    <code>def disconnect(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Disconnect from server</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-get_ping">
-                                    <code>def get_ping(self: Any) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get current ping to server in milliseconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-send">
-                                    <code>def send(self: Any, message: NetworkMessage) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Send message to server</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-_send_heartbeats">
-                                    <code>def _send_heartbeats(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Send periodic heartbeats to server for ping measurement</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-_queue_event">
-                                    <code>def _queue_event(self: Any, event_type: NetworkEventType, data: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Add event to processing queue</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-_process_events">
-                                    <code>def _process_events(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Process queued events</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-_handle_event">
-                                    <code>def _handle_event(self: Any, event: NetworkEvent) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Handle a network event</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-on_event">
-                                    <code>def on_event(self: Any, event_type: NetworkEventType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator to register event handlers</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-hostclient">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    HostClient
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Hybrid client that can also act as a server for other clients<br>Perfect for player-hosted multiplayer games with enhanced features</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-__init__">
-                                    <code>def __init__(self: Any, host: str, port: int, max_peers: int, password: str) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-toggle_server_scripts">
-                                    <code>def toggle_server_scripts(self: Any, enabled: bool, key: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Enable or disable server scripts execution (host mode only)<br><br>Args:<br> &nbsp; &nbsp;enabled: Whether to enable or disable scripts<br> &nbsp; &nbsp;key: Specific script name to toggle, if None toggles all scripts</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-disconnect">
-                                    <code>def disconnect(self: Any, reason: str, notify_peers: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Disconnect from network with optional peer notification<br><br>Args:<br> &nbsp; &nbsp;reason: Reason for disconnection<br> &nbsp; &nbsp;notify_peers: Whether to notify peers before disconnecting (host mode only)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-_kick_all_peers">
-                                    <code>def _kick_all_peers(self: Any, reason: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Kick all connected peers (host mode only)<br><br>Args:<br> &nbsp; &nbsp;reason: Reason for kicking all peers</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-emergency_disconnect">
-                                    <code>def emergency_disconnect(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Immediately disconnect without notifying peers<br>Use this only in emergency situations</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-set_auto_kick_on_leave">
-                                    <code>def set_auto_kick_on_leave(self: Any, enabled: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Enable or disable auto-kick when host leaves<br><br>Args:<br> &nbsp; &nbsp;enabled: Whether to automatically kick peers when host disconnects</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-start_as_host">
-                                    <code>def start_as_host(self: Any) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Start as host (server + client) with password protection</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-connect_as_client">
-                                    <code>def connect_as_client(self: Any, host_address: str, port: int, password: str) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Connect as client to existing host with password</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-add_server_script">
-                                    <code>def add_server_script(self: Any, name: str, interval: float, callback: Callable, enabled: bool, one_shot: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Add a server script (host only)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-remove_server_script">
-                                    <code>def remove_server_script(self: Any, name: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Remove a server script (host only)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-kick_peer">
-                                    <code>def kick_peer(self: Any, peer_id: int, reason: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Kick a peer from the server (host only)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-get_peer_ping">
-                                    <code>def get_peer_ping(self: Any, peer_id: int) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get ping of a specific peer (host only)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-get_server_stats">
-                                    <code>def get_server_stats(self: Any) -> Dict[str, Any]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get server statistics (host only)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-get_ping">
-                                    <code>def get_ping(self: Any) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get current ping to host (client mode only)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-send_to_all">
-                                    <code>def send_to_all(self: Any, message: NetworkMessage, exclude_self: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Send message to all connected peers (if host) and to host (if client)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-send_to_peer">
-                                    <code>def send_to_peer(self: Any, peer_id: int, message: NetworkMessage) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Send message to specific peer (host only)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-get_peer_count">
-                                    <code>def get_peer_count(self: Any) -> int</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get number of connected peers (host only)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-get_peer_list">
-                                    <code>def get_peer_list(self: Any) -> List[int]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get list of connected peer IDs (host only)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-_queue_event">
-                                    <code>def _queue_event(self: Any, event_type: NetworkEventType, data: Any, client_id: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Add event to processing queue</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-_process_events">
-                                    <code>def _process_events(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Process queued events</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-_handle_event">
-                                    <code>def _handle_event(self: Any, event: NetworkEvent) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Handle a network event</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-on_event">
-                                    <code>def on_event(self: Any, event_type: NetworkEventType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator to register event handlers</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-networkdiscovery">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    NetworkDiscovery
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Simple network discovery for finding local hosts</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkdiscovery-__init__">
-                                    <code>def __init__(self: Any, discovery_port: int) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkdiscovery-broadcast_presence">
-                                    <code>def broadcast_presence(self: Any, game_name: str, port: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Broadcast host presence on local network</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkdiscovery-discover_hosts">
-                                    <code>def discover_hosts(self: Any, timeout: float) -> List[tuple]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Discover hosts on local network</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-heartbeatmessage">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    HeartbeatMessage
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Heartbeat message for connection monitoring with ping measurement</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-heartbeatmessage-__init__">
+                <div class="docstring-content mb-2"><div class="docstring-text">Base class for all network messages.</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkmessage-__init__">
                                     <code>def __init__(self: Any) -> None</code>
-                        </div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-authmessage">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    AuthMessage
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Authentication message for password-protected servers</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-authmessage-__init__">
-                                    <code>def __init__(self: Any, password: str) -> None</code>
-                        </div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-authresultmessage">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    AuthResultMessage
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Authentication result message</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-authresultmessage-__init__">
-                                    <code>def __init__(self: Any, success: bool, reason: str) -> None</code>
-                        </div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-kickmessage">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    KickMessage
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Kick message for removing clients from server</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-kickmessage-__init__">
-                                    <code>def __init__(self: Any, reason: str) -> None</code>
-                        </div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-playerpositionmessage">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    PlayerPositionMessage
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Player position update message</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-playerpositionmessage-__init__">
-                                    <code>def __init__(self: Any, x: float, y: float, player_id: str) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkmessage-serialize">
+                                    <code>def serialize(self: Any) -> bytes</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Convert message to bytes for transmission.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkmessage-deserialize">
+                                    <code>def deserialize(cls: Any, data: bytes) -> 'NetworkMessage'</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Create message from bytes.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkmessage-__str__">
+                                    <code>def __str__(self: Any) -> str</code>
                         </div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-chatmessage">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     ChatMessage
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Chat message with better duplicate prevention</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
+                <div class="docstring-content mb-2"><div class="docstring-text">Message for chat communication.</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-chatmessage-__init__">
-                                    <code>def __init__(self: Any, message: str, player_id: str, message_id: str) -> None</code>
+                                    <code>def __init__(self: Any, message: str, player_id: str, sender_name: str) -> None</code>
+                        </div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-playerpositionmessage">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    PlayerPositionMessage
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Message for player position updates.</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-playerpositionmessage-__init__">
+                                    <code>def __init__(self: Any, x: float, y: float, player_id: str) -> None</code>
                         </div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-gamestatemessage">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     GameStateMessage
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Game state synchronization message</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
+                <div class="docstring-content mb-2"><div class="docstring-text">Message for complete game state synchronization.</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-gamestatemessage-__init__">
-                                    <code>def __init__(self: Any, game_state: Dict) -> None</code>
+                                    <code>def __init__(self: Any, game_state: Dict[str, Any]) -> None</code>
                         </div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-serverscriptmessage">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-playerinfomessage">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
-                                    ServerScriptMessage
+                                    PlayerInfoMessage
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Server script execution result message</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-serverscriptmessage-__init__">
-                                    <code>def __init__(self: Any, script_name: str, result: Any, execution_count: int) -> None</code>
+                <div class="docstring-content mb-2"><div class="docstring-text">Message for player information updates.</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-playerinfomessage-__init__">
+                                    <code>def __init__(self: Any, player_name: str, player_id: str) -> None</code>
                         </div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-servershutdownmessage">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-playerslistmessage">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
-                                    ServerShutdownMessage
+                                    PlayersListMessage
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Message sent to all clients when server is shutting down</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-servershutdownmessage-__init__">
-                                    <code>def __init__(self: Any, reason: str, graceful: bool) -> None</code>
+                <div class="docstring-content mb-2"><div class="docstring-text">Message for sending list of all players.</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-playerslistmessage-__init__">
+                                    <code>def __init__(self: Any, players_data: Dict[int, Dict]) -> None</code>
                         </div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-hostmigrationmessage">
+                            <div class="class-item mb-3 p-3 border rounded" id="class-welcomemessage">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
-                                    HostMigrationMessage
+                                    WelcomeMessage
                                 </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Message for host migration scenarios</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostmigrationmessage-__init__">
-                                    <code>def __init__(self: Any, new_host: str, migration_possible: bool) -> None</code>
+                <div class="docstring-content mb-2"><div class="docstring-text">Welcome message for new clients.</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-welcomemessage-__init__">
+                                    <code>def __init__(self: Any, player_id: int, players_data: Dict[int, Dict]) -> None</code>
                         </div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-clientinfo">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ClientInfo
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Information about a connected client.</div></div><div class="mt-3"><strong>Attributes:</strong>
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>client_id: int = None</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>address: Tuple[str, int] = None</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>connected_at: float = field(default_factory=time.time)</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>last_message: float = field(default_factory=time.time)</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>authenticated: bool = False</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>username: str = ''</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>ping: float = 0.0</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>bandwidth_usage: float = 0.0</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>disconnected: bool = False</code>
+                                </div>
+                        </div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-clientinfo-connection_time">
+                                    <code>def connection_time(self: Any) -> float</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get connection duration in seconds.</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-serverscript">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    ServerScript
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Represents a server-side script that runs periodically.</div></div><div class="mt-3"><strong>Attributes:</strong>
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>name: str = None</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>interval: float = None</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>function: Callable[[Any], Any] = None</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>last_execution: float = 0.0</code>
+                                </div>
+                        
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>enabled: bool = True</code>
+                                </div>
+                        </div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-serverscript-should_execute">
+                                    <code>def should_execute(self: Any) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Check if script should execute now.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-serverscript-execute">
+                                    <code>def execute(self: Any, server: Any) -> Any</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Execute the script.</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-performancemonitor">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    PerformanceMonitor
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Monitors network performance metrics.</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-performancemonitor-__init__">
+                                    <code>def __init__(self: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-performancemonitor-update_ping">
+                                    <code>def update_ping(self: Any, ping: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update ping measurement.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-performancemonitor-update_packet_loss">
+                                    <code>def update_packet_loss(self: Any, loss: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update packet loss measurement.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-performancemonitor-update_bandwidth">
+                                    <code>def update_bandwidth(self: Any, bytes_sent: int, bytes_received: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update bandwidth measurements.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-performancemonitor-get_metrics">
+                                    <code>def get_metrics(self: Any) -> NetworkMetrics</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get current network metrics.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-performancemonitor-get_summary">
+                                    <code>def get_summary(self: Any) -> Dict[str, Any]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get a summary of all performance metrics.</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-regiondetector">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    RegionDetector
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Detects geographic region/country based on IP address.</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-regiondetector-detect_region">
+                                    <code>def detect_region(ip_address: str) -> str</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Detect geographic region based on IP address.<br><br>Args:<br> &nbsp; &nbsp;ip_address: IP address to check. If None, uses local public IP.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Detected region/country name or &#x27;Unknown&#x27;</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-regiondetector-get_public_ip">
+                                    <code>def get_public_ip() -> Optional[str]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the public IP address of the current machine.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-regiondetector-get_local_region">
+                                    <code>def get_local_region() -> str</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Attempt to determine region from local network settings.</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-server">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Server
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Network server for multiplayer games.</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-__init__">
+                                    <code>def __init__(self: Any, host: str, port: int, max_clients: int, password: str) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-start">
+                                    <code>def start(self: Any) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Start the server.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-stop">
+                                    <code>def stop(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Stop the server and disconnect all clients.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_accept_thread">
+                                    <code>def _accept_thread(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Thread for accepting new client connections.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_receive_thread">
+                                    <code>def _receive_thread(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Thread for receiving data from clients.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_process_received_data">
+                                    <code>def _process_received_data(self: Any, client_id: int, data: bytes) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Process received data from a client.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_authenticate_client">
+                                    <code>def _authenticate_client(self: Any, client_id: int, auth_data: Dict) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Authenticate a client.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_processing_thread">
+                                    <code>def _processing_thread(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Thread for processing events and running scripts.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_handle_event">
+                                    <code>def _handle_event(self: Any, event: NetworkEvent) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Handle a network event.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_run_scripts">
+                                    <code>def _run_scripts(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Execute server scripts.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_send_heartbeats">
+                                    <code>def _send_heartbeats(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Send heartbeat messages to all clients.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_check_timeouts">
+                                    <code>def _check_timeouts(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Check for client timeouts.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_disconnect_client">
+                                    <code>def _disconnect_client(self: Any, client_id: int, reason: str) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Disconnect a client.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-_queue_event">
+                                    <code>def _queue_event(self: Any, event_type: NetworkEventType, client_id: Optional[int], data: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Queue an event for processing.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-broadcast">
+                                    <code>def broadcast(self: Any, message: Any, exclude_client_id: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Broadcast a message to all connected clients.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-send_to_client">
+                                    <code>def send_to_client(self: Any, client_id: int, message: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Send a message to a specific client.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-on_event">
+                                    <code>def on_event(self: Any, event_type: NetworkEventType) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator for registering event handlers.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-on_message">
+                                    <code>def on_message(self: Any, message_type: type) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator for registering message handlers.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-add_server_script">
+                                    <code>def add_server_script(self: Any, name: str, interval: float, function: Callable) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Add a server script.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-remove_server_script">
+                                    <code>def remove_server_script(self: Any, name: str) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Remove a server script.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-toggle_server_scripts">
+                                    <code>def toggle_server_scripts(self: Any, enabled: bool) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Enable or disable all server scripts.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-get_server_stats">
+                                    <code>def get_server_stats(self: Any) -> Dict[str, Any]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get server statistics.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-server-kick_client">
+                                    <code>def kick_client(self: Any, client_id: int, reason: str) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Kick a client from the server.</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-networkclient">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    NetworkClient
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Network client for connecting to servers.</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-__init__">
+                                    <code>def __init__(self: Any, server_host: str, server_port: int) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-connect">
+                                    <code>def connect(self: Any, username: str, password: str) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Connect to the server.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-disconnect">
+                                    <code>def disconnect(self: Any, reason: str) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Disconnect from the server.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-_receive_thread">
+                                    <code>def _receive_thread(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Thread for receiving data from server.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-_process_received_data">
+                                    <code>def _process_received_data(self: Any, data: bytes) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Process received data from server.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-_send_thread">
+                                    <code>def _send_thread(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Thread for sending data to server.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-_processing_thread">
+                                    <code>def _processing_thread(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Thread for processing events.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-_handle_event">
+                                    <code>def _handle_event(self: Any, event: NetworkEvent) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Handle a network event.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-_queue_event">
+                                    <code>def _queue_event(self: Any, event_type: NetworkEventType, client_id: Optional[int], data: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Queue an event for processing.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-send">
+                                    <code>def send(self: Any, message: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Send a message to the server.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-on_event">
+                                    <code>def on_event(self: Any, event_type: NetworkEventType) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator for registering event handlers.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkclient-on_message">
+                                    <code>def on_message(self: Any, message_type: type) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator for registering message handlers.</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-hostclient">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    HostClient
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Hybrid host-client that can act as both server and client.</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-__init__">
+                                    <code>def __init__(self: Any, host: str, port: int, max_peers: int, password: str) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-start_as_host">
+                                    <code>def start_as_host(self: Any) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Start as host (server + local client).</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-connect_as_client">
+                                    <code>def connect_as_client(self: Any, server_host: str, server_port: int, password: str) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Connect to a host as client.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-_setup_event_forwarding">
+                                    <code>def _setup_event_forwarding(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Setup event forwarding from server/client to unified handlers.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-_handle_event">
+                                    <code>def _handle_event(self: Any, event: NetworkEvent) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Handle events from server or client.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-send_to_all">
+                                    <code>def send_to_all(self: Any, message: Any, exclude_self: bool) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Send message to all peers.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-send_to_peer">
+                                    <code>def send_to_peer(self: Any, peer_id: int, message: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Send message to specific peer.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-disconnect">
+                                    <code>def disconnect(self: Any, reason: str) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Disconnect from network.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-on_event">
+                                    <code>def on_event(self: Any, event_type: NetworkEventType) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator for registering event handlers.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-on_message">
+                                    <code>def on_message(self: Any, message_type: type) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator for registering message handlers.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-get_peer_count">
+                                    <code>def get_peer_count(self: Any) -> int</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get number of connected peers.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-kick_peer">
+                                    <code>def kick_peer(self: Any, peer_id: int, reason: str) -> bool</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Kick a peer (host only).</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-toggle_server_scripts">
+                                    <code>def toggle_server_scripts(self: Any, enabled: bool) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Toggle server scripts (host only).</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-add_server_script">
+                                    <code>def add_server_script(self: Any, name: str, interval: float, function: Callable) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Add a server script (host only).</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-hostclient-get_server_stats">
+                                    <code>def get_server_stats(self: Any) -> Dict[str, Any]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get server statistics (host only).</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-networkdiscovery">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    NetworkDiscovery
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Discovers network games on local network.</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkdiscovery-__init__">
+                                    <code>def __init__(self: Any, broadcast_port: int, discovery_port: int) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkdiscovery-broadcast_presence">
+                                    <code>def broadcast_presence(self: Any, game_name: str, game_port: int, interval: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Broadcast game presence on local network.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkdiscovery-discover_hosts">
+                                    <code>def discover_hosts(self: Any, timeout: float) -> List[Tuple[str, int, str]]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Discover available hosts on local network.</div></div></div></div></div>
                             <div class="class-item mb-3 p-3 border rounded" id="class-networkmessages">
                                 <h6 class="text-success mb-2">
                                     <i class="bi bi-box me-2"></i>
                                     NetworkMessages
                                 </h6>
-                <div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>HeartbeatMessage: NetworkMessage = HeartbeatMessage</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>PlayerPositionMessage: NetworkMessage = PlayerPositionMessage</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>ChatMessage: NetworkMessage = ChatMessage</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>GameStateMessage: NetworkMessage = GameStateMessage</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>AuthMessage: NetworkMessage = AuthMessage</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>AuthResultMessage: NetworkMessage = AuthResultMessage</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>KickMessage: NetworkMessage = KickMessage</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>ServerScriptMessage: NetworkMessage = ServerScriptMessage</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>ServerShutdownMessage: NetworkMessage = ServerShutdownMessage</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>HostMigrationMessage: NetworkMessage = HostMigrationMessage</code>
-                                </div>
-                        </div></div>
+                <div class="docstring-content mb-2"><div class="docstring-text">Factory for common network messages.</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkmessages-create_chat">
+                                    <code>def create_chat(message: str, player_id: str, sender_name: str) -> ChatMessage</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Create a chat message.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkmessages-create_player_position">
+                                    <code>def create_player_position(x: float, y: float, player_id: str) -> PlayerPositionMessage</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Create a player position message.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkmessages-create_game_state">
+                                    <code>def create_game_state(game_state: Dict[str, Any]) -> GameStateMessage</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Create a game state synchronization message.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkmessages-create_player_info">
+                                    <code>def create_player_info(player_name: str, player_id: str) -> PlayerInfoMessage</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Create a player information message.</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-smoothpositionmessage">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    SmoothPositionMessage
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Mensagem para atualização suave de posição com timestamp</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-smoothpositionmessage-__init__">
+                                    <code>def __init__(self: Any, x: float, y: float, player_id: str, velocity_x: float, velocity_y: float, timestamp: float) -> None</code>
+                        </div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-playerinputmessage">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    PlayerInputMessage
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Mensagem para envio de inputs do jogador (mais eficiente)</div></div><small class="text-muted">Inherits from: NetworkMessage</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-playerinputmessage-__init__">
+                                    <code>def __init__(self: Any, inputs: Dict[str, bool], player_id: str, timestamp: float) -> None</code>
+                        </div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-networkinterpolator">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    NetworkInterpolator
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">Interpola posições para movimento suave</div></div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkinterpolator-__init__">
+                                    <code>def __init__(self: Any, interpolation_time: float) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkinterpolator-add_position">
+                                    <code>def add_position(self: Any, x: float, y: float, timestamp: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Adiciona uma nova posição ao buffer</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkinterpolator-get_interpolated_position">
+                                    <code>def get_interpolated_position(self: Any, current_time: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Obtém posição interpolada para o tempo atual</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-networkinterpolator-clear">
+                                    <code>def clear(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Limpa o buffer</div></div></div></div></div><h6 class="mt-4">Functions:</h6>
+                        <div class="function-item mb-3 p-3 border rounded" id="func-get_local_ip">
+                            <code>def get_local_ip() -> str</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">Get the local IP address of this machine.</div></div></div>
+                        <div class="function-item mb-3 p-3 border rounded" id="func-is_port_available">
+                            <code>def is_port_available(port: int, host: str) -> bool</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">Check if a port is available for binding.</div></div></div>
+                        <div class="function-item mb-3 p-3 border rounded" id="func-find_available_port">
+                            <code>def find_available_port(start_port: int, end_port: int, host: str) -> Optional[int]</code>
+                <div class="docstring-content mt-2"><div class="docstring-text">Find an available port in the specified range.</div></div></div>
                         </div>
                     </div>
                 </div>
@@ -695,9 +796,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_line">
                                     <code>def draw_line(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: tuple, width: int, surface: Optional[pygame.Surface]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw a line between two points with specified width.<br><br>Args:<br> &nbsp; &nbsp;start_x: Start X coordinate<br> &nbsp; &nbsp;start_y: Start Y coordinate<br> &nbsp; &nbsp;end_x: End X coordinate<br> &nbsp; &nbsp;end_y: End Y coordinate<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;width: Line width<br> &nbsp; &nbsp;surface: Target surface</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_lines">
+                                    <code>def draw_lines(self: Any, points: List[Tuple[Tuple[int, int], Tuple[int, int]]], color: Tuple[int, int, int, float] | Tuple[int, int, int], width: int, surface: Optional[pygame.Surface]) -> None</code>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-draw_text">
-                                    <code>def draw_text(self: Any, text: str, x: int, y: int, color: tuple, font: pygame.font.FontType, surface: Optional[pygame.Surface]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw text using pygame font rendering - FIX FOR TEXT ISSUES</div></div></div>
+                                    <code>def draw_text(self: Any, text: str, x: int, y: int, color: tuple, font: pygame.font.FontType, surface: Optional[pygame.Surface], anchor_point: tuple) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw text using pygame font rendering</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-openglrenderer-_draw_thick_line_optimized">
                                     <code>def _draw_thick_line_optimized(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: tuple, width: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Optimized method for drawing thick lines</div></div></div>

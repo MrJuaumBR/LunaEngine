@@ -32,6 +32,8 @@ from typing import Dict, List, Any, Optional, TYPE_CHECKING
 from ..ui import UIElement
 from ..graphics import Camera, ParticleConfig, ParticleSystem, ParticleType, ShadowSystem
 from ..core.audio import AudioSystem
+from ..backend.opengl import OpenGLRenderer
+from ..backend.pygame_backend import PygameRenderer
 
 if TYPE_CHECKING:
     from ..core import LunaEngine, Renderer
@@ -105,7 +107,7 @@ class Scene(ABC):
         # Update particle system with camera position
         self.particle_system.update(dt, self.camera.position)
         
-    def render(self, renderer: 'Renderer') -> None:
+    def render(self, renderer: OpenGLRenderer|PygameRenderer) -> None:
         """
         Render the scene.
         
@@ -114,7 +116,7 @@ class Scene(ABC):
         Args:
             renderer: The renderer to use for drawing operations
         """
-        self.shadow_system.render_to_screen(renderer, self.camera.position.x, self.camera.position.y)
+        pass
         
     def add_ui_element(self, ui_element: UIElement) -> None:
         """
@@ -166,6 +168,30 @@ class Scene(ABC):
             List[UIElement]: List of UI elements matching the specified type
         """
         return [element for element in self.ui_elements if isinstance(element, element_type)]
+        
+    def get_ui_elements_by_group(self, group: str) -> List[UIElement]:
+        """
+        Get all UI elements in the scene.
+        
+        Returns:
+            List[UIElement]: All UI elements in the scene
+        """
+        uis = []
+        for ui in self.ui_elements:
+            if hasattr(ui, 'group'):
+                if ui.has_group(group):
+                    uis.append(ui)
+        return uis
+        
+    def toggle_element_group(self, group: str, visible: bool) -> None:
+        """
+        Toggle the visibility of UI elements in a specific group.
+        
+        Args:
+            group (str): The group to toggle
+        """
+        for ui in self.get_ui_elements_by_group(group):
+            ui.visible = visible
         
     def get_all_ui_elements(self) -> List[UIElement]:
         """

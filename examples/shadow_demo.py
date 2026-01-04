@@ -277,15 +277,7 @@ class ShadowTestScene(Scene):
         mouse_pos = self.debug_info['mouse_world_pos']
         camera_pos = self.debug_info['camera_pos']
         
-        debug_text = (
-            f"Mouse World: ({mouse_pos[0]:.1f}, {mouse_pos[1]:.1f})\n"
-            f"Camera: ({camera_pos[0]:.1f}, {camera_pos[1]:.1f})\n"
-            f"Zoom: {self.camera.zoom:.2f}\n"
-            f"Lights: {stats.get('total_lights', 0)} (visible: {stats.get('visible_lights', 0)})\n"
-            f"Casters: {stats.get('total_casters', 0)} (visible: {stats.get('visible_casters', 0)})\n"
-            f"Render Time: {stats.get('render_time_ms', 0):.1f}ms\n"
-            f"FPS: {stats.get('current_fps', 0):.1f}"
-        )
+        debug_text = f"Mouse World: ({mouse_pos[0]:.1f}, {mouse_pos[1]:.1f}), Camera: ({camera_pos[0]:.1f}, {camera_pos[1]:.1f}), Zoom: {self.camera.zoom:.2f}, Lights: {stats.get('total_lights', 0)} (visible: {stats.get('visible_lights', 0)}), Casters: {stats.get('total_casters', 0)} (visible: {stats.get('visible_casters', 0)}), Render Time: {stats.get('render_time_ms', 0):.1f}ms, FPS: {stats.get('current_fps', 0):.1f}"
         
         self.debug_label.set_text(debug_text)
 

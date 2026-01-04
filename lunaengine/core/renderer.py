@@ -189,6 +189,19 @@ class Renderer(ABC):
         pass
     
     @abstractmethod
+    def draw_lines(self, points: List[Tuple[int, int]], color: Tuple[int, int, int], width: int = 1, surface: Optional[pygame.Surface] = None):
+        """
+        Draw multiple lines beetween the points specified.
+        
+        Args:
+            points (List[Tuple[int, int]]): List of (x, y) points defining the lines
+            color (Tuple[int, int, int]): RGB color tuple
+            width (int): Line width (default: 1)
+            surface (Optional[pygame.Surface]): Surface to draw
+        """
+        pass
+    
+    @abstractmethod
     def draw_polygon(self, points: List[Tuple[int, int]], color: Tuple[int, int, int], 
                      fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None):
         """

@@ -21,9 +21,10 @@ LIBRARIES USED:
 from .opengl import OpenGLRenderer, TextureShader, ParticleShader, ShaderProgram
 from .pygame_backend import PygameRenderer
 from .types import EVENTS
-from .network import Client, ClientInfo, Server, NetworkClient, NetworkEventType, NetworkEvent, NetworkMessage, NetworkDiscovery, NetworkMessages
+from .network import NetworkEventType, NetworkEvent, HostClientMode, ConnectionQuality, NetworkMetrics, NetworkMessage, ClientInfo, ServerScript, PerformanceMonitor, RegionDetector, Server, NetworkClient, HostClient, NetworkDiscovery, NetworkMessages, get_local_ip, is_port_available, find_available_port
 
 __all__ = [
-    "OpenGLRenderer", "TextureShader", "ParticleShader", "ShaderProgram", "PygameRenderer", "EVENTS", "Client", "Server",
-    "ClientInfo", "NetworkClient", "NetworkEventType", "NetworkEvent", "NetworkMessage", "NetworkDiscovery", "NetworkMessages"
+    "OpenGLRenderer", "TextureShader", "ParticleShader", "ShaderProgram", "PygameRenderer", "EVENTS", 'NetworkEventType',
+    'NetworkEvent', 'HostClientMode', 'ConnectionQuality', 'NetworkMetrics', 'NetworkMessage', 'ClientInfo', 'ServerScript', 'PerformanceMonitor', 'RegionDetector',
+    'Server', 'NetworkClient', 'HostClient', 'NetworkDiscovery', 'NetworkMessages', 'get_local_ip', 'is_port_available', 'find_available_port'
 ]

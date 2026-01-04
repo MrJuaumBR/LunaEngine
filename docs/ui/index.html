@@ -143,6 +143,21 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-__init__">
                                     <code>def __init__(self: Any, x: int, y: int, width: int, height: int, root_point: Tuple[float, float], element_id: Optional[str]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Initialize a UI element with position and dimensions.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the element in pixels.<br> &nbsp; &nbsp;height (int): Height of the element in pixels.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning where (0,0) is top-left <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;and (1,1) is bottom-right.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID. If None, generates automatic ID.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-add_group">
+                                    <code>def add_group(self: Any, group: str) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-remove_group">
+                                    <code>def remove_group(self: Any, group: str) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-clear_groups">
+                                    <code>def clear_groups(self: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-has_group">
+                                    <code>def has_group(self: Any, group: str) -> bool</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-__str__">
+                                    <code>def __str__(self: Any) -> str</code>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-get_id">
                                     <code>def get_id(self: Any) -> str</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the unique ID of this UI element.<br><br>Returns:<br> &nbsp; &nbsp;str: The unique element ID</div></div></div>
@@ -155,6 +170,9 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-add_child">
                                     <code>def add_child(self: Any, child: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Add a child element to this UI element.<br><br>Args:<br> &nbsp; &nbsp;child: The child UI element to add.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-remove_child">
+                                    <code>def remove_child(self: Any, child: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Remove a child element from this UI element.<br><br>Args:<br> &nbsp; &nbsp;child: The child UI element to remove.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uielement-set_tooltip">
                                     <code>def set_tooltip(self: Any, tooltip: 'Tooltip') -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set tooltip for this element using a Tooltip instance.<br><br>Args:<br> &nbsp; &nbsp;tooltip (Tooltip): Tooltip instance to associate with this element</div></div></div>
@@ -290,6 +308,9 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-update_theme">
                                     <code>def update_theme(self: Any, theme_type: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update theme for text label.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-set_text_color">
+                                    <code>def set_text_color(self: Any, color: Tuple[int, int, int]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set the text color.<br><br>Args:<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textlabel-font">
                                     <code>def font(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get the font object (lazy loading).<br><br>Returns:<br> &nbsp; &nbsp;pygame.font.Font: The font object for this label.</div></div></div>
@@ -338,8 +359,17 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-__init__">
                                     <code>def __init__(self: Any, x: int, y: int, width: int, height: int, text: str, font_size: int, font_name: Optional[str], root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
                         </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-set_background_color">
+                                    <code>def set_background_color(self: Any, color: Tuple[int, int, int]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-set_text_color">
+                                    <code>def set_text_color(self: Any, color: Tuple[int, int, int]) -> None</code>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-set_text">
                                     <code>def set_text(self: Any, text: str) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-update_theme">
+                                    <code>def update_theme(self: Any, theme_type: Any) -> None</code>
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-button-font">
                                     <code>def font(self: Any) -> None</code>
@@ -422,6 +452,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-_update_with_mouse">
                                     <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update text box with mouse interaction - IMPROVED with backspace support</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-focus">
+                                    <code>def focus(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">This will focus the textbox, like as of the user pass the mouse and click on it</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-unfocus">
+                                    <code>def unfocus(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">This will unfocus the textbox, like as of the user pass the mouse and click on it</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-textbox-handle_key_input">
                                     <code>def handle_key_input(self: Any, event: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Handle keyboard input when focused - UPDATED with max_length support<br><br>Args:<br> &nbsp; &nbsp;event: Pygame keyboard event.</div></div></div>
@@ -487,6 +523,24 @@
                 <small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-__init__">
                                     <code>def __init__(self: Any, x: int, y: int, width: int, height: int, min_val: float, max_val: float, value: float, root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-set_background_color">
+                                    <code>def set_background_color(self: Any, color: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-set_foreground_color">
+                                    <code>def set_foreground_color(self: Any, color: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-set_font_color">
+                                    <code>def set_font_color(self: Any, color: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-set_font">
+                                    <code>def set_font(self: Any, font_name: str, font_size: int) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-set_border_color">
+                                    <code>def set_border_color(self: Any, color: Any) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-update_theme">
+                                    <code>def update_theme(self: Any, theme_type: Any) -> None</code>
                         </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-progressbar-set_value">
                                     <code>def set_value(self: Any, value: float) -> None</code>
@@ -626,6 +680,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-__init__">
                                     <code>def __init__(self: Any, x: int, y: int, width: int, height: int, content_width: int, content_height: int, root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
                         </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-set_background_color">
+                                    <code>def set_background_color(self: Any, color: Tuple[int, int, int]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-update_theme">
+                                    <code>def update_theme(self: Any, theme_type: Any) -> None</code>
+                        </div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scrollingframe-clear_children">
                                     <code>def clear_children(self: Any) -> None</code>
                         </div>
@@ -746,6 +806,9 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uiframe-set_background_color">
                                     <code>def set_background_color(self: Any, color: Optional[Tuple[int, int, int]]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set the background color of the frame.<br><br>Args:<br> &nbsp; &nbsp;color (Optional[Tuple[int, int, int]]): RGB color tuple or None for transparent.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uiframe-set_border_color">
+                                    <code>def set_border_color(self: Any, color: Optional[Tuple[int, int, int]]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set the border color of the frame.<br><br>Args:<br> &nbsp; &nbsp;color (Optional[Tuple[int, int, int]]): RGB color tuple or None for no border.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uiframe-set_border">
                                     <code>def set_border(self: Any, color: Optional[Tuple[int, int, int]], width: int) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Set the border properties of the frame.<br><br>Args:<br> &nbsp; &nbsp;color (Optional[Tuple[int, int, int]]): Border color or None for no border.<br> &nbsp; &nbsp;width (int): Border width in pixels.</div></div></div>
@@ -779,6 +842,76 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-uiframe-clear_children">
                                     <code>def clear_children(self: Any) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Remove all child elements from this frame.</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-numberselector">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    NumberSelector
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">UI element that allows a user to select a number within a specified range <br>using increment and decrement controls.<br><br>This element manages its value internally, ensuring it stays within <br>the defined min_value and max_value. It also handles formatting with <br>a minimum number of digits (min_length) using padding.<br><br>Attributes:<br> &nbsp; &nbsp;min_value (int): The lowest allowed value.<br> &nbsp; &nbsp;max_value (int): The highest allowed value.<br> &nbsp; &nbsp;min_length (int): Minimum number of digits for display padding (e.g., 5 -&gt; &#x27;05&#x27;).<br> &nbsp; &nbsp;max_length (int): Maximum number of digits allowed.<br> &nbsp; &nbsp;<br>Internal Attributes:<br> &nbsp; &nbsp;_value (int): The current selected value.<br> &nbsp; &nbsp;_font (pygame.font.Font): Cached font object used for rendering the number.<br> &nbsp; &nbsp;_up_rect (pygame.Rect): Rectangular area for the increment button (relative position).<br> &nbsp; &nbsp;_down_rect (pygame.Rect): Rectangular area for the decrement button (relative position).<br> &nbsp; &nbsp;_is_up_pressed (bool): True if the increment button is currently pressed.<br> &nbsp; &nbsp;_is_down_pressed (bool): True if the decrement button is currently pressed.<br> &nbsp; &nbsp;_last_mouse_pos_rel (Tuple[int, int]): Last mouse position relative to the element (for state update).</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-numberselector-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, min_value: int, max_value: int, value: int, min_length: int, max_length: int, root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the NumberSelector element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the number selector.<br> &nbsp; &nbsp;height (int): Height of the number selector.<br> &nbsp; &nbsp;min_value (int): Minimum selectable value.<br> &nbsp; &nbsp;max_value (int): Maximum selectable value.<br> &nbsp; &nbsp;value (int): Initial value for the number selector.<br> &nbsp; &nbsp;min_length (int): Minimum number of digits for display padding (defaults to 1).<br> &nbsp; &nbsp;max_length (int): Maximum number of digits allowed (defaults to 10).<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for styling.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-numberselector-value">
+                                    <code>def value(self: Any) -> int</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get the current selected value.<br><br>Returns:<br> &nbsp; &nbsp;int: The current numeric value.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-numberselector-value">
+                                    <code>def value(self: Any, new_value: int) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Set the value, ensuring it stays within min/max bounds.<br><br>Args:<br> &nbsp; &nbsp;new_value (int): The new value to set.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-numberselector-_format_value">
+                                    <code>def _format_value(self: Any) -> str</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Formats the current value with padding based on min_length.<br><br>Returns:<br> &nbsp; &nbsp;str: The formatted string representation of the value (e.g., &#x27;007&#x27;).</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-numberselector-increment">
+                                    <code>def increment(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Increments the value, respecting max_value.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-numberselector-decrement">
+                                    <code>def decrement(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Decrements the value, respecting min_value.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-numberselector-_setup_control_areas">
+                                    <code>def _setup_control_areas(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Defines the rectangular areas for the increment (up) and decrement (down) buttons.<br>These are relative to the element&#x27;s top-left corner (0, 0).</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-numberselector-_get_button_colors">
+                                    <code>def _get_button_colors(self: Any, theme: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Determines the colors for the buttons based on the current state and theme.<br><br>Args:<br> &nbsp; &nbsp;theme: The current theme object from ThemeManager.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple: (up_color, down_color, text_color, border_color, background_color)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-numberselector-_update_with_mouse">
+                                    <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update element state and handle increment/decrement on click.<br><br>Args:<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position (x, y).<br> &nbsp; &nbsp;mouse_pressed (bool): Whether mouse button is currently pressed.<br> &nbsp; &nbsp;dt (float): Delta time in seconds.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-numberselector-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render the NumberSelector using Pygame backend.<br><br>Args:<br> &nbsp; &nbsp;renderer: The Pygame renderer object.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-numberselector-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render the NumberSelector using OpenGL backend.<br><br>Args:<br> &nbsp; &nbsp;renderer: The OpenGL renderer object.</div></div></div></div></div>
+                            <div class="class-item mb-3 p-3 border rounded" id="class-checkbox">
+                                <h6 class="text-success mb-2">
+                                    <i class="bi bi-box me-2"></i>
+                                    Checkbox
+                                </h6>
+                <div class="docstring-content mb-2"><div class="docstring-text">A binary state control element that allows a user to select a boolean value (checked or unchecked).<br><br>The Checkbox is typically rendered as a small square box that can be toggled by clicking.<br><br>Attributes:<br> &nbsp; &nbsp;checked (bool): The current state of the checkbox (True if checked, False otherwise).<br> &nbsp; &nbsp;label (Optional[str]): The text label to display next to the checkbox.<br> &nbsp; &nbsp;label_position (str): Position of the label relative to the box (&#x27;right&#x27; or &#x27;left&#x27;).<br> &nbsp; &nbsp;box_size (int): The size (width and height) of the square checkbox box.<br> &nbsp; &nbsp;<br>Internal Attributes:<br> &nbsp; &nbsp;_font (pygame.font.Font): Cached font object for rendering the label.</div></div><small class="text-muted">Inherits from: UIElement</small><div class="mt-3"><strong>Attributes:</strong>
+                                <div class="attribute-item ms-3 mt-1">
+                                    <code>on_toggle: Callable[[bool], None] = None</code>
+                                </div>
+                        </div><div class="mt-3"><strong>Methods:</strong>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-checkbox-__init__">
+                                    <code>def __init__(self: Any, x: int, y: int, width: int, height: int, checked: bool, label: Optional[str], label_position: str, root_point: Tuple[float, float], theme: ThemeType, element_id: Optional[str]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the Checkbox element.<br><br>The width and height define the overall bounding box, including the label.<br>The actual checkbox box size is calculated based on the height.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Total width of the element (box + label).<br> &nbsp; &nbsp;height (int): Total height of the element (usually the box size).<br> &nbsp; &nbsp;checked (bool): Initial state of the checkbox.<br> &nbsp; &nbsp;theme_type (ThemeType): Theme type for styling.<br> &nbsp; &nbsp;label (Optional[str]): Text label displayed next to the box.<br> &nbsp; &nbsp;label_position (str): Where to place the label (&#x27;right&#x27; or &#x27;left&#x27;).<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-checkbox-set_on_toggle">
+                                    <code>def set_on_toggle(self: Any, callback: Callable[[bool], None]) -> None</code>
+                        </div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-checkbox-_get_colors">
+                                    <code>def _get_colors(self: Any) -> Tuple[Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int]]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Determines the colors for the checkbox based on the current state and theme.<br><br>Args:<br> &nbsp; &nbsp;theme: The current theme object from ThemeManager.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple: (box_color, check_color, border_color, label_color)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-checkbox-toggle">
+                                    <code>def toggle(self: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Toggles the state of the checkbox (True -&gt; False, False -&gt; True).</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-checkbox-_update_with_mouse">
+                                    <code>def _update_with_mouse(self: Any, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Update element state and handle toggle on click.<br><br>Args:<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position (x, y).<br> &nbsp; &nbsp;mouse_pressed (bool): Whether mouse button is currently pressed.<br> &nbsp; &nbsp;dt (float): Delta time in seconds.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-checkbox-render_pygame">
+                                    <code>def render_pygame(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render the Checkbox and its label using Pygame backend.<br><br>Args:<br> &nbsp; &nbsp;renderer: The Pygame renderer object.</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-checkbox-render_opengl">
+                                    <code>def render_opengl(self: Any, renderer: Any) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Render the Checkbox and its label using OpenGL backend.<br><br>Args:<br> &nbsp; &nbsp;renderer: The OpenGL renderer object.</div></div></div></div></div>
                         </div>
                     </div>
                 </div>

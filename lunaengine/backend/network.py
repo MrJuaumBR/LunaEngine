@@ -1,1338 +1,1500 @@
+# lunaengine/backend/network.py
 """
-lunaengine.backend.network module
+Network backend module for LunaEngine.
 
-DESCRIPTION:
-Enhanced networking system with Host Client support - allowing a client to also
-act as a server for peer-to-peer multiplayer games.
+This module provides comprehensive multiplayer networking functionality
+including server, client, host-client hybrid, network discovery, and
+performance monitoring.
 
-NEW FEATURES:
-- HostClient class that combines server and client functionality
-- Automatic port forwarding handling
-- Local network discovery
-- Seamless migration between client and host modes
-- Server password protection
-- Ping/latency measurement
-- Client kick functionality
-- Server script callbacks for automated tasks
+Features:
+- Server with password protection and scripting
+- Network client with reconnection capabilities
+- Host-Client hybrid for peer-to-peer gaming
+- Network discovery for local game finding
+- Performance monitoring and connection quality analysis
+- Region detection based on IP geolocation
+- Thread-safe message handling and event system
 """
 
-import pickle
-import socket
-import threading
-import time
-import queue
-from typing import List, Dict, Callable, Any, Optional, Union
-from dataclasses import dataclass
-from enum import Enum
+import sys, sys, os, time, socket, threading, queue, json, struct, hashlib, pickle, select, errno, random, math, uuid
+from typing import Dict, List, Tuple, Optional, Any, Callable, Union
+from enum import Enum, auto
+from dataclasses import dataclass, field
+from abc import ABC, abstractmethod
+
+# For region detection (optional external)
+try:
+    import urllib.request
+    import urllib.error
+    EXTERNAL_NETWORK_AVAILABLE = True
+except ImportError:
+    EXTERNAL_NETWORK_AVAILABLE = False
 
 
 class NetworkEventType(Enum):
-    """Types of network events"""
-    CONNECT = "connect"
-    DISCONNECT = "disconnect"
-    MESSAGE = "message"
-    ERROR = "error"
-    PING_UPDATE = "ping_update"
-    SERVER_SCRIPT = "server_script"
+    """Enumeration of network event types."""
+    CONNECT = auto()           # Client connected
+    DISCONNECT = auto()        # Client disconnected
+    MESSAGE = auto()           # Message received
+    ERROR = auto()             # Network error occurred
+    PING_UPDATE = auto()       # Ping measurement updated
+    AUTH_SUCCESS = auto()      # Authentication successful
+    AUTH_FAILED = auto()       # Authentication failed
+    SERVER_SCRIPT = auto()     # Server script executed
+    QUALITY_UPDATE = auto()    # Connection quality updated
+    BANDWIDTH_UPDATE = auto() # Bandwidth usage updated
 
 
 @dataclass
 class NetworkEvent:
-    """Network event container"""
+    """Represents a network event with associated data."""
     event_type: NetworkEventType
-    data: Any
     client_id: Optional[int] = None
-    timestamp: float = None
+    data: Any = None
+    timestamp: float = field(default_factory=time.time)
 
-    def __post_init__(self):
-        if self.timestamp is None:
-            self.timestamp = time.time()
+
+class HostClientMode(Enum):
+    """Operating modes for HostClient."""
+    DISCONNECTED = auto()  # Not connected
+    HOST = auto()          # Acting as host/server
+    CLIENT = auto()        # Connected as client
+
+
+class ConnectionQuality(Enum):
+    """Connection quality levels."""
+    EXCELLENT = auto()  # < 50ms ping, < 1% packet loss
+    GOOD = auto()       # < 100ms ping, < 3% packet loss
+    FAIR = auto()       # < 200ms ping, < 5% packet loss
+    POOR = auto()       # < 500ms ping, < 10% packet loss
+    UNUSABLE = auto()   # > 500ms ping or > 10% packet loss
+
+
+@dataclass
+class NetworkMetrics:
+    """Container for network performance metrics."""
+    ping: float = 0.0                 # Round-trip time in milliseconds
+    jitter: float = 0.0               # Ping variation in milliseconds
+    packet_loss: float = 0.0          # Percentage of lost packets
+    bandwidth_up: float = 0.0         # Upload bandwidth in KB/s
+    bandwidth_down: float = 0.0       # Download bandwidth in KB/s
+    uptime: float = 0.0               # Connection uptime in seconds
+    messages_sent: int = 0            # Total messages sent
+    messages_received: int = 0        # Total messages received
+    last_update: float = field(default_factory=time.time)
+    
+    def get_quality(self) -> ConnectionQuality:
+        """Determine connection quality based on metrics."""
+        if self.ping <= 0:
+            return ConnectionQuality.UNUSABLE
+        
+        if self.ping < 50 and self.packet_loss < 1:
+            return ConnectionQuality.EXCELLENT
+        elif self.ping < 100 and self.packet_loss < 3:
+            return ConnectionQuality.GOOD
+        elif self.ping < 200 and self.packet_loss < 5:
+            return ConnectionQuality.FAIR
+        elif self.ping < 500 and self.packet_loss < 10:
+            return ConnectionQuality.POOR
+        else:
+            return ConnectionQuality.UNUSABLE
 
 
 class NetworkMessage:
-    """
-    Base class for network messages with serialization capabilities
-    """
-    def to_bytes(self) -> bytes:
-        """Convert message to bytes for transmission"""
+    """Base class for all network messages."""
+    
+    def __init__(self):
+        self.message_id = str(uuid.uuid4())
+        self.timestamp = time.time()
+        self.version = 1
+    
+    def serialize(self) -> bytes:
+        """Convert message to bytes for transmission."""
         return pickle.dumps(self)
     
     @classmethod
-    def from_bytes(cls, data: bytes):
-        """Create message from bytes"""
-        try:
-            return pickle.loads(data)
-        except Exception as e:
-            print(f"Error deserializing message: {e}")
-            return None
+    def deserialize(cls, data: bytes) -> 'NetworkMessage':
+        """Create message from bytes."""
+        return pickle.loads(data)
+    
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}(id={self.message_id[:8]})"
+
+
+class ChatMessage(NetworkMessage):
+    """Message for chat communication."""
+    
+    def __init__(self, message: str = "", player_id: str = "", sender_name: str = ""):
+        super().__init__()
+        self.message = message
+        self.player_id = player_id
+        self.sender_name = sender_name
+        self.version = 1
+
+
+class PlayerPositionMessage(NetworkMessage):
+    """Message for player position updates."""
+    
+    def __init__(self, x: float = 0.0, y: float = 0.0, player_id: str = ""):
+        super().__init__()
+        self.x = x
+        self.y = y
+        self.player_id = player_id
+        self.version = 1
+
+
+class GameStateMessage(NetworkMessage):
+    """Message for complete game state synchronization."""
+    
+    def __init__(self, game_state: Dict[str, Any] = None):
+        super().__init__()
+        self.game_state = game_state or {}
+        self.version = 1
+
+
+class PlayerInfoMessage(NetworkMessage):
+    """Message for player information updates."""
+    
+    def __init__(self, player_name: str = "", player_id: str = ""):
+        super().__init__()
+        self.player_name = player_name
+        self.player_id = player_id
+        self.version = 1
+
+
+class PlayersListMessage(NetworkMessage):
+    """Message for sending list of all players."""
+    
+    def __init__(self, players_data: Dict[int, Dict] = None):
+        super().__init__()
+        self.players = players_data or {}
+        self.version = 1
+
+
+class WelcomeMessage(NetworkMessage):
+    """Welcome message for new clients."""
+    
+    def __init__(self, player_id: int = 0, players_data: Dict[int, Dict] = None):
+        super().__init__()
+        self.player_id = player_id
+        self.players = players_data or {}
+        self.version = 1
 
 
 @dataclass
 class ClientInfo:
-    """Client information container with enhanced tracking"""
+    """Information about a connected client."""
     client_id: int
-    address: tuple
-    username: str = "Unknown"
-    connected: bool = False
-    last_heartbeat: float = 0
-    ping: float = 0
-    last_ping_time: float = 0
-    join_time: float = None
-
-    def __post_init__(self):
-        if self.join_time is None:
-            self.join_time = time.time()
-
-
-class Client(NetworkMessage):
-    """
-    Represents a connected client in the network system with ping tracking
-    """
-    def __init__(self, client_id: int, address: tuple, username: str = "Unknown"):
-        self.client_id = client_id
-        self.address = address
-        self.username = username
-        self.connected = True
-        self.last_heartbeat = time.time()
-        self.ping = 0
-        self.last_ping_time = 0
-        self.join_time = time.time()
-        self.socket = None
+    address: Tuple[str, int]
+    connected_at: float = field(default_factory=time.time)
+    last_message: float = field(default_factory=time.time)
+    authenticated: bool = False
+    username: str = ""
+    ping: float = 0.0
+    bandwidth_usage: float = 0.0
+    disconnected: bool = False
     
-    def update_heartbeat(self):
-        """Update the last heartbeat time"""
-        self.last_heartbeat = time.time()
-    
-    def update_ping(self, ping: float):
-        """Update client ping"""
-        self.ping = ping
-        self.last_ping_time = time.time()
-    
-    def is_timeout(self, timeout_seconds: float = 30) -> bool:
-        """Check if client has timed out"""
-        return time.time() - self.last_heartbeat > timeout_seconds
+    @property
+    def connection_time(self) -> float:
+        """Get connection duration in seconds."""
+        return time.time() - self.connected_at
 
 
+@dataclass
 class ServerScript:
-    """
-    Server script for automated tasks like auto-save, day/night cycle, etc.
-    """
-    def __init__(self, name: str, interval: float, callback: Callable, 
-                 enabled: bool = True, one_shot: bool = False):
-        self.name = name
-        self.interval = interval
-        self.callback = callback
-        self.enabled = enabled
-        self.one_shot = one_shot
-        self.last_execution = 0
-        self.execution_count = 0
+    """Represents a server-side script that runs periodically."""
+    name: str
+    interval: float  # Seconds between executions
+    function: Callable[[Any], Any]
+    last_execution: float = 0.0
+    enabled: bool = True
     
     def should_execute(self) -> bool:
-        """Check if script should execute based on interval"""
+        """Check if script should execute now."""
         if not self.enabled:
             return False
-        
-        current_time = time.time()
-        if current_time - self.last_execution >= self.interval:
-            self.last_execution = current_time
-            self.execution_count += 1
-            return True
-        return False
+        return time.time() - self.last_execution >= self.interval
     
-    def execute(self, server: 'Server', *args, **kwargs):
-        """Execute the script callback"""
-        if self.enabled and self.should_execute():
+    def execute(self, server: Any) -> Any:
+        """Execute the script."""
+        if self.should_execute():
             try:
-                result = self.callback(server, *args, **kwargs)
-                if self.one_shot:
-                    self.enabled = False
+                result = self.function(server)
+                self.last_execution = time.time()
                 return result
             except Exception as e:
-                print(f"Error executing server script '{self.name}': {e}")
+                print(f"Server script '{self.name}' error: {e}")
                 return None
+        return None
+
+
+class PerformanceMonitor:
+    """Monitors network performance metrics."""
+    
+    def __init__(self):
+        self.ping_history: List[float] = []
+        self.packet_loss_history: List[float] = []
+        self.bandwidth_up_history: List[float] = []
+        self.bandwidth_down_history: List[float] = []
+        self.start_time = time.time()
+        self.max_history = 100
+        
+        self.bytes_sent = 0
+        self.bytes_received = 0
+        self.last_bandwidth_update = time.time()
+    
+    def update_ping(self, ping: float):
+        """Update ping measurement."""
+        self.ping_history.append(ping)
+        if len(self.ping_history) > self.max_history:
+            self.ping_history.pop(0)
+    
+    def update_packet_loss(self, loss: float):
+        """Update packet loss measurement."""
+        self.packet_loss_history.append(loss)
+        if len(self.packet_loss_history) > self.max_history:
+            self.packet_loss_history.pop(0)
+    
+    def update_bandwidth(self, bytes_sent: int, bytes_received: int):
+        """Update bandwidth measurements."""
+        current_time = time.time()
+        time_diff = current_time - self.last_bandwidth_update
+        
+        if time_diff > 0:
+            up_kbps = (bytes_sent - self.bytes_sent) / time_diff / 1024
+            down_kbps = (bytes_received - self.bytes_received) / time_diff / 1024
+            
+            self.bandwidth_up_history.append(up_kbps)
+            self.bandwidth_down_history.append(down_kbps)
+            
+            if len(self.bandwidth_up_history) > self.max_history:
+                self.bandwidth_up_history.pop(0)
+            if len(self.bandwidth_down_history) > self.max_history:
+                self.bandwidth_down_history.pop(0)
+        
+        self.bytes_sent = bytes_sent
+        self.bytes_received = bytes_received
+        self.last_bandwidth_update = current_time
+    
+    def get_metrics(self) -> NetworkMetrics:
+        """Get current network metrics."""
+        ping_avg = 0.0
+        if self.ping_history:
+            ping_avg = sum(self.ping_history) / len(self.ping_history)
+        
+        loss_avg = 0.0
+        if self.packet_loss_history:
+            loss_avg = sum(self.packet_loss_history) / len(self.packet_loss_history)
+        
+        bandwidth_up_avg = 0.0
+        if self.bandwidth_up_history:
+            bandwidth_up_avg = sum(self.bandwidth_up_history) / len(self.bandwidth_up_history)
+        
+        bandwidth_down_avg = 0.0
+        if self.bandwidth_down_history:
+            bandwidth_down_avg = sum(self.bandwidth_down_history) / len(self.bandwidth_down_history)
+        
+        jitter = 0.0
+        if len(self.ping_history) >= 2:
+            # Calculate jitter as standard deviation
+            mean = ping_avg
+            variance = sum((x - mean) ** 2 for x in self.ping_history) / len(self.ping_history)
+            jitter = math.sqrt(variance)
+        
+        return NetworkMetrics(
+            ping=ping_avg,
+            jitter=jitter,
+            packet_loss=loss_avg,
+            bandwidth_up=bandwidth_up_avg,
+            bandwidth_down=bandwidth_down_avg,
+            uptime=time.time() - self.start_time,
+            last_update=time.time()
+        )
+    
+    def get_summary(self) -> Dict[str, Any]:
+        """Get a summary of all performance metrics."""
+        metrics = self.get_metrics()
+        return {
+            'average_ping': metrics.ping,
+            'ping_jitter': metrics.jitter,
+            'packet_loss': metrics.packet_loss,
+            'bandwidth_up': metrics.bandwidth_up,
+            'bandwidth_down': metrics.bandwidth_down,
+            'connection_quality': metrics.get_quality().name,
+            'uptime': metrics.uptime,
+            'ping_samples': len(self.ping_history)
+        }
+
+
+class RegionDetector:
+    """Detects geographic region/country based on IP address."""
+    
+    @staticmethod
+    def detect_region(ip_address: str = None) -> str:
+        """
+        Detect geographic region based on IP address.
+        
+        Args:
+            ip_address: IP address to check. If None, uses local public IP.
+            
+        Returns:
+            Detected region/country name or 'Unknown'
+        """
+        if not EXTERNAL_NETWORK_AVAILABLE:
+            return RegionDetector.get_local_region()
+        
+        if ip_address is None:
+            ip_address = RegionDetector.get_public_ip()
+        
+        if not ip_address or ip_address.startswith(('127.', '192.168.', '10.', '172.')):
+            return RegionDetector.get_local_region()
+        
+        # Try public geolocation API
+        try:
+            url = f"http://ip-api.com/json/{ip_address}?fields=country,regionName,city"
+            with urllib.request.urlopen(url, timeout=3) as response:
+                data = json.loads(response.read().decode())
+                if data.get('country'):
+                    region = f"{data['country']}"
+                    if data.get('regionName'):
+                        region += f", {data['regionName']}"
+                    if data.get('city'):
+                        region += f", {data['city']}"
+                    return region
+        except Exception:
+            pass
+        
+        return RegionDetector.get_local_region()
+    
+    @staticmethod
+    def get_public_ip() -> Optional[str]:
+        """Get the public IP address of the current machine."""
+        if not EXTERNAL_NETWORK_AVAILABLE:
+            return None
+        
+        try:
+            services = [
+                "https://api.ipify.org",
+                "https://checkip.amazonaws.com",
+                "https://icanhazip.com"
+            ]
+            
+            for service in services:
+                try:
+                    with urllib.request.urlopen(service, timeout=3) as response:
+                        ip = response.read().decode().strip()
+                        if ip and len(ip.split('.')) == 4:
+                            return ip
+                except:
+                    continue
+        except Exception:
+            pass
+        
+        return None
+    
+    @staticmethod
+    def get_local_region() -> str:
+        """Attempt to determine region from local network settings."""
+        try:
+            import locale
+            import platform
+            
+            if platform.system() == 'Windows':
+                import ctypes
+                windll = ctypes.windll.kernel32
+                locale_code = windll.GetUserDefaultUILanguage()
+                locale_map = {
+                    1033: "United States",
+                    1046: "Brazil",
+                    3082: "Spain",
+                    1036: "France",
+                    1031: "Germany",
+                    1040: "Italy",
+                    1041: "Japan",
+                    1042: "Korea",
+                    2052: "China",
+                    1028: "Taiwan"
+                }
+                return locale_map.get(locale_code, "Unknown")
+            else:
+                loc = locale.getdefaultlocale()
+                if loc and len(loc) > 0:
+                    lang = loc[0].lower()
+                    if 'en_us' in lang:
+                        return "United States"
+                    elif 'pt_br' in lang:
+                        return "Brazil"
+                    elif 'es_' in lang:
+                        return "Spain"
+                    elif 'fr_' in lang:
+                        return "France"
+                    elif 'de_' in lang:
+                        return "Germany"
+                    elif 'it_' in lang:
+                        return "Italy"
+                    elif 'ja_' in lang:
+                        return "Japan"
+                    elif 'ko_' in lang:
+                        return "Korea"
+                    elif 'zh_cn' in lang:
+                        return "China"
+                    elif 'zh_tw' in lang:
+                        return "Taiwan"
+        except Exception:
+            pass
+        
+        return "Local Network"
 
 
 class Server:
-    """
-    Network server for handling multiple client connections with enhanced features
+    """Network server for multiplayer games."""
     
-    Parameters:
-        host: Server host address (default: 'localhost')
-        port: Server port (default: 5555)
-        max_clients: Maximum number of simultaneous clients (default: 8)
-        password[Optional]: Optional password for client authentication (default: None)
-    """
-    
-    def __init__(self, host: str = 'localhost', port: int = 5555, 
+    def __init__(self, host: str = "0.0.0.0", port: int = 5555, 
                  max_clients: int = 8, password: str = None):
         self.host = host
         self.port = port
         self.max_clients = max_clients
-        self.password = password
-        self.clients: Dict[int, Client] = {}
-        self.client_sockets: Dict[int, socket.socket] = {}
+        self.password_hash = hashlib.sha256(password.encode()).hexdigest() if password else None
+        
+        self.socket = None
         self.running = False
-        self.server_socket = None
-        self.client_counter = 0
-        self.event_queue = queue.Queue()
-        self.event_handlers: Dict[NetworkEventType, List[Callable]] = {}
+        self.clients: Dict[int, ClientInfo] = {}
+        self.client_sockets: Dict[int, socket.socket] = {}
         
-        # Threading
-        self.accept_thread = None
-        self.process_thread = None
-        self.scripts_thread = None
+        self.event_handlers: Dict[NetworkEventType, List[Callable]] = {et: [] for et in NetworkEventType}
+        self.message_handlers: Dict[type, List[Callable]] = {}
         
-        # Server settings
-        self.heartbeat_interval = 10  # seconds
-        self.timeout_threshold = 30   # seconds
-        
-        # Server scripts for automated tasks
         self.scripts: Dict[str, ServerScript] = {}
-        self.scripts_running: Dict[str, bool] = {}
+        self.performance_monitor = PerformanceMonitor()
         
-        # Performance tracking
-        self.start_time = time.time()
-        self.total_messages_sent = 0
-        self.total_messages_received = 0
+        self.next_client_id = 1
+        self.timeout_threshold = 30.0
+        self.heartbeat_interval = 5.0
+        self.last_heartbeat = 0.0
         
-        # Graceful shutdown control
-        self._shutting_down = False
-        self._shutdown_reason = "Server shutdown"
+        self._lock = threading.RLock()
+        self._event_queue = queue.Queue()
     
-    def toggle_scripts_execution(self, enabled: bool, key:str=None):
-        """
-        Enable or disable server scripts execution
-        
-        Args:
-            enabled: Whether to enable or disable scripts
-            key: Specific script name to toggle, if None toggles all scripts
-        """
-        if key:
-            if key in self.scripts:
-                self.scripts[key].enabled = enabled
-                status = "enabled" if enabled else "disabled"
-                print(f"Server script '{key}' {status}")
-        else:
-            for script in self.scripts.values():
-                script.enabled = enabled
-            status = "enabled" if enabled else "disabled"
-            print(f"All server scripts {status}")
-    
-    def disconnect_client(self, client_id: int, reason: str = "Disconnected by server", 
-                         send_message: bool = True):
-        """
-        Gracefully disconnect a specific client
-        
-        Args:
-            client_id: ID of client to disconnect
-            reason: Reason for disconnection
-            send_message: Whether to send a disconnect message to the client
-        """
-        if client_id in self.client_sockets:
-            try:
-                if send_message:
-                    # Send graceful disconnect message
-                    disconnect_msg = KickMessage(reason=reason)
-                    self.client_sockets[client_id].send(disconnect_msg.to_bytes())
-                    self.total_messages_sent += 1
-                    time.sleep(0.1)  # Give time for message to be sent
-            except:
-                pass  # Client might already be disconnected
-            
-            # Close the connection
-            self.client_sockets[client_id].close()
-            
-            # Remove from tracking
-            if client_id in self.client_sockets:
-                del self.client_sockets[client_id]
-            
-            self._disconnect_client(client_id)
-            print(f"Disconnected client {client_id}: {reason}")
-            return True
-        return False
-    
-    def disconnect(self, reason: str = "Server shutdown", delay: float = 2.0):
-        """
-        Disconnect all clients and shutdown the server gracefully
-        
-        Args:
-            reason: Reason for disconnection
-            delay: Time to wait before forcing shutdown
-        """
-        self.graceful_shutdown(reason, delay)
-        self.stop()
-    
-    def graceful_shutdown(self, reason: str = "Server shutdown", delay: float = 2.0):
-        """
-        Gracefully shutdown the server, notifying all clients first
-        
-        Args:
-            reason: Reason for shutdown
-            delay: Time to wait before forcing shutdown
-        """
-        if self._shutting_down:
-            return
-            
-        self._shutting_down = True
-        self._shutdown_reason = reason
-        
-        print(f"Starting graceful server shutdown: {reason}")
-        
-        # Notify all clients about impending shutdown
-        shutdown_msg = ServerShutdownMessage(reason=reason, graceful=True)
-        self.broadcast(shutdown_msg)
-        
-        # Give clients time to process the shutdown message
-        print(f"Waiting {delay} seconds for clients to process shutdown...")
-        time.sleep(delay)
-        
-        # Disconnect all clients gracefully
-        client_ids = list(self.client_sockets.keys())
-        for client_id in client_ids:
-            self.disconnect_client(client_id, reason, send_message=False)
-        
-        # Stop the server
-        self.stop()
-        
-        print("Server shutdown complete")
-    
-    def emergency_shutdown(self, reason: str = "Server emergency shutdown"):
-        """
-        Immediately shutdown the server without notifying clients
-        """
-        print(f"EMERGENCY SERVER SHUTDOWN: {reason}")
-        self._shutting_down = True
-        self._shutdown_reason = reason
-        self.stop()
-    
-    def start(self):
-        """Start the server"""
+    def start(self) -> bool:
+        """Start the server."""
         try:
-            self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.server_socket.bind((self.host, self.port))
-            self.server_socket.listen(self.max_clients)
-            self.server_socket.settimeout(1.0)  # Non-blocking with timeout
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.socket.bind((self.host, self.port))
+            self.socket.listen(self.max_clients)
+            self.socket.setblocking(False)
             
             self.running = True
             
-            # Start threads
-            self.accept_thread = threading.Thread(target=self._accept_connections, daemon=True)
-            self.process_thread = threading.Thread(target=self._process_events, daemon=True)
-            self.scripts_thread = threading.Thread(target=self._run_scripts, daemon=True)
+            # Start server threads
+            threading.Thread(target=self._accept_thread, daemon=True).start()
+            threading.Thread(target=self._receive_thread, daemon=True).start()
+            threading.Thread(target=self._processing_thread, daemon=True).start()
             
-            self.accept_thread.start()
-            self.process_thread.start()
-            self.scripts_thread.start()
-            
-            print(f"Server started on {self.host}:{self.port} (Password: {'Yes' if self.password else 'No'})")
+            print(f"Server started on {self.host}:{self.port}")
+            self._queue_event(NetworkEventType.CONNECT, 0, None)
             return True
             
         except Exception as e:
             print(f"Failed to start server: {e}")
+            self.stop()
             return False
     
     def stop(self):
-        """Stop the server"""
+        """Stop the server and disconnect all clients."""
         self.running = False
         
-        # Close all client connections
-        for client_id, client_socket in self.client_sockets.items():
-            try:
-                client_socket.close()
-            except:
-                pass
-        
-        if self.server_socket:
-            self.server_socket.close()
+        with self._lock:
+            # Disconnect all clients
+            for client_id, client_sock in list(self.client_sockets.items()):
+                try:
+                    client_sock.shutdown(socket.SHUT_RDWR)
+                    client_sock.close()
+                except:
+                    pass
+            
+            self.client_sockets.clear()
+            self.clients.clear()
+            
+            # Close server socket
+            if self.socket:
+                try:
+                    self.socket.close()
+                except:
+                    pass
+                self.socket = None
         
         print("Server stopped")
     
-    def add_script(self, name: str, interval: float, callback: Callable, 
-                   enabled: bool = True, one_shot: bool = False):
-        """
-        Add a server script for automated tasks
-        
-        Args:
-            name: Unique name for the script
-            interval: Execution interval in seconds
-            callback: Function to call (will receive server instance as first argument)
-            enabled: Whether the script is enabled
-            one_shot: If True, script will only run once
-        """
-        self.scripts[name] = ServerScript(name, interval, callback, enabled, one_shot)
-        print(f"Added server script: {name} (interval: {interval}s)")
-    
-    def remove_script(self, name: str):
-        """Remove a server script"""
-        if name in self.scripts:
-            del self.scripts[name]
-            print(f"Removed server script: {name}")
-    
-    def enable_script(self, name: str):
-        """Enable a server script"""
-        if name in self.scripts:
-            self.scripts[name].enabled = True
-    
-    def disable_script(self, name: str):
-        """Disable a server script"""
-        if name in self.scripts:
-            self.scripts[name].enabled = False
-    
-    def _run_scripts(self):
-        """Execute server scripts at their intervals"""
+    def _accept_thread(self):
+        """Thread for accepting new client connections."""
         while self.running:
             try:
-                for script in self.scripts.values():
-                    result = script.execute(self)
-                    if result is not None:
-                        # Queue script result as event
-                        self._queue_event(NetworkEventType.SERVER_SCRIPT, {
-                            'script_name': script.name,
-                            'result': result,
-                            'execution_count': script.execution_count
-                        })
-                
-                time.sleep(0.1)  # Small sleep to prevent busy waiting
-            except Exception as e:
-                print(f"Error in script execution: {e}")
-    
-    def _accept_connections(self):
-        """Accept incoming client connections with password verification"""
-        while self.running:
-            try:
-                client_socket, address = self.server_socket.accept()
-                client_socket.settimeout(1.0)
-                
-                # Check if we have room for more clients
-                current_clients = len(self.clients)
-                if current_clients >= self.max_clients:
-                    print(f"Max clients reached ({self.max_clients}), rejecting connection from {address}")
-                    client_socket.close()
-                    continue
-                
-                # Handle password authentication
-                if self.password:
-                    try:
-                        # Wait for auth message
-                        auth_data = client_socket.recv(256)
-                        auth_msg = NetworkMessage.from_bytes(auth_data)
-                        
-                        if not isinstance(auth_msg, AuthMessage) or auth_msg.password != self.password:
-                            # Send rejection and close connection
-                            rejection = AuthResultMessage(success=False, reason="Invalid password")
-                            client_socket.send(rejection.to_bytes())
+                readable, _, _ = select.select([self.socket], [], [], 0.1)
+                if self.socket in readable:
+                    client_socket, address = self.socket.accept()
+                    client_socket.setblocking(False)
+                    
+                    with self._lock:
+                        if len(self.clients) >= self.max_clients:
                             client_socket.close()
-                            print(f"Rejected connection from {address} - invalid password")
                             continue
                         
-                        # Send success
-                        success = AuthResultMessage(success=True)
-                        client_socket.send(success.to_bytes())
+                        client_id = self.next_client_id
+                        self.next_client_id += 1
                         
-                    except Exception as e:
-                        print(f"Authentication error with {address}: {e}")
-                        client_socket.close()
-                        continue
-                
-                # Create new client
-                self.client_counter += 1
-                client_id = self.client_counter
-                
-                client = Client(client_id, address)
-                self.clients[client_id] = client
-                self.client_sockets[client_id] = client_socket
-                
-                # Start client handler thread
-                client_thread = threading.Thread(
-                    target=self._handle_client, 
-                    args=(client_socket, client),
-                    daemon=True
-                )
-                client_thread.start()
-                
-                # Notify about new connection
-                self._queue_event(NetworkEventType.CONNECT, client, client_id)
-                print(f"Client {client_id} connected from {address}. Total clients: {len(self.clients)}")
-                
-            except socket.timeout:
-                continue
+                        self.client_sockets[client_id] = client_socket
+                        self.clients[client_id] = ClientInfo(
+                            client_id=client_id,
+                            address=address
+                        )
+                        
+                        print(f"Client {client_id} connected from {address}")
+                        self._queue_event(NetworkEventType.CONNECT, client_id, {
+                            'client_id': client_id,
+                            'address': address
+                        })
+                        
             except Exception as e:
                 if self.running:
-                    print(f"Error accepting connection: {e}")
+                    print(f"Accept thread error: {e}")
     
-    def _handle_client(self, client_socket: socket.socket, client: Client):
-        """
-        Handle communication with a single client with ping measurement
-        
-        Parameters:
-            client_socket: Socket connected to the client
-            client: Client instance representing the connected client
-        """
-        try:
-            while self.running and client.connected and not self._shutting_down:
-                try:
-                    # Receive data
-                    data = client_socket.recv(4096)
-                    if not data:
-                        break
-                    
-                    self.total_messages_received += 1
-                    
-                    # Parse message
-                    message = NetworkMessage.from_bytes(data)
-                    if message is None:
-                        continue
-                    
-                    # Handle heartbeat
-                    if isinstance(message, HeartbeatMessage):
-                        client.update_heartbeat()
-                        # Calculate ping
-                        if hasattr(message, 'send_time'):
-                            ping = (time.time() - message.send_time) * 1000  # Convert to ms
-                            client.update_ping(ping)
-                            
-                            # Queue ping update event
-                            self._queue_event(NetworkEventType.PING_UPDATE, {
-                                'client_id': client.client_id,
-                                'ping': ping,
-                                'address': client.address
-                            })
-                        
-                        # Send heartbeat response
-                        response = HeartbeatMessage()
-                        response.send_time = time.time()
-                        client_socket.send(response.to_bytes())
-                        self.total_messages_sent += 1
-                        continue
-                    
-                    # Queue message for processing
-                    self._queue_event(NetworkEventType.MESSAGE, message, client.client_id)
-                    
-                except socket.timeout:
-                    continue
-                except ConnectionResetError:
-                    break
-                except Exception as e:
-                    if not self._shutting_down:  # Only log errors if not during shutdown
-                        print(f"Error handling client {client.client_id}: {e}")
-                    break
-        
-        except Exception as e:
-            if not self._shutting_down:  # Only log errors if not during shutdown
-                print(f"Client handler error: {e}")
-        finally:
-            if not self._shutting_down:  # Only cleanup if this is an unexpected disconnect
-                client_socket.close()
-                if client.client_id in self.client_sockets:
-                    del self.client_sockets[client.client_id]
-                self._disconnect_client(client.client_id)
-    
-    def _disconnect_client(self, client_id: int):
-        """Disconnect a client"""
-        if client_id in self.clients:
-            client = self.clients[client_id]
-            client.connected = False
-            del self.clients[client_id]
-            self._queue_event(NetworkEventType.DISCONNECT, client, client_id)
-            print(f"Client {client_id} disconnected")
-    
-    def kick_client(self, client_id: int, reason: str = "Kicked by server"):
-        """
-        Kick a client from the server
-        
-        Args:
-            client_id: ID of client to kick
-            reason: Reason for kicking (sent to client)
-        """
-        if client_id in self.client_sockets:
+    def _receive_thread(self):
+        """Thread for receiving data from clients."""
+        while self.running:
+            with self._lock:
+                sockets_to_check = list(self.client_sockets.values())
+            
+            if not sockets_to_check:
+                time.sleep(0.01)
+                continue
+            
             try:
-                # Send kick message
-                kick_msg = KickMessage(reason=reason)
-                self.client_sockets[client_id].send(kick_msg.to_bytes())
-                self.total_messages_sent += 1
-            except:
+                readable, _, exceptional = select.select(
+                    sockets_to_check, [], sockets_to_check, 0.1
+                )
+                
+                for sock in readable:
+                    try:
+                        # Find client_id for this socket
+                        client_id = None
+                        with self._lock:
+                            for cid, csock in self.client_sockets.items():
+                                if csock == sock:
+                                    client_id = cid
+                                    break
+                        
+                        if client_id is None:
+                            continue
+                        
+                        # Receive data
+                        data = b""
+                        while True:
+                            try:
+                                chunk = sock.recv(4096)
+                                if not chunk:
+                                    break
+                                data += chunk
+                                if len(chunk) < 4096:
+                                    break
+                            except socket.error as e:
+                                if e.errno == errno.EWOULDBLOCK:
+                                    break
+                                else:
+                                    raise
+                        
+                        if data:
+                            self._process_received_data(client_id, data)
+                        
+                    except Exception as e:
+                        print(f"Error receiving from client {client_id}: {e}")
+                        self._disconnect_client(client_id, str(e))
+                
+                # Handle exceptional conditions
+                for sock in exceptional:
+                    client_id = None
+                    with self._lock:
+                        for cid, csock in self.client_sockets.items():
+                            if csock == sock:
+                                client_id = cid
+                                break
+                    
+                    if client_id:
+                        self._disconnect_client(client_id, "Socket error")
+                        
+            except Exception as e:
+                if self.running:
+                    print(f"Receive thread error: {e}")
+    
+    def _process_received_data(self, client_id: int, data: bytes):
+        """Process received data from a client."""
+        try:
+            # Deserialize message
+            message = pickle.loads(data)
+            
+            # Update client info
+            with self._lock:
+                if client_id in self.clients:
+                    self.clients[client_id].last_message = time.time()
+            
+            # Handle authentication
+            if not self.clients[client_id].authenticated:
+                if isinstance(message, dict) and message.get('type') == 'auth':
+                    if self._authenticate_client(client_id, message):
+                        self.clients[client_id].authenticated = True
+                        self.clients[client_id].username = message.get('username', '')
+                        self._queue_event(NetworkEventType.AUTH_SUCCESS, client_id, 
+                                         {'username': self.clients[client_id].username})
+                    else:
+                        self._queue_event(NetworkEventType.AUTH_FAILED, client_id, None)
+                        self._disconnect_client(client_id, "Authentication failed")
+                    return
+            
+            # Queue message for processing
+            self._queue_event(NetworkEventType.MESSAGE, client_id, message)
+            
+        except Exception as e:
+            print(f"Error processing data from client {client_id}: {e}")
+    
+    def _authenticate_client(self, client_id: int, auth_data: Dict) -> bool:
+        """Authenticate a client."""
+        if self.password_hash is None:
+            return True  # No password required
+        
+        password_hash = auth_data.get('password_hash')
+        return password_hash == self.password_hash
+    
+    def _processing_thread(self):
+        """Thread for processing events and running scripts."""
+        while self.running:
+            # Process queued events
+            try:
+                while True:
+                    event = self._event_queue.get_nowait()
+                    self._handle_event(event)
+            except queue.Empty:
                 pass
             
-            # Close connection
-            self.client_sockets[client_id].close()
-            self._disconnect_client(client_id)
-            print(f"Kicked client {client_id}: {reason}")
-            return True
-        return False
-    
-    def get_client_ping(self, client_id: int) -> float:
-        """Get ping of a specific client in milliseconds"""
-        if client_id in self.clients:
-            return self.clients[client_id].ping
-        return -1
-    
-    def get_average_ping(self) -> float:
-        """Get average ping of all connected clients"""
-        if not self.clients:
-            return 0
-        
-        total_ping = sum(client.ping for client in self.clients.values())
-        return total_ping / len(self.clients)
-    
-    def get_server_stats(self) -> Dict[str, Any]:
-        """Get server statistics"""
-        return {
-            'uptime': time.time() - self.start_time,
-            'total_clients': len(self.clients),
-            'max_clients': self.max_clients,
-            'messages_sent': self.total_messages_sent,
-            'messages_received': self.total_messages_received,
-            'average_ping': self.get_average_ping(),
-            'active_scripts': len([s for s in self.scripts.values() if s.enabled])
-        }
-    
-    def _queue_event(self, event_type: NetworkEventType, data: Any, client_id: int = None):
-        """Add event to processing queue"""
-        event = NetworkEvent(event_type, data, client_id)
-        self.event_queue.put(event)
-    
-    def _process_events(self):
-        """Process queued events"""
-        while self.running:
-            try:
-                event = self.event_queue.get(timeout=1.0)
-                self._handle_event(event)
-            except queue.Empty:
-                self._check_timeouts()
-                continue
+            # Run server scripts
+            self._run_scripts()
+            
+            # Send heartbeats
+            current_time = time.time()
+            if current_time - self.last_heartbeat >= self.heartbeat_interval:
+                self._send_heartbeats()
+                self.last_heartbeat = current_time
+            
+            # Check for timeouts
+            self._check_timeouts()
+            
+            time.sleep(0.01)
     
     def _handle_event(self, event: NetworkEvent):
-        """Handle a network event"""
-        # Call registered handlers
-        if event.event_type in self.event_handlers:
-            for handler in self.event_handlers[event.event_type]:
+        """Handle a network event."""
+        # Call event handlers
+        for handler in self.event_handlers.get(event.event_type, []):
+            try:
+                handler(event)
+            except Exception as e:
+                print(f"Error in event handler: {e}")
+        
+        # Call message handlers for MESSAGE events
+        if event.event_type == NetworkEventType.MESSAGE and event.data:
+            message_type = type(event.data)
+            for handler in self.message_handlers.get(message_type, []):
                 try:
                     handler(event)
                 except Exception as e:
-                    print(f"Error in event handler: {e}")
+                    print(f"Error in message handler: {e}")
+    
+    def _run_scripts(self):
+        """Execute server scripts."""
+        for script_name, script in self.scripts.items():
+            result = script.execute(self)
+            if result:
+                self._queue_event(NetworkEventType.SERVER_SCRIPT, 0, 
+                                 {'script_name': script_name, 'result': result})
+    
+    def _send_heartbeats(self):
+        """Send heartbeat messages to all clients."""
+        heartbeat_msg = {'type': 'heartbeat', 'timestamp': time.time()}
+        self.broadcast(heartbeat_msg)
     
     def _check_timeouts(self):
-        """Check for timed out clients"""
+        """Check for client timeouts."""
         current_time = time.time()
-        timed_out_clients = []
+        clients_to_disconnect = []
         
-        for client_id, client in self.clients.items():
-            if client.is_timeout(self.timeout_threshold):
-                timed_out_clients.append(client_id)
+        with self._lock:
+            for client_id, client_info in self.clients.items():
+                if current_time - client_info.last_message > self.timeout_threshold:
+                    clients_to_disconnect.append(client_id)
         
-        for client_id in timed_out_clients:
-            print(f"Client {client_id} timed out")
-            self._disconnect_client(client_id)
+        for client_id in clients_to_disconnect:
+            self._disconnect_client(client_id, "Timeout")
     
-    def broadcast(self, message: NetworkMessage, exclude_client_id: int = None):
-        """Broadcast message to all connected clients"""
-        for client_id, client_socket in self.client_sockets.items():
-            if client_id == exclude_client_id:
-                continue
+    def _disconnect_client(self, client_id: int, reason: str = "Disconnected"):
+        """Disconnect a client."""
+        with self._lock:
+            if client_id in self.client_sockets:
+                try:
+                    self.client_sockets[client_id].shutdown(socket.SHUT_RDWR)
+                    self.client_sockets[client_id].close()
+                except:
+                    pass
                 
-            # Additional check: skip if this message has a sender_id that matches the client
-            if hasattr(message, 'sender_id') and message.sender_id == client_id:
-                continue
-                
-            try:
-                data = message.to_bytes()
-                client_socket.send(data)
-                self.total_messages_sent += 1
-            except Exception as e:
-                print(f"Error sending to client {client_id}: {e}")
-                self._disconnect_client(client_id)
+                del self.client_sockets[client_id]
+            
+            if client_id in self.clients:
+                client_info = self.clients[client_id]
+                client_info.disconnected = True
+                del self.clients[client_id]
+        
+        print(f"Client {client_id} disconnected: {reason}")
+        self._queue_event(NetworkEventType.DISCONNECT, client_id, {'reason': reason})
     
-    def send_to_client(self, client_id: int, message: NetworkMessage):
-        """Send message to specific client"""
-        if client_id in self.client_sockets:
-            try:
-                data = message.to_bytes()
-                self.client_sockets[client_id].send(data)
-                self.total_messages_sent += 1
-            except Exception as e:
-                print(f"Error sending to client {client_id}: {e}")
-                self._disconnect_client(client_id)
+    def _queue_event(self, event_type: NetworkEventType, client_id: Optional[int], data: Any):
+        """Queue an event for processing."""
+        self._event_queue.put(NetworkEvent(event_type, client_id, data))
+    
+    def broadcast(self, message: Any, exclude_client_id: int = None):
+        """Broadcast a message to all connected clients."""
+        serialized = pickle.dumps(message)
+        
+        with self._lock:
+            for client_id, client_sock in self.client_sockets.items():
+                if client_id == exclude_client_id:
+                    continue
+                
+                try:
+                    client_sock.sendall(serialized)
+                except Exception as e:
+                    print(f"Error broadcasting to client {client_id}: {e}")
+    
+    def send_to_client(self, client_id: int, message: Any):
+        """Send a message to a specific client."""
+        serialized = pickle.dumps(message)
+        
+        with self._lock:
+            if client_id in self.client_sockets:
+                try:
+                    self.client_sockets[client_id].sendall(serialized)
+                except Exception as e:
+                    print(f"Error sending to client {client_id}: {e}")
     
     def on_event(self, event_type: NetworkEventType):
-        """Decorator to register event handlers"""
+        """Decorator for registering event handlers."""
         def decorator(func):
-            if event_type not in self.event_handlers:
-                self.event_handlers[event_type] = []
             self.event_handlers[event_type].append(func)
             return func
         return decorator
+    
+    def on_message(self, message_type: type):
+        """Decorator for registering message handlers."""
+        def decorator(func):
+            if message_type not in self.message_handlers:
+                self.message_handlers[message_type] = []
+            self.message_handlers[message_type].append(func)
+            return func
+        return decorator
+    
+    def add_server_script(self, name: str, interval: float, function: Callable):
+        """Add a server script."""
+        self.scripts[name] = ServerScript(name, interval, function)
+    
+    def remove_server_script(self, name: str):
+        """Remove a server script."""
+        if name in self.scripts:
+            del self.scripts[name]
+    
+    def toggle_server_scripts(self, enabled: bool):
+        """Enable or disable all server scripts."""
+        for script in self.scripts.values():
+            script.enabled = enabled
+    
+    def get_server_stats(self) -> Dict[str, Any]:
+        """Get server statistics."""
+        with self._lock:
+            return {
+                'total_clients': len(self.clients),
+                'connected_clients': len([c for c in self.clients.values() if not c.disconnected]),
+                'max_clients': self.max_clients,
+                'uptime': self.performance_monitor.get_metrics().uptime,
+                'scripts_count': len(self.scripts),
+                'active_scripts': len([s for s in self.scripts.values() if s.enabled]),
+                'average_ping': sum(c.ping for c in self.clients.values()) / max(len(self.clients), 1)
+            }
+    
+    def kick_client(self, client_id: int, reason: str = "Kicked by server") -> bool:
+        """Kick a client from the server."""
+        if client_id not in self.clients:
+            return False
+        
+        self._disconnect_client(client_id, reason)
+        return True
 
 
 class NetworkClient:
-    """
-    Network client for connecting to server with enhanced features
-    """
+    """Network client for connecting to servers."""
     
-    def __init__(self, server_host: str = 'localhost', server_port: int = 5555):
+    def __init__(self, server_host: str = "localhost", server_port: int = 5555):
         self.server_host = server_host
         self.server_port = server_port
+        self.username = "Player"
+        self.password = None
+        
         self.socket = None
         self.connected = False
-        self.running = False
         self.client_id = None
-        self.ping = 0
-        self.last_ping_time = 0
         
-        self.event_queue = queue.Queue()
-        self.event_handlers: Dict[NetworkEventType, List[Callable]] = {}
+        self.event_handlers: Dict[NetworkEventType, List[Callable]] = {et: [] for et in NetworkEventType}
+        self.message_handlers: Dict[type, List[Callable]] = {}
         
-        # Threading
+        self.performance_monitor = PerformanceMonitor()
         self.receive_thread = None
-        self.process_thread = None
-        self.heartbeat_thread = None
+        self.running = False
         
-        # Connection settings
-        self.heartbeat_interval = 5  # seconds
-        
-        # Server shutdown handling
-        self._server_shutting_down = False
+        self._lock = threading.RLock()
+        self._event_queue = queue.Queue()
+        self._send_queue = queue.Queue()
     
-    def _receive_messages(self):
-        """Receive messages from server with shutdown handling"""
-        while self.running and self.connected:
-            try:
-                data = self.socket.recv(4096)
-                if not data:
-                    if not self._server_shutting_down:
-                        print("Server closed connection unexpectedly")
-                    break
-                
-                message = NetworkMessage.from_bytes(data)
-                if message is None:
-                    continue
-                
-                # Handle server shutdown message
-                if isinstance(message, ServerShutdownMessage):
-                    self._server_shutting_down = True
-                    print(f"Server is shutting down: {message.reason}")
-                    self._queue_event(NetworkEventType.DISCONNECT, {
-                        'reason': message.reason,
-                        'graceful': message.graceful,
-                        'shutdown_time': message.shutdown_time
-                    })
-                    break
-                
-                # Handle kick message
-                if isinstance(message, KickMessage):
-                    print(f"Kicked from server: {message.reason}")
-                    self._queue_event(NetworkEventType.DISCONNECT, {
-                        'reason': message.reason,
-                        'graceful': False
-                    })
-                    self.disconnect()
-                    break
-                
-                # Handle heartbeat response and calculate ping
-                if isinstance(message, HeartbeatMessage) and hasattr(message, 'send_time'):
-                    self.ping = (time.time() - message.send_time) * 1000
-                    self.last_ping_time = time.time()
-                    self._queue_event(NetworkEventType.PING_UPDATE, {'ping': self.ping})
-                    continue
-                
-                self._queue_event(NetworkEventType.MESSAGE, message)
-                
-            except socket.timeout:
-                continue
-            except ConnectionResetError:
-                if not self._server_shutting_down:
-                    print("Connection reset by server")
-                break
-            except Exception as e:
-                if self.running and not self._server_shutting_down:
-                    print(f"Error receiving message: {e}")
-                break
+    def connect(self, username: str = None, password: str = None) -> bool:
+        """Connect to the server."""
+        if username:
+            self.username = username
+        if password:
+            self.password = password
         
-        self.disconnect()
-    
-    def connect(self, username: str = "Player", password: str = None) -> bool:
-        """Connect to server with optional password"""
         try:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.settimeout(1.0)
+            self.socket.settimeout(5.0)
             self.socket.connect((self.server_host, self.server_port))
-            
-            # Handle password authentication if required
-            if password is not None:
-                auth_msg = AuthMessage(password=password)
-                self.socket.send(auth_msg.to_bytes())
-                
-                # Wait for auth response
-                response_data = self.socket.recv(256)
-                auth_result = NetworkMessage.from_bytes(response_data)
-                
-                if not isinstance(auth_result, AuthResultMessage) or not auth_result.success:
-                    print(f"Authentication failed: {getattr(auth_result, 'reason', 'Unknown error')}")
-                    self.socket.close()
-                    return False
+            self.socket.setblocking(False)
             
             self.connected = True
             self.running = True
-            self.username = username
             
             # Start threads
-            self.receive_thread = threading.Thread(target=self._receive_messages, daemon=True)
-            self.process_thread = threading.Thread(target=self._process_events, daemon=True)
-            self.heartbeat_thread = threading.Thread(target=self._send_heartbeats, daemon=True)
-            
+            self.receive_thread = threading.Thread(target=self._receive_thread, daemon=True)
             self.receive_thread.start()
-            self.process_thread.start()
-            self.heartbeat_thread.start()
             
-            print(f"Connected to server {self.server_host}:{self.server_port}")
+            threading.Thread(target=self._processing_thread, daemon=True).start()
+            threading.Thread(target=self._send_thread, daemon=True).start()
+            
+            # Send authentication
+            auth_data = {
+                'type': 'auth',
+                'username': self.username,
+                'password_hash': hashlib.sha256(self.password.encode()).hexdigest() if self.password else None
+            }
+            self.send(auth_data)
+            
+            print(f"Connected to server at {self.server_host}:{self.server_port}")
+            self._queue_event(NetworkEventType.CONNECT, 0, None)
             return True
             
         except Exception as e:
             print(f"Failed to connect to server: {e}")
+            self.disconnect()
             return False
     
-    def disconnect(self):
-        """Disconnect from server"""
+    def disconnect(self, reason: str = "Client disconnected"):
+        """Disconnect from the server."""
         self.running = False
         self.connected = False
         
         if self.socket:
-            self.socket.close()
-        
-        print("Disconnected from server")
-    
-    def get_ping(self) -> float:
-        """Get current ping to server in milliseconds"""
-        return self.ping
-    
-    def send(self, message: NetworkMessage):
-        """Send message to server"""
-        if self.connected and self.socket:
             try:
-                data = message.to_bytes()
-                self.socket.send(data)
-            except Exception as e:
-                print(f"Error sending message: {e}")
-                self.disconnect()
+                self.socket.shutdown(socket.SHUT_RDWR)
+                self.socket.close()
+            except:
+                pass
+            self.socket = None
+        
+        print(f"Disconnected from server: {reason}")
+        self._queue_event(NetworkEventType.DISCONNECT, 0, {'reason': reason})
     
-    def _send_heartbeats(self):
-        """Send periodic heartbeats to server for ping measurement"""
+    def _receive_thread(self):
+        """Thread for receiving data from server."""
         while self.running and self.connected:
             try:
-                heartbeat = HeartbeatMessage()
-                heartbeat.send_time = time.time()
-                self.send(heartbeat)
-                time.sleep(self.heartbeat_interval)
+                readable, _, exceptional = select.select([self.socket], [], [self.socket], 0.1)
+                
+                if self.socket in readable:
+                    data = b""
+                    while True:
+                        try:
+                            chunk = self.socket.recv(4096)
+                            if not chunk:
+                                self.disconnect("Connection closed by server")
+                                break
+                            data += chunk
+                            if len(chunk) < 4096:
+                                break
+                        except socket.error as e:
+                            if e.errno == errno.EWOULDBLOCK:
+                                break
+                            else:
+                                raise
+                    
+                    if data:
+                        self._process_received_data(data)
+                
+                if self.socket in exceptional:
+                    self.disconnect("Socket error")
+                    
             except Exception as e:
-                if self.running:
-                    print(f"Heartbeat error: {e}")
-                    break
+                if self.running and self.connected:
+                    print(f"Receive thread error: {e}")
+                    self.disconnect(str(e))
     
-    def _queue_event(self, event_type: NetworkEventType, data: Any):
-        """Add event to processing queue"""
-        event = NetworkEvent(event_type, data)
-        self.event_queue.put(event)
+    def _process_received_data(self, data: bytes):
+        """Process received data from server."""
+        try:
+            message = pickle.loads(data)
+            
+            # Handle heartbeat
+            if isinstance(message, dict) and message.get('type') == 'heartbeat':
+                # Update ping
+                server_time = message.get('timestamp', 0)
+                ping = (time.time() - server_time) * 1000
+                self.performance_monitor.update_ping(ping)
+                self._queue_event(NetworkEventType.PING_UPDATE, 0, {'ping': ping})
+                return
+            
+            # Queue message for processing
+            self._queue_event(NetworkEventType.MESSAGE, 0, message)
+            
+        except Exception as e:
+            print(f"Error processing received data: {e}")
     
-    def _process_events(self):
-        """Process queued events"""
-        while self.running:
+    def _send_thread(self):
+        """Thread for sending data to server."""
+        while self.running and self.connected:
             try:
-                event = self.event_queue.get(timeout=1.0)
-                self._handle_event(event)
+                message = self._send_queue.get(timeout=0.1)
+                serialized = pickle.dumps(message)
+                
+                try:
+                    self.socket.sendall(serialized)
+                except Exception as e:
+                    print(f"Error sending message: {e}")
+                    self.disconnect(str(e))
+                    
             except queue.Empty:
                 continue
+            except Exception as e:
+                if self.running:
+                    print(f"Send thread error: {e}")
+    
+    def _processing_thread(self):
+        """Thread for processing events."""
+        while self.running:
+            try:
+                while True:
+                    event = self._event_queue.get_nowait()
+                    self._handle_event(event)
+            except queue.Empty:
+                pass
+            
+            time.sleep(0.01)
     
     def _handle_event(self, event: NetworkEvent):
-        """Handle a network event"""
-        if event.event_type in self.event_handlers:
-            for handler in self.event_handlers[event.event_type]:
+        """Handle a network event."""
+        # Call event handlers
+        for handler in self.event_handlers.get(event.event_type, []):
+            try:
+                handler(event)
+            except Exception as e:
+                print(f"Error in event handler: {e}")
+        
+        # Call message handlers for MESSAGE events
+        if event.event_type == NetworkEventType.MESSAGE and event.data:
+            message_type = type(event.data)
+            for handler in self.message_handlers.get(message_type, []):
                 try:
                     handler(event)
                 except Exception as e:
-                    print(f"Error in event handler: {e}")
+                    print(f"Error in message handler: {e}")
+    
+    def _queue_event(self, event_type: NetworkEventType, client_id: Optional[int], data: Any):
+        """Queue an event for processing."""
+        self._event_queue.put(NetworkEvent(event_type, client_id, data))
+    
+    def send(self, message: Any):
+        """Send a message to the server."""
+        if self.connected and self.running:
+            self._send_queue.put(message)
     
     def on_event(self, event_type: NetworkEventType):
-        """Decorator to register event handlers"""
+        """Decorator for registering event handlers."""
         def decorator(func):
-            if event_type not in self.event_handlers:
-                self.event_handlers[event_type] = []
             self.event_handlers[event_type].append(func)
             return func
         return decorator
+    
+    def on_message(self, message_type: type):
+        """Decorator for registering message handlers."""
+        def decorator(func):
+            if message_type not in self.message_handlers:
+                self.message_handlers[message_type] = []
+            self.message_handlers[message_type].append(func)
+            return func
+        return decorator
+
 
 class HostClient:
-    """
-    Hybrid client that can also act as a server for other clients
-    Perfect for player-hosted multiplayer games with enhanced features
-    """
+    """Hybrid host-client that can act as both server and client."""
     
-    def __init__(self, host: str = 'localhost', port: int = 5555, max_peers: int = 4, password: str = None):
+    def __init__(self, host: str = "0.0.0.0", port: int = 5555, 
+                 max_peers: int = 8, password: str = None):
         self.host = host
         self.port = port
         self.max_peers = max_peers
         self.password = password
-        self.is_host = False
-        self.connected_to_host = False
         
-        # Server components
+        self.mode = HostClientMode.DISCONNECTED
         self.server = None
-        self.peers: Dict[int, Client] = {}
-        
-        # Client components  
         self.client = None
-        self.host_address = None
+        self.local_peer_id = 0
         
-        # Shared event system
-        self.event_queue = queue.Queue()
-        self.event_handlers: Dict[NetworkEventType, List[Callable]] = {}
+        self.event_handlers: Dict[NetworkEventType, List[Callable]] = {et: [] for et in NetworkEventType}
+        self.message_handlers: Dict[type, List[Callable]] = {}
         
-        # Threading
+        self.peers: Dict[int, ClientInfo] = {}
         self.running = False
-        self.process_thread = None
         
-        # Auto-kick settings
-        self.auto_kick_on_host_leave = True
-        self.host_migration_enabled = False  # Future feature
-        
-    def toggle_server_scripts(self, enabled: bool, key:str=None):
-        """
-        Enable or disable server scripts execution (host mode only)
-        
-        Args:
-            enabled: Whether to enable or disable scripts
-            key: Specific script name to toggle, if None toggles all scripts
-        """
-        if not self.is_host or not self.server:
-            return
-        
-        self.server.toggle_scripts_execution(enabled, key)
-    
-    def disconnect(self, reason: str = "Host disconnected", notify_peers: bool = True):
-        """
-        Disconnect from network with optional peer notification
-        
-        Args:
-            reason: Reason for disconnection
-            notify_peers: Whether to notify peers before disconnecting (host mode only)
-        """
-        if self.running and self.is_host and notify_peers and self.server:
-            # As host, notify all peers before shutting down
-            print(f"Host disconnecting, notifying {self.get_peer_count()} peers...")
-            
-            # Send shutdown notification to all peers
-            shutdown_msg = ServerShutdownMessage(
-                reason=reason, 
-                graceful=True
-            )
-            self.server.broadcast(shutdown_msg)
-            
-            # Give a small delay for messages to be sent
-            time.sleep(0.5)
-            
-            # Kick all peers if auto-kick is enabled
-            if self.auto_kick_on_host_leave:
-                self._kick_all_peers(reason)
-        
-        # Stop the network components
-        self.running = False
-        self.connected_to_host = False
-        
-        if self.server:
-            self.server.stop()
-        if self.client:
-            self.client.disconnect()
-        
-        print(f"HostClient disconnected: {reason}")
-    
-    def _kick_all_peers(self, reason: str = "Host left the game"):
-        """
-        Kick all connected peers (host mode only)
-        
-        Args:
-            reason: Reason for kicking all peers
-        """
-        if not self.is_host or not self.server:
-            return
-        
-        peer_ids = list(self.server.clients.keys())
-        kicked_count = 0
-        
-        print(f"Kicking {len(peer_ids)} peers: {reason}")
-        
-        for peer_id in peer_ids:
-            if self.server.kick_client(peer_id, reason):
-                kicked_count += 1
-        
-        print(f"Successfully kicked {kicked_count} peers")
-    
-    def emergency_disconnect(self):
-        """
-        Immediately disconnect without notifying peers
-        Use this only in emergency situations
-        """
-        print("EMERGENCY DISCONNECT - No peer notification")
-        self.running = False
-        self.connected_to_host = False
-        
-        if self.server:
-            self.server.emergency_shutdown("Host emergency disconnect")
-        if self.client:
-            self.client.disconnect()
-    
-    def set_auto_kick_on_leave(self, enabled: bool):
-        """
-        Enable or disable auto-kick when host leaves
-        
-        Args:
-            enabled: Whether to automatically kick peers when host disconnects
-        """
-        self.auto_kick_on_host_leave = enabled
-        status = "enabled" if enabled else "disabled"
-        print(f"Auto-kick on host leave: {status}")
+        self._lock = threading.RLock()
     
     def start_as_host(self) -> bool:
-        """Start as host (server + client) with password protection"""
+        """Start as host (server + local client)."""
+        if self.mode != HostClientMode.DISCONNECTED:
+            return False
+        
         try:
-            # Start server component with password
             self.server = Server(self.host, self.port, self.max_peers, self.password)
+            self.client = NetworkClient(self.host, self.port)
+            
             if not self.server.start():
                 return False
             
-            # Connect to ourselves as client (no password needed for self-connection)
-            self.client = NetworkClient(self.host, self.port)
-            if not self.client.connect("Host"):
+            # Wait a moment for server to start
+            time.sleep(0.5)
+            
+            if not self.client.connect("Host", self.password):
                 self.server.stop()
                 return False
             
-            self.is_host = True
-            self.connected_to_host = True
+            self.mode = HostClientMode.HOST
+            self.local_peer_id = 0
             self.running = True
             
-            # Forward server events
-            @self.server.on_event(NetworkEventType.CONNECT)
-            def on_peer_connect(event):
-                self._queue_event(NetworkEventType.CONNECT, event.data, event.client_id)
+            # Setup event forwarding
+            self._setup_event_forwarding()
             
-            @self.server.on_event(NetworkEventType.DISCONNECT) 
-            def on_peer_disconnect(event):
-                self._queue_event(NetworkEventType.DISCONNECT, event.data, event.client_id)
-            
-            @self.server.on_event(NetworkEventType.MESSAGE)
-            def on_peer_message(event):
-                self._queue_event(NetworkEventType.MESSAGE, event.data, event.client_id)
-            
-            @self.server.on_event(NetworkEventType.PING_UPDATE)
-            def on_ping_update(event):
-                self._queue_event(NetworkEventType.PING_UPDATE, event.data, event.client_id)
-            
-            @self.server.on_event(NetworkEventType.SERVER_SCRIPT)
-            def on_server_script(event):
-                self._queue_event(NetworkEventType.SERVER_SCRIPT, event.data)
-            
-            # Forward client events
-            @self.client.on_event(NetworkEventType.MESSAGE)
-            def on_host_message(event):
-                self._queue_event(NetworkEventType.MESSAGE, event.data)
-            
-            @self.client.on_event(NetworkEventType.PING_UPDATE)
-            def on_client_ping_update(event):
-                self._queue_event(NetworkEventType.PING_UPDATE, event.data)
-            
-            # Start event processor
-            self.process_thread = threading.Thread(target=self._process_events, daemon=True)
-            self.process_thread.start()
-            
-            print(f"Started as HOST on port {self.port} (Password: {'Yes' if self.password else 'No'})")
+            print(f"Host started on {self.host}:{self.port}")
             return True
             
         except Exception as e:
             print(f"Failed to start as host: {e}")
+            self.stop()
             return False
     
-    def connect_as_client(self, host_address: str, port: int = 5555, password: str = None) -> bool:
-        """Connect as client to existing host with password"""
+    def connect_as_client(self, server_host: str, server_port: int, 
+                         password: str = None) -> bool:
+        """Connect to a host as client."""
+        if self.mode != HostClientMode.DISCONNECTED:
+            return False
+        
         try:
-            self.client = NetworkClient(host_address, port)
+            self.client = NetworkClient(server_host, server_port)
+            
             if not self.client.connect("Client", password):
                 return False
             
-            self.is_host = False
-            self.connected_to_host = True
-            self.host_address = (host_address, port)
+            self.mode = HostClientMode.CLIENT
             self.running = True
             
-            # Forward client events
-            @self.client.on_event(NetworkEventType.MESSAGE)
-            def on_host_message(event):
-                self._queue_event(NetworkEventType.MESSAGE, event.data)
+            # Setup event forwarding
+            self._setup_event_forwarding()
             
-            @self.client.on_event(NetworkEventType.PING_UPDATE)
-            def on_ping_update(event):
-                self._queue_event(NetworkEventType.PING_UPDATE, event.data)
-            
-            # Start event processor
-            self.process_thread = threading.Thread(target=self._process_events, daemon=True)
-            self.process_thread.start()
-            
-            print(f"Connected as CLIENT to {host_address}:{port}")
+            print(f"Connected as client to {server_host}:{server_port}")
             return True
             
         except Exception as e:
             print(f"Failed to connect as client: {e}")
+            self.stop()
             return False
     
-    def add_server_script(self, name: str, interval: float, callback: Callable, 
-                         enabled: bool = True, one_shot: bool = False):
-        """Add a server script (host only)"""
-        if self.is_host and self.server:
-            self.server.add_script(name, interval, callback, enabled, one_shot)
-    
-    def remove_server_script(self, name: str):
-        """Remove a server script (host only)"""
-        if self.is_host and self.server:
-            self.server.remove_script(name)
-    
-    def kick_peer(self, peer_id: int, reason: str = "Kicked by host"):
-        """Kick a peer from the server (host only)"""
-        if self.is_host and self.server:
-            return self.server.kick_client(peer_id, reason)
-        return False
-    
-    def get_peer_ping(self, peer_id: int) -> float:
-        """Get ping of a specific peer (host only)"""
-        if self.is_host and self.server:
-            return self.server.get_client_ping(peer_id)
-        return -1
-    
-    def get_server_stats(self) -> Dict[str, Any]:
-        """Get server statistics (host only)"""
-        if self.is_host and self.server:
-            return self.server.get_server_stats()
-        return {}
-    
-    def get_ping(self) -> float:
-        """Get current ping to host (client mode only)"""
-        if not self.is_host and self.client:
-            return self.client.get_ping()
-        return 0
-    
-    def send_to_all(self, message: NetworkMessage, exclude_self: bool = False):
-        """Send message to all connected peers (if host) and to host (if client)"""
-        if self.is_host and self.server:
-            # As host, broadcast to all peers EXCEPT ourselves
-            exclude_client_id = self.client.client_id if exclude_self and hasattr(self, 'client') else None
-            self.server.broadcast(message, exclude_client_id=exclude_client_id)
-            
-            # Process locally if not excluding self
-            if not exclude_self:
-                self._queue_event(NetworkEventType.MESSAGE, message)
-                
-        elif self.connected_to_host and self.client:
-            # As client, send to host
-            self.client.send(message)
-    
-    def send_to_peer(self, peer_id: int, message: NetworkMessage):
-        """Send message to specific peer (host only)"""
-        if self.is_host and self.server:
-            self.server.send_to_client(peer_id, message)
-    
-    def get_peer_count(self) -> int:
-        """Get number of connected peers (host only)"""
-        if self.is_host and self.server and hasattr(self.server, 'clients'):
-            return len(self.server.clients)
-        return 0
-    
-    def get_peer_list(self) -> List[int]:
-        """Get list of connected peer IDs (host only)"""
-        if self.is_host and self.server:
-            return list(self.server.clients.keys())
-        return []
-    
-    def _queue_event(self, event_type: NetworkEventType, data: Any, client_id: int = None):
-        """Add event to processing queue"""
-        event = NetworkEvent(event_type, data, client_id)
-        self.event_queue.put(event)
-    
-    def _process_events(self):
-        """Process queued events"""
-        while self.running:
-            try:
-                event = self.event_queue.get(timeout=1.0)
-                self._handle_event(event)
-            except queue.Empty:
-                continue
+    def _setup_event_forwarding(self):
+        """Setup event forwarding from server/client to unified handlers."""
+        if self.server:
+            for event_type in NetworkEventType:
+                @self.server.on_event(event_type)
+                def forward_server_event(event):
+                    self._handle_event(event)
+        
+        if self.client:
+            for event_type in NetworkEventType:
+                @self.client.on_event(event_type)
+                def forward_client_event(event):
+                    self._handle_event(event)
     
     def _handle_event(self, event: NetworkEvent):
-        """Handle a network event"""
-        if event.event_type in self.event_handlers:
-            for handler in self.event_handlers[event.event_type]:
-                try:
-                    handler(event)
-                except Exception as e:
-                    print(f"Error in event handler: {e}")
+        """Handle events from server or client."""
+        # Update peer info for CONNECT/DISCONNECT events
+        if event.event_type == NetworkEventType.CONNECT:
+            with self._lock:
+                if event.client_id not in self.peers:
+                    self.peers[event.client_id] = ClientInfo(
+                        client_id=event.client_id,
+                        address=('localhost', self.port) if self.mode == HostClientMode.HOST else None
+                    )
+        elif event.event_type == NetworkEventType.DISCONNECT:
+            with self._lock:
+                if event.client_id in self.peers:
+                    del self.peers[event.client_id]
+        
+        # Call registered handlers
+        for handler in self.event_handlers.get(event.event_type, []):
+            try:
+                handler(event)
+            except Exception as e:
+                print(f"Error in event handler: {e}")
+    
+    def send_to_all(self, message: Any, exclude_self: bool = False):
+        """Send message to all peers."""
+        if self.mode == HostClientMode.HOST and self.server:
+            exclude_id = 0 if exclude_self else None
+            self.server.broadcast(message, exclude_client_id=exclude_id)
+        
+        elif self.mode == HostClientMode.CLIENT and self.client:
+            self.client.send(message)
+    
+    def send_to_peer(self, peer_id: int, message: Any):
+        """Send message to specific peer."""
+        if self.mode == HostClientMode.HOST and self.server:
+            self.server.send_to_client(peer_id, message)
+        
+        elif self.mode == HostClientMode.CLIENT and self.client:
+            # Clients can only send to server
+            self.client.send(message)
+    
+    def disconnect(self, reason: str = "Disconnected"):
+        """Disconnect from network."""
+        self.running = False
+        
+        if self.server:
+            self.server.stop()
+            self.server = None
+        
+        if self.client:
+            self.client.disconnect(reason)
+            self.client = None
+        
+        self.mode = HostClientMode.DISCONNECTED
+        self.peers.clear()
+        
+        print(f"Disconnected: {reason}")
     
     def on_event(self, event_type: NetworkEventType):
-        """Decorator to register event handlers"""
+        """Decorator for registering event handlers."""
         def decorator(func):
-            if event_type not in self.event_handlers:
-                self.event_handlers[event_type] = []
             self.event_handlers[event_type].append(func)
             return func
         return decorator
-
-
-# NetworkDiscovery class remains the same as original...
-class NetworkDiscovery:
-    """
-    Simple network discovery for finding local hosts
-    """
     
-    def __init__(self, discovery_port: int = 5556):
-        self.discovery_port = discovery_port
-        self.running = False
-        self.discovered_hosts = []
+    def on_message(self, message_type: type):
+        """Decorator for registering message handlers."""
+        def decorator(func):
+            if message_type not in self.message_handlers:
+                self.message_handlers[message_type] = []
+            self.message_handlers[message_type].append(func)
+            return func
+        return decorator
     
-    def broadcast_presence(self, game_name: str = "LunaEngine Game", port: int = 5555):
-        """Broadcast host presence on local network"""
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            sock.settimeout(0.5)
-            
-            message = f"LUNAENGINE_HOST:{game_name}:{port}"
-            sock.sendto(message.encode(), ('255.255.255.255', self.discovery_port))
-            sock.close()
-            print(f"Broadcasted presence: {game_name} on port {port}")
-            return True
-        except Exception as e:
-            print(f"Broadcast error: {e}")
+    def get_peer_count(self) -> int:
+        """Get number of connected peers."""
+        with self._lock:
+            return len(self.peers)
+    
+    def kick_peer(self, peer_id: int, reason: str = "Kicked") -> bool:
+        """Kick a peer (host only)."""
+        if self.mode != HostClientMode.HOST or not self.server:
             return False
+        
+        return self.server.kick_client(peer_id, reason)
     
-    def discover_hosts(self, timeout: float = 3.0) -> List[tuple]:
-        """Discover hosts on local network"""
+    def toggle_server_scripts(self, enabled: bool):
+        """Toggle server scripts (host only)."""
+        if self.mode == HostClientMode.HOST and self.server:
+            self.server.toggle_server_scripts(enabled)
+    
+    def add_server_script(self, name: str, interval: float, function: Callable):
+        """Add a server script (host only)."""
+        if self.mode == HostClientMode.HOST and self.server:
+            self.server.add_server_script(name, interval, function)
+    
+    def get_server_stats(self) -> Dict[str, Any]:
+        """Get server statistics (host only)."""
+        if self.mode == HostClientMode.HOST and self.server:
+            return self.server.get_server_stats()
+        return {}
+
+
+class NetworkDiscovery:
+    """Discovers network games on local network."""
+    
+    def __init__(self, broadcast_port: int = 55555, discovery_port: int = 55556):
+        self.broadcast_port = broadcast_port
+        self.discovery_port = discovery_port
+        self.broadcast_socket = None
+        self.discovery_socket = None
+        self.running = False
+    
+    def broadcast_presence(self, game_name: str, game_port: int, interval: float = 2.0):
+        """Broadcast game presence on local network."""
         try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            sock.settimeout(timeout)
-            sock.bind(('0.0.0.0', self.discovery_port))
+            self.broadcast_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.broadcast_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            self.broadcast_socket.settimeout(0.1)
             
-            hosts = []
-            end_time = time.time() + timeout
+            message = json.dumps({
+                'game_name': game_name,
+                'game_port': game_port,
+                'host_ip': get_local_ip(),
+                'timestamp': time.time()
+            }).encode('utf-8')
             
-            print(f"Discovering hosts on port {self.discovery_port}...")
-            
-            while time.time() < end_time:
+            while True:
                 try:
-                    data, addr = sock.recvfrom(1024)
-                    message = data.decode()
-                    
-                    if message.startswith("LUNAENGINE_HOST:"):
-                        parts = message.split(":")
-                        if len(parts) >= 3:
-                            game_name = parts[1]
-                            port = int(parts[2])
-                            host_info = (addr[0], port, game_name)
-                            
-                            # Avoid duplicates
-                            if host_info not in hosts:
-                                hosts.append(host_info)
-                                print(f"Discovered host: {game_name} at {addr[0]}:{port}")
-                            
+                    self.broadcast_socket.sendto(
+                        message, 
+                        ('<broadcast>', self.broadcast_port)
+                    )
+                    time.sleep(interval)
                 except socket.timeout:
                     continue
                 except Exception as e:
-                    print(f"Error in discovery: {e}")
+                    print(f"Broadcast error: {e}")
+                    break
+                    
+        finally:
+            if self.broadcast_socket:
+                self.broadcast_socket.close()
+    
+    def discover_hosts(self, timeout: float = 5.0) -> List[Tuple[str, int, str]]:
+        """Discover available hosts on local network."""
+        try:
+            self.discovery_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.discovery_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.discovery_socket.settimeout(timeout)
+            self.discovery_socket.bind(('', self.discovery_port))
+            
+            discovered_hosts = []
+            start_time = time.time()
+            
+            while time.time() - start_time < timeout:
+                try:
+                    data, addr = self.discovery_socket.recvfrom(1024)
+                    message = json.loads(data.decode('utf-8'))
+                    
+                    host_ip = message.get('host_ip', addr[0])
+                    game_port = message.get('game_port', 5555)
+                    game_name = message.get('game_name', 'Unknown Game')
+                    
+                    discovered_hosts.append((host_ip, game_port, game_name))
+                    
+                except socket.timeout:
+                    break
+                except Exception as e:
+                    print(f"Discovery error: {e}")
                     continue
             
-            sock.close()
-            print(f"Discovery complete. Found {len(hosts)} hosts.")
-            return hosts
+            # Remove duplicates
+            unique_hosts = []
+            seen = set()
+            for host in discovered_hosts:
+                key = (host[0], host[1])
+                if key not in seen:
+                    seen.add(key)
+                    unique_hosts.append(host)
             
-        except Exception as e:
-            print(f"Discovery setup error: {e}")
-            return []
+            return unique_hosts
+            
+        finally:
+            if self.discovery_socket:
+                self.discovery_socket.close()
 
 
-# New message classes for enhanced functionality
-class HeartbeatMessage(NetworkMessage):
-    """Heartbeat message for connection monitoring with ping measurement"""
-    def __init__(self):
-        self.send_time = time.time()
+# Network utility functions
+
+def get_local_ip() -> str:
+    """Get the local IP address of this machine."""
+    try:
+        # Create a socket to find local IP
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(0)
+        
+        try:
+            # Doesn't need to be reachable
+            s.connect(('10.254.254.254', 1))
+            local_ip = s.getsockname()[0]
+        except Exception:
+            local_ip = '127.0.0.1'
+        finally:
+            s.close()
+        
+        return local_ip
+        
+    except Exception as e:
+        print(f"Error getting local IP: {e}")
+        return '127.0.0.1'
 
 
-class AuthMessage(NetworkMessage):
-    """Authentication message for password-protected servers"""
-    def __init__(self, password: str):
-        self.password = password
+def is_port_available(port: int, host: str = "0.0.0.0") -> bool:
+    """Check if a port is available for binding."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind((host, port))
+        s.close()
+        return True
+    except socket.error:
+        return False
 
 
-class AuthResultMessage(NetworkMessage):
-    """Authentication result message"""
-    def __init__(self, success: bool, reason: str = ""):
-        self.success = success
-        self.reason = reason
+def find_available_port(start_port: int = 5555, end_port: int = 5655, 
+                       host: str = "0.0.0.0") -> Optional[int]:
+    """Find an available port in the specified range."""
+    for port in range(start_port, end_port + 1):
+        if is_port_available(port, host):
+            return port
+    return None
 
 
-class KickMessage(NetworkMessage):
-    """Kick message for removing clients from server"""
-    def __init__(self, reason: str = "Kicked by server"):
-        self.reason = reason
+# Convenience classes for common message types
 
-
-class PlayerPositionMessage(NetworkMessage):
-    """Player position update message"""
-    def __init__(self, x: float, y: float, player_id: str):
+class NetworkMessages:
+    """Factory for common network messages."""
+    
+    @staticmethod
+    def create_chat(message: str, player_id: str = "", sender_name: str = "") -> ChatMessage:
+        """Create a chat message."""
+        return ChatMessage(message, player_id, sender_name)
+    
+    @staticmethod
+    def create_player_position(x: float, y: float, player_id: str) -> PlayerPositionMessage:
+        """Create a player position message."""
+        return PlayerPositionMessage(x, y, player_id)
+    
+    @staticmethod
+    def create_game_state(game_state: Dict[str, Any]) -> GameStateMessage:
+        """Create a game state synchronization message."""
+        return GameStateMessage(game_state)
+    
+    @staticmethod
+    def create_player_info(player_name: str, player_id: str) -> PlayerInfoMessage:
+        """Create a player information message."""
+        return PlayerInfoMessage(player_name, player_id)
+    
+class SmoothPositionMessage(NetworkMessage):
+    """Mensagem para atualização suave de posição com timestamp"""
+    
+    def __init__(self, x: float = 0.0, y: float = 0.0, player_id: str = "", 
+                 velocity_x: float = 0.0, velocity_y: float = 0.0,
+                 timestamp: float = 0.0):
+        super().__init__()
         self.x = x
         self.y = y
         self.player_id = player_id
+        self.velocity_x = velocity_x
+        self.velocity_y = velocity_y
+        self.timestamp = timestamp or time.time()
+        self.version = 2
 
 
-class ChatMessage(NetworkMessage):
-    """Chat message with better duplicate prevention"""
-    def __init__(self, message: str, player_id: str, message_id: str = None):
-        self.message = message
+class PlayerInputMessage(NetworkMessage):
+    """Mensagem para envio de inputs do jogador (mais eficiente)"""
+    
+    def __init__(self, inputs: Dict[str, bool] = None, player_id: str = "",
+                 timestamp: float = 0.0):
+        super().__init__()
+        self.inputs = inputs or {}
         self.player_id = player_id
-        self.message_id = message_id or f"{player_id}_{int(time.time() * 1000)}"
-        self.timestamp = time.time()
+        self.timestamp = timestamp or time.time()
+        self.version = 1
 
 
-class GameStateMessage(NetworkMessage):
-    """Game state synchronization message"""
-    def __init__(self, game_state: Dict):
-        self.game_state = game_state
-
-
-class ServerScriptMessage(NetworkMessage):
-    """Server script execution result message"""
-    def __init__(self, script_name: str, result: Any, execution_count: int):
-        self.script_name = script_name
-        self.result = result
-        self.execution_count = execution_count
+# Adicione esta classe para interpolação
+class NetworkInterpolator:
+    """Interpola posições para movimento suave"""
+    
+    def __init__(self, interpolation_time: float = 0.1):
+        self.interpolation_time = interpolation_time  # 100ms de interpolação
+        self.position_buffer: List[Tuple[float, float, float]] = []  # (x, y, timestamp)
+        self.max_buffer_size = 10
         
-class ServerShutdownMessage(NetworkMessage):
-    """Message sent to all clients when server is shutting down"""
-    def __init__(self, reason: str = "Server shutdown", graceful: bool = True):
-        self.reason = reason
-        self.graceful = graceful
-        self.shutdown_time = time.time()
-
-
-class HostMigrationMessage(NetworkMessage):
-    """Message for host migration scenarios"""
-    def __init__(self, new_host: str = None, migration_possible: bool = False):
-        self.new_host = new_host
-        self.migration_possible = migration_possible
-        self.timestamp = time.time()
-
-# Messages container class
-class NetworkMessages:
-    HeartbeatMessage: NetworkMessage = HeartbeatMessage
-    PlayerPositionMessage: NetworkMessage = PlayerPositionMessage
-    ChatMessage: NetworkMessage = ChatMessage
-    GameStateMessage: NetworkMessage = GameStateMessage
-    AuthMessage: NetworkMessage = AuthMessage
-    AuthResultMessage: NetworkMessage = AuthResultMessage
-    KickMessage: NetworkMessage = KickMessage
-    ServerScriptMessage: NetworkMessage = ServerScriptMessage
-    ServerShutdownMessage: NetworkMessage = ServerShutdownMessage
-    HostMigrationMessage: NetworkMessage = HostMigrationMessage
+    def add_position(self, x: float, y: float, timestamp: float):
+        """Adiciona uma nova posição ao buffer"""
+        self.position_buffer.append((x, y, timestamp))
+        
+        # Manter buffer ordenado por timestamp
+        self.position_buffer.sort(key=lambda p: p[2])
+        
+        # Limitar tamanho do buffer
+        if len(self.position_buffer) > self.max_buffer_size:
+            self.position_buffer.pop(0)
+    
+    def get_interpolated_position(self, current_time: float):
+        """Obtém posição interpolada para o tempo atual"""
+        if len(self.position_buffer) < 2:
+            if self.position_buffer:
+                return self.position_buffer[-1][0], self.position_buffer[-1][1]
+            return 0, 0
+        
+        # Encontrar posições para interpolar
+        target_time = current_time - self.interpolation_time
+        
+        # Se target_time for mais antigo que a posição mais velha, usar a mais velha
+        if target_time <= self.position_buffer[0][2]:
+            return self.position_buffer[0][0], self.position_buffer[0][1]
+        
+        # Encontrar as duas posições entre as quais interpolar
+        for i in range(len(self.position_buffer) - 1):
+            t1 = self.position_buffer[i][2]
+            t2 = self.position_buffer[i + 1][2]
+            
+            if t1 <= target_time <= t2:
+                # Interpolar linearmente
+                alpha = (target_time - t1) / (t2 - t1)
+                x1, y1 = self.position_buffer[i][0], self.position_buffer[i][1]
+                x2, y2 = self.position_buffer[i + 1][0], self.position_buffer[i + 1][1]
+                
+                x = x1 + (x2 - x1) * alpha
+                y = y1 + (y2 - y1) * alpha
+                return x, y
+        
+        # Se target_time for mais novo que a posição mais recente, usar extrapolação
+        x1, y1, t1 = self.position_buffer[-2]
+        x2, y2, t2 = self.position_buffer[-1]
+        
+        if t2 > t1:
+            # Extrapolar baseado na velocidade
+            dt = target_time - t2
+            dx = x2 - x1
+            dy = y2 - y1
+            dt_prev = t2 - t1
+            
+            if dt_prev > 0:
+                vx = dx / dt_prev
+                vy = dy / dt_prev
+                x = x2 + vx * dt
+                y = y2 + vy * dt
+                return x, y
+        
+        return self.position_buffer[-1][0], self.position_buffer[-1][1]
+    
+    def clear(self):
+        """Limpa o buffer"""
+        self.position_buffer.clear()

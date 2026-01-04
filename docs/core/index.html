@@ -574,6 +574,9 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_line">
                                     <code>def draw_line(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: Tuple[int, int, int], width: int, surface: Optional[pygame.Surface]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw a line between two points with specified width.<br><br>Args:<br> &nbsp; &nbsp;start_x (int): Start X coordinate<br> &nbsp; &nbsp;start_y (int): Start Y coordinate<br> &nbsp; &nbsp;end_x (int): End X coordinate<br> &nbsp; &nbsp;end_y (int): End Y coordinate<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;width (int): Line width (default: 1)</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_lines">
+                                    <code>def draw_lines(self: Any, points: List[Tuple[int, int]], color: Tuple[int, int, int], width: int, surface: Optional[pygame.Surface]) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Draw multiple lines beetween the points specified.<br><br>Args:<br> &nbsp; &nbsp;points (List[Tuple[int, int]]): List of (x, y) points defining the lines<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;width (int): Line width (default: 1)<br> &nbsp; &nbsp;surface (Optional[pygame.Surface]): Surface to draw</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_polygon">
                                     <code>def draw_polygon(self: Any, points: List[Tuple[int, int]], color: Tuple[int, int, int], fill: bool, border_width: int, surface: Optional[pygame.Surface]) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Draw a polygon from a list of points.<br><br>Args:<br> &nbsp; &nbsp;points (List[Tuple[int, int]]): List of (x, y) points defining the polygon<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the polygon (default: True)<br> &nbsp; &nbsp;border_width (int): Border width for hollow polygons (default: 1)</div></div></div>
@@ -639,7 +642,7 @@
                                     <code>def update(self: Any, dt: float) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Update scene logic.</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-render">
-                                    <code>def render(self: Any, renderer: 'Renderer') -> None</code>
+                                    <code>def render(self: Any, renderer: OpenGLRenderer | PygameRenderer) -> None</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Render the scene.<br><br>Called every frame to draw the scene content.<br><br>Args:<br> &nbsp; &nbsp;renderer: The renderer to use for drawing operations</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-add_ui_element">
                                     <code>def add_ui_element(self: Any, ui_element: UIElement) -> None</code>
@@ -653,6 +656,12 @@
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-get_ui_elements_by_type">
                                     <code>def get_ui_elements_by_type(self: Any, element_type: type) -> List[UIElement]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get all UI elements of a specific type.<br><br>Args:<br> &nbsp; &nbsp;element_type (type): The class type to filter by (e.g., Button, Label)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[UIElement]: List of UI elements matching the specified type</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-get_ui_elements_by_group">
+                                    <code>def get_ui_elements_by_group(self: Any, group: str) -> List[UIElement]</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Get all UI elements in the scene.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: All UI elements in the scene</div></div></div>
+                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-toggle_element_group">
+                                    <code>def toggle_element_group(self: Any, group: str, visible: bool) -> None</code>
+                        <div class="docstring-content mt-1"><div class="docstring-text">Toggle the visibility of UI elements in a specific group.<br><br>Args:<br> &nbsp; &nbsp;group (str): The group to toggle</div></div></div>
                                 <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-get_all_ui_elements">
                                     <code>def get_all_ui_elements(self: Any) -> List[UIElement]</code>
                         <div class="docstring-content mt-1"><div class="docstring-text">Get all UI elements in the scene.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: All UI elements in the scene</div></div></div>
