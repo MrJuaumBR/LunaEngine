@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pygame_backend.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Backend</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.html">Backend</a></li>
+                <li class="breadcrumb-item active">pygame_backend.py</li>
+            </ol>
+        </nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>pygame_backend.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">No documentation</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-pygamerenderer">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class PygameRenderer</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Pygame-based software renderer for LunaEngine<br><br>LOCATION: lunaengine/backend/pygame_backend.py<br><br>DESCRIPTION:<br>Provides a simple, reliable software renderer using Pygame&#x27;s built-in<br>drawing functions. Serves as a fallback when OpenGL is not available<br>or for development purposes.<br><br>FEATURES:<br>- Software-based 2D rendering<br>- Basic shape drawing (rectangles, circles, lines)<br>- Surface blitting and composition<br>- Cross-platform compatibility<br><br>LIBRARIES USED:<br>- pygame: Core graphics, surface management, and drawing primitives<br><br>INHERITS FROM:<br>- Renderer: Base renderer class from core module<br><br>USAGE:<br>&gt;&gt;&gt; renderer = PygameRenderer(800, 600)<br>&gt;&gt;&gt; renderer.initialize()<br>&gt;&gt;&gt; renderer.draw_rect(100, 100, 50, 50, (255, 0, 0))</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, width, height) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize Pygame renderer with specified dimensions<br><br>ARGS:<br> &nbsp; &nbsp;width: Screen width in pixels<br> &nbsp; &nbsp;height: Screen height in pixels</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-max_particles">
+                <code class="fs-6 fw-bold text-color-title">def max_particles(self) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-max_particles">
+                <code class="fs-6 fw-bold text-color-title">def max_particles(self, value) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-initialize">
+                <code class="fs-6 fw-bold text-color-title">def initialize(self) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize the renderer - create main surface</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-begin_frame">
+                <code class="fs-6 fw-bold text-color-title">def begin_frame(self) -> Any</code>
+                <div class="mt-2 text-muted small">Begin rendering frame - clear the surface with transparent black</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-end_frame">
+                <code class="fs-6 fw-bold text-color-title">def end_frame(self) -> Any</code>
+                <div class="mt-2 text-muted small">End rendering frame - no additional processing needed</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-get_surface">
+                <code class="fs-6 fw-bold text-color-title">def get_surface(self) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Get the underlying pygame surface<br><br>RETURNS:<br> &nbsp; &nbsp;pygame.Surface: The current rendering surface</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-set_surface">
+                <code class="fs-6 fw-bold text-color-title">def set_surface(self, surface) -> Any</code>
+                <div class="mt-2 text-muted small">Set custom surface for rendering<br><br>ARGS:<br> &nbsp; &nbsp;surface: Pygame surface to use as render target</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-draw_surface">
+                <code class="fs-6 fw-bold text-color-title">def draw_surface(self, surface, x, y) -> Any</code>
+                <div class="mt-2 text-muted small">Draw a pygame surface onto the renderer<br><br>ARGS:<br> &nbsp; &nbsp;surface: Pygame surface to draw<br> &nbsp; &nbsp;x: X coordinate for drawing<br> &nbsp; &nbsp;y: Y coordinate for drawing</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-draw_rect">
+                <code class="fs-6 fw-bold text-color-title">def draw_rect(self, x, y, width, height, color, fill, border_width) -> Any</code>
+                <div class="mt-2 text-muted small">Draw a colored rectangle<br><br>ARGS:<br> &nbsp; &nbsp;x: X coordinate of top-left corner<br> &nbsp; &nbsp;y: Y coordinate of top-left corner<br> &nbsp; &nbsp;width: Rectangle width<br> &nbsp; &nbsp;height: Rectangle height<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the rectangle (default: True)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-draw_circle">
+                <code class="fs-6 fw-bold text-color-title">def draw_circle(self, x, y, radius, color) -> Any</code>
+                <div class="mt-2 text-muted small">Draw a circle<br><br>ARGS:<br> &nbsp; &nbsp;x: Center X coordinate<br> &nbsp; &nbsp;y: Center Y coordinate<br> &nbsp; &nbsp;radius: Circle radius<br> &nbsp; &nbsp;color: RGB color tuple</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-draw_line">
+                <code class="fs-6 fw-bold text-color-title">def draw_line(self, start_x, start_y, end_x, end_y, color, width) -> Any</code>
+                <div class="mt-2 text-muted small">Draw a line<br><br>ARGS:<br> &nbsp; &nbsp;start_x: Starting X coordinate<br> &nbsp; &nbsp;start_y: Starting Y coordinate<br> &nbsp; &nbsp;end_x: Ending X coordinate<br> &nbsp; &nbsp;end_y: Ending Y coordinate<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;width: Line width (default: 1)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-draw_polygon">
+                <code class="fs-6 fw-bold text-color-title">def draw_polygon(self, points, color, fill, border_width) -> Any</code>
+                <div class="mt-2 text-muted small">Draw a polygon<br><br>ARGS:<br> &nbsp; &nbsp;points: List of (x, y) coordinates of polygon vertices<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the polygon (default: True)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-blit">
+                <code class="fs-6 fw-bold text-color-title">def blit(self, source_surface, dest_rect, area, special_flags) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-cleanup">
+                <code class="fs-6 fw-bold text-color-title">def cleanup(self) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-enable_scissor">
+                <code class="fs-6 fw-bold text-color-title">def enable_scissor(self, x, y, width, height) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-disable_scissor">
+                <code class="fs-6 fw-bold text-color-title">def disable_scissor(self) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-render_opengl">
+                <code class="fs-6 fw-bold text-color-title">def render_opengl(self, renderer) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-render_particles">
+                <code class="fs-6 fw-bold text-color-title">def render_particles(self, particle_data, camera) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pygamerenderer-render_surface">
+                <code class="fs-6 fw-bold text-color-title">def render_surface(self, surface, x, y) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                
+                
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Backend Module
+            </a>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0 text-white-50 small">LunaEngine Documentation &copy; 2026</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+</body>
+</html>

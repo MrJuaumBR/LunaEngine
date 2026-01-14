@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>audio.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Core</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.html">Core</a></li>
+                <li class="breadcrumb-item active">audio.py</li>
+            </ol>
+        </nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>audio.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">Advanced Audio System - Enhanced with Dynamic Control and Smooth Transitions<br><br>LOCATION: lunaengine/core/audio.py</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-audiostate">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class AudioState</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Enumeration for audio playback states.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-audioevent">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class AudioEvent</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Enumeration for audio events.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-audiochannel">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class AudioChannel</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Enhanced audio channel with dynamic control and smooth transitions.<br><br>NEW FEATURES:<br>- Dynamic speed changes without stopping playback<br>- Smooth transitions for volume and speed<br>- Audio duration information<br>- Improved state management</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, channel_id) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize an enhanced audio channel.<br><br>Args:<br> &nbsp; &nbsp;channel_id (int): Pygame mixer channel number</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-get_duration">
+                <code class="fs-6 fw-bold text-color-title">def get_duration(self) -> float</code>
+                <div class="mt-2 text-muted small">Get the duration of the loaded sound in seconds.<br><br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds, or 0.0 if no sound loaded</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-get_playback_position">
+                <code class="fs-6 fw-bold text-color-title">def get_playback_position(self) -> float</code>
+                <div class="mt-2 text-muted small">Get current playback position in seconds.<br><br>Note: This is an approximation since pygame doesn&#x27;t provide exact position.<br><br>Returns:<br> &nbsp; &nbsp;float: Current playback position in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-play">
+                <code class="fs-6 fw-bold text-color-title">def play(self, sound, loop) -> bool</code>
+                <div class="mt-2 text-muted small">Play a sound on this channel with enhanced state management.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): Sound to play<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if playback started successfully</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-pause">
+                <code class="fs-6 fw-bold text-color-title">def pause(self) -> None</code>
+                <div class="mt-2 text-muted small">Pause playback on this channel with state verification.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-resume">
+                <code class="fs-6 fw-bold text-color-title">def resume(self) -> None</code>
+                <div class="mt-2 text-muted small">Resume playback on this channel with state verification.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-set_volume">
+                <code class="fs-6 fw-bold text-color-title">def set_volume(self, volume, duration) -> None</code>
+                <div class="mt-2 text-muted small">Set channel volume with optional smooth transition.<br><br>Args:<br> &nbsp; &nbsp;volume (float): Volume level (0.0 to 1.0)<br> &nbsp; &nbsp;duration (float): Transition duration in seconds. 0 for immediate change.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-set_speed">
+                <code class="fs-6 fw-bold text-color-title">def set_speed(self, speed, duration) -> None</code>
+                <div class="mt-2 text-muted small">Change the speed of the sound playback.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-_change_speed_immediate">
+                <code class="fs-6 fw-bold text-color-title">def _change_speed_immediate(self, speed) -> None</code>
+                <div class="mt-2 text-muted small">Change playback speed immediately using pitch adjustment.<br><br>Args:<br> &nbsp; &nbsp;speed (float): Target speed multiplier</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-_smooth_speed_transition">
+                <code class="fs-6 fw-bold text-color-title">def _smooth_speed_transition(self, start, end, duration) -> Any</code>
+                <div class="mt-2 text-muted small">Smoothly transition between speeds.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-_transition_speed">
+                <code class="fs-6 fw-bold text-color-title">def _transition_speed(self, target_speed, duration) -> None</code>
+                <div class="mt-2 text-muted small">Smoothly transition between speeds.<br><br>Args:<br> &nbsp; &nbsp;target_speed (float): Target speed multiplier<br> &nbsp; &nbsp;duration (float): Transition duration in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-_smooth_speed_change">
+                <code class="fs-6 fw-bold text-color-title">def _smooth_speed_change(self, start_speed, end_speed, duration) -> None</code>
+                <div class="mt-2 text-muted small">Smoothly change speed over time.<br><br>Args:<br> &nbsp; &nbsp;start_speed (float): Starting speed<br> &nbsp; &nbsp;end_speed (float): Target speed<br> &nbsp; &nbsp;duration (float): Transition duration in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-_transition_volume">
+                <code class="fs-6 fw-bold text-color-title">def _transition_volume(self, start_volume, end_volume, duration) -> None</code>
+                <div class="mt-2 text-muted small">Enhanced volume transition with better state management.<br><br>Args:<br> &nbsp; &nbsp;start_volume (float): Starting volume<br> &nbsp; &nbsp;end_volume (float): Ending volume<br> &nbsp; &nbsp;duration (float): Transition duration in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-fade_in">
+                <code class="fs-6 fw-bold text-color-title">def fade_in(self, duration, target_volume) -> None</code>
+                <div class="mt-2 text-muted small">Enhanced fade in with better state management.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds<br> &nbsp; &nbsp;target_volume (float, optional): Target volume. Defaults to 1.0.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-fade_out">
+                <code class="fs-6 fw-bold text-color-title">def fade_out(self, duration) -> None</code>
+                <div class="mt-2 text-muted small">Enhanced fade out with better state management.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-_fade_volume_out">
+                <code class="fs-6 fw-bold text-color-title">def _fade_volume_out(self, start_volume, end_volume, duration) -> None</code>
+                <div class="mt-2 text-muted small">Special fade out that stops playback after completion.<br><br>Args:<br> &nbsp; &nbsp;start_volume (float): Starting volume<br> &nbsp; &nbsp;end_volume (float): Ending volume<br> &nbsp; &nbsp;duration (float): Fade duration in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-stop">
+                <code class="fs-6 fw-bold text-color-title">def stop(self) -> None</code>
+                <div class="mt-2 text-muted small">Enhanced stop with thread management.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-is_playing">
+                <code class="fs-6 fw-bold text-color-title">def is_playing(self) -> bool</code>
+                <div class="mt-2 text-muted small">Enhanced play state check.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if playing, False otherwise</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-is_paused">
+                <code class="fs-6 fw-bold text-color-title">def is_paused(self) -> bool</code>
+                <div class="mt-2 text-muted small">Enhanced pause state check.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if paused, False otherwise</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-on_event">
+                <code class="fs-6 fw-bold text-color-title">def on_event(self, event_type) -> Callable</code>
+                <div class="mt-2 text-muted small">Decorator to register event handlers.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-_trigger_event">
+                <code class="fs-6 fw-bold text-color-title">def _trigger_event(self, event_type) -> None</code>
+                <div class="mt-2 text-muted small">Trigger all handlers for the given event type.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-soundeffect">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class SoundEffect</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Enhanced sound effect with duration information.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-soundeffect-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, sound) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize a sound effect with duration tracking.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): The sound object</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-soundeffect-_calculate_duration">
+                <code class="fs-6 fw-bold text-color-title">def _calculate_duration(self, sound) -> float</code>
+                <div class="mt-2 text-muted small">Calculate sound duration.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): Sound to calculate duration for<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-soundeffect-get_duration">
+                <code class="fs-6 fw-bold text-color-title">def get_duration(self) -> float</code>
+                <div class="mt-2 text-muted small">Get the duration of this sound effect.<br><br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-soundeffect-play">
+                <code class="fs-6 fw-bold text-color-title">def play(self, audio_system, volume, speed, loop) -> Optional[AudioChannel]</code>
+                <div class="mt-2 text-muted small">Play the sound effect on an available channel.<br><br>Args:<br> &nbsp; &nbsp;audio_system (AudioSystem): The audio system to get channels from<br> &nbsp; &nbsp;volume (float, optional): Volume level. Defaults to 1.0.<br> &nbsp; &nbsp;speed (float, optional): Playback speed. Defaults to 1.0.<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[AudioChannel]: The channel playing the sound, or None if failed</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-soundeffect-stop_all">
+                <code class="fs-6 fw-bold text-color-title">def stop_all(self) -> None</code>
+                <div class="mt-2 text-muted small">Stop all instances of this sound effect.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-audiosystem">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class AudioSystem</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Advanced audio system with multi-channel support and real speed control.<br><br>Attributes:<br> &nbsp; &nbsp;music_volume (float): Global music volume<br> &nbsp; &nbsp;sfx_volume (float): Global sound effects volume<br> &nbsp; &nbsp;channels (List[AudioChannel]): All available audio channels<br> &nbsp; &nbsp;sound_effects (Dict[str, SoundEffect]): Loaded sound effects<br> &nbsp; &nbsp;music_channel (AudioChannel): Dedicated music channel</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, num_channels) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize the advanced audio system.<br><br>Args:<br> &nbsp; &nbsp;num_channels (int, optional): Number of audio channels. Defaults to 16.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-get_available_channel">
+                <code class="fs-6 fw-bold text-color-title">def get_available_channel(self) -> Optional[AudioChannel]</code>
+                <div class="mt-2 text-muted small">Get an available audio channel.<br><br>Returns:<br> &nbsp; &nbsp;Optional[AudioChannel]: Available channel, or None if all busy</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-load_sound_effect">
+                <code class="fs-6 fw-bold text-color-title">def load_sound_effect(self, name, file_path) -> bool</code>
+                <div class="mt-2 text-muted small">Load a sound effect from file.<br><br>Args:<br> &nbsp; &nbsp;name (str): Unique name for the sound effect<br> &nbsp; &nbsp;file_path (str): Path to the sound file<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if loaded successfully</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-load_music">
+                <code class="fs-6 fw-bold text-color-title">def load_music(self, name, file_path) -> bool</code>
+                <div class="mt-2 text-muted small">Load a music track (store path for later use).<br><br>Args:<br> &nbsp; &nbsp;name (str): Unique name for the music track<br> &nbsp; &nbsp;file_path (str): Path to the music file<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if file exists</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-play_sound">
+                <code class="fs-6 fw-bold text-color-title">def play_sound(self, name, volume, speed, loop) -> Optional[AudioChannel]</code>
+                <div class="mt-2 text-muted small">Play a sound effect on an available channel.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the sound effect<br> &nbsp; &nbsp;volume (float, optional): Volume level. Uses SFX volume if None.<br> &nbsp; &nbsp;speed (float, optional): Playback speed. Defaults to 1.0.<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[AudioChannel]: The channel playing the sound</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-play_music">
+                <code class="fs-6 fw-bold text-color-title">def play_music(self, name, volume, speed, loop) -> bool</code>
+                <div class="mt-2 text-muted small">Play a music track on the dedicated music channel.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the music track<br> &nbsp; &nbsp;volume (float, optional): Volume level. Uses music volume if None.<br> &nbsp; &nbsp;speed (float, optional): Playback speed. Defaults to 1.0.<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to True.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if playback started successfully</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-stop_music">
+                <code class="fs-6 fw-bold text-color-title">def stop_music(self) -> None</code>
+                <div class="mt-2 text-muted small">Stop the currently playing music.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-pause_music">
+                <code class="fs-6 fw-bold text-color-title">def pause_music(self) -> None</code>
+                <div class="mt-2 text-muted small">Pause the currently playing music.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-resume_music">
+                <code class="fs-6 fw-bold text-color-title">def resume_music(self) -> None</code>
+                <div class="mt-2 text-muted small">Resume the paused music.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-set_music_volume">
+                <code class="fs-6 fw-bold text-color-title">def set_music_volume(self, volume) -> None</code>
+                <div class="mt-2 text-muted small">Set global music volume.<br><br>Args:<br> &nbsp; &nbsp;volume (float): Volume level (0.0 to 1.0)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-set_sfx_volume">
+                <code class="fs-6 fw-bold text-color-title">def set_sfx_volume(self, volume) -> None</code>
+                <div class="mt-2 text-muted small">Set global sound effects volume.<br><br>Args:<br> &nbsp; &nbsp;volume (float): Volume level (0.0 to 1.0)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-fade_in_music">
+                <code class="fs-6 fw-bold text-color-title">def fade_in_music(self, name, duration, target_volume, speed) -> bool</code>
+                <div class="mt-2 text-muted small">Fade in a music track.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the music track<br> &nbsp; &nbsp;duration (float, optional): Fade duration. Defaults to 2.0.<br> &nbsp; &nbsp;target_volume (float, optional): Target volume. Uses music volume if None.<br> &nbsp; &nbsp;speed (float, optional): Playback speed. Defaults to 1.0.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if fade started successfully</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-fade_out_music">
+                <code class="fs-6 fw-bold text-color-title">def fade_out_music(self, duration) -> None</code>
+                <div class="mt-2 text-muted small">Fade out the current music.<br><br>Args:<br> &nbsp; &nbsp;duration (float, optional): Fade duration. Defaults to 2.0.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-stop_all_sounds">
+                <code class="fs-6 fw-bold text-color-title">def stop_all_sounds(self) -> None</code>
+                <div class="mt-2 text-muted small">Stop all playing sound effects.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-get_channel_info">
+                <code class="fs-6 fw-bold text-color-title">def get_channel_info(self) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Get information about all channels.<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, Any]: Channel information</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-cleanup">
+                <code class="fs-6 fw-bold text-color-title">def cleanup(self) -> None</code>
+                <div class="mt-2 text-muted small">Clean up audio resources.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-get_sound_duration">
+                <code class="fs-6 fw-bold text-color-title">def get_sound_duration(self, name) -> float</code>
+                <div class="mt-2 text-muted small">Get the duration of a loaded sound effect.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the sound effect<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds, or 0.0 if not found</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-get_music_duration">
+                <code class="fs-6 fw-bold text-color-title">def get_music_duration(self, name) -> float</code>
+                <div class="mt-2 text-muted small">Get the duration of a loaded music track.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the music track<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds, or 0.0 if not found</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiosystem-get_current_music_position">
+                <code class="fs-6 fw-bold text-color-title">def get_current_music_position(self) -> float</code>
+                <div class="mt-2 text-muted small">Get current playback position of music.<br><br>Returns:<br> &nbsp; &nbsp;float: Current position in seconds</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                
+                
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Core Module
+            </a>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0 text-white-50 small">LunaEngine Documentation &copy; 2026</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+</body>
+</html>

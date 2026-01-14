@@ -27,16 +27,18 @@ USAGE PATTERN:
 4. Manage scene-specific logic in update method
 """
 
+import pygame
 from abc import ABC, abstractmethod
 from typing import Dict, List, Any, Optional, TYPE_CHECKING
-from ..ui import UIElement
+from ..ui import UIElement, UiFrame, ScrollingFrame, Tabination
 from ..graphics import Camera, ParticleConfig, ParticleSystem, ParticleType, ShadowSystem
 from ..core.audio import AudioSystem
 from ..backend.opengl import OpenGLRenderer
-from ..backend.pygame_backend import PygameRenderer
+from ..core.renderer import Renderer
+from ..backend.types import ElementsList, ElementsListEvents
 
 if TYPE_CHECKING:
-    from ..core import LunaEngine, Renderer
+    from ..core.engine import LunaEngine
 
 class Scene(ABC):
     """
@@ -58,7 +60,7 @@ class Scene(ABC):
         Args:
             engine (LunaEngine): Reference to the game engine
         """
-        self.ui_elements: List[UIElement] = []
+        self.ui_elements: ElementsList = ElementsList(on_change=self._ui_element_list)
         self._initialized = False
         self.engine: LunaEngine = engine
         
@@ -74,6 +76,45 @@ class Scene(ABC):
         
         # Audio System
         self.audio_system: AudioSystem = AudioSystem(num_channels=16)
+    
+    def _add_event_to_handler(self, element: UIElement):
+        if element.element_type == 'textbox': # Textbox on_key_down and on_key_up events
+            @self.engine.on_event(pygame.KEYDOWN, element.element_id)
+            def on_key_down(event):
+                if element.focused and element.enabled:
+                    element.on_key_down(event)
+                
+            @self.engine.on_event(pygame.KEYUP, element.element_id)
+            def on_key_up(event):
+                if element.focused and element.enabled:
+                    element.on_key_up(event)
+        elif element.element_type in ['scrollingframe', 'dropdown']: # ScrollingFrame, Dropdown on_scroll events
+            @self.engine.on_event(pygame.MOUSEWHEEL, element.element_id)
+            def on_scroll(event):
+                element.on_scroll(event)
+    
+    def _update_on_change_child(self, element: UIElement):
+        self._add_event_to_handler(element)
+        
+        for child in element.children:
+            child.children.set_on_change(self._ui_element_list, child)
+            # Check if all childs already have the events sets on the engine decorator
+            if hasattr(child,'on_key_down'):
+                self.engine.find_event_handlers(pygame.KEYDOWN, child.element_id)
+            elif hasattr(child,'on_key_up'):
+                self.engine.find_event_handlers(pygame.KEYUP, child.element_id)
+            elif hasattr(child,'on_scroll'):
+                self.engine.find_event_handlers(pygame.MOUSEWHEEL, child.element_id)
+            
+            child.scene = self
+            self._update_on_change_child(child)
+    
+    def _ui_element_list(self, event_type:ElementsListEvents, element: UIElement, index: Optional[int] = None):
+        if event_type == 'append':
+            self._update_on_change_child(element)
+            
+            element.scene = self
+            element.children.set_on_change(self._ui_element_list, element)
         
     def on_enter(self, previous_scene: Optional[str] = None) -> None:
         """
@@ -107,7 +148,7 @@ class Scene(ABC):
         # Update particle system with camera position
         self.particle_system.update(dt, self.camera.position)
         
-    def render(self, renderer: OpenGLRenderer|PygameRenderer) -> None:
+    def render(self, renderer: Renderer|OpenGLRenderer) -> None:
         """
         Render the scene.
         

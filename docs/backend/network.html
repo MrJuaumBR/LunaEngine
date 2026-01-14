@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>network.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Backend</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.html">Backend</a></li>
+                <li class="breadcrumb-item active">network.py</li>
+            </ol>
+        </nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>network.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">Network backend module for LunaEngine.<br><br>This module provides comprehensive multiplayer networking functionality<br>including server, client, host-client hybrid, network discovery, and<br>performance monitoring.<br><br>Features:<br>- Server with password protection and scripting<br>- Network client with reconnection capabilities<br>- Host-Client hybrid for peer-to-peer gaming<br>- Network discovery for local game finding<br>- Performance monitoring and connection quality analysis<br>- Region detection based on IP geolocation<br>- Thread-safe message handling and event system</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-networkeventtype">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class NetworkEventType</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Enumeration of network event types.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-networkevent">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class NetworkEvent</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Represents a network event with associated data.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-hostclientmode">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class HostClientMode</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Operating modes for HostClient.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-connectionquality">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ConnectionQuality</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Connection quality levels.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-networkmetrics">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class NetworkMetrics</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Container for network performance metrics.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkmetrics-get_quality">
+                <code class="fs-6 fw-bold text-color-title">def get_quality(self) -> ConnectionQuality</code>
+                <div class="mt-2 text-muted small">Determine connection quality based on metrics.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-networkmessage">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class NetworkMessage</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Base class for all network messages.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkmessage-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkmessage-serialize">
+                <code class="fs-6 fw-bold text-color-title">def serialize(self) -> bytes</code>
+                <div class="mt-2 text-muted small">Convert message to bytes for transmission.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkmessage-deserialize">
+                <code class="fs-6 fw-bold text-color-title">def deserialize(cls, data) -> 'NetworkMessage'</code>
+                <div class="mt-2 text-muted small">Create message from bytes.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkmessage-__str__">
+                <code class="fs-6 fw-bold text-color-title">def __str__(self) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-chatmessage">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ChatMessage</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Message for chat communication.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chatmessage-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, message, player_id, sender_name) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-playerpositionmessage">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class PlayerPositionMessage</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Message for player position updates.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-playerpositionmessage-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, x, y, player_id) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-gamestatemessage">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class GameStateMessage</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Message for complete game state synchronization.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-gamestatemessage-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, game_state) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-playerinfomessage">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class PlayerInfoMessage</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Message for player information updates.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-playerinfomessage-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, player_name, player_id) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-playerslistmessage">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class PlayersListMessage</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Message for sending list of all players.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-playerslistmessage-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, players_data) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-welcomemessage">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class WelcomeMessage</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Welcome message for new clients.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-welcomemessage-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, player_id, players_data) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-clientinfo">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ClientInfo</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Information about a connected client.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clientinfo-connection_time">
+                <code class="fs-6 fw-bold text-color-title">def connection_time(self) -> float</code>
+                <div class="mt-2 text-muted small">Get connection duration in seconds.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-serverscript">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ServerScript</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Represents a server-side script that runs periodically.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-serverscript-should_execute">
+                <code class="fs-6 fw-bold text-color-title">def should_execute(self) -> bool</code>
+                <div class="mt-2 text-muted small">Check if script should execute now.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-serverscript-execute">
+                <code class="fs-6 fw-bold text-color-title">def execute(self, server) -> Any</code>
+                <div class="mt-2 text-muted small">Execute the script.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-performancemonitor">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class PerformanceMonitor</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Monitors network performance metrics.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-update_ping">
+                <code class="fs-6 fw-bold text-color-title">def update_ping(self, ping) -> Any</code>
+                <div class="mt-2 text-muted small">Update ping measurement.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-update_packet_loss">
+                <code class="fs-6 fw-bold text-color-title">def update_packet_loss(self, loss) -> Any</code>
+                <div class="mt-2 text-muted small">Update packet loss measurement.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-update_bandwidth">
+                <code class="fs-6 fw-bold text-color-title">def update_bandwidth(self, bytes_sent, bytes_received) -> Any</code>
+                <div class="mt-2 text-muted small">Update bandwidth measurements.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-get_metrics">
+                <code class="fs-6 fw-bold text-color-title">def get_metrics(self) -> NetworkMetrics</code>
+                <div class="mt-2 text-muted small">Get current network metrics.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-get_summary">
+                <code class="fs-6 fw-bold text-color-title">def get_summary(self) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Get a summary of all performance metrics.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-regiondetector">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class RegionDetector</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Detects geographic region/country based on IP address.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-regiondetector-detect_region">
+                <code class="fs-6 fw-bold text-color-title">def detect_region(ip_address) -> str</code>
+                <div class="mt-2 text-muted small">Detect geographic region based on IP address.<br><br>Args:<br> &nbsp; &nbsp;ip_address: IP address to check. If None, uses local public IP.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Detected region/country name or &#x27;Unknown&#x27;</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-regiondetector-get_public_ip">
+                <code class="fs-6 fw-bold text-color-title">def get_public_ip() -> Optional[str]</code>
+                <div class="mt-2 text-muted small">Get the public IP address of the current machine.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-regiondetector-get_local_region">
+                <code class="fs-6 fw-bold text-color-title">def get_local_region() -> str</code>
+                <div class="mt-2 text-muted small">Attempt to determine region from local network settings.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-server">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Server</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Network server for multiplayer games.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, host, port, max_clients, password) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-start">
+                <code class="fs-6 fw-bold text-color-title">def start(self) -> bool</code>
+                <div class="mt-2 text-muted small">Start the server.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-stop">
+                <code class="fs-6 fw-bold text-color-title">def stop(self) -> Any</code>
+                <div class="mt-2 text-muted small">Stop the server and disconnect all clients.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-_accept_thread">
+                <code class="fs-6 fw-bold text-color-title">def _accept_thread(self) -> Any</code>
+                <div class="mt-2 text-muted small">Thread for accepting new client connections.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-_receive_thread">
+                <code class="fs-6 fw-bold text-color-title">def _receive_thread(self) -> Any</code>
+                <div class="mt-2 text-muted small">Thread for receiving data from clients.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-_process_received_data">
+                <code class="fs-6 fw-bold text-color-title">def _process_received_data(self, client_id, data) -> Any</code>
+                <div class="mt-2 text-muted small">Process received data from a client.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-_authenticate_client">
+                <code class="fs-6 fw-bold text-color-title">def _authenticate_client(self, client_id, auth_data) -> bool</code>
+                <div class="mt-2 text-muted small">Authenticate a client.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-_processing_thread">
+                <code class="fs-6 fw-bold text-color-title">def _processing_thread(self) -> Any</code>
+                <div class="mt-2 text-muted small">Thread for processing events and running scripts.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-_handle_event">
+                <code class="fs-6 fw-bold text-color-title">def _handle_event(self, event) -> Any</code>
+                <div class="mt-2 text-muted small">Handle a network event.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-_run_scripts">
+                <code class="fs-6 fw-bold text-color-title">def _run_scripts(self) -> Any</code>
+                <div class="mt-2 text-muted small">Execute server scripts.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-_send_heartbeats">
+                <code class="fs-6 fw-bold text-color-title">def _send_heartbeats(self) -> Any</code>
+                <div class="mt-2 text-muted small">Send heartbeat messages to all clients.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-_check_timeouts">
+                <code class="fs-6 fw-bold text-color-title">def _check_timeouts(self) -> Any</code>
+                <div class="mt-2 text-muted small">Check for client timeouts.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-_disconnect_client">
+                <code class="fs-6 fw-bold text-color-title">def _disconnect_client(self, client_id, reason) -> Any</code>
+                <div class="mt-2 text-muted small">Disconnect a client.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-_queue_event">
+                <code class="fs-6 fw-bold text-color-title">def _queue_event(self, event_type, client_id, data) -> Any</code>
+                <div class="mt-2 text-muted small">Queue an event for processing.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-broadcast">
+                <code class="fs-6 fw-bold text-color-title">def broadcast(self, message, exclude_client_id) -> Any</code>
+                <div class="mt-2 text-muted small">Broadcast a message to all connected clients.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-send_to_client">
+                <code class="fs-6 fw-bold text-color-title">def send_to_client(self, client_id, message) -> Any</code>
+                <div class="mt-2 text-muted small">Send a message to a specific client.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-on_event">
+                <code class="fs-6 fw-bold text-color-title">def on_event(self, event_type) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for registering event handlers.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-on_message">
+                <code class="fs-6 fw-bold text-color-title">def on_message(self, message_type) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for registering message handlers.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-add_server_script">
+                <code class="fs-6 fw-bold text-color-title">def add_server_script(self, name, interval, function) -> Any</code>
+                <div class="mt-2 text-muted small">Add a server script.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-remove_server_script">
+                <code class="fs-6 fw-bold text-color-title">def remove_server_script(self, name) -> Any</code>
+                <div class="mt-2 text-muted small">Remove a server script.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-toggle_server_scripts">
+                <code class="fs-6 fw-bold text-color-title">def toggle_server_scripts(self, enabled) -> Any</code>
+                <div class="mt-2 text-muted small">Enable or disable all server scripts.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-get_server_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_server_stats(self) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Get server statistics.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-server-kick_client">
+                <code class="fs-6 fw-bold text-color-title">def kick_client(self, client_id, reason) -> bool</code>
+                <div class="mt-2 text-muted small">Kick a client from the server.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-networkclient">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class NetworkClient</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Network client for connecting to servers.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkclient-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, server_host, server_port) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkclient-connect">
+                <code class="fs-6 fw-bold text-color-title">def connect(self, username, password) -> bool</code>
+                <div class="mt-2 text-muted small">Connect to the server.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkclient-disconnect">
+                <code class="fs-6 fw-bold text-color-title">def disconnect(self, reason) -> Any</code>
+                <div class="mt-2 text-muted small">Disconnect from the server.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkclient-_receive_thread">
+                <code class="fs-6 fw-bold text-color-title">def _receive_thread(self) -> Any</code>
+                <div class="mt-2 text-muted small">Thread for receiving data from server.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkclient-_process_received_data">
+                <code class="fs-6 fw-bold text-color-title">def _process_received_data(self, data) -> Any</code>
+                <div class="mt-2 text-muted small">Process received data from server.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkclient-_send_thread">
+                <code class="fs-6 fw-bold text-color-title">def _send_thread(self) -> Any</code>
+                <div class="mt-2 text-muted small">Thread for sending data to server.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkclient-_processing_thread">
+                <code class="fs-6 fw-bold text-color-title">def _processing_thread(self) -> Any</code>
+                <div class="mt-2 text-muted small">Thread for processing events.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkclient-_handle_event">
+                <code class="fs-6 fw-bold text-color-title">def _handle_event(self, event) -> Any</code>
+                <div class="mt-2 text-muted small">Handle a network event.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkclient-_queue_event">
+                <code class="fs-6 fw-bold text-color-title">def _queue_event(self, event_type, client_id, data) -> Any</code>
+                <div class="mt-2 text-muted small">Queue an event for processing.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkclient-send">
+                <code class="fs-6 fw-bold text-color-title">def send(self, message) -> Any</code>
+                <div class="mt-2 text-muted small">Send a message to the server.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkclient-on_event">
+                <code class="fs-6 fw-bold text-color-title">def on_event(self, event_type) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for registering event handlers.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkclient-on_message">
+                <code class="fs-6 fw-bold text-color-title">def on_message(self, message_type) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for registering message handlers.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-hostclient">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class HostClient</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Hybrid host-client that can act as both server and client.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, host, port, max_peers, password) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-start_as_host">
+                <code class="fs-6 fw-bold text-color-title">def start_as_host(self) -> bool</code>
+                <div class="mt-2 text-muted small">Start as host (server + local client).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-connect_as_client">
+                <code class="fs-6 fw-bold text-color-title">def connect_as_client(self, server_host, server_port, password) -> bool</code>
+                <div class="mt-2 text-muted small">Connect to a host as client.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-_setup_event_forwarding">
+                <code class="fs-6 fw-bold text-color-title">def _setup_event_forwarding(self) -> Any</code>
+                <div class="mt-2 text-muted small">Setup event forwarding from server/client to unified handlers.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-_handle_event">
+                <code class="fs-6 fw-bold text-color-title">def _handle_event(self, event) -> Any</code>
+                <div class="mt-2 text-muted small">Handle events from server or client.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-send_to_all">
+                <code class="fs-6 fw-bold text-color-title">def send_to_all(self, message, exclude_self) -> Any</code>
+                <div class="mt-2 text-muted small">Send message to all peers.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-send_to_peer">
+                <code class="fs-6 fw-bold text-color-title">def send_to_peer(self, peer_id, message) -> Any</code>
+                <div class="mt-2 text-muted small">Send message to specific peer.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-disconnect">
+                <code class="fs-6 fw-bold text-color-title">def disconnect(self, reason) -> Any</code>
+                <div class="mt-2 text-muted small">Disconnect from network.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-on_event">
+                <code class="fs-6 fw-bold text-color-title">def on_event(self, event_type) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for registering event handlers.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-on_message">
+                <code class="fs-6 fw-bold text-color-title">def on_message(self, message_type) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for registering message handlers.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-get_peer_count">
+                <code class="fs-6 fw-bold text-color-title">def get_peer_count(self) -> int</code>
+                <div class="mt-2 text-muted small">Get number of connected peers.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-kick_peer">
+                <code class="fs-6 fw-bold text-color-title">def kick_peer(self, peer_id, reason) -> bool</code>
+                <div class="mt-2 text-muted small">Kick a peer (host only).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-toggle_server_scripts">
+                <code class="fs-6 fw-bold text-color-title">def toggle_server_scripts(self, enabled) -> Any</code>
+                <div class="mt-2 text-muted small">Toggle server scripts (host only).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-add_server_script">
+                <code class="fs-6 fw-bold text-color-title">def add_server_script(self, name, interval, function) -> Any</code>
+                <div class="mt-2 text-muted small">Add a server script (host only).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-hostclient-get_server_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_server_stats(self) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Get server statistics (host only).</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-networkdiscovery">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class NetworkDiscovery</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Discovers network games on local network.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkdiscovery-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, broadcast_port, discovery_port) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkdiscovery-broadcast_presence">
+                <code class="fs-6 fw-bold text-color-title">def broadcast_presence(self, game_name, game_port, interval) -> Any</code>
+                <div class="mt-2 text-muted small">Broadcast game presence on local network.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkdiscovery-discover_hosts">
+                <code class="fs-6 fw-bold text-color-title">def discover_hosts(self, timeout) -> List[Tuple[str, int, str]]</code>
+                <div class="mt-2 text-muted small">Discover available hosts on local network.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-networkmessages">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class NetworkMessages</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Factory for common network messages.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkmessages-create_chat">
+                <code class="fs-6 fw-bold text-color-title">def create_chat(message, player_id, sender_name) -> ChatMessage</code>
+                <div class="mt-2 text-muted small">Create a chat message.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkmessages-create_player_position">
+                <code class="fs-6 fw-bold text-color-title">def create_player_position(x, y, player_id) -> PlayerPositionMessage</code>
+                <div class="mt-2 text-muted small">Create a player position message.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkmessages-create_game_state">
+                <code class="fs-6 fw-bold text-color-title">def create_game_state(game_state) -> GameStateMessage</code>
+                <div class="mt-2 text-muted small">Create a game state synchronization message.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkmessages-create_player_info">
+                <code class="fs-6 fw-bold text-color-title">def create_player_info(player_name, player_id) -> PlayerInfoMessage</code>
+                <div class="mt-2 text-muted small">Create a player information message.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-smoothpositionmessage">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class SmoothPositionMessage</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Mensagem para atualização suave de posição com timestamp</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-smoothpositionmessage-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, x, y, player_id, velocity_x, velocity_y, timestamp) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-playerinputmessage">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class PlayerInputMessage</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Mensagem para envio de inputs do jogador (mais eficiente)</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-playerinputmessage-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, inputs, player_id, timestamp) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-networkinterpolator">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class NetworkInterpolator</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Interpola posições para movimento suave</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkinterpolator-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, interpolation_time) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkinterpolator-add_position">
+                <code class="fs-6 fw-bold text-color-title">def add_position(self, x, y, timestamp) -> Any</code>
+                <div class="mt-2 text-muted small">Adiciona uma nova posição ao buffer</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkinterpolator-get_interpolated_position">
+                <code class="fs-6 fw-bold text-color-title">def get_interpolated_position(self, current_time) -> Any</code>
+                <div class="mt-2 text-muted small">Obtém posição interpolada para o tempo atual</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-networkinterpolator-clear">
+                <code class="fs-6 fw-bold text-color-title">def clear(self) -> Any</code>
+                <div class="mt-2 text-muted small">Limpa o buffer</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
+                
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-get_local_ip">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def get_local_ip() -> str</code>
+                    <p class="mt-2 mb-0 text-muted">Get the local IP address of this machine.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-is_port_available">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def is_port_available(port, host) -> bool</code>
+                    <p class="mt-2 mb-0 text-muted">Check if a port is available for binding.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-find_available_port">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def find_available_port(start_port, end_port, host) -> Optional[int]</code>
+                    <p class="mt-2 mb-0 text-muted">Find an available port in the specified range.</p>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Backend Module
+            </a>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0 text-white-50 small">LunaEngine Documentation &copy; 2026</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+</body>
+</html>

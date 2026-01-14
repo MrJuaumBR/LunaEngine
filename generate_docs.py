@@ -1,25 +1,21 @@
-#!/usr/bin/env python3
 """
 DEFINITIVE DOCUMENTATION GENERATOR - LUNAENGINE
 Compact version with external CSS/JS files
 """
 
-import os
-import ast
-import shutil
-import stat
-import html
-import re
+import os, ast, shutil, stat, html, re
 from pathlib import Path
 from datetime import datetime
 
 # ========== CONFIGURATION ==========
 
 def remove_readonly(func, path, excinfo):
+    """Handle read-only files during deletion."""
     os.chmod(path, stat.S_IWRITE)
     func(path)
 
 def safe_remove_folder(folder_path):
+    """Safely remove a folder and its contents."""
     if os.path.exists(folder_path):
         try:
             shutil.rmtree(folder_path, onerror=remove_readonly)
@@ -29,6 +25,7 @@ def safe_remove_folder(folder_path):
     return True
 
 def format_docstring(docstring):
+    """Format python docstrings into HTML-safe text."""
     if not docstring or docstring == 'No documentation':
         return 'No documentation'
     docstring = html.escape(docstring)
@@ -37,6 +34,7 @@ def format_docstring(docstring):
     return docstring
 
 def extract_theme_colors(file_path):
+    """Extract hex colors from themes.py for visual preview."""
     colors_data = {}
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -48,18 +46,13 @@ def extract_theme_colors(file_path):
             named_colors = re.findall(r'(\w+)\s*=\s*\"(#(?:[0-9a-fA-F]{3}){1,2})\"', content)
             for color_name, color_hex in named_colors:
                 colors_data[theme_class][color_name] = color_hex
-            
-            if not colors_data[theme_class]:
-                hex_colors = re.findall(r'\"(#(?:[0-9a-fA-F]{3}){1,2})\"', content)
-                for i, color_hex in enumerate(hex_colors[:10]):
-                    colors_data[theme_class][f'color_{i+1}'] = color_hex
-        
         return colors_data
     except Exception as e:
         print(f"      ⚠️  Error extracting theme colors: {e}")
         return {}
 
 def analyze_project():
+    """Scan the project structure and extract metadata."""
     print("🔍 Analyzing project structure...")
     
     project = {
@@ -86,13 +79,12 @@ def analyze_project():
             project['total_classes'] += len(module_info['classes'])
             project['total_functions'] += len(module_info['functions'])
             project['total_methods'] += module_info['total_methods']
-            print(f"   ✅ {module}: {len(module_info['files'])} files, {len(module_info['classes'])} classes, {len(module_info['functions'])} functions")
-        else:
-            print(f"   ⚠️  {module}: not found")
-    
+            print(f"   ✅ {module}: {len(module_info['files'])} files found")
+            
     return project
 
 def analyze_module(module_path, module_name):
+    """Analyze all python files within a specific module."""
     module_info = {
         'name': module_name,
         'description': get_module_description(module_name),
@@ -110,14 +102,16 @@ def analyze_module(module_path, module_name):
             if file == 'themes.py':
                 file_info['theme_colors'] = extract_theme_colors(file_path)
             
-            module_info['files'].append({
+            file_data = {
                 'name': file,
+                'base_name': file.replace('.py', ''),
                 'classes': file_info['classes'],
                 'functions': file_info['functions'],
                 'docstring': file_info['docstring'],
                 'theme_colors': file_info.get('theme_colors', {})
-            })
+            }
             
+            module_info['files'].append(file_data)
             module_info['classes'].extend(file_info['classes'])
             module_info['functions'].extend(file_info['functions'])
             module_info['total_methods'] += file_info['total_methods']
@@ -125,61 +119,45 @@ def analyze_module(module_path, module_name):
     return module_info
 
 def analyze_python_file(file_path):
-    file_info = {
-        'classes': [],
-        'functions': [],
-        'docstring': '',
-        'total_methods': 0
-    }
-    
+    """Parse a single python file using AST."""
+    file_info = {'classes': [], 'functions': [], 'docstring': '', 'total_methods': 0}
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        try:
-            tree = ast.parse(content)
+            tree = ast.parse(f.read())
             
-            # Module docstring
-            if tree.body and isinstance(tree.body[0], ast.Expr):
-                if hasattr(ast, 'Constant') and isinstance(tree.body[0].value, ast.Constant) and isinstance(tree.body[0].value.value, str):
-                    file_info['docstring'] = format_docstring(tree.body[0].value.value.strip())
-                elif isinstance(tree.body[0].value, ast.Str):
-                    file_info['docstring'] = format_docstring(tree.body[0].value.s.strip())
+            # Extract module docstring
+            file_info['docstring'] = format_docstring(ast.get_docstring(tree))
             
-            # Extract classes and functions
             for node in tree.body:
                 if isinstance(node, ast.ClassDef):
                     class_info = extract_class_info(node)
                     file_info['classes'].append(class_info)
                     file_info['total_methods'] += len(class_info['methods'])
                 elif isinstance(node, ast.FunctionDef):
-                    function_info = extract_function_info(node)
-                    file_info['functions'].append(function_info)
-                    
-        except SyntaxError as e:
-            print(f"      ⚠️  Syntax error in {os.path.basename(file_path)}: {e}")
-            extract_basic_info(content, file_info)
-            
+                    file_info['functions'].append(extract_function_info(node))
     except Exception as e:
-        print(f"      ⚠️  Error analyzing {os.path.basename(file_path)}: {e}")
-    
+        print(f"      ⚠️  Error parsing {os.path.basename(file_path)}: {e}")
     return file_info
 
 def extract_class_info(class_node):
-    class_info = {
+    """Extract class metadata, methods, and attributes."""
+    return {
         'name': class_node.name,
-        'docstring': format_docstring(ast.get_docstring(class_node)) or 'No documentation',
-        'methods': [],
-        'bases': [ast.unparse(base) for base in class_node.bases],
-        'attributes': extract_class_attributes(class_node)
+        'docstring': format_docstring(ast.get_docstring(class_node)),
+        'methods': [extract_function_info(n, True) for n in class_node.body if isinstance(n, ast.FunctionDef)],
+        'bases': [ast.unparse(base) for base in class_node.bases]
     }
     
-    for item in class_node.body:
-        if isinstance(item, ast.FunctionDef):
-            method_info = extract_function_info(item, is_method=True)
-            class_info['methods'].append(method_info)
-    
-    return class_info
+def extract_function_info(node, is_method=False):
+    """Extract function/method signature and docstrings."""
+    args = [arg.arg for arg in node.args.args]
+    return {
+        'name': node.name,
+        'docstring': format_docstring(ast.get_docstring(node)),
+        'args': args,
+        'returns': ast.unparse(node.returns) if node.returns else 'Any',
+        'is_method': is_method
+    }
 
 def extract_class_attributes(class_node):
     attributes = []
@@ -196,20 +174,6 @@ def extract_class_attributes(class_node):
                     default_value = ast.unparse(item.value) if item.value else 'None'
                     attributes.append({'name': attr_name, 'type': 'Any', 'default': default_value})
     return attributes
-
-def extract_function_info(function_node, is_method=False):
-    full_code = ast.unparse(function_node) if hasattr(ast, 'unparse') else function_node.name
-    docstring = ast.get_docstring(function_node) or ''
-    
-    return {
-        'name': function_node.name,
-        'docstring': format_docstring(docstring) or 'No documentation',
-        'args': extract_arguments(function_node.args),
-        'returns': extract_return_annotation(function_node),
-        'is_method': is_method,
-        'full_code': full_code,  
-        'raw_docstring': docstring
-    }
 
 def extract_arguments(args_node):
     arguments = []
@@ -262,6 +226,7 @@ def extract_basic_info(content, file_info):
         })
 
 def get_module_description(module_name):
+    """Descriptions for the main module categories."""
     descriptions = {
         "core": "Core engine systems - Engine, Window, Renderer",
         "ui": "User interface components - Buttons, Layouts, Themes", 
@@ -297,6 +262,28 @@ def get_contrast_color(hex_color):
     return '#ffffff' if brightness < 128 else '#000000'
 
 # ========== DOCUMENTATION GENERATOR ==========
+
+def get_navbar_html(path_prefix="./", active_module=None):
+    return f"""
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{path_prefix}index.html#" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                {( '<span class="badge bg-primary me-3">' + active_module.title() + '</span>' if active_module else '')}
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    """
 
 def get_search_script():
     return """
@@ -361,35 +348,26 @@ def get_search_script():
     """
 
 def generate_documentation():
+    """Main entry point for HTML generation."""
     print("\n🚀 Generating professional documentation...")
-    
-    # Create docs folder
     os.makedirs("docs", exist_ok=True)
     
-    # Generate theme files (will not overwrite if exist)
-    generate_theme_files()
-    
-    # Analyze project
     project = analyze_project()
-    
-    # Generate search data
-    search_data = generate_search_data(project)
-    
-    # Generate pages
     generate_main_page(project)
-    generate_module_pages(project)
+    search_data = generate_search_data(project)
+    generate_search_page(project, search_data)
     generate_quick_start()
     generate_contact_page()
-    generate_search_page(project, search_data)
     
-    print(f"\n🎉 DOCUMENTATION GENERATED SUCCESSFULLY!")
-    print(f"📊 Project statistics:")
-    print(f"   • Modules: {len(project['modules'])}")
-    print(f"   • Files: {project['total_files']}")
-    print(f"   • Classes: {project['total_classes']}")
-    print(f"   • Functions: {project['total_functions']}")
-    print(f"   • Methods: {project['total_methods']}")
-    print(f"📁 Folder: {os.path.abspath('docs')}")
+    # Process modules and their internal files
+    for module_name, module_info in project['modules'].items():
+        print(f"   📦 Processing module: {module_name}...")
+        generate_module_index(module_name, module_info)
+        
+        for file_info in module_info['files']:
+            generate_file_page(module_name, file_info)
+    
+    print(f"\n🎉 DONE! Files generated in: {os.path.abspath('docs')}")
 
 def generate_main_page(project):
     print("📄 Creating main page...")
@@ -408,23 +386,7 @@ def generate_main_page(project):
     <link href="theme.css" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">
-                <i class="bi bi-moon-stars-fill me-2"></i>
-                LunaEngine
-            </a>
-            <div class="d-flex align-items-center">
-                <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
-                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
-                </div>
-                <button class="btn btn-outline-secondary theme-toggle">
-                    <span class="theme-icon">🌙</span>
-                </button>
-            </div>
-        </div>
-    </nav>
+    {get_navbar_html()}
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -601,6 +563,163 @@ def generate_main_page(project):
     
     with open("docs/index.html", "w", encoding="utf-8") as f:
         f.write(html)
+        
+def     generate_module_index(module_name, module_info):
+    """Create an index.html for a specific module folder."""
+    module_dir = f"docs/{module_name}"
+    os.makedirs(module_dir, exist_ok=True)
+    
+    file_list_html = ""
+    for file in module_info['files']:
+        file_list_html += f"""
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>{file['name']}</h5>
+                    <p class="card-text small text-muted">Contains {len(file['classes'])} classes and {len(file['functions'])} functions.</p>
+                    <a href="{file['base_name']}.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div>"""
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="en" data-theme="light">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../theme.css" rel="stylesheet">
+        <title>{module_name.title()} - LunaEngine</title>
+    </head>
+    <body>
+        {get_navbar_html("../", module_name)}
+        <div class="container mt-5">
+            <nav aria-label="breadcrumb"><ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item active">{module_name.title()}</li>
+            </ol></nav>
+            <h1 class="display-4">{module_name.title()} Module</h1>
+            <p class="lead">{module_info['description']}</p>
+            <hr>
+            <div class="row mt-4">{file_list_html}</div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="../theme.js"></script>
+        {get_search_script()}
+    </body>
+
+    </html>
+    """
+    
+    with open(f"{module_dir}/index.html", "w", encoding="utf-8") as f:
+        f.write(html_content)
+        
+def generate_file_page(module_name, file_info):
+    """Create a detailed and professional documentation page for a single .py file."""
+    path_prefix = "../"
+    
+    classes_html = ""
+    for cls in file_info['classes']:
+        methods_html = ""
+        for m in cls['methods']:
+            args = ", ".join(m['args'])
+            # ID example: #method-audiochannel-__init__
+            methods_html += f"""
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-{str(cls['name']).lower()}-{str(m['name']).lower()}">
+                <code class="fs-6 fw-bold text-color-title">def {m['name']}({args}) -> {m['returns']}</code>
+                <div class="mt-2 text-muted small">{m['docstring']}</div>
+            </div>"""
+            
+        classes_html += f"""
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-{str(cls['name']).lower()}">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class {cls['name']}</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">{cls['docstring']}</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    {methods_html if methods_html else '<p class="text-muted italic">No methods defined.</p>'}
+                </div>
+            </div>
+        </div>"""
+
+    functions_html = ""
+    if file_info['functions']:
+        for func in file_info['functions']:
+            args = ", ".join(func['args'])
+            functions_html += f"""
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-{str(func['name']).lower()}">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def {func['name']}({args}) -> {func['returns']}</code>
+                    <p class="mt-2 mb-0 text-muted">{func['docstring']}</p>
+                </div>
+            </div>"""
+
+    html_page = f"""<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{file_info['name']} - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{path_prefix}theme.css" rel="stylesheet">
+</head>
+<body>
+    {get_navbar_html(path_prefix, module_name)}
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{path_prefix}index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.html">{module_name.title()}</a></li>
+                <li class="breadcrumb-item active">{file_info['name']}</li>
+            </ol>
+        </nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>{file_info['name']}</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">{file_info['docstring']}</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                {classes_html}
+                
+                {f'<h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>' if functions_html else ''}
+                {functions_html}
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to {module_name.title()} Module
+            </a>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0 text-white-50 small">LunaEngine Documentation &copy; {datetime.now().year}</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{path_prefix}theme.js"></script>
+    {get_search_script()}
+</body>
+</html>"""
+
+    with open(f"docs/{module_name}/{file_info['base_name']}.html", "w", encoding="utf-8") as f:
+        f.write(html_page)
 
 def generate_module_pages(project):
     print("📚 Generating module pages...")
@@ -637,24 +756,7 @@ def generate_single_module_page(module_name, module_info):
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html">
-                <i class="bi bi-moon-stars-fill me-2"></i>
-                LunaEngine
-            </a>
-            <div class="d-flex align-items-center">
-                <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search in {module_name}... (e.g.: def render(), .update())">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                </div>
-                <span class="badge bg-primary me-3">{module_name.title()}</span>
-                <button class="btn btn-outline-secondary theme-toggle">
-                    <span class="theme-icon">🌙</span>
-                </button>
-            </div>
-        </div>
-    </nav>
+    {get_navbar_html("../", module_name)}
 
     <div class="container mt-4">
         <!-- Module Header -->
@@ -967,18 +1069,11 @@ def generate_search_data(project):
     
     # Add modules
     for module_name, module_info in project['modules'].items():
-        search_data["modules"].append({
-            "name": module_name,
-            "title": module_name.title(),
-            "description": module_info['description'],
-            "link": f"{module_name}/index.html",
-            "files_count": len(module_info['files']),
-            "classes_count": len(module_info['classes']),
-            "functions_count": len(module_info['functions'])
-        })
-        
+        # module_file = get from what file the module is
+        module_file = None
         # Add classes from this module
         for file_info in module_info['files']:
+            file_name = str(file_info['name']).split('.py')[0]
             for class_info in file_info['classes']:
                 class_id = f"class-{class_info['name'].lower()}"
                 search_data["classes"].append({
@@ -986,7 +1081,7 @@ def generate_search_data(project):
                     "module": module_name,
                     "file": file_info['name'],
                     "description": class_info['docstring'],
-                    "link": f"{module_name}/index.html#{class_id}",
+                    "link": f"{module_name}/{file_name}.html",
                     "methods_count": len(class_info['methods']),
                     "element_id": class_id
                 })
@@ -999,7 +1094,7 @@ def generate_search_data(project):
                         "class": class_info['name'],
                         "module": module_name,
                         "description": method_info['docstring'],
-                        "link": f"{module_name}/index.html#{method_id}",
+                        "link": f"{module_name}/{file_name}.html",
                         "is_method": True,
                         "element_id": method_id
                     })
@@ -1012,10 +1107,22 @@ def generate_search_data(project):
                     "module": module_name,
                     "file": file_info['name'],
                     "description": function_info['docstring'],
-                    "link": f"{module_name}/index.html#{function_id}",
+                    "link": f"{module_name}/{file_name}.html",
                     "is_method": False,
                     "element_id": function_id
                 })
+                
+        search_data["modules"].append({
+            "name": module_name,
+            "title": module_name.title(),
+            "description": module_info['description'],
+            "link": f"{module_name}/index.html",
+            "files_count": len(module_info['files']),
+            "classes_count": len(module_info['classes']),
+            "functions_count": len(module_info['functions'])
+        })
+        
+        
     
     # Add general pages
     search_data["pages"] = [
@@ -1044,7 +1151,7 @@ def generate_search_data(project):
     
     return search_data
 
-def generate_search_page(project, search_data):
+def generate_search_page(project, search_data):   
     print("🔍 Creating search page...")
     
     total_items = (len(search_data['modules']) + len(search_data['classes']) + 

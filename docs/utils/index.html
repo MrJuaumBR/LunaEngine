@@ -1,38 +1,24 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Utils - LunaEngine</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="../theme.css" rel="stylesheet">
-    <style>
-    .search-highlight {
-        background-color: #ffeb3b;
-        padding: 2px 4px;
-        border-radius: 3px;
-        animation: highlight-pulse 2s ease-in-out;
-    }
-    
-    @keyframes highlight-pulse {
-        0% { background-color: #ffeb3b; }
-        50% { background-color: #ffff72; }
-        100% { background-color: #ffeb3b; }
-    }
-    </style>
-</head>
-<body>
+
+    <!DOCTYPE html>
+    <html lang="en" data-theme="light">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../theme.css" rel="stylesheet">
+        <title>Utils - LunaEngine</title>
+    </head>
+    <body>
+        
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search in utils... (e.g.: def render(), .update())">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 <span class="badge bg-primary me-3">Utils</span>
                 <button class="btn btn-outline-secondary theme-toggle">
@@ -41,272 +27,57 @@
             </div>
         </div>
     </nav>
-
-    <div class="container mt-4">
-        <!-- Module Header -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
-                        <li class="breadcrumb-item active">Utils</li>
-                    </ol>
-                </nav>
-                
-                <div class="d-flex align-items-center mb-3">
-                    <h1 class="mb-0">Utils</h1>
-                    <span class="badge bg-info ms-3">Code Analysis</span>
-                </div>
-                <p class="lead text-muted">Utility functions - Performance, Math, Threading</p>
-            </div>
-        </div>
-
-        <!-- Module Files -->
-        <div class="row">
-            <div class="col-12">
-
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                image_converter.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Image Converter - Embedded Image Management and Conversion System<br>LOCATION: lunaengine/utils/image_converter.py<br>DESCRIPTION: Comprehensive image conversion and embedding system</div>
-                            </div>
-            <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-imageconverter">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    ImageConverter
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Converts images to Python code for embedding in games<br>Uses Pygame for image loading - NO PILLOW REQUIRED</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-image_to_python_code">
-                                    <code>def image_to_python_code(image_path: str, output_var_name: str, max_size: Optional[Tuple[int, int]], method: str, quality: float) -> str</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Convert an image to Python code with quality compression<br><br>Args:<br> &nbsp; &nbsp;image_path: Path to the image file<br> &nbsp; &nbsp;output_var_name: Name for the output variable<br> &nbsp; &nbsp;max_size: Maximum dimensions (width, height)<br> &nbsp; &nbsp;method: Conversion method (&#x27;pixel_array&#x27;, &#x27;base64&#x27;, &#x27;compressed&#x27;)<br> &nbsp; &nbsp;quality: Image quality (1.0 = original, 0.5 = half size, 0.25 = quarter size)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-_resize_surface">
-                                    <code>def _resize_surface(surface: pygame.Surface, target_size: Tuple[int, int]) -> pygame.Surface</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-_to_pixel_array">
-                                    <code>def _to_pixel_array(surface: pygame.Surface, width: int, height: int, var_name: str) -> str</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-_to_base64">
-                                    <code>def _to_base64(surface: pygame.Surface, width: int, height: int, var_name: str) -> str</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-_to_compressed_optimized">
-                                    <code>def _to_compressed_optimized(surface: pygame.Surface, width: int, height: int, var_name: str) -> str</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-create_image_from_code">
-                                    <code>def create_image_from_code(image_data: dict) -> pygame.Surface</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-_from_pixel_array">
-                                    <code>def _from_pixel_array(image_data: dict) -> pygame.Surface</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-imageconverter-_from_encoded_data">
-                                    <code>def _from_encoded_data(image_data: dict) -> pygame.Surface</code>
-                        </div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-embeddedimage">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    EmbeddedImage
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Helper class for working with embedded images</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-embeddedimage-__init__">
-                                    <code>def __init__(self: Any, image_data: dict) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-embeddedimage-surface">
-                                    <code>def surface(self: Any) -> pygame.Surface</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-embeddedimage-width">
-                                    <code>def width(self: Any) -> int</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-embeddedimage-height">
-                                    <code>def height(self: Any) -> int</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-embeddedimage-draw">
-                                    <code>def draw(self: Any, renderer: Any, x: int, y: int) -> None</code>
-                        </div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                math_utils.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Math Utilities - Essential Mathematical Functions for Game Development<br><br>LOCATION: lunaengine/utils/math_utils.py<br><br>DESCRIPTION:<br>Collection of fundamental mathematical functions commonly used in game<br>development. Provides optimized implementations for interpolation,<br>clamping, distance calculations, and vector operations.<br><br>KEY FUNCTIONS:<br>- lerp: Linear interpolation for smooth transitions<br>- clamp: Value constraint within specified ranges<br>- distance: Euclidean distance between points<br>- normalize_vector: Vector normalization for movement calculations<br>- angle_between_points: Angle calculation for directional systems<br><br>LIBRARIES USED:<br>- math: Core mathematical operations and trigonometric functions<br>- numpy: High-performance numerical operations (optional)<br>- typing: Type annotations for coordinates and return values<br><br>USAGE:<br>&gt;&gt;&gt; smoothed_value = lerp(start, end, 0.5)<br>&gt;&gt;&gt; constrained_value = clamp(value, 0, 100)<br>&gt;&gt;&gt; dist = distance((x1, y1), (x2, y2))<br>&gt;&gt;&gt; direction = normalize_vector(dx, dy)<br>&gt;&gt;&gt; angle = angle_between_points(point_a, point_b)</div>
-                            </div>
-            <h6 class="mt-4">Functions:</h6>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-lerp">
-                            <code>def lerp(a: float, b: float, t: float) -> float</code>
-                <div class="docstring-content mt-2"><div class="docstring-text">Linear interpolation between a and b</div></div></div>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-clamp">
-                            <code>def clamp(value: float, min_val: float, max_val: float) -> float</code>
-                <div class="docstring-content mt-2"><div class="docstring-text">Clamp value between min and max</div></div></div>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-distance">
-                            <code>def distance(point1: Tuple[float, float], point2: Tuple[float, float]) -> float</code>
-                <div class="docstring-content mt-2"><div class="docstring-text">Calculate distance between two points</div></div></div>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-normalize_vector">
-                            <code>def normalize_vector(x: float, y: float) -> Tuple[float, float]</code>
-                <div class="docstring-content mt-2"><div class="docstring-text">Normalize a 2D vector</div></div></div>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-angle_between_points">
-                            <code>def angle_between_points(point1: Tuple[float, float], point2: Tuple[float, float]) -> float</code>
-                <div class="docstring-content mt-2"><div class="docstring-text">Calculate angle between two points in radians</div></div></div>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-rgba_brightness">
-                            <code>def rgba_brightness(rgba: Tuple[int, int, int, float]) -> float</code>
-                <div class="docstring-content mt-2"><div class="docstring-text">This function is used to calculate the overall brightness of an RGBA color<br><br>Parameters:<br> &nbsp; &nbsp;rgba (Tuple[int, int, int, float]): A tuple representing the RGBA color<br>Returns:<br> &nbsp; &nbsp;float: A float representing the brightness of the color</div></div></div>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-individual_rgba_brightness">
-                            <code>def individual_rgba_brightness(rgba: Tuple[int, int, int, float]) -> Tuple[float, float, float, float]</code>
-                <div class="docstring-content mt-2"><div class="docstring-text">This function is used to calculate the individual brightness of each color channel (R, G, B, A)<br><br>Parameters:<br> &nbsp; &nbsp;rgba (Tuple[int, int, int, float]): A tuple representing the RGBA color<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float, float, float]: A tuple representing the normalized RGBA values</div></div></div>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-humanize_number">
-                            <code>def humanize_number(self: Any, number: float, decimal_places: int) -> str</code>
-                <div class="docstring-content mt-2"><div class="docstring-text">This function is used to format a number into a human-readable string<br>Like: 1K, 1M, 1B, etc.<br>Also: 1.5K, 2.34M, etc.<br>Parameters:<br> &nbsp; &nbsp;number (float): A float representing the number to be formatted<br> &nbsp; &nbsp;decimal_places (int): Number of decimal places to include<br>Returns:<br> &nbsp; &nbsp;str: A string representing the formatted number</div></div></div>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-humanize_time">
-                            <code>def humanize_time(self: Any, seconds: float) -> str</code>
-                <div class="docstring-content mt-2"><div class="docstring-text">This function is used to format a time duration in seconds into a human-readable string<br>Like: 1h 30m, 2d 5h, etc.<br><br>Parameters:<br> &nbsp; &nbsp;seconds (float): A float representing the time duration in seconds<br>Returns:<br> &nbsp; &nbsp;str: A string representing the formatted time duration</div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                performance.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Performance Monitoring - System Optimization and Resource Management<br><br>LOCATION: lunaengine/utils/performance.py<br><br>DESCRIPTION:<br>Comprehensive performance monitoring system that tracks frame rates,<br>system resources, and provides optimization utilities. Includes hardware<br>detection, garbage collection, and performance statistics.<br><br>KEY COMPONENTS:<br>- PerformanceMonitor: Real-time FPS tracking and hardware monitoring<br>- GarbageCollector: Automatic resource cleanup and memory management<br>- Hardware detection for system-specific optimizations<br>- Frame time analysis and performance statistics<br><br>LIBRARIES USED:<br>- psutil: System resource monitoring (CPU, memory)<br>- pygame: Version detection and integration<br>- platform: System information and platform detection<br>- time: Precise timing measurements<br>- threading: Background monitoring capabilities<br>- collections: Efficient data structures for performance tracking<br><br>USAGE:<br>&gt;&gt;&gt; monitor = PerformanceMonitor()<br>&gt;&gt;&gt; stats = monitor.get_stats()<br>&gt;&gt;&gt; hardware = monitor.get_hardware_info()<br>&gt;&gt;&gt; gc = GarbageCollector()<br>&gt;&gt;&gt; gc.cleanup()</div>
-                            </div>
-            <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-performancemonitor">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    PerformanceMonitor
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Optimized performance monitoring with minimal overhead</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-performancemonitor-__init__">
-                                    <code>def __init__(self: Any, history_size: int) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-performancemonitor-get_hardware_info">
-                                    <code>def get_hardware_info(self: Any) -> Dict[str, str]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get system hardware information with caching</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-performancemonitor-update_frame">
-                                    <code>def update_frame(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update frame timing - FIXED VERSION</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-performancemonitor-get_stats">
-                                    <code>def get_stats(self: Any) -> Dict[str, float]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get FPS statistics with optimized calculations - FIXED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-performancemonitor-_get_empty_stats">
-                                    <code>def _get_empty_stats(self: Any) -> Dict[str, float]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Return empty stats structure - FIXED</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-garbagecollector">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    GarbageCollector
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Manages cleanup of unused resources</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-garbagecollector-__init__">
-                                    <code>def __init__(self: Any) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-garbagecollector-mark_font_unused">
-                                    <code>def mark_font_unused(self: Any, font: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Mark a font as potentially unused</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-garbagecollector-mark_surface_unused">
-                                    <code>def mark_surface_unused(self: Any, surface: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Mark a surface as potentially unused</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-garbagecollector-cleanup">
-                                    <code>def cleanup(self: Any, force: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Clean up unused resources</div></div></div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                threading.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Threading System - Concurrent Task Execution and Management<br><br>LOCATION: lunaengine/utils/threading.py<br><br>DESCRIPTION:<br>Provides a thread pool system for concurrent task execution, allowing<br>background processing without blocking the main game loop. Supports<br>task submission, execution, and result management.<br><br>KEY COMPONENTS:<br>- Task: Individual executable task with parameters and results<br>- ThreadPool: Managed pool of worker threads for concurrent execution<br>- Queue-based task distribution for efficient load balancing<br>- Exception handling and task result management<br><br>LIBRARIES USED:<br>- threading: Core threading functionality and thread management<br>- queue: Thread-safe task queue implementation<br>- typing: Type hints for callable functions and task parameters<br><br>USAGE:<br>&gt;&gt;&gt; pool = ThreadPool(4)<br>&gt;&gt;&gt; pool.start()<br>&gt;&gt;&gt; task = Task(expensive_calculation, arg1, arg2)<br>&gt;&gt;&gt; pool.submit(task)<br>&gt;&gt;&gt; # Later: check task.result or task.exception<br>&gt;&gt;&gt; pool.stop()</div>
-                            </div>
-            <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-task">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    Task
-                                </h6>
-                <div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-task-__init__">
-                                    <code>def __init__(self: Any, func: Callable, *args: Any, **kwargs: Any) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-task-execute">
-                                    <code>def execute(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Execute the task</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-threadpool">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    ThreadPool
-                                </h6>
-                <div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-threadpool-__init__">
-                                    <code>def __init__(self: Any, num_threads: int) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-threadpool-start">
-                                    <code>def start(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Start the thread pool</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-threadpool-stop">
-                                    <code>def stop(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Stop the thread pool</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-threadpool-submit">
-                                    <code>def submit(self: Any, task: Task) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Submit a task to the thread pool</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-threadpool-_worker">
-                                    <code>def _worker(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Worker thread function</div></div></div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-            </div>
-        </div>
-
-        <!-- Navigation -->
-        <div class="row mt-4">
-            <div class="col-12 text-center">
-                <a href="../index.html" class="btn btn-primary">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Home
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../theme.js"></script>
     
+        <div class="container mt-5">
+            <nav aria-label="breadcrumb"><ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item active">Utils</li>
+            </ol></nav>
+            <h1 class="display-4">Utils Module</h1>
+            <p class="lead">Utility functions - Performance, Math, Threading</p>
+            <hr>
+            <div class="row mt-4">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>image_converter.py</h5>
+                    <p class="card-text small text-muted">Contains 2 classes and 0 functions.</p>
+                    <a href="image_converter.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>math_utils.py</h5>
+                    <p class="card-text small text-muted">Contains 0 classes and 9 functions.</p>
+                    <a href="math_utils.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>performance.py</h5>
+                    <p class="card-text small text-muted">Contains 2 classes and 0 functions.</p>
+                    <a href="performance.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>threading.py</h5>
+                    <p class="card-text small text-muted">Contains 2 classes and 0 functions.</p>
+                    <a href="threading.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div></div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="../theme.js"></script>
+        
     <script>
     // Universal search handler for GitHub Pages structure
     document.addEventListener('DOMContentLoaded', function() {
@@ -366,5 +137,7 @@
     });
     </script>
     
-</body>
-</html>
+    </body>
+
+    </html>
+    

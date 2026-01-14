@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lunaengine"
-version = "0.1.8"
+version = "0.1.9"
 description = "A modern 2D game engine with advanced UI and graphics"
 authors = [
     {name = "MrJuaum"},
 ]
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 keywords = ["game", "engine", "2d", "graphics", "pygame"]
 classifiers = [
     "Development Status :: 3 - Alpha",

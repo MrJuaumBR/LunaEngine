@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>spritesheet.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Graphics</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.html">Graphics</a></li>
+                <li class="breadcrumb-item active">spritesheet.py</li>
+            </ol>
+        </nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>spritesheet.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">Sprite Sheet System with Alpha Support and Time-Based Animations<br><br>LOCATION: lunaengine/graphics/spritesheet.py<br><br>DESCRIPTION:<br>Advanced sprite sheet management system with alpha channel support and<br>time-based animation system. Provides efficient sprite extraction from<br>texture atlases with flexible positioning and frame-rate independent animations.<br><br>KEY FEATURES:<br>- Full alpha channel support for transparent sprites<br>- Flexible sprite extraction using Rect coordinates<br>- Batch sprite extraction for multiple regions<br>- Time-based animation system (frame-rate independent)<br>- Support for padding, margin, and scaling<br>- Animation sequencing with configurable durations<br>- Automatic frame extraction based on parameters<br><br>LIBRARIES USED:<br>- pygame: Image loading, surface manipulation, and alpha processing<br>- typing: Type hints for better code documentation<br>- time: Animation timing calculations<br><br>! WARN:<br>- Ensure pygame is initialized before using this module<br><br>USAGE:<br>&gt;&gt;&gt; # Basic sprite sheet<br>&gt;&gt;&gt; spritesheet = SpriteSheet(&quot;characters.png&quot;)<br>&gt;&gt;&gt; single_sprite = spritesheet.get_sprite_at_rect(pygame.Rect(0, 0, 64, 64))<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; # Multiple sprites<br>&gt;&gt;&gt; regions = [pygame.Rect(0, 0, 64, 64), pygame.Rect(64, 0, 64, 64)]<br>&gt;&gt;&gt; sprites = spritesheet.get_sprites_at_regions(regions)<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; # Animation - automatically extracts frames<br>&gt;&gt;&gt; walk_animation = Animation(&quot;tiki_texture.png&quot;, (70, 70), (0, 0), frame_count=6,<br>&gt;&gt;&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; scale=(2, 2), duration=1.0)<br>&gt;&gt;&gt; current_frame = walk_animation.get_current_frame()</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-spritesheet">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class SpriteSheet</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Main sprite sheet class for managing and extracting sprites from texture atlases.<br><br>This class handles loading sprite sheets with alpha support and provides<br>multiple methods for extracting individual sprites or sprite sequences.<br><br>Attributes:<br> &nbsp; &nbsp;sheet (pygame.Surface): The loaded sprite sheet surface with alpha<br> &nbsp; &nbsp;filename (str): Path to the sprite sheet file<br> &nbsp; &nbsp;width (int): Width of the sprite sheet<br> &nbsp; &nbsp;height (int): Height of the sprite sheet</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, filename) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize the sprite sheet with alpha support.<br><br>Args:<br> &nbsp; &nbsp;filename (str): Path to the sprite sheet image file</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-get_sprite_at_rect">
+                <code class="fs-6 fw-bold text-color-title">def get_sprite_at_rect(self, rect) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Extract a sprite from a specific rectangular region.<br><br>Args:<br> &nbsp; &nbsp;rect (pygame.Rect): Rectangle defining the sprite region (x, y, width, height)<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface with alpha<br><br>Raises:<br> &nbsp; &nbsp;ValueError: If the rect is outside the sprite sheet bounds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-get_sprites_at_regions">
+                <code class="fs-6 fw-bold text-color-title">def get_sprites_at_regions(self, regions) -> List[pygame.Surface]</code>
+                <div class="mt-2 text-muted small">Extract multiple sprites from a list of rectangular regions.<br><br>Args:<br> &nbsp; &nbsp;regions (List[pygame.Rect]): List of rectangles defining sprite regions<br><br>Returns:<br> &nbsp; &nbsp;List[pygame.Surface]: List of extracted sprite surfaces</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-get_sprite_grid">
+                <code class="fs-6 fw-bold text-color-title">def get_sprite_grid(self, cell_size, grid_pos) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Extract a sprite from a grid-based sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;cell_size (Tuple[int, int]): Width and height of each grid cell<br> &nbsp; &nbsp;grid_pos (Tuple[int, int]): Grid coordinates (col, row)<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-get_surface_drawn_area">
+                <code class="fs-6 fw-bold text-color-title">def get_surface_drawn_area(self, surface, threshold) -> pygame.Rect</code>
+                <div class="mt-2 text-muted small">Get the bounding rectangle of the non-transparent (drawn) area of a surface.<br><br>This function analyzes the alpha channel of the surface to find the smallest<br>rectangle that contains all non-transparent pixels, creating a tight hitbox.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Surface to analyze (must have alpha channel)<br> &nbsp; &nbsp;threshold (int): Alpha threshold value (0-255). Pixels with alpha &gt;= threshold<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;are considered drawn. Default is 1 (any non-fully-transparent).<br><br>Returns:<br> &nbsp; &nbsp;pygame.Rect: Tight bounding rectangle around the non-transparent area.<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Returns empty Rect (0,0,0,0) if surface is fully transparent.<br><br>Raises:<br> &nbsp; &nbsp;ValueError: If surface doesn&#x27;t have per-pixel alpha</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-animation">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Animation</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Time-based animation system for sprite sequences with fade effects.<br><br>This class automatically extracts frames from a sprite sheet based on<br>the provided parameters and manages animation timing with alpha transitions.<br><br>Attributes:<br> &nbsp; &nbsp;spritesheet (SpriteSheet): The source sprite sheet<br> &nbsp; &nbsp;frames (List[pygame.Surface]): List of animation frames<br> &nbsp; &nbsp;frame_count (int): Total number of frames in the animation<br> &nbsp; &nbsp;current_frame_index (int): Current frame index in the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;frame_duration (float): Duration of each frame in seconds<br> &nbsp; &nbsp;last_update_time (float): Last time the animation was updated<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;playing (bool): Whether the animation is currently playing<br> &nbsp; &nbsp;fade_in_duration (float): Duration of fade-in effect in seconds<br> &nbsp; &nbsp;fade_out_duration (float): Duration of fade-out effect in seconds<br> &nbsp; &nbsp;fade_alpha (int): Current alpha value for fade effects (0-255)<br> &nbsp; &nbsp;fade_mode (str): Current fade mode: &#x27;in&#x27;, &#x27;out&#x27;, or None<br> &nbsp; &nbsp;flip (Tuple[bool, bool]): Flip flags for horizontal and vertical flipping</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, spritesheet_file, size, start_pos, frame_count, padding, margin, scale, duration, loop, fade_in_duration, fade_out_duration, flip) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize the animation and automatically extract frames from sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;spritesheet_file (str): Path to the sprite sheet file<br> &nbsp; &nbsp;size (Tuple[int, int]): Size of each sprite (width, height)<br> &nbsp; &nbsp;start_pos (Tuple[int, int]): Starting position in the sprite sheet (x, y)<br> &nbsp; &nbsp;frame_count (int): Number of frames to extract for the animation<br> &nbsp; &nbsp;padding (Tuple[int, int]): Padding between sprites (x, y)<br> &nbsp; &nbsp;margin (Tuple[int, int]): Margin around the sprite sheet (x, y)<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;fade_in_duration (float): Duration of fade-in effect in seconds<br> &nbsp; &nbsp;fade_out_duration (float): Duration of fade-out effect in seconds<br> &nbsp; &nbsp;flip (Tuple[bool, bool]): Flip the animation horizontally and vertically</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-_extract_animation_frames">
+                <code class="fs-6 fw-bold text-color-title">def _extract_animation_frames(self) -> List[pygame.Surface]</code>
+                <div class="mt-2 text-muted small">Automatically extract animation frames based on parameters.<br><br>Creates a sequence of rectangles and extracts the corresponding sprites<br>from the sprite sheet.<br><br>Returns:<br> &nbsp; &nbsp;List[pygame.Surface]: List of extracted frames</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-_apply_scaling">
+                <code class="fs-6 fw-bold text-color-title">def _apply_scaling(self) -> Any</code>
+                <div class="mt-2 text-muted small">Apply scaling to all animation frames.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-set_duration">
+                <code class="fs-6 fw-bold text-color-title">def set_duration(self, new_duration) -> Any</code>
+                <div class="mt-2 text-muted small">Change the animation duration.<br><br>Args:<br> &nbsp; &nbsp;new_duration (float): New total duration in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-play">
+                <code class="fs-6 fw-bold text-color-title">def play(self) -> Any</code>
+                <div class="mt-2 text-muted small">Start or resume the animation.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-pause">
+                <code class="fs-6 fw-bold text-color-title">def pause(self) -> Any</code>
+                <div class="mt-2 text-muted small">Pause the animation.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-get_frame_count">
+                <code class="fs-6 fw-bold text-color-title">def get_frame_count(self) -> int</code>
+                <div class="mt-2 text-muted small">Get the number of frames in the animation.<br><br>Returns:<br> &nbsp; &nbsp;int: Number of frames</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-get_progress">
+                <code class="fs-6 fw-bold text-color-title">def get_progress(self) -> float</code>
+                <div class="mt-2 text-muted small">Get the current progress of the animation (0.0 to 1.0).<br><br>Returns:<br> &nbsp; &nbsp;float: Animation progress from start (0.0) to end (1.0)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-_apply_fade_effect">
+                <code class="fs-6 fw-bold text-color-title">def _apply_fade_effect(self, surface) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Apply current fade alpha to a surface.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Original surface<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: Surface with fade effect applied</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-update_fade">
+                <code class="fs-6 fw-bold text-color-title">def update_fade(self) -> Any</code>
+                <div class="mt-2 text-muted small">Update fade-in and fade-out effects based on elapsed time.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self) -> Any</code>
+                <div class="mt-2 text-muted small">Update the animation based on elapsed time including fade effects.<br><br>This method uses time-based animation rather than frame-based,<br>making it frame-rate independent.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-get_current_frame">
+                <code class="fs-6 fw-bold text-color-title">def get_current_frame(self) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Get the current animation frame with fade effects applied.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The current frame surface with fade alpha</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-start_fade_in">
+                <code class="fs-6 fw-bold text-color-title">def start_fade_in(self, duration) -> Any</code>
+                <div class="mt-2 text-muted small">Start a fade-in effect.<br><br>Args:<br> &nbsp; &nbsp;duration (float, optional): Override fade-in duration. If None, uses initialized value.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-start_fade_out">
+                <code class="fs-6 fw-bold text-color-title">def start_fade_out(self, duration) -> Any</code>
+                <div class="mt-2 text-muted small">Start a fade-out effect.<br><br>Args:<br> &nbsp; &nbsp;duration (float, optional): Override fade-out duration. If None, uses initialized value.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-set_fade_alpha">
+                <code class="fs-6 fw-bold text-color-title">def set_fade_alpha(self, alpha) -> Any</code>
+                <div class="mt-2 text-muted small">Manually set the fade alpha value.<br><br>Args:<br> &nbsp; &nbsp;alpha (int): Alpha value from 0 (transparent) to 255 (opaque)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-is_fade_complete">
+                <code class="fs-6 fw-bold text-color-title">def is_fade_complete(self) -> bool</code>
+                <div class="mt-2 text-muted small">Check if the current fade effect is complete.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if no fade effect is active or fade is complete</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-reset">
+                <code class="fs-6 fw-bold text-color-title">def reset(self) -> Any</code>
+                <div class="mt-2 text-muted small">Reset the animation to the first frame and reset fade effects.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                
+                
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Graphics Module
+            </a>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0 text-white-50 small">LunaEngine Documentation &copy; 2026</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+</body>
+</html>

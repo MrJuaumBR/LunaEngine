@@ -336,7 +336,7 @@ class ParallaxDemo(Scene):
 
 def main():
     """Main function to run the parallax demo"""
-    engine = LunaEngine("Parallax System Demo - Use A/D to move, P to toggle parallax", 1024, 576, use_opengl=True)
+    engine = LunaEngine("Parallax System Demo - Use A/D to move, P to toggle parallax", 1024, 576)
     engine.fps = 60
     
     # Register event handlers

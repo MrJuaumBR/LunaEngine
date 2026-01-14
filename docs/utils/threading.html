@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>threading.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Utils</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.html">Utils</a></li>
+                <li class="breadcrumb-item active">threading.py</li>
+            </ol>
+        </nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>threading.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">Threading System - Concurrent Task Execution and Management<br><br>LOCATION: lunaengine/utils/threading.py<br><br>DESCRIPTION:<br>Provides a thread pool system for concurrent task execution, allowing<br>background processing without blocking the main game loop. Supports<br>task submission, execution, and result management.<br><br>KEY COMPONENTS:<br>- Task: Individual executable task with parameters and results<br>- ThreadPool: Managed pool of worker threads for concurrent execution<br>- Queue-based task distribution for efficient load balancing<br>- Exception handling and task result management<br><br>LIBRARIES USED:<br>- threading: Core threading functionality and thread management<br>- queue: Thread-safe task queue implementation<br>- typing: Type hints for callable functions and task parameters<br><br>USAGE:<br>&gt;&gt;&gt; pool = ThreadPool(4)<br>&gt;&gt;&gt; pool.start()<br>&gt;&gt;&gt; task = Task(expensive_calculation, arg1, arg2)<br>&gt;&gt;&gt; pool.submit(task)<br>&gt;&gt;&gt; # Later: check task.result or task.exception<br>&gt;&gt;&gt; pool.stop()</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-task">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Task</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-task-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, func) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-task-execute">
+                <code class="fs-6 fw-bold text-color-title">def execute(self) -> Any</code>
+                <div class="mt-2 text-muted small">Execute the task</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-threadpool">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ThreadPool</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadpool-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, num_threads) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadpool-start">
+                <code class="fs-6 fw-bold text-color-title">def start(self) -> Any</code>
+                <div class="mt-2 text-muted small">Start the thread pool</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadpool-stop">
+                <code class="fs-6 fw-bold text-color-title">def stop(self) -> Any</code>
+                <div class="mt-2 text-muted small">Stop the thread pool</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadpool-submit">
+                <code class="fs-6 fw-bold text-color-title">def submit(self, task) -> Any</code>
+                <div class="mt-2 text-muted small">Submit a task to the thread pool</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadpool-_worker">
+                <code class="fs-6 fw-bold text-color-title">def _worker(self) -> Any</code>
+                <div class="mt-2 text-muted small">Worker thread function</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                
+                
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Utils Module
+            </a>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0 text-white-50 small">LunaEngine Documentation &copy; 2026</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+</body>
+</html>

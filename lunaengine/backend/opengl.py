@@ -1,10 +1,11 @@
 """
-OpenGL-based hardware-accelerated renderer for LunaEngine - DYNAMIC PARTICLE BUFFERS
+OpenGL-based hardware-accelerated renderer for LunaEngine - DYNAMIC PARTICLE BUFFERS & FILTER SYSTEM
 """
 
 import pygame
 import numpy as np
 from typing import Tuple, Dict, Any, List, TYPE_CHECKING, Optional
+from enum import Enum
 
 # Check if OpenGL is available
 try:
@@ -17,6 +18,100 @@ except ImportError:
     
 if TYPE_CHECKING:
     from ..graphics import Camera
+
+# ============================================================================
+# FILTER SYSTEM ENUMS
+# ============================================================================
+
+class FilterType(Enum):
+    """Enumeration of available filter types"""
+    NONE = "none"
+    VIGNETTE = "vignette"
+    BLUR = "blur"
+    SEPIA = "sepia"
+    GRAYSCALE = "grayscale"
+    INVERT = "invert"
+    TEMPERATURE_WARM = "temperature_warm"
+    TEMPERATURE_COLD = "temperature_cold"
+    NIGHT_VISION = "night_vision"
+    CRT = "crt"
+    PIXELATE = "pixelate"
+    BLOOM = "bloom"
+    EDGE_DETECT = "edge_detect"
+    EMBOSS = "emboss"
+    SHARPEN = "sharpen"
+    POSTERIZE = "posterize"
+    NEON = "neon"
+    RADIAL_BLUR = "radial_blur"
+    FISHEYE = "fisheye"
+    TWIRL = "twirl"
+
+class FilterRegionType(Enum):
+    """Enumeration of filter region shapes"""
+    FULLSCREEN = "fullscreen"
+    RECTANGLE = "rectangle"
+    CIRCLE = "circle"
+
+# ============================================================================
+# FILTER CLASS
+# ============================================================================
+
+class Filter:
+    """Simple filter class with all parameters"""
+    
+    def __init__(self, 
+                 filter_type: FilterType = FilterType.NONE,
+                 intensity: float = 1.0,
+                 region_type: FilterRegionType = FilterRegionType.FULLSCREEN,
+                 region_pos: Tuple[float, float] = (0, 0),
+                 region_size: Tuple[float, float] = (100, 100),
+                 radius: float = 50.0,
+                 feather: float = 10.0,
+                 blend_mode: str = "normal"):
+        """
+        Initialize a filter with all parameters.
+        
+        Args:
+            filter_type: Type of filter effect
+            intensity: Filter strength (0.0 to 1.0)
+            region_type: Shape of filter region
+            region_pos: Position of region (top-left for rect, center for circle)
+            region_size: Size of region (width, height)
+            radius: Radius for circular regions
+            feather: Edge softness in pixels
+            blend_mode: How filter blends with background
+        """
+        self.filter_type = filter_type
+        self.intensity = max(0.0, min(1.0, intensity))
+        self.region_type = region_type
+        self.region_pos = region_pos
+        self.region_size = region_size
+        self.radius = max(1.0, radius)
+        self.feather = max(0.0, feather)
+        self.blend_mode = blend_mode
+        self.enabled = True
+        self.time = 0.0  # For animated filters
+        
+    def update(self, dt: float):
+        """Update filter for animation"""
+        self.time += dt
+        
+    def copy(self) -> 'Filter':
+        """Create a copy of this filter"""
+        return Filter(
+            self.filter_type,
+            self.intensity,
+            self.region_type,
+            self.region_pos,
+            self.region_size,
+            self.radius,
+            self.feather,
+            self.blend_mode
+        )
+
+# ============================================================================
+# SHADER CLASSES
+# ============================================================================
 
 class ShaderProgram:
     """Generic shader program for 2D rendering with caching"""
@@ -274,21 +369,492 @@ class TextureShader(ShaderProgram):
         glBindBuffer(GL_ARRAY_BUFFER, 0)
         glBindVertexArray(0)
 
+class FilterShader(ShaderProgram):
+    """Shader for applying post-processing filters"""
+    
+    def __init__(self):
+        vertex_source = """
+        #version 330 core
+        layout (location = 0) in vec2 aPos;
+        layout (location = 1) in vec2 aTexCoord;
+        
+        out vec2 TexCoord;
+        
+        void main() {
+            gl_Position = vec4(aPos, 0.0, 1.0);
+            TexCoord = aTexCoord;
+        }
+        """
+        
+        fragment_source = """
+        #version 330 core
+        out vec4 FragColor;
+        in vec2 TexCoord;
+        
+        uniform sampler2D screenTexture;
+        uniform vec2 screenSize;
+        uniform float time;
+        
+        // Filter parameters
+        uniform int filterType;
+        uniform float intensity;
+        uniform vec4 regionParams; // x, y, width, height
+        uniform float radius;
+        uniform float feather;
+        uniform int regionType; // 0=full, 1=rect, 2=circle
+        
+        // Common utility functions
+        float luminance(vec3 color) {
+            return dot(color, vec3(0.299, 0.587, 0.114));
+        }
+        
+        vec3 rgb2hsv(vec3 c) {
+            vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+            vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+            vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+            
+            float d = q.x - min(q.w, q.y);
+            float e = 1.0e-10;
+            return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+        }
+        
+        vec3 hsv2rgb(vec3 c) {
+            vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+            vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+            return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+        }
+        
+        // Region masking
+        float getRegionMask(vec2 pixelCoord) {
+            if (regionType == 0) return 1.0; // Fullscreen
+            
+            if (regionType == 1) { // Rectangle
+                vec2 rectMin = regionParams.xy;
+                vec2 rectMax = regionParams.xy + regionParams.zw;
+                
+                // Distance to rectangle edges
+                vec2 dist = vec2(
+                    max(rectMin.x - pixelCoord.x, pixelCoord.x - rectMax.x),
+                    max(rectMin.y - pixelCoord.y, pixelCoord.y - rectMax.y)
+                );
+                
+                float edgeDist = max(dist.x, dist.y);
+                return 1.0 - smoothstep(0.0, feather, edgeDist);
+            }
+            else { // Circle (regionType == 2)
+                vec2 center = regionParams.xy + regionParams.zw * 0.5;
+                float dist = distance(pixelCoord, center);
+                float effectiveRadius = min(regionParams.z, regionParams.w) * 0.5 * radius;
+                return 1.0 - smoothstep(effectiveRadius - feather, effectiveRadius + feather, dist);
+            }
+        }
+        
+        // FILTER FUNCTIONS - READY TO USE
+        
+        // 1. VIGNETTE FILTER (darkens edges)
+        vec3 applyVignette(vec3 color, vec2 uv) {
+            vec2 center = uv - 0.5;
+            float dist = length(center);
+            float vignette = 1.0 - dist * 2.0 * intensity;
+            vignette = smoothstep(0.0, 0.8, vignette);
+            return color * vignette;
+        }
+        
+        // 2. GAUSSIAN BLUR FILTER
+        vec3 applyBlur(vec3 color) {
+            vec2 texelSize = 1.0 / screenSize;
+            vec3 result = vec3(0.0);
+            float total = 0.0;
+            
+            // 5x5 Gaussian blur
+            float kernel[25] = float[25](
+                1.0, 4.0, 7.0, 4.0, 1.0,
+                4.0, 16.0, 26.0, 16.0, 4.0,
+                7.0, 26.0, 41.0, 26.0, 7.0,
+                4.0, 16.0, 26.0, 16.0, 4.0,
+                1.0, 4.0, 7.0, 4.0, 1.0
+            );
+            
+            int idx = 0;
+            for (int y = -2; y <= 2; y++) {
+                for (int x = -2; x <= 2; x++) {
+                    vec2 offset = vec2(x, y) * texelSize * 2.0;
+                    result += texture(screenTexture, TexCoord + offset).rgb * kernel[idx];
+                    total += kernel[idx];
+                    idx++;
+                }
+            }
+            
+            return result / total;
+        }
+        
+        // 3. SEPIA FILTER (old photo effect)
+        vec3 applySepia(vec3 color) {
+            vec3 sepia = vec3(
+                dot(color, vec3(0.393, 0.769, 0.189)),
+                dot(color, vec3(0.349, 0.686, 0.168)),
+                dot(color, vec3(0.272, 0.534, 0.131))
+            );
+            return mix(color, sepia, intensity);
+        }
+        
+        // 4. GRAYSCALE FILTER (black and white)
+        vec3 applyGrayscale(vec3 color) {
+            float gray = luminance(color);
+            return mix(color, vec3(gray), intensity);
+        }
+        
+        // 5. INVERT FILTER (color inversion)
+        vec3 applyInvert(vec3 color) {
+            vec3 inverted = vec3(1.0) - color;
+            return mix(color, inverted, intensity);
+        }
+        
+        // 6. WARM TEMPERATURE FILTER
+        vec3 applyWarmTemperature(vec3 color) {
+            vec3 warm = vec3(1.0, 0.9, 0.7);
+            return mix(color, color * warm, intensity);
+        }
+        
+        // 7. COLD TEMPERATURE FILTER
+        vec3 applyColdTemperature(vec3 color) {
+            vec3 cold = vec3(0.7, 0.9, 1.0);
+            return mix(color, color * cold, intensity);
+        }
+        
+        // 8. NIGHT VISION FILTER (green night vision)
+        vec3 applyNightVision(vec3 color) {
+            float green = luminance(color) * 1.5;
+            float scanLine = sin(TexCoord.y * screenSize.y * 0.7 + time * 5.0) * 0.1 + 0.9;
+            float noise = fract(sin(dot(TexCoord, vec2(12.9898, 78.233))) * 43758.5453) * 0.1;
+            vec3 nightColor = vec3(0.0, green * scanLine + noise, 0.0);
+            return mix(color, nightColor, intensity);
+        }
+        
+        // 9. CRT FILTER (old monitor effect)
+        vec3 applyCRT(vec3 color) {
+            // Scanlines
+            float scanline = sin(TexCoord.y * screenSize.y * 0.7) * 0.04 + 0.96;
+            
+            // Vignette
+            vec2 uv = TexCoord - 0.5;
+            float vignette = 1.0 - length(uv) * 0.7;
+            
+            // Color bleed (simple RGB separation)
+            float offset = 0.003;
+            vec3 bleed;
+            bleed.r = texture(screenTexture, TexCoord + vec2(offset, 0.0)).r;
+            bleed.g = texture(screenTexture, TexCoord).g;
+            bleed.b = texture(screenTexture, TexCoord - vec2(offset, 0.0)).b;
+            
+            // Curvature
+            uv *= 1.2;
+            uv = uv * (1.0 + length(uv) * 0.2);
+            
+            vec3 crtColor = bleed * scanline * vignette;
+            return mix(color, crtColor, intensity);
+        }
+        
+        // 10. PIXELATE FILTER
+        vec3 applyPixelate(vec3 color) {
+            float pixelSize = 8.0 + (1.0 - intensity) * 15.0;
+            vec2 pixelCoord = floor(TexCoord * screenSize / pixelSize) * pixelSize / screenSize;
+            vec3 pixelated = texture(screenTexture, pixelCoord).rgb;
+            return mix(color, pixelated, intensity);
+        }
+        
+        // 11. BLOOM FILTER (glow effect)
+        vec3 applyBloom(vec3 color) {
+            vec2 texelSize = 1.0 / screenSize;
+            vec3 blur = vec3(0.0);
+            int samples = 5;
+            float total = 0.0;
+            
+            for (int i = -samples; i <= samples; i++) {
+                for (int j = -samples; j <= samples; j++) {
+                    float weight = 1.0 / (1.0 + abs(float(i)) + abs(float(j)));
+                    vec2 offset = vec2(i, j) * texelSize * 2.0;
+                    blur += texture(screenTexture, TexCoord + offset).rgb * weight;
+                    total += weight;
+                }
+            }
+            
+            blur /= total;
+            
+            // Only apply to bright areas
+            float brightness = luminance(color);
+            float glow = smoothstep(0.7, 1.0, brightness);
+            
+            return mix(color, mix(color, blur, glow * 0.5), intensity);
+        }
+        
+        // 12. EDGE DETECTION FILTER
+        vec3 applyEdgeDetect(vec3 color) {
+            vec2 texelSize = 1.0 / screenSize;
+            
+            // Sobel edge detection
+            float gx[9] = float[9](-1.0, 0.0, 1.0, -2.0, 0.0, 2.0, -1.0, 0.0, 1.0);
+            float gy[9] = float[9](-1.0, -2.0, -1.0, 0.0, 0.0, 0.0, 1.0, 2.0, 1.0);
+            
+            float sx = 0.0;
+            float sy = 0.0;
+            int idx = 0;
+            
+            for (int y = -1; y <= 1; y++) {
+                for (int x = -1; x <= 1; x++) {
+                    vec2 offset = vec2(x, y) * texelSize;
+                    float sample = luminance(texture(screenTexture, TexCoord + offset).rgb);
+                    
+                    sx += sample * gx[idx];
+                    sy += sample * gy[idx];
+                    idx++;
+                }
+            }
+            
+            float edge = sqrt(sx * sx + sy * sy);
+            vec3 edgeColor = vec3(edge > 0.2 ? 1.0 : 0.0);
+            return mix(color, edgeColor, intensity);
+        }
+        
+        // 13. EMBOSS FILTER
+        vec3 applyEmboss(vec3 color) {
+            vec2 texelSize = 1.0 / screenSize;
+            
+            float sample1 = luminance(texture(screenTexture, TexCoord + vec2(-texelSize.x, -texelSize.y)).rgb);
+            float sample2 = luminance(texture(screenTexture, TexCoord + vec2(texelSize.x, texelSize.y)).rgb);
+            
+            float emboss = sample2 - sample1 + 0.5;
+            vec3 embossColor = vec3(emboss);
+            return mix(color, embossColor, intensity);
+        }
+        
+        // 14. SHARPEN FILTER
+        vec3 applySharpen(vec3 color) {
+            vec2 texelSize = 1.0 / screenSize;
+            
+            // Unsharp masking (sharp = original + (original - blurred))
+            vec3 blur = (texture(screenTexture, TexCoord + vec2(-texelSize.x, 0.0)).rgb +
+                        texture(screenTexture, TexCoord + vec2(texelSize.x, 0.0)).rgb +
+                        texture(screenTexture, TexCoord + vec2(0.0, -texelSize.y)).rgb +
+                        texture(screenTexture, TexCoord + vec2(0.0, texelSize.y)).rgb) * 0.25;
+            
+            vec3 sharp = color + (color - blur) * 2.0 * intensity;
+            vec3 sharpened = clamp(sharp, 0.0, 1.0);
+            return mix(color, sharpened, intensity);
+        }
+        
+        // 15. POSTERIZE FILTER
+        vec3 applyPosterize(vec3 color) {
+            float levels = 4.0 + (1.0 - intensity) * 12.0;
+            vec3 posterized = floor(color * levels) / levels;
+            return mix(color, posterized, intensity);
+        }
+        
+        // 16. NEON FILTER (glowing edges)
+        vec3 applyNeon(vec3 color) {
+            vec2 texelSize = 1.0 / screenSize;
+            
+            // Sobel for edge detection
+            float gx[9] = float[9](-1.0, 0.0, 1.0, -2.0, 0.0, 2.0, -1.0, 0.0, 1.0);
+            float gy[9] = float[9](-1.0, -2.0, -1.0, 0.0, 0.0, 0.0, 1.0, 2.0, 1.0);
+            
+            vec3 sx = vec3(0.0);
+            vec3 sy = vec3(0.0);
+            int idx = 0;
+            
+            for (int y = -1; y <= 1; y++) {
+                for (int x = -1; x <= 1; x++) {
+                    vec2 offset = vec2(x, y) * texelSize;
+                    vec3 sample = texture(screenTexture, TexCoord + offset).rgb;
+                    
+                    sx += sample * gx[idx];
+                    sy += sample * gy[idx];
+                    idx++;
+                }
+            }
+            
+            vec3 edge = sqrt(sx * sx + sy * sy);
+            vec3 neon = edge * 3.0 * intensity;
+            
+            // Add color to neon based on original color hue
+            vec3 hsv = rgb2hsv(color);
+            hsv.y = 1.0; // Full saturation for neon
+            hsv.z = 1.0; // Full value
+            vec3 neonColor = hsv2rgb(hsv) * neon;
+            
+            return mix(color, color + neonColor, intensity);
+        }
+        
+        // 17. RADIAL BLUR FILTER (zoom blur)
+        vec3 applyRadialBlur(vec3 color) {
+            vec2 center = vec2(0.5, 0.5);
+            vec2 uv = TexCoord - center;
+            float dist = length(uv);
+            
+            vec3 result = vec3(0.0);
+            float samples = 10.0 * intensity;
+            float total = 0.0;
+            
+            for (float i = 0.0; i < samples; i++) {
+                float percent = i / samples;
+                float weight = 1.0 - percent;
+                vec2 sampleUV = center + uv * (1.0 - percent * 0.5);
+                result += texture(screenTexture, sampleUV).rgb * weight;
+                total += weight;
+            }
+            
+            return result / total;
+        }
+        
+        // 18. FISHEYE FILTER
+        vec3 applyFisheye(vec3 color) {
+            vec2 center = vec2(0.5, 0.5);
+            vec2 uv = TexCoord - center;
+            float dist = length(uv);
+            
+            float strength = 0.5 * intensity;
+            vec2 distorted = uv * (1.0 - strength * dist * dist);
+            vec2 sampleUV = center + distorted;
+            
+            if (sampleUV.x < 0.0 || sampleUV.x > 1.0 || sampleUV.y < 0.0 || sampleUV.y > 1.0) {
+                return color;
+            }
+            
+            return texture(screenTexture, sampleUV).rgb;
+        }
+        
+        // 19. TWIRL FILTER
+        vec3 applyTwirl(vec3 color) {
+            vec2 center = vec2(0.5, 0.5);
+            vec2 uv = TexCoord - center;
+            float angle = length(uv) * 3.0 * intensity;
+            
+            float cosAngle = cos(angle);
+            float sinAngle = sin(angle);
+            vec2 twisted = vec2(
+                uv.x * cosAngle - uv.y * sinAngle,
+                uv.x * sinAngle + uv.y * cosAngle
+            );
+            
+            vec2 sampleUV = center + twisted;
+            
+            if (sampleUV.x < 0.0 || sampleUV.x > 1.0 || sampleUV.y < 0.0 || sampleUV.y > 1.0) {
+                return color;
+            }
+            
+            return texture(screenTexture, sampleUV).rgb;
+        }
+        
+        // MAIN FILTER SWITCH
+        vec3 applyFilter(vec3 color, int type) {
+            switch(type) {
+                case 1: return applyVignette(color, TexCoord);
+                case 2: return applyBlur(color);
+                case 3: return applySepia(color);
+                case 4: return applyGrayscale(color);
+                case 5: return applyInvert(color);
+                case 6: return applyWarmTemperature(color);
+                case 7: return applyColdTemperature(color);
+                case 8: return applyNightVision(color);
+                case 9: return applyCRT(color);
+                case 10: return applyPixelate(color);
+                case 11: return applyBloom(color);
+                case 12: return applyEdgeDetect(color);
+                case 13: return applyEmboss(color);
+                case 14: return applySharpen(color);
+                case 15: return applyPosterize(color);
+                case 16: return applyNeon(color);
+                case 17: return applyRadialBlur(color);
+                case 18: return applyFisheye(color);
+                case 19: return applyTwirl(color);
+                default: return color;
+            }
+        }
+        
+        void main() {
+            vec4 original = texture(screenTexture, TexCoord);
+            vec3 color = original.rgb;
+            
+            // Get current pixel coordinate
+            vec2 pixelCoord = gl_FragCoord.xy;
+            
+            // Get region mask
+            float regionMask = getRegionMask(pixelCoord);
+            
+            if (regionMask > 0.0 && filterType != 0) {
+                // Apply the selected filter
+                vec3 filtered = applyFilter(color, filterType);
+                
+                // Blend with original based on intensity and region mask
+                color = mix(color, filtered, intensity * regionMask);
+            }
+            
+            FragColor = vec4(color, original.a);
+        }
+        """
+        
+        super().__init__(vertex_source, fragment_source)
+    
+    def _setup_geometry(self):
+        """Setup fullscreen quad for filter rendering"""
+        vertices = np.array([
+            # positions   # texture coords
+            -1.0,  1.0,  0.0, 1.0,  # top-left
+            -1.0, -1.0,  0.0, 0.0,  # bottom-left
+             1.0, -1.0,  1.0, 0.0,  # bottom-right
+             1.0,  1.0,  1.0, 1.0,  # top-right
+        ], dtype=np.float32)
+        
+        indices = np.array([0, 1, 2, 2, 3, 0], dtype=np.uint32)
+        
+        self.vao = glGenVertexArrays(1)
+        self.vbo = glGenBuffers(1)
+        self.ebo = glGenBuffers(1)
+        
+        glBindVertexArray(self.vao)
+        
+        glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
+        glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
+        
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebo)
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL_STATIC_DRAW)
+        
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * vertices.itemsize, ctypes.c_void_p(0))
+        glEnableVertexAttribArray(0)
+        
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * vertices.itemsize, ctypes.c_void_p(2 * vertices.itemsize))
+        glEnableVertexAttribArray(1)
+        
+        glBindBuffer(GL_ARRAY_BUFFER, 0)
+        glBindVertexArray(0)
+
+# ============================================================================
+# MAIN OPENGL RENDERER WITH FILTER SYSTEM
+# ============================================================================
+
 class OpenGLRenderer:
-    camera_position:pygame.math.Vector2 = pygame.math.Vector2(0, 0)
+    camera_position: pygame.math.Vector2 = pygame.math.Vector2(0, 0)
+    
     def __init__(self, width: int, height: int):
         self.width = width
         self.height = height
         self.simple_shader = None
         self.texture_shader = None
         self.particle_shader = None
+        self.filter_shader = None  # NEW: Filter shader
         self._initialized = False
         
         # Particle optimization with DYNAMIC buffers
         self._max_particles = 1024  # Initial size
         self._particle_instance_data = np.zeros((self._max_particles, 4), dtype=np.float32)
         self._particle_color_data = np.zeros((self._max_particles, 4), dtype=np.float32)
-        self.on_max_particles_change:list = [] # Callbacks
+        self.on_max_particles_change: list = [] # Callbacks
+        
+        # FILTER SYSTEM - NEW
+        self.filters: List[Filter] = []
+        self._filter_framebuffer = None
+        self._filter_texture = None
+        self._filter_renderbuffer = None
         
         # Cache for reusable geometry
         self._circle_cache = {}
@@ -327,26 +893,445 @@ class OpenGLRenderer:
         self.simple_shader = SimpleShader()
         self.texture_shader = TextureShader()
         self.particle_shader = ParticleShader()
+        self.filter_shader = FilterShader()  # NEW: Initialize filter shader
         
-        if not self.simple_shader.program or not self.texture_shader.program or not self.particle_shader.program:
+        if not all([self.simple_shader.program, self.texture_shader.program, 
+                   self.particle_shader.program, self.filter_shader.program]):
             print("Shader initialization failed")
             return False
+        
+        # Initialize filter framebuffer
+        self._initialize_filter_framebuffer()
         
         self._initialized = True
         print("OpenGL renderer initialized successfully")
         return True
+    
+    def _initialize_filter_framebuffer(self):
+        """Initialize framebuffer for filter rendering"""
+        try:
+            # Create framebuffer
+            self._filter_framebuffer = glGenFramebuffers(1)
+            self._filter_texture = glGenTextures(1)
+            self._filter_renderbuffer = glGenRenderbuffers(1)
+            
+            # Setup texture
+            glBindTexture(GL_TEXTURE_2D, self._filter_texture)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.width, self.height, 
+                        0, GL_RGBA, GL_UNSIGNED_BYTE, None)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+            
+            # Setup renderbuffer
+            glBindRenderbuffer(GL_RENDERBUFFER, self._filter_renderbuffer)
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, self.width, self.height)
+            
+            # Attach to framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER, self._filter_framebuffer)
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, self._filter_texture, 0)
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, 
+                                    GL_RENDERBUFFER, self._filter_renderbuffer)
+            
+            # Check framebuffer status
+            if glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE:
+                print("Filter framebuffer is not complete!")
+                return False
+            
+            glBindFramebuffer(GL_FRAMEBUFFER, 0)
+            return True
+            
+        except Exception as e:
+            print(f"Failed to initialize filter framebuffer: {e}")
+            return False
+    
+    # ========================================================================
+    # FILTER SYSTEM METHODS - SIMPLE AND DIRECT
+    # ========================================================================
+    
+    def add_filter(self, filter_obj: Filter):
+        """
+        Add a filter to be applied during rendering.
         
+        Args:
+            filter_obj: Filter object with settings
+        """
+        self.filters.append(filter_obj)
+    
+    def remove_filter(self, filter_obj: Filter):
+        """
+        Remove a filter.
+        
+        Args:
+            filter_obj: Filter object to remove
+        """
+        if filter_obj in self.filters:
+            self.filters.remove(filter_obj)
+    
+    def clear_filters(self):
+        """Remove all filters"""
+        self.filters.clear()
+    
+    def create_quick_filter(self, 
+                          filter_type: FilterType, 
+                          intensity: float = 1.0,
+                          x: float = 0, y: float = 0,
+                          width: float = None, height: float = None,
+                          radius: float = 50.0,
+                          feather: float = 10.0) -> Filter:
+        """
+        Quick helper to create and add a filter in one call.
+        
+        Args:
+            filter_type: Type of filter
+            intensity: Filter strength (0.0 to 1.0)
+            x, y: Position (top-left for rect, center for circle)
+            width, height: Size (defaults to screen size)
+            radius: Radius for circular regions
+            feather: Edge softness
+            
+        Returns:
+            Filter: Created filter object
+        """
+        if width is None or height is None:
+            width, height = self.width, self.height
+        
+        region_type = FilterRegionType.FULLSCREEN
+        if width < self.width or height < self.height:
+            region_type = FilterRegionType.RECTANGLE
+        if filter_type in [FilterType.VIGNETTE, FilterType.CRT]:
+            region_type = FilterRegionType.FULLSCREEN  # These are usually fullscreen
+        
+        filter_obj = Filter(
+            filter_type=filter_type,
+            intensity=intensity,
+            region_type=region_type,
+            region_pos=(x, y),
+            region_size=(width, height),
+            radius=radius,
+            feather=feather
+        )
+        
+        self.add_filter(filter_obj)
+        return filter_obj
+    
+    # QUICK FILTER FUNCTIONS - READY TO USE
+    
+    def apply_vignette(self, intensity: float = 0.7, feather: float = 100.0) -> Filter:
+        """Quick vignette filter (darkens edges)"""
+        return self.create_quick_filter(
+            filter_type=FilterType.VIGNETTE,
+            intensity=intensity,
+            feather=feather
+        )
+    
+    def apply_blur(self, intensity: float = 0.5, x: float = 0, y: float = 0, 
+                  width: float = None, height: float = None) -> Filter:
+        """Quick blur filter"""
+        return self.create_quick_filter(
+            filter_type=FilterType.BLUR,
+            intensity=intensity,
+            x=x, y=y,
+            width=width, height=height,
+            feather=20.0
+        )
+    
+    def apply_sepia(self, intensity: float = 1.0) -> Filter:
+        """Quick sepia (old photo) filter"""
+        return self.create_quick_filter(
+            filter_type=FilterType.SEPIA,
+            intensity=intensity
+        )
+    
+    def apply_grayscale(self, intensity: float = 1.0) -> Filter:
+        """Quick black and white filter"""
+        return self.create_quick_filter(
+            filter_type=FilterType.GRAYSCALE,
+            intensity=intensity
+        )
+    
+    def apply_invert(self, intensity: float = 1.0) -> Filter:
+        """Quick color inversion filter"""
+        return self.create_quick_filter(
+            filter_type=FilterType.INVERT,
+            intensity=intensity
+        )
+    
+    def apply_warm_temperature(self, intensity: float = 0.5) -> Filter:
+        """Quick warm temperature filter"""
+        return self.create_quick_filter(
+            filter_type=FilterType.TEMPERATURE_WARM,
+            intensity=intensity
+        )
+    
+    def apply_cold_temperature(self, intensity: float = 0.5) -> Filter:
+        """Quick cold temperature filter"""
+        return self.create_quick_filter(
+            filter_type=FilterType.TEMPERATURE_COLD,
+            intensity=intensity
+        )
+    
+    def apply_night_vision(self, intensity: float = 0.9) -> Filter:
+        """Quick night vision (green) effect"""
+        return self.create_quick_filter(
+            filter_type=FilterType.NIGHT_VISION,
+            intensity=intensity
+        )
+    
+    def apply_crt_effect(self, intensity: float = 0.8) -> Filter:
+        """Quick CRT (old monitor) effect"""
+        return self.create_quick_filter(
+            filter_type=FilterType.CRT,
+            intensity=intensity
+        )
+    
+    def apply_pixelate(self, intensity: float = 0.7) -> Filter:
+        """Quick pixelation effect"""
+        return self.create_quick_filter(
+            filter_type=FilterType.PIXELATE,
+            intensity=intensity
+        )
+    
+    def apply_bloom(self, intensity: float = 0.5) -> Filter:
+        """Quick bloom (glow) effect"""
+        return self.create_quick_filter(
+            filter_type=FilterType.BLOOM,
+            intensity=intensity
+        )
+    
+    def apply_edge_detect(self, intensity: float = 0.8) -> Filter:
+        """Quick edge detection filter"""
+        return self.create_quick_filter(
+            filter_type=FilterType.EDGE_DETECT,
+            intensity=intensity
+        )
+    
+    def apply_emboss(self, intensity: float = 0.7) -> Filter:
+        """Quick emboss effect"""
+        return self.create_quick_filter(
+            filter_type=FilterType.EMBOSS,
+            intensity=intensity
+        )
+    
+    def apply_sharpen(self, intensity: float = 0.5) -> Filter:
+        """Quick sharpen filter"""
+        return self.create_quick_filter(
+            filter_type=FilterType.SHARPEN,
+            intensity=intensity
+        )
+    
+    def apply_posterize(self, intensity: float = 0.6) -> Filter:
+        """Quick posterize effect"""
+        return self.create_quick_filter(
+            filter_type=FilterType.POSTERIZE,
+            intensity=intensity
+        )
+    
+    def apply_neon(self, intensity: float = 0.7) -> Filter:
+        """Quick neon glow effect"""
+        return self.create_quick_filter(
+            filter_type=FilterType.NEON,
+            intensity=intensity
+        )
+    
+    def apply_radial_blur(self, intensity: float = 0.5) -> Filter:
+        """Quick radial blur (zoom effect)"""
+        return self.create_quick_filter(
+            filter_type=FilterType.RADIAL_BLUR,
+            intensity=intensity
+        )
+    
+    def apply_fisheye(self, intensity: float = 0.4) -> Filter:
+        """Quick fisheye lens effect"""
+        return self.create_quick_filter(
+            filter_type=FilterType.FISHEYE,
+            intensity=intensity
+        )
+    
+    def apply_twirl(self, intensity: float = 0.3) -> Filter:
+        """Quick twirl distortion effect"""
+        return self.create_quick_filter(
+            filter_type=FilterType.TWIRL,
+            intensity=intensity
+        )
+    
+    def apply_circular_grayscale(self, center_x: float, center_y: float, 
+                               radius: float = 100.0, intensity: float = 1.0) -> Filter:
+        """
+        Apply grayscale filter to a circular region.
+        
+        Args:
+            center_x: X position of circle center
+            center_y: Y position of circle center
+            radius: Radius of the circle
+            intensity: Filter strength
+            
+        Returns:
+            Filter: Created filter
+        """
+        diameter = radius * 2
+        filter_obj = Filter(
+            filter_type=FilterType.GRAYSCALE,
+            intensity=intensity,
+            region_type=FilterRegionType.CIRCLE,
+            region_pos=(center_x - radius, center_y - radius),
+            region_size=(diameter, diameter),
+            radius=1.0,
+            feather=20.0
+        )
+        self.add_filter(filter_obj)
+        return filter_obj
+    
+    def apply_rectangular_blur(self, x: float, y: float, 
+                             width: float, height: float, 
+                             intensity: float = 0.5) -> Filter:
+        """
+        Apply blur filter to a rectangular region.
+        
+        Args:
+            x, y: Top-left position
+            width, height: Size of rectangle
+            intensity: Blur strength
+            
+        Returns:
+            Filter: Created filter
+        """
+        filter_obj = Filter(
+            filter_type=FilterType.BLUR,
+            intensity=intensity,
+            region_type=FilterRegionType.RECTANGLE,
+            region_pos=(x, y),
+            region_size=(width, height),
+            radius=1.0,
+            feather=15.0
+        )
+        self.add_filter(filter_obj)
+        return filter_obj
+    
+    # ========================================================================
+    # FRAME RENDERING WITH FILTER SUPPORT
+    # ========================================================================
+    
     def begin_frame(self):
         """Begin rendering frame"""
         if not self._initialized:
             return
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         
+        # If we have filters, render to filter framebuffer
+        if self.filters:
+            glBindFramebuffer(GL_FRAMEBUFFER, self._filter_framebuffer)
+            glViewport(0, 0, self.width, self.height)
+        
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    
     def end_frame(self):
-        """End rendering frame"""
+        """End rendering frame - apply filters if any"""
         if not self._initialized:
             return
+        
+        # Apply filters if we have any
+        if self.filters:
+            # Switch to default framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER, 0)
+            glViewport(0, 0, self.width, self.height)
+            
+            # Apply all filters
+            self._apply_filters()
+        
         pygame.display.flip()
+    
+    def _apply_filters(self):
+        """Apply all registered filters to the screen"""
+        if not self.filters or not self.filter_shader.program:
+            return
+        
+        # Update filter animations
+        for filter_obj in self.filters:
+            if filter_obj.enabled:
+                filter_obj.update(1.0/60.0)  # Approximate delta time
+        
+        # Use filter shader
+        glUseProgram(self.filter_shader.program)
+        
+        # Bind the filter texture (what we just rendered)
+        glActiveTexture(GL_TEXTURE0)
+        glBindTexture(GL_TEXTURE_2D, self._filter_texture)
+        glUniform1i(self.filter_shader._get_uniform_location("screenTexture"), 0)
+        
+        # Set screen size
+        glUniform2f(self.filter_shader._get_uniform_location("screenSize"), 
+                   float(self.width), float(self.height))
+        
+        # Apply filters one by one (they stack)
+        for filter_obj in self.filters:
+            if not filter_obj.enabled:
+                continue
+            
+            # Set filter type
+            filter_type_map = {
+                FilterType.NONE: 0,
+                FilterType.VIGNETTE: 1,
+                FilterType.BLUR: 2,
+                FilterType.SEPIA: 3,
+                FilterType.GRAYSCALE: 4,
+                FilterType.INVERT: 5,
+                FilterType.TEMPERATURE_WARM: 6,
+                FilterType.TEMPERATURE_COLD: 7,
+                FilterType.NIGHT_VISION: 8,
+                FilterType.CRT: 9,
+                FilterType.PIXELATE: 10,
+                FilterType.BLOOM: 11,
+                FilterType.EDGE_DETECT: 12,
+                FilterType.EMBOSS: 13,
+                FilterType.SHARPEN: 14,
+                FilterType.POSTERIZE: 15,
+                FilterType.NEON: 16,
+                FilterType.RADIAL_BLUR: 17,
+                FilterType.FISHEYE: 18,
+                FilterType.TWIRL: 19,
+            }
+            
+            filter_id = filter_type_map.get(filter_obj.filter_type, 0)
+            glUniform1i(self.filter_shader._get_uniform_location("filterType"), filter_id)
+            
+            # Set filter intensity
+            glUniform1f(self.filter_shader._get_uniform_location("intensity"), 
+                       filter_obj.intensity)
+            
+            # Set time for animated filters
+            glUniform1f(self.filter_shader._get_uniform_location("time"), 
+                       filter_obj.time)
+            
+            # Set region parameters
+            region_type_map = {
+                FilterRegionType.FULLSCREEN: 0,
+                FilterRegionType.RECTANGLE: 1,
+                FilterRegionType.CIRCLE: 2,
+            }
+            
+            glUniform1i(self.filter_shader._get_uniform_location("regionType"), 
+                       region_type_map.get(filter_obj.region_type, 0))
+            
+            glUniform4f(self.filter_shader._get_uniform_location("regionParams"),
+                       filter_obj.region_pos[0], filter_obj.region_pos[1],
+                       filter_obj.region_size[0], filter_obj.region_size[1])
+            
+            glUniform1f(self.filter_shader._get_uniform_location("radius"), 
+                       filter_obj.radius)
+            glUniform1f(self.filter_shader._get_uniform_location("feather"), 
+                       filter_obj.feather)
+            
+            # Draw fullscreen quad with filter
+            glBindVertexArray(self.filter_shader.vao)
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
+        
+        glBindVertexArray(0)
+        glUseProgram(0)
+    
+    # ========================================================================
+    # EXISTING RENDERER METHODS (remain unchanged)
+    # ========================================================================
     
     def get_surface(self) -> pygame.Surface:
         """
@@ -1155,6 +2140,18 @@ class OpenGLRenderer:
         if not self._initialized:
             return
             
+        # Clean up filters
+        if self.filter_shader and self.filter_shader.program:
+            glDeleteProgram(self.filter_shader.program)
+        
+        if self._filter_framebuffer:
+            glDeleteFramebuffers(1, [self._filter_framebuffer])
+        if self._filter_texture:
+            glDeleteTextures(1, [self._filter_texture])
+        if self._filter_renderbuffer:
+            glDeleteRenderbuffers(1, [self._filter_renderbuffer])
+        
+        # Existing cleanup
         if self.simple_shader and self.simple_shader.program:
             glDeleteProgram(self.simple_shader.program)
         if self.texture_shader and self.texture_shader.program:

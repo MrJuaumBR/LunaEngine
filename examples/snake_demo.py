@@ -389,7 +389,7 @@ class InGameScene(Scene):
             element.render(renderer)
             
 def main():
-    engine = LunaEngine("LunaEngine - Snake Demo", 1024, 720, True)
+    engine = LunaEngine("LunaEngine - Snake Demo", 1024, 720, False)
     engine.fps = 120
     
     engine.add_scene("MainMenu", MainMenuScene)

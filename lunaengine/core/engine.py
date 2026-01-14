@@ -32,69 +32,13 @@ DEPENDENCIES:
 import pygame, threading
 import numpy as np
 from typing import Dict, List, Tuple, Callable, Optional, Type, TYPE_CHECKING
+from ..ui.layer_manager import UILayerManager
 from ..ui import *
 from .scene import Scene
 from ..utils import PerformanceMonitor, GarbageCollector
-from ..backend import PygameRenderer, EVENTS
+from ..backend import OpenGLRenderer, EVENTS, InputState, MouseButtonPressed, LayerType
+from .renderer import Renderer
 from dataclasses import dataclass
-
-if TYPE_CHECKING:
-    from . import Renderer
-    
-@dataclass
-class mbttons_pressed(dict):
-    left:bool = False
-    middle:bool = False
-    right:bool = False
-    extra_button_1:bool = False
-    extra_button_2:bool = False
-
-@dataclass
-class InputState:
-    """
-    Tracks input state with proper click detection
-    """
-    mouse_pos: tuple = (0, 0)
-    mouse_buttons_pressed: mbttons_pressed = None
-    mouse_just_pressed: bool = False
-    mouse_just_released: bool = False
-    mouse_wheel: float = 0
-    consumed_events: set = None
-    
-    def __post_init__(self):
-        if self.mouse_buttons_pressed is None:
-            self.mouse_buttons_pressed = mbttons_pressed()
-            
-        if self.consumed_events is None:
-            self.consumed_events = set()
-    
-    def update(self, mouse_pos: tuple, mouse_pressed:tuple, mouse_wheel: float = 0):
-        """Update input state with proper click detection"""
-        
-        self.mouse_buttons_pressed.left = mouse_pressed[0]
-        self.mouse_buttons_pressed.middle = mouse_pressed[1]
-        self.mouse_buttons_pressed.right = mouse_pressed[2]
-        self.mouse_buttons_pressed.extra_button_1 = mouse_pressed[3]
-        self.mouse_buttons_pressed.extra_button_2 = mouse_pressed[4]
-        self.mouse_pos = mouse_pos
-        
-        if mouse_wheel != 0:
-            self.mouse_wheel += mouse_wheel
-            
-        if self.mouse_wheel != 0:
-            self.mouse_wheel *= 0.6
-        
-    def consume_event(self, element_id):
-        """Mark an event as consumed by a specific element"""
-        self.consumed_events.add(element_id)
-    
-    def is_event_consumed(self, element_id):
-        """Check if event was already consumed"""
-        return element_id in self.consumed_events
-    
-    def clear_consumed(self):
-        """Clear consumed events for new frame"""
-        self.consumed_events.clear()
 
 class LunaEngine:
     """
@@ -113,7 +57,7 @@ class LunaEngine:
         scenes (Dict[str, Scene]): Registered scenes
         current_scene (Scene): Currently active scene
     """
-    def __init__(self, title: str = "LunaEngine Game", width: int = 800, height: int = 600, use_opengl: bool = True, fullscreen: bool = False):
+    def __init__(self, title: str = "LunaEngine Game", width: int = 800, height: int = 600, fullscreen: bool = False, **kwargs):
         """
         Initialize the LunaEngine.
         
@@ -135,16 +79,14 @@ class LunaEngine:
         self.scenes: Dict[str, Scene] = {}
         self.current_scene: Optional[Scene] = None
         self.previous_scene_name: Optional[str] = None
-        self._event_handlers = {}
+        self._event_handlers:Dict[str, List[Dict[str, Callable[pygame.event.EventType, None], str, Optional[str]]]] = {}
         self.input_state = InputState()
         
         # Performance monitoring
         self.performance_monitor = PerformanceMonitor()
         self.garbage_collector = GarbageCollector()
         
-        # Choose rendering backend
-        
-        self.use_opengl = use_opengl
+        # Render
         self.renderer: Renderer = None
         
         self.screen = None
@@ -152,6 +94,7 @@ class LunaEngine:
         # Automatically initialize
         self.initialize()
         self.animation_handler = AnimationHandler(self)
+        self.layer_manager = UILayerManager()
         
     def initialize(self):
         """Initialize the engine and create the game window."""
@@ -162,38 +105,28 @@ class LunaEngine:
         # Initialize font system early
         FontManager.initialize()
         
-        print(f"Initializing engine with OpenGL: {self.use_opengl}")
-        
         # Create the display based on renderer type
-        if self.use_opengl:
-            # Set OpenGL attributes BEFORE creating display
-            pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MAJOR_VERSION, 3)
-            pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MINOR_VERSION, 3)
-            pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
-            
-            try:
-                code = pygame.OPENGL | pygame.DOUBLEBUF
-                if self.fullscreen:
-                    self.width, self.height = self.monitor_size.current_w, self.monitor_size.current_h
-                    code |= pygame.FULLSCREEN | pygame.SCALED
-                    print(f"Setting fullscreen mode: {self.width}x{self.height}")
-                self.screen = pygame.display.set_mode(size=(self.width, self.height), flags=code)
-            except Exception as e:
-                print(f"Failed to create OpenGL display: {e}")
-                print("Falling back to Pygame rendering")
-                self.use_opengl = False
-                self.screen = pygame.display.set_mode(size=(self.width, self.height))
-        else:
-            self.screen = pygame.display.set_mode(size=(self.width, self.height), flags=(pygame.FULLSCREEN if self.fullscreen else 0))
+        # Set OpenGL attributes BEFORE creating display
+        pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MAJOR_VERSION, 3)
+        pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MINOR_VERSION, 3)
+        pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
+        
+        try:
+            code = pygame.OPENGL | pygame.DOUBLEBUF
+            if self.fullscreen:
+                self.width, self.height = self.monitor_size.current_w, self.monitor_size.current_h
+                code |= pygame.FULLSCREEN | pygame.SCALED
+                print(f"Setting fullscreen mode: {self.width}x{self.height}")
+            self.screen = pygame.display.set_mode(size=(self.width, self.height), flags=code)
+        except Exception as e:
+            print(f"Failed to create OpenGL display: {e}")
+            print("Falling back to Pygame rendering")
+            self.screen = pygame.display.set_mode(size=(self.width, self.height))
         
         pygame.display.set_caption(self.title)
         
-        # Create renderers
-        if self.use_opengl:
-            from ..backend.opengl import OpenGLRenderer
-            self.renderer: Renderer = OpenGLRenderer(self.width, self.height)
-        else:
-            self.renderer:Renderer = PygameRenderer(self.width, self.height)
+        # Create renderer
+        self.renderer: Renderer = OpenGLRenderer(self.width, self.height)
         
         self.update_camera_renderer()
         
@@ -203,6 +136,9 @@ class LunaEngine:
         
         self.running = True
         print("Engine initialization complete")
+        
+        from ..ui.elements import UIElement
+        UIElement._global_engine = self
         
     def update_camera_renderer(self):
         for scene in self.scenes.values():
@@ -249,9 +185,10 @@ class LunaEngine:
             self.current_scene = self.scenes[name]
             self.current_scene.on_enter(self.previous_scene_name)
     
+    def find_event_handlers(self, event:int, rep_id:str) -> bool:
+        return False
     
-    
-    def on_event(self, event_type: int):
+    def on_event(self, event_type: int, rep_id: Optional[str] = None):
         """
         Decorator to register event handlers
         
@@ -270,7 +207,7 @@ class LunaEngine:
             """
             if event_type not in self._event_handlers:
                 self._event_handlers[event_type] = []
-            self._event_handlers[event_type].append(func)
+            self._event_handlers[event_type].append({'callable':func, 'rep_id': rep_id})
             return func
         return decorator
     
@@ -419,7 +356,7 @@ class LunaEngine:
         return size
 
     def run(self):
-        """Main game loop - CORRECTED"""
+        """Main game loop"""
         if self.renderer is None:
             self.initialize()
         
@@ -438,19 +375,10 @@ class LunaEngine:
             for event in pygame.event.get():
                 if event.type == EVENTS.QUIT:
                     self.running = False
-                
-                # Process both KEYDOWN and KEYUP for better text input
-                elif event.type in [EVENTS.KEYDOWN, EVENTS.KEYUP]:
-                    self._handle_keyboard_event(event)
-                
-                # Handle mouse wheel scrolling
-                elif event.type == EVENTS.MOUSEWHEEL:
-                    self._handle_mouse_scroll(event)
-                
                 # Call registered event handlers
                 if event.type in self._event_handlers:
                     for handler in self._event_handlers[event.type]:
-                        handler(event)
+                        handler['callable'](event)
             
             
             # Update current scene
@@ -463,13 +391,8 @@ class LunaEngine:
             # Update UI elements
             self._update_ui_elements(dt)
             
-            # CORRECTED: Unified rendering pipeline
-            if self.use_opengl:
-                # OPENGL MODE - Hybrid rendering
-                self._render_opengl_mode()
-            else:
-                # PYGAME MODE - Traditional rendering
-                self._render_pygame_mode()
+            # Render
+            self._render()
             
             # Periodic garbage collection
             self.garbage_collector.cleanup()
@@ -502,8 +425,8 @@ class LunaEngine:
     def mouse_wheel(self) -> float:
         return self.input_state.mouse_wheel
 
-    def _render_opengl_mode(self):
-        """Rendering pipeline for OpenGL mode"""
+    def _render(self):
+        """Rendering"""
         try:
             # 1. Start OpenGL frame
             self.renderer.begin_frame()
@@ -513,10 +436,10 @@ class LunaEngine:
                 self.current_scene.render(self.renderer)
             
             # 3. Render particles using OpenGL
-            self.render_scene()
+            self._render_particles()
             
             # 4. Render UI elements using OpenGL
-            self._render_ui_elements_opengl()
+            self._render_ui_elements()
             
             # 5. Finalize OpenGL frame
             self.renderer.end_frame()
@@ -526,114 +449,28 @@ class LunaEngine:
             import traceback
             traceback.print_exc()
 
-    def _render_ui_elements_opengl(self):
-        """Render UI elements using OpenGL renderer - SKIP elements with ScrollingFrame parent"""
+    def _render_ui_elements(self):
+        """Render UI elements using the layer manager system."""
         if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
             return
         
-        # Sort elements for optimal rendering order, skipping ScrollingFrame children
-        regular_elements = []
-        closed_dropdowns = []
-        open_dropdowns = []
+        # Get elements in correct render order
+        elements_to_render = self.layer_manager.get_elements_in_order()
         
-        for ui_element in self.current_scene.ui_elements:
-            # Skip elements that have ScrollingFrame as parent
+        # Render elements
+        for ui_element in elements_to_render:
+            # Skip elements inside ScrollingFrame (they're rendered by the ScrollingFrame itself)
             if hasattr(ui_element, 'parent') and ui_element.parent and isinstance(ui_element.parent, ScrollingFrame):
                 continue
                 
-            if isinstance(ui_element, Dropdown):
-                if ui_element.expanded:
-                    open_dropdowns.append(ui_element)
-                else:
-                    closed_dropdowns.append(ui_element)
-            else:
-                regular_elements.append(ui_element)
-        
-        # Render in correct z-order
-        
-        for ui_element in sorted(regular_elements + closed_dropdowns + UITooltipManager.get_tooltip_to_render(engine=self), key=lambda e: e.z_index):
             ui_element.render(self.renderer)
         
-        for dropdown in open_dropdowns:
-            dropdown.render(self.renderer)
-
-    def _render_pygame_mode(self):
-        """Rendering pipeline for Pygame mode - SIMPLIFIED"""
-        try:
-            # 1. Clear screen
-            self.screen.fill((30, 30, 50))
+        # Render tooltips (they're managed separately by UITooltipManager)
+        for tooltip in UITooltipManager.get_tooltip_to_render(engine=self):
+            tooltip.render(self.renderer)
             
-            # 2. Set the screen as render target
-            if hasattr(self.renderer, 'set_surface'):
-                self.renderer.set_surface(self.screen)
-            self.renderer.begin_frame()
-            
-            # 3. Render main scene
-            if self.current_scene:
-                self.current_scene.render(self.renderer)
-            
-            # 3. Render particles using Pygame
-            self.render_scene()
-            
-            # 4. Render UI elements
-            self._render_ui_elements(self.renderer)
-            
-            # 5. Finalize Pygame frame
-            pygame.display.flip()
-            
-        except Exception as e:
-            print(f"Pygame rendering error: {e}")
-
-    def _render_ui_elements(self, renderer):
-        """Render UI elements - SKIP elements with ScrollingFrame parent"""
-        if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
-            return
-        
-        # Filter out elements that have ScrollingFrame as parent
-        root_elements = []
-        regular_elements = []
-        closed_dropdowns = []
-        open_dropdowns = []
-        
-        for ui_element in self.current_scene.ui_elements:
-            # Skip elements that have ScrollingFrame as parent (they will be rendered by their parent)
-            if hasattr(ui_element, 'parent') and ui_element.parent and isinstance(ui_element.parent, ScrollingFrame):
-                continue
-                
-            if isinstance(ui_element, Dropdown):
-                if ui_element.expanded:
-                    open_dropdowns.append(ui_element)
-                else:
-                    closed_dropdowns.append(ui_element)
-            else:
-                regular_elements.append(ui_element)
-        
-        # Render in correct z-order
-        for ui_element in regular_elements + closed_dropdowns:
-            ui_element.render(renderer)
-        
-        for dropdown in open_dropdowns:
-            dropdown.render(renderer)
-
-    def _render_ui_direct(self):
-        """Render UI directly to screen in Pygame mode"""
-        # Set UI renderer to use main screen
-        self.ui_renderer.set_surface(self.screen)
-        self.ui_renderer.begin_frame()
-        
-        # Render UI elements
-        self._render_ui_elements(self.ui_renderer)
-
-    def render_scene(self):
-        if self.use_opengl:
-            # Particles
-            self._render_particles_opengl()
-        else:
-            # Particles
-            self.current_scene.particle_system.render(self.renderer.get_surface(), self.current_scene.camera)
-            
-    def _render_particles_opengl(self):
-        """Render particles using OpenGL - FIXED"""
+    def _render_particles(self):
+        """Render particles using OpenGL"""
         if (self.current_scene and 
             hasattr(self.current_scene, 'particle_system') and
             hasattr(self.renderer, 'render_particles')):
@@ -645,54 +482,9 @@ class LunaEngine:
             except Exception as e:
                 print(f"OpenGL particle rendering error: {e}")
 
-    def _handle_mouse_scroll(self, event):
-        """Handle mouse wheel scrolling for UI elements - OPTIMIZED"""
-        if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
-            return
-            
-        self.input_state.mouse_wheel += event.y
-        
-        for ui_element in self.current_scene.ui_elements:
-            if not hasattr(ui_element, 'handle_scroll'):
-                continue
-                
-            actual_x, actual_y = ui_element.get_actual_position()
-            
-            # For expanded dropdowns, check expanded area
-            if hasattr(ui_element, 'expanded') and ui_element.expanded:
-                expanded_height = (ui_element.height + 
-                                 ui_element.max_visible_options * ui_element._option_height)
-                mouse_over = (
-                    actual_x <= self.mouse_pos[0] <= actual_x + ui_element.width and 
-                    actual_y <= self.mouse_pos[1] <= actual_y + expanded_height
-                )
-            else:
-                # Normal behavior for other elements
-                mouse_over = (
-                    actual_x <= self.mouse_pos[0] <= actual_x + ui_element.width and 
-                    actual_y <= self.mouse_pos[1] <= actual_y + ui_element.height
-                )
-            
-            if mouse_over:
-                ui_element.handle_scroll(event.y)
-                break  # Only handle scroll for one element at a time
-    
-    def _handle_keyboard_event(self, event):
-        """Handle keyboard events for focused UI elements - OPTIMIZED"""
-        if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
-            return
-            
-        # FIX: Process all focused elements, not just one
-        for ui_element in self.current_scene.ui_elements:
-            if (hasattr(ui_element, 'focused') and ui_element.focused and 
-                hasattr(ui_element, 'handle_key_input')):
-                ui_element.handle_key_input(event)
-                # Remove the 'break' to allow multiple elements to receive events if needed
-                break  # Only one element can be focused at a time
-
     def _update_ui_elements(self, dt):
         """
-        Update UI elements with improved input handling and event consumption
+        Update UI elements using the layer manager system.
         
         Args:
             dt (float): Delta time in seconds
@@ -700,39 +492,14 @@ class LunaEngine:
         if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
             return
         
-        # Find expanded dropdowns first
-        expanded_dropdowns = []
-        other_elements = []
+        # Rebuild layers from current scene UI elements
+        self.layer_manager.clear_all()
         
         for ui_element in self.current_scene.ui_elements:
-            if isinstance(ui_element, Dropdown) and ui_element.expanded:
-                expanded_dropdowns.append(ui_element)
-            else:
-                other_elements.append(ui_element)
+            self.layer_manager.add_element(ui_element)
         
-        # If there are expanded dropdowns, they get priority
-        if expanded_dropdowns:
-            # Only process the topmost expanded dropdown and its children
-            top_dropdown = expanded_dropdowns[-1]  # Last one is topmost
-            self._process_ui_element_tree(top_dropdown, dt)
-            
-            # Other elements are disabled for interaction when dropdown is open
-            for element in other_elements:
-                if hasattr(element, '_update_with_mouse'):
-                    element._update_with_mouse(
-                        self.input_state.mouse_pos, 
-                        False,  # Force not pressed when dropdown is open
-                        dt,
-                    )
-        else:
-            # Normal processing - no expanded dropdowns
-            for ui_element in self.current_scene.ui_elements:
-                if hasattr(ui_element, '_update_with_mouse'):
-                    ui_element._update_with_mouse(
-                        self.input_state.mouse_pos,
-                        self.input_state.mouse_buttons_pressed.left,
-                        dt
-                    )
+        # Update all elements through layer manager
+        self.layer_manager.update(dt, self.input_state)
 
     def _process_ui_element_tree(self, root_element, dt):
         """
@@ -743,12 +510,8 @@ class LunaEngine:
             dt (float): Delta time in seconds
         """
         # Process the element itself
-        if hasattr(root_element, '_update_with_mouse'):
-            root_element._update_with_mouse(
-                self.input_state.mouse_pos,
-                self.input_state.mouse_buttons_pressed.left,
-                dt
-            )
+        if hasattr(root_element, 'update'):
+            root_element.update(dt,self.input_state)
         
         # Process all children recursively
         for child in getattr(root_element, 'children', []):

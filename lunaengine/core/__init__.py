@@ -17,7 +17,7 @@ Imports:
     - abc: For abstract base classes
 """
 
-from .engine import LunaEngine, InputState
+from .engine import LunaEngine
 from .scene import Scene
 from .renderer import Renderer
 from .window import Window
@@ -25,4 +25,4 @@ from .audio import AudioSystem, AudioEvent, AudioState, AudioChannel, SoundEffec
 
 engine = LunaEngine
 
-__all__ = ["LunaEngine", "engine", "Scene", "Renderer", "Window", "AudioSystem", "AudioEvent", "AudioState", "InputState", "AudioChannel", "SoundEffect"]
+__all__ = ["LunaEngine", "engine", "Scene", "Renderer", "Window", "AudioSystem", "AudioEvent", "AudioState", "AudioChannel", "SoundEffect"]

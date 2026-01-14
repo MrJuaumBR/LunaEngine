@@ -27,10 +27,10 @@ class CodeStatistics:
         }
         
         try:
-            sys.path.insert(0, str(self.root_dir))
+            sys.path.append(str(self.root_dir))
             
             # Import the ThemeManager
-            from ui.themes import ThemeManager
+            from lunaengine.ui.themes import ThemeManager
             
             # Get all themes and count them
             themes = ThemeManager.get_themes()

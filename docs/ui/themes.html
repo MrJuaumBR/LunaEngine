@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>themes.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Ui</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.html">Ui</a></li>
+                <li class="breadcrumb-item active">themes.py</li>
+            </ol>
+        </nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>themes.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">themes.py - UI Themes Manager for LunaEngine<br><br>ENGINE PATH:<br>lunaengine -&gt; ui -&gt; themes.py<br><br>DESCRIPTION:<br>This module manages comprehensive UI themes with predefined color schemes<br>for various applications and visual styles. It includes a wide range of<br>themes from basic functional ones to brand-specific and aesthetic designs.<br><br>MAIN FEATURES:<br>- Tries to load themes from local themes.json file<br>- If not found, tries to download from GitHub<br>- Fallback to default theme if everything fails</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-uitheme">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class UITheme</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Complete UI theme configuration for all elements</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-themetype">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ThemeType</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Enumeration of all available theme types</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-thememanager">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ThemeManager</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Manages complete UI themes with local/remote loading</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_get_themes_file_path">
+                <code class="fs-6 fw-bold text-color-title">def _get_themes_file_path(cls) -> str</code>
+                <div class="mt-2 text-muted small">Get the path to themes.json file (cross-platform)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_download_from_github">
+                <code class="fs-6 fw-bold text-color-title">def _download_from_github(cls) -> Optional[dict]</code>
+                <div class="mt-2 text-muted small">Download themes.json from GitHub</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_save_themes_to_cache">
+                <code class="fs-6 fw-bold text-color-title">def _save_themes_to_cache(cls, themes_data) -> bool</code>
+                <div class="mt-2 text-muted small">Save downloaded themes to local cache</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_load_themes_from_json">
+                <code class="fs-6 fw-bold text-color-title">def _load_themes_from_json(cls) -> Any</code>
+                <div class="mt-2 text-muted small">Load themes from JSON file or GitHub</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_process_themes_data">
+                <code class="fs-6 fw-bold text-color-title">def _process_themes_data(cls, themes_data) -> Any</code>
+                <div class="mt-2 text-muted small">Process themes data from dictionary</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_create_fallback_theme">
+                <code class="fs-6 fw-bold text-color-title">def _create_fallback_theme(cls) -> Any</code>
+                <div class="mt-2 text-muted small">Create a simple fallback theme if loading fails</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-ensure_themes_loaded">
+                <code class="fs-6 fw-bold text-color-title">def ensure_themes_loaded(cls) -> Any</code>
+                <div class="mt-2 text-muted small">Ensure themes are loaded from JSON or GitHub</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_by_name">
+                <code class="fs-6 fw-bold text-color-title">def get_theme_by_name(cls, name) -> UITheme</code>
+                <div class="mt-2 text-muted small">Get theme by name string</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_type_by_name">
+                <code class="fs-6 fw-bold text-color-title">def get_theme_type_by_name(cls, name) -> ThemeType</code>
+                <div class="mt-2 text-muted small">Get theme type by name string</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme">
+                <code class="fs-6 fw-bold text-color-title">def get_theme(cls, theme_type) -> UITheme</code>
+                <div class="mt-2 text-muted small">Get complete theme by type</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-set_theme">
+                <code class="fs-6 fw-bold text-color-title">def set_theme(cls, theme_type, theme) -> Any</code>
+                <div class="mt-2 text-muted small">Set or override a theme</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-set_current_theme">
+                <code class="fs-6 fw-bold text-color-title">def set_current_theme(cls, theme_type) -> Any</code>
+                <div class="mt-2 text-muted small">Set the current default theme</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_current_theme">
+                <code class="fs-6 fw-bold text-color-title">def get_current_theme(cls) -> ThemeType</code>
+                <div class="mt-2 text-muted small">Get current default theme</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_themes">
+                <code class="fs-6 fw-bold text-color-title">def get_themes(cls) -> Dict[ThemeType, UITheme]</code>
+                <div class="mt-2 text-muted small">Get all available themes</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_types">
+                <code class="fs-6 fw-bold text-color-title">def get_theme_types(cls) -> List[ThemeType]</code>
+                <div class="mt-2 text-muted small">Get all available theme types</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_names">
+                <code class="fs-6 fw-bold text-color-title">def get_theme_names(cls) -> List[str]</code>
+                <div class="mt-2 text-muted small">Get all available theme names</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_color">
+                <code class="fs-6 fw-bold text-color-title">def get_color(cls, color_name) -> Tuple[int, int, int]</code>
+                <div class="mt-2 text-muted small">Get a specific color from the current theme</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-reload_themes">
+                <code class="fs-6 fw-bold text-color-title">def reload_themes(cls) -> Any</code>
+                <div class="mt-2 text-muted small">Force reload themes from source</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_loaded_count">
+                <code class="fs-6 fw-bold text-color-title">def get_loaded_count(cls) -> int</code>
+                <div class="mt-2 text-muted small">Get number of loaded themes</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-is_theme_available">
+                <code class="fs-6 fw-bold text-color-title">def is_theme_available(cls, theme_name) -> bool</code>
+                <div class="mt-2 text-muted small">Check if a theme is available by name</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                
+                
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Ui Module
+            </a>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0 text-white-50 small">LunaEngine Documentation &copy; 2026</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+</body>
+</html>

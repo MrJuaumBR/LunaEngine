@@ -651,7 +651,7 @@ class AudioDemoScene(Scene):
 # Main function
 def main():
     """Main entry point"""
-    engine = LunaEngine("LunaEngine - Enhanced Audio Demo", 1024, 720, True)
+    engine = LunaEngine("LunaEngine - Enhanced Audio Demo", 1024, 720, False)
     engine.fps = 60
     
     # Initialize enhanced audio system

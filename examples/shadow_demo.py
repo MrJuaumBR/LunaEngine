@@ -419,7 +419,7 @@ class ShadowTestScene(Scene):
 
 def main():
     """Main function to run the shadow test demo"""
-    engine = LunaEngine("Shadow System Test - LunaEngine", 1024, 768, use_opengl=True)
+    engine = LunaEngine("Shadow System Test - LunaEngine", 1024, 768)
     engine.fps = 60
     
     # Register event handlers

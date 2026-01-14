@@ -317,4 +317,3 @@ class Renderer(ABC):
         
         win_w, win_h = pygame.display.get_window_size()
         self.draw_rect(0,0,win_w, win_h, (r, g, b, a), fill=True, surface=self.screen)
-            

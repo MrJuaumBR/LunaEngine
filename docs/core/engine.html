@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>engine.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Core</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.html">Core</a></li>
+                <li class="breadcrumb-item active">engine.py</li>
+            </ol>
+        </nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>engine.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">LunaEngine Main Engine - Core Game Loop and Management System<br><br>LOCATION: lunaengine/core/engine.py<br><br>DESCRIPTION:<br>The central engine class that orchestrates the entire game lifecycle. Manages<br>scene transitions, rendering pipeline, event handling, performance monitoring,<br>and UI system integration. This is the primary interface for game developers.<br><br>KEY RESPONSIBILITIES:<br>- Game loop execution with fixed timestep<br>- Scene management and lifecycle control<br>- Event distribution to scenes and UI elements<br>- Performance monitoring and optimization<br>- Theme management across the entire application<br>- Resource initialization and cleanup<br><br>LIBRARIES USED:<br>- pygame: Window management, event handling, timing, and surface operations<br>- numpy: Mathematical operations for game calculations<br>- threading: Background task management (if needed)<br>- typing: Type hints for better code documentation<br><br>DEPENDENCIES:<br>- ..backend.pygame_backend: Default rendering backend<br>- ..ui.elements: UI component system<br>- ..utils.performance: Performance monitoring utilities<br>- .scene: Scene management base class</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-lunaengine">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class LunaEngine</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether to start in fullscreen mode<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, title, width, height, fullscreen) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize the LunaEngine.<br><br>Args:<br> &nbsp; &nbsp;title (str): The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int): The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int): The height of the game window (default: 600)<br> &nbsp; &nbsp;use_opengl (bool): Use OpenGL for rendering (default: True)<br> &nbsp; &nbsp;fullscreen (bool): Start in fullscreen mode (default: False)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-initialize">
+                <code class="fs-6 fw-bold text-color-title">def initialize(self) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize the engine and create the game window.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-update_camera_renderer">
+                <code class="fs-6 fw-bold text-color-title">def update_camera_renderer(self) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-add_scene">
+                <code class="fs-6 fw-bold text-color-title">def add_scene(self, name, scene_class) -> Any</code>
+                <div class="mt-2 text-muted small">Add a scene to the engine by class (the engine will instantiate it).<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene<br> &nbsp; &nbsp;scene_class (Type[Scene]): The scene class to instantiate<br> &nbsp; &nbsp;*args: Arguments to pass to scene constructor<br> &nbsp; &nbsp;**kwargs: Keyword arguments to pass to scene constructor</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-set_scene">
+                <code class="fs-6 fw-bold text-color-title">def set_scene(self, name) -> Any</code>
+                <div class="mt-2 text-muted small">Set the current active scene.<br><br>Calls on_exit on the current scene and on_enter on the new scene.<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene to set as current</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-find_event_handlers">
+                <code class="fs-6 fw-bold text-color-title">def find_event_handlers(self, event, rep_id) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_event">
+                <code class="fs-6 fw-bold text-color-title">def on_event(self, event_type, rep_id) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator to register event handlers<br><br>Args:<br> &nbsp; &nbsp;event_type (int): The Pygame event type to listen for<br>Returns:<br> &nbsp; &nbsp;Callable: The decorator function</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_all_themes">
+                <code class="fs-6 fw-bold text-color-title">def get_all_themes(self) -> Dict[str, any]</code>
+                <div class="mt-2 text-muted small">Get all available themes including user custom ones<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, any]: Dictionary with theme names as keys and theme objects as values</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_theme_names">
+                <code class="fs-6 fw-bold text-color-title">def get_theme_names(self) -> List[str]</code>
+                <div class="mt-2 text-muted small">Get list of all available theme names<br><br>Returns:<br> &nbsp; &nbsp;List[str]: List of theme names</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-set_global_theme">
+                <code class="fs-6 fw-bold text-color-title">def set_global_theme(self, theme) -> bool</code>
+                <div class="mt-2 text-muted small">Set the global theme for the entire engine and update all UI elements<br><br>Args:<br> &nbsp; &nbsp;theme_name (str): Name of the theme to set<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if theme was set successfully, False otherwise</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_update_all_ui_themes">
+                <code class="fs-6 fw-bold text-color-title">def _update_all_ui_themes(self, theme_enum) -> Any</code>
+                <div class="mt-2 text-muted small">Update all UI elements in the current scene to use the new theme<br><br>Args:<br> &nbsp; &nbsp;theme_enum: The theme enum to apply</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_fps_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_fps_stats(self) -> dict</code>
+                <div class="mt-2 text-muted small">Get comprehensive FPS statistics (optimized)<br><br>Returns:<br> &nbsp; &nbsp;dict: A dictionary containing FPS statistics</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_hardware_info">
+                <code class="fs-6 fw-bold text-color-title">def get_hardware_info(self) -> dict</code>
+                <div class="mt-2 text-muted small">Get hardware information</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-scalesize">
+                <code class="fs-6 fw-bold text-color-title">def ScaleSize(self, width, height) -> Tuple[float, float] | Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">Scale size is a function that will convert scales size to a pixel size<br><br>e.g.:<br>- 1.0, 1.0 = Full Screen<br>- 0.5, 0.5 = Half Screen<br>- 0.5, 1.0 = Half Screen Width, Full Screen Height<br><br>Args:<br> &nbsp; &nbsp;width (float): Width scale<br> &nbsp; &nbsp;height (float): Height scale<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float]|Tuple[int, int]: Pixel size</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-scalepos">
+                <code class="fs-6 fw-bold text-color-title">def ScalePos(self, x, y) -> Tuple[float, float] | Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">Scale position is a function that will convert scales position to a pixel position<br><br>e.g.:<br>- 1.0, 1.0 = Bottom Right<br>- 0.0, 0.0 = Top Left<br>- 0.5, 0.5 = Center<br><br>Args:<br> &nbsp; &nbsp;x (float): X position<br> &nbsp; &nbsp;y (float): Y position<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float]|Tuple[int, int]: Pixel position</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-run">
+                <code class="fs-6 fw-bold text-color-title">def run(self) -> Any</code>
+                <div class="mt-2 text-muted small">Main game loop</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-update_mouse">
+                <code class="fs-6 fw-bold text-color-title">def update_mouse(self) -> Any</code>
+                <div class="mt-2 text-muted small">Update mouse position and button state with proper click detection</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-visibility_change">
+                <code class="fs-6 fw-bold text-color-title">def visibility_change(self, element, visible) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-mouse_pos">
+                <code class="fs-6 fw-bold text-color-title">def mouse_pos(self) -> tuple</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-mouse_pressed">
+                <code class="fs-6 fw-bold text-color-title">def mouse_pressed(self) -> list</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-mouse_wheel">
+                <code class="fs-6 fw-bold text-color-title">def mouse_wheel(self) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_render">
+                <code class="fs-6 fw-bold text-color-title">def _render(self) -> Any</code>
+                <div class="mt-2 text-muted small">Rendering</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_render_ui_elements">
+                <code class="fs-6 fw-bold text-color-title">def _render_ui_elements(self) -> Any</code>
+                <div class="mt-2 text-muted small">Render UI elements using the layer manager system.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_render_particles">
+                <code class="fs-6 fw-bold text-color-title">def _render_particles(self) -> Any</code>
+                <div class="mt-2 text-muted small">Render particles using OpenGL</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_update_ui_elements">
+                <code class="fs-6 fw-bold text-color-title">def _update_ui_elements(self, dt) -> Any</code>
+                <div class="mt-2 text-muted small">Update UI elements using the layer manager system.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_process_ui_element_tree">
+                <code class="fs-6 fw-bold text-color-title">def _process_ui_element_tree(self, root_element, dt) -> Any</code>
+                <div class="mt-2 text-muted small">Process a UI element and all its children with proper event consumption<br><br>Args:<br> &nbsp; &nbsp;root_element (UIElement): The root element to process<br> &nbsp; &nbsp;dt (float): Delta time in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-shutdown">
+                <code class="fs-6 fw-bold text-color-title">def shutdown(self) -> Any</code>
+                <div class="mt-2 text-muted small">Cleanup resources</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                
+                
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Core Module
+            </a>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0 text-white-50 small">LunaEngine Documentation &copy; 2026</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+</body>
+</html>

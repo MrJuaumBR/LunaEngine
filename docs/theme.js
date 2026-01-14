@@ -503,5 +503,9 @@ function escapeHtml(unsafe) {
 
 // Also initialize when navigating
 document.addEventListener('DOMContentLoaded', function() {
+    // document.getElementById('navbar-logo-link').addEventListener('click', function(e) {
+    //     e.preventDefault();
+    //     window.location.href = '/';
+    // })
     setTimeout(initSimpleMarkdownParser, 100);
 });

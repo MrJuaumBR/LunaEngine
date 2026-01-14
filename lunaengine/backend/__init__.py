@@ -18,13 +18,13 @@ LIBRARIES USED:
 - numpy: Numerical operations for graphics math
 """
 
-from .opengl import OpenGLRenderer, TextureShader, ParticleShader, ShaderProgram
-from .pygame_backend import PygameRenderer
-from .types import EVENTS
+from .opengl import OpenGLRenderer, TextureShader, ParticleShader, ShaderProgram, Filter, FilterRegionType, FilterShader, FilterType
+from .types import EVENTS, InputState, MouseButtonPressed, LayerType
 from .network import NetworkEventType, NetworkEvent, HostClientMode, ConnectionQuality, NetworkMetrics, NetworkMessage, ClientInfo, ServerScript, PerformanceMonitor, RegionDetector, Server, NetworkClient, HostClient, NetworkDiscovery, NetworkMessages, get_local_ip, is_port_available, find_available_port
 
 __all__ = [
-    "OpenGLRenderer", "TextureShader", "ParticleShader", "ShaderProgram", "PygameRenderer", "EVENTS", 'NetworkEventType',
+    "OpenGLRenderer", "TextureShader", "ParticleShader", "ShaderProgram", "InputState", "MouseButtonPressed", "EVENTS", 'NetworkEventType', 'LayerType'
     'NetworkEvent', 'HostClientMode', 'ConnectionQuality', 'NetworkMetrics', 'NetworkMessage', 'ClientInfo', 'ServerScript', 'PerformanceMonitor', 'RegionDetector',
-    'Server', 'NetworkClient', 'HostClient', 'NetworkDiscovery', 'NetworkMessages', 'get_local_ip', 'is_port_available', 'find_available_port'
+    'Server', 'NetworkClient', 'HostClient', 'NetworkDiscovery', 'NetworkMessages', 'get_local_ip', 'is_port_available', 'find_available_port',
+    'Filter', 'FilterRegionType', 'FilterShader', 'FilterType'
 ]

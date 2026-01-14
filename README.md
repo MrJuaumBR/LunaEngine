@@ -2,7 +2,7 @@
 
 A modern, optimized 2D game engine built with Python and Pygame featuring advanced UI systems, procedural lighting, and embedded asset management.
 
-<b>! We will no longer support pygame renderer, only openGL</b>
+<b>PyGame Renderer is no longer supported, only OpenGL!</b>
 
 ## 📋 Features
 
@@ -12,6 +12,7 @@ A modern, optimized 2D game engine built with Python and Pygame featuring advanc
 | **OpenGL Rendering** | Hardware-accelerated graphics | ✅ Functional |
 | **Performance Tools** | FPS monitoring, hardware detection | ✅ Functional |
 | **Themes** | The engine have pre-built themes | ✅ Functional |
+| **Filters** | We home a huge amount of filters for your game(Blur, Neon, ...) | ✅ Functional |
 | **Lighting System** | Dynamic lights and shadows | 🔄 WIP |
 | **Particle Effects** | Particle system | 🔄 WIP |
 | **Image Embedding** | Convert assets to Python code | ⚠️ Useless |

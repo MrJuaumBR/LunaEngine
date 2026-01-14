@@ -15,7 +15,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from lunaengine.core import Scene, LunaEngine
 from lunaengine.ui import *
-from lunaengine.backend.pygame_backend import PygameRenderer
 from lunaengine.graphics.spritesheet import Animation
 import pygame
 
@@ -584,7 +583,7 @@ class SpriteSheetTestScene(Scene):
                 fade_status = f" | Fade: {self.current_animation.fade_mode.upper()} ({self.current_animation.fade_alpha}/255)"
             self.frame_label.set_text(f"Frame: {current_frame}/{frame_count}{fade_status}")
     
-    def render(self, renderer: PygameRenderer):
+    def render(self, renderer):
         """Render the scene"""
         # Draw background
         current_theme = ThemeManager.get_theme(ThemeManager.get_current_theme())
@@ -657,7 +656,7 @@ class MainMenuScene(Scene):
     def update(self, dt):
         pass
     
-    def render(self, renderer: PygameRenderer):
+    def render(self, renderer):
         # Draw background
         current_theme = ThemeManager.get_theme(ThemeManager.get_current_theme())
         renderer.draw_rect(0, 0, 1024, 720, current_theme.background)
@@ -669,7 +668,7 @@ class MainMenuScene(Scene):
 
 def main():
     """Main entry point for the sprite sheet test"""
-    engine = LunaEngine("LunaEngine - Sprite Sheet Test with Fade Effects", 1024, 720, True)
+    engine = LunaEngine("LunaEngine - Sprite Sheet Test with Fade Effects", 1024, 720, False)
     engine.fps = 60
     
     # Add scenes

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>code_stats.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Tools</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.html">Tools</a></li>
+                <li class="breadcrumb-item active">code_stats.py</li>
+            </ol>
+        </nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>code_stats.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">LunaEngine Code Statistics Script<br>Counts lines of code, files, and provides detailed statistics</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-codestatistics">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class CodeStatistics</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, root_dir) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-count_themes_in_engine">
+                <code class="fs-6 fw-bold text-color-title">def count_themes_in_engine(self) -> Dict</code>
+                <div class="mt-2 text-muted small">Count the number of themes available in LunaEngine<br>Returns: Dictionary with theme statistics</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-count_lines_in_file">
+                <code class="fs-6 fw-bold text-color-title">def count_lines_in_file(self, file_path) -> Tuple[int, int, int]</code>
+                <div class="mt-2 text-muted small">Count lines in a file<br>Returns: (total_lines, code_lines, comment_lines, blank_lines)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-get_all_files">
+                <code class="fs-6 fw-bold text-color-title">def get_all_files(self) -> List[Path]</code>
+                <div class="mt-2 text-muted small">Get all relevant files in the project</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-get_project_structure">
+                <code class="fs-6 fw-bold text-color-title">def get_project_structure(self) -> List[str]</code>
+                <div class="mt-2 text-muted small">Get the complete project structure as a list of formatted lines</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-format_structure_tree">
+                <code class="fs-6 fw-bold text-color-title">def format_structure_tree(self, structure_lines) -> str</code>
+                <div class="mt-2 text-muted small">Format the structure lines as a tree</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-get_file_emoji">
+                <code class="fs-6 fw-bold text-color-title">def get_file_emoji(self, extension) -> str</code>
+                <div class="mt-2 text-muted small">Get appropriate emoji for file type</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-analyze_project">
+                <code class="fs-6 fw-bold text-color-title">def analyze_project(self) -> Dict</code>
+                <div class="mt-2 text-muted small">Analyze the entire project and return statistics</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-get_code_density">
+                <code class="fs-6 fw-bold text-color-title">def get_code_density(self, stats) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-print_statistics">
+                <code class="fs-6 fw-bold text-color-title">def print_statistics(self, stats) -> Any</code>
+                <div class="mt-2 text-muted small">Print formatted statistics</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
+                
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-main">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def main() -> Any</code>
+                    <p class="mt-2 mb-0 text-muted">No documentation</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-save_detailed_report">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def save_detailed_report(stats, report_file, analyzer) -> Any</code>
+                    <p class="mt-2 mb-0 text-muted">Save a detailed markdown report</p>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Tools Module
+            </a>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0 text-white-50 small">LunaEngine Documentation &copy; 2026</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+</body>
+</html>

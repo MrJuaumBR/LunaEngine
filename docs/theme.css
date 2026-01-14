@@ -85,8 +85,16 @@ body {
 .card {
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
-    color: var(--text-color);
+    color: #000;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-body {
+    color: #000;
+}
+
+[data-theme="dark"] .card-body {
+    color: #fff !important;
 }
 
 .card:hover {
@@ -302,6 +310,38 @@ h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, small, .text-muted {
 
 .text-muted {
     opacity: 0.8;
+}
+
+[data-theme="dark"] .text-muted {
+    opacity: 0.8;
+    
+    color: #000 !important;
+    & a, a {
+        color: #007bff !important;
+    }
+
+}
+
+[data-theme="dark"] input.form-control[type="text"]::placeholder {
+    opacity: 0.8;
+    color: #c4c4c4 !important;
+}
+
+[data-theme="dark"] .card-body .text-muted{
+    opacity: 0.8;
+    color: #fff !important;
+}
+
+[data-theme="dark"] .method-item{
+    background-color: #212529 !important;
+}
+
+.text-color-title {
+    color: #000 !important;
+}
+
+[data-theme="dark"] .text-color-title {
+    color: #c4c4c4 !important;
 }
 
 /* Fix for badges in dark mode */
@@ -650,10 +690,11 @@ a:hover {
 
 /* Add to theme.css */
 .search-highlight {
-    background-color: #ffeb3b !important;
-    padding: 2px 4px;
+    background-color: var(--warning-color) !important;
+    color: #000 !important;
+    padding: 0 2px;
     border-radius: 3px;
-    animation: highlight-pulse 2s ease-in-out;
+    font-weight: 600;
 }
 
 @keyframes highlight-pulse {
@@ -662,11 +703,25 @@ a:hover {
     100% { background-color: #ffeb3b; }
 }
 
+/* Enhanced Search Results Styling */
 .search-result-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-result-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .search-result-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.search-result-card .btn:hover {
+    background-color: var(--primary-color);
+    color: white !important;
 }

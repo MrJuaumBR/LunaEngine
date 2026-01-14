@@ -10,12 +10,6 @@ for creating interactive graphical interfaces in Pygame. It includes basic compo
 like buttons, labels, and text fields, as well as more complex elements like dropdown
 menus, progress bars, and scrollable containers.
 
-NEW FEATURES:
-- DialogBox: RPG-style dialog boxes with multiple styles and animations
-- Tooltip: Intelligent tooltip system with screen boundary detection
-- TextBox improvements: Continuous backspace and max_length support
-- Animation system for DialogBox (typewriter effect, fade-in, etc.)
-
 LIBRARIES USED:
 - pygame: For graphical rendering and event handling
 - numpy: For mathematical calculations (primarily in gradients)
@@ -106,10 +100,9 @@ from typing import Optional, Callable, List, Tuple, Any, TYPE_CHECKING, Dict, Li
 from enum import Enum
 from abc import ABC, abstractmethod
 from .themes import ThemeManager, ThemeType
-
-
-if TYPE_CHECKING:
-    from lunaengine.core import Renderer
+from ..core.renderer import Renderer
+from ..backend.types import InputState, ElementsList, ElementsListEvents, LayerType
+from ..backend.opengl import OpenGLRenderer
 
 class _UIDGenerator:
     """
@@ -206,6 +199,7 @@ class UIElement(ABC):
         children (List[UIElement]): Child elements
         parent (UIElement): Parent element
     """
+    _global_engine:'LunaEngine' = None
     def __init__(self, x: int, y: int, width: int, height: int, root_point: Tuple[float, float] = (0, 0),
                  element_id: Optional[str] = None):
         """
@@ -226,20 +220,27 @@ class UIElement(ABC):
         self.height = height
         self.root_point = root_point
         self.state = UIState.NORMAL
-        self.visible = True
-        self.enabled = True
-        self.children = []
+        self.visible:bool = True
+        self.enabled:bool = True
+        self.scene: 'Scene' = None
+        self.children: ElementsList = ElementsList()
         self.parent = None
-        self.z_index = 0  # For rendering order
+        self.z_index:int = 0  # For rendering order
+        self.render_layer:LayerType = LayerType.NORMAL
+        self.always_on_top:bool = False
         self.groups:List[str] = []
         
         # Generate unique ID using element type name
         self.element_type = self.__class__.__name__.lower()
         self.element_id = element_id if element_id else _uid_generator.generate_id(self.element_type)
+        
+    def get_engine(self) -> 'LunaEngine':
+        return self._global_engine
     
     def add_group(self, group:str):
         if group not in self.groups:
             self.groups.append(str(group).lower())
+            
     def remove_group(self, group:str):
         if group in self.groups:
             self.groups.remove(str(group).lower())
@@ -339,37 +340,33 @@ class UIElement(ABC):
         """Remove tooltip from this element."""
         UITooltipManager.unregister_tooltip(self)
     
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float, input_state):
+    def update(self, dt: float, inputState:InputState):
         """
-        Improved mouse interaction with proper click detection and event consumption
+        Update element state.
         
         Args:
-            mouse_pos (Tuple[int, int]): Current mouse position (x, y)
-            mouse_pressed (bool): Whether mouse button is currently pressed
-            dt (float): Delta time in seconds
-            input_state: The input state manager for event consumption
+            dt (float): Delta time in seconds since last update.
         """
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
             
         # Check if event was already consumed by another element
-        if input_state.is_event_consumed(self.element_id):
+        if inputState.is_event_consumed(self.element_id):
             self.state = UIState.NORMAL
             return
-            
+        
         actual_x, actual_y = self.get_actual_position()
-        mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.width and 
-                    actual_y <= mouse_pos[1] <= actual_y + self.height)
+        mouse_over = (actual_x <= inputState.mouse_pos[0] <= actual_x + self.width and 
+                    actual_y <= inputState.mouse_pos[1] <= actual_y + self.height)
         
         if mouse_over:
-            # Handle click with proper press/release detection
-            if input_state.mouse_just_pressed:
+            if inputState.mouse_just_pressed:
                 self.state = UIState.PRESSED
                 # Mark event as consumed to prevent other elements from using it
-                input_state.consume_event(self.element_id)
+                inputState.consume_event(self.element_id)
                 self.on_click()
-            elif input_state.mouse_pressed and self.state == UIState.PRESSED:
+            elif inputState.mouse_buttons_pressed.left and self.state == UIState.PRESSED:
                 # Keep pressed state while mouse is held down
                 self.state = UIState.PRESSED
             else:
@@ -378,19 +375,6 @@ class UIElement(ABC):
         else:
             self.state = UIState.NORMAL
         
-        # Update children with the same improved logic
-        for child in self.children:
-            if hasattr(child, '_update_with_mouse'):
-                child._update_with_mouse(mouse_pos, mouse_pressed, dt)
-        
-    
-    def update(self, dt: float):
-        """
-        Update element state.
-        
-        Args:
-            dt (float): Delta time in seconds since last update.
-        """
         for child in self.children:
             if hasattr(child, 'update'):
                 child.update(dt)
@@ -407,65 +391,15 @@ class UIElement(ABC):
             if hasattr(child, 'update_theme'):
                 child.update_theme(theme_type)    
     
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """
-        Update element with current mouse state for interaction.
-        
-        Args:
-            mouse_pos (Tuple[int, int]): Current mouse position (x, y).
-            mouse_pressed (bool): Whether mouse button is currently pressed.
-            dt (float): Delta time in seconds.
-        """
-        if not self.visible or not self.enabled:
-            self.state = UIState.DISABLED
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        
-        if (actual_x <= mouse_pos[0] <= actual_x + self.width and 
-            actual_y <= mouse_pos[1] <= actual_y + self.height):
-            
-            if mouse_pressed:
-                self.state = UIState.PRESSED
-                self.on_click()
-            else:
-                self.state = UIState.HOVERED
-                self.on_hover()
-        else:
-            self.state = UIState.NORMAL
-            
-        for child in self.children:
-            child._update_with_mouse(mouse_pos, mouse_pressed, dt)
-
-
-    def render_pygame(self, renderer):
-        """
-        Render this element using Pygame backend.
-        Override this in subclasses for Pygame-specific rendering.
-        """
-        # Default implementation - render children only
-        for child in self.children:
-            child.render(renderer)
-    
-    def render_opengl(self, renderer):
+    def render(self, renderer:Renderer|OpenGLRenderer):
         """
         Render this element using OpenGL backend.  
         Override this in subclasses for OpenGL-specific rendering.
         """
-        # Default implementation - render children only
-        for child in self.children:
-            child.render(renderer)
-    
-    def render(self, renderer):
-        """Universal render method"""
-        if not self.visible:
-            return
-            
-        # Proper OpenGL detection
-        if hasattr(renderer, 'render_opengl'):
-            self.render_opengl(renderer)
-        else:
-            self.render_pygame(renderer)
+        
+        for child in self._global_engine.layer_manager.get_elements_in_order_from(self.children):
+            if hasattr(child, 'render'):
+                child.render(renderer)
     
     def on_click(self):
         """Called when element is clicked by the user."""
@@ -474,7 +408,6 @@ class UIElement(ABC):
     def on_hover(self):
         """Called when mouse hovers over the element."""
         pass
-
 
 class TooltipConfig:
     """
@@ -626,7 +559,7 @@ class Tooltip(UIElement):
         """
         self.target_element = element
     
-    def update_tooltip(self, mouse_pos: Tuple[int, int], dt: float, 
+    def update_tooltip(self, inputState: InputState, dt: float, 
                       screen_width: int, screen_height: int) -> bool:
         """
         Update tooltip state and position.
@@ -644,28 +577,18 @@ class Tooltip(UIElement):
             self._visible = False
             self._hover_time = 0.0
             return False
-        
-        # Check if mouse is over target element
-        actual_x, actual_y = self.target_element.get_actual_position()
-        
-        # Needs to account for root_point        
-        if self.target_element.parent:
-            mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.target_element.parent.width and 
-                     actual_y <= mouse_pos[1] <= actual_y + self.target_element.parent.height)
-        else:
-            mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.target_element.width and 
-                     actual_y <= mouse_pos[1] <= actual_y + self.target_element.height)
-        
-        if mouse_over:
+        if self.target_element.state == UIState.HOVERED:
             self._hover_time += dt
             if self._hover_time >= self.config.show_delay:
                 self._visible = True
-                self._update_position(screen_width, screen_height, mouse_pos)
+                self._update_position(screen_width, screen_height, inputState.mouse_pos)
             else:
                 self._visible = False
-        else:
+        elif self.target_element.state == UIState.NORMAL:
             self._visible = False
             self._hover_time = 0.0
+        else:
+            self._visible = False
         
         return self._visible
     
@@ -697,40 +620,10 @@ class Tooltip(UIElement):
         self.x = x
         self.y = y
     
-    def render_pygame(self, renderer):
-        """Render tooltip using Pygame backend"""
-        if not self._visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
-        
-        # Draw background with rounded corners
-        if self.config.corner_radius > 0:
-            pygame.draw.rect(renderer.get_surface(), theme.tooltip_background, 
-                            (actual_x, actual_y, self.width, self.height),
-                            border_radius=self.config.corner_radius)
-        else:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.tooltip_background)
-        
-        # Draw border
-        if theme.tooltip_border:
-            if self.config.corner_radius > 0:
-                pygame.draw.rect(renderer.get_surface(), theme.tooltip_border,
-                               (actual_x, actual_y, self.width, self.height),
-                               width=1, border_radius=self.config.corner_radius)
-            else:
-                renderer.draw_rect(actual_x, actual_y, self.width, self.height,
-                                 theme.tooltip_border, fill=False)
-        
-        # Draw wrapped text
-        self._render_wrapped_text(renderer, actual_x, actual_y, theme)
-    
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """Render tooltip using OpenGL backend"""
         if not self._visible:
             return
-            
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
         
@@ -743,9 +636,9 @@ class Tooltip(UIElement):
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.tooltip_background)
         
         # Draw wrapped text
-        self._render_wrapped_text(renderer, actual_x, actual_y, theme, opengl=True)
+        self._render_wrapped_text(renderer, actual_x, actual_y, theme)
     
-    def _render_wrapped_text(self, renderer, x: int, y: int, theme, opengl=False):
+    def _render_wrapped_text(self, renderer, x: int, y: int, theme):
         """Render wrapped text inside tooltip."""
         if not self.config.text:
             return
@@ -758,7 +651,7 @@ class Tooltip(UIElement):
             text_x = x + (self.width - text_surface.get_width()) // 2
             text_y = y + self.config.padding + i * line_height
             
-            if opengl and hasattr(renderer, 'render_surface'):
+            if hasattr(renderer, 'render_surface'):
                 renderer.render_surface(text_surface, text_x, text_y)
             else:
                 renderer.draw_surface(text_surface, text_x, text_y)
@@ -817,8 +710,8 @@ class UITooltipManager:
         best_hover_time = 0
         
         for tooltip in cls._tooltips.values():
-            if engine.current_scene and engine.current_scene.has_element(tooltip.target_element):
-                if tooltip.update_tooltip(engine.mouse_pos, dt, engine.width, engine.height):
+            if engine.current_scene and engine.current_scene == tooltip.target_element.scene:
+                if tooltip.update_tooltip(engine.input_state, dt, engine.width, engine.height):
                     if tooltip._hover_time > best_hover_time:
                         best_tooltip = tooltip
                         best_hover_time = tooltip._hover_time
@@ -838,7 +731,7 @@ class UITooltipManager:
         """
         l = []
         for tooltip in cls._tooltips.values():
-            if engine.current_scene and engine.current_scene.has_element(tooltip.target_element):
+            if engine.current_scene and engine.current_scene == tooltip.target_element.scene:
                 if tooltip._visible:
                     l.append(tooltip)
                     
@@ -949,23 +842,8 @@ class TextLabel(UIElement):
         if self.custom_color:
             return self.custom_color
         return ThemeManager.get_theme(self.theme_type).label_text
-        
-    def render_pygame(self, renderer):
-        """Render using Pygame backend"""
-        if not self.visible:
-            return
             
-        actual_x, actual_y = self.get_actual_position()
-        text_color = self._get_text_color()
-        
-        text_surface = self.font.render(self.text, True, text_color)
-        
-        renderer.draw_surface(text_surface, actual_x, actual_y)
-        
-        # Render children
-        super().render_pygame(renderer)
-            
-    def render_opengl(self, renderer:'Renderer'):
+    def render(self, renderer:'Renderer'):
         """Render using OpenGL backend"""
         if not self.visible:
             return
@@ -975,7 +853,7 @@ class TextLabel(UIElement):
         
         renderer.draw_text(self.text, actual_x, actual_y, text_color, self.font)
         
-        super().render_opengl(renderer)
+        super().render(renderer)
 
 class ImageLabel(UIElement):
     def __init__(self, x: int, y: int, image_path: str, 
@@ -1011,23 +889,8 @@ class ImageLabel(UIElement):
         """
         self.image_path = image_path
         self._load_image()
-        
-    def render_pygame(self, renderer):
-        """Render using Pygame backend"""
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        
-        if self._image.get_width() != self.width or self._image.get_height() != self.height:
-            scaled_image = pygame.transform.scale(self._image, (self.width, self.height))
-            renderer.draw_surface(scaled_image, actual_x, actual_y)
-        else:
-            renderer.draw_surface(self._image, actual_x, actual_y)
-            
-        super().render_pygame(renderer)
     
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """Render using OpenGL backend"""
         if not self.visible:
             return
@@ -1046,7 +909,7 @@ class ImageLabel(UIElement):
             else:
                 renderer.draw_surface(self._image, actual_x, actual_y)
                 
-        super().render_opengl(renderer)
+        super().render(renderer)
 
 class Button(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int, text: str = "", 
@@ -1122,31 +985,30 @@ class Button(UIElement):
         """
         return ThemeManager.get_theme(self.theme_type)
     
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """Update button with mouse interaction."""
+    def update(self, dt: float, inputState:InputState):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
             
         actual_x, actual_y = self.get_actual_position()
         
-        mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.width and 
-                     actual_y <= mouse_pos[1] <= actual_y + self.height)
-        
+        mouse_over = (actual_x <= inputState.mouse_pos[0] <= actual_x + self.width and 
+                     actual_y <= inputState.mouse_pos[1] <= actual_y + self.height)
         if mouse_over:
-            if mouse_pressed:
+            if inputState.mouse_buttons_pressed.left:
                 self.state = UIState.PRESSED
                 if not self._was_pressed and self.on_click_callback:
                     self.on_click_callback()
                 self._was_pressed = True
             else:
+                self.on_hover()
                 self.state = UIState.HOVERED
                 self._was_pressed = False
         else:
             self.state = UIState.NORMAL
             self._was_pressed = False
-            
-        super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
+    
+        return super().update(dt, inputState)
     
     def _get_color_for_state(self) -> Tuple[int, int, int]:
         """
@@ -1175,32 +1037,7 @@ class Button(UIElement):
         """
         return self.text_color
             
-    def render_pygame(self, renderer):
-        """Render using Pygame backend"""
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        theme = self._get_colors()
-        
-        color = self._get_color_for_state()
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color)
-        
-        if theme.button_border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                             theme.button_border, fill=False)
-        
-        if self.text:
-            text_color = self._get_text_color()
-            text_surface = self.font.render(self.text, True, text_color)
-            text_x = actual_x + (self.width - text_surface.get_width()) // 2
-            text_y = actual_y + (self.height - text_surface.get_height()) // 2
-            renderer.draw_surface(text_surface, text_x, text_y)
-            
-        # Render children
-        super().render_pygame(renderer)
-            
-    def render_opengl(self, renderer:'Renderer'):
+    def render(self, renderer:'Renderer'):
         """Render using OpenGL backend"""
         if not self.visible:
             return
@@ -1223,7 +1060,7 @@ class Button(UIElement):
             center_x, center_y =  actual_x + self.width // 2, actual_y + self.height // 2
             renderer.draw_text(self.text, center_x, center_y, text_color, self.font, anchor_point=(0.5, 0.5))
                     
-        super().render_opengl(renderer)
+        super().render(renderer)
 
 class ImageButton(UIElement):
     def __init__(self, x: int, y: int, image_path: str, 
@@ -1262,20 +1099,18 @@ class ImageButton(UIElement):
             callback (Callable): Function to call when button is clicked.
         """
         self.on_click_callback = callback
-        
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """Update image button with mouse interaction."""
+    
+    def update(self, dt:float, inputState:InputState):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
             
         actual_x, actual_y = self.get_actual_position()
         
-        mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.width and 
-                     actual_y <= mouse_pos[1] <= actual_y + self.height)
-        
+        mouse_over = (actual_x <= inputState.mouse_pos[0] <= actual_x + self.width and 
+                     actual_y <= inputState.mouse_pos[1] <= actual_y + self.height)
         if mouse_over:
-            if mouse_pressed:
+            if inputState.mouse_buttons_pressed.left:
                 self.state = UIState.PRESSED
                 if not self._was_pressed and self.on_click_callback:
                     self.on_click_callback()
@@ -1286,8 +1121,8 @@ class ImageButton(UIElement):
         else:
             self.state = UIState.NORMAL
             self._was_pressed = False
-            
-        super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
+    
+        return super().update(dt, inputState)
     
     def _get_overlay_color(self) -> Optional[Tuple[int, int, int]]:
         """
@@ -1301,27 +1136,8 @@ class ImageButton(UIElement):
         elif self.state == UIState.PRESSED:
             return (0, 0, 0, 50)  # Semi-transparent black
         return None
-            
-    def render_pygame(self, renderer):
-        """Render using Pygame backend"""
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        
-        if self._image.get_width() != self.width or self._image.get_height() != self.height:
-            scaled_image = pygame.transform.scale(self._image, (self.width, self.height))
-            renderer.draw_surface(scaled_image, actual_x, actual_y)
-        else:
-            renderer.draw_surface(self._image, actual_x, actual_y)
-        
-        overlay_color = self._get_overlay_color()
-        if overlay_color:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, overlay_color)
-            
-        super().render_pygame(renderer)
     
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """Render using OpenGL backend"""
         if not self.visible:
             return
@@ -1344,7 +1160,7 @@ class ImageButton(UIElement):
         if overlay_color:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, overlay_color)
                 
-        super().render_opengl(renderer)
+        super().render(renderer)
 
 class TextBox(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int, 
@@ -1379,6 +1195,94 @@ class TextBox(UIElement):
         if self._font is None:
             self._font = FontManager.get_font(self.font_name, self.font_size)
         return self._font
+    
+    def on_key_down(self, event:pygame.event.Event):
+        """
+        Handle keyboard input when focused - UPDATED with max_length support
+        
+        Args:
+            event: Pygame keyboard event.
+        """
+        if not self.focused or event.type != pygame.KEYDOWN:
+            return
+        text_changed = False
+        cursor_moved = False
+        
+        if event.key == pygame.K_BACKSPACE:
+            if self.cursor_pos > 0:
+                self.text = self.text[:self.cursor_pos-1] + self.text[self.cursor_pos:]
+                self.cursor_pos -= 1
+                self._needs_redraw = True
+                text_changed = True
+                
+        elif event.key == pygame.K_DELETE:
+            if self.cursor_pos < len(self.text):
+                self.text = self.text[:self.cursor_pos] + self.text[self.cursor_pos+1:]
+                self._needs_redraw = True
+                text_changed = True
+                
+        elif event.key == pygame.K_LEFT:
+            self.cursor_pos = max(0, self.cursor_pos - 1)
+            self._needs_redraw = True
+            cursor_moved = True
+            
+        elif event.key == pygame.K_RIGHT:
+            self.cursor_pos = min(len(self.text), self.cursor_pos + 1)
+            self._needs_redraw = True
+            cursor_moved = True
+        elif event.key == pygame.K_HOME:
+            self.cursor_pos = 0
+            self._needs_redraw = True
+            cursor_moved = True
+        elif event.key == pygame.K_END:
+            self.cursor_pos = len(self.text)
+            self._needs_redraw = True
+            cursor_moved = True
+            
+        # Update rendering if needed
+        if text_changed:
+            self._update_text_surface()
+        elif cursor_moved:
+            self.cursor_visible = True
+            self.cursor_timer = 0
+            self._needs_redraw = True
+        
+    def on_key_up(self, event:pygame.event.Event):
+        """
+        Handle keyboard input when focused - UPDATED with max_length support
+        
+        Args:
+            event: Pygame keyboard event.
+        """
+        if not self.focused or event.type != pygame.KEYUP:
+            return
+        
+        text_changed = False
+        cursor_moved = False
+        
+        # Handle special keys
+        if event.key in [pygame.K_BACKSPACE, pygame.K_DELETE, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_HOME, pygame.K_END]:
+            # This ones are handled in on_key_down
+            pass
+        elif event.unicode and event.unicode.isprintable():
+            # NEW: Check max_length before inserting
+            if self.max_length > 0 and len(self.text) >= self.max_length:
+                # At max length, don't add more characters
+                pass
+            else:
+                # Insert character at cursor position
+                self.text = self.text[:self.cursor_pos] + event.unicode + self.text[self.cursor_pos:]
+                self.cursor_pos += len(event.unicode)
+                text_changed = True
+                cursor_moved = True
+        
+        # Update rendering if needed
+        if text_changed:
+            self._update_text_surface()
+        elif cursor_moved:
+            self.cursor_visible = True
+            self.cursor_timer = 0
+            self._needs_redraw = True
     
     def _update_text_surface(self):
         """Update text surface cache when text changes."""
@@ -1424,8 +1328,7 @@ class TextBox(UIElement):
             self.cursor_pos = len(text)
             self._update_text_surface()
     
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """Update text box with mouse interaction - IMPROVED with backspace support"""
+    def update(self, dt, inputState):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             self.focused = False
@@ -1433,13 +1336,13 @@ class TextBox(UIElement):
         
         actual_x, actual_y = self.get_actual_position()
         mouse_over = (
-            actual_x <= mouse_pos[0] <= actual_x + self.width and 
-            actual_y <= mouse_pos[1] <= actual_y + self.height
+            actual_x <= inputState.mouse_pos[0] <= actual_x + self.width and 
+            actual_y <= inputState.mouse_pos[1] <= actual_y + self.height
         )
         
         # Handle focus changes
         old_focused = self.focused
-        if mouse_pressed:
+        if inputState.mouse_buttons_pressed.left:
             self.focused = mouse_over
             if mouse_over:
                 self.state = UIState.PRESSED
@@ -1449,45 +1352,6 @@ class TextBox(UIElement):
                 self._needs_redraw = True
         else:
             self.state = UIState.HOVERED if mouse_over else UIState.NORMAL
-        
-        # Handle continuous backspace when focused
-        if self.focused:
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_BACKSPACE]:
-                self._backspace_timer += dt
-                
-                # Check if we should delete a character
-                should_delete = False
-                if self._backspace_timer >= self._backspace_initial_delay:
-                    # After initial delay, delete every repeat delay
-                    if self._backspace_timer >= self._backspace_initial_delay + self._backspace_repeat_delay:
-                        should_delete = True
-                        self._backspace_timer = self._backspace_initial_delay  # Reset to initial for continuous repeat
-                elif self._backspace_timer == dt:  # First frame of press
-                    should_delete = True
-                
-                if should_delete and self.text and self.cursor_pos > 0:
-                    self.text = self.text[:self.cursor_pos-1] + self.text[self.cursor_pos:]
-                    self.cursor_pos -= 1
-                    self._update_text_surface()
-                    self._needs_redraw = True
-            else:
-                self._backspace_timer = 0.0
-        
-        # Update cursor blink only when focused
-        if self.focused:
-            self.cursor_timer += dt
-            if self.cursor_timer >= 0.5:  # Blink every 0.5 seconds
-                self.cursor_visible = not self.cursor_visible
-                self.cursor_timer = 0
-                self._needs_redraw = True
-        elif old_focused != self.focused:
-            # Lost focus, ensure cursor is visible next time
-            self.cursor_visible = True
-            self.cursor_timer = 0
-            self._needs_redraw = True
-        
-        super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
     
     def focus(self):
         """
@@ -1504,68 +1368,6 @@ class TextBox(UIElement):
         self.focused = False
         self.state = UIState.NORMAL
         self._needs_redraw = True
-    
-    def handle_key_input(self, event):
-        """
-        Handle keyboard input when focused - UPDATED with max_length support
-        
-        Args:
-            event: Pygame keyboard event.
-        """
-        if not self.focused or event.type != pygame.KEYDOWN:
-            return
-        
-        text_changed = False
-        cursor_moved = False
-        
-        # Handle special keys
-        if event.key == pygame.K_BACKSPACE:
-            if self.cursor_pos > 0:
-                self.text = self.text[:self.cursor_pos-1] + self.text[self.cursor_pos:]
-                self.cursor_pos -= 1
-                text_changed = True
-                cursor_moved = True
-                
-        elif event.key == pygame.K_DELETE:
-            if self.cursor_pos < len(self.text):
-                self.text = self.text[:self.cursor_pos] + self.text[self.cursor_pos+1:]
-                text_changed = True
-                
-        elif event.key == pygame.K_LEFT:
-            self.cursor_pos = max(0, self.cursor_pos - 1)
-            cursor_moved = True
-            
-        elif event.key == pygame.K_RIGHT:
-            self.cursor_pos = min(len(self.text), self.cursor_pos + 1)
-            cursor_moved = True
-            
-        elif event.key == pygame.K_HOME:
-            self.cursor_pos = 0
-            cursor_moved = True
-            
-        elif event.key == pygame.K_END:
-            self.cursor_pos = len(self.text)
-            cursor_moved = True
-            
-        elif event.unicode and event.unicode.isprintable():
-            # NEW: Check max_length before inserting
-            if self.max_length > 0 and len(self.text) >= self.max_length:
-                # At max length, don't add more characters
-                pass
-            else:
-                # Insert character at cursor position
-                self.text = self.text[:self.cursor_pos] + event.unicode + self.text[self.cursor_pos:]
-                self.cursor_pos += len(event.unicode)
-                text_changed = True
-                cursor_moved = True
-        
-        # Update rendering if needed
-        if text_changed:
-            self._update_text_surface()
-        elif cursor_moved:
-            self.cursor_visible = True
-            self.cursor_timer = 0
-            self._needs_redraw = True
     
     def _get_cursor_position(self, actual_x: int, actual_y: int) -> Tuple[int, int]:
         """Calculate cursor position - IMPROVED with bounds checking"""
@@ -1593,36 +1395,7 @@ class TextBox(UIElement):
         
         return cursor_x, base_y
     
-    def render_pygame(self, renderer):
-        """Render using Pygame backend"""
-        if not self.visible:
-            return
-        
-        actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
-        
-        # Draw background
-        bg_color = self._get_background_color()
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
-        
-        # Draw border
-        if theme.dropdown_border:
-            border_color = theme.text_primary if self.focused else theme.dropdown_border
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, fill=False)
-        
-        # Draw text
-        self._render_text_content(renderer, actual_x, actual_y, theme)
-        
-        # Draw cursor
-        if self.focused and self.cursor_visible:
-            cursor_x, cursor_y = self._get_cursor_position(actual_x, actual_y)
-            cursor_height = self.height - 10
-            renderer.draw_rect(cursor_x, cursor_y, 2, cursor_height, theme.dropdown_text)
-        
-        self._needs_redraw = False
-        super().render_pygame(renderer)
-    
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """Render using OpenGL backend - FIXED cursor visibility"""
         if not self.visible:
             return
@@ -1851,10 +1624,20 @@ class DialogBox(UIElement):
         """Set callback for when dialog is advanced."""
         self.on_advance_callback = callback
     
-    def update(self, dt: float):
+    def update(self, dt: float, inputState: InputState):
         """Update dialog box animations."""
-        if not self.visible:
+        if not self.visible or not self.enabled:
             return
+            
+        actual_x, actual_y = self.get_actual_position()
+        mouse_over = (actual_x <= inputState.mouse_pos[0] <= actual_x + self.width and 
+                     actual_y <= inputState.mouse_pos[1] <= actual_y + self.height)
+        
+        # Only advance on mouse click when we're waiting for advance
+        if mouse_over and inputState.mouse_buttons_pressed.left and self.waiting_for_advance:
+            self.advance()
+        
+        self.state = UIState.HOVERED if mouse_over else UIState.NORMAL
             
         # Update text animation
         if self.is_animating and self.animation_type == "typewriter":
@@ -1875,86 +1658,8 @@ class DialogBox(UIElement):
             if self.continue_timer >= 0.5:  # Blink every 0.5 seconds (faster)
                 self.continue_timer = 0.0
                 self.continue_indicator_blink = not self.continue_indicator_blink
-    
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """Handle mouse interaction for dialog box."""
-        if not self.visible or not self.enabled:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.width and 
-                     actual_y <= mouse_pos[1] <= actual_y + self.height)
-        
-        # Only advance on mouse click when we're waiting for advance
-        if mouse_over and mouse_pressed and self.waiting_for_advance:
-            self.advance()
-        
-        self.state = UIState.HOVERED if mouse_over else UIState.NORMAL
-        
-        self.update(dt)
-    
-    def render_pygame(self, renderer):
-        """Render dialog box using Pygame backend."""
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
-        
-        # Draw main dialog box
-        if self.corner_radius > 0:
-            pygame.draw.rect(renderer.get_surface(), theme.dialog_background,
-                           (actual_x, actual_y, self.width, self.height),
-                           border_radius=self.corner_radius)
-        else:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.dialog_background)
-        
-        # Draw border
-        if theme.dialog_border:
-            if self.corner_radius > 0:
-                pygame.draw.rect(renderer.get_surface(), theme.dialog_border,
-                               (actual_x, actual_y, self.width, self.height),
-                               width=2, border_radius=self.corner_radius)
-            else:
-                renderer.draw_rect(actual_x, actual_y, self.width, self.height,
-                                 theme.dialog_border, fill=False, border_width=2)
-        
-        # Draw speaker name box if provided
-        if self.speaker_name:
-            name_width = self.name_font.size(self.speaker_name)[0] + self.name_padding * 2
-            name_height = self.name_font.get_height() + self.name_padding
-            name_x = actual_x + 10
-            name_y = actual_y - name_height // 2
-            
-            # Name box
-            pygame.draw.rect(renderer.get_surface(), theme.dialog_name_bg,
-                           (name_x, name_y, name_width, name_height))
-            
-            # Name text
-            name_surface = self.name_font.render(self.speaker_name, True, theme.dialog_name_text)
-            renderer.draw_surface(name_surface, name_x + self.name_padding, name_y + self.name_padding // 2)
-        
-        # Draw text with word wrapping
-        text_area_width = self.width - self.padding * 2
-        text_area_height = self.height - self.padding * 2
-        text_x = actual_x + self.padding
-        text_y = actual_y + self.padding
-        
-        self._render_wrapped_text(renderer, text_x, text_y, text_area_width, text_area_height, theme)
-        
-        # Draw continue indicator if waiting for advance
-        if self.show_continue_indicator and self.waiting_for_advance and self.continue_indicator_blink:
-            indicator_size = 10
-            indicator_x = actual_x + self.width - self.padding - indicator_size
-            indicator_y = actual_y + self.height - self.padding - indicator_size
-            
-            pygame.draw.polygon(renderer.get_surface(), theme.dialog_continue_indicator, [
-                (indicator_x, indicator_y),
-                (indicator_x + indicator_size, indicator_y),
-                (indicator_x + indicator_size // 2, indicator_y + indicator_size)
-            ])
-    
-    def render_opengl(self, renderer):
+                
+    def render(self, renderer):
         """Render dialog box using OpenGL backend."""
         if not self.visible:
             return
@@ -2097,7 +1802,6 @@ class ProgressBar(UIElement):
         self.font_color = theme.slider_text
         self.border_color = theme.border
         
-    
     def set_value(self, value: float):
         """
         Set the current progress value.
@@ -2114,39 +1818,9 @@ class ProgressBar(UIElement):
         Returns:
             float: Progress percentage (0-100).
         """
-        return (self.value - self.min_val) / (self.max_val - self.min_val) * 100
+        return (self.value - self.min_val) / (self.max_val - self.min_val) * 100    
     
-    def render_pygame(self, renderer):
-        """Render using Pygame backend"""
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
-        
-        # Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.slider_track)
-        
-        # Draw progress
-        progress_width = int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
-        if progress_width > 0:
-            renderer.draw_rect(actual_x, actual_y, progress_width, self.height, theme.button_normal)
-        
-        # Draw border
-        if theme.border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
-        
-        # Draw text
-        font = pygame.font.Font(None, 12)
-        text = f"{self.get_percentage():.1f}%"
-        text_surface = font.render(text, True, theme.slider_text)
-        text_x = actual_x + (self.width - text_surface.get_width()) // 2
-        text_y = actual_y + (self.height - text_surface.get_height()) // 2
-        renderer.draw_surface(text_surface, text_x, text_y)
-        
-        super().render_pygame(renderer)
-    
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """Render using OpenGL backend"""
         if not self.visible:
             return
@@ -2171,7 +1845,7 @@ class ProgressBar(UIElement):
             font = FontManager.get_font(self.font_draw, self.font_size)
             renderer.draw_text(f"{self.get_percentage():.1f}%", actual_x, actual_y, self.font_color, font, anchor_point=(0.5, 0.5))
                 
-        super().render_opengl(renderer)
+        super().render(renderer)
 
 class UIDraggable(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int,
@@ -2184,13 +1858,13 @@ class UIDraggable(UIElement):
         
         self.theme_type = theme or ThemeManager.get_current_theme()
 
-    
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """Update draggable element with mouse interaction."""
+    def update(self, dt:float, inputState:InputState):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
             
+            
+        mouse_pos, mouse_pressed = inputState.mouse_pos, inputState.mouse_buttons_pressed.left
         actual_x, actual_y = self.get_actual_position()
         
         mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.width and 
@@ -2209,31 +1883,8 @@ class UIDraggable(UIElement):
             new_y = mouse_pos[1] - self.drag_offset[1] + int(self.height * self.root_point[1])
             self.x = new_x
             self.y = new_y
-            
-        super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
     
-    def render_pygame(self, renderer):
-        """Render using Pygame backend"""
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
-        
-        color = theme.button_normal
-        if self.dragging:
-            color = theme.button_pressed
-        elif self.state == UIState.HOVERED:
-            color = theme.button_hover
-            
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color)
-        
-        if theme.button_border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.button_border, fill=False)
-        
-        super().render_pygame(renderer)
-    
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """Render using OpenGL backend"""
         if not self.visible:
             return
@@ -2255,7 +1906,7 @@ class UIDraggable(UIElement):
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, color)
         
         
-        super().render_opengl(renderer)
+        super().render(renderer)
 
 class UIGradient(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int,
@@ -2356,17 +2007,7 @@ class UIGradient(UIElement):
         self.colors = colors
         self._generate_gradient()
     
-    def render_pygame(self, renderer):
-        """Render using Pygame backend"""
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        renderer.draw_surface(self._gradient_surface, actual_x, actual_y)
-        
-        super().render_pygame(renderer)
-    
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """Render using OpenGL backend"""
         if not self.visible:
             return
@@ -2378,7 +2019,7 @@ class UIGradient(UIElement):
         else:
             renderer.draw_surface(self._gradient_surface, actual_x, actual_y)
                 
-        super().render_opengl(renderer)
+        super().render(renderer)
 
 class Select(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int,
@@ -2395,7 +2036,7 @@ class Select(UIElement):
         self.on_selection_changed = None
         
         # Fix: Add click cooldown to prevent rapid switching
-        self._click_cooldown = 0
+        self._click_cooldown = time.time()
         self._click_delay = 0.3  # 300ms between clicks
         
         self.theme_type = theme or ThemeManager.get_current_theme()
@@ -2461,15 +2102,13 @@ class Select(UIElement):
         """
         self.on_selection_changed = callback
     
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """Update select element with mouse interaction."""
+    def update(self, dt, inputState):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
             
-        # Update cooldown
-        if self._click_cooldown > 0:
-            self._click_cooldown -= dt
+        mouse_pos = inputState.mouse_pos
+        mouse_pressed = inputState.mouse_buttons_pressed.left
             
         actual_x, actual_y = self.get_actual_position()
         
@@ -2484,46 +2123,17 @@ class Select(UIElement):
                             right_arrow_rect[1] <= mouse_pos[1] <= right_arrow_rect[1] + right_arrow_rect[3])
         
         # Only process click if not in cooldown
-        if mouse_pressed and self._click_cooldown <= 0:
+        if mouse_pressed and time.time() - self._click_cooldown > self._click_delay:
             if left_arrow_hover:
                 self.previous_option()
-                self._click_cooldown = self._click_delay
+                self._click_cooldown = time.time()
             elif right_arrow_hover:
                 self.next_option()
-                self._click_cooldown = self._click_delay
+                self._click_cooldown = time.time()
         
         self.state = UIState.HOVERED if (left_arrow_hover or right_arrow_hover) else UIState.NORMAL
-            
-        super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
     
-    def render_pygame(self, renderer):
-        """Render using Pygame backend"""
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
-        
-        # Draw background
-        if self.state == UIState.NORMAL:
-            bg_color = theme.dropdown_normal
-        else:
-            bg_color = theme.dropdown_hover
-            
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
-        
-        # Draw border
-        if theme.dropdown_border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                             theme.dropdown_border, fill=False)
-        
-        # Draw arrows and text
-        self._render_select_content(renderer, actual_x, actual_y, theme, opengl=False)
-        
-        # Render children
-        super().render_pygame(renderer)
-    
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """Render using OpenGL backend"""
         if not self.visible:
             return
@@ -2545,12 +2155,12 @@ class Select(UIElement):
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
         
         # FINALLY: Draw arrows and text
-        self._render_select_content(renderer, actual_x, actual_y, theme, opengl=True)
+        self._render_select_content(renderer, actual_x, actual_y, theme)
         
         # Render children
-        super().render_opengl(renderer)
+        super().render(renderer)
     
-    def _render_select_content(self, renderer, actual_x: int, actual_y: int, theme, opengl=False):
+    def _render_select_content(self, renderer, actual_x: int, actual_y: int, theme):
         """Helper method to render select content for both backends"""
         arrow_color = theme.dropdown_text
         
@@ -2571,21 +2181,16 @@ class Select(UIElement):
             right_arrow_colored.fill(arrow_color, special_flags=pygame.BLEND_RGBA_MULT)
             
             # Draw arrows using surface rendering (works for both backends)
-            if opengl:
-                if hasattr(renderer, 'render_surface'):
-                    renderer.render_surface(left_arrow_colored, left_arrow_x, left_arrow_y)
-                    renderer.render_surface(right_arrow_colored, right_arrow_x, right_arrow_y)
-                else:
-                    # Fallback for OpenGL renderers without render_surface
-                    renderer.draw_surface(left_arrow_colored, left_arrow_x, left_arrow_y)
-                    renderer.draw_surface(right_arrow_colored, right_arrow_x, right_arrow_y)
+            if hasattr(renderer, 'render_surface'):
+                renderer.render_surface(left_arrow_colored, left_arrow_x, left_arrow_y)
+                renderer.render_surface(right_arrow_colored, right_arrow_x, right_arrow_y)
             else:
-                # Pygame backend
+                # Fallback for OpenGL renderers without render_surface
                 renderer.draw_surface(left_arrow_colored, left_arrow_x, left_arrow_y)
                 renderer.draw_surface(right_arrow_colored, right_arrow_x, right_arrow_y)
         else:
             # Fallback: draw simple triangles if surfaces aren't available
-            self._draw_fallback_arrows(renderer, actual_x, actual_y, arrow_color, opengl)
+            self._draw_fallback_arrows(renderer, actual_x, actual_y, arrow_color)
         
         # Draw selected text
         if self.options:
@@ -2596,12 +2201,12 @@ class Select(UIElement):
             text_x = actual_x + (self.width - text_surface.get_width()) // 2
             text_y = actual_y + (self.height - text_surface.get_height()) // 2
             
-            if opengl and hasattr(renderer, 'render_surface'):
+            if hasattr(renderer, 'render_surface'):
                 renderer.render_surface(text_surface, text_x, text_y)
             else:
                 renderer.draw_surface(text_surface, text_x, text_y)
     
-    def _draw_fallback_arrows(self, renderer, actual_x: int, actual_y: int, arrow_color, opengl=False):
+    def _draw_fallback_arrows(self, renderer, actual_x: int, actual_y: int, arrow_color):
         """Fallback arrow drawing method"""
         # Left arrow points (points left)
         left_arrow_points = [
@@ -2617,25 +2222,17 @@ class Select(UIElement):
             (actual_x + self.width - 15, actual_y + self.height // 2 + 5)
         ]
         
-        if opengl:
-            # For OpenGL, try polygon drawing first
-            if hasattr(renderer, 'draw_polygon'):
-                renderer.draw_polygon(left_arrow_points, arrow_color)
-                renderer.draw_polygon(right_arrow_points, arrow_color)
-            elif hasattr(renderer, 'draw_line'):
-                # Draw as thick lines
-                for points in [left_arrow_points, right_arrow_points]:
-                    for i in range(len(points)):
-                        start_point = points[i]
-                        end_point = points[(i + 1) % len(points)]
-                        renderer.draw_line(start_point[0], start_point[1], 
-                                         end_point[0], end_point[1], arrow_color, 2)
-        else:
-            # For Pygame, draw directly on surface
-            surface = renderer.get_surface()
-            pygame.draw.polygon(surface, arrow_color, left_arrow_points)
-            pygame.draw.polygon(surface, arrow_color, right_arrow_points)
-
+        if hasattr(renderer, 'draw_polygon'):
+            renderer.draw_polygon(left_arrow_points, arrow_color)
+            renderer.draw_polygon(right_arrow_points, arrow_color)
+        elif hasattr(renderer, 'draw_line'):
+            # Draw as thick lines
+            for points in [left_arrow_points, right_arrow_points]:
+                for i in range(len(points)):
+                    start_point = points[i]
+                    end_point = points[(i + 1) % len(points)]
+                    renderer.draw_line(start_point[0], start_point[1], 
+                                        end_point[0], end_point[1], arrow_color, 2)
 
 class Switch(UIElement):
     def __init__(self, x: int, y: int, width: int = 60, height: int = 30,
@@ -2674,12 +2271,14 @@ class Switch(UIElement):
         """
         self.on_toggle = callback
     
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """Update switch with mouse interaction."""
+    def update(self, dt, inputState):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
             
+            
+        mouse_pos = inputState.mouse_pos
+        mouse_pressed = inputState.mouse_buttons_pressed.left
         actual_x, actual_y = self.get_actual_position()
         
         mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.width and 
@@ -2703,8 +2302,6 @@ class Switch(UIElement):
             self.animation_progress += (target_progress - self.animation_progress) * 0.2
             if abs(self.animation_progress - target_progress) < 0.01:
                 self.animation_progress = target_progress
-            
-        super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
     
     def _get_colors(self):
         """Get colors from current theme for switch"""
@@ -2725,39 +2322,8 @@ class Switch(UIElement):
                 track_color = tuple(min(255, c + 20) for c in track_color)
         
         return track_color, thumb_color
-    
-    def render_pygame(self, renderer):
-        """Render using Pygame backend - CONSISTENT with OpenGL"""
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        track_color, thumb_color = self._get_colors()
-        
-        # Draw track with rounded corners effect
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, track_color)
-        
-        # Draw thumb with smooth animation
-        thumb_size = max(10, int(self.height * 0.7))
-        thumb_margin = max(2, (self.height - thumb_size) // 2)
-        max_thumb_travel = max(10, self.width - thumb_size - (thumb_margin * 2))
-        
-        thumb_x = actual_x + thumb_margin + int(max_thumb_travel * self.animation_progress)
-        thumb_y = actual_y + thumb_margin
-        
-        # Ensure thumb stays within bounds
-        thumb_x = max(actual_x + thumb_margin, 
-                     min(thumb_x, actual_x + self.width - thumb_size - thumb_margin))
-        
-        renderer.draw_rect(thumb_x, thumb_y, thumb_size, thumb_size, thumb_color)
-        
-        # Draw border
-        border_color = (150, 150, 150)
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, fill=False)
-        
-        super().render_pygame(renderer)
 
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """Render using OpenGL backend - CONSISTENT with Pygame"""
         if not self.visible:
             return
@@ -2783,277 +2349,7 @@ class Switch(UIElement):
         
         renderer.draw_rect(thumb_x, thumb_y, thumb_size, thumb_size, thumb_color)
         
-        super().render_opengl(renderer)
-
-class ScrollingFrame(UIElement):
-    def __init__(self, x: int, y: int, width: int, height: int,
-                 content_width: int, content_height: int,
-                 root_point: Tuple[float, float] = (0, 0),
-                 theme: ThemeType = None,
-                 element_id: Optional[str] = None):
-        super().__init__(x, y, width, height, root_point, element_id)
-        self.content_width = content_width
-        self.content_height = content_height
-        self.scroll_x = 0
-        self.scroll_y = 0
-        self.scrollbar_size = 15
-        self.dragging_vertical = False
-        self.dragging_horizontal = False
-        self.scroll_drag_start = (0, 0)
-        
-        self.theme_type = theme or ThemeManager.get_current_theme()
-        self.background_color = ThemeManager.get_theme(self.theme_type).background
-        
-    def set_background_color(self, color: Tuple[int, int, int]):
-        self.background_color = color
-        
-    def update_theme(self, theme_type):
-        super().update_theme(theme_type)
-        self.background_color = ThemeManager.get_theme(self.theme_type).background
-        
-    def clear_children(self):
-        self.children.clear()
-
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """Update scrolling frame with proper scroll handling"""
-        if not self.visible or not self.enabled:
-            self.state = UIState.DISABLED
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        
-        # Calculate max scroll values
-        max_scroll_x = max(0, self.content_width - self.width)
-        max_scroll_y = max(0, self.content_height - self.height)
-        
-        # Handle scrollbar dragging
-        if mouse_pressed:
-            if not (self.dragging_vertical or self.dragging_horizontal):
-                # Check vertical scrollbar
-                if max_scroll_y > 0:
-                    scrollbar_rect = self._get_vertical_scrollbar_rect(actual_x, actual_y)
-                    if (scrollbar_rect[0] <= mouse_pos[0] <= scrollbar_rect[0] + scrollbar_rect[2] and 
-                        scrollbar_rect[1] <= mouse_pos[1] <= scrollbar_rect[1] + scrollbar_rect[3]):
-                        self.dragging_vertical = True
-                        self.scroll_drag_start = (mouse_pos[0], mouse_pos[1])
-                        self.scroll_start_y = self.scroll_y
-                
-                # Check horizontal scrollbar  
-                if max_scroll_x > 0:
-                    scrollbar_rect = self._get_horizontal_scrollbar_rect(actual_x, actual_y)
-                    if (scrollbar_rect[0] <= mouse_pos[0] <= scrollbar_rect[0] + scrollbar_rect[2] and 
-                        scrollbar_rect[1] <= mouse_pos[1] <= scrollbar_rect[1] + scrollbar_rect[3]):
-                        self.dragging_horizontal = True
-                        self.scroll_drag_start = (mouse_pos[0], mouse_pos[1])
-                        self.scroll_start_x = self.scroll_x
-        else:
-            self.dragging_vertical = False
-            self.dragging_horizontal = False
-            
-        # Update scroll position if dragging
-        if self.dragging_vertical and max_scroll_y > 0:
-            drag_delta_y = mouse_pos[1] - self.scroll_drag_start[1]
-            scroll_area_height = self.height - self.scrollbar_size
-            scroll_ratio = drag_delta_y / scroll_area_height
-            self.scroll_y = max(0, min(max_scroll_y, self.scroll_start_y + int(scroll_ratio * max_scroll_y)))
-            
-        if self.dragging_horizontal and max_scroll_x > 0:
-            drag_delta_x = mouse_pos[0] - self.scroll_drag_start[0]
-            scroll_area_width = self.width - self.scrollbar_size
-            scroll_ratio = drag_delta_x / scroll_area_width
-            self.scroll_x = max(0, min(max_scroll_x, self.scroll_start_x + int(scroll_ratio * max_scroll_x)))
-        
-        # Update children with scrolled mouse position for interaction
-        scrolled_mouse_pos = (mouse_pos[0] + self.scroll_x, mouse_pos[1] + self.scroll_y)
-        for child in self.children:
-            child._update_with_mouse(scrolled_mouse_pos, mouse_pressed, dt)
-            
-        self.state = UIState.NORMAL
-    
-    def handle_scroll(self, scroll_y: int):
-        """Handle mouse wheel scrolling"""
-        max_scroll_y = max(0, self.content_height - self.height)
-        self.scroll_y = max(0, min(max_scroll_y, self.scroll_y - scroll_y * 30))
-        max_scroll_x = max(0, self.content_width - self.width)
-        self.scroll_x = max(0, min(max_scroll_x, self.scroll_x - scroll_y * 30))
-    
-    def render_pygame(self, renderer):
-        """Render using Pygame backend - FIXED scroll application"""
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
-        
-        # Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.background_color)
-        
-        # Setup clipping for content
-        original_clip = renderer.get_surface().get_clip()
-        renderer.get_surface().set_clip(pygame.Rect(actual_x, actual_y, self.width, self.height))
-        
-        # Apply scroll transform by adjusting rendering position
-        for child in self.children:
-            # Save original position
-            original_x, original_y = child.x, child.y
-            
-            # Apply scroll offset to child position for rendering only
-            child.x = original_x - self.scroll_x
-            child.y = original_y - self.scroll_y
-            
-            # Render child with scrolled position
-            child.render_pygame(renderer)
-            
-            # Restore original position immediately
-            child.x, child.y = original_x, original_y
-        
-        # Restore clipping
-        renderer.get_surface().set_clip(original_clip)
-        
-        # Draw scrollbars if needed
-        if self.content_width > self.width:
-            self._draw_horizontal_scrollbar(renderer, actual_x, actual_y, theme)
-        
-        if self.content_height > self.height:
-            self._draw_vertical_scrollbar(renderer, actual_x, actual_y, theme)
-        
-        # Draw border
-        if theme.border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
-        
-        # super().render_pygame(renderer) - Will render duplicated children
-
-    def render_opengl(self, renderer):
-        """Render using OpenGL backend - FIXED clipping"""
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
-        
-        # FIRST: Draw border
-        if theme.border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.border, fill=False)
-        
-        # THEN: Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.background_color)
-        
-        # Clips content
-        if hasattr(renderer, 'enable_scissor'):
-            # OpenGL scissor uses bottom-left origin, no Y flipping needed
-            renderer.enable_scissor(actual_x, actual_y, self.width, self.height)
-        
-        # Apply scroll transform to children rendering
-        for child in self.children:
-            # Save original position
-            original_x, original_y = child.x, child.y
-            
-            # Apply scroll offset to child position for rendering only
-            child.x = original_x - self.scroll_x
-            child.y = original_y - self.scroll_y
-            
-            # Render child with scrolled position
-            child.render_opengl(renderer)
-            
-            # Restore original position immediately
-            child.x, child.y = original_x, original_y
-        
-        # Disable scissor test
-        if hasattr(renderer, 'disable_scissor'):
-            renderer.disable_scissor()
-        
-        # Draw scrollbars on top
-        if self.content_width > self.width:
-            self._draw_horizontal_scrollbar(renderer, actual_x, actual_y, theme)
-        
-        if self.content_height > self.height:
-            self._draw_vertical_scrollbar(renderer, actual_x, actual_y, theme)
-    
-    def _get_vertical_scrollbar_rect(self, x: int, y: int) -> Tuple[int, int, int, int]:
-        """Get the vertical scrollbar rectangle - FIXED limits"""
-        if self.content_height <= self.height:
-            return (0, 0, 0, 0)
-        
-        scrollbar_width = self.scrollbar_size
-        scrollbar_height = self.height - (self.scrollbar_size if self.content_width > self.width else 0)
-        
-        scrollbar_x = x + self.width - scrollbar_width
-        scrollbar_y = y
-        
-        # Calculate thumb height and position - FIXED: Same logic as drawing
-        max_scroll_y = max(1, self.content_height - self.height)
-        thumb_height = max(20, int((self.height / self.content_height) * scrollbar_height))
-        
-        available_height = scrollbar_height - thumb_height
-        scroll_ratio = self.scroll_y / max_scroll_y
-        thumb_y = scrollbar_y + int(scroll_ratio * available_height)
-        
-        return (scrollbar_x, thumb_y, scrollbar_width, thumb_height)
-
-    def _get_horizontal_scrollbar_rect(self, x: int, y: int) -> Tuple[int, int, int, int]:
-        """Get the horizontal scrollbar rectangle - FIXED limits"""
-        if self.content_width <= self.width:
-            return (0, 0, 0, 0)
-        
-        scrollbar_width = self.width - (self.scrollbar_size if self.content_height > self.height else 0)
-        scrollbar_height = self.scrollbar_size
-        
-        scrollbar_x = x
-        scrollbar_y = y + self.height - scrollbar_height
-        
-        # Calculate thumb width and position - FIXED: Same logic as drawing
-        max_scroll_x = max(1, self.content_width - self.width)
-        thumb_width = max(20, int((self.width / self.content_width) * scrollbar_width))
-        
-        available_width = scrollbar_width - thumb_width
-        scroll_ratio = self.scroll_x / max_scroll_x
-        thumb_x = scrollbar_x + int(scroll_ratio * available_width)
-        
-        return (thumb_x, scrollbar_y, thumb_width, scrollbar_height)
-    
-    def _draw_horizontal_scrollbar(self, renderer, x: int, y: int, theme):
-        """Draw horizontal scrollbar - FIXED limits"""
-        scrollbar_width = self.width - (self.scrollbar_size if self.content_height > self.height else 0)
-        scrollbar_height = self.scrollbar_size
-        
-        scrollbar_x = x
-        scrollbar_y = y + self.height - scrollbar_height
-        
-        # Track
-        renderer.draw_rect(scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height, theme.slider_track)
-        
-        # Thumb - FIXED: Calculate thumb position correctly
-        max_scroll_x = max(1, self.content_width - self.width)  # Avoid division by zero
-        thumb_width = max(20, int((self.width / self.content_width) * scrollbar_width))
-        
-        # Ensure thumb doesn't exceed scrollbar bounds
-        available_width = scrollbar_width - thumb_width
-        scroll_ratio = self.scroll_x / max_scroll_x
-        thumb_x = scrollbar_x + int(scroll_ratio * available_width)
-        
-        renderer.draw_rect(thumb_x, scrollbar_y, thumb_width, scrollbar_height, theme.slider_thumb_normal)
-
-    def _draw_vertical_scrollbar(self, renderer, x: int, y: int, theme):
-        """Draw vertical scrollbar - FIXED limits"""
-        scrollbar_width = self.scrollbar_size
-        scrollbar_height = self.height - (self.scrollbar_size if self.content_width > self.width else 0)
-        
-        scrollbar_x = x + self.width - scrollbar_width
-        scrollbar_y = y
-        
-        # Track
-        renderer.draw_rect(scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height, theme.slider_track)
-        
-        # Thumb - FIXED: Calculate thumb position correctly
-        max_scroll_y = max(1, self.content_height - self.height)  # Avoid division by zero
-        thumb_height = max(20, int((self.height / self.content_height) * scrollbar_height))
-        
-        # Ensure thumb doesn't exceed scrollbar bounds
-        available_height = scrollbar_height - thumb_height
-        scroll_ratio = self.scroll_y / max_scroll_y
-        thumb_y = scrollbar_y + int(scroll_ratio * available_height)
-        
-        renderer.draw_rect(scrollbar_x, thumb_y, scrollbar_width, thumb_height, theme.slider_thumb_normal)
+        super().render(renderer)
 
 class Slider(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int, 
@@ -3078,12 +2374,17 @@ class Slider(UIElement):
         """Get colors from current theme"""
         return ThemeManager.get_theme(self.theme_type)
     
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """Update slider with mouse interaction"""
+    def set_value(self, value: float):
+        self.value = max(self.min_val, min(self.max_val, value))
+        if self.on_value_changed:
+            self.on_value_changed(self.value)
+    
+    def update(self, dt, inputState):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
-            
+        
+        mouse_pos, mouse_pressed = inputState.get_mouse_state()
         actual_x, actual_y = self.get_actual_position()
             
         thumb_x = actual_x + int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
@@ -3092,7 +2393,7 @@ class Slider(UIElement):
         mouse_over_thumb = (thumb_rect[0] <= mouse_pos[0] <= thumb_rect[0] + thumb_rect[2] and 
                            thumb_rect[1] <= mouse_pos[1] <= thumb_rect[1] + thumb_rect[3])
         
-        if mouse_pressed and (mouse_over_thumb or self.dragging):
+        if mouse_pressed.left and (mouse_over_thumb or self.dragging):
             self.dragging = True
             self.state = UIState.PRESSED
             # Update value based on mouse position
@@ -3110,43 +2411,8 @@ class Slider(UIElement):
                 self.state = UIState.HOVERED
             else:
                 self.state = UIState.NORMAL
-                
-        super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
-            
-    def render_pygame(self, renderer):
-        """Render using Pygame backend"""
-        if not self.visible:
-            return
-            
-        theme = self._get_colors()
-        actual_x, actual_y = self.get_actual_position()
-        
-        # Draw track
-        renderer.draw_rect(actual_x, actual_y + self.height//2 - 2, 
-                         self.width, 4, theme.slider_track)
-        
-        # Draw thumb
-        thumb_x = actual_x + int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
-        
-        if self.state == UIState.PRESSED:
-            thumb_color = theme.slider_thumb_pressed
-        elif self.state == UIState.HOVERED:
-            thumb_color = theme.slider_thumb_hover
-        else:
-            thumb_color = theme.slider_thumb_normal
-            
-        renderer.draw_rect(thumb_x - 5, actual_y, 10, self.height, thumb_color)
-        
-        # Draw value text
-        font = pygame.font.Font(None, 12)
-        value_text = f"{self.value:.1f}"
-        text_surface = font.render(value_text, True, theme.slider_text)
-        renderer.draw_surface(text_surface, thumb_x - text_surface.get_width()//2, 
-                            actual_y + self.height + 5)
-        
-        super().render_pygame(renderer)
     
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """Render using OpenGL backend"""
         if not self.visible:
             return
@@ -3182,8 +2448,7 @@ class Slider(UIElement):
             renderer.draw_surface(text_surface, thumb_x - text_surface.get_width()//2, 
                                 actual_y + self.height + 5)
                 
-        super().render_opengl(renderer)
-
+        super().render(renderer)
 
 class Dropdown(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int, 
@@ -3238,12 +2503,12 @@ class Dropdown(UIElement):
         """Get colors from current theme"""
         return ThemeManager.get_theme(self.theme_type)
     
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """Update dropdown with mouse interaction and scroll support"""
+    def update(self, dt, inputState):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
             
+        mouse_pos, mouse_pressed = inputState.get_mouse_state()
         actual_x, actual_y = self.get_actual_position()
             
         # Check if mouse is over main dropdown
@@ -3251,16 +2516,21 @@ class Dropdown(UIElement):
         mouse_over_main = (main_rect[0] <= mouse_pos[0] <= main_rect[0] + main_rect[2] and 
                           main_rect[1] <= mouse_pos[1] <= main_rect[1] + main_rect[3])
         
+        if self.expanded:
+            self.render_layer = LayerType.POPUP
+        else:
+            self.render_layer = LayerType.NORMAL
+        
         # Handle scrollbar interaction
         if self.expanded and len(self.options) > self.max_visible_options:
             scrollbar_rect = self._get_scrollbar_rect(actual_x, actual_y)
-            if mouse_pressed and scrollbar_rect[0] <= mouse_pos[0] <= scrollbar_rect[0] + scrollbar_rect[2] and \
+            if mouse_pressed.left and scrollbar_rect[0] <= mouse_pos[0] <= scrollbar_rect[0] + scrollbar_rect[2] and \
                scrollbar_rect[1] <= mouse_pos[1] <= scrollbar_rect[1] + scrollbar_rect[3]:
                 self.is_scrolling = True
             elif not mouse_pressed:
                 self.is_scrolling = False
             
-            if self.is_scrolling and mouse_pressed:
+            if self.is_scrolling and mouse_pressed.left:
                 # Calculate scroll position based on mouse Y
                 options_height = len(self.options) * self._option_height
                 visible_height = self.max_visible_options * self._option_height
@@ -3272,7 +2542,7 @@ class Dropdown(UIElement):
                 self.scroll_offset = int(scroll_ratio * max_scroll)
         
         # Handle mouse press
-        if mouse_pressed and not self._just_opened and not self.is_scrolling:
+        if mouse_pressed.left and not self._just_opened and not self.is_scrolling:
             if mouse_over_main:
                 # Toggle expansion
                 self.expanded = not self.expanded
@@ -3305,7 +2575,7 @@ class Dropdown(UIElement):
                     self._just_opened = False
         else:
             # Reset the just_opened flag when mouse is released
-            if not mouse_pressed:
+            if not mouse_pressed.left:
                 self._just_opened = False
                 self.is_scrolling = False
             
@@ -3313,11 +2583,13 @@ class Dropdown(UIElement):
                 self.state = UIState.HOVERED
             else:
                 self.state = UIState.NORMAL
-                
-        super()._update_with_mouse(mouse_pos, mouse_pressed, dt)
     
-    def handle_scroll(self, scroll_y: int):
+    def on_scroll(self, event: pygame.event.Event):
         """Handle mouse wheel scrolling"""
+        if not self.expanded or len(self.options) <= self.max_visible_options or self.visible == False or self.enabled == False:
+            return
+        
+        scroll_y = event.y
         if self.expanded and len(self.options) > self.max_visible_options:
             self.scroll_offset = max(0, min(
                 len(self.options) - self.max_visible_options,
@@ -3346,62 +2618,8 @@ class Dropdown(UIElement):
         scrollbar_x = actual_x + self.width - self.scrollbar_width
         
         return (scrollbar_x, scrollbar_y, self.scrollbar_width, scrollbar_height)
-            
-    def render_pygame(self, renderer):
-        """Render using Pygame backend"""
-        if not self.visible:
-            return
-            
-        theme = self._get_colors()
-        actual_x, actual_y = self.get_actual_position()
-        
-        # Draw main box
-        if self.state == UIState.NORMAL:
-            main_color = theme.dropdown_normal
-        else:
-            main_color = theme.dropdown_hover
-            
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, main_color)
-        
-        # Draw border
-        if theme.dropdown_border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                             theme.dropdown_border, fill=False)
-        
-        # Draw selected text
-        if self.options:
-            text = self.options[self.selected_index]
-            # Truncate text if too long
-            if len(text) > 15:
-                text = text[:15] + "..."
-            text_surface = self.font.render(text, True, theme.dropdown_text)
-            renderer.draw_surface(text_surface, actual_x + 5, 
-                                actual_y + (self.height - text_surface.get_height()) // 2)
-        
-        # Draw dropdown arrow
-        arrow_color = theme.dropdown_text
-        arrow_points = [
-            (actual_x + self.width - 15, actual_y + self.height//2 - 3),
-            (actual_x + self.width - 5, actual_y + self.height//2 - 3),
-            (actual_x + self.width - 10, actual_y + self.height//2 + 3)
-        ]
-        
-        # Pygame-specific arrow drawing
-        if hasattr(renderer, 'get_surface'):
-            surface = renderer.get_surface()
-            pygame.draw.polygon(surface, arrow_color, arrow_points)
-        else:
-            # Fallback for renderers without get_surface
-            self._draw_arrow_polygon(renderer, arrow_points, arrow_color)
-        
-        # Draw expanded options with scroll
-        if self.expanded:
-            self._render_expanded_options(renderer, actual_x, actual_y, theme)
-        
-        super().render_pygame(renderer)
     
-    
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """Render using OpenGL backend"""
         if not self.visible:
             return
@@ -3450,9 +2668,9 @@ class Dropdown(UIElement):
         
         # Draw expanded options with scroll
         if self.expanded:
-            self._render_expanded_options(renderer, actual_x, actual_y, theme, opengl=True)
+            self._render_expanded_options(renderer, actual_x, actual_y, theme)
         
-        super().render_opengl(renderer)
+        super().render(renderer)
     
     def _draw_arrow_polygon(self, renderer, points, color):
         """
@@ -3500,7 +2718,7 @@ class Dropdown(UIElement):
                 renderer.draw_rect(arrow_rect[0], arrow_rect[1], 
                                  arrow_rect[2], arrow_rect[3], color)
     
-    def _render_expanded_options(self, renderer, actual_x: int, actual_y: int, theme, opengl=False):
+    def _render_expanded_options(self, renderer, actual_x: int, actual_y: int, theme):
         """Helper method to render expanded options - WITH OPTION SEPARATORS"""
         visible_options = self._get_visible_options()
         total_options_height = self.max_visible_options * self._option_height
@@ -3555,7 +2773,7 @@ class Dropdown(UIElement):
             text_x = actual_x + 5 + 1  # Adjust for main container border
             text_y = option_y + (self._option_height - text_surface.get_height()) // 2
             
-            if opengl and hasattr(renderer, 'render_surface'):
+            if hasattr(renderer, 'render_surface'):
                 renderer.render_surface(text_surface, text_x, text_y)
             else:
                 renderer.draw_surface(text_surface, text_x, text_y)
@@ -3616,6 +2834,16 @@ class UiFrame(UIElement):
         self.border_width = 1
         self.padding = 5  # Padding inside the frame
         
+    def add_child(self, child: UIElement):
+        """
+        Add a child element to the frame.
+        
+        Args:
+            child (UIElement): Child element to add.
+        """
+        super().add_child(child)
+        
+        
     def set_background_color(self, color: Optional[Tuple[int, int, int]]):
         """
         Set the background color of the frame.
@@ -3654,15 +2882,6 @@ class UiFrame(UIElement):
         """
         self.padding = padding
         
-    def add_child(self, child: UIElement):
-        """
-        Add a child element to this frame with automatic positioning.
-        
-        Args:
-            child (UIElement): The child UI element to add.
-        """
-        super().add_child(child)
-        
     def get_content_rect(self) -> Tuple[int, int, int, int]:
         """
         Get the rectangle area available for child elements (inside padding).
@@ -3688,48 +2907,12 @@ class UiFrame(UIElement):
         self.theme_type = theme_type
         super().update_theme(theme_type)
     
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """
-        Update frame and children with mouse interaction.
-        
-        Args:
-            mouse_pos (Tuple[int, int]): Current mouse position.
-            mouse_pressed (bool): Whether mouse button is pressed.
-            dt (float): Delta time in seconds.
-        """ 
-        # Can't be super because of hover and click effects
+    def update(self, dt, inputState):
         for child in self.children:
-            if hasattr(child, '_update_with_mouse'):
-                child._update_with_mouse(mouse_pos, mouse_pressed, dt)
+            if hasattr(child, 'update'):
+                child.update(dt, inputState)
     
-    def render_pygame(self, renderer):
-        """Render frame using Pygame backend"""
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
-        
-        # Draw background
-        if self.background_color is not None:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.background_color)
-        else:
-            # Use theme background if no custom color
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.background)
-        
-        # Draw border
-        if self.border_color is not None:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                             self.border_color, fill=False, border_width=self.border_width)
-        elif theme.border:
-            # Use theme border if no custom border
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                             theme.border, fill=False, border_width=self.border_width)
-        
-        # Render children
-        super().render_pygame(renderer)
-    
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """Render frame using OpenGL backend"""
         if not self.visible:
             return
@@ -3748,7 +2931,7 @@ class UiFrame(UIElement):
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
         
         # Render children
-        super().render_opengl(renderer)
+        super().render(renderer)
     
     def arrange_children_vertically(self, spacing: int = 5, align: str = "left"):
         """
@@ -3982,20 +3165,13 @@ class NumberSelector(UIElement):
                 down_color = theme.button_pressed
             
         return up_color, down_color, text_color, border_color, background_color
-
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """
-        Update element state and handle increment/decrement on click.
-        
-        Args:
-            mouse_pos (Tuple[int, int]): Current mouse position (x, y).
-            mouse_pressed (bool): Whether mouse button is currently pressed.
-            dt (float): Delta time in seconds.
-        """
+    
+    def update(self, dt, inputState):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
             
+        mouse_pos, mouse_pressed = inputState.get_mouse_state()
         actual_x, actual_y = self.get_actual_position()
         
         # Mouse position relative to the element
@@ -4020,7 +3196,7 @@ class NumberSelector(UIElement):
             if not hasattr(self, '_was_pressed'):
                  self._was_pressed = False
             
-            if mouse_pressed:
+            if mouse_pressed.left:
                 if up_over:
                     self._is_up_pressed = True
                     self.state = UIState.PRESSED
@@ -4044,71 +3220,7 @@ class NumberSelector(UIElement):
             self.state = UIState.NORMAL
             self._was_pressed = False
 
-    def render_pygame(self, renderer):
-        """
-        Render the NumberSelector using Pygame backend.
-        
-        Args:
-            renderer: The Pygame renderer object.
-        """
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
-        up_color, down_color, text_color, border_color, background_color = self._get_button_colors(theme)
-        surface = renderer.get_surface() # Assuming get_surface is available for direct pygame calls
-        
-        # 1. Draw main background rectangle (for the number display)
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, background_color)
-        
-        # 2. Draw the UP button area
-        up_rect_abs = pygame.Rect(actual_x + self._up_rect.x, actual_y + self._up_rect.y, 
-                                  self._up_rect.width, self._up_rect.height)
-        renderer.draw_rect(up_rect_abs.x, up_rect_abs.y, up_rect_abs.width, up_rect_abs.height, up_color)
-        
-        # 3. Draw the DOWN button area
-        down_rect_abs = pygame.Rect(actual_x + self._down_rect.x, actual_y + self._down_rect.y, 
-                                    self._down_rect.width, self._down_rect.height)
-        renderer.draw_rect(down_rect_abs.x, down_rect_abs.y, down_rect_abs.width, down_rect_abs.height, down_color)
-        
-        # 4. Draw the border around the main element
-        if border_color:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, fill=False)
-
-        # 5. Draw the value text
-        formatted_value = self._format_value()
-        text_surface = self._font.render(formatted_value, True, text_color)
-        
-        # Center the text in the left part of the selector (excluding buttons)
-        text_area_width = self.width - self._up_rect.width
-        text_x = actual_x + (text_area_width - text_surface.get_width()) // 2
-        text_y = actual_y + (self.height - text_surface.get_height()) // 2
-        
-        renderer.draw_surface(text_surface, text_x, text_y)
-        
-        # 6. Draw increment/decrement symbols (triangles)
-        
-        # Up triangle (Centered in up button area)
-        center_up = up_rect_abs.center
-        triangle_size = min(up_rect_abs.width, up_rect_abs.height) // 3
-        up_triangle_points = [
-            (center_up[0], center_up[1] - triangle_size), # Top point
-            (center_up[0] - triangle_size, center_up[1] + triangle_size // 2), # Bottom-left
-            (center_up[0] + triangle_size, center_up[1] + triangle_size // 2)  # Bottom-right
-        ]
-        pygame.draw.polygon(surface, text_color, up_triangle_points)
-
-        # Down triangle (Centered in down button area)
-        center_down = down_rect_abs.center
-        down_triangle_points = [
-            (center_down[0], center_down[1] + triangle_size), # Bottom point
-            (center_down[0] - triangle_size, center_down[1] - triangle_size // 2), # Top-left
-            (center_down[0] + triangle_size, center_down[1] - triangle_size // 2)  # Top-right
-        ]
-        pygame.draw.polygon(surface, text_color, down_triangle_points)
-
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """
         Render the NumberSelector using OpenGL backend.
         
@@ -4236,18 +3348,18 @@ class Checkbox(UIElement):
         """
         theme = ThemeManager.get_theme(self.theme_type)
         # Default colors from theme
-        box_color = theme.background
+        box_color = theme.border2
         border_color = theme.button_border
-        check_color = theme.button_pressed
+        check_color = theme.button_text
         label_color = theme.button_text
         
         # Apply hover/pressed effects
         if self.state == UIState.HOVERED:
             # Subtle change for hover on the border or box
-            border_color = theme.button_hover
+            border_color = theme.border
         elif self.state == UIState.PRESSED:
             # Change for pressed state
-            box_color = theme.button_text
+            box_color = theme.border
         elif self.state == UIState.DISABLED:
             box_color = theme.button_disabled
         if border_color is None:
@@ -4264,19 +3376,12 @@ class Checkbox(UIElement):
             if callable(self.on_toggle):
                 self.on_toggle(self.checked)
 
-    def _update_with_mouse(self, mouse_pos: Tuple[int, int], mouse_pressed: bool, dt: float):
-        """
-        Update element state and handle toggle on click.
-        
-        Args:
-            mouse_pos (Tuple[int, int]): Current mouse position (x, y).
-            mouse_pressed (bool): Whether mouse button is currently pressed.
-            dt (float): Delta time in seconds.
-        """
+    def update(self, dt, inputState):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
-            
+        
+        mouse_pos, mouse_pressed = inputState.get_mouse_state()    
         actual_x, actual_y = self.get_actual_position()
         
         # Mouse position relative to the element
@@ -4292,7 +3397,7 @@ class Checkbox(UIElement):
         if mouse_over_main:
             self.state = UIState.HOVERED
             
-            if mouse_pressed:
+            if mouse_pressed.left:
                 self.state = UIState.PRESSED
                 if not self._was_pressed:
                     self.toggle()
@@ -4305,76 +3410,7 @@ class Checkbox(UIElement):
             self.state = UIState.NORMAL
             self._was_pressed = False
 
-    def render_pygame(self, renderer):
-        """
-        Render the Checkbox and its label using Pygame backend.
-        
-        Args:
-            renderer: The Pygame renderer object.
-        """
-        if not self.visible:
-            return
-            
-        actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
-        box_color, check_color, border_color, label_color = self._get_colors(theme)
-        surface = renderer.get_surface() # Assuming get_surface is available
-
-        # 1. Determine Box Position
-        box_x = actual_x
-        label_text_surface = None
-        
-        if self.label:
-            label_text_surface = self._font.render(self.label, True, label_color)
-            if self.label_position == 'right':
-                box_x = actual_x # Box is on the left
-                label_x = actual_x + self.box_size + 5 # 5 pixel padding
-            else: # 'left'
-                # Box is on the right, position determined by total width - box size
-                box_x = actual_x + self.width - self.box_size 
-                label_x = actual_x
-        
-        box_rect = pygame.Rect(box_x, actual_y, self.box_size, self.box_size)
-        
-        # 2. Draw the main box background
-        renderer.draw_rect(box_rect.x, box_rect.y, box_rect.width, box_rect.height, box_color)
-
-        # 3. Draw the border
-        renderer.draw_rect(box_rect.x, box_rect.y, box_rect.width, box_rect.height, border_color, fill=False, border_width=2)
-        
-        # 4. Draw the checkmark if checked
-        if self.checked:
-            # Use a simple cross line or a checkmark polygon for the mark
-            # Draw a diagonal line (X shape) in the middle of the box
-            padding = self.box_size // 4
-            inner_rect = box_rect.inflate(-padding * 2, -padding * 2)
-            
-            # Draw a diagonal 'V' (checkmark) for better appearance
-            check_points = [
-                (inner_rect.left, inner_rect.center[1]), 
-                (inner_rect.center[0], inner_rect.bottom), 
-                (inner_rect.right, inner_rect.top)
-            ]
-            # Adjust to a small checkmark for clean look
-            check_points = [
-                (box_rect.left + self.box_size * 0.2, box_rect.top + self.box_size * 0.5), # Tip 1
-                (box_rect.left + self.box_size * 0.4, box_rect.bottom - self.box_size * 0.2), # Corner
-                (box_rect.right - self.box_size * 0.2, box_rect.top + self.box_size * 0.2) # Tip 2
-            ]
-            pygame.draw.lines(surface, check_color, False, check_points, 3)
-
-        # 5. Draw the label
-        if label_text_surface:
-            # Center the label vertically next to the box
-            label_y = actual_y + (self.height - label_text_surface.get_height()) // 2
-            
-            # Adjust label_x if the label is on the left
-            if self.label_position == 'left':
-                label_x = box_rect.x - label_text_surface.get_width() - 5
-                
-            renderer.draw_surface(label_text_surface, label_x, label_y)
-
-    def render_opengl(self, renderer):
+    def render(self, renderer):
         """
         Render the Checkbox and its label using OpenGL backend.
         
@@ -4435,3 +3471,805 @@ class Checkbox(UIElement):
             # Assumes the OpenGL renderer supports text drawing with center anchoring (0, 0.5)
             # or bottom left anchoring and we calculate the Y offset for vertical center.
             renderer.draw_text(self.label, label_x, label_y, label_color, self._font, anchor_point=(0.0, 0.5))
+
+class ScrollingFrame(UiFrame):
+    """
+    A frame container with scrollable content.
+    
+    Supports both horizontal and vertical scrolling with scrollbars.
+    Automatically handles clipping of child elements to visible area.
+    
+    Attributes:
+        content_width (int): Total width of scrollable content area.
+        content_height (int): Total height of scrollable content area.
+        scroll_x (int): Current horizontal scroll position.
+        scroll_y (int): Current vertical scroll position.
+        scrollbar_size (int): Width/height of scrollbars.
+        dragging_vertical (bool): Whether vertical scrollbar is being dragged.
+        dragging_horizontal (bool): Whether horizontal scrollbar is being dragged.
+    """
+    
+    def __init__(self, x: int, y: int, width: int, height: int,
+                 content_width: int, content_height: int,
+                 root_point: Tuple[float, float] = (0, 0),
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):
+        """
+        Initialize a scrolling frame.
+        
+        Args:
+            x (int): X coordinate position.
+            y (int): Y coordinate position.
+            width (int): Visible width of the frame.
+            height (int): Visible height of the frame.
+            content_width (int): Total width of scrollable content.
+            content_height (int): Total height of scrollable content.
+            root_point (Tuple[float, float]): Anchor point for positioning.
+            theme (ThemeType): Theme to use for styling.
+            element_id (Optional[str]): Custom element ID.
+        """
+        super().__init__(x, y, width, height, root_point, theme, element_id)
+        
+        self.content_width = content_width
+        self.content_height = content_height
+        self.scroll_x = 0
+        self.scroll_y = 0
+        self.scrollbar_size = 15
+        self.dragging_vertical = False
+        self.dragging_horizontal = False
+        self.scroll_drag_start = (0, 0)
+        
+        # Override default padding from UiFrame
+        self.padding = 0
+        
+        # Store original background color
+        self._background_color_override = None
+        
+    def set_background_color(self, color: Tuple[int, int, int]):
+        """
+        Set background color for the scrolling frame.
+        
+        Args:
+            color (Tuple[int, int, int]): RGB color tuple.
+        """
+        self._background_color_override = color
+        
+    def update_theme(self, theme_type):
+        """
+        Update theme for scrolling frame.
+        
+        Args:
+            theme_type (ThemeType): New theme to apply.
+        """
+        super().update_theme(theme_type)
+        
+    def clear_children(self):
+        """
+        Remove all child elements from the scrolling frame.
+        """
+        self.children.clear()
+
+    def update(self, dt, inputState):
+        """
+        Update scrolling frame state and handle user interaction.
+        
+        Args:
+            dt (float): Delta time in seconds.
+            inputState (InputState): Current input state.
+        """
+        if not self.visible or not self.enabled:
+            self.state = UIState.DISABLED
+            return
+            
+        # Calculate actual position
+        mouse_pos = inputState.mouse_pos
+        actual_x, actual_y = self.get_actual_position()
+        
+        mouse_over:bool = (
+            actual_x <= mouse_pos[0] <= actual_x + self.width and
+            actual_y <= mouse_pos[1] <= actual_y + self.height
+        )
+        
+        # Update state
+        if mouse_over:
+            self.state = UIState.HOVERED
+        else:
+            self.state = UIState.NORMAL
+        
+        # Get mouse state
+        mouse_pos = inputState.mouse_pos
+        mouse_pressed = inputState.mouse_buttons_pressed.left
+        
+        # Calculate max scroll values
+        max_scroll_x = max(0, self.content_width - self.width)
+        max_scroll_y = max(0, self.content_height - self.height)
+        
+        # Handle scrollbar dragging
+        if mouse_pressed:
+            if not (self.dragging_vertical or self.dragging_horizontal):
+                # Check vertical scrollbar
+                if max_scroll_y > 0:
+                    scrollbar_rect = self._get_vertical_scrollbar_rect(actual_x, actual_y)
+                    if (scrollbar_rect[0] <= mouse_pos[0] <= scrollbar_rect[0] + scrollbar_rect[2] and 
+                        scrollbar_rect[1] <= mouse_pos[1] <= scrollbar_rect[1] + scrollbar_rect[3]):
+                        self.dragging_vertical = True
+                        self.scroll_drag_start = (mouse_pos[0], mouse_pos[1])
+                        self.scroll_start_y = self.scroll_y
+                
+                # Check horizontal scrollbar  
+                if max_scroll_x > 0:
+                    scrollbar_rect = self._get_horizontal_scrollbar_rect(actual_x, actual_y)
+                    if (scrollbar_rect[0] <= mouse_pos[0] <= scrollbar_rect[0] + scrollbar_rect[2] and 
+                        scrollbar_rect[1] <= mouse_pos[1] <= scrollbar_rect[1] + scrollbar_rect[3]):
+                        self.dragging_horizontal = True
+                        self.scroll_drag_start = (mouse_pos[0], mouse_pos[1])
+                        self.scroll_start_x = self.scroll_x
+        else:
+            self.dragging_vertical = False
+            self.dragging_horizontal = False
+            
+        # Update scroll position if dragging
+        if self.dragging_vertical and max_scroll_y > 0:
+            drag_delta_y = mouse_pos[1] - self.scroll_drag_start[1]
+            scroll_area_height = self.height - self.scrollbar_size
+            scroll_ratio = drag_delta_y / scroll_area_height
+            self.scroll_y = max(0, min(max_scroll_y, self.scroll_start_y + int(scroll_ratio * max_scroll_y)))
+            
+        if self.dragging_horizontal and max_scroll_x > 0:
+            drag_delta_x = mouse_pos[0] - self.scroll_drag_start[0]
+            scroll_area_width = self.width - self.scrollbar_size
+            scroll_ratio = drag_delta_x / scroll_area_width
+            self.scroll_x = max(0, min(max_scroll_x, self.scroll_start_x + int(scroll_ratio * max_scroll_x)))
+        
+        # Update children with scrolled mouse position for interaction
+        # Adjusted mouse position relative to scrolled content
+        scrolled_mouse_pos = (mouse_pos[0] + self.scroll_x - actual_x, 
+                             mouse_pos[1] + self.scroll_y - actual_y)
+        
+        # Update children manually since we're overriding the update method
+        for child in self.children:
+            if hasattr(child, 'update'):
+                # Create a modified input state with adjusted mouse position
+                # This is a simplified approach - in a real implementation,
+                # you might want to create a proper InputState proxy
+                child.update(dt, inputState)
+        
+        # self.state = UIState.NORMAL
+        
+    def on_scroll(self, event: pygame.event.Event):
+        """
+        Handle mouse wheel scrolling.
+        
+        Args:
+            scroll_y (int): Scroll amount (positive for up, negative for down).
+        """
+        if event.type != pygame.MOUSEWHEEL or self.state != UIState.HOVERED or not self.enabled:
+            return
+        max_scroll_y = max(0, self.content_height - self.height)
+        self.scroll_y = max(0, min(max_scroll_y, self.scroll_y - event.y * 30))
+        max_scroll_x = max(0, self.content_width - self.width)
+        self.scroll_x = max(0, min(max_scroll_x, self.scroll_x - event.y * 30))
+
+    def render(self, renderer):
+        """
+        Render scrolling frame and its content.
+        
+        Args:
+            renderer (Renderer): Renderer object for drawing.
+        """
+        if not self.visible:
+            return
+            
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Get background color (use override if set, otherwise from theme)
+        bg_color = self._background_color_override or theme.background
+        
+        # FIRST: Draw border (inherited from UiFrame)
+        border_color = self.border_color or (theme.border if theme.border else None)
+        if border_color:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
+                             border_color, fill=False, border_width=self.border_width)
+        
+        # THEN: Draw background
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        
+        # Enable clipping for content area
+        if hasattr(renderer, 'enable_scissor'):
+            # OpenGL scissor uses bottom-left origin, no Y flipping needed
+            renderer.enable_scissor(actual_x, actual_y, self.width, self.height)
+        
+        # Apply scroll transform to children rendering
+        for child in self.children:
+            # Save original position
+            original_x, original_y = child.x, child.y
+            
+            # Apply scroll offset to child position for rendering only
+            child.x = original_x - self.scroll_x
+            child.y = original_y - self.scroll_y
+            
+            # Render child with scrolled position
+            child.render(renderer)
+            
+            # Restore original position immediately
+            child.x, child.y = original_x, original_y
+        
+        # Disable scissor test
+        if hasattr(renderer, 'disable_scissor'):
+            renderer.disable_scissor()
+        
+        # Draw scrollbars on top (outside of clipping region)
+        if self.content_width > self.width:
+            self._draw_horizontal_scrollbar(renderer, actual_x, actual_y, theme)
+        
+        if self.content_height > self.height:
+            self._draw_vertical_scrollbar(renderer, actual_x, actual_y, theme)
+    
+    def _get_vertical_scrollbar_rect(self, x: int, y: int) -> Tuple[int, int, int, int]:
+        """
+        Get the vertical scrollbar rectangle.
+        
+        Args:
+            x (int): X position of frame.
+            y (int): Y position of frame.
+            
+        Returns:
+            Tuple[int, int, int, int]: (x, y, width, height) of scrollbar thumb.
+        """
+        if self.content_height <= self.height:
+            return (0, 0, 0, 0)
+        
+        scrollbar_width = self.scrollbar_size
+        scrollbar_height = self.height - (self.scrollbar_size if self.content_width > self.width else 0)
+        
+        scrollbar_x = x + self.width - scrollbar_width
+        scrollbar_y = y
+        
+        # Calculate thumb height and position
+        max_scroll_y = max(1, self.content_height - self.height)
+        thumb_height = max(20, int((self.height / self.content_height) * scrollbar_height))
+        
+        available_height = scrollbar_height - thumb_height
+        scroll_ratio = self.scroll_y / max_scroll_y
+        thumb_y = scrollbar_y + int(scroll_ratio * available_height)
+        
+        return (scrollbar_x, thumb_y, scrollbar_width, thumb_height)
+
+    def _get_horizontal_scrollbar_rect(self, x: int, y: int) -> Tuple[int, int, int, int]:
+        """
+        Get the horizontal scrollbar rectangle.
+        
+        Args:
+            x (int): X position of frame.
+            y (int): Y position of frame.
+            
+        Returns:
+            Tuple[int, int, int, int]: (x, y, width, height) of scrollbar thumb.
+        """
+        if self.content_width <= self.width:
+            return (0, 0, 0, 0)
+        
+        scrollbar_width = self.width - (self.scrollbar_size if self.content_height > self.height else 0)
+        scrollbar_height = self.scrollbar_size
+        
+        scrollbar_x = x
+        scrollbar_y = y + self.height - scrollbar_height
+        
+        # Calculate thumb width and position
+        max_scroll_x = max(1, self.content_width - self.width)
+        thumb_width = max(20, int((self.width / self.content_width) * scrollbar_width))
+        
+        available_width = scrollbar_width - thumb_width
+        scroll_ratio = self.scroll_x / max_scroll_x
+        thumb_x = scrollbar_x + int(scroll_ratio * available_width)
+        
+        return (thumb_x, scrollbar_y, thumb_width, scrollbar_height)
+    
+    def _draw_horizontal_scrollbar(self, renderer, x: int, y: int, theme):
+        """
+        Draw horizontal scrollbar.
+        
+        Args:
+            renderer (Renderer): Renderer object.
+            x (int): X position of frame.
+            y (int): Y position of frame.
+            theme: Current theme.
+        """
+        scrollbar_width = self.width - (self.scrollbar_size if self.content_height > self.height else 0)
+        scrollbar_height = self.scrollbar_size
+        
+        scrollbar_x = x
+        scrollbar_y = y + self.height - scrollbar_height
+        
+        # Track
+        renderer.draw_rect(scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height, theme.slider_track)
+        
+        # Thumb
+        max_scroll_x = max(1, self.content_width - self.width)
+        thumb_width = max(20, int((self.width / self.content_width) * scrollbar_width))
+        
+        available_width = scrollbar_width - thumb_width
+        scroll_ratio = self.scroll_x / max_scroll_x
+        thumb_x = scrollbar_x + int(scroll_ratio * available_width)
+        
+        thumb_color = theme.slider_thumb_pressed if self.dragging_horizontal else theme.slider_thumb_normal
+        renderer.draw_rect(thumb_x, scrollbar_y, thumb_width, scrollbar_height, thumb_color)
+
+    def _draw_vertical_scrollbar(self, renderer, x: int, y: int, theme):
+        """
+        Draw vertical scrollbar.
+        
+        Args:
+            renderer (Renderer): Renderer object.
+            x (int): X position of frame.
+            y (int): Y position of frame.
+            theme: Current theme.
+        """
+        scrollbar_width = self.scrollbar_size
+        scrollbar_height = self.height - (self.scrollbar_size if self.content_width > self.width else 0)
+        
+        scrollbar_x = x + self.width - scrollbar_width
+        scrollbar_y = y
+        
+        # Track
+        renderer.draw_rect(scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height, theme.slider_track)
+        
+        # Thumb
+        max_scroll_y = max(1, self.content_height - self.height)
+        thumb_height = max(20, int((self.height / self.content_height) * scrollbar_height))
+        
+        available_height = scrollbar_height - thumb_height
+        scroll_ratio = self.scroll_y / max_scroll_y
+        thumb_y = scrollbar_y + int(scroll_ratio * available_height)
+        
+        thumb_color = theme.slider_thumb_pressed if self.dragging_vertical else theme.slider_thumb_normal
+        renderer.draw_rect(scrollbar_x, thumb_y, scrollbar_width, thumb_height, thumb_color)   
+            
+class Tabination(UiFrame):
+    """
+    A tabbed interface element that organizes content into multiple tabs.
+    
+    Displays clickable tabs at the top with their content below.
+    Supports alternating background colors for tabs and theme-based styling.
+    
+    Attributes:
+        tabs (List[Dict]): List of tab information dictionaries.
+        current_tab (int): Index of currently active tab.
+        tab_height (int): Height of the tab headers.
+        font_size (int): Font size for tab titles.
+        font_name (str): Font name for tab titles.
+        tab_padding (int): Padding inside tabs.
+    """
+    
+    def __init__(self, x: int, y: int, width: int, height: int, 
+                 font_size: int = 20, font_name: Optional[str] = None,
+                 root_point: Tuple[float, float] = (0, 0),
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):
+        """
+        Initialize a Tabination element.
+        
+        Args:
+            x (int): X coordinate position.
+            y (int): Y coordinate position.
+            width (int): Width of the tabination element.
+            height (int): Height of the tabination element.
+            font_size (int): Font size for tab titles.
+            font_name (Optional[str]): Font name for tab titles.
+            root_point (Tuple[float, float]): Anchor point for positioning.
+            theme (ThemeType): Theme to use for styling.
+            element_id (Optional[str]): Custom element ID.
+        """
+        super().__init__(x, y, width, height, root_point, theme, element_id)
+        
+        self.tabs = []  # List of dicts: {'name': str, 'frame': Frame, 'visible': bool}
+        self.current_tab = None  # Index of currently active tab
+        
+        # Tab header properties
+        self.tab_height = 30  # Height of tab headers
+        self.font_size = font_size
+        self.font_name = font_name
+        self.tab_padding = 10  # Padding inside tabs
+        self.tab_spacing = 2   # Space between tabs
+        
+        # Font for tab titles
+        self._font = None
+        
+        # Background colors for alternating tabs
+        self.even_tab_bg = None
+        self.odd_tab_bg = None
+        self._calculate_tab_colors()
+        
+        # Override default padding for content area
+        self.padding = 0
+        
+    def _calculate_tab_colors(self):
+        """Calculate alternating background colors for tabs based on theme."""
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Base color from theme
+        base_color = theme.button_normal
+        
+        # Create lighter and darker variations
+        if base_color:
+            # Even tabs (lighter)
+            self.even_tab_bg = tuple(min(255, c + 20) for c in base_color)
+            # Odd tabs (darker)
+            self.odd_tab_bg = tuple(max(0, c - 10) for c in base_color)
+        else:
+            # Fallback colors
+            self.even_tab_bg = (220, 220, 220)
+            self.odd_tab_bg = (200, 200, 200)
+    
+    @property
+    def font(self):
+        """Get the font object with lazy loading."""
+        if self._font is None:
+            FontManager.initialize()
+            self._font = FontManager.get_font(self.font_name, self.font_size)
+        return self._font
+    
+    def update_theme(self, theme_type: ThemeType):
+        """
+        Update theme for tabination and recalculate tab colors.
+        
+        Args:
+            theme_type (ThemeType): The new theme to apply.
+        """
+        super().update_theme(theme_type)
+        self._calculate_tab_colors()
+        
+        # Update theme for all tab frames
+        for tab in self.tabs:
+            if hasattr(tab['frame'], 'update_theme'):
+                tab['frame'].update_theme(theme_type)
+    
+    def add_tab(self, tab_name: str) -> bool:
+        """
+        Add a new tab to the tabination.
+        
+        Args:
+            tab_name (str): Name/title of the new tab.
+            
+        Returns:
+            bool: True if tab was added successfully, False if tab already exists.
+        """
+        # Check if tab already exists
+        for tab in self.tabs:
+            if tab['name'].lower() == tab_name.lower():
+                return False
+        
+        # Calculate content area dimensions
+        content_height = self.height - self.tab_height
+        content_width = self.width
+        
+        # Create a frame for this tab's content
+        tab_frame = UiFrame(0, self.tab_height, content_width, content_height, 
+                           theme=self.theme_type)
+        tab_frame.visible = False  # Hide by default
+        
+        # Add frame as a child
+        super().add_child(tab_frame)
+        
+        # Store tab information
+        tab_info = {
+            'name': tab_name,
+            'frame': tab_frame,
+            'visible': False
+        }
+        
+        self.tabs.append(tab_info)
+        
+        # If this is the first tab, make it active
+        if self.current_tab is None:
+            self.current_tab = 0
+            self.tabs[0]['visible'] = True
+            self.tabs[0]['frame'].visible = True
+        
+        return True
+    
+    def add_to_tab(self, tab_name: str, ui_element: UIElement) -> bool:
+        """
+        Add a UI element to a specific tab.
+        
+        Args:
+            tab_name (str): Name of the tab to add element to.
+            ui_element (UIElement): The UI element to add.
+            
+        Returns:
+            bool: True if element was added successfully, False if tab doesn't exist.
+        """
+        # Find the tab
+        tab_index = -1
+        for i, tab in enumerate(self.tabs):
+            if tab['name'].lower() == tab_name.lower():
+                tab_index = i
+                break
+        
+        if tab_index == -1:
+            return False
+        
+        # Add element to the tab's frame
+        self.tabs[tab_index]['frame'].add_child(ui_element)
+        return True
+    
+    def switch_tab(self, tab_index: int) -> bool:
+        """
+        Switch to a different tab by index.
+        
+        Args:
+            tab_index (int): Index of tab to switch to.
+            
+        Returns:
+            bool: True if switched successfully, False if index is invalid.
+        """
+        if tab_index < 0 or tab_index >= len(self.tabs):
+            return False
+        
+        # Hide current tab
+        if self.current_tab is not None:
+            self.tabs[self.current_tab]['visible'] = False
+            self.tabs[self.current_tab]['frame'].visible = False
+        
+        # Show new tab
+        self.current_tab = tab_index
+        self.tabs[tab_index]['visible'] = True
+        self.tabs[tab_index]['frame'].visible = True
+        
+        return True
+    
+    def get_tab_index(self, tab_name: str) -> int:
+        """
+        Get the index of a tab by name.
+        
+        Args:
+            tab_name (str): Name of the tab.
+            
+        Returns:
+            int: Index of the tab, or -1 if not found.
+        """
+        for i, tab in enumerate(self.tabs):
+            if tab['name'].lower() == tab_name.lower():
+                return i
+        return -1
+    
+    def remove_tab(self, tab_name: str) -> bool:
+        """
+        Remove a tab and all its contents.
+        
+        Args:
+            tab_name (str): Name of the tab to remove.
+            
+        Returns:
+            bool: True if tab was removed, False if tab doesn't exist.
+        """
+        tab_index = self.get_tab_index(tab_name)
+        if tab_index == -1:
+            return False
+        
+        # If removing the current tab, switch to another if available
+        if tab_index == self.current_tab:
+            # Try to switch to next tab, or previous if no next
+            if len(self.tabs) > 1:
+                new_index = (tab_index + 1) % len(self.tabs)
+                if new_index == tab_index:  # Only one tab
+                    new_index = -1
+                if new_index != -1:
+                    self.switch_tab(new_index)
+            else:
+                self.current_tab = None
+        
+        # Remove the tab's frame from children
+        tab_frame = self.tabs[tab_index]['frame']
+        if tab_frame in self.children:
+            self.children.remove(tab_frame)
+        
+        # Remove tab from list
+        self.tabs.pop(tab_index)
+        
+        # If we removed the tab we were going to switch to, adjust current_tab
+        if self.current_tab is not None and self.current_tab >= len(self.tabs):
+            self.current_tab = max(0, len(self.tabs) - 1)
+            if self.tabs:
+                self.tabs[self.current_tab]['visible'] = True
+                self.tabs[self.current_tab]['frame'].visible = True
+        
+        return True
+    
+    def get_tab(self, tab_name:str) -> Optional[Dict[str, Any]]:
+        """
+        Get information about a tab by name.
+        
+        Args:
+            tab_name (str): Name of the tab.
+            
+        Returns:
+            Optional[Dict[str, Any]]: Tab information dictionary, or None if tab doesn't exist.
+        """
+        tab_index = self.get_tab_index(tab_name)
+        if tab_index == -1:
+            return None
+        return self.tabs[tab_index]
+    
+    def get_tab_frame(self, tab_name: str) -> Optional[UiFrame]:
+        """
+        Get the frame associated with a tab.
+        
+        Args:
+            tab_name (str): Name of the tab.
+            
+        Returns:
+            Optional[UiFrame]: The tab's frame, or None if tab doesn't exist.
+        """
+        tab_index = self.get_tab_index(tab_name)
+        if tab_index == -1:
+            return None
+        return self.tabs[tab_index]['frame']
+    
+    def _get_tab_colors(self, tab_index: int, is_active: bool, is_hovered: bool) -> Tuple[Tuple[int, int, int], Tuple[int, int, int]]:
+        """
+        Get colors for a tab based on its state.
+        
+        Args:
+            tab_index (int): Index of the tab.
+            is_active (bool): Whether tab is currently active.
+            is_hovered (bool): Whether tab is being hovered.
+            
+        Returns:
+            Tuple[Tuple[int, int, int], Tuple[int, int, int]]: (bg_color, text_color)
+        """
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Text color
+        if is_active:
+            text_color = theme.button_text
+        else:
+            text_color = tuple(max(0, c - 50) for c in theme.button_text)
+        
+        # Background color
+        if is_active:
+            bg_color = theme.button_normal
+        elif is_hovered:
+            bg_color = theme.button_hover
+        else:
+            # Alternating colors for inactive tabs
+            if tab_index % 2 == 0:  # Even index
+                bg_color = self.even_tab_bg
+            else:  # Odd index
+                bg_color = self.odd_tab_bg
+        
+        return bg_color, text_color
+    
+    def _get_tab_rect(self, tab_index: int, actual_x: int, actual_y: int) -> Tuple[int, int, int, int]:
+        """
+        Calculate the rectangle for a tab header.
+        
+        Args:
+            tab_index (int): Index of the tab.
+            actual_x (int): Actual X position of tabination.
+            actual_y (int): Actual Y position of tabination.
+            
+        Returns:
+            Tuple[int, int, int, int]: (x, y, width, height) of tab rectangle.
+        """
+        if not self.tabs:
+            return (0, 0, 0, 0)
+        
+        # Calculate tab width based on number of tabs
+        total_tab_width = self.width - (len(self.tabs) - 1) * self.tab_spacing
+        tab_width = total_tab_width // len(self.tabs)
+        
+        # Calculate tab position
+        tab_x = actual_x + tab_index * (tab_width + self.tab_spacing)
+        tab_y = actual_y
+        
+        return (tab_x, tab_y, tab_width, self.tab_height)
+    
+    def update(self, dt, inputState):
+        """
+        Update tabination state and handle tab clicks.
+        
+        Args:
+            dt (float): Delta time in seconds.
+            inputState (InputState): Current input state.
+        """
+        if not self.visible or not self.enabled:
+            self.state = UIState.DISABLED
+            return
+        
+        actual_x, actual_y = self.get_actual_position()
+        mouse_pos = inputState.mouse_pos
+        mouse_pressed = inputState.mouse_buttons_pressed.left
+        
+        # Check for tab clicks
+        if mouse_pressed:
+            for i, tab in enumerate(self.tabs):
+                tab_rect = self._get_tab_rect(i, actual_x, actual_y)
+                
+                # Check if mouse is over this tab
+                if (tab_rect[0] <= mouse_pos[0] <= tab_rect[0] + tab_rect[2] and
+                    tab_rect[1] <= mouse_pos[1] <= tab_rect[1] + tab_rect[3]):
+                    
+                    # Switch to this tab if not already active
+                    if i != self.current_tab:
+                        self.switch_tab(i)
+                    break
+        
+        # Update the visible tab's frame
+        if self.current_tab is not None:
+            active_frame = self.tabs[self.current_tab]['frame']
+            if hasattr(active_frame, 'update'):
+                active_frame.update(dt, inputState)
+    
+    def render(self, renderer):
+        """
+        Render the tabination element with tabs and active content.
+        
+        Args:
+            renderer (Renderer): Renderer object for drawing.
+        """
+        if not self.visible:
+            return
+        
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # 1. Draw main border (inherited from UiFrame)
+        border_color = self.border_color or (theme.border if theme.border else None)
+        if border_color:
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
+                             border_color, fill=False, border_width=self.border_width)
+        
+        # 2. Draw main background
+        bg_color = self.background_color or theme.background
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        
+        # 3. Draw tab headers area background
+        tab_area_bg = tuple(min(255, c + 30) for c in bg_color) if bg_color else (240, 240, 240)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.tab_height, tab_area_bg)
+        
+        # 4. Draw tab headers
+        for i, tab in enumerate(self.tabs):
+            is_active = (i == self.current_tab)
+            
+            # Check if mouse is hovering over this tab
+            tab_rect = self._get_tab_rect(i, actual_x, actual_y)
+            mouse_pos = pygame.mouse.get_pos() if hasattr(pygame, 'mouse') else (0, 0)
+            is_hovered = (tab_rect[0] <= mouse_pos[0] <= tab_rect[0] + tab_rect[2] and
+                         tab_rect[1] <= mouse_pos[1] <= tab_rect[1] + tab_rect[3])
+            
+            # Get colors for this tab
+            bg_color, text_color = self._get_tab_colors(i, is_active, is_hovered)
+            # Draw tab border
+            if is_active:
+                # Active tab has border on top and sides
+                renderer.draw_rect(tab_rect[0], tab_rect[1], tab_rect[2], tab_rect[3], 
+                                 theme.border or (0, 0, 0), fill=False)
+            else:
+                # Inactive tabs have bottom border only
+                renderer.draw_rect(tab_rect[0], tab_rect[1] + tab_rect[3] - 1, 
+                                 tab_rect[2], 1, theme.border or (200, 200, 200))
+            
+            # Draw tab background
+            renderer.draw_rect(tab_rect[0], tab_rect[1], tab_rect[2], tab_rect[3], bg_color)
+            
+            # Draw tab text
+            text_surface = self.font.render(tab['name'], True, text_color)
+            text_x = tab_rect[0] + (tab_rect[2] - text_surface.get_width()) // 2
+            text_y = tab_rect[1] + (tab_rect[3] - text_surface.get_height()) // 2
+            
+            if hasattr(renderer, 'render_surface'):
+                renderer.render_surface(text_surface, text_x, text_y)
+            else:
+                renderer.draw_surface(text_surface, text_x, text_y)
+        
+        # 5. Draw content separator line
+        separator_y = actual_y + self.tab_height - 1
+        separator_color = theme.border or (200, 200, 200)
+        renderer.draw_rect(actual_x, separator_y, self.width, 1, separator_color)
+        
+        # 6. Draw active tab content
+        if self.current_tab is not None:
+            active_frame:UiFrame = self.tabs[self.current_tab]['frame']
+            active_frame.render(renderer)

@@ -45,5 +45,5 @@ __all__ = [
     "ShadowCaster",
     "PerformanceLevel",
     "Light",
-    "ShadowTechnique"
+    "ShadowTechnique",
 ]

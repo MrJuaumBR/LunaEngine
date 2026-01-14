@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>math_utils.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Utils</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.html">Utils</a></li>
+                <li class="breadcrumb-item active">math_utils.py</li>
+            </ol>
+        </nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>math_utils.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">Math Utilities - Essential Mathematical Functions for Game Development<br><br>LOCATION: lunaengine/utils/math_utils.py<br><br>DESCRIPTION:<br>Collection of fundamental mathematical functions commonly used in game<br>development. Provides optimized implementations for interpolation,<br>clamping, distance calculations, and vector operations.<br><br>KEY FUNCTIONS:<br>- lerp: Linear interpolation for smooth transitions<br>- clamp: Value constraint within specified ranges<br>- distance: Euclidean distance between points<br>- normalize_vector: Vector normalization for movement calculations<br>- angle_between_points: Angle calculation for directional systems<br><br>LIBRARIES USED:<br>- math: Core mathematical operations and trigonometric functions<br>- numpy: High-performance numerical operations (optional)<br>- typing: Type annotations for coordinates and return values<br><br>USAGE:<br>&gt;&gt;&gt; smoothed_value = lerp(start, end, 0.5)<br>&gt;&gt;&gt; constrained_value = clamp(value, 0, 100)<br>&gt;&gt;&gt; dist = distance((x1, y1), (x2, y2))<br>&gt;&gt;&gt; direction = normalize_vector(dx, dy)<br>&gt;&gt;&gt; angle = angle_between_points(point_a, point_b)</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+                
+                <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
+                
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-lerp">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def lerp(a, b, t) -> float</code>
+                    <p class="mt-2 mb-0 text-muted">Linear interpolation between a and b</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-clamp">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def clamp(value, min_val, max_val) -> float</code>
+                    <p class="mt-2 mb-0 text-muted">Clamp value between min and max</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-distance">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def distance(point1, point2) -> float</code>
+                    <p class="mt-2 mb-0 text-muted">Calculate distance between two points</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-normalize_vector">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def normalize_vector(x, y) -> Tuple[float, float]</code>
+                    <p class="mt-2 mb-0 text-muted">Normalize a 2D vector</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-angle_between_points">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def angle_between_points(point1, point2) -> float</code>
+                    <p class="mt-2 mb-0 text-muted">Calculate angle between two points in radians</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-rgba_brightness">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def rgba_brightness(rgba) -> float</code>
+                    <p class="mt-2 mb-0 text-muted">This function is used to calculate the overall brightness of an RGBA color<br><br>Parameters:<br> &nbsp; &nbsp;rgba (Tuple[int, int, int, float]): A tuple representing the RGBA color<br>Returns:<br> &nbsp; &nbsp;float: A float representing the brightness of the color</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-individual_rgba_brightness">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def individual_rgba_brightness(rgba) -> Tuple[float, float, float, float]</code>
+                    <p class="mt-2 mb-0 text-muted">This function is used to calculate the individual brightness of each color channel (R, G, B, A)<br><br>Parameters:<br> &nbsp; &nbsp;rgba (Tuple[int, int, int, float]): A tuple representing the RGBA color<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float, float, float]: A tuple representing the normalized RGBA values</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-humanize_number">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def humanize_number(self, number, decimal_places) -> str</code>
+                    <p class="mt-2 mb-0 text-muted">This function is used to format a number into a human-readable string<br>Like: 1K, 1M, 1B, etc.<br>Also: 1.5K, 2.34M, etc.<br>Parameters:<br> &nbsp; &nbsp;number (float): A float representing the number to be formatted<br> &nbsp; &nbsp;decimal_places (int): Number of decimal places to include<br>Returns:<br> &nbsp; &nbsp;str: A string representing the formatted number</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-humanize_time">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def humanize_time(self, seconds) -> str</code>
+                    <p class="mt-2 mb-0 text-muted">This function is used to format a time duration in seconds into a human-readable string<br>Like: 1h 30m, 2d 5h, etc.<br><br>Parameters:<br> &nbsp; &nbsp;seconds (float): A float representing the time duration in seconds<br>Returns:<br> &nbsp; &nbsp;str: A string representing the formatted time duration</p>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Utils Module
+            </a>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0 text-white-50 small">LunaEngine Documentation &copy; 2026</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+</body>
+</html>

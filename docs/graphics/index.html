@@ -1,38 +1,24 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Graphics - LunaEngine</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="../theme.css" rel="stylesheet">
-    <style>
-    .search-highlight {
-        background-color: #ffeb3b;
-        padding: 2px 4px;
-        border-radius: 3px;
-        animation: highlight-pulse 2s ease-in-out;
-    }
-    
-    @keyframes highlight-pulse {
-        0% { background-color: #ffeb3b; }
-        50% { background-color: #ffff72; }
-        100% { background-color: #ffeb3b; }
-    }
-    </style>
-</head>
-<body>
+
+    <!DOCTYPE html>
+    <html lang="en" data-theme="light">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../theme.css" rel="stylesheet">
+        <title>Graphics - LunaEngine</title>
+    </head>
+    <body>
+        
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search in graphics... (e.g.: def render(), .update())">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 <span class="badge bg-primary me-3">Graphics</span>
                 <button class="btn btn-outline-secondary theme-toggle">
@@ -41,761 +27,57 @@
             </div>
         </div>
     </nav>
-
-    <div class="container mt-4">
-        <!-- Module Header -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
-                        <li class="breadcrumb-item active">Graphics</li>
-                    </ol>
-                </nav>
-                
-                <div class="d-flex align-items-center mb-3">
-                    <h1 class="mb-0">Graphics</h1>
-                    <span class="badge bg-info ms-3">Code Analysis</span>
-                </div>
-                <p class="lead text-muted">Graphics and rendering - Sprites, Lighting, Particles</p>
-            </div>
-        </div>
-
-        <!-- Module Files -->
-        <div class="row">
-            <div class="col-12">
-
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                camera.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Camera System - 2D Camera with Smooth Movement and Effects</div>
-                            </div>
-            <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-cameramode">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    CameraMode
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Camera follow behavior modes</div></div><small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>FIXED: Any = 'fixed'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>FOLLOW: Any = 'follow'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>PLATFORMER: Any = 'platformer'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>TOPDOWN: Any = 'topdown'</code>
-                                </div>
-                        </div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-camerashaketype">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    CameraShakeType
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Types of camera shake effects</div></div><small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>POSITIONAL: Any = 'positional'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>ROTATIONAL: Any = 'rotational'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>TRAUMA: Any = 'trauma'</code>
-                                </div>
-                        </div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-parallaxlayer">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    ParallaxLayer
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Otimizado: Camada de parallax com renderização eficiente</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxlayer-__init__">
-                                    <code>def __init__(self: Any, surface: pygame.Surface, speed_factor: float, tile_mode: bool, offset: Tuple[float, float]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Inicializa uma camada de parallax.<br><br>Args:<br> &nbsp; &nbsp;surface: Superfície pygame para a camada<br> &nbsp; &nbsp;speed_factor: Fator de velocidade (0.0 = estático, 1.0 = move com câmera)<br> &nbsp; &nbsp;tile_mode: Se True, a imagem se repete infinitamente<br> &nbsp; &nbsp;offset: Offset inicial da camada</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxlayer-update">
-                                    <code>def update(self: Any, camera_position: pygame.math.Vector2, camera_zoom: float, dt: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Atualiza a posição da camada baseado na posição da câmera.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-parallaxbackground">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    ParallaxBackground
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Sistema de parallax otimizado para múltiplas camadas</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-__init__">
-                                    <code>def __init__(self: Any, camera: Any) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-add_layer">
-                                    <code>def add_layer(self: Any, surface: pygame.Surface, speed_factor: float, tile_mode: bool, offset: Tuple[float, float]) -> ParallaxLayer</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Adiciona uma camada ao sistema de parallax.<br><br>Args:<br> &nbsp; &nbsp;surface: Superfície pygame<br> &nbsp; &nbsp;speed_factor: Fator de velocidade do parallax<br> &nbsp; &nbsp;tile_mode: Se a imagem deve se repetir<br> &nbsp; &nbsp;offset: Offset inicial<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParallaxLayer: A camada criada</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-remove_layer">
-                                    <code>def remove_layer(self: Any, layer: ParallaxLayer) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Remove uma camada do sistema de parallax</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-clear_layers">
-                                    <code>def clear_layers(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Remove todas as camadas</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-update">
-                                    <code>def update(self: Any, dt: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Atualiza todas as camadas de parallax</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-render">
-                                    <code>def render(self: Any, renderer: Any) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Renderiza todas as camadas de parallax de forma otimizada.<br><br>Returns:<br> &nbsp; &nbsp;bool: True se o parallax foi renderizado, False caso contrário</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-_render_layer">
-                                    <code>def _render_layer(self: Any, renderer: Any, layer: ParallaxLayer) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Renderiza uma única camada de parallax de forma otimizada</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-_render_tiled_layer">
-                                    <code>def _render_tiled_layer(self: Any, renderer: Any, layer: ParallaxLayer, base_x: float, base_y: float, viewport_size: Tuple[int, int], zoom: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Renderiza camada em modo tile (repetição infinita)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-parallaxbackground-_render_single_layer">
-                                    <code>def _render_single_layer(self: Any, renderer: Any, layer: ParallaxLayer, base_x: float, base_y: float, viewport_size: Tuple[int, int], zoom: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Renderiza camada em modo único (uma única cópia)</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-camera">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    Camera
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Advanced 2D Camera system with smooth movement and effects.</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-__init__">
-                                    <code>def __init__(self: Any, scene: Any, width: int, height: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize camera with viewport dimensions.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-position">
-                                    <code>def position(self: Any) -> pygame.math.Vector2</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get camera position with shake offset applied</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-position">
-                                    <code>def position(self: Any, value: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set camera base position (without shake)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-base_position">
-                                    <code>def base_position(self: Any) -> pygame.math.Vector2</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get camera base position without shake offset</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-set_target">
-                                    <code>def set_target(self: Any, target: Any, mode: CameraMode) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set camera target to follow.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-set_bounds">
-                                    <code>def set_bounds(self: Any, bounds: pygame.Rect) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set camera movement boundaries.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-update">
-                                    <code>def update(self: Any, dt: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update camera position and effects.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_update_renderer_camera_position">
-                                    <code>def _update_renderer_camera_position(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update camera position in both renderers</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_update_follow">
-                                    <code>def _update_follow(self: Any, dt: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update camera position based on follow mode</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_get_target_position">
-                                    <code>def _get_target_position(self: Any) -> pygame.math.Vector2</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Extract position from target object</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_update_platformer_mode">
-                                    <code>def _update_platformer_mode(self: Any, target_pos: pygame.math.Vector2) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Platformer-style camera with deadzone</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_update_topdown_mode">
-                                    <code>def _update_topdown_mode(self: Any, target_pos: pygame.math.Vector2) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Top-down RPG style camera</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_apply_smooth_movement">
-                                    <code>def _apply_smooth_movement(self: Any, dt: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Apply smooth interpolation to camera position</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_apply_zoom">
-                                    <code>def _apply_zoom(self: Any, dt: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Apply smooth zoom interpolation</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_apply_shake">
-                                    <code>def _apply_shake(self: Any, dt: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Apply camera shake effects</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_update_trauma_shake">
-                                    <code>def _update_trauma_shake(self: Any, dt: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update trauma-based shake</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_update_positional_shake">
-                                    <code>def _update_positional_shake(self: Any, dt: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update simple positional shake</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-_apply_bounds">
-                                    <code>def _apply_bounds(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Constrain camera within boundaries</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-shake">
-                                    <code>def shake(self: Any, intensity: float, duration: float, shake_type: CameraShakeType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Start camera shake effect.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-add_trauma">
-                                    <code>def add_trauma(self: Any, amount: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Add trauma for trauma-based shake.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-set_zoom">
-                                    <code>def set_zoom(self: Any, zoom: float, smooth: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set camera zoom level.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-convert_size_zoom">
-                                    <code>def convert_size_zoom(self: Any, size: tuple) -> tuple</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-convert_size_zoom_list">
-                                    <code>def convert_size_zoom_list(self: Any, sizes: tuple, return_type: Literal['list', 'nparray', 'ndarray']) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-world_to_screen">
-                                    <code>def world_to_screen(self: Any, world_pos: pygame.math.Vector2, vector_type: bool) -> pygame.math.Vector2</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Convert world coordinates to screen coordinates<br><br>Parameters:<br> &nbsp; &nbsp;world_pos: pygame.math.Vector2 or Tuple<br> &nbsp; &nbsp;vector_type: bool = True<br>Returns:<br> &nbsp; &nbsp;pygame.math.Vector2 or Tuple</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-world_to_screen_list">
-                                    <code>def world_to_screen_list(self: Any, world_positions: list, vector_type: bool, return_type: Literal['list', 'nparray', 'ndarray']) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-screen_to_world">
-                                    <code>def screen_to_world(self: Any, screen_pos: pygame.math.Vector2) -> pygame.math.Vector2</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Converts the screen position to world position<br><br>Worlds position are like: 0,0 is the center of the world<br><br>Parameters:<br> &nbsp; &nbsp;screen_pos: pygame.math.Vector2 or Tuple<br>Returns:<br> &nbsp; &nbsp;pygame.math.Vector2</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-screen_to_world_list">
-                                    <code>def screen_to_world_list(self: Any, screen_positions: list) -> list</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-screen_to_world_vector">
-                                    <code>def screen_to_world_vector(self: Any, screen_vec: Any) -> pygame.math.Vector2</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Convert screen vector to world vector (ignores camera position).</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-get_visible_rect">
-                                    <code>def get_visible_rect(self: Any) -> pygame.Rect</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the visible world area as a rectangle.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-is_visible">
-                                    <code>def is_visible(self: Any, world_pos: Any, margin: float) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Check if a world position is visible on screen.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-add_parallax_layer">
-                                    <code>def add_parallax_layer(self: Any, surface: pygame.Surface, speed_factor: float, tile_mode: bool, offset: Tuple[float, float]) -> ParallaxLayer</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Adiciona uma camada ao sistema de parallax da câmera.<br><br>Args:<br> &nbsp; &nbsp;surface: Superfície pygame para a camada<br> &nbsp; &nbsp;speed_factor: Fator de velocidade do parallax (0.0 = estático, 1.0 = move com câmera)<br> &nbsp; &nbsp;tile_mode: Se a imagem deve se repetir infinitamente<br> &nbsp; &nbsp;offset: Offset inicial da camada<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParallaxLayer: A camada criada</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-remove_parallax_layer">
-                                    <code>def remove_parallax_layer(self: Any, layer: ParallaxLayer) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Remove uma camada do sistema de parallax</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-clear_parallax_layers">
-                                    <code>def clear_parallax_layers(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Remove todas as camadas de parallax</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-render_parallax">
-                                    <code>def render_parallax(self: Any, renderer: Any) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Renderiza o sistema de parallax.<br><br>Returns:<br> &nbsp; &nbsp;bool: True se o parallax foi renderizado, False caso contrário</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-enable_parallax">
-                                    <code>def enable_parallax(self: Any, enabled: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Habilita ou desabilita o sistema de parallax</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-camera-get_parallax_layer_count">
-                                    <code>def get_parallax_layer_count(self: Any) -> int</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Retorna o número de camadas de parallax</div></div></div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                particles.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Particle System - Optimized Version</div>
-                            </div>
-            <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-particletype">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    ParticleType
-                                </h6>
-                <small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>FIRE: Any = 'fire'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>WATER: Any = 'water'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>SMOKE: Any = 'smoke'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>DUST: Any = 'dust'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>SPARK: Any = 'spark'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>SNOW: Any = 'snow'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>SAND: Any = 'sand'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>EXHAUST: Any = 'exhaust'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>STARFIELD: Any = 'starfield'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>EXPLOSION: Any = 'explosion'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>ENERGY: Any = 'energy'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>PLASMA: Any = 'plasma'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>CUSTOM: Any = 'custom'</code>
-                                </div>
-                        </div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-exitpoint">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    ExitPoint
-                                </h6>
-                <small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>TOP: Any = 'top'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>BOTTOM: Any = 'bottom'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>LEFT: Any = 'left'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>RIGHT: Any = 'right'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>CENTER: Any = 'center'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>CIRCULAR: Any = 'circular'</code>
-                                </div>
-                        </div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-physicstype">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    PhysicsType
-                                </h6>
-                <small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>TOPDOWN: Any = 'topdown'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>PLATFORMER: Any = 'platformer'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>SPACESHOOTER: Any = 'spaceshooter'</code>
-                                </div>
-                        </div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-particleconfig">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    ParticleConfig
-                                </h6>
-                <div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>color_start: Tuple[int, int, int] = (255, 255, 255)</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>color_end: Tuple[int, int, int] = (255, 255, 255)</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>size_start: float = 4.0</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>size_end: float = 4.0</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>lifetime: float = 1.0</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>speed: float = 100.0</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>gravity: float = 98.0</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>damping: float = 0.98</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>fade_out: bool = True</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>grow: bool = False</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>spread: float = 45.0</code>
-                                </div>
-                        </div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-particlesystem">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    ParticleSystem
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Particle System - Optimized version</div></div><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>PARTICLE_CONFIGS: Dict[ParticleType, ParticleConfig] = {ParticleType.FIRE: ParticleConfig(color_start=(255, 100, 0), color_end=(255, 255, 0), size_start=8.0, size_end=2.0, lifetime=1.5, speed=150.0, gravity=-100.0, spread=60.0, fade_out=True, grow=False), ParticleType.WATER: ParticleConfig(color_start=(0, 100, 255), color_end=(0, 200, 255), size_start=6.0, size_end=4.0, lifetime=2.0, speed=80.0, gravity=300.0, spread=30.0, damping=0.9, fade_out=True), ParticleType.SMOKE: ParticleConfig(color_start=(100, 100, 100), color_end=(50, 50, 50), size_start=4.0, size_end=12.0, lifetime=3.0, speed=60.0, gravity=-50.0, spread=120.0, fade_out=True, grow=True), ParticleType.DUST: ParticleConfig(color_start=(200, 200, 150), color_end=(150, 150, 100), size_start=3.0, size_end=1.0, lifetime=1.0, speed=40.0, gravity=50.0, spread=180.0, fade_out=True), ParticleType.SPARK: ParticleConfig(color_start=(255, 255, 200), color_end=(255, 100, 0), size_start=2.0, size_end=1.0, lifetime=0.5, speed=200.0, gravity=200.0, spread=15.0, fade_out=True), ParticleType.SNOW: ParticleConfig(color_start=(250, 250, 255), color_end=(225, 225, 235), size_start=3.0, size_end=1.0, lifetime=1.0, speed=50.0, gravity=100.0, spread=180.0, fade_out=True), ParticleType.SAND: ParticleConfig(color_start=(230, 230, 0), color_end=(255, 255, 0), size_start=1.0, size_end=1.0, lifetime=5.0, speed=200.0, gravity=100.0, spread=180.0, fade_out=True), ParticleType.EXHAUST: ParticleConfig(color_start=(0, 100, 255), color_end=(255, 50, 0), size_start=4.0, size_end=1.0, lifetime=0.3, speed=100.0, gravity=0.0, spread=30.0, fade_out=True, grow=False), ParticleType.EXPLOSION: ParticleConfig(color_start=(255, 200, 0), color_end=(255, 50, 0), size_start=10.0, size_end=2.0, lifetime=1.0, speed=300.0, gravity=0.0, spread=360.0, fade_out=True, grow=False), ParticleType.ENERGY: ParticleConfig(color_start=(0, 255, 255), color_end=(0, 100, 255), size_start=6.0, size_end=2.0, lifetime=1.2, speed=150.0, gravity=0.0, spread=90.0, fade_out=True, grow=False), ParticleType.PLASMA: ParticleConfig(color_start=(255, 0, 255), color_end=(100, 0, 255), size_start=5.0, size_end=1.0, lifetime=0.8, speed=250.0, gravity=0.0, spread=45.0, fade_out=True, grow=False)}</code>
-                                </div>
-                        </div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-__init__">
-                                    <code>def __init__(self: Any, max_particles: int) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-get_particles_names">
-                                    <code>def get_particles_names(self: Any, sort_name: bool, capitalize: bool) -> List[str]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get list of all registered particle names</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-get_physics_names">
-                                    <code>def get_physics_names(self: Any, sort_name: bool, capitalize: bool) -> List[str]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get a list of physics names</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-update_max_particles">
-                                    <code>def update_max_particles(self: Any, value: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Callback for the renderer update max_particles.<br>Preserves active particles during resize.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_init_arrays">
-                                    <code>def _init_arrays(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize optimized NumPy arrays using current max_particles</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-register_custom_particle">
-                                    <code>def register_custom_particle(self: Any, name: str, config: ParticleConfig) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Register a custom particle type for user-defined effects<br><br>Args:<br> &nbsp; &nbsp;name (str): Unique name for the custom particle type<br> &nbsp; &nbsp;config (ParticleConfig): Configuration for the custom particle<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if registration was successful<br> &nbsp; &nbsp;<br>Raises:<br> &nbsp; &nbsp;ValueError: If particle name is already registered</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-get_custom_particle">
-                                    <code>def get_custom_particle(self: Any, name: str) -> Optional[ParticleConfig]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get configuration for a custom particle<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the custom particle type<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[ParticleConfig]: The particle configuration or None if not found</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-list_custom_particles">
-                                    <code>def list_custom_particles(self: Any) -> List[str]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get list of all registered custom particle names<br><br>Returns:<br> &nbsp; &nbsp;List[str]: List of custom particle names</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-get_render_data">
-                                    <code>def get_render_data(self: Any) -> Dict[str, Any]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get particle data for rendering with caching</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_resolve_particle_config">
-                                    <code>def _resolve_particle_config(self: Any, particle_type: Union[ParticleType, str], custom_config: Optional[ParticleConfig]) -> Optional[ParticleConfig]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Resolve particle configuration from various sources<br><br>Args:<br> &nbsp; &nbsp;particle_type: The particle type identifier<br> &nbsp; &nbsp;custom_config: Optional custom configuration<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParticleConfig or None if not found</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_get_exit_offset">
-                                    <code>def _get_exit_offset(self: Any, exit_point: ExitPoint) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get offset distance for exit points</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_get_exit_position">
-                                    <code>def _get_exit_position(self: Any, x: float, y: float, exit_point: ExitPoint, offset: float) -> Tuple[float, float]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Calculate initial position based on exit point</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_get_initial_velocity">
-                                    <code>def _get_initial_velocity(self: Any, exit_point: ExitPoint, speed: float, spread: float, base_angle: float) -> Tuple[float, float]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Calculate initial velocity vector with spread</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-emit">
-                                    <code>def emit(self: Any, x: float, y: float, particle_type: Union[ParticleType, str], count: int, exit_point: ExitPoint, physics_type: PhysicsType, spread: Optional[float], angle: float, custom_config: Optional[ParticleConfig]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Emit particles with optimizations<br><br>Parameters:<br> &nbsp; &nbsp;x: The x position of the emitter (int or float)<br> &nbsp; &nbsp;y: The y position of the emitter (int or float)<br> &nbsp; &nbsp;particle_type: The particle type identifier<br> &nbsp; &nbsp;count: The number of particles to emit (default: 1)<br> &nbsp; &nbsp;exit_point: The exit point of the particle (default: ExitPoint.CENTER)<br> &nbsp; &nbsp;physics_type: The physics type of the particle (default: PhysicsType.TOPDOWN)<br> &nbsp; &nbsp;spread: The spread of the particle (default: None) is in degrees<br> &nbsp; &nbsp;angle: The angle of the particle (default: 0.0)<br> &nbsp; &nbsp;custom_config: Optional custom configuration</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_setup_particle_properties">
-                                    <code>def _setup_particle_properties(self: Any, idx: int, config: ParticleConfig, physics_type: PhysicsType) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Setup particle properties optimized for different physics types</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-update">
-                                    <code>def update(self: Any, dt: float, camera_position: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update particles with vectorized operations</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-_update_properties">
-                                    <code>def _update_properties(self: Any, indices: np.ndarray) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update particle properties using vectorized operations - FIXED COLOR BUG</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-clear">
-                                    <code>def clear(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Clear all particles</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-render">
-                                    <code>def render(self: Any, surface: Any, camera: 'Camera') -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render particles - Fixed coordinate conversion<br>! This method is only used by PyGame renderer</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-particlesystem-get_stats">
-                                    <code>def get_stats(self: Any) -> Dict[str, Any]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get comprehensive system statistics<br><br>Returns:<br> &nbsp; &nbsp;Dict with system statistics</div></div></div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                shadows.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Advanced Shadow System - Optimized for OpenGL Rendering<br><br>LOCATION: lunaengine/graphics/shadows.py</div>
-                            </div>
-            <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-shadowtechnique">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    ShadowTechnique
-                                </h6>
-                <small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>GEOMETRY_FAST: Any = 'geometry_fast'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>OCCLUSION_MAP: Any = 'occlusion_map'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>GEOMETRY_QUALITY: Any = 'geometry_quality'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>HYBRID: Any = 'hybrid'</code>
-                                </div>
-                        </div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-performancelevel">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    PerformanceLevel
-                                </h6>
-                <small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>LOW: Any = 'low'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>MEDIUM: Any = 'medium'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>HIGH: Any = 'high'</code>
-                                </div>
-                        </div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-light">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    Light
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Light source for shadow casting</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-light-__init__">
-                                    <code>def __init__(self: Any, x: float, y: float, radius: float, color: Tuple[int, int, int], intensity: float) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-light-get_hash">
-                                    <code>def get_hash(self: Any) -> str</code>
-                        </div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-shadowcaster">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    ShadowCaster
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Object that can cast shadows</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowcaster-__init__">
-                                    <code>def __init__(self: Any, vertices: List[Tuple[float, float]]) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowcaster-_calculate_bounds">
-                                    <code>def _calculate_bounds(self: Any) -> pygame.Rect</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowcaster-get_hash">
-                                    <code>def get_hash(self: Any) -> str</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowcaster-bounds">
-                                    <code>def bounds(self: Any) -> pygame.Rect</code>
-                        </div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-shadowsystem">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    ShadowSystem
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Optimized shadow system for OpenGL rendering with stable performance</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-__init__">
-                                    <code>def __init__(self: Any, screen_width: int, screen_height: int, engine: Any) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-add_light">
-                                    <code>def add_light(self: Any, x: float, y: float, radius: float, color: Tuple[int, int, int], intensity: float) -> Light</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Add a light source to the shadow system</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-add_shadow_caster">
-                                    <code>def add_shadow_caster(self: Any, vertices: List[Tuple[float, float]]) -> ShadowCaster</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Add an object that can cast shadows</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-add_rectangle_caster">
-                                    <code>def add_rectangle_caster(self: Any, x: float, y: float, width: float, height: float) -> ShadowCaster</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Add a rectangular shadow caster</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-add_circle_caster">
-                                    <code>def add_circle_caster(self: Any, x: float, y: float, radius: float, segments: int) -> ShadowCaster</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Add a circular shadow caster (approximated as polygon)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-clear_lights">
-                                    <code>def clear_lights(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Remove all light sources</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-clear_shadow_casters">
-                                    <code>def clear_shadow_casters(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Remove all shadow casting objects</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-_calculate_scene_hash">
-                                    <code>def _calculate_scene_hash(self: Any, camera_position: pygame.math.Vector2) -> str</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Calculate hash of current scene state</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-_get_visible_lights">
-                                    <code>def _get_visible_lights(self: Any, camera_position: pygame.math.Vector2) -> List[Light]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get lights that are visible in the current viewport</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-_get_visible_shadow_casters">
-                                    <code>def _get_visible_shadow_casters(self: Any, camera_position: pygame.math.Vector2) -> List[ShadowCaster]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get shadow casters that are visible in the current viewport</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-_get_current_viewport">
-                                    <code>def _get_current_viewport(self: Any, camera_position: pygame.math.Vector2) -> pygame.Rect</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get current camera viewport in world coordinates</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-_world_to_screen">
-                                    <code>def _world_to_screen(self: Any, world_pos: pygame.math.Vector2, camera_position: pygame.math.Vector2) -> Tuple[int, int]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Convert world coordinates to screen coordinates</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-_get_current_zoom">
-                                    <code>def _get_current_zoom(self: Any) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get current camera zoom</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-_geometry_fast_technique">
-                                    <code>def _geometry_fast_technique(self: Any, camera_position: pygame.math.Vector2) -> pygame.Surface</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Fast and stable shadow technique for OpenGL - FIXED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-_draw_simple_shadow">
-                                    <code>def _draw_simple_shadow(self: Any, surface: pygame.Surface, light: Light, caster: ShadowCaster, camera_position: pygame.math.Vector2) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw simple shadow using vertex extrusion - FIXED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-_update_performance_stats">
-                                    <code>def _update_performance_stats(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update performance statistics</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-render">
-                                    <code>def render(self: Any, camera_position: pygame.math.Vector2, renderer: Any) -> pygame.Surface</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Stable shadow rendering for OpenGL</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-render_to_screen">
-                                    <code>def render_to_screen(self: Any, renderer: Any, camera_position: pygame.math.Vector2, x: int, y: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render shadows directly to screen using the provided renderer - FIXED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-get_stats">
-                                    <code>def get_stats(self: Any) -> Dict[str, Any]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get performance and rendering statistics</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-shadowsystem-cleanup">
-                                    <code>def cleanup(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Clean up resources</div></div></div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                spritesheet.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Sprite Sheet System with Alpha Support and Time-Based Animations<br><br>LOCATION: lunaengine/graphics/spritesheet.py<br><br>DESCRIPTION:<br>Advanced sprite sheet management system with alpha channel support and<br>time-based animation system. Provides efficient sprite extraction from<br>texture atlases with flexible positioning and frame-rate independent animations.<br><br>KEY FEATURES:<br>- Full alpha channel support for transparent sprites<br>- Flexible sprite extraction using Rect coordinates<br>- Batch sprite extraction for multiple regions<br>- Time-based animation system (frame-rate independent)<br>- Support for padding, margin, and scaling<br>- Animation sequencing with configurable durations<br>- Automatic frame extraction based on parameters<br><br>LIBRARIES USED:<br>- pygame: Image loading, surface manipulation, and alpha processing<br>- typing: Type hints for better code documentation<br>- time: Animation timing calculations<br><br>! WARN:<br>- Ensure pygame is initialized before using this module<br><br>USAGE:<br>&gt;&gt;&gt; # Basic sprite sheet<br>&gt;&gt;&gt; spritesheet = SpriteSheet(&quot;characters.png&quot;)<br>&gt;&gt;&gt; single_sprite = spritesheet.get_sprite_at_rect(pygame.Rect(0, 0, 64, 64))<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; # Multiple sprites<br>&gt;&gt;&gt; regions = [pygame.Rect(0, 0, 64, 64), pygame.Rect(64, 0, 64, 64)]<br>&gt;&gt;&gt; sprites = spritesheet.get_sprites_at_regions(regions)<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; # Animation - automatically extracts frames<br>&gt;&gt;&gt; walk_animation = Animation(&quot;tiki_texture.png&quot;, (70, 70), (0, 0), frame_count=6,<br>&gt;&gt;&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; scale=(2, 2), duration=1.0)<br>&gt;&gt;&gt; current_frame = walk_animation.get_current_frame()</div>
-                            </div>
-            <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-spritesheet">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    SpriteSheet
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Main sprite sheet class for managing and extracting sprites from texture atlases.<br><br>This class handles loading sprite sheets with alpha support and provides<br>multiple methods for extracting individual sprites or sprite sequences.<br><br>Attributes:<br> &nbsp; &nbsp;sheet (pygame.Surface): The loaded sprite sheet surface with alpha<br> &nbsp; &nbsp;filename (str): Path to the sprite sheet file<br> &nbsp; &nbsp;width (int): Width of the sprite sheet<br> &nbsp; &nbsp;height (int): Height of the sprite sheet</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-spritesheet-__init__">
-                                    <code>def __init__(self: Any, filename: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the sprite sheet with alpha support.<br><br>Args:<br> &nbsp; &nbsp;filename (str): Path to the sprite sheet image file</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-spritesheet-get_sprite_at_rect">
-                                    <code>def get_sprite_at_rect(self: Any, rect: pygame.Rect) -> pygame.Surface</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Extract a sprite from a specific rectangular region.<br><br>Args:<br> &nbsp; &nbsp;rect (pygame.Rect): Rectangle defining the sprite region (x, y, width, height)<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface with alpha<br><br>Raises:<br> &nbsp; &nbsp;ValueError: If the rect is outside the sprite sheet bounds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-spritesheet-get_sprites_at_regions">
-                                    <code>def get_sprites_at_regions(self: Any, regions: List[pygame.Rect]) -> List[pygame.Surface]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Extract multiple sprites from a list of rectangular regions.<br><br>Args:<br> &nbsp; &nbsp;regions (List[pygame.Rect]): List of rectangles defining sprite regions<br><br>Returns:<br> &nbsp; &nbsp;List[pygame.Surface]: List of extracted sprite surfaces</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-spritesheet-get_sprite_grid">
-                                    <code>def get_sprite_grid(self: Any, cell_size: Tuple[int, int], grid_pos: Tuple[int, int]) -> pygame.Surface</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Extract a sprite from a grid-based sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;cell_size (Tuple[int, int]): Width and height of each grid cell<br> &nbsp; &nbsp;grid_pos (Tuple[int, int]): Grid coordinates (col, row)<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-spritesheet-get_surface_drawn_area">
-                                    <code>def get_surface_drawn_area(self: Any, surface: pygame.Surface, threshold: int) -> pygame.Rect</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the bounding rectangle of the non-transparent (drawn) area of a surface.<br><br>This function analyzes the alpha channel of the surface to find the smallest<br>rectangle that contains all non-transparent pixels, creating a tight hitbox.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Surface to analyze (must have alpha channel)<br> &nbsp; &nbsp;threshold (int): Alpha threshold value (0-255). Pixels with alpha &gt;= threshold<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;are considered drawn. Default is 1 (any non-fully-transparent).<br><br>Returns:<br> &nbsp; &nbsp;pygame.Rect: Tight bounding rectangle around the non-transparent area.<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Returns empty Rect (0,0,0,0) if surface is fully transparent.<br><br>Raises:<br> &nbsp; &nbsp;ValueError: If surface doesn&#x27;t have per-pixel alpha</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-animation">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    Animation
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Time-based animation system for sprite sequences with fade effects.<br><br>This class automatically extracts frames from a sprite sheet based on<br>the provided parameters and manages animation timing with alpha transitions.<br><br>Attributes:<br> &nbsp; &nbsp;spritesheet (SpriteSheet): The source sprite sheet<br> &nbsp; &nbsp;frames (List[pygame.Surface]): List of animation frames<br> &nbsp; &nbsp;frame_count (int): Total number of frames in the animation<br> &nbsp; &nbsp;current_frame_index (int): Current frame index in the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;frame_duration (float): Duration of each frame in seconds<br> &nbsp; &nbsp;last_update_time (float): Last time the animation was updated<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;playing (bool): Whether the animation is currently playing<br> &nbsp; &nbsp;fade_in_duration (float): Duration of fade-in effect in seconds<br> &nbsp; &nbsp;fade_out_duration (float): Duration of fade-out effect in seconds<br> &nbsp; &nbsp;fade_alpha (int): Current alpha value for fade effects (0-255)<br> &nbsp; &nbsp;fade_mode (str): Current fade mode: &#x27;in&#x27;, &#x27;out&#x27;, or None<br> &nbsp; &nbsp;flip (Tuple[bool, bool]): Flip flags for horizontal and vertical flipping</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-__init__">
-                                    <code>def __init__(self: Any, spritesheet_file: str, size: Tuple[int, int], start_pos: Tuple[int, int], frame_count: int, padding: Tuple[int, int], margin: Tuple[int, int], scale: Tuple[float, float], duration: float, loop: bool, fade_in_duration: float, fade_out_duration: float, flip: tuple) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the animation and automatically extract frames from sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;spritesheet_file (str): Path to the sprite sheet file<br> &nbsp; &nbsp;size (Tuple[int, int]): Size of each sprite (width, height)<br> &nbsp; &nbsp;start_pos (Tuple[int, int]): Starting position in the sprite sheet (x, y)<br> &nbsp; &nbsp;frame_count (int): Number of frames to extract for the animation<br> &nbsp; &nbsp;padding (Tuple[int, int]): Padding between sprites (x, y)<br> &nbsp; &nbsp;margin (Tuple[int, int]): Margin around the sprite sheet (x, y)<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;fade_in_duration (float): Duration of fade-in effect in seconds<br> &nbsp; &nbsp;fade_out_duration (float): Duration of fade-out effect in seconds<br> &nbsp; &nbsp;flip (Tuple[bool, bool]): Flip the animation horizontally and vertically</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-_extract_animation_frames">
-                                    <code>def _extract_animation_frames(self: Any) -> List[pygame.Surface]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Automatically extract animation frames based on parameters.<br><br>Creates a sequence of rectangles and extracts the corresponding sprites<br>from the sprite sheet.<br><br>Returns:<br> &nbsp; &nbsp;List[pygame.Surface]: List of extracted frames</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-_apply_scaling">
-                                    <code>def _apply_scaling(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Apply scaling to all animation frames.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-set_duration">
-                                    <code>def set_duration(self: Any, new_duration: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Change the animation duration.<br><br>Args:<br> &nbsp; &nbsp;new_duration (float): New total duration in seconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-play">
-                                    <code>def play(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Start or resume the animation.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-pause">
-                                    <code>def pause(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Pause the animation.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-get_frame_count">
-                                    <code>def get_frame_count(self: Any) -> int</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the number of frames in the animation.<br><br>Returns:<br> &nbsp; &nbsp;int: Number of frames</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-get_progress">
-                                    <code>def get_progress(self: Any) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the current progress of the animation (0.0 to 1.0).<br><br>Returns:<br> &nbsp; &nbsp;float: Animation progress from start (0.0) to end (1.0)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-_apply_fade_effect">
-                                    <code>def _apply_fade_effect(self: Any, surface: pygame.Surface) -> pygame.Surface</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Apply current fade alpha to a surface.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Original surface<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: Surface with fade effect applied</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-update_fade">
-                                    <code>def update_fade(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update fade-in and fade-out effects based on elapsed time.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-update">
-                                    <code>def update(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update the animation based on elapsed time including fade effects.<br><br>This method uses time-based animation rather than frame-based,<br>making it frame-rate independent.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-get_current_frame">
-                                    <code>def get_current_frame(self: Any) -> pygame.Surface</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the current animation frame with fade effects applied.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The current frame surface with fade alpha</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-start_fade_in">
-                                    <code>def start_fade_in(self: Any, duration: Optional[float]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Start a fade-in effect.<br><br>Args:<br> &nbsp; &nbsp;duration (float, optional): Override fade-in duration. If None, uses initialized value.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-start_fade_out">
-                                    <code>def start_fade_out(self: Any, duration: Optional[float]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Start a fade-out effect.<br><br>Args:<br> &nbsp; &nbsp;duration (float, optional): Override fade-out duration. If None, uses initialized value.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-set_fade_alpha">
-                                    <code>def set_fade_alpha(self: Any, alpha: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Manually set the fade alpha value.<br><br>Args:<br> &nbsp; &nbsp;alpha (int): Alpha value from 0 (transparent) to 255 (opaque)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-is_fade_complete">
-                                    <code>def is_fade_complete(self: Any) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Check if the current fade effect is complete.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if no fade effect is active or fade is complete</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-animation-reset">
-                                    <code>def reset(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Reset the animation to the first frame and reset fade effects.</div></div></div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-            </div>
-        </div>
-
-        <!-- Navigation -->
-        <div class="row mt-4">
-            <div class="col-12 text-center">
-                <a href="../index.html" class="btn btn-primary">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Home
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../theme.js"></script>
     
+        <div class="container mt-5">
+            <nav aria-label="breadcrumb"><ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item active">Graphics</li>
+            </ol></nav>
+            <h1 class="display-4">Graphics Module</h1>
+            <p class="lead">Graphics and rendering - Sprites, Lighting, Particles</p>
+            <hr>
+            <div class="row mt-4">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>camera.py</h5>
+                    <p class="card-text small text-muted">Contains 5 classes and 0 functions.</p>
+                    <a href="camera.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>particles.py</h5>
+                    <p class="card-text small text-muted">Contains 5 classes and 0 functions.</p>
+                    <a href="particles.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>shadows.py</h5>
+                    <p class="card-text small text-muted">Contains 5 classes and 0 functions.</p>
+                    <a href="shadows.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>spritesheet.py</h5>
+                    <p class="card-text small text-muted">Contains 2 classes and 0 functions.</p>
+                    <a href="spritesheet.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div></div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="../theme.js"></script>
+        
     <script>
     // Universal search handler for GitHub Pages structure
     document.addEventListener('DOMContentLoaded', function() {
@@ -855,5 +137,7 @@
     });
     </script>
     
-</body>
-</html>
+    </body>
+
+    </html>
+    

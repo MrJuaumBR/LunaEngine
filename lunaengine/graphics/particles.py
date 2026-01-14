@@ -51,7 +51,7 @@ class ParticleConfig:
     spread: float = 45.0
 
 class ParticleSystem:
-    """Particle System - Optimized version"""
+    """Particle System"""
     
     PARTICLE_CONFIGS: Dict[ParticleType, ParticleConfig] = {
         ParticleType.FIRE: ParticleConfig(
@@ -656,49 +656,6 @@ class ParticleSystem:
         self._free_indices = list(range(self.max_particles))
         self.active_particles = 0
         self._cache_dirty = True
-    
-    def render(self, surface, camera: 'Camera'):
-        """
-        Render particles - Fixed coordinate conversion
-        ! This method is only used by PyGame renderer
-        """
-        if camera is not None:
-            self._camera_position = camera.position
-        
-        if self.active_particles == 0:
-            return
-        
-        active_indices = np.where(self.active)[0]
-        
-        for idx in active_indices:
-            if not self.active[idx] or self.alphas[idx] == 0:
-                continue
-            
-            screen_pos = camera.world_to_screen(self.positions[idx])
-            x, y = screen_pos.x, screen_pos.y
-            
-            size = camera.convert_size_zoom(self.sizes[idx])
-            if isinstance(size, (tuple, list)):
-                size = size[0]
-            elif isinstance(size, pygame.math.Vector2):
-                size = size.x
-            
-            color = tuple(self.colors_current[idx])
-            alpha = self.alphas[idx]
-            
-            margin = size * 3
-            if (x < -margin or x > surface.get_width() + margin or 
-                y < -margin or y > surface.get_height() + margin):
-                continue
-            
-            if alpha < 255:
-                # Transparent
-                temp_surface = pygame.Surface((int(size * 2), int(size * 2)), pygame.SRCALPHA)
-                pygame.draw.circle(temp_surface, (*color, alpha), (int(size), int(size)), int(size))
-                surface.blit(temp_surface, (int(x - size), int(y - size)))
-            else:
-                # Opaque
-                pygame.draw.circle(surface, color, (int(x), int(y)), int(size))
             
     def get_stats(self) -> Dict[str, Any]:
         """

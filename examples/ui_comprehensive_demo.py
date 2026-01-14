@@ -6,6 +6,7 @@ lunaengine -> examples -> ui_comprehensive_demo.py
 
 DESCRIPTION:
 This demo showcases all available UI elements in the LunaEngine system.
+All elements are organized in tabs by functional sections.
 """
 
 import sys
@@ -29,7 +30,6 @@ class ComprehensiveUIDemo(Scene):
             'switch_state': False,
             'select_index': 0,
             'dialog_active': False,
-            # NEW STATES FOR NEW ELEMENTS
             'number_selector_value': 10,
             'checkbox_state': True,
         }
@@ -39,7 +39,8 @@ class ComprehensiveUIDemo(Scene):
         
     def on_enter(self, previous_scene: str = None):
         print("=== LunaEngine UI Demo ===")
-        print("Explore all UI elements!")
+        print("Explore all UI elements organized by section!")
+        print("Use the tabs to navigate between different UI element categories.")
         print("Controls:")
         print("- Click buttons to interact")
         print("- Use dropdowns and selects to choose options")
@@ -56,250 +57,40 @@ class ComprehensiveUIDemo(Scene):
         self.animation_handler.cancel_all()
         
     def setup_ui(self):
-        """Sets up all UI elements for the demo scene."""
+        """Sets up all UI elements organized in tabs by section."""
         self.engine.set_global_theme(ThemeType.DEFAULT)
         
         # --- TITLE ---
         title = TextLabel(512, 30, "LunaEngine - UI Demo", 36, root_point=(0.5, 0))
         self.add_ui_element(title)
         
+        # --- MAIN TAB CONTAINER ---
+        self.main_tabs = Tabination(25, 90, 980, 650, 20)
+        
         # --- SECTION 1: Interactive Elements ---
-        section1_title = TextLabel(50, 100, "Interactive Elements", 20, (255, 255, 0))
-        self.add_ui_element(section1_title)
+        self.main_tabs.add_tab('Interactive')
+        self.setup_interactive_tab()
         
-        # Button Example
-        button1 = Button(50, 130, 150, 40, "Click Me")
-        button1.set_on_click(lambda: self.update_state('button_clicks', self.demo_state['button_clicks'] + 1))
-        button1.set_simple_tooltip("This button counts your clicks!")
-        self.add_ui_element(button1)
+        # --- SECTION 2: Selection Elements ---
+        self.main_tabs.add_tab('Selection')
+        self.setup_selection_tab()
         
-        self.button_counter = TextLabel(220, 140, "Clicks: 0", 16)
-        self.add_ui_element(self.button_counter)
-        
-        # Slider Example
-        slider = Slider(50, 175, 200, 30, 0, 100, 50)
-        slider.on_value_changed = lambda v: self.update_state('slider_value', v)
-        slider.set_simple_tooltip("Drag to change the value")
-        self.add_ui_element(slider)
-        
-        self.slider_display = TextLabel(260, 180, "Value: 50.0", 14)
-        self.add_ui_element(self.slider_display)
-        
-        # NEW: NumberSelector Example
-        number_selector = NumberSelector(50, 215, 75, 25, 0, 99, self.demo_state['number_selector_value'], min_length=2)
-        number_selector.on_value_changed = lambda v: self.update_state('number_selector_value', v)
-        number_selector.set_simple_tooltip("Select a number from 00 to 99")
-        self.add_ui_element(number_selector)
-
-        self.number_selector_display = TextLabel(210, 220, "Number: 10", 14)
-        self.add_ui_element(self.number_selector_display)
-        
-        # --- SECTION 2: Selection Elements (Shifted Down) ---
-        section2_title = TextLabel(50, 260, "Selection Elements", 20, (255, 255, 0))
-        self.add_ui_element(section2_title)
-        
-        # Dropdown Example
-        dropdown = Dropdown(50, 290, 200, 30, ["Option 1", "Option 2", "Option 3"])
-        dropdown.set_on_selection_changed(lambda i, v: self.update_state('dropdown_selection', v))
-        dropdown.set_simple_tooltip("Click to expand and select an option")
-        self.add_ui_element(dropdown)
-        
-        # Theme Dropdown Example
-        theme_dropdown = Dropdown(50, 330, 150, 30, ThemeManager.get_theme_names(), font_size=19)
-        theme_dropdown.set_on_selection_changed(lambda i, v: self.engine.set_global_theme(v))
-        theme_dropdown.set_simple_tooltip("Change the global theme")
-        self.add_ui_element(theme_dropdown)
-        
-        self.dropdown_display = TextLabel(260, 290, "Selected: Option 1", 14)
-        self.add_ui_element(self.dropdown_display)
-        
-        # Switch Example
-        switch = Switch(50, 370, 60, 30)
-        switch.set_on_toggle(lambda s: self.update_state('switch_state', s))
-        switch.set_simple_tooltip("Toggle switch on/off")
-        self.add_ui_element(switch)
-        
-        self.switch_display = TextLabel(120, 380, "Switch: OFF", 14)
-        self.add_ui_element(self.switch_display)
-        
-        checkbox = Checkbox(50, 410, 200, 25, self.demo_state['checkbox_state'], label="Enable Feature X")
-        checkbox.set_on_toggle(lambda s: self.update_state('checkbox_state', s))
-        checkbox.set_simple_tooltip("Toggle this feature on/off")
-        self.add_ui_element(checkbox)
-        
-        self.checkbox_display = TextLabel(260, 415, "Feature X: ON", 14)
-        self.add_ui_element(self.checkbox_display)
-
         # --- SECTION 3: Visual Elements ---
-        section3_title = TextLabel(550, 100, "Visual Elements", 20, (255, 255, 0))
-        self.add_ui_element(section3_title)
-        
-        self.progress_bar = ProgressBar(550, 120, 200, 20, 0, 100, 0)
-        self.progress_bar.set_simple_tooltip("Shows progress from 0% to 100%")
-        self.add_ui_element(self.progress_bar)
-        
-        progress_btn = Button(760, 120, 100, 20, "Add 10%")
-        progress_btn.set_on_click(lambda: self.add_progress(10))
-        self.add_ui_element(progress_btn)
-        
-        self.progress_display = TextLabel(550, 140, "Progress: 0%", 14)
-        self.add_ui_element(self.progress_display)
-        
-        draggable = UIDraggable(550, 165, 100, 50)
-        draggable.set_simple_tooltip("Drag me around the screen!")
-        self.add_ui_element(draggable)
-        
-        gradient = UIGradient(550, 225, 200, 50, [(255, 0, 0), (200, 100, 0), (0, 255, 0), (0, 200, 100), (0, 0, 255)])
-        gradient.set_simple_tooltip("Beautiful gradient with multiple colors")
-        self.add_ui_element(gradient)
+        self.main_tabs.add_tab('Visual')
+        self.setup_visual_tab()
         
         # --- SECTION 4: Advanced Elements ---
-        section4_title = TextLabel(550, 285, "Advanced Elements", 20, (255, 255, 0))
-        self.add_ui_element(section4_title)
+        self.main_tabs.add_tab('Advanced')
+        self.setup_advanced_tab()
         
-        textbox = TextBox(550, 320, 200, 30, "Type here...")
-        textbox.set_simple_tooltip("Click and type to enter text")
-        self.add_ui_element(textbox)
+        # --- SECTION 5: Animation Examples ---
+        self.main_tabs.add_tab('Animation')
+        self.setup_animation_tab()
         
-        select = Select(550, 355, 200, 30, ["Choice A", "Choice B", "Choice C"])
-        select.set_on_selection_changed(lambda i, v: self.update_state('select_index', i))
-        select.set_simple_tooltip("Use arrows to cycle through options")
-        self.add_ui_element(select)
+        # Add the main tabs container to the scene
+        self.add_ui_element(self.main_tabs)
         
-        self.select_display = TextLabel(760, 355, "Choice: 1", 14)
-        self.add_ui_element(self.select_display)
-        
-        scroll_frame = ScrollingFrame(550, 400, 300, 150, 280, 300)
-        scroll_frame.set_simple_tooltip("Scrollable container with multiple items")
-        self.add_ui_element(scroll_frame)
-        
-        for i in range(8):
-            item_label = TextLabel(10, i * 25, f"Item {i + 1}", 14)
-            scroll_frame.add_child(item_label)
-        
-        # --- SECTION 5: Animation Examples (Shifted Down) ---
-        section5_title = TextLabel(50, 450, "Animation Examples", 20, (255, 255, 0))
-        self.add_ui_element(section5_title)
-        
-        # Animation controls
-        animation_controls = TextLabel(50, 470, "Animation Controls:", 16, (200, 200, 255))
-        self.add_ui_element(animation_controls)
-        
-        # Linear Animation Example
-        linear_label = TextLabel(50, 490, "Linear Animation:", 14, (100, 255, 100))
-        self.add_ui_element(linear_label)
-        
-        self.linear_box = UiFrame(50, 510, 15, 15)
-        self.linear_box.set_background_color((100, 255, 100))
-        self.add_ui_element(self.linear_box)
-        
-        # Bounce Animation Example
-        bounce_label = TextLabel(50, 530, "Bounce Animation:", 14, (255, 200, 50))
-        self.add_ui_element(bounce_label)
-        
-        self.bounce_box = UiFrame(50, 550, 15, 15)
-        self.bounce_box.set_background_color((255, 200, 50))
-        self.add_ui_element(self.bounce_box)
-        
-        # Back Animation Example
-        back_label = TextLabel(50, 570, "Back Animation:", 14, (255, 100, 100))
-        self.add_ui_element(back_label)
-        
-        self.back_box = UiFrame(50, 590, 15, 15)
-        self.back_box.set_background_color((255, 100, 100))
-        self.add_ui_element(self.back_box)
-        
-        # Animation path indicators
-        self.linear_path = UiFrame(50, 515, 300, 5)
-        self.linear_path.z_index = -1
-        self.add_ui_element(self.linear_path)
-        
-        self.bounce_path = UiFrame(50, 555, 300, 5)
-        self.bounce_path.z_index = -1
-        self.add_ui_element(self.bounce_path)
-        
-        self.back_path = UiFrame(50, 595, 300, 5)
-        self.back_path.z_index = -1
-        self.add_ui_element(self.back_path)
-        
-        # Animation progress displays
-        self.linear_progress = TextLabel(375, 515, "0%", 14, (100, 255, 100))
-        self.add_ui_element(self.linear_progress)
-        
-        self.bounce_progress = TextLabel(375, 555, "0%", 14, (255, 200, 50))
-        self.add_ui_element(self.bounce_progress)
-        
-        self.back_progress = TextLabel(375, 595, "0%", 14, (255, 100, 100))
-        self.add_ui_element(self.back_progress)
-        
-        # Animation control buttons
-        pause_btn = Button(50, 615, 80, 30, "Pause All")
-        pause_btn.set_on_click(lambda: self.pause_animations())
-        pause_btn.set_simple_tooltip("Pause all animations")
-        self.add_ui_element(pause_btn)
-        
-        resume_btn = Button(140, 615, 80, 30, "Resume All")
-        resume_btn.set_on_click(lambda: self.resume_animations())
-        resume_btn.set_simple_tooltip("Resume all animations")
-        self.add_ui_element(resume_btn)
-        
-        reset_btn = Button(230, 615, 80, 30, "Reset All")
-        reset_btn.set_on_click(lambda: self.reset_animations())
-        reset_btn.set_simple_tooltip("Reset all animations")
-        self.add_ui_element(reset_btn)
-        
-        # Animation speed control
-        speed_label = TextLabel(50, 655, "Speed:", 14, (200, 200, 255))
-        self.add_ui_element(speed_label)
-        
-        self.speed_slider = Slider(100, 650, 100, 20, 0.5, 3.0, 1.0)
-        self.speed_slider.on_value_changed = lambda v: self.update_animation_speed(v)
-        self.speed_slider.set_simple_tooltip("Adjust animation speed (0.5x to 3.0x)")
-        self.add_ui_element(self.speed_slider)
-        
-        self.speed_display = TextLabel(300, 655, "1.0x", 12)
-        self.add_ui_element(self.speed_display)
-        
-        # Loop control buttons
-        loop_btn = Button(50, 685, 80, 30, "3 Loops")
-        loop_btn.set_on_click(lambda: self.set_animations_loops(3))
-        loop_btn.set_simple_tooltip("Set all animations to loop 3 times")
-        self.add_ui_element(loop_btn)
-
-        infinite_loop_btn = Button(140, 685, 100, 30, "Infinite")
-        infinite_loop_btn.set_on_click(lambda: self.set_animations_loops(-1))
-        infinite_loop_btn.set_simple_tooltip("Set all animations to loop infinitely")
-        self.add_ui_element(infinite_loop_btn)
-
-        no_loop_btn = Button(250, 685, 80, 30, "No Loop")
-        no_loop_btn.set_on_click(lambda: self.set_animations_loops(0))
-        no_loop_btn.set_simple_tooltip("Disable looping for all animations")
-        self.add_ui_element(no_loop_btn)
-        
-        # Loop count display
-        self.loop_display = TextLabel(50, 725, "Loops: Infinite", 14, (200, 200, 255))
-        self.add_ui_element(self.loop_display)
-        
-        # Dialog button
-        dialog_btn = Button(725, 600, 150, 40, "Show Dialog")
-        dialog_btn.set_on_click(lambda: self.show_dialog())
-        dialog_btn.set_simple_tooltip("Click to show an RPG-style dialog box")
-        self.add_ui_element(dialog_btn)
-        
-        advanced_tooltip_btn = Button(530, 600, 180, 40, "Advanced Tooltip")
-        advanced_tooltip_config = TooltipConfig(
-            text="This is an advanced tooltip with custom styling! It has more padding, and a delay.",
-            font_size=16,
-            padding=12,
-            offset_x=15,
-            offset_y=15,
-            show_delay=0.2,
-            max_width=250,
-        )
-        advanced_tooltip = Tooltip(advanced_tooltip_config)
-        advanced_tooltip_btn.set_tooltip(advanced_tooltip)
-        self.add_ui_element(advanced_tooltip_btn)
-        
+        # --- GLOBAL ELEMENTS (outside tabs) ---
         self.dialog_box = DialogBox(120, 300, 400, 150, style="modern")
         self.dialog_box.visible = False
         self.dialog_box.set_on_advance(lambda: self.hide_dialog())
@@ -311,7 +102,349 @@ class ComprehensiveUIDemo(Scene):
         
         # Initialize animations
         self.setup_animations()
+    
+    def setup_interactive_tab(self):
+        """Sets up interactive elements tab."""
+        # Tab title
+        self.main_tabs.add_to_tab('Interactive', TextLabel(10, 10, "Interactive Elements", 24, (255, 255, 0)))
         
+        # Button Example
+        button1 = Button(20, 50, 150, 40, "Click Me")
+        button1.set_on_click(lambda: self.update_state('button_clicks', self.demo_state['button_clicks'] + 1))
+        button1.set_simple_tooltip("This button counts your clicks!")
+        self.main_tabs.add_to_tab('Interactive', button1)
+        
+        self.button_counter = TextLabel(180, 70, "Clicks: 0", 16)
+        self.main_tabs.add_to_tab('Interactive', self.button_counter)
+        
+        # Slider Example
+        slider_label = TextLabel(20, 125, "Slider:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Interactive', slider_label)
+        
+        slider = Slider(100, 120, 200, 30, 0, 100, 50)
+        slider.on_value_changed = lambda v: self.update_state('slider_value', v)
+        slider.set_simple_tooltip("Drag to change the value")
+        self.main_tabs.add_to_tab('Interactive', slider)
+        
+        self.slider_display = TextLabel(310, 125, "Value: 50.0", 14)
+        self.main_tabs.add_to_tab('Interactive', self.slider_display)
+        
+        # Progress Bar Example
+        progress_label = TextLabel(20, 175, "Progress Bar:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Interactive', progress_label)
+        
+        self.progress_bar = ProgressBar(150, 170, 200, 20, 0, 100, 0)
+        self.progress_bar.set_simple_tooltip("Shows progress from 0% to 100%")
+        self.main_tabs.add_to_tab('Interactive', self.progress_bar)
+        
+        progress_btn = Button(360, 170, 100, 20, "Add 10%")
+        progress_btn.set_on_click(lambda: self.add_progress(10))
+        self.main_tabs.add_to_tab('Interactive', progress_btn)
+        
+        self.progress_display = TextLabel(470, 175, "Progress: 0%", 14)
+        self.main_tabs.add_to_tab('Interactive', self.progress_display)
+        
+        # Draggable Element
+        draggable_label = TextLabel(20, 220, "Draggable Element:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Interactive', draggable_label)
+        
+        draggable = UIDraggable(160, 220, 100, 50)
+        draggable.set_simple_tooltip("Drag me around within the tab!")
+        self.main_tabs.add_to_tab('Interactive', draggable)
+    
+    def setup_selection_tab(self):
+        """Sets up selection elements tab."""
+        # Tab title
+        self.main_tabs.add_to_tab('Selection', TextLabel(10, 10, "Selection Elements", 24, (255, 255, 0)))
+        
+        # Dropdown Example
+        dropdown_label = TextLabel(20, 50, "Dropdown:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Selection', dropdown_label)
+        
+        dropdown = Dropdown(120, 40, 200, 30, ["Option 1", "Option 2", "Option 3"])
+        dropdown.set_on_selection_changed(lambda i, v: self.update_state('dropdown_selection', v))
+        dropdown.set_simple_tooltip("Click to expand and select an option")
+        self.main_tabs.add_to_tab('Selection', dropdown)
+        
+        self.dropdown_display = TextLabel(330, 50, "Selected: Option 1", 14)
+        self.main_tabs.add_to_tab('Selection', self.dropdown_display)
+        
+        # Theme Dropdown
+        theme_label = TextLabel(20, 100, "Theme Selector:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Selection', theme_label)
+        
+        theme_dropdown = Dropdown(150, 90, 150, 30, ThemeManager.get_theme_names(), font_size=16)
+        theme_dropdown.set_on_selection_changed(lambda i, v: self.engine.set_global_theme(v))
+        theme_dropdown.set_simple_tooltip("Change the global theme")
+        self.main_tabs.add_to_tab('Selection', theme_dropdown)
+        
+        # Switch Example
+        switch_label = TextLabel(20, 160, "Switch:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Selection', switch_label)
+        
+        switch = Switch(100, 150, 60, 30)
+        switch.set_on_toggle(lambda s: self.update_state('switch_state', s))
+        switch.set_simple_tooltip("Toggle switch on/off")
+        self.main_tabs.add_to_tab('Selection', switch)
+        
+        self.switch_display = TextLabel(170, 160, "Switch: OFF", 14)
+        self.main_tabs.add_to_tab('Selection', self.switch_display)
+        
+        # Checkbox Example
+        checkbox_label = TextLabel(20, 205, "Checkbox:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Selection', checkbox_label)
+        
+        checkbox = Checkbox(120, 200, 200, 25, self.demo_state['checkbox_state'], label="Enable Feature X")
+        checkbox.set_on_toggle(lambda s: self.update_state('checkbox_state', s))
+        checkbox.set_simple_tooltip("Toggle this feature on/off")
+        self.main_tabs.add_to_tab('Selection', checkbox)
+        
+        self.checkbox_display = TextLabel(330, 205, "Feature X: ON", 14)
+        self.main_tabs.add_to_tab('Selection', self.checkbox_display)
+        
+        # Number Selector Example
+        number_label = TextLabel(20, 255, "Number Selector:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Selection', number_label)
+        
+        number_selector = NumberSelector(160, 250, 75, 25, 0, 99, self.demo_state['number_selector_value'], min_length=2)
+        number_selector.on_value_changed = lambda v: self.update_state('number_selector_value', v)
+        number_selector.set_simple_tooltip("Select a number from 00 to 99")
+        self.main_tabs.add_to_tab('Selection', number_selector)
+
+        self.number_selector_display = TextLabel(245, 255, "Number: 10", 14)
+        self.main_tabs.add_to_tab('Selection', self.number_selector_display)
+        
+        # Select Example
+        select_label = TextLabel(20, 295, "Select (Cycle):", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Selection', select_label)
+        
+        select = Select(150, 290, 200, 30, ["Choice A", "Choice B", "Choice C"])
+        select.set_on_selection_changed(lambda i, v: self.update_state('select_index', i))
+        select.set_simple_tooltip("Use arrows to cycle through options")
+        self.main_tabs.add_to_tab('Selection', select)
+        
+        self.select_display = TextLabel(360, 295, "Choice: 1", 14)
+        self.main_tabs.add_to_tab('Selection', self.select_display)
+    
+    def setup_visual_tab(self):
+        """Sets up visual elements tab."""
+        # Tab title
+        self.main_tabs.add_to_tab('Visual', TextLabel(10, 10, "Visual Elements", 24, (255, 255, 0)))
+        
+        # Gradient Example
+        gradient_label = TextLabel(20, 50, "Color Gradient:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Visual', gradient_label)
+        
+        gradient = UIGradient(40, 75, 300, 60, [(255, 0, 0), (200, 100, 0), (0, 255, 0), (0, 200, 100), (0, 0, 255)])
+        gradient.set_simple_tooltip("Beautiful gradient with multiple colors")
+        self.main_tabs.add_to_tab('Visual', gradient)
+        
+        # Text Label Examples
+        labels_label = TextLabel(20, 175, "Text Labels:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Visual', labels_label)
+        
+        label1 = TextLabel(40, 195, "Regular Label", 18, (255, 255, 255))
+        self.main_tabs.add_to_tab('Visual', label1)
+        
+        label2 = TextLabel(40, 225, "Colored Label", 22, (100, 255, 100))
+        self.main_tabs.add_to_tab('Visual', label2)
+        
+        label3 = TextLabel(40, 255, "Large Label", 28, (255, 200, 50))
+        self.main_tabs.add_to_tab('Visual', label3)
+        
+        # Frame Example
+        frame_label = TextLabel(20, 280, "UI Frame:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Visual', frame_label)
+        
+        frame = UiFrame(40, 300, 200, 100)
+        frame.set_background_color((50, 50, 100, 200))
+        frame.set_border((100, 150, 255),2)
+        self.main_tabs.add_to_tab('Visual', frame)
+        
+        # Frame with text
+        inner_label = TextLabel(5,5, "This is a frame", 16, (255, 255, 255))
+        frame.add_child(inner_label)
+        
+        # Separator line
+        separator = TextLabel(20, 420, "Horizontal Separator:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Visual', separator)
+        
+        separator_line = UiFrame(20, 440, 400, 2)
+        separator_line.set_background_color((100, 100, 100))
+        self.main_tabs.add_to_tab('Visual', separator_line)
+    
+    def setup_advanced_tab(self):
+        """Sets up advanced elements tab."""
+        # Tab title
+        self.main_tabs.add_to_tab('Advanced', TextLabel(10, 10, "Advanced Elements", 24, (255, 255, 0)))
+        
+        # TextBox Example
+        textbox_label = TextLabel(20, 60, "TextBox:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Advanced', textbox_label)
+        
+        textbox = TextBox(100, 50, 250, 30, "Type here...")
+        textbox.set_simple_tooltip("Click and type to enter text")
+        self.main_tabs.add_to_tab('Advanced', textbox)
+        
+        # ScrollingFrame Example
+        scroll_label = TextLabel(20, 100, "Scrolling Frame:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Advanced', scroll_label)
+        
+        scroll_frame = ScrollingFrame(20, 130, 350, 200, 330, 300)
+        scroll_frame.set_simple_tooltip("Scrollable container with multiple items")
+        self.main_tabs.add_to_tab('Advanced', scroll_frame)
+        
+        # Add items to scrolling frame
+        for i in range(15):
+            item_color = (100 + i * 10, 150, 200) if i % 2 == 0 else (200, 150, 100 + i * 10)
+            item = TextLabel(10, i * 30, f"Scrollable Item {i + 1}", 14, item_color)
+            scroll_frame.add_child(item)
+        
+        # Dialog Button
+        dialog_label = TextLabel(390, 65, "Dialog Box:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Advanced', dialog_label)
+        
+        dialog_btn = Button(500, 50, 150, 40, "Show Dialog")
+        dialog_btn.set_on_click(lambda: self.show_dialog())
+        dialog_btn.set_simple_tooltip("Click to show an RPG-style dialog box")
+        self.main_tabs.add_to_tab('Advanced', dialog_btn)
+        
+        # Advanced Tooltip Button
+        tooltip_label = TextLabel(390, 115, "Advanced Tooltip:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Advanced', tooltip_label)
+        
+        advanced_tooltip_btn = Button(500, 100, 180, 40, "Hover for Tooltip")
+        advanced_tooltip_config = TooltipConfig(
+            text="This is an advanced tooltip with custom styling! It has more padding, and a delay.",
+            font_size=16,
+            padding=12,
+            offset_x=15,
+            offset_y=15,
+            show_delay=0.2,
+            max_width=250,
+        )
+        advanced_tooltip = Tooltip(advanced_tooltip_config)
+        advanced_tooltip_btn.set_tooltip(advanced_tooltip)
+        self.main_tabs.add_to_tab('Advanced', advanced_tooltip_btn)
+    
+    def setup_animation_tab(self):
+        """Sets up animation examples tab."""
+        # Tab title
+        self.main_tabs.add_to_tab('Animation', TextLabel(10, 10, "Animation Examples", 24, (255, 255, 0)))
+        
+        # Animation controls label
+        animation_controls = TextLabel(20, 50, "Animation Controls:", 20, (200, 200, 255))
+        self.main_tabs.add_to_tab('Animation', animation_controls)
+        
+        # Linear Animation Example
+        linear_label = TextLabel(20, 80, "Linear Animation:", 16, (100, 255, 100))
+        self.main_tabs.add_to_tab('Animation', linear_label)
+        
+        self.linear_box = UiFrame(20, 105, 20, 20)
+        self.linear_box.set_background_color((100, 255, 100))
+        self.main_tabs.add_to_tab('Animation', self.linear_box)
+        
+        # Linear animation path
+        self.linear_path = UiFrame(20, 115, 300, 3)
+        self.linear_path.set_background_color((50, 150, 50, 100))
+        self.linear_path.z_index = -1
+        self.main_tabs.add_to_tab('Animation', self.linear_path)
+        
+        self.linear_progress = TextLabel(330, 110, "0%", 14, (100, 255, 100))
+        self.main_tabs.add_to_tab('Animation', self.linear_progress)
+        
+        # Bounce Animation Example
+        bounce_label = TextLabel(20, 140, "Bounce Animation:", 16, (255, 200, 50))
+        self.main_tabs.add_to_tab('Animation', bounce_label)
+        
+        self.bounce_box = UiFrame(20, 165, 20, 20)
+        self.bounce_box.set_background_color((255, 200, 50))
+        self.main_tabs.add_to_tab('Animation', self.bounce_box)
+        
+        # Bounce animation path
+        self.bounce_path = UiFrame(20, 175, 300, 3)
+        self.bounce_path.set_background_color((200, 150, 50, 100))
+        self.bounce_path.z_index = -1
+        self.main_tabs.add_to_tab('Animation', self.bounce_path)
+        
+        self.bounce_progress = TextLabel(330, 170, "0%", 14, (255, 200, 50))
+        self.main_tabs.add_to_tab('Animation', self.bounce_progress)
+        
+        # Back Animation Example
+        back_label = TextLabel(20, 200, "Back Animation:", 16, (255, 100, 100))
+        self.main_tabs.add_to_tab('Animation', back_label)
+        
+        self.back_box = UiFrame(20, 225, 20, 20)
+        self.back_box.set_background_color((255, 100, 100))
+        self.main_tabs.add_to_tab('Animation', self.back_box)
+        
+        # Back animation path
+        self.back_path = UiFrame(20, 235, 300, 3)
+        self.back_path.set_background_color((200, 50, 50, 100))
+        self.back_path.z_index = -1
+        self.main_tabs.add_to_tab('Animation', self.back_path)
+        
+        self.back_progress = TextLabel(330, 230, "0%", 14, (255, 100, 100))
+        self.main_tabs.add_to_tab('Animation', self.back_progress)
+        
+        # Animation control buttons (horizontal layout)
+        control_y = 270
+        pause_btn = Button(20, control_y, 90, 30, "Pause All")
+        pause_btn.set_on_click(lambda: self.pause_animations())
+        pause_btn.set_simple_tooltip("Pause all animations")
+        self.main_tabs.add_to_tab('Animation', pause_btn)
+        
+        resume_btn = Button(120, control_y, 90, 30, "Resume All")
+        resume_btn.set_on_click(lambda: self.resume_animations())
+        resume_btn.set_simple_tooltip("Resume all animations")
+        self.main_tabs.add_to_tab('Animation', resume_btn)
+        
+        reset_btn = Button(220, control_y, 90, 30, "Reset All")
+        reset_btn.set_on_click(lambda: self.reset_animations())
+        reset_btn.set_simple_tooltip("Reset all animations")
+        self.main_tabs.add_to_tab('Animation', reset_btn)
+        
+        # Animation speed control
+        speed_label = TextLabel(20, 310, "Animation Speed:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Animation', speed_label)
+        
+        self.speed_slider = Slider(170, 310, 150, 20, 0.5, 3.0, 1.0)
+        self.speed_slider.on_value_changed = lambda v: self.update_animation_speed(v)
+        self.speed_slider.set_simple_tooltip("Adjust animation speed (0.5x to 3.0x)")
+        self.main_tabs.add_to_tab('Animation', self.speed_slider)
+        
+        self.speed_display = TextLabel(330, 315, "1.0x", 14)
+        self.main_tabs.add_to_tab('Animation', self.speed_display)
+        
+        # Loop control buttons
+        loop_label = TextLabel(20, 350, "Loop Controls:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Animation', loop_label)
+        
+        loop_y = 380
+        loop_btn = Button(20, loop_y, 100, 30, "3 Loops")
+        loop_btn.set_on_click(lambda: self.set_animations_loops(3))
+        loop_btn.set_simple_tooltip("Set all animations to loop 3 times")
+        self.main_tabs.add_to_tab('Animation', loop_btn)
+
+        infinite_loop_btn = Button(130, loop_y, 100, 30, "Infinite")
+        infinite_loop_btn.set_on_click(lambda: self.set_animations_loops(-1))
+        infinite_loop_btn.set_simple_tooltip("Set all animations to loop infinitely")
+        self.main_tabs.add_to_tab('Animation', infinite_loop_btn)
+
+        no_loop_btn = Button(240, loop_y, 100, 30, "No Loop")
+        no_loop_btn.set_on_click(lambda: self.set_animations_loops(0))
+        no_loop_btn.set_simple_tooltip("Disable looping for all animations")
+        self.main_tabs.add_to_tab('Animation', no_loop_btn)
+        
+        # Loop count display
+        self.loop_display = TextLabel(20, 420, "Loops: Infinite", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Animation', self.loop_display)
+        
+        # Animation description
+        desc_text = "Animations use the Tween system with Yoyo effect (forward-backward motion)."
+        desc_label = TextLabel(20, 460, desc_text, 14, (150, 200, 255))
+        self.main_tabs.add_to_tab('Animation', desc_label)
+    
     def set_animations_loops(self, loops: int):
         """Set loop count for all animations"""
         yoyo = True  # Always use yoyo for this demo
@@ -338,7 +471,7 @@ class ComprehensiveUIDemo(Scene):
         # 1. Linear Animation (smooth back and forth with yoyo)
         linear_tween = Tween.create(self.linear_box)
         linear_tween.to(
-            x=350,  # Move 300 pixels to the right
+            x=320,  # Move within the tab boundaries
             duration=2.0,
             easing=EasingType.LINEAR
         )
@@ -352,7 +485,7 @@ class ComprehensiveUIDemo(Scene):
         # 2. Bounce Animation (bounces at the end with yoyo)
         bounce_tween = Tween.create(self.bounce_box)
         bounce_tween.to(
-            x=350,  # Move 300 pixels to the right
+            x=320,  # Move within the tab boundaries
             duration=2.0,
             easing=EasingType.BOUNCE_OUT
         )
@@ -366,7 +499,7 @@ class ComprehensiveUIDemo(Scene):
         # 3. Back Animation (overshoots and comes back with yoyo)
         back_tween = Tween.create(self.back_box)
         back_tween.to(
-            x=350,  # Move 300 pixels to the right
+            x=320,  # Move within the tab boundaries
             duration=2.0,
             easing=EasingType.BACK_OUT
         )
@@ -428,9 +561,9 @@ class ComprehensiveUIDemo(Scene):
         self.animation_handler.cancel_all()
         
         # Reset box positions
-        self.linear_box.x = 50
-        self.bounce_box.x = 130
-        self.back_box.x = 210
+        self.linear_box.x = 20
+        self.bounce_box.x = 20
+        self.back_box.x = 20
         
         # Reset progress displays
         self.linear_progress.set_text("0%")
@@ -499,9 +632,7 @@ class ComprehensiveUIDemo(Scene):
     def render(self, renderer):
         renderer.fill_screen(ThemeManager.get_color('background'))
         
-        renderer.draw_rect(20, 90, 480, 650, ThemeManager.get_color('background2'))
-        renderer.draw_rect(520, 90, 480, 650, ThemeManager.get_color('background2'))
-        
+        # Header background
         renderer.draw_rect(0, 0, self.engine.width, 90, ThemeManager.get_color('background2'))
 
 def main():

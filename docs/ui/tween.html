@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tween.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Ui</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.html">Ui</a></li>
+                <li class="breadcrumb-item active">tween.py</li>
+            </ol>
+        </nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>tween.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">tween.py - Tween Animation System for LunaEngine (Inspired by Roblox Studio)<br><br>ENGINE PATH:<br>lunaengine -&gt; ui -&gt; tween.py<br><br>DESCRIPTION:<br>A comprehensive tween animation system inspired by Roblox Studio, providing<br>smooth property animations with various easing functions, sequencing, <br>and lifecycle management.<br><br>FEATURES:<br>- 25+ easing types (Linear, Quadratic, Cubic, Elastic, Bounce, etc.)<br>- Property animations: position, size, rotation, opacity, colors, custom properties<br>- Lifecycle callbacks: on_start, on_update, on_complete, on_loop<br>- Animation control: play, pause, resume, cancel, stop<br>- Sequencing: parallel and sequential animation groups<br>- Looping: finite loops, infinite loops, yoyo effect<br>- Progress tracking: get current animation progress percentage<br>- Global management: AnimationHandler for engine-wide animation control<br><br>USAGE EXAMPLES:<br># Simple animation<br>tween = Tween.create(button)<br>tween.to(x=100, y=200, duration=1.0, easing=EasingType.QUAD_IN_OUT)<br>tween.play()<br><br># Sequence of animations<br>sequence = Tween.sequence([<br> &nbsp; &nbsp;Tween.create(element).to(x=100, duration=0.5),<br> &nbsp; &nbsp;Tween.create(element).to(y=200, duration=0.5),<br>])<br><br># Animation with callbacks and loops<br>tween = Tween.create(element)<br>tween.to(rotation=360, duration=2.0, easing=EasingType.ELASTIC_OUT)<br>tween.set_loops(3, yoyo=True)<br>tween.set_callbacks(<br> &nbsp; &nbsp;on_start=lambda: print(&quot;Animation started&quot;),<br> &nbsp; &nbsp;on_complete=lambda: print(&quot;Animation completed&quot;)<br>)<br>tween.play()</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-easingtype">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class EasingType</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Easing function types inspired by Roblox Studio.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-tweenproperty">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class TweenProperty</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Represents a property to be animated with its start and end values.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-tween">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Tween</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Main tween class for animating object properties.<br><br>Provides Roblox Studio-like API for creating and controlling animations.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, target) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize a new tween animation.<br><br>Args:<br> &nbsp; &nbsp;target: The object to animate (UIElement or any object with properties)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-create">
+                <code class="fs-6 fw-bold text-color-title">def create(cls, target) -> 'Tween'</code>
+                <div class="mt-2 text-muted small">Factory method to create a new tween (Roblox Studio style).<br><br>Args:<br> &nbsp; &nbsp;target: Object to animate<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: New tween instance</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-to">
+                <code class="fs-6 fw-bold text-color-title">def to(self) -> 'Tween'</code>
+                <div class="mt-2 text-muted small">Set target values for the animation (Roblox Studio style).<br><br>Args:<br> &nbsp; &nbsp;**kwargs: Properties to animate with their target values<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Special parameters: duration, easing<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Example: x=100, y=200, duration=1.0, easing=EasingType.QUAD_IN_OUT<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-play">
+                <code class="fs-6 fw-bold text-color-title">def play(self) -> 'Tween'</code>
+                <div class="mt-2 text-muted small">Start playing the animation.<br><br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-pause">
+                <code class="fs-6 fw-bold text-color-title">def pause(self) -> 'Tween'</code>
+                <div class="mt-2 text-muted small">Pause the animation.<br><br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-resume">
+                <code class="fs-6 fw-bold text-color-title">def resume(self) -> 'Tween'</code>
+                <div class="mt-2 text-muted small">Resume a paused animation.<br><br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-cancel">
+                <code class="fs-6 fw-bold text-color-title">def cancel(self) -> 'Tween'</code>
+                <div class="mt-2 text-muted small">Cancel the animation and reset properties to initial state.<br><br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-stop">
+                <code class="fs-6 fw-bold text-color-title">def stop(self, reset) -> 'Tween'</code>
+                <div class="mt-2 text-muted small">Stop the animation.<br><br>Args:<br> &nbsp; &nbsp;reset: If True, reset properties to initial values<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-set_duration">
+                <code class="fs-6 fw-bold text-color-title">def set_duration(self, duration) -> 'Tween'</code>
+                <div class="mt-2 text-muted small">Change the duration of the animation.<br><br>Args:<br> &nbsp; &nbsp;duration: New duration in seconds (must be positive)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining<br> &nbsp; &nbsp;<br>Raises:<br> &nbsp; &nbsp;ValueError: If duration is not positive</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-_get_elapsed_time">
+                <code class="fs-6 fw-bold text-color-title">def _get_elapsed_time(self) -> float</code>
+                <div class="mt-2 text-muted small">Get elapsed time since animation started.<br><br>Returns:<br> &nbsp; &nbsp;float: Elapsed time in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-get_progress">
+                <code class="fs-6 fw-bold text-color-title">def get_progress(self) -> float</code>
+                <div class="mt-2 text-muted small">Get current animation progress as a percentage (0.0 to 1.0).<br><br>Returns:<br> &nbsp; &nbsp;float: Animation progress (0.0 = start, 1.0 = end)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-get_progress_percentage">
+                <code class="fs-6 fw-bold text-color-title">def get_progress_percentage(self) -> float</code>
+                <div class="mt-2 text-muted small">Get current animation progress as a percentage (0 to 100).<br><br>Returns:<br> &nbsp; &nbsp;float: Animation progress percentage (0 to 100)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self, dt) -> bool</code>
+                <div class="mt-2 text-muted small">Update the animation state.<br><br>Args:<br> &nbsp; &nbsp;dt: Delta time in seconds (optional, uses real time if None)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation is complete, False otherwise</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-_update_property">
+                <code class="fs-6 fw-bold text-color-title">def _update_property(self, prop_name, prop, progress) -> Any</code>
+                <div class="mt-2 text-muted small">Update a specific property based on animation progress.<br><br>Args:<br> &nbsp; &nbsp;prop_name: Name of the property<br> &nbsp; &nbsp;prop: TweenProperty object<br> &nbsp; &nbsp;progress: Eased animation progress (0.0 to 1.0)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-_complete_animation">
+                <code class="fs-6 fw-bold text-color-title">def _complete_animation(self) -> Any</code>
+                <div class="mt-2 text-muted small">Mark animation as complete and fire callbacks.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-_apply_easing">
+                <code class="fs-6 fw-bold text-color-title">def _apply_easing(self, t) -> float</code>
+                <div class="mt-2 text-muted small">Apply easing function to raw progress.<br><br>Args:<br> &nbsp; &nbsp;t: Raw progress (0.0 to 1.0)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Eased progress</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-_bounce_out">
+                <code class="fs-6 fw-bold text-color-title">def _bounce_out(t) -> float</code>
+                <div class="mt-2 text-muted small">Bounce out easing function.<br><br>Args:<br> &nbsp; &nbsp;t: Input value (0.0 to 1.0)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Bounced value</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-set_easing">
+                <code class="fs-6 fw-bold text-color-title">def set_easing(self, easing) -> 'Tween'</code>
+                <div class="mt-2 text-muted small">Set the easing function for the animation.<br><br>Args:<br> &nbsp; &nbsp;easing: EasingType enum or string name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-set_loops">
+                <code class="fs-6 fw-bold text-color-title">def set_loops(self, loops, yoyo) -> 'Tween'</code>
+                <div class="mt-2 text-muted small">Set number of loops and yoyo mode.<br><br>Args:<br> &nbsp; &nbsp;loops: Number of loops (0 = no loop, -1 = infinite)<br> &nbsp; &nbsp;yoyo: If True, reverse animation on each loop<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-set_callbacks">
+                <code class="fs-6 fw-bold text-color-title">def set_callbacks(self, on_start, on_update, on_complete, on_loop, on_stop) -> 'Tween'</code>
+                <div class="mt-2 text-muted small">Set lifecycle callbacks for the animation.<br><br>Args:<br> &nbsp; &nbsp;on_start: Called when animation starts<br> &nbsp; &nbsp;on_update: Called each frame with (tween, progress)<br> &nbsp; &nbsp;on_complete: Called when animation completes<br> &nbsp; &nbsp;on_loop: Called after each loop with loop number<br> &nbsp; &nbsp;on_stop: Called when animation is stopped<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: Self for method chaining</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-update_all">
+                <code class="fs-6 fw-bold text-color-title">def update_all(cls, dt) -> Any</code>
+                <div class="mt-2 text-muted small">Update all active tweens.<br><br>Args:<br> &nbsp; &nbsp;dt: Delta time in seconds (optional)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-cancel_all">
+                <code class="fs-6 fw-bold text-color-title">def cancel_all(cls) -> Any</code>
+                <div class="mt-2 text-muted small">Cancel all active tweens.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-pause_all">
+                <code class="fs-6 fw-bold text-color-title">def pause_all(cls) -> Any</code>
+                <div class="mt-2 text-muted small">Pause all active tweens.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-resume_all">
+                <code class="fs-6 fw-bold text-color-title">def resume_all(cls) -> Any</code>
+                <div class="mt-2 text-muted small">Resume all paused tweens.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-get_active_count">
+                <code class="fs-6 fw-bold text-color-title">def get_active_count(cls) -> int</code>
+                <div class="mt-2 text-muted small">Get number of active tweens.<br><br>Returns:<br> &nbsp; &nbsp;int: Number of active tweens</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-sequence">
+                <code class="fs-6 fw-bold text-color-title">def sequence(cls, tweens) -> 'TweenSequence'</code>
+                <div class="mt-2 text-muted small">Create a sequence of tweens (executes one after another).<br><br>Args:<br> &nbsp; &nbsp;tweens: List of tweens to execute sequentially<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;TweenSequence: Sequence controller</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tween-parallel">
+                <code class="fs-6 fw-bold text-color-title">def parallel(cls, tweens) -> 'TweenParallel'</code>
+                <div class="mt-2 text-muted small">Create a parallel group of tweens (executes all simultaneously).<br><br>Args:<br> &nbsp; &nbsp;tweens: List of tweens to execute in parallel<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;TweenParallel: Parallel group controller</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-animationhandler">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class AnimationHandler</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Global animation handler for managing all tweens in the engine.<br><br>Integrates with LunaEngine to provide centralized animation control.</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, engine) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize the animation handler.<br><br>Args:<br> &nbsp; &nbsp;engine: Reference to LunaEngine instance (optional)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-add">
+                <code class="fs-6 fw-bold text-color-title">def add(self, name, tween, auto_play) -> Tween</code>
+                <div class="mt-2 text-muted small">Add a tween to the handler with a name.<br><br>Args:<br> &nbsp; &nbsp;name: Unique name for the animation<br> &nbsp; &nbsp;tween: Tween instance<br> &nbsp; &nbsp;auto_play: If True, start playing immediately<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tween: The added tween</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-get">
+                <code class="fs-6 fw-bold text-color-title">def get(self, name) -> Optional[Tween]</code>
+                <div class="mt-2 text-muted small">Get a tween by name.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[Tween]: Tween instance or None if not found</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-remove">
+                <code class="fs-6 fw-bold text-color-title">def remove(self, name, stop) -> bool</code>
+                <div class="mt-2 text-muted small">Remove a tween by name.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;stop: If True, stop the animation before removing<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation was found and removed</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-pause">
+                <code class="fs-6 fw-bold text-color-title">def pause(self, name) -> bool</code>
+                <div class="mt-2 text-muted small">Pause a specific animation.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation was found and paused</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-resume">
+                <code class="fs-6 fw-bold text-color-title">def resume(self, name) -> bool</code>
+                <div class="mt-2 text-muted small">Resume a specific animation.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation was found and resumed</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-stop">
+                <code class="fs-6 fw-bold text-color-title">def stop(self, name, reset) -> bool</code>
+                <div class="mt-2 text-muted small">Stop a specific animation.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;reset: If True, reset properties to initial values<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation was found and stopped</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-cancel">
+                <code class="fs-6 fw-bold text-color-title">def cancel(self, name) -> bool</code>
+                <div class="mt-2 text-muted small">Cancel a specific animation (stops and resets).<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation was found and canceled</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-is_playing">
+                <code class="fs-6 fw-bold text-color-title">def is_playing(self, name) -> bool</code>
+                <div class="mt-2 text-muted small">Check if an animation is currently playing.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation exists and is playing</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-is_paused">
+                <code class="fs-6 fw-bold text-color-title">def is_paused(self, name) -> bool</code>
+                <div class="mt-2 text-muted small">Check if an animation is paused.<br><br>Args:<br> &nbsp; &nbsp;name: Animation name<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if animation exists and is paused</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self, dt) -> Any</code>
+                <div class="mt-2 text-muted small">Update all animations managed by this handler.<br><br>Args:<br> &nbsp; &nbsp;dt: Delta time in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-_cleanup_completed">
+                <code class="fs-6 fw-bold text-color-title">def _cleanup_completed(self) -> Any</code>
+                <div class="mt-2 text-muted small">Remove completed animations from the named dictionary.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-pause_all">
+                <code class="fs-6 fw-bold text-color-title">def pause_all(self) -> Any</code>
+                <div class="mt-2 text-muted small">Pause all animations.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-resume_all">
+                <code class="fs-6 fw-bold text-color-title">def resume_all(self) -> Any</code>
+                <div class="mt-2 text-muted small">Resume all animations.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-stop_all">
+                <code class="fs-6 fw-bold text-color-title">def stop_all(self, reset) -> Any</code>
+                <div class="mt-2 text-muted small">Stop all animations.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-cancel_all">
+                <code class="fs-6 fw-bold text-color-title">def cancel_all(self) -> Any</code>
+                <div class="mt-2 text-muted small">Cancel all animations (stop and reset).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-get_active_count">
+                <code class="fs-6 fw-bold text-color-title">def get_active_count(self) -> int</code>
+                <div class="mt-2 text-muted small">Get number of active animations.<br><br>Returns:<br> &nbsp; &nbsp;int: Number of active animations</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animationhandler-clear">
+                <code class="fs-6 fw-bold text-color-title">def clear(self) -> Any</code>
+                <div class="mt-2 text-muted small">Clear all animations from the handler.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-tweengroup">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class TweenGroup</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Base class for groups of tweens (sequential or parallel).</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tweengroup-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self, tweens) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize a tween group.<br><br>Args:<br> &nbsp; &nbsp;tweens: List of tweens in the group</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tweengroup-play">
+                <code class="fs-6 fw-bold text-color-title">def play(self) -> Any</code>
+                <div class="mt-2 text-muted small">Start playing the tween group.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tweengroup-_play_current">
+                <code class="fs-6 fw-bold text-color-title">def _play_current(self) -> Any</code>
+                <div class="mt-2 text-muted small">Start playing the current tween in the group.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tweengroup-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self, dt) -> bool</code>
+                <div class="mt-2 text-muted small">Update the tween group.<br><br>Args:<br> &nbsp; &nbsp;dt: Delta time<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if group is complete</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tweengroup-cancel">
+                <code class="fs-6 fw-bold text-color-title">def cancel(self) -> Any</code>
+                <div class="mt-2 text-muted small">Cancel the tween group.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-tweensequence">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class TweenSequence</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Plays tweens in sequence (one after another).</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tweensequence-_play_current">
+                <code class="fs-6 fw-bold text-color-title">def _play_current(self) -> Any</code>
+                <div class="mt-2 text-muted small">Start playing the current tween in sequence.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tweensequence-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self, dt) -> bool</code>
+                <div class="mt-2 text-muted small">Update the tween sequence.<br><br>Args:<br> &nbsp; &nbsp;dt: Delta time<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if sequence is complete</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-tweenparallel">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class TweenParallel</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Plays tweens in parallel (all at the same time).</p>
+                </div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tweenparallel-play">
+                <code class="fs-6 fw-bold text-color-title">def play(self) -> Any</code>
+                <div class="mt-2 text-muted small">Start playing all tweens in parallel.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tweenparallel-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self, dt) -> bool</code>
+                <div class="mt-2 text-muted small">Update all tweens in parallel.<br><br>Args:<br> &nbsp; &nbsp;dt: Delta time<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if all tweens are complete</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                
+                
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Ui Module
+            </a>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0 text-white-50 small">LunaEngine Documentation &copy; 2026</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    // Universal search handler for GitHub Pages structure
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // GitHub Pages structure: 
+                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
+                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
+                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
+                    
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        // We're in a subdirectory like /LunaEngine/core/
+                        searchPath = '../search.html';
+                    }
+                    // If we're in the root (/LunaEngine/)
+                    else {
+                        // We're in the root, search.html is at same level
+                        searchPath = 'search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            // Handle click on search icon
+            searchIcon.addEventListener('click', performSearch);
+            
+            // Also prevent form submission if the input is inside a form
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+</body>
+</html>

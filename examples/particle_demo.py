@@ -288,7 +288,7 @@ class ParticleDemoScene(Scene):
 def main():
     """Main function"""
     # Test
-    engine = LunaEngine("LunaEngine - Particle System Demo", 1024, 768, use_opengl=True)
+    engine = LunaEngine("LunaEngine - Particle System Demo", 1024, 768)
     engine.fps = 144
     
     @engine.on_event(pygame.KEYDOWN)

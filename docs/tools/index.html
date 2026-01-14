@@ -1,38 +1,24 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tools - LunaEngine</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="../theme.css" rel="stylesheet">
-    <style>
-    .search-highlight {
-        background-color: #ffeb3b;
-        padding: 2px 4px;
-        border-radius: 3px;
-        animation: highlight-pulse 2s ease-in-out;
-    }
-    
-    @keyframes highlight-pulse {
-        0% { background-color: #ffeb3b; }
-        50% { background-color: #ffff72; }
-        100% { background-color: #ffeb3b; }
-    }
-    </style>
-</head>
-<body>
+
+    <!DOCTYPE html>
+    <html lang="en" data-theme="light">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../theme.css" rel="stylesheet">
+        <title>Tools - LunaEngine</title>
+    </head>
+    <body>
+        
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search in tools... (e.g.: def render(), .update())">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 <span class="badge bg-primary me-3">Tools</span>
                 <button class="btn btn-outline-secondary theme-toggle">
@@ -41,138 +27,39 @@
             </div>
         </div>
     </nav>
-
-    <div class="container mt-4">
-        <!-- Module Header -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
-                        <li class="breadcrumb-item active">Tools</li>
-                    </ol>
-                </nav>
-                
-                <div class="d-flex align-items-center mb-3">
-                    <h1 class="mb-0">Tools</h1>
-                    <span class="badge bg-info ms-3">Code Analysis</span>
-                </div>
-                <p class="lead text-muted">Development tools - Documentation, Analysis</p>
-            </div>
-        </div>
-
-        <!-- Module Files -->
-        <div class="row">
-            <div class="col-12">
-
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                code_stats.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">LunaEngine Code Statistics Script<br>Counts lines of code, files, and provides detailed statistics</div>
-                            </div>
-            <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-codestatistics">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    CodeStatistics
-                                </h6>
-                <div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-codestatistics-__init__">
-                                    <code>def __init__(self: Any, root_dir: str) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-codestatistics-count_themes_in_engine">
-                                    <code>def count_themes_in_engine(self: Any) -> Dict</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Count the number of themes available in LunaEngine<br>Returns: Dictionary with theme statistics</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-codestatistics-count_lines_in_file">
-                                    <code>def count_lines_in_file(self: Any, file_path: Path) -> Tuple[int, int, int]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Count lines in a file<br>Returns: (total_lines, code_lines, comment_lines, blank_lines)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-codestatistics-get_all_files">
-                                    <code>def get_all_files(self: Any) -> List[Path]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get all relevant files in the project</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-codestatistics-get_project_structure">
-                                    <code>def get_project_structure(self: Any) -> List[str]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the complete project structure as a list of formatted lines</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-codestatistics-format_structure_tree">
-                                    <code>def format_structure_tree(self: Any, structure_lines: List[str]) -> str</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Format the structure lines as a tree</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-codestatistics-get_file_emoji">
-                                    <code>def get_file_emoji(self: Any, extension: str) -> str</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get appropriate emoji for file type</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-codestatistics-analyze_project">
-                                    <code>def analyze_project(self: Any) -> Dict</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Analyze the entire project and return statistics</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-codestatistics-get_code_density">
-                                    <code>def get_code_density(self: Any, stats: Any) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-codestatistics-print_statistics">
-                                    <code>def print_statistics(self: Any, stats: Dict) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Print formatted statistics</div></div></div></div></div><h6 class="mt-4">Functions:</h6>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-main">
-                            <code>def main() -> None</code>
-                </div>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-save_detailed_report">
-                            <code>def save_detailed_report(stats: Dict, report_file: Path, analyzer: CodeStatistics) -> None</code>
-                <div class="docstring-content mt-2"><div class="docstring-text">Save a detailed markdown report</div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                image_conversion_tool.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">LunaEngine Image Conversion Tool<br><br>Function:<br> &nbsp; &nbsp;Converts images to embedded Python code for use in the LunaEngine graphics engine,<br> &nbsp; &nbsp;supporting resolution scaling and multiple encoding methods.<br><br>Description:<br> &nbsp; &nbsp;Command-line tool for converting images into Python representations that can be<br> &nbsp; &nbsp;embedded directly in source code. Offers resizing options, preview capabilities,<br> &nbsp; &nbsp;and batch conversion support.<br><br>Location:<br> &nbsp; &nbsp;lunaengine/tools/image_conversion_tool.py<br><br>Libraries Used:<br> &nbsp; &nbsp;- os: Path and directory manipulation<br> &nbsp; &nbsp;- sys: Argument handling and system control<br> &nbsp; &nbsp;- argparse: Command-line argument processing<br> &nbsp; &nbsp;- pathlib: Object-oriented path handling<br> &nbsp; &nbsp;- pygame: Image processing and preview functionality<br> &nbsp; &nbsp;- utils (internal module): ImageConverter and EmbeddedImage for conversion</div>
-                            </div>
-            <h6 class="mt-4">Functions:</h6>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-main">
-                            <code>def main() -> None</code>
-                </div>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-show_preview">
-                            <code>def show_preview(original_path: Path, var_name: str, python_code: str, target_size: tuple) -> None</code>
-                <div class="docstring-content mt-2"><div class="docstring-text">Show a preview of the original and converted image</div></div></div>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-print_statistics">
-                            <code>def print_statistics(original_path: Path, output_path: Path, var_name: str, python_code: str) -> None</code>
-                <div class="docstring-content mt-2"><div class="docstring-text">Print conversion statistics</div></div></div>
-                        <div class="function-item mb-3 p-3 border rounded" id="func-batch_convert">
-                            <code>def batch_convert() -> None</code>
-                <div class="docstring-content mt-2"><div class="docstring-text">Batch convert multiple images</div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-            </div>
-        </div>
-
-        <!-- Navigation -->
-        <div class="row mt-4">
-            <div class="col-12 text-center">
-                <a href="../index.html" class="btn btn-primary">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Home
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../theme.js"></script>
     
+        <div class="container mt-5">
+            <nav aria-label="breadcrumb"><ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item active">Tools</li>
+            </ol></nav>
+            <h1 class="display-4">Tools Module</h1>
+            <p class="lead">Development tools - Documentation, Analysis</p>
+            <hr>
+            <div class="row mt-4">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>code_stats.py</h5>
+                    <p class="card-text small text-muted">Contains 1 classes and 2 functions.</p>
+                    <a href="code_stats.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>image_conversion_tool.py</h5>
+                    <p class="card-text small text-muted">Contains 0 classes and 4 functions.</p>
+                    <a href="image_conversion_tool.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div></div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="../theme.js"></script>
+        
     <script>
     // Universal search handler for GitHub Pages structure
     document.addEventListener('DOMContentLoaded', function() {
@@ -232,5 +119,7 @@
     });
     </script>
     
-</body>
-</html>
+    </body>
+
+    </html>
+    

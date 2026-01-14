@@ -11,4 +11,6 @@ from . import utils
 from . import backend
 from . import tools
 
-__all__ = ['core', 'ui', 'graphics', 'utils', 'backend', 'tools']
+LunaEngine = core.LunaEngine
+
+__all__ = ['core', 'ui', 'graphics', 'utils', 'backend', 'tools', 'LunaEngine']

@@ -1,38 +1,24 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Core - LunaEngine</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="../theme.css" rel="stylesheet">
-    <style>
-    .search-highlight {
-        background-color: #ffeb3b;
-        padding: 2px 4px;
-        border-radius: 3px;
-        animation: highlight-pulse 2s ease-in-out;
-    }
-    
-    @keyframes highlight-pulse {
-        0% { background-color: #ffeb3b; }
-        50% { background-color: #ffff72; }
-        100% { background-color: #ffeb3b; }
-    }
-    </style>
-</head>
-<body>
+
+    <!DOCTYPE html>
+    <html lang="en" data-theme="light">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../theme.css" rel="stylesheet">
+        <title>Core - LunaEngine</title>
+    </head>
+    <body>
+        
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html">
+            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search in core... (e.g.: def render(), .update())">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 <span class="badge bg-primary me-3">Core</span>
                 <button class="btn btn-outline-secondary theme-toggle">
@@ -41,705 +27,66 @@
             </div>
         </div>
     </nav>
-
-    <div class="container mt-4">
-        <!-- Module Header -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
-                        <li class="breadcrumb-item active">Core</li>
-                    </ol>
-                </nav>
-                
-                <div class="d-flex align-items-center mb-3">
-                    <h1 class="mb-0">Core</h1>
-                    <span class="badge bg-info ms-3">Code Analysis</span>
-                </div>
-                <p class="lead text-muted">Core engine systems - Engine, Window, Renderer</p>
-            </div>
-        </div>
-
-        <!-- Module Files -->
-        <div class="row">
-            <div class="col-12">
-
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                audio.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Advanced Audio System - Enhanced with Dynamic Control and Smooth Transitions<br><br>LOCATION: lunaengine/core/audio.py</div>
-                            </div>
-            <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-audiostate">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    AudioState
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Enumeration for audio playback states.</div></div><small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>STOPPED: Any = 'stopped'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>PLAYING: Any = 'playing'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>PAUSED: Any = 'paused'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>FADING_IN: Any = 'fading_in'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>FADING_OUT: Any = 'fading_out'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>SPEED_CHANGING: Any = 'speed_changing'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>VOLUME_CHANGING: Any = 'volume_changing'</code>
-                                </div>
-                        </div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-audioevent">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    AudioEvent
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Enumeration for audio events.</div></div><small class="text-muted">Inherits from: Enum</small><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>COMPLETE: Any = 'complete'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>STOP: Any = 'stop'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>PAUSE: Any = 'pause'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>RESUME: Any = 'resume'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>FADE_START: Any = 'fade_start'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>FADE_COMPLETE: Any = 'fade_complete'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>LOOP: Any = 'loop'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>SPEED_CHANGE: Any = 'speed_change'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>VOLUME_CHANGE: Any = 'volume_change'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>SPEED_CHANGE_START: Any = 'speed_change_start'</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>SPEED_CHANGE_COMPLETE: Any = 'speed_change_complete'</code>
-                                </div>
-                        </div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-audiochannel">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    AudioChannel
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Enhanced audio channel with dynamic control and smooth transitions.<br><br>NEW FEATURES:<br>- Dynamic speed changes without stopping playback<br>- Smooth transitions for volume and speed<br>- Audio duration information<br>- Improved state management</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-__init__">
-                                    <code>def __init__(self: Any, channel_id: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize an enhanced audio channel.<br><br>Args:<br> &nbsp; &nbsp;channel_id (int): Pygame mixer channel number</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-get_duration">
-                                    <code>def get_duration(self: Any) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the duration of the loaded sound in seconds.<br><br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds, or 0.0 if no sound loaded</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-get_playback_position">
-                                    <code>def get_playback_position(self: Any) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get current playback position in seconds.<br><br>Note: This is an approximation since pygame doesn&#x27;t provide exact position.<br><br>Returns:<br> &nbsp; &nbsp;float: Current playback position in seconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-play">
-                                    <code>def play(self: Any, sound: pygame.mixer.Sound, loop: bool) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Play a sound on this channel with enhanced state management.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): Sound to play<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if playback started successfully</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-pause">
-                                    <code>def pause(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Pause playback on this channel with state verification.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-resume">
-                                    <code>def resume(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Resume playback on this channel with state verification.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-set_volume">
-                                    <code>def set_volume(self: Any, volume: float, duration: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set channel volume with optional smooth transition.<br><br>Args:<br> &nbsp; &nbsp;volume (float): Volume level (0.0 to 1.0)<br> &nbsp; &nbsp;duration (float): Transition duration in seconds. 0 for immediate change.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-set_speed">
-                                    <code>def set_speed(self: Any, speed: float, duration: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Change the speed of the sound playback.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_change_speed_immediate">
-                                    <code>def _change_speed_immediate(self: Any, speed: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Change playback speed immediately using pitch adjustment.<br><br>Args:<br> &nbsp; &nbsp;speed (float): Target speed multiplier</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_smooth_speed_transition">
-                                    <code>def _smooth_speed_transition(self: Any, start: float, end: float, duration: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Smoothly transition between speeds.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_transition_speed">
-                                    <code>def _transition_speed(self: Any, target_speed: float, duration: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Smoothly transition between speeds.<br><br>Args:<br> &nbsp; &nbsp;target_speed (float): Target speed multiplier<br> &nbsp; &nbsp;duration (float): Transition duration in seconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_smooth_speed_change">
-                                    <code>def _smooth_speed_change(self: Any, start_speed: float, end_speed: float, duration: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Smoothly change speed over time.<br><br>Args:<br> &nbsp; &nbsp;start_speed (float): Starting speed<br> &nbsp; &nbsp;end_speed (float): Target speed<br> &nbsp; &nbsp;duration (float): Transition duration in seconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_transition_volume">
-                                    <code>def _transition_volume(self: Any, start_volume: float, end_volume: float, duration: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Enhanced volume transition with better state management.<br><br>Args:<br> &nbsp; &nbsp;start_volume (float): Starting volume<br> &nbsp; &nbsp;end_volume (float): Ending volume<br> &nbsp; &nbsp;duration (float): Transition duration in seconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-fade_in">
-                                    <code>def fade_in(self: Any, duration: float, target_volume: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Enhanced fade in with better state management.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds<br> &nbsp; &nbsp;target_volume (float, optional): Target volume. Defaults to 1.0.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-fade_out">
-                                    <code>def fade_out(self: Any, duration: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Enhanced fade out with better state management.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Fade duration in seconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_fade_volume_out">
-                                    <code>def _fade_volume_out(self: Any, start_volume: float, end_volume: float, duration: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Special fade out that stops playback after completion.<br><br>Args:<br> &nbsp; &nbsp;start_volume (float): Starting volume<br> &nbsp; &nbsp;end_volume (float): Ending volume<br> &nbsp; &nbsp;duration (float): Fade duration in seconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-stop">
-                                    <code>def stop(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Enhanced stop with thread management.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-is_playing">
-                                    <code>def is_playing(self: Any) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Enhanced play state check.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if playing, False otherwise</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-is_paused">
-                                    <code>def is_paused(self: Any) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Enhanced pause state check.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if paused, False otherwise</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-on_event">
-                                    <code>def on_event(self: Any, event_type: AudioEvent) -> Callable</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator to register event handlers.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiochannel-_trigger_event">
-                                    <code>def _trigger_event(self: Any, event_type: AudioEvent) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Trigger all handlers for the given event type.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-soundeffect">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    SoundEffect
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Enhanced sound effect with duration information.</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-soundeffect-__init__">
-                                    <code>def __init__(self: Any, sound: pygame.mixer.Sound) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a sound effect with duration tracking.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): The sound object</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-soundeffect-_calculate_duration">
-                                    <code>def _calculate_duration(self: Any, sound: pygame.mixer.Sound) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Calculate sound duration.<br><br>Args:<br> &nbsp; &nbsp;sound (pygame.mixer.Sound): Sound to calculate duration for<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-soundeffect-get_duration">
-                                    <code>def get_duration(self: Any) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the duration of this sound effect.<br><br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-soundeffect-play">
-                                    <code>def play(self: Any, audio_system: 'AudioSystem', volume: float, speed: float, loop: bool) -> Optional[AudioChannel]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Play the sound effect on an available channel.<br><br>Args:<br> &nbsp; &nbsp;audio_system (AudioSystem): The audio system to get channels from<br> &nbsp; &nbsp;volume (float, optional): Volume level. Defaults to 1.0.<br> &nbsp; &nbsp;speed (float, optional): Playback speed. Defaults to 1.0.<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[AudioChannel]: The channel playing the sound, or None if failed</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-soundeffect-stop_all">
-                                    <code>def stop_all(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Stop all instances of this sound effect.</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-audiosystem">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    AudioSystem
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Advanced audio system with multi-channel support and real speed control.<br><br>Attributes:<br> &nbsp; &nbsp;music_volume (float): Global music volume<br> &nbsp; &nbsp;sfx_volume (float): Global sound effects volume<br> &nbsp; &nbsp;channels (List[AudioChannel]): All available audio channels<br> &nbsp; &nbsp;sound_effects (Dict[str, SoundEffect]): Loaded sound effects<br> &nbsp; &nbsp;music_channel (AudioChannel): Dedicated music channel</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-__init__">
-                                    <code>def __init__(self: Any, num_channels: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the advanced audio system.<br><br>Args:<br> &nbsp; &nbsp;num_channels (int, optional): Number of audio channels. Defaults to 16.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-get_available_channel">
-                                    <code>def get_available_channel(self: Any) -> Optional[AudioChannel]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get an available audio channel.<br><br>Returns:<br> &nbsp; &nbsp;Optional[AudioChannel]: Available channel, or None if all busy</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-load_sound_effect">
-                                    <code>def load_sound_effect(self: Any, name: str, file_path: str) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Load a sound effect from file.<br><br>Args:<br> &nbsp; &nbsp;name (str): Unique name for the sound effect<br> &nbsp; &nbsp;file_path (str): Path to the sound file<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if loaded successfully</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-load_music">
-                                    <code>def load_music(self: Any, name: str, file_path: str) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Load a music track (store path for later use).<br><br>Args:<br> &nbsp; &nbsp;name (str): Unique name for the music track<br> &nbsp; &nbsp;file_path (str): Path to the music file<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if file exists</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-play_sound">
-                                    <code>def play_sound(self: Any, name: str, volume: float, speed: float, loop: bool) -> Optional[AudioChannel]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Play a sound effect on an available channel.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the sound effect<br> &nbsp; &nbsp;volume (float, optional): Volume level. Uses SFX volume if None.<br> &nbsp; &nbsp;speed (float, optional): Playback speed. Defaults to 1.0.<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to False.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[AudioChannel]: The channel playing the sound</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-play_music">
-                                    <code>def play_music(self: Any, name: str, volume: float, speed: float, loop: bool) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Play a music track on the dedicated music channel.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the music track<br> &nbsp; &nbsp;volume (float, optional): Volume level. Uses music volume if None.<br> &nbsp; &nbsp;speed (float, optional): Playback speed. Defaults to 1.0.<br> &nbsp; &nbsp;loop (bool, optional): Whether to loop. Defaults to True.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if playback started successfully</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-stop_music">
-                                    <code>def stop_music(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Stop the currently playing music.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-pause_music">
-                                    <code>def pause_music(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Pause the currently playing music.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-resume_music">
-                                    <code>def resume_music(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Resume the paused music.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-set_music_volume">
-                                    <code>def set_music_volume(self: Any, volume: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set global music volume.<br><br>Args:<br> &nbsp; &nbsp;volume (float): Volume level (0.0 to 1.0)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-set_sfx_volume">
-                                    <code>def set_sfx_volume(self: Any, volume: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set global sound effects volume.<br><br>Args:<br> &nbsp; &nbsp;volume (float): Volume level (0.0 to 1.0)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-fade_in_music">
-                                    <code>def fade_in_music(self: Any, name: str, duration: float, target_volume: float, speed: float) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Fade in a music track.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the music track<br> &nbsp; &nbsp;duration (float, optional): Fade duration. Defaults to 2.0.<br> &nbsp; &nbsp;target_volume (float, optional): Target volume. Uses music volume if None.<br> &nbsp; &nbsp;speed (float, optional): Playback speed. Defaults to 1.0.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if fade started successfully</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-fade_out_music">
-                                    <code>def fade_out_music(self: Any, duration: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Fade out the current music.<br><br>Args:<br> &nbsp; &nbsp;duration (float, optional): Fade duration. Defaults to 2.0.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-stop_all_sounds">
-                                    <code>def stop_all_sounds(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Stop all playing sound effects.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-get_channel_info">
-                                    <code>def get_channel_info(self: Any) -> Dict[str, Any]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get information about all channels.<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, Any]: Channel information</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-cleanup">
-                                    <code>def cleanup(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Clean up audio resources.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-get_sound_duration">
-                                    <code>def get_sound_duration(self: Any, name: str) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the duration of a loaded sound effect.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the sound effect<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds, or 0.0 if not found</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-get_music_duration">
-                                    <code>def get_music_duration(self: Any, name: str) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the duration of a loaded music track.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the music track<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;float: Duration in seconds, or 0.0 if not found</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-audiosystem-get_current_music_position">
-                                    <code>def get_current_music_position(self: Any) -> float</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get current playback position of music.<br><br>Returns:<br> &nbsp; &nbsp;float: Current position in seconds</div></div></div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                engine.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">LunaEngine Main Engine - Core Game Loop and Management System<br><br>LOCATION: lunaengine/core/engine.py<br><br>DESCRIPTION:<br>The central engine class that orchestrates the entire game lifecycle. Manages<br>scene transitions, rendering pipeline, event handling, performance monitoring,<br>and UI system integration. This is the primary interface for game developers.<br><br>KEY RESPONSIBILITIES:<br>- Game loop execution with fixed timestep<br>- Scene management and lifecycle control<br>- Event distribution to scenes and UI elements<br>- Performance monitoring and optimization<br>- Theme management across the entire application<br>- Resource initialization and cleanup<br><br>LIBRARIES USED:<br>- pygame: Window management, event handling, timing, and surface operations<br>- numpy: Mathematical operations for game calculations<br>- threading: Background task management (if needed)<br>- typing: Type hints for better code documentation<br><br>DEPENDENCIES:<br>- ..backend.pygame_backend: Default rendering backend<br>- ..ui.elements: UI component system<br>- ..utils.performance: Performance monitoring utilities<br>- .scene: Scene management base class</div>
-                            </div>
-            <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-mbttons_pressed">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    mbttons_pressed
-                                </h6>
-                <small class="text-muted">Inherits from: dict</small><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>left: bool = False</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>middle: bool = False</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>right: bool = False</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>extra_button_1: bool = False</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>extra_button_2: bool = False</code>
-                                </div>
-                        </div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-inputstate">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    InputState
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Tracks input state with proper click detection</div></div><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>mouse_pos: tuple = (0, 0)</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>mouse_buttons_pressed: mbttons_pressed = None</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>mouse_just_pressed: bool = False</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>mouse_just_released: bool = False</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>mouse_wheel: float = 0</code>
-                                </div>
-                        
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>consumed_events: set = None</code>
-                                </div>
-                        </div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-inputstate-__post_init__">
-                                    <code>def __post_init__(self: Any) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-inputstate-update">
-                                    <code>def update(self: Any, mouse_pos: tuple, mouse_pressed: tuple, mouse_wheel: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update input state with proper click detection</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-inputstate-consume_event">
-                                    <code>def consume_event(self: Any, element_id: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Mark an event as consumed by a specific element</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-inputstate-is_event_consumed">
-                                    <code>def is_event_consumed(self: Any, element_id: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Check if event was already consumed</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-inputstate-clear_consumed">
-                                    <code>def clear_consumed(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Clear consumed events for new frame</div></div></div></div></div>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-lunaengine">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    LunaEngine
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether to start in fullscreen mode<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-__init__">
-                                    <code>def __init__(self: Any, title: str, width: int, height: int, use_opengl: bool, fullscreen: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the LunaEngine.<br><br>Args:<br> &nbsp; &nbsp;title (str): The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int): The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int): The height of the game window (default: 600)<br> &nbsp; &nbsp;use_opengl (bool): Use OpenGL for rendering (default: True)<br> &nbsp; &nbsp;fullscreen (bool): Start in fullscreen mode (default: False)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-initialize">
-                                    <code>def initialize(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the engine and create the game window.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-update_camera_renderer">
-                                    <code>def update_camera_renderer(self: Any) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-add_scene">
-                                    <code>def add_scene(self: Any, name: str, scene_class: Type[Scene], *args: Any, **kwargs: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Add a scene to the engine by class (the engine will instantiate it).<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene<br> &nbsp; &nbsp;scene_class (Type[Scene]): The scene class to instantiate<br> &nbsp; &nbsp;*args: Arguments to pass to scene constructor<br> &nbsp; &nbsp;**kwargs: Keyword arguments to pass to scene constructor</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-set_scene">
-                                    <code>def set_scene(self: Any, name: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set the current active scene.<br><br>Calls on_exit on the current scene and on_enter on the new scene.<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene to set as current</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-on_event">
-                                    <code>def on_event(self: Any, event_type: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Decorator to register event handlers<br><br>Args:<br> &nbsp; &nbsp;event_type (int): The Pygame event type to listen for<br>Returns:<br> &nbsp; &nbsp;Callable: The decorator function</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-get_all_themes">
-                                    <code>def get_all_themes(self: Any) -> Dict[str, any]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get all available themes including user custom ones<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, any]: Dictionary with theme names as keys and theme objects as values</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-get_theme_names">
-                                    <code>def get_theme_names(self: Any) -> List[str]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get list of all available theme names<br><br>Returns:<br> &nbsp; &nbsp;List[str]: List of theme names</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-set_global_theme">
-                                    <code>def set_global_theme(self: Any, theme: str) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set the global theme for the entire engine and update all UI elements<br><br>Args:<br> &nbsp; &nbsp;theme_name (str): Name of the theme to set<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if theme was set successfully, False otherwise</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_update_all_ui_themes">
-                                    <code>def _update_all_ui_themes(self: Any, theme_enum: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update all UI elements in the current scene to use the new theme<br><br>Args:<br> &nbsp; &nbsp;theme_enum: The theme enum to apply</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-get_fps_stats">
-                                    <code>def get_fps_stats(self: Any) -> dict</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get comprehensive FPS statistics (optimized)<br><br>Returns:<br> &nbsp; &nbsp;dict: A dictionary containing FPS statistics</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-get_hardware_info">
-                                    <code>def get_hardware_info(self: Any) -> dict</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get hardware information</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-scalesize">
-                                    <code>def ScaleSize(self: Any, width: float, height: float) -> Tuple[float, float] | Tuple[int, int]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Scale size is a function that will convert scales size to a pixel size<br><br>e.g.:<br>- 1.0, 1.0 = Full Screen<br>- 0.5, 0.5 = Half Screen<br>- 0.5, 1.0 = Half Screen Width, Full Screen Height<br><br>Args:<br> &nbsp; &nbsp;width (float): Width scale<br> &nbsp; &nbsp;height (float): Height scale<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float]|Tuple[int, int]: Pixel size</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-scalepos">
-                                    <code>def ScalePos(self: Any, x: float, y: float) -> Tuple[float, float] | Tuple[int, int]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Scale position is a function that will convert scales position to a pixel position<br><br>e.g.:<br>- 1.0, 1.0 = Bottom Right<br>- 0.0, 0.0 = Top Left<br>- 0.5, 0.5 = Center<br><br>Args:<br> &nbsp; &nbsp;x (float): X position<br> &nbsp; &nbsp;y (float): Y position<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float]|Tuple[int, int]: Pixel position</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-run">
-                                    <code>def run(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Main game loop - CORRECTED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-update_mouse">
-                                    <code>def update_mouse(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update mouse position and button state with proper click detection</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-visibility_change">
-                                    <code>def visibility_change(self: Any, element: UIElement, visible: bool) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-mouse_pos">
-                                    <code>def mouse_pos(self: Any) -> tuple</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-mouse_pressed">
-                                    <code>def mouse_pressed(self: Any) -> list</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-mouse_wheel">
-                                    <code>def mouse_wheel(self: Any) -> float</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_render_opengl_mode">
-                                    <code>def _render_opengl_mode(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Rendering pipeline for OpenGL mode</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_render_ui_elements_opengl">
-                                    <code>def _render_ui_elements_opengl(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render UI elements using OpenGL renderer - SKIP elements with ScrollingFrame parent</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_render_pygame_mode">
-                                    <code>def _render_pygame_mode(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Rendering pipeline for Pygame mode - SIMPLIFIED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_render_ui_elements">
-                                    <code>def _render_ui_elements(self: Any, renderer: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render UI elements - SKIP elements with ScrollingFrame parent</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_render_ui_direct">
-                                    <code>def _render_ui_direct(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render UI directly to screen in Pygame mode</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-render_scene">
-                                    <code>def render_scene(self: Any) -> None</code>
-                        </div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_render_particles_opengl">
-                                    <code>def _render_particles_opengl(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render particles using OpenGL - FIXED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_handle_mouse_scroll">
-                                    <code>def _handle_mouse_scroll(self: Any, event: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Handle mouse wheel scrolling for UI elements - OPTIMIZED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_handle_keyboard_event">
-                                    <code>def _handle_keyboard_event(self: Any, event: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Handle keyboard events for focused UI elements - OPTIMIZED</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_update_ui_elements">
-                                    <code>def _update_ui_elements(self: Any, dt: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update UI elements with improved input handling and event consumption<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-_process_ui_element_tree">
-                                    <code>def _process_ui_element_tree(self: Any, root_element: Any, dt: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Process a UI element and all its children with proper event consumption<br><br>Args:<br> &nbsp; &nbsp;root_element (UIElement): The root element to process<br> &nbsp; &nbsp;dt (float): Delta time in seconds</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-lunaengine-shutdown">
-                                    <code>def shutdown(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Cleanup resources</div></div></div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                renderer.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Renderer Abstraction Layer - Graphics Backend Interface<br><br>LOCATION: lunaengine/core/renderer.py<br><br>DESCRIPTION:<br>Defines the abstract interface for all rendering backends in LunaEngine.<br>Provides a unified API for 2D graphics operations regardless of the underlying<br>graphics technology (Pygame, OpenGL, etc.). Ensures consistent rendering<br>behavior across different platforms and hardware.<br><br>KEY FEATURES:<br>- Abstract base class for renderer implementations<br>- Standardized drawing primitives (shapes, surfaces, lines)<br>- Frame lifecycle management (begin/end frame)<br>- Hardware abstraction for graphics operations<br>- Particle system rendering with dynamic buffers<br>- Scissor testing for clipping regions<br>- Geometry caching for performance optimization<br><br>LIBRARIES USED:<br>- abc: Abstract base class functionality<br>- pygame: Surface and rendering type definitions<br>- typing: Type hints for method signatures<br>- numpy: Array operations for particle systems<br><br>IMPLEMENTATIONS:<br>- PygameRenderer (backend/pygame_backend.py): Software-based fallback<br>- OpenGLRenderer (backend/opengl.py): Hardware-accelerated rendering</div>
-                            </div>
-            <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-renderer">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    Renderer
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Abstract base class for all renderers in LunaEngine.</div></div><small class="text-muted">Inherits from: ABC</small><div class="mt-3"><strong>Attributes:</strong>
-                                <div class="attribute-item ms-3 mt-1">
-                                    <code>camera_position: pygame.math.Vector2 = pygame.math.Vector2(0, 0)</code>
-                                </div>
-                        </div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-max_particles">
-                                    <code>def max_particles(self: Any) -> int</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the maximum number of particles supported by the renderer.<br><br>Returns:<br> &nbsp; &nbsp;int: Maximum number of particles</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-max_particles">
-                                    <code>def max_particles(self: Any, value: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set the maximum number of particles and trigger resize callbacks.<br><br>Args:<br> &nbsp; &nbsp;value (int): New maximum particle count</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-initialize">
-                                    <code>def initialize(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize the renderer and required resources.<br><br>This method should set up the rendering context, create shaders (if applicable),<br>allocate buffers, and prepare the renderer for drawing operations.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-begin_frame">
-                                    <code>def begin_frame(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Begin a new rendering frame.<br><br>This typically involves clearing the screen, resetting render states,<br>and preparing for new drawing commands.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-end_frame">
-                                    <code>def end_frame(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">End the current rendering frame.<br><br>This typically involves swapping buffers, finalizing rendering operations,<br>and preparing for display.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-get_surface">
-                                    <code>def get_surface(self: Any) -> pygame.Surface</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get the main rendering surface.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The current rendering surface</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-set_surface">
-                                    <code>def set_surface(self: Any, surface: pygame.Surface) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set a custom surface for rendering.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Surface to use as render target</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_surface">
-                                    <code>def draw_surface(self: Any, x: int, y: int, surface: pygame.Surface) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a pygame surface at specified coordinates.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): The surface to draw<br> &nbsp; &nbsp;x (int): X coordinate<br> &nbsp; &nbsp;y (int): Y coordinate</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-render_surface">
-                                    <code>def render_surface(self: Any, surface: pygame.Surface, x: int, y: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Alternative method for drawing surfaces (OpenGL compatibility).<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): The surface to draw<br> &nbsp; &nbsp;x (int): X coordinate<br> &nbsp; &nbsp;y (int): Y coordinate</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_rect">
-                                    <code>def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: Tuple[int, int, int, float], fill: bool, anchor_point: Tuple[float, float], border_width: int, surface: Optional[pygame.Surface]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a colored rectangle.<br><br>R,G,B,A = (0~255, 0~255, 0~255, 0.0~1.0)<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate of top-left corner<br> &nbsp; &nbsp;y (int): Y coordinate of top-left corner<br> &nbsp; &nbsp;width (int): Rectangle width<br> &nbsp; &nbsp;height (int): Rectangle height<br> &nbsp; &nbsp;color (Tuple[int, int, int, float]): RGBA color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the rectangle (default: True)<br> &nbsp; &nbsp;anchor_point (Tuple[float, float]): Anchor point for the rectangle<br> &nbsp; &nbsp;border_width (int): Border width for unfilled rectangles (default: 1)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_circle">
-                                    <code>def draw_circle(self: Any, center_x: int, center_y: int, radius: int, color: Tuple[int, int, int], fill: bool, border_width: int, surface: Optional[pygame.Surface]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a circle with specified center, radius and color.<br><br>Args:<br> &nbsp; &nbsp;center_x (int): Center X coordinate<br> &nbsp; &nbsp;center_y (int): Center Y coordinate<br> &nbsp; &nbsp;radius (int): Circle radius<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the circle (default: True)<br> &nbsp; &nbsp;border_width (int): Border width for hollow circles (default: 1)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_line">
-                                    <code>def draw_line(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: Tuple[int, int, int], width: int, surface: Optional[pygame.Surface]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a line between two points with specified width.<br><br>Args:<br> &nbsp; &nbsp;start_x (int): Start X coordinate<br> &nbsp; &nbsp;start_y (int): Start Y coordinate<br> &nbsp; &nbsp;end_x (int): End X coordinate<br> &nbsp; &nbsp;end_y (int): End Y coordinate<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;width (int): Line width (default: 1)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_lines">
-                                    <code>def draw_lines(self: Any, points: List[Tuple[int, int]], color: Tuple[int, int, int], width: int, surface: Optional[pygame.Surface]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw multiple lines beetween the points specified.<br><br>Args:<br> &nbsp; &nbsp;points (List[Tuple[int, int]]): List of (x, y) points defining the lines<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;width (int): Line width (default: 1)<br> &nbsp; &nbsp;surface (Optional[pygame.Surface]): Surface to draw</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_polygon">
-                                    <code>def draw_polygon(self: Any, points: List[Tuple[int, int]], color: Tuple[int, int, int], fill: bool, border_width: int, surface: Optional[pygame.Surface]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw a polygon from a list of points.<br><br>Args:<br> &nbsp; &nbsp;points (List[Tuple[int, int]]): List of (x, y) points defining the polygon<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the polygon (default: True)<br> &nbsp; &nbsp;border_width (int): Border width for hollow polygons (default: 1)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-draw_text">
-                                    <code>def draw_text(self: Any, text: str, x: int, y: int, color: Tuple[int, int, int], font: pygame.font.FontType, surface: Optional[pygame.Surface]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Draw text using pygame font rendering</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-enable_scissor">
-                                    <code>def enable_scissor(self: Any, x: int, y: int, width: int, height: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Enable scissor test for clipping region.<br><br>Args:<br> &nbsp; &nbsp;x (int): X position from left (pygame coordinate system)<br> &nbsp; &nbsp;y (int): Y position from top (pygame coordinate system) &nbsp;<br> &nbsp; &nbsp;width (int): Width of scissor region<br> &nbsp; &nbsp;height (int): Height of scissor region</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-disable_scissor">
-                                    <code>def disable_scissor(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Disable scissor test.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-render_particles">
-                                    <code>def render_particles(self: Any, particle_data: Dict[str, Any], camera: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render particle systems with optimized batch processing.<br><br>Args:<br> &nbsp; &nbsp;particle_data (Dict[str, Any]): Particle system data containing:<br> &nbsp; &nbsp; &nbsp; &nbsp;- positions: Array of particle positions<br> &nbsp; &nbsp; &nbsp; &nbsp;- sizes: Array of particle sizes<br> &nbsp; &nbsp; &nbsp; &nbsp;- colors: Array of particle colors<br> &nbsp; &nbsp; &nbsp; &nbsp;- alphas: Array of particle alpha values<br> &nbsp; &nbsp; &nbsp; &nbsp;- active_count: Number of active particles<br> &nbsp; &nbsp;camera (Any): Camera object for coordinate transformations</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-render_opengl">
-                                    <code>def render_opengl(self: Any, renderer: Any) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">OpenGL-specific rendering method for profiling detection.<br><br>Args:<br> &nbsp; &nbsp;renderer: Renderer instance<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: Always returns True for OpenGL detection</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-cleanup">
-                                    <code>def cleanup(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Clean up rendering resources and shutdown the renderer.<br><br>This method should release all allocated resources, delete shaders,<br>buffers, and perform any necessary cleanup operations.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-blit">
-                                    <code>def blit(self: Any, source_surface: pygame.Surface, dest_rect: pygame.Rect, area: Optional[pygame.Rect], special_flags: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Blit a source surface onto the current render target.<br>Works similarly to pygame.Surface.blit().<br><br>Args:<br> &nbsp; &nbsp;source_surface: Surface to blit from<br> &nbsp; &nbsp;dest_rect: Destination rectangle (x, y, width, height) or (x, y)<br> &nbsp; &nbsp;area: Source area to blit from (None for entire surface)<br> &nbsp; &nbsp;special_flags: Additional blitting flags (currently unused)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-renderer-fill_screen">
-                                    <code>def fill_screen(self: Any, color: Tuple[int, int, int, float]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Fill the screen background with the color<br><br>R,G,B,A = (0~255, 0~255, 0~255, 0.0~1.0)<br><br>Args:<br> &nbsp; &nbsp;color (Tuple[int, int, int, float]): RGBA color tuple</div></div></div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                scene.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Scene Management System - Game State and UI Container<br><br>LOCATION: lunaengine/core/scene.py<br><br>DESCRIPTION:<br>Provides the foundation for organizing game content into manageable states.<br>Each scene represents a distinct game state (menu, gameplay, pause screen)<br>with its own logic, rendering, and UI elements. Supports seamless transitions<br>between scenes with proper lifecycle management.<br><br>KEY FEATURES:<br>- Scene lifecycle hooks (on_enter/on_exit)<br>- UI element management with unique identifiers<br>- Type-based element filtering and retrieval<br>- Scene transition state tracking<br><br>LIBRARIES USED:<br>- abc: Abstract base class for scene interface<br>- typing: Type hints for collections and optional values<br>- TYPE_CHECKING: For circular import resolution<br><br>USAGE PATTERN:<br>1. Inherit from Scene class<br>2. Implement abstract methods (on_enter, on_exit, update, render)<br>3. Add UI elements in on_enter method<br>4. Manage scene-specific logic in update method</div>
-                            </div>
-            <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-scene">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    Scene
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Base class for all game scenes.<br><br>Provides lifecycle methods and UI element management. <br>All custom scenes should inherit from this class.<br><br>Attributes:<br> &nbsp; &nbsp;ui_elements (List[UIElement]): List of UI elements in this scene<br> &nbsp; &nbsp;_initialized (bool): Whether the scene has been initialized<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine</div></div><small class="text-muted">Inherits from: ABC</small><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-__init__">
-                                    <code>def __init__(self: Any, engine: 'LunaEngine', *args: tuple, **kwargs: dict) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize a new scene with empty UI elements list.<br><br>Args:<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-on_enter">
-                                    <code>def on_enter(self: Any, previous_scene: Optional[str]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Called when the scene becomes active.<br><br>Use this to initialize resources, create UI elements, or reset game state.<br><br>Args:<br> &nbsp; &nbsp;previous_scene (str, optional): Name of the previous scene</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-on_exit">
-                                    <code>def on_exit(self: Any, next_scene: Optional[str]) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Called when the scene is being replaced.<br><br>Use this to clean up resources, save game state, or perform transitions.<br><br>Args:<br> &nbsp; &nbsp;next_scene (str, optional): Name of the next scene</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-update">
-                                    <code>def update(self: Any, dt: float) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Update scene logic.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-render">
-                                    <code>def render(self: Any, renderer: OpenGLRenderer | PygameRenderer) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Render the scene.<br><br>Called every frame to draw the scene content.<br><br>Args:<br> &nbsp; &nbsp;renderer: The renderer to use for drawing operations</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-add_ui_element">
-                                    <code>def add_ui_element(self: Any, ui_element: UIElement) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Add a UI element to the scene.<br><br>Args:<br> &nbsp; &nbsp;ui_element (UIElement): The UI element to add to the scene</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-remove_ui_element">
-                                    <code>def remove_ui_element(self: Any, ui_element: UIElement) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Remove a UI element from the scene.<br><br>Args:<br> &nbsp; &nbsp;ui_element (UIElement): The UI element to remove<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if element was found and removed, False otherwise</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-get_ui_element_by_id">
-                                    <code>def get_ui_element_by_id(self: Any, element_id: str) -> Optional[UIElement]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get UI element by its unique ID.<br><br>Args:<br> &nbsp; &nbsp;element_id (str): The unique ID of the element to find<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;UIElement: The found UI element or None if not found</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-get_ui_elements_by_type">
-                                    <code>def get_ui_elements_by_type(self: Any, element_type: type) -> List[UIElement]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get all UI elements of a specific type.<br><br>Args:<br> &nbsp; &nbsp;element_type (type): The class type to filter by (e.g., Button, Label)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[UIElement]: List of UI elements matching the specified type</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-get_ui_elements_by_group">
-                                    <code>def get_ui_elements_by_group(self: Any, group: str) -> List[UIElement]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get all UI elements in the scene.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: All UI elements in the scene</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-toggle_element_group">
-                                    <code>def toggle_element_group(self: Any, group: str, visible: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Toggle the visibility of UI elements in a specific group.<br><br>Args:<br> &nbsp; &nbsp;group (str): The group to toggle</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-get_all_ui_elements">
-                                    <code>def get_all_ui_elements(self: Any) -> List[UIElement]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get all UI elements in the scene.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: All UI elements in the scene</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-has_element_by_id">
-                                    <code>def has_element_by_id(self: Any, element_id: str) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Check if a UI element with the given ID exists in the scene.<br><br>Args:<br> &nbsp; &nbsp;element_id (str): The unique ID of the element to check<br>Returns:<br> &nbsp; &nbsp;bool: True if element exists, False otherwise</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-has_element">
-                                    <code>def has_element(self: Any, element: UIElement) -> bool</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Check if a specific UI element exists in the scene.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to check<br>Returns:<br> &nbsp; &nbsp;bool: True if element exists, False otherwise</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-scene-clear_ui_elements">
-                                    <code>def clear_ui_elements(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Remove all UI elements from the scene.</div></div></div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="file-card mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="bi bi-file-code me-2"></i>
-                                window.py
-                            </h5>
-                        </div>
-                        <div class="card-body">
-        
-                            <div class="alert alert-info docstring-content">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <div class="docstring-text">Window Management System - Display and Surface Control<br><br>LOCATION: lunaengine/core/window.py<br><br>DESCRIPTION:<br>Handles the creation, configuration, and management of the game window.<br>Provides functionality for display mode changes, window properties, and<br>surface management. Supports both windowed and fullscreen modes with<br>dynamic resizing capabilities.<br><br>KEY FEATURES:<br>- Window creation with customizable flags<br>- Fullscreen/windowed mode switching<br>- Dynamic window resizing support<br>- Display surface management<br>- Window property configuration<br><br>LIBRARIES USED:<br>- pygame: Display system, surface creation, and window flags<br>- typing: Type hints for coordinates and optional parameters<br><br>WINDOW FLAGS SUPPORTED:<br>- OPENGL: OpenGL context creation<br>- FULLSCREEN: Fullscreen display mode<br>- RESIZABLE: User-resizable window<br>- DOUBLEBUF: Double buffering for smooth rendering</div>
-                            </div>
-            <h6>Classes:</h6>
-                            <div class="class-item mb-3 p-3 border rounded" id="class-window">
-                                <h6 class="text-success mb-2">
-                                    <i class="bi bi-box me-2"></i>
-                                    Window
-                                </h6>
-                <div class="docstring-content mb-2"><div class="docstring-text">Manages the game window and display settings.<br><br>This class handles window creation, resizing, fullscreen mode,<br>and provides utility methods for window information.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether window is in fullscreen mode<br> &nbsp; &nbsp;resizable (bool): Whether window is resizable<br> &nbsp; &nbsp;surface (pygame.Surface): The window surface</div></div><div class="mt-3"><strong>Methods:</strong>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-__init__">
-                                    <code>def __init__(self: Any, title: str, width: int, height: int, fullscreen: bool, resizable: bool) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Initialize window settings.<br><br>Args:<br> &nbsp; &nbsp;title (str): Window title (default: &quot;LunaEngine&quot;)<br> &nbsp; &nbsp;width (int): Window width (default: 800)<br> &nbsp; &nbsp;height (int): Window height (default: 600)<br> &nbsp; &nbsp;fullscreen (bool): Start in fullscreen mode (default: False)<br> &nbsp; &nbsp;resizable (bool): Allow window resizing (default: True)</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-create">
-                                    <code>def create(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Create the game window with specified settings.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-set_title">
-                                    <code>def set_title(self: Any, title: str) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Set window title.<br><br>Args:<br> &nbsp; &nbsp;title (str): New window title</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-set_size">
-                                    <code>def set_size(self: Any, width: int, height: int) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Resize the window.<br><br>Args:<br> &nbsp; &nbsp;width (int): New window width<br> &nbsp; &nbsp;height (int): New window height</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-toggle_fullscreen">
-                                    <code>def toggle_fullscreen(self: Any) -> None</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Toggle between fullscreen and windowed mode.</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-get_size">
-                                    <code>def get_size(self: Any) -> Tuple[int, int]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get current window size.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int]: (width, height) of the window</div></div></div>
-                                <div class="method-item ms-3 mt-2 p-2 border-start border-3 border-success" id="method-window-get_center">
-                                    <code>def get_center(self: Any) -> Tuple[int, int]</code>
-                        <div class="docstring-content mt-1"><div class="docstring-text">Get window center coordinates.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int]: (x, y) coordinates of window center</div></div></div></div></div>
-                        </div>
-                    </div>
-                </div>
-        
-            </div>
-        </div>
-
-        <!-- Navigation -->
-        <div class="row mt-4">
-            <div class="col-12 text-center">
-                <a href="../index.html" class="btn btn-primary">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Home
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../theme.js"></script>
     
+        <div class="container mt-5">
+            <nav aria-label="breadcrumb"><ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item active">Core</li>
+            </ol></nav>
+            <h1 class="display-4">Core Module</h1>
+            <p class="lead">Core engine systems - Engine, Window, Renderer</p>
+            <hr>
+            <div class="row mt-4">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>audio.py</h5>
+                    <p class="card-text small text-muted">Contains 5 classes and 0 functions.</p>
+                    <a href="audio.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>engine.py</h5>
+                    <p class="card-text small text-muted">Contains 1 classes and 0 functions.</p>
+                    <a href="engine.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>renderer.py</h5>
+                    <p class="card-text small text-muted">Contains 1 classes and 0 functions.</p>
+                    <a href="renderer.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>scene.py</h5>
+                    <p class="card-text small text-muted">Contains 1 classes and 0 functions.</p>
+                    <a href="scene.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-code me-2"></i>window.py</h5>
+                    <p class="card-text small text-muted">Contains 1 classes and 0 functions.</p>
+                    <a href="window.html" class="btn btn-sm btn-outline-primary">View Documentation</a>
+                </div>
+            </div>
+        </div></div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="../theme.js"></script>
+        
     <script>
     // Universal search handler for GitHub Pages structure
     document.addEventListener('DOMContentLoaded', function() {
@@ -799,5 +146,7 @@
     });
     </script>
     
-</body>
-</html>
+    </body>
+
+    </html>
+    

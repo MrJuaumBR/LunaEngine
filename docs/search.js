@@ -44,89 +44,75 @@ class LunaEngineSearch {
         }
     }
 
+    flattenLink(link) {
+        if (!link) return '#';
+        // Remove trailing index.html and replace with .html
+        let flat = link.replace(/\/index\.html$/, '.html');
+        // If it ends in a slash (e.g., 'core/'), convert to 'core.html'
+        if (flat.endsWith('/')) {
+            flat = flat.slice(0, -1) + '.html';
+        }
+        return flat;
+    }
+
     buildSearchIndexFromData(data) {
         this.searchIndex = [];
 
-        // Index modules
-        data.modules.forEach(module => {
-            this.searchIndex.push({
-                type: 'module',
-                title: module.title,
-                description: module.description,
-                module: module.name,
-                link: module.link,
-                content: this.normalizeText(module.title + ' ' + module.description + ' ' + module.name),
-                icon: 'bi-folder',
-                score: 10,
-                meta: `${module.files_count} files, ${module.classes_count} classes`
-            });
-        });
+        const processItem = (item, type, icon, score) => {
+            return {
+                ...item,
+                type: type,
+                link: this.flattenLink(item.link), // Apply flat structure
+                content: this.normalizeText(item.name + ' ' + (item.description || '')),
+                icon: icon,
+                score: score
+            };
+        };
 
+        // Index modules
+        if (data.modules) data.modules.forEach(m => this.searchIndex.push(processItem(m, 'module', 'bi-folder', 10)));
         // Index classes
-        data.classes.forEach(cls => {
-            this.searchIndex.push({
-                type: 'class',
-                title: cls.name,
-                description: cls.description,
-                module: cls.module,
-                file: cls.file,
-                link: cls.link,
-                element_id: cls.element_id,
-                content: this.normalizeText(cls.name + ' ' + cls.description + ' ' + cls.module),
-                icon: 'bi-box',
-                score: 9,
-                meta: `${cls.methods_count} methods`
-            });
-        });
+        if (data.classes) data.classes.forEach(c => this.searchIndex.push(processItem(c, 'class', 'bi-box', 9)));
 
         // Index functions
-        data.functions.forEach(func => {
-            this.searchIndex.push({
-                type: 'function',
-                title: func.name + '()',
-                description: func.description,
-                module: func.module,
-                file: func.file,
-                link: func.link,
-                element_id: func.element_id,
-                content: this.normalizeText(func.name + ' ' + func.description + ' ' + func.module),
-                icon: 'bi-gear',
-                score: 8,
-                meta: 'function'
-            });
-        });
+        if (data.functions) data.functions.forEach(f => this.searchIndex.push(processItem(f, 'function', 'bi-gear', 8)));
 
         // Index methods
-        data.methods.forEach(method => {
-            this.searchIndex.push({
-                type: 'method',
-                title: method.name + '()',
-                description: method.description,
-                module: method.module,
-                class: method.class,
-                link: method.link,
-                element_id: method.element_id,
-                content: this.normalizeText(method.name + ' ' + method.description + ' ' + method.class + ' ' + method.module),
-                icon: 'bi-hammer',
-                score: 7,
-                meta: 'method'
-            });
-        });
+        if (data.methods) data.methods.forEach(m => this.searchIndex.push(processItem(m, 'method', 'bi-hammer', 7)));
 
         // Index pages
-        data.pages.forEach(page => {
-            this.searchIndex.push({
-                type: 'page',
-                title: page.name,
-                description: page.description,
-                module: 'documentation',
-                link: page.link,
-                content: this.normalizeText(page.name + ' ' + page.description),
-                icon: 'bi-file-text',
-                score: 6,
-                meta: page.type
-            });
-        });
+        if (data.pages) data.pages.forEach(p => this.searchIndex.push(processItem(p, 'page', 'bi-file-text', 6)));
+    }
+
+    renderResultItem(item, searchTerm) {
+        const highlightedTitle = this.highlightText(item.title || item.name, searchTerm);
+        
+        return `
+            <div class="col-lg-6 mb-3">
+                <div class="search-result-card card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="result-icon-wrapper me-2" style="color: var(--primary-color)">
+                                <i class="bi ${item.icon} fs-5"></i>
+                            </div>
+                            <h5 class="card-title mb-0">${highlightedTitle}</h5>
+                        </div>
+                        <div class="search-result-meta mb-2">
+                            <span class="badge" style="background-color: var(--primary-color)">${item.module || 'System'}</span>
+                            <span class="badge bg-secondary opacity-75">${item.type}</span>
+                        </div>
+                        <p class="card-text text-muted small">${item.description || ''}</p>
+                        <div class="mt-auto pt-2">
+                            <a href="${item.link}${item.element_id ? '#' + item.element_id : ''}" 
+                               class="btn btn-sm w-100" 
+                               style="border: 1px solid var(--primary-color); color: var(--primary-color);">
+                                Open Documentation
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     buildBasicIndex() {
@@ -210,10 +196,10 @@ class LunaEngineSearch {
         this.currentSearchTerm = searchTerm;
 
         const results = this.searchIndex.filter(item => 
-            this.normalizeText(item.content).includes(this.normalizeText(searchTerm)) ||
-            this.normalizeText(item.title).includes(this.normalizeText(searchTerm)) ||
-            this.normalizeText(item.description).includes(this.normalizeText(searchTerm)) ||
-            this.normalizeText(item.module).includes(this.normalizeText(searchTerm))
+            (item.content && this.normalizeText(item.content).includes(this.normalizeText(searchTerm))) ||
+            (item.title && this.normalizeText(item.title).includes(this.normalizeText(searchTerm))) ||
+            (item.description && this.normalizeText(item.description).includes(this.normalizeText(searchTerm))) ||
+            (item.module && this.normalizeText(item.module).includes(this.normalizeText(searchTerm)))
         );
 
         this.displayResults(results, searchTerm);
@@ -402,19 +388,26 @@ class LunaEngineSearch {
     addResultClickHandlers() {
         document.querySelectorAll('.view-result').forEach(button => {
             button.addEventListener('click', (e) => {
-                const link = e.target.getAttribute('data-link');
-                const elementId = e.target.getAttribute('data-element-id');
-                const searchTerm = e.target.getAttribute('data-search-term');
+                const btn = e.currentTarget; // Garante o elemento correto
+                const link = btn.getAttribute('data-link');
+                const elementId = btn.getAttribute('data-element-id');
+                const searchTerm = btn.getAttribute('data-search-term');
                 
-                // Store search term for highlighting on target page
                 if (searchTerm) {
                     sessionStorage.setItem('lunaSearchTerm', searchTerm);
                     sessionStorage.setItem('lunaElementId', elementId);
                 }
                 
-                // Remove any existing search parameters from the link
-                const cleanLink = link.split('?')[0];
-                window.location.href = cleanLink;
+                // Print module name
+                // 1. Limpa o link de index.html para o formato flat (ex: core.html)
+                let cleanLink = link.replace(/\/index\.html$/, '.html');
+                
+                // 2. Adiciona o ID (âncora) diretamente na URL para o navegador pular para a função
+                if (elementId) {
+                    window.location.href = `${cleanLink}#${elementId}`;
+                } else {
+                    window.location.href = cleanLink;
+                }
             });
         });
     }
@@ -448,7 +441,8 @@ class LunaEngineSearch {
 
     // Utility functions
     normalizeText(text) {
-        return text.toLowerCase().trim();
+        if (!text) return ''; // Retorna string vazia se o texto for nulo ou indefinido
+        return String(text).toLowerCase().trim();
     }
 
     highlightText(text, searchTerm) {
@@ -503,6 +497,7 @@ if (document.readyState === 'loading') {
 
 // Handle search highlighting on target pages
 document.addEventListener('DOMContentLoaded', function() {
+
     const searchTerm = sessionStorage.getItem('lunaSearchTerm');
     const elementId = sessionStorage.getItem('lunaElementId');
     
