@@ -249,9 +249,25 @@ def get_code_statistics():
             content = content.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             return content
         except Exception as e:
-            print(f"⚠️  Error reading CODE_STATISTICS.md: {e}")
+            print(f"Error reading CODE_STATISTICS.md: {e}")
             return "Statistics not available"
     return "Statistics file not found"
+
+def get_about_md():
+    """Reads and returns the raw about.md content with basic HTML escaping"""
+    file_path = './about.md'
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # Basic HTML escaping to prevent issues
+            content = content.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+            return content
+        except Exception as e:
+            print(f"Error reading about.md: {e}")
+            return "About content not available"
+    return "About file not found"
 
 def get_contrast_color(hex_color):
     hex_color = hex_color.lstrip('#')
@@ -346,6 +362,32 @@ def get_search_script():
     });
     </script>
     """
+    
+def get_footer_html():
+    return f"""
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-5 py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Engine for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on {datetime.now().strftime('%Y-%m-%d %H:%M')}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    {get_search_script()}
+    """
 
 def generate_documentation():
     """Main entry point for HTML generation."""
@@ -358,6 +400,7 @@ def generate_documentation():
     generate_search_page(project, search_data)
     generate_quick_start()
     generate_contact_page()
+    generate_about_page(project)
     
     # Process modules and their internal files
     for module_name, module_info in project['modules'].items():
@@ -444,6 +487,9 @@ def generate_main_page(project):
                                 </a>
                                 <a href="contact.html" class="btn btn-outline-light btn-sm">
                                     <i class="bi bi-people me-1"></i>Community
+                                </a>
+                                <a href="about.html" class="btn btn-outline-light btn-sm">
+                                    <i class="bi bi-info-circle me-1"></i>About
                                 </a>
                             </div>
                         </div>
@@ -536,35 +582,57 @@ def generate_main_page(project):
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white mt-5 py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
-                    <p class="text-white-50">2D Game Engine for Python</p>
-                </div>
-                <div class="col-md-6 text-end">
-                    <p class="text-white-50">
-                        <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on {datetime.now().strftime('%Y-%m-%d %H:%M')}
-                    </p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
-    {get_search_script()}
+    {get_footer_html()}
 </body>
 </html>"""
     
     with open("docs/index.html", "w", encoding="utf-8") as f:
         f.write(html)
         
-def     generate_module_index(module_name, module_info):
+def generate_about_page(project_info):
+    html = f"""
+    <!DOCTYPE html>
+    <html lang="en" data-theme="light">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>LunaEngine - Documentation</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+            <link href="theme.css" rel="stylesheet">
+        </head>
+        <body>
+            {get_navbar_html()}
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="bi bi-info-circle-fill"></i>About</h5>
+                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#aboutcollapse" aria-expanded="false" aria-controls="aboutcollapse">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse show" id="aboutcollapse" style="height: 120vw;">
+                                <div class="card-body" style="height: 100%;">
+                                    <div class="code-stats-content markdown-content" style="max-height: 100%;">
+                                        {get_about_md()}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {get_footer_html()}
+        </body>
+    </html>
+    """
+    
+    with open("docs/about.html", "w", encoding="utf-8") as f:
+        f.write(html)
+        
+def generate_module_index(module_name, module_info):
     """Create an index.html for a specific module folder."""
     module_dir = f"docs/{module_name}"
     os.makedirs(module_dir, exist_ok=True)
@@ -706,11 +774,7 @@ def generate_file_page(module_name, file_info):
         </div>
     </div>
 
-    <footer class="bg-dark text-white mt-5 py-4">
-        <div class="container text-center">
-            <p class="mb-0 text-white-50 small">LunaEngine Documentation &copy; {datetime.now().year}</p>
-        </div>
-    </footer>
+    {get_footer_html()}
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{path_prefix}theme.js"></script>
@@ -1334,7 +1398,7 @@ def generate_contact_page():
                     <div class="card-body">
                         <p>We welcome contributions! Here's how you can help:</p>
                         <ul>
-                            <li>Report bugs and issues on GitHub</li>
+                            <li>Report bugs and issues on GitHub/Discord</li>
                             <li>Suggest new features and improvements</li>
                             <li>Submit pull requests with bug fixes</li>
                             <li>Improve documentation and examples</li>
@@ -1349,6 +1413,9 @@ def generate_contact_page():
                     </a>
                     <a href="quick-start.html" class="btn btn-outline-primary">
                         <i class="bi bi-play-circle me-2"></i>Quick Start
+                    </a>
+                    <a href="about.html" class="btn btn-outline-primary">
+                        <i class="bi bi-info-circle me-2"></i>About
                     </a>
                 </div>
             </div>

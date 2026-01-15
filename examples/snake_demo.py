@@ -5,7 +5,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from lunaengine.core import Scene, LunaEngine # Core Items
 from lunaengine.ui.elements import * # UI Elements
-from lunaengine.backend.pygame_backend import PygameRenderer # Pygame Renderer
 from lunaengine.graphics.particles import ParticleSystem, ParticleConfig, ExitPoint, PhysicsType  # Adicionar importações de partículas
 import pygame
 
@@ -83,7 +82,7 @@ class MainMenuScene(Scene):
     def update(self, dt):
         pass
             
-    def render(self, renderer: PygameRenderer):
+    def render(self, renderer:Renderer):
         # Draw background
         renderer.draw_rect(0, 0, 1024, 720, ThemeManager.get_theme(ThemeManager.get_current_theme()).background)
         
@@ -197,8 +196,8 @@ class InGameScene(Scene):
     def emit_apple_particles(self):
         """Emit flare particles around the apple"""
         if hasattr(self, 'apple'):
-            apple_x = self.apple[0] * self.cell_size + self.cell_size // 2
-            apple_y = self.apple[1] * self.cell_size + self.cell_size // 2
+            apple_x = self.apple[0] * self.cell_size
+            apple_y = self.apple[1] * self.cell_size
             
             # Continuous glow effect
             self.particle_system.emit(
@@ -277,8 +276,8 @@ class InGameScene(Scene):
     def emit_apple_eaten_particles(self):
         """Emit a special particle burst when apple is eaten"""
         if hasattr(self, 'apple'):
-            apple_x = self.apple[0] * self.cell_size + self.cell_size // 2
-            apple_y = self.apple[1] * self.cell_size + self.cell_size // 2
+            apple_x = self.apple[0] * self.cell_size
+            apple_y = self.apple[1] * self.cell_size
             
             # Big burst when apple is eaten
             self.particle_system.emit(
@@ -325,8 +324,9 @@ class InGameScene(Scene):
         if "MainMenu" in self.engine.scenes:
             self.snake_color = self.engine.scenes["MainMenu"].SnakeColor
     
-    def render(self, renderer: PygameRenderer):
+    def render(self, renderer: Renderer):
         # Draw background
+        
         current_theme = ThemeManager.get_theme(ThemeManager.get_current_theme())
         renderer.draw_rect(0, 0, 1024, 720, current_theme.background)
         
@@ -362,10 +362,6 @@ class InGameScene(Scene):
             # Draw border around segments
             border_color = tuple(max(0, c - 40) for c in color)
             renderer.draw_rect(segment_x, segment_y, self.cell_size, self.cell_size, border_color, fill=False)
-        
-        # Render particle system
-        if not self.engine.use_opengl:
-            self.particle_system.render(renderer.get_surface())
         
         # Draw game over screen
         if self.game_over:
