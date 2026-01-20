@@ -138,21 +138,23 @@ class Renderer(ABC):
         
     @abstractmethod
     def draw_rect(self, x: int, y: int, width: int, height: int, 
-                  color: Tuple[int, int, int, float], fill: bool = True, anchor_point: Tuple[float, float] = (0.0, 0.0), border_width: int = 1, surface: Optional[pygame.Surface] = None):
+                color: Tuple[int, int, int, float], fill: bool = True, 
+                anchor_point: Tuple[float, float] = (0.0, 0.0), 
+                border_width: int = 1, surface: Optional[pygame.Surface] = None,
+                corner_radius: Tuple[int, int, int, int]|int = 0):
         """
-        Draw a colored rectangle.
-        
-        R,G,B,A = (0~255, 0~255, 0~255, 0.0~1.0)
+        Draw a colored rectangle with optional rounded corners.
         
         Args:
-            x (int): X coordinate of top-left corner
-            y (int): Y coordinate of top-left corner
+            x (int): X coordinate
+            y (int): Y coordinate
             width (int): Rectangle width
             height (int): Rectangle height
             color (Tuple[int, int, int, float]): RGBA color tuple
             fill (bool): Whether to fill the rectangle (default: True)
-            anchor_point (Tuple[float, float]): Anchor point for the rectangle
-            border_width (int): Border width for unfilled rectangles (default: 1)
+            anchor_point (Tuple[float, float]): Anchor point (default: (0.0, 0.0))
+            border_width (int): Border width for hollow rectangles (default: 1)
+            corner_radius: Radius of rounded corners in pixels (default: 0 = sharp corners)
         """
         pass
         
@@ -216,7 +218,7 @@ class Renderer(ABC):
         pass
     
     @abstractmethod
-    def draw_text(self, text:str, x:int, y:int, color:Tuple[int, int, int], font:pygame.font.FontType, surface: Optional[pygame.Surface] = None):
+    def draw_text(self, text:str, x:int, y:int, color:Tuple[int, int, int], font:pygame.font.FontType, surface: Optional[pygame.Surface] = None, anchor_point: tuple = (0.0, 0.0)):
         """
         Draw text using pygame font rendering
         """
@@ -255,19 +257,6 @@ class Renderer(ABC):
                 - alphas: Array of particle alpha values
                 - active_count: Number of active particles
             camera (Any): Camera object for coordinate transformations
-        """
-        pass
-    
-    @abstractmethod
-    def render_opengl(self, renderer) -> bool:
-        """
-        OpenGL-specific rendering method for profiling detection.
-        
-        Args:
-            renderer: Renderer instance
-            
-        Returns:
-            bool: Always returns True for OpenGL detection
         """
         pass
     
@@ -317,3 +306,27 @@ class Renderer(ABC):
         
         win_w, win_h = pygame.display.get_window_size()
         self.draw_rect(0,0,win_w, win_h, (r, g, b, a), fill=True, surface=self.screen)
+        
+    def resize(self, surface: pygame.Surface, width: int, height: int):
+        """
+        Resize a surface
+        
+        Args:
+            surface (pygame.Surface): Surface to resize
+            width (int): New width
+            height (int): New height
+        """
+        return pygame.transform.scale(surface, (width, height))
+    
+    
+    def scale(self, surface:pygame.Surface, width:float, height:float):
+        """
+        Scale a surface by a percentage
+        
+        Args:
+            surface (pygame.Surface): Surface to scale
+            width (float): Percentage to scale width
+            height (float): Percentage to scale height
+        """
+        size = surface.get_size()
+        return self.resize(surface, int(size[0] * width), int(size[1] * height))

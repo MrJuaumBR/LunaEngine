@@ -207,6 +207,19 @@ class Tween:
         
         return self
     
+    def set_delay(self, delay: float) -> 'Tween':
+        """
+        Add a delay to the animation.
+        
+        Args:
+            delay: Delay in seconds
+            
+        Returns:
+            Tween: Self for method chaining
+        """
+        self.duration += delay
+        return self
+    
     def play(self) -> 'Tween':
         """
         Start playing the animation.
@@ -238,8 +251,6 @@ class Tween:
             # Fire start callback
             if self.on_start:
                 self.on_start()
-            
-            print(f"Tween started: duration={self.duration}, loops={self.loops}, yoyo={self.yoyo}")
         
         return self
     
@@ -858,8 +869,6 @@ class AnimationHandler:
             self._animations[name].stop()
         
         self._animations[name] = tween
-        
-        print(f"AnimationHandler added: {name}, auto_play={auto_play}")
         
         if auto_play:
             tween.play()

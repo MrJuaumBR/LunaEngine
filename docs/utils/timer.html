@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>timer.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Utils</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Utils</a></li><li class="breadcrumb-item active">timer.py</li></ol></nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>timer.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">Timer system for LunaEngine<br><br>LOCATION: lunaengine/utils/timer.py<br><br>This module provides a timer management system for the LunaEngine framework.<br>It allows creating, managing, and triggering timers with callbacks.</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-timecounter">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class TimeCounter</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Represents a single timer instance.<br><br>Attributes:<br> &nbsp; &nbsp;name (str): Unique identifier for the timer<br> &nbsp; &nbsp;start_time (float): When the timer was started (in seconds since epoch)<br> &nbsp; &nbsp;duration (float): How long the timer runs (in seconds)<br> &nbsp; &nbsp;callback (Optional[Callable]): Function to call when timer completes<br> &nbsp; &nbsp;callback_args (tuple): Arguments to pass to the callback function<br> &nbsp; &nbsp;callback_kwargs (dict): Keyword arguments to pass to the callback function<br> &nbsp; &nbsp;repeats (bool): Whether the timer should restart after completion<br> &nbsp; &nbsp;paused (bool): Whether the timer is currently paused<br> &nbsp; &nbsp;paused_time (float): How long the timer has been paused<br> &nbsp; &nbsp;destroyed (bool): Whether the timer has been marked for removal</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>name: str = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>start_time: float = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>duration: float = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>callback: Optional[Callable] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>callback_args: tuple = field(default_factory=tuple)</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>callback_kwargs: dict = field(default_factory=dict)</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>repeats: bool = False</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>paused: bool = False</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>paused_time: float = 0.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>destroyed: bool = False</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-timer">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Timer</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Main timer manager for LunaEngine.<br><br>Manages multiple timers, updates them, and triggers callbacks.<br>Should be updated every frame in the game loop via update() method.<br><br>Example:<br> &nbsp; &nbsp;&gt;&gt;&gt; timer = Timer()<br> &nbsp; &nbsp;&gt;&gt;&gt; timer.add(&quot;enemy_spawn&quot;, 2.0, spawn_enemy, repeats=True)<br> &nbsp; &nbsp;&gt;&gt;&gt; # In game loop:<br> &nbsp; &nbsp;&gt;&gt;&gt; while running:<br> &nbsp; &nbsp;&gt;&gt;&gt; &nbsp; &nbsp; timer.update()</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Initialize a new Timer manager with empty timer dictionary.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-add">
+                <code class="fs-6 fw-bold text-color-title">def add(self: Any, name: str, duration: float, callback: Optional[Callable] = None, callback_args: tuple = (), callback_kwargs: dict = None, repeats: bool = False) -> bool</code>
+                <div class="mt-2 text-muted small">Add a new timer to the system.<br><br>Args:<br> &nbsp; &nbsp;name (str): Unique identifier for the timer<br> &nbsp; &nbsp;duration (float): Timer duration in seconds<br> &nbsp; &nbsp;callback (Optional[Callable]): Function to call when timer completes<br> &nbsp; &nbsp;callback_args (tuple): Arguments to pass to the callback function<br> &nbsp; &nbsp;callback_kwargs (dict): Keyword arguments to pass to the callback function<br> &nbsp; &nbsp;repeats (bool): Whether the timer should restart after completion<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if timer was added, False if a timer with this name already exists<br> &nbsp; &nbsp;<br>Example:<br> &nbsp; &nbsp;&gt;&gt;&gt; timer.add(&quot;powerup&quot;, 10.0, remove_powerup, repeats=False)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-add_timer_to">
+                <code class="fs-6 fw-bold text-color-title">def add_timer_to(self: Any, duration: float, callback: Callable, callback_args: tuple = (), callback_kwargs: dict = None, repeats: bool = False) -> str</code>
+                <div class="mt-2 text-muted small">Add a timer with an auto-generated name and return its name.<br><br>Args:<br> &nbsp; &nbsp;duration (float): Timer duration in seconds<br> &nbsp; &nbsp;callback (Callable): Function to call when timer completes<br> &nbsp; &nbsp;callback_args (tuple): Arguments to pass to the callback function<br> &nbsp; &nbsp;callback_kwargs (dict): Keyword arguments to pass to the callback function<br> &nbsp; &nbsp;repeats (bool): Whether the timer should restart after completion<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;str: The auto-generated name of the timer<br> &nbsp; &nbsp;<br>Example:<br> &nbsp; &nbsp;&gt;&gt;&gt; timer_id = timer.add_timer_to(5.0, lambda: print(&quot;5 seconds passed&quot;))</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-remove">
+                <code class="fs-6 fw-bold text-color-title">def remove(self: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Remove a timer from the system.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the timer to remove<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if timer was removed, False if timer didn&#x27;t exist</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-destroy">
+                <code class="fs-6 fw-bold text-color-title">def destroy(self: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Mark a timer for destruction (will be removed on next update).<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the timer to destroy<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if timer was marked for destruction, False if timer didn&#x27;t exist</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-pause">
+                <code class="fs-6 fw-bold text-color-title">def pause(self: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Pause a running timer.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the timer to pause<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if timer was paused, False if timer didn&#x27;t exist or was already paused</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-resume">
+                <code class="fs-6 fw-bold text-color-title">def resume(self: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Resume a paused timer.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the timer to resume<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if timer was resumed, False if timer didn&#x27;t exist or wasn&#x27;t paused</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-reset">
+                <code class="fs-6 fw-bold text-color-title">def reset(self: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Reset a timer to start counting from now.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the timer to reset<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if timer was reset, False if timer didn&#x27;t exist</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-get_elapsed">
+                <code class="fs-6 fw-bold text-color-title">def get_elapsed(self: Any, name: str) -> Optional[float]</code>
+                <div class="mt-2 text-muted small">Get elapsed time for a timer.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the timer<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[float]: Elapsed time in seconds, or None if timer doesn&#x27;t exist</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-get_remaining">
+                <code class="fs-6 fw-bold text-color-title">def get_remaining(self: Any, name: str) -> Optional[float]</code>
+                <div class="mt-2 text-muted small">Get remaining time for a timer.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the timer<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[float]: Remaining time in seconds, or None if timer doesn&#x27;t exist</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-is_done">
+                <code class="fs-6 fw-bold text-color-title">def is_done(self: Any, name: str) -> Optional[bool]</code>
+                <div class="mt-2 text-muted small">Check if a timer has completed.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the timer<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[bool]: True if timer is done, False if still running, None if timer doesn&#x27;t exist</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-exists">
+                <code class="fs-6 fw-bold text-color-title">def exists(self: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Check if a timer exists.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the timer<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if timer exists</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-is_paused">
+                <code class="fs-6 fw-bold text-color-title">def is_paused(self: Any, name: str) -> Optional[bool]</code>
+                <div class="mt-2 text-muted small">Check if a timer is paused.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the timer<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[bool]: True if timer is paused, False if running, None if timer doesn&#x27;t exist</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-clear">
+                <code class="fs-6 fw-bold text-color-title">def clear(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Remove all timers from the system.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any) -> List[str]</code>
+                <div class="mt-2 text-muted small">Update all timers. Should be called every frame in the game loop.<br><br>Checks all timers for completion, triggers callbacks, and removes destroyed timers.<br><br>Returns:<br> &nbsp; &nbsp;List[str]: Names of timers that completed during this update<br> &nbsp; &nbsp;<br>Example:<br> &nbsp; &nbsp;&gt;&gt;&gt; completed_timers = timer.update()<br> &nbsp; &nbsp;&gt;&gt;&gt; for timer_name in completed_timers:<br> &nbsp; &nbsp;&gt;&gt;&gt; &nbsp; &nbsp; print(f&quot;Timer {timer_name} completed!&quot;)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-wait_for_end">
+                <code class="fs-6 fw-bold text-color-title">def wait_for_end(self: Any, name: str, timeout: float = 0.0) -> bool</code>
+                <div class="mt-2 text-muted small">Block until a timer completes.<br><br>Warning: This blocks the main thread! Use sparingly.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the timer to wait for<br> &nbsp; &nbsp;timeout (float): Maximum time to wait in seconds (0 = no timeout)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if timer completed, False if timeout reached or timer doesn&#x27;t exist<br> &nbsp; &nbsp;<br>Example:<br> &nbsp; &nbsp;&gt;&gt;&gt; timer.add(&quot;wait_test&quot;, 3.0)<br> &nbsp; &nbsp;&gt;&gt;&gt; timer.wait_for_end(&quot;wait_test&quot;) &nbsp;# Blocks for 3 seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-get_all_timers">
+                <code class="fs-6 fw-bold text-color-title">def get_all_timers(self: Any) -> List[str]</code>
+                <div class="mt-2 text-muted small">Get names of all active timers.<br><br>Returns:<br> &nbsp; &nbsp;List[str]: List of timer names</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-get_timer_count">
+                <code class="fs-6 fw-bold text-color-title">def get_timer_count(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">Get the number of active timers.<br><br>Returns:<br> &nbsp; &nbsp;int: Number of timers</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
+                
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-get_global_timer">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def get_global_timer() -> Timer</code>
+                    <p class="mt-2 mb-0 text-muted">Get or create the global singleton timer instance.<br><br>Returns:<br> &nbsp; &nbsp;Timer: Global timer instance<br> &nbsp; &nbsp;<br>Example:<br> &nbsp; &nbsp;&gt;&gt;&gt; from lunaengine.utils.timer import get_global_timer<br> &nbsp; &nbsp;&gt;&gt;&gt; timer = get_global_timer()<br> &nbsp; &nbsp;&gt;&gt;&gt; timer.add(&quot;global_timer&quot;, 1.0, lambda: print(&quot;Global timer fired!&quot;))</p>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Utils Module
+            </a>
+        </div>
+    </div>
+
+    
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-01-20 14:14
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    // Universal search handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // Adjust path based on current location
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            searchIcon.addEventListener('click', performSearch);
+            
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

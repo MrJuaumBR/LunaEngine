@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Demo - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Examples Hub</a></li><li class="breadcrumb-item active">Performance Demo</li></ol></nav>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Performance Demo</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>performance_demo.py</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
+
+from lunaengine.core import LunaEngine, Scene
+from lunaengine.ui import TextLabel, Button, Slider, Dropdown
+
+class PerformanceDemoScene(Scene):
+    
+    def on_enter(self, previous_scene = None):
+        return super().on_enter(previous_scene)
+    
+    def on_exit(self, next_scene = None):
+        return super().on_exit(next_scene)
+    
+    def __init__(self, engine: LunaEngine):
+        super().__init__(engine)
+        self.test_count = 100  # Number of test elements
+        self.show_test_elements = False
+
+        # Hardware Info Display
+        hardware_info = self.engine.get_hardware_info()
+        hardware_text = TextLabel(20, 50, f&quot;System: {hardware_info.get(&#x27;system&#x27;, &#x27;Unknown&#x27;)} | CPU: {hardware_info.get(&#x27;cpu_cores&#x27;, &#x27;?&#x27;)} cores | RAM: {hardware_info.get(&#x27;memory_gb&#x27;, &#x27;Unknown&#x27;)}&quot;, 
+                                16, (200, 200, 255))
+        self.ui_elements.append(hardware_text)
+        
+        # FPS Display
+        self.ui_elements.append(TextLabel(20, 80, &quot;Performance Statistics:&quot;, 24, (255, 255, 0)))
+        
+        self.fps_current = TextLabel(20, 110, &quot;Current FPS: --&quot;, 18, (100, 255, 100))
+        self.ui_elements.append(self.fps_current)
+        
+        self.fps_avg = TextLabel(20, 135, &quot;Average FPS: --&quot;, 16, (200, 200, 255))
+        self.ui_elements.append(self.fps_avg)
+        
+        self.fps_lows = TextLabel(20, 155, &quot;1% Low: -- | 0.1% Low: --&quot;, 16, (255, 150, 100))
+        self.ui_elements.append(self.fps_lows)
+        
+        self.frame_time = TextLabel(20, 175, &quot;Frame Time: -- ms&quot;, 16, (200, 150, 255))
+        self.ui_elements.append(self.frame_time)
+        
+        # Performance Controls
+        self.toggle_btn = Button(20, 210, 200, 40, &quot;Toggle Test Elements&quot;)
+        self.toggle_btn.set_on_click(self.toggle_test_elements)
+        self.ui_elements.append(self.toggle_btn)
+        
+        self.count_slider = Slider(20, 270, 200, 30, 10, 1000, 100)
+        self.count_slider.on_value_changed = self.change_test_count
+        self.ui_elements.append(self.count_slider)
+        
+        self.count_text = TextLabel(20, 325, f&quot;Test Elements: {self.test_count}&quot;, 16, (150, 200, 150))
+        self.ui_elements.append(self.count_text)
+        
+        # Instructions
+        instructions = [
+            &quot;Performance Monitoring Features:&quot;,
+            &quot;• Optimized FPS tracking with minimal overhead&quot;,
+            &quot;• Hardware detection (Windows/Linux)&quot;,
+            &quot;• Automatic garbage collection&quot;, 
+            &quot;• 1% and 0.1% low FPS tracking&quot;,
+            &quot;• Toggle test elements to see performance impact&quot;
+        ]
+        
+        for i, instruction in enumerate(instructions):
+            instruction_text = TextLabel(400, 80 + i * 25, instruction, 16, (150, 200, 150))
+            self.ui_elements.append(instruction_text)
+        
+    def update(self, dt):
+        self.update_ui()
+        
+    def update_ui(self):
+        fps_stats = self.engine.get_fps_stats()
+        
+        self.fps_current.set_text(f&quot;Current FPS: {fps_stats[&#x27;current_fps&#x27;]:.1f}&quot;)
+        self.fps_avg.set_text(f&quot;Average FPS: {fps_stats[&#x27;average_fps&#x27;]:.1f}&quot;)
+        self.fps_lows.set_text(f&quot;1% Low: {fps_stats[&#x27;percentile_1&#x27;]:.1f} | 0.1% Low: {fps_stats[&#x27;percentile_01&#x27;]:.1f}&quot;)
+        self.frame_time.set_text(f&quot;Frame Time: {fps_stats[&#x27;frame_time_ms&#x27;]:.2f} ms&quot;)
+        self.count_text.set_text(f&quot;Test Elements: {self.test_count}&quot;)
+    
+    def toggle_test_elements(self):
+        self.show_test_elements = not self.show_test_elements
+        print(f&quot;Test elements: {&#x27;ON&#x27; if self.show_test_elements else &#x27;OFF&#x27;}&quot;)
+        
+    def change_test_count(self, value):
+        self.test_count = int(value)
+        print(f&quot;Test elements: {self.test_count}&quot;)
+        
+    def render(self, renderer):
+        # Draw background
+        renderer.draw_rect(0, 0, 800, 600, (20, 20, 40))
+        
+        # Draw header
+        renderer.draw_rect(0, 0, 800, 40, (40, 40, 60))
+        
+        # Draw test elements if enabled (for performance testing)
+        if self.show_test_elements:
+            for i in range(self.test_count):
+                x = (i * 10) % 700
+                y = 400 + ((i * 15) // 700) * 20
+                renderer.draw_rect(x, y, 8, 8, (100, 100, 200))
+
+def main():
+    engine = LunaEngine(&quot;LunaEngine - Performance Demo&quot;, 800, 600, False)
+    engine.fps = 240
+    
+    
+    engine.add_scene(&quot;main&quot;, PerformanceDemoScene)
+    engine.set_scene(&quot;main&quot;)
+    
+    print(&quot;=== Performance Demo ===&quot;)
+    print(&quot;Features:&quot;)
+    print(&quot;✅ Fixed button click handling&quot;)
+    print(&quot;✅ Optimized FPS tracking&quot;) 
+    print(&quot;✅ Hardware detection&quot;)
+    print(&quot;✅ Garbage collection&quot;)
+    print(&quot;✅ Minimal performance overhead&quot;)
+    print(&quot;\nStarting demo...&quot;)
+    engine.run()
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About This Example</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>No description provided</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="performance_demo.py" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples Hub
+                            </a>
+                            <a href="../quick-start.html" class="btn btn-outline-success">
+                                <i class="bi bi-play-circle me-2"></i>Quick Start Guide
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-01-20 14:14
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    // Universal search handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // Adjust path based on current location
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            searchIcon.addEventListener('click', performSearch);
+            
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

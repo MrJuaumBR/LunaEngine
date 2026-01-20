@@ -39,7 +39,7 @@ Yeah, the engine has hundreds of problems that i try to fix with every update—
 
 But through some magic, I’ve added more docstrings to this project than in my entire life using Python. Seriously.
 
-So, what do you need to know? In Luna, we have six main pillars—the folders: *backend* , *core* , *graphics* , *tools* , *ui* , and *utils* . Each one basically handles its own functions. Don’t worry about *tools* —it’s mostly for my daily development of Luna. I don’t think you’ll need it.
+So, what do you need to know? In Luna, we have six main pillars—the folders: *backend* , *core* , *graphics* , *tools* , *ui* , *misc* and *utils* . Each one basically handles its own functions. Don’t worry about *tools* —it’s mostly for my daily development of Luna. I don’t think you’ll need it.
 
 ## Documentation
 

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>notifications.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Ui</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Ui</a></li><li class="breadcrumb-item active">notifications.py</li></ol></nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>notifications.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">notifications.py - Advanced Notification System for LunaEngine<br><br>A sophisticated notification system with queue management, multiple positioning options,<br>animations, and theme integration.</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-notificationtype">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class NotificationType</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Types of notifications with different visual styles.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>SUCCESS: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>INFO: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>WARNING: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>ERROR: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>CUSTOM: Any = auto()</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-notificationposition">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class NotificationPosition</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Pre-defined notification positions.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>TOP_LEFT: Any = 'top_left'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>TOP_CENTER: Any = 'top_center'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>TOP_RIGHT: Any = 'top_right'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>CENTER_LEFT: Any = 'center_left'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>CENTER: Any = 'center'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>CENTER_RIGHT: Any = 'center_right'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>BOTTOM_LEFT: Any = 'bottom_left'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>BOTTOM_CENTER: Any = 'bottom_center'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>BOTTOM_RIGHT: Any = 'bottom_right'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>CUSTOM: Any = 'custom'</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-notificationstyle">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class NotificationStyle</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Style configuration for different notification types.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationstyle-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, bg_color: Tuple[int, int, int], border_color: Tuple[int, int, int], text_color: Tuple[int, int, int], icon_type: Optional[Icons] = None, duration: float = 5.0, show_icon: bool = True) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize notification style.<br><br>Args:<br> &nbsp; &nbsp;bg_color: Background color (RGB)<br> &nbsp; &nbsp;border_color: Border color (RGB)<br> &nbsp; &nbsp;text_color: Text color (RGB)<br> &nbsp; &nbsp;icon_type: Optional icon type from Icons enum<br> &nbsp; &nbsp;duration: Default duration in seconds<br> &nbsp; &nbsp;show_icon: Whether to show icon</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-notificationconfig">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class NotificationConfig</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationconfig-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, text: str, notification_type: NotificationType = NotificationType.INFO, duration: Optional[float] = None, position: Union[NotificationPosition, Tuple[int, int]] = NotificationPosition.TOP_RIGHT, width: int = 300, height: int = 60, show_close_button: bool = True, auto_close: bool = True, animation_speed: float = 0.3, show_progress_bar: bool = False, on_close: Optional[Callable] = None, on_click: Optional[Callable] = None, metadata: Any = None, custom_icon: Optional[Icons] = None) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize notification configuration.<br><br>Args:<br> &nbsp; &nbsp;text: Notification text<br> &nbsp; &nbsp;notification_type: Type of notification<br> &nbsp; &nbsp;duration: Display duration in seconds (None for default based on type)<br> &nbsp; &nbsp;position: Position (NotificationPosition enum or custom (x, y) tuple)<br> &nbsp; &nbsp;width: Width of notification<br> &nbsp; &nbsp;height: Height of notification<br> &nbsp; &nbsp;show_close_button: Whether to show close button<br> &nbsp; &nbsp;auto_close: Whether notification auto-closes after duration<br> &nbsp; &nbsp;animation_speed: Speed of slide/fade animations in seconds<br> &nbsp; &nbsp;show_progress_bar: Whether to show progress bar for remaining time<br> &nbsp; &nbsp;on_close: Callback when notification is closed<br> &nbsp; &nbsp;on_click: Callback when notification is clicked<br> &nbsp; &nbsp;metadata: Optional metadata attached to notification<br> &nbsp; &nbsp;custom_icon: Optional custom icon</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-notification">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Notification</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Single notification element with advanced positioning and animations.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>STYLES: Any = {NotificationType.SUCCESS: NotificationStyle(bg_color=(46, 204, 113), border_color=(39, 174, 96), text_color=(255, 255, 255), icon_type=Icons.SUCCESS, duration=3.0, show_icon=True), NotificationType.INFO: NotificationStyle(bg_color=(52, 152, 219), border_color=(41, 128, 185), text_color=(255, 255, 255), icon_type=Icons.INFO, duration=5.0, show_icon=True), NotificationType.WARNING: NotificationStyle(bg_color=(241, 196, 15), border_color=(243, 156, 18), text_color=(0, 0, 0), icon_type=Icons.WARN, duration=7.0, show_icon=True), NotificationType.ERROR: NotificationStyle(bg_color=(231, 76, 60), border_color=(192, 57, 43), text_color=(255, 255, 255), icon_type=Icons.ERROR, duration=10.0, show_icon=True), NotificationType.CUSTOM: NotificationStyle(bg_color=(149, 165, 166), border_color=(127, 140, 141), text_color=(255, 255, 255), icon_type=Icons.INFO, duration=5.0, show_icon=True)}</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, config: NotificationConfig, engine: 'LunaEngine', theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize a notification.<br><br>Args:<br> &nbsp; &nbsp;config: Notification configuration<br> &nbsp; &nbsp;engine: Reference to the engine for screen size<br> &nbsp; &nbsp;theme: Theme to use<br> &nbsp; &nbsp;element_id: Custom element ID</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-_get_theme_based_style">
+                <code class="fs-6 fw-bold text-color-title">def _get_theme_based_style(self: Any) -> NotificationStyle</code>
+                <div class="mt-2 text-muted small">Get notification style based on current theme.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-_calculate_target_position">
+                <code class="fs-6 fw-bold text-color-title">def _calculate_target_position(self: Any) -> Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">Calculate target position based on configuration.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-_calculate_start_position">
+                <code class="fs-6 fw-bold text-color-title">def _calculate_start_position(self: Any) -> Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">Calculate start position for slide animation based on target position.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-_create_ui">
+                <code class="fs-6 fw-bold text-color-title">def _create_ui(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Create the notification UI elements.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-_apply_custom_style">
+                <code class="fs-6 fw-bold text-color-title">def _apply_custom_style(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Apply custom styling if provided in config.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-show">
+                <code class="fs-6 fw-bold text-color-title">def show(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Start showing the notification.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-close">
+                <code class="fs-6 fw-bold text-color-title">def close(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Close the notification with animation.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-force_close">
+                <code class="fs-6 fw-bold text-color-title">def force_close(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Force close without animation.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <div class="mt-2 text-muted small">Update notification state and animations.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-_ease_out">
+                <code class="fs-6 fw-bold text-color-title">def _ease_out(self: Any, t: float) -> float</code>
+                <div class="mt-2 text-muted small">Ease out cubic function for smooth animation.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-_ease_in">
+                <code class="fs-6 fw-bold text-color-title">def _ease_in(self: Any, t: float) -> float</code>
+                <div class="mt-2 text-muted small">Ease in cubic function for smooth animation.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-should_remove">
+                <code class="fs-6 fw-bold text-color-title">def should_remove(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Check if notification should be removed.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-get_opacity">
+                <code class="fs-6 fw-bold text-color-title">def get_opacity(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">Get current opacity for fade animations.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notification-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Render notification with icon.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-notificationmanager">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class NotificationManager</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Manages all notifications globally with queue support.<br>Handles positioning, stacking, and lifecycle of notifications.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_instance: Any = None</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-__new__">
+                <code class="fs-6 fw-bold text-color-title">def __new__(cls: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-_initialize">
+                <code class="fs-6 fw-bold text-color-title">def _initialize(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize the notification manager.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-set_engine">
+                <code class="fs-6 fw-bold text-color-title">def set_engine(self: Any, engine: 'LunaEngine') -> Any</code>
+                <div class="mt-2 text-muted small">Set the engine reference for screen size calculations.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-show_notification">
+                <code class="fs-6 fw-bold text-color-title">def show_notification(self: Any, config: NotificationConfig) -> Notification</code>
+                <div class="mt-2 text-muted small">Show a new notification immediately or add to queue.<br><br>Args:<br> &nbsp; &nbsp;config: Notification configuration<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The created Notification object</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-_show_notification_immediate">
+                <code class="fs-6 fw-bold text-color-title">def _show_notification_immediate(self: Any, notification: Notification) -> Any</code>
+                <div class="mt-2 text-muted small">Show a notification immediately.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-_update_notification_positions">
+                <code class="fs-6 fw-bold text-color-title">def _update_notification_positions(self: Any, position: NotificationPosition) -> Any</code>
+                <div class="mt-2 text-muted small">Update positions for stacked notifications in a position group.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-show_simple_notification">
+                <code class="fs-6 fw-bold text-color-title">def show_simple_notification(self: Any, text: str, notification_type: NotificationType = NotificationType.INFO, duration: Optional[float] = None, position: Union[NotificationPosition, Tuple[int, int]] = NotificationPosition.TOP_RIGHT) -> Notification</code>
+                <div class="mt-2 text-muted small">Show a simple notification with minimal configuration.<br><br>Args:<br> &nbsp; &nbsp;text: Notification text<br> &nbsp; &nbsp;notification_type: Type of notification<br> &nbsp; &nbsp;duration: Optional custom duration<br> &nbsp; &nbsp;position: Position for notification<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The created Notification object</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-remove_notification">
+                <code class="fs-6 fw-bold text-color-title">def remove_notification(self: Any, notification: Notification) -> Any</code>
+                <div class="mt-2 text-muted small">Remove a specific notification.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-clear_all">
+                <code class="fs-6 fw-bold text-color-title">def clear_all(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Clear all notifications immediately.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-clear_by_type">
+                <code class="fs-6 fw-bold text-color-title">def clear_by_type(self: Any, notification_type: NotificationType) -> Any</code>
+                <div class="mt-2 text-muted small">Clear all notifications of a specific type.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-_process_queue">
+                <code class="fs-6 fw-bold text-color-title">def _process_queue(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Process the notification queue.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <div class="mt-2 text-muted small">Update all notifications and process queue.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Render all notifications.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-get_notification_count">
+                <code class="fs-6 fw-bold text-color-title">def get_notification_count(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">Get the current number of active notifications.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-get_queue_length">
+                <code class="fs-6 fw-bold text-color-title">def get_queue_length(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">Get the current queue length.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-has_notifications">
+                <code class="fs-6 fw-bold text-color-title">def has_notifications(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Check if there are any active notifications.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-has_queued_notifications">
+                <code class="fs-6 fw-bold text-color-title">def has_queued_notifications(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Check if there are any queued notifications.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-set_max_concurrent">
+                <code class="fs-6 fw-bold text-color-title">def set_max_concurrent(self: Any, max_count: int) -> Any</code>
+                <div class="mt-2 text-muted small">Set maximum concurrent notifications.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-set_default_margin">
+                <code class="fs-6 fw-bold text-color-title">def set_default_margin(self: Any, margin: int) -> Any</code>
+                <div class="mt-2 text-muted small">Set default margin for notifications.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationmanager-set_spacing">
+                <code class="fs-6 fw-bold text-color-title">def set_spacing(self: Any, spacing: int) -> Any</code>
+                <div class="mt-2 text-muted small">Set spacing between notifications.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
+                
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-show_notification">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def show_notification(text: str, notification_type: NotificationType = NotificationType.INFO, duration: Optional[float] = None, position: Union[NotificationPosition, Tuple[int, int]] = NotificationPosition.TOP_RIGHT) -> Notification</code>
+                    <p class="mt-2 mb-0 text-muted">Convenience function to show a simple notification.<br><br>Args:<br> &nbsp; &nbsp;text: Notification text<br> &nbsp; &nbsp;notification_type: Type of notification<br> &nbsp; &nbsp;duration: Optional custom duration<br> &nbsp; &nbsp;position: Position for notification<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The created Notification object</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-show_error">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def show_error(text: str, duration: Optional[float] = None, position: Union[NotificationPosition, Tuple[int, int]] = NotificationPosition.TOP_RIGHT) -> Notification</code>
+                    <p class="mt-2 mb-0 text-muted">Show an error notification.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-show_warning">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def show_warning(text: str, duration: Optional[float] = None, position: Union[NotificationPosition, Tuple[int, int]] = NotificationPosition.TOP_RIGHT) -> Notification</code>
+                    <p class="mt-2 mb-0 text-muted">Show a warning notification.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-show_success">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def show_success(text: str, duration: Optional[float] = None, position: Union[NotificationPosition, Tuple[int, int]] = NotificationPosition.TOP_RIGHT) -> Notification</code>
+                    <p class="mt-2 mb-0 text-muted">Show a success notification.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-show_info">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def show_info(text: str, duration: Optional[float] = None, position: Union[NotificationPosition, Tuple[int, int]] = NotificationPosition.TOP_RIGHT) -> Notification</code>
+                    <p class="mt-2 mb-0 text-muted">Show an info notification.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-clear_all_notifications">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def clear_all_notifications() -> Any</code>
+                    <p class="mt-2 mb-0 text-muted">Clear all notifications.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-get_notification_count">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def get_notification_count() -> int</code>
+                    <p class="mt-2 mb-0 text-muted">Get the current number of active notifications.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-get_queue_length">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def get_queue_length() -> int</code>
+                    <p class="mt-2 mb-0 text-muted">Get the current queue length.</p>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Ui Module
+            </a>
+        </div>
+    </div>
+
+    
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-01-20 14:14
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    // Universal search handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // Adjust path based on current location
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            searchIcon.addEventListener('click', performSearch);
+            
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

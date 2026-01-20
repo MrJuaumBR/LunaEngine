@@ -9,55 +9,58 @@
     <link href="theme.css" rel="stylesheet">
 </head>
 <body>
+    
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="index.html">
+            <a class="navbar-brand fw-bold" href="./index.html" id="navbar-logo-link">
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search documentation...">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
+                
                 <button class="btn btn-outline-secondary theme-toggle">
                     <span class="theme-icon">🌙</span>
                 </button>
             </div>
         </div>
     </nav>
-
+    
     <div class="container mt-5">
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <h1 class="text-center mb-4">🚀 Quick Start Guide</h1>
-                
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Quick Installation</h5>
-                    </div>
-                    <div class="card-body">
-                        <pre><code># Clone the repository
-pip install lunaengine
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Home</a></li><li class="breadcrumb-item active">Quick Start</li></ol></nav>
+        
+        <h1 class="text-center mb-4">Quick Start Guide</h1>
+        
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Quick Installation</h5>
+            </div>
+            <div class="card-body">
+                <pre><code># Clone the repository
+git clone https://github.com/MrJuaumBR/LunaEngine.git
+cd LunaEngine
 
-git clone https://github.com/your-username/lunaengine.git
-cd lunaengine
+# Install dependencies
+pip install -r requirements.txt
 
 # Run the Snake Game example
 python examples/snake_demo.py</code></pre>
-                    </div>
-                </div>
+            </div>
+        </div>
 
-                <div class="card mb-4">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0"><i class="bi bi-play-circle me-2"></i>Snake Game Example</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="text-muted mb-3">
-                            <i class="bi bi-info-circle me-1"></i>
-                            This is the actual code from <code>examples/snake_demo.py</code>
-                        </p>
-                        <pre><code>import sys
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-play-circle me-2"></i>Snake Game Example</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    <i class="bi bi-info-circle me-1"></i>
+                    This is the actual code from <code>examples/snake_demo.py</code>
+                </p>
+                <pre><code>import sys
 import os
 import random
 sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
@@ -141,7 +144,7 @@ class MainMenuScene(Scene):
     def update(self, dt):
         pass
             
-    def render(self, renderer: PygameRenderer):
+    def render(self, renderer:Renderer):
         # Draw background
         renderer.draw_rect(0, 0, 1024, 720, ThemeManager.get_theme(ThemeManager.get_current_theme()).background)
         
@@ -255,8 +258,8 @@ class InGameScene(Scene):
     def emit_apple_particles(self):
         &quot;&quot;&quot;Emit flare particles around the apple&quot;&quot;&quot;
         if hasattr(self, &#x27;apple&#x27;):
-            apple_x = self.apple[0] * self.cell_size + self.cell_size // 2
-            apple_y = self.apple[1] * self.cell_size + self.cell_size // 2
+            apple_x = self.apple[0] * self.cell_size
+            apple_y = self.apple[1] * self.cell_size
             
             # Continuous glow effect
             self.particle_system.emit(
@@ -335,8 +338,8 @@ class InGameScene(Scene):
     def emit_apple_eaten_particles(self):
         &quot;&quot;&quot;Emit a special particle burst when apple is eaten&quot;&quot;&quot;
         if hasattr(self, &#x27;apple&#x27;):
-            apple_x = self.apple[0] * self.cell_size + self.cell_size // 2
-            apple_y = self.apple[1] * self.cell_size + self.cell_size // 2
+            apple_x = self.apple[0] * self.cell_size
+            apple_y = self.apple[1] * self.cell_size
             
             # Big burst when apple is eaten
             self.particle_system.emit(
@@ -383,8 +386,9 @@ class InGameScene(Scene):
         if &quot;MainMenu&quot; in self.engine.scenes:
             self.snake_color = self.engine.scenes[&quot;MainMenu&quot;].SnakeColor
     
-    def render(self, renderer: PygameRenderer):
+    def render(self, renderer: Renderer):
         # Draw background
+        
         current_theme = ThemeManager.get_theme(ThemeManager.get_current_theme())
         renderer.draw_rect(0, 0, 1024, 720, current_theme.background)
         
@@ -421,10 +425,6 @@ class InGameScene(Scene):
             border_color = tuple(max(0, c - 40) for c in color)
             renderer.draw_rect(segment_x, segment_y, self.cell_size, self.cell_size, border_color, fill=False)
         
-        # Render particle system
-        if not self.engine.use_opengl:
-            self.particle_system.render(renderer.get_surface())
-        
         # Draw game over screen
         if self.game_over:
             # Semi-transparent overlay
@@ -457,42 +457,61 @@ def main():
     
 if __name__ == &quot;__main__&quot;:
     main()</code></pre>
-                    </div>
-                </div>
+            </div>
+        </div>
 
-                <div class="card mb-4">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-book me-2"></i>Next Steps</h5>
-                    </div>
-                    <div class="card-body">
-                        <ol>
-                            <li>Explore the modules in the documentation</li>
-                            <li>Check out examples in the <code>examples/</code> folder</li>
-                            <li>We now have a games repository: <a href="https://github.com/MrJuaumBR/LunaEngine-Games">LunaEngine-Games</a></li>
-                            <li>Experiment with UI, graphics, and utilities</li>
-                            <li>Consult specific module documentation</li>
-                            <li>Join our <a href="contact.html">community</a> for help and support</li>
-                        </ol>
-                    </div>
-                </div>
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-book me-2"></i>Next Steps</h5>
+            </div>
+            <div class="card-body">
+                <ol>
+                    <li>Explore the <a href="examples/">examples hub</a> for more projects</li>
+                    <li>Check out modules in the documentation</li>
+                    <li>Visit our <a href="https://github.com/MrJuaumBR/LunaEngine-Games">games repository</a></li>
+                    <li>Experiment with UI, graphics, and utilities</li>
+                    <li>Join our <a href="contact.html">community</a> for help and support</li>
+                </ol>
+            </div>
+        </div>
 
-                <div class="text-center">
-                    <a href="index.html" class="btn btn-primary me-2">
-                        <i class="bi bi-house me-2"></i>Back to Home
-                    </a>
-                    <a href="contact.html" class="btn btn-outline-primary">
-                        <i class="bi bi-people me-2"></i>Join Community
-                    </a>
+        <div class="text-center">
+            <a href="index.html" class="btn btn-primary me-2">
+                <i class="bi bi-house me-2"></i>Back to Home
+            </a>
+            <a href="examples/" class="btn btn-outline-primary me-2">
+                <i class="bi bi-code-slash me-2"></i>View Examples
+            </a>
+            <a href="contact.html" class="btn btn-outline-primary">
+                <i class="bi bi-people me-2"></i>Join Community
+            </a>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-01-20 14:14
+                    </p>
                 </div>
             </div>
         </div>
-    </div>
+    </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler for GitHub Pages structure
+    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
@@ -501,30 +520,18 @@ if __name__ == &quot;__main__&quot;:
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
                     
-                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
                         searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
                     }
                     
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
             
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -534,10 +541,8 @@ if __name__ == &quot;__main__&quot;:
                 }
             });
             
-            // Handle click on search icon
             searchIcon.addEventListener('click', performSearch);
             
-            // Also prevent form submission if the input is inside a form
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {
@@ -549,6 +554,7 @@ if __name__ == &quot;__main__&quot;:
         }
     });
     </script>
+    
     
 </body>
 </html>

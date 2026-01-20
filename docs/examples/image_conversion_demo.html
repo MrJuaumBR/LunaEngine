@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Conversion Demo - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Examples Hub</a></li><li class="breadcrumb-item active">Image Conversion Demo</li></ol></nav>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Image Conversion Demo</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>image_conversion_demo.py</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">&quot;&quot;&quot;
+LunaEngine Image Conversion Demo
+With quality compression parameter
+&quot;&quot;&quot;
+
+import sys
+import os
+import math
+from pathlib import Path
+
+sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
+
+from lunaengine.core import LunaEngine, Scene
+from lunaengine.ui.elements import *
+from lunaengine.utils import EmbeddedImage, ImageConverter
+import pygame
+
+class ImageConversionDemoScene(Scene):
+    def on_exit(self, next_scene = None):
+        return super().on_exit(next_scene)
+    
+    def on_enter(self, previous_scene = None):
+        return super().on_enter(previous_scene)
+    def __init__(self, engine: LunaEngine = None):
+        super().__init__(engine)
+        self.embedded_images = []
+        self.animation_time = 0
+        self.converted_images = []
+        self.selected_image_index = 0
+        self.available_images = []
+        self.status_message = &quot;Click &#x27;Find Images&#x27; to start&quot;
+        self.ui_elements_created = False
+        self.quality = 1.0  # Default quality
+        
+    def on_enter(self, previous_scene = None):
+        if not self.ui_elements_created:
+            self._setup_ui()
+            self.ui_elements_created = True
+        return super().on_enter(previous_scene)
+        
+    def _setup_ui(self):
+        &quot;&quot;&quot;Setup all UI elements with proper layout&quot;&quot;&quot;
+        self.ui_elements.clear()
+        
+        # Title and subtitle
+        title = TextLabel(20, 20, &quot;Image Conversion Demo&quot;, 32, (255, 255, 0))
+        self.ui_elements.append(title)
+        
+        subtitle = TextLabel(20, 60, &quot;PYGAME ONLY - NO PILLOW REQUIRED&quot;, 18, (100, 255, 100))
+        self.ui_elements.append(subtitle)
+        
+        # Status display
+        self.status_text = TextLabel(20, 90, self.status_message, 18, (255, 200, 100))
+        self.ui_elements.append(self.status_text)
+        
+        # Control buttons
+        find_btn = Button(20, 130, 150, 40, &quot;Find Images&quot;)
+        find_btn.set_on_click(self._find_images)
+        self.ui_elements.append(find_btn)
+        
+        convert_all_btn = Button(180, 130, 150, 40, &quot;Convert All Images&quot;)
+        convert_all_btn.set_on_click(self._convert_all_images)
+        self.ui_elements.append(convert_all_btn)
+        
+        view_btn = Button(340, 130, 180, 40, &quot;View Converted Images&quot;)
+        view_btn.set_on_click(self._view_converted_images)
+        self.ui_elements.append(view_btn)
+        
+        # Quality slider
+        quality_label = TextLabel(20, 190, &quot;Quality/Size:&quot;, 16, (200, 200, 255))
+        self.ui_elements.append(quality_label)
+        
+        self.quality_slider = Slider(120, 190, 200, 20, 0.1, 1.0, self.quality)
+        self.quality_slider.on_value_changed = self._on_quality_changed
+        self.ui_elements.append(self.quality_slider)
+        
+        self.quality_value = TextLabel(330, 190, f&quot;{self.quality:.1f}&quot;, 16, (255, 255, 255))
+        self.ui_elements.append(self.quality_value)
+        
+        # Statistics display
+        self.stats_text = TextLabel(20, 220, &quot;Images found: 0 | Converted: 0&quot;, 16, (100, 255, 100))
+        self.ui_elements.append(self.stats_text)
+        
+        # Instructions
+        instructions = [
+            &quot;How to use:&quot;,
+            &quot;1. Click &#x27;Find Images&#x27; to discover images&quot;,
+            &quot;2. Adjust quality slider for size/quality tradeoff&quot;, 
+            &quot;3. Select an image from the dropdown&quot;,
+            &quot;4. Click &#x27;Convert Selected Image&#x27; or &#x27;Convert All Images&#x27;&quot;,
+            &quot;5. Click &#x27;View Converted Images&#x27; to see results&quot;,
+            &quot;6. Use arrow keys to cycle through converted images&quot;,
+            &quot;&quot;,
+            &quot;Quality: 1.0 = original, 0.5 = half size, 0.25 = quarter size&quot;,
+            &quot;Supported formats: PNG, JPG, BMP, TGA, TIF&quot;
+        ]
+        
+        for i, instruction in enumerate(instructions):
+            text = TextLabel(20, 500 + i * 25, instruction, 16, (200, 200, 255))
+            self.ui_elements.append(text)
+    
+    def _on_quality_changed(self, value):
+        &quot;&quot;&quot;Handle quality slider change&quot;&quot;&quot;
+        self.quality = value
+        self.quality_value.set_text(f&quot;{value:.1f}&quot;)
+    
+    def _find_images(self):
+        &quot;&quot;&quot;Find images in project directory&quot;&quot;&quot;
+        self.status_message = &quot;Searching for images...&quot;
+        self.status_text.set_text(self.status_message)
+        
+        project_root = Path(__file__).parent.parent
+        self.available_images = self._find_image_files(project_root)
+        
+        if not self.available_images:
+            self.status_message = &quot;No images found! Add image files to project.&quot;
+            self.status_text.set_text(self.status_message)
+        else:
+            self.status_message = f&quot;Found {len(self.available_images)} images&quot;
+            self.status_text.set_text(self.status_message)
+            
+            # Remove existing dropdown if present
+            if hasattr(self, &#x27;image_dropdown&#x27;):
+                self.ui_elements.remove(self.image_dropdown)
+            
+            # Create dropdown with unique image names
+            image_names = [img.stem for img in self.available_images]
+            self.image_dropdown = Dropdown(20, 250, 300, 30, image_names)
+            self.ui_elements.append(self.image_dropdown)
+            
+            # Add Convert Selected button if not present
+            if not hasattr(self, &#x27;convert_btn&#x27;) or self.convert_btn not in self.ui_elements:
+                self.convert_btn = Button(20, 290, 200, 40, &quot;Convert Selected Image&quot;)
+                self.convert_btn.set_on_click(self._convert_selected)
+                self.ui_elements.append(self.convert_btn)
+    
+    def _convert_selected(self):
+        &quot;&quot;&quot;Convert the currently selected image&quot;&quot;&quot;
+        if self.available_images and hasattr(self, &#x27;image_dropdown&#x27;):
+            selected_index = self.image_dropdown.selected_index
+            if selected_index &lt; len(self.available_images):
+                image_path = self.available_images[selected_index]
+                converted = self._convert_image_file(image_path, self.quality)
+                if converted:
+                    self.converted_images.append(converted)
+                    self.status_message = f&quot;Converted: {image_path.name} (Quality: {self.quality})&quot;
+                    self.status_text.set_text(self.status_message)
+    
+    def _convert_all_images(self):
+        &quot;&quot;&quot;Convert all found images&quot;&quot;&quot;
+        if not self.available_images:
+            self.status_message = &quot;No images to convert! Click &#x27;Find Images&#x27; first.&quot;
+            self.status_text.set_text(self.status_message)
+            return
+        
+        self.status_message = f&quot;Converting all images (Quality: {self.quality})...&quot;
+        self.status_text.set_text(self.status_message)
+        
+        converted_count = 0
+        for image_file in self.available_images[:8]:  # Limit to 8 images
+            converted = self._convert_image_file(image_file, self.quality)
+            if converted:
+                self.converted_images.append(converted)
+                converted_count += 1
+        
+        self.status_message = f&quot;Converted {converted_count} images (Quality: {self.quality})&quot;
+        self.status_text.set_text(self.status_message)
+    
+    def _view_converted_images(self):
+        &quot;&quot;&quot;Show converted images dropdown&quot;&quot;&quot;
+        if not self.converted_images:
+            self.status_message = &quot;No converted images! Convert some images first.&quot;
+            self.status_text.set_text(self.status_message)
+            return
+        
+        # Remove existing dropdown if present
+        if hasattr(self, &#x27;converted_dropdown&#x27;):
+            self.ui_elements.remove(self.converted_dropdown)
+        
+        # Create dropdown for converted images
+        converted_names = [f&quot;{img[&#x27;name&#x27;]} ({img[&#x27;image&#x27;].width}x{img[&#x27;image&#x27;].height})&quot; 
+                          for img in self.converted_images]
+        self.converted_dropdown = Dropdown(20, 340, 300, 30, converted_names)
+        self.converted_dropdown.set_on_selection_changed(
+            lambda i, n: setattr(self, &#x27;selected_image_index&#x27;, i)
+        )
+        self.ui_elements.append(self.converted_dropdown)
+        self.status_message = f&quot;Viewing {len(self.converted_images)} converted images&quot;
+        self.status_text.set_text(self.status_message)
+    
+    def _find_image_files(self, directory: Path, max_depth: int = 3) -&gt; list:
+        &quot;&quot;&quot;Find all image files using Pygame-supported formats&quot;&quot;&quot;
+        image_files = []
+        supported_extensions = {&#x27;.png&#x27;, &#x27;.jpg&#x27;, &#x27;.jpeg&#x27;, &#x27;.bmp&#x27;, &#x27;.tga&#x27;, &#x27;.tiff&#x27;}
+        
+        def search_path(current_path: Path, depth: int):
+            if depth &gt; max_depth:
+                return
+                
+            try:
+                for item in current_path.iterdir():
+                    if item.is_file() and item.suffix.lower() in supported_extensions:
+                        if item.stat().st_size &lt; 10 * 1024 * 1024:  # Skip files &gt;10MB
+                            image_files.append(item)
+                    elif item.is_dir() and not item.name.startswith(&#x27;.&#x27;):
+                        search_path(item, depth + 1)
+            except (PermissionError, OSError):
+                pass
+        
+        search_path(directory, 0)
+        return image_files
+    
+    def _convert_image_file(self, image_path: Path, quality: float = 1.0) -&gt; dict:
+        &quot;&quot;&quot;Convert an image file to embedded format with quality setting&quot;&quot;&quot;
+        try:
+            python_code = ImageConverter.image_to_python_code(
+                str(image_path),
+                output_var_name=f&quot;embedded_{image_path.stem}&quot;,
+                max_size=(256, 256),  # Max size constraint
+                method=&#x27;compressed&#x27;,
+                quality=quality
+            )
+            
+            # Execute the code to get image data
+            namespace = {}
+            exec(python_code, namespace)
+            image_data = namespace.get(f&quot;embedded_{image_path.stem}&quot;)
+            
+            if not image_data:
+                return None
+            
+            embedded_image = EmbeddedImage(image_data)
+            
+            # Save the converted code
+            output_file = image_path.parent / f&quot;{image_path.stem}_embedded.py&quot;
+            with open(output_file, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as f:
+                header = [
+                    &#x27;# Auto-generated by LunaEngine Image Conversion Tool&#x27;,
+                    f&#x27;# Source: {image_path.name}&#x27;,
+                    f&#x27;# Quality: {quality}&#x27;,
+                    &#x27;# Converted with: Pygame + base64 + zlib compression&#x27;,
+                    &#x27;&#x27;
+                ]
+                f.write(&#x27;\n&#x27;.join(header) + python_code)
+            
+            return {
+                &#x27;name&#x27;: image_path.stem,
+                &#x27;path&#x27;: image_path,
+                &#x27;image&#x27;: embedded_image,
+                &#x27;output_file&#x27;: output_file,
+                &#x27;quality&#x27;: quality
+            }
+        
+        except Exception:
+            return None
+    
+    def _update_stats(self):
+        &quot;&quot;&quot;Update statistics display&quot;&quot;&quot;
+        found_count = len(self.available_images)
+        converted_count = len(self.converted_images)
+        self.stats_text.set_text(f&quot;Images found: {found_count} | Converted: {converted_count}&quot;)
+    
+    def update(self, dt):
+        self.animation_time += dt
+        for element in self.ui_elements:
+            element.update(dt)
+        self._update_stats()
+            
+    def render(self, renderer):
+        # Draw background
+        renderer.draw_rect(0, 0, 800, 600, (30, 30, 50))
+        renderer.draw_rect(0, 0, 800, 60, (50, 50, 80))
+        
+        # Draw converted images in dedicated area
+        if self.converted_images:
+            current_image = self.converted_images[self.selected_image_index]
+            x, y = 450, 150  # Fixed position away from UI
+            
+            # Draw with subtle animation
+            offset_y = math.sin(self.animation_time * 2) * 5
+            current_image[&#x27;image&#x27;].draw(renderer, int(x), int(y + offset_y))
+            
+            # Draw border and info
+            renderer.draw_rect(int(x), int(y + offset_y), 
+                             current_image[&#x27;image&#x27;].width, 
+                             current_image[&#x27;image&#x27;].height, 
+                             (255, 255, 255), fill=False)
+            
+            # Draw image info
+            font = pygame.font.Font(None, 20)
+            info_text = f&quot;{current_image[&#x27;name&#x27;]} - {current_image[&#x27;image&#x27;].width}x{current_image[&#x27;image&#x27;].height}&quot;
+            text_surface = font.render(info_text, True, (255, 255, 255))
+            renderer.draw_surface(text_surface, x, y + current_image[&#x27;image&#x27;].height + 15)
+            
+            # Draw quality info
+            quality_text = f&quot;Quality: {current_image.get(&#x27;quality&#x27;, 1.0):.1f}&quot;
+            quality_surface = font.render(quality_text, True, (200, 255, 200))
+            renderer.draw_surface(quality_surface, x, y + current_image[&#x27;image&#x27;].height + 35)
+
+def main():
+    engine = LunaEngine(&quot;Image Conversion Demo&quot;, 800, 600)
+    
+    @engine.on_event(pygame.KEYDOWN)
+    def handle_key_event(event):
+        if engine.current_scene and hasattr(engine.current_scene, &#x27;converted_images&#x27;):
+            scene = engine.current_scene
+            if scene.converted_images:
+                if event.key == pygame.K_RIGHT:
+                    scene.selected_image_index = (scene.selected_image_index + 1) % len(scene.converted_images)
+                elif event.key == pygame.K_LEFT:
+                    scene.selected_image_index = (scene.selected_image_index - 1) % len(scene.converted_images)
+    
+    engine.add_scene(&quot;main&quot;, ImageConversionDemoScene)
+    engine.set_scene(&quot;main&quot;)
+    engine.run()
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About This Example</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>LunaEngine Image Conversion Demo</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="image_conversion_demo.py" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples Hub
+                            </a>
+                            <a href="../quick-start.html" class="btn btn-outline-success">
+                                <i class="bi bi-play-circle me-2"></i>Quick Start Guide
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-01-20 14:14
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    // Universal search handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // Adjust path based on current location
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            searchIcon.addEventListener('click', performSearch);
+            
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

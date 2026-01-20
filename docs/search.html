@@ -7,27 +7,51 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="theme.css" rel="stylesheet">
+    <style>
+    .search-highlight {
+        background-color: #ffeb3b;
+        padding: 2px 4px;
+        border-radius: 3px;
+    }
+    
+    .result-item {
+        border-left: 4px solid var(--primary-color);
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    
+    .result-item:hover {
+        background-color: rgba(67, 97, 238, 0.05);
+        transform: translateX(5px);
+    }
+    
+    .result-type-badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+    }
+    </style>
 </head>
 <body>
+    
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="index.html">
+            <a class="navbar-brand fw-bold" href="./index.html" id="navbar-logo-link">
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="globalSearch" class="form-control" placeholder="Search everything in LunaEngine...">
-                    <button class="btn btn-primary" type="button" id="searchButton">
-                        <i class="bi bi-search"></i>
-                    </button>
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
+                
                 <button class="btn btn-outline-secondary theme-toggle">
                     <span class="theme-icon">🌙</span>
                 </button>
             </div>
         </div>
     </nav>
+    
 
     <div class="container mt-5">
         <div class="row">
@@ -43,11 +67,22 @@
                 
                 <div id="searchInfo" class="alert alert-info">
                     <i class="bi bi-info-circle me-2"></i>
-                    Global search across all LunaEngine documentation: 898 items indexed
+                    Global search across all LunaEngine documentation: 1091 items indexed
+                </div>
+                
+                <div class="input-group mb-4">
+                    <input type="text" id="globalSearch" class="form-control" placeholder="Search everything in LunaEngine...">
+                    <button class="btn btn-primary" type="button" id="searchButton">
+                        <i class="bi bi-search"></i> Search
+                    </button>
                 </div>
                 
                 <div id="searchResults" class="search-results-container">
                     <!-- Results will be populated by JavaScript -->
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Search functionality requires JavaScript. Please enable JavaScript to use search.
+                    </div>
                 </div>
                 
                 <div id="noResults" class="text-center py-5" style="display: none;">
@@ -62,13 +97,285 @@
                 <div id="searchStats" class="mt-4 text-center" style="display: none;">
                     <small class="text-muted" id="statsText"></small>
                 </div>
+                
+                <div class="mt-5">
+                    <h5>Quick Navigation</h5>
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            <a href="index.html" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-house me-1"></i>Home
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="examples/" class="btn btn-outline-success w-100">
+                                <i class="bi bi-code-slash me-1"></i>Examples
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="quick-start.html" class="btn btn-outline-info w-100">
+                                <i class="bi bi-play-circle me-1"></i>Quick Start
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="contact.html" class="btn btn-outline-warning w-100">
+                                <i class="bi bi-people me-1"></i>Community
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
+    <script>
+    // Search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('globalSearch');
+        const searchButton = document.getElementById('searchButton');
+        const searchResults = document.getElementById('searchResults');
+        const noResults = document.getElementById('noResults');
+        const searchStats = document.getElementById('searchStats');
+        const statsText = document.getElementById('statsText');
+        
+        // Get search term from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchTerm = urlParams.get('q');
+        
+        if (searchTerm) {
+            searchInput.value = searchTerm;
+            performSearch(searchTerm);
+        }
+        
+        // Search button click
+        if (searchButton) {
+            searchButton.addEventListener('click', function() {
+                const term = searchInput.value.trim();
+                if (term) {
+                    window.location.href = `search.html?q=${encodeURIComponent(term)}`;
+                }
+            });
+        }
+        
+        // Enter key in search input
+        if (searchInput) {
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const term = searchInput.value.trim();
+                    if (term) {
+                        window.location.href = `search.html?q=${encodeURIComponent(term)}`;
+                    }
+                }
+            });
+        }
+        
+        function performSearch(term) {
+            fetch('search-data.json')
+                .then(response => response.json())
+                .then(data => {
+                    const results = searchData(data, term.toLowerCase());
+                    displayResults(results, term);
+                })
+                .catch(error => {
+                    console.error('Error loading search data:', error);
+                    searchResults.innerHTML = '<div class="alert alert-danger">Error loading search data. Please try again later.</div>';
+                });
+        }
+        
+        function searchData(data, term) {
+            const results = [];
+            
+            // Search in modules
+            data.modules.forEach(module => {
+                if (module.name.toLowerCase().includes(term) || 
+                    module.title.toLowerCase().includes(term) || 
+                    module.description.toLowerCase().includes(term)) {
+                    results.push({...module, type: 'module'});
+                }
+            });
+            
+            // Search in classes
+            data.classes.forEach(cls => {
+                if (cls.name.toLowerCase().includes(term) || 
+                    cls.description.toLowerCase().includes(term) ||
+                    cls.module.toLowerCase().includes(term)) {
+                    results.push({...cls, type: 'class'});
+                }
+            });
+            
+            // Search in functions
+            data.functions.forEach(func => {
+                if (func.name.toLowerCase().includes(term) || 
+                    func.description.toLowerCase().includes(term) ||
+                    func.module.toLowerCase().includes(term)) {
+                    results.push({...func, type: 'function'});
+                }
+            });
+            
+            // Search in methods
+            data.methods.forEach(method => {
+                if (method.name.toLowerCase().includes(term) || 
+                    method.description.toLowerCase().includes(term) ||
+                    method.class.toLowerCase().includes(term) ||
+                    method.module.toLowerCase().includes(term)) {
+                    results.push({...method, type: 'method'});
+                }
+            });
+            
+            // Search in pages
+            data.pages.forEach(page => {
+                if (page.name.toLowerCase().includes(term) || 
+                    page.description.toLowerCase().includes(term)) {
+                    results.push({...page, type: 'page'});
+                }
+            });
+            
+            // Search in examples
+            if (data.examples) {
+                data.examples.forEach(example => {
+                    if (example.name.toLowerCase().includes(term) || 
+                        example.file.toLowerCase().includes(term)) {
+                        results.push({...example, type: 'example'});
+                    }
+                });
+            }
+            
+            return results;
+        }
+        
+        function displayResults(results, term) {
+            if (results.length === 0) {
+                searchResults.style.display = 'none';
+                noResults.style.display = 'block';
+                searchStats.style.display = 'none';
+                return;
+            }
+            
+            // Sort results by type priority
+            const typePriority = {
+                'module': 1,
+                'class': 2,
+                'method': 3,
+                'function': 4,
+                'example': 5,
+                'page': 6
+            };
+            
+            results.sort((a, b) => {
+                return typePriority[a.type] - typePriority[b.type] || a.name.localeCompare(b.name);
+            });
+            
+            let html = '<h5 class="mb-3">Found ' + results.length + ' results for "' + term + '"</h5>';
+            
+            results.forEach(result => {
+                const typeBadges = {
+                    'module': 'primary',
+                    'class': 'success',
+                    'method': 'info',
+                    'function': 'warning',
+                    'example': 'secondary',
+                    'page': 'dark'
+                };
+                
+                const typeLabels = {
+                    'module': 'Module',
+                    'class': 'Class',
+                    'method': 'Method',
+                    'function': 'Function',
+                    'example': 'Example',
+                    'page': 'Page'
+                };
+                
+                const badgeColor = typeBadges[result.type] || 'secondary';
+                const typeLabel = typeLabels[result.type] || result.type;
+                
+                let description = result.description || 'No description available';
+                if (description.length > 150) {
+                    description = description.substring(0, 150) + '...';
+                }
+                
+                // Highlight search term in description
+                const regex = new RegExp(`(${term})`, 'gi');
+                description = description.replace(regex, '<mark class="search-highlight">$1</mark>');
+                
+                html += `
+                <div class="result-item p-3 rounded bg-light">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="mb-0">
+                            <a href="${result.link}" class="text-decoration-none">
+                                ${result.name}
+                            </a>
+                        </h6>
+                        <span class="badge bg-${badgeColor} result-type-badge">${typeLabel}</span>
+                    </div>
+                    <p class="text-muted small mb-2">${description}</p>
+                    <div class="text-muted small">
+                        ${result.type === 'method' ? `<i class="bi bi-box me-1"></i>Class: ${result.class} | ` : ''}
+                        ${result.type === 'class' || result.type === 'function' || result.type === 'method' ? `<i class="bi bi-folder me-1"></i>Module: ${result.module} | ` : ''}
+                        ${result.type === 'class' && result.methods_count ? `<i class="bi bi-hammer me-1"></i>${result.methods_count} methods | ` : ''}
+                        <a href="${result.link}" class="text-primary">
+                            <i class="bi bi-arrow-right me-1"></i>View details
+                        </a>
+                    </div>
+                </div>`;
+            });
+            
+            searchResults.innerHTML = html;
+            searchResults.style.display = 'block';
+            noResults.style.display = 'none';
+            searchStats.style.display = 'block';
+            statsText.textContent = `Found ${results.length} results for "${term}"`;
+        }
+    });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="search.js"></script>
     <script src="theme.js"></script>
+    
+    <script>
+    // Universal search handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // Adjust path based on current location
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            searchIcon.addEventListener('click', performSearch);
+            
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
 </body>
 </html>

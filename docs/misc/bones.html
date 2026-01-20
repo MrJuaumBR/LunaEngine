@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bones.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Misc</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Misc</a></li><li class="breadcrumb-item active">bones.py</li></ol></nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>bones.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">Miscellaneous things for LunaEngine<br><br>This module provides classes for creating and manipulating bone-based skeletal structures.<br><br>LOCATION: lunaengine/misc/bones.py</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-joint">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Joint</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Represents a joint in a skeletal system that can rotate.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-joint-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, angle: float = 0, show_joint: bool = True) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-joint-set_position">
+                <code class="fs-6 fw-bold text-color-title">def set_position(self: Any, x: int, y: int) -> None</code>
+                <div class="mt-2 text-muted small">Set the position of the joint.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-joint-set_angle">
+                <code class="fs-6 fw-bold text-color-title">def set_angle(self: Any, angle: float) -> None</code>
+                <div class="mt-2 text-muted small">Set the rotation angle of the joint.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-joint-get_end_position">
+                <code class="fs-6 fw-bold text-color-title">def get_end_position(self: Any, length: int) -> Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">Calculate the endpoint position given a length and angle.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-joint-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer, color: Tuple[int, int, int] = (255, 100, 100), radius: int = 5) -> None</code>
+                <div class="mt-2 text-muted small">Render the joint.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-bone">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Bone</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Represents a bone segment that connects a joint to an endpoint.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-bone-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, joint: Joint, length: int, width: int = 3, color: Tuple[int, int, int] = (255, 255, 255)) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-bone-_calculate_end_position">
+                <code class="fs-6 fw-bold text-color-title">def _calculate_end_position(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Calculate the end position based on joint angle and length.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-bone-set_color">
+                <code class="fs-6 fw-bold text-color-title">def set_color(self: Any, color: Tuple[int, int, int]) -> None</code>
+                <div class="mt-2 text-muted small">Set the color of the bone.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-bone-set_width">
+                <code class="fs-6 fw-bold text-color-title">def set_width(self: Any, width: int) -> None</code>
+                <div class="mt-2 text-muted small">Set the width of the bone.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-bone-set_angle">
+                <code class="fs-6 fw-bold text-color-title">def set_angle(self: Any, angle: float) -> None</code>
+                <div class="mt-2 text-muted small">Set the angle of the bone&#x27;s joint.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-bone-get_end_position">
+                <code class="fs-6 fw-bold text-color-title">def get_end_position(self: Any) -> Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">Get the end position of the bone.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-bone-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
+                <div class="mt-2 text-muted small">Render the bone.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-skeleton">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Skeleton</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">A hierarchical skeleton system with joints and bones.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-skeleton-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-skeleton-add_joint">
+                <code class="fs-6 fw-bold text-color-title">def add_joint(self: Any, name: str, joint: Joint, parent_joint: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">Add a joint to the skeleton.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-skeleton-add_bone">
+                <code class="fs-6 fw-bold text-color-title">def add_bone(self: Any, name: str, bone: Bone, parent_bone: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">Add a bone to the skeleton.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-skeleton-set_bone_angle">
+                <code class="fs-6 fw-bold text-color-title">def set_bone_angle(self: Any, name: str, angle: float) -> None</code>
+                <div class="mt-2 text-muted small">Set the angle of a bone.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-skeleton-set_bone_color">
+                <code class="fs-6 fw-bold text-color-title">def set_bone_color(self: Any, name: str, color: Tuple[int, int, int]) -> None</code>
+                <div class="mt-2 text-muted small">Set the color of a bone.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-skeleton-set_all_bones_color">
+                <code class="fs-6 fw-bold text-color-title">def set_all_bones_color(self: Any, color: Tuple[int, int, int]) -> None</code>
+                <div class="mt-2 text-muted small">Set the color of all bones.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-skeleton-set_bone_width">
+                <code class="fs-6 fw-bold text-color-title">def set_bone_width(self: Any, name: str, width: int) -> None</code>
+                <div class="mt-2 text-muted small">Set the width of a bone.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-skeleton-set_all_bones_width">
+                <code class="fs-6 fw-bold text-color-title">def set_all_bones_width(self: Any, width: int) -> None</code>
+                <div class="mt-2 text-muted small">Set the width of all bones.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-skeleton-set_joints_visible">
+                <code class="fs-6 fw-bold text-color-title">def set_joints_visible(self: Any, visible: bool) -> None</code>
+                <div class="mt-2 text-muted small">Set visibility of all joints.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-skeleton-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
+                <div class="mt-2 text-muted small">Render the entire skeleton.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-humanbones">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class HumanBones</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Human skeleton with proper rotation.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-humanbones-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int = 400, y: int = 300, scale: float = 1.0) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-humanbones-_create_skeleton">
+                <code class="fs-6 fw-bold text-color-title">def _create_skeleton(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Create the human skeleton with proper hierarchy.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-humanbones-_update_positions">
+                <code class="fs-6 fw-bold text-color-title">def _update_positions(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Update positions of all bones based on hierarchy.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-dogbones">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class DogBones</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Dog skeleton with proper rotation.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dogbones-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int = 400, y: int = 300, scale: float = 1.0) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dogbones-_create_skeleton">
+                <code class="fs-6 fw-bold text-color-title">def _create_skeleton(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Create a simple dog skeleton with hierarchy.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dogbones-_update_positions">
+                <code class="fs-6 fw-bold text-color-title">def _update_positions(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Update positions of all bones based on hierarchy.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-catbones">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class CatBones</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Cat skeleton with proper rotation.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-catbones-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int = 400, y: int = 300, scale: float = 1.0) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-catbones-_create_skeleton">
+                <code class="fs-6 fw-bold text-color-title">def _create_skeleton(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Create a simple cat skeleton with hierarchy.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-catbones-_update_positions">
+                <code class="fs-6 fw-bold text-color-title">def _update_positions(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Update positions of all bones based on hierarchy.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-horsebones">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class HorseBones</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Horse skeleton with proper rotation.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-horsebones-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int = 400, y: int = 300, scale: float = 1.0) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-horsebones-_create_skeleton">
+                <code class="fs-6 fw-bold text-color-title">def _create_skeleton(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Create a simple horse skeleton with hierarchy.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-horsebones-_update_positions">
+                <code class="fs-6 fw-bold text-color-title">def _update_positions(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Update positions of all bones based on hierarchy.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                
+                
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Misc Module
+            </a>
+        </div>
+    </div>
+
+    
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-01-20 14:14
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    // Universal search handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // Adjust path based on current location
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            searchIcon.addEventListener('click', performSearch);
+            
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

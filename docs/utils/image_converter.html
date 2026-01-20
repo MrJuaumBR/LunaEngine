@@ -12,13 +12,13 @@
     
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
                     <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 <span class="badge bg-primary me-3">Utils</span>
@@ -31,19 +31,13 @@
     
 
     <div class="container mt-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="index.html">Utils</a></li>
-                <li class="breadcrumb-item active">image_converter.py</li>
-            </ol>
-        </nav>
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Utils</a></li><li class="breadcrumb-item active">image_converter.py</li></ol></nav>
 
         <div class="header-section mb-5">
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>image_converter.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">Image Converter - Embedded Image Management and Conversion System<br>LOCATION: lunaengine/utils/image_converter.py<br>DESCRIPTION: Comprehensive image conversion and embedding system</span>
+                <span class="text-muted">Image Converter - Embedded Image Management and Conversion System<br>LOCATION: lunaengine/utils/image_converter.py<br>DESCRIPTION: Comprehensive image conversion and embedding system<br><br>Probably you will never use this shit :)</span>
             </div>
         </div>
 
@@ -59,39 +53,40 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">Converts images to Python code for embedding in games<br>Uses Pygame for image loading - NO PILLOW REQUIRED</p>
                 </div>
+                
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imageconverter-image_to_python_code">
-                <code class="fs-6 fw-bold text-color-title">def image_to_python_code(image_path, output_var_name, max_size, method, quality) -> str</code>
+                <code class="fs-6 fw-bold text-color-title">def image_to_python_code(image_path: str, output_var_name: str = 'image_data', max_size: Optional[Tuple[int, int]] = None, method: str = 'compressed', quality: float = 1.0) -> str</code>
                 <div class="mt-2 text-muted small">Convert an image to Python code with quality compression<br><br>Args:<br> &nbsp; &nbsp;image_path: Path to the image file<br> &nbsp; &nbsp;output_var_name: Name for the output variable<br> &nbsp; &nbsp;max_size: Maximum dimensions (width, height)<br> &nbsp; &nbsp;method: Conversion method (&#x27;pixel_array&#x27;, &#x27;base64&#x27;, &#x27;compressed&#x27;)<br> &nbsp; &nbsp;quality: Image quality (1.0 = original, 0.5 = half size, 0.25 = quarter size)</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imageconverter-_resize_surface">
-                <code class="fs-6 fw-bold text-color-title">def _resize_surface(surface, target_size) -> pygame.Surface</code>
+                <code class="fs-6 fw-bold text-color-title">def _resize_surface(surface: pygame.Surface, target_size: Tuple[int, int]) -> pygame.Surface</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imageconverter-_to_pixel_array">
-                <code class="fs-6 fw-bold text-color-title">def _to_pixel_array(surface, width, height, var_name) -> str</code>
+                <code class="fs-6 fw-bold text-color-title">def _to_pixel_array(surface: pygame.Surface, width: int, height: int, var_name: str) -> str</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imageconverter-_to_base64">
-                <code class="fs-6 fw-bold text-color-title">def _to_base64(surface, width, height, var_name) -> str</code>
+                <code class="fs-6 fw-bold text-color-title">def _to_base64(surface: pygame.Surface, width: int, height: int, var_name: str) -> str</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imageconverter-_to_compressed_optimized">
-                <code class="fs-6 fw-bold text-color-title">def _to_compressed_optimized(surface, width, height, var_name) -> str</code>
+                <code class="fs-6 fw-bold text-color-title">def _to_compressed_optimized(surface: pygame.Surface, width: int, height: int, var_name: str) -> str</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imageconverter-create_image_from_code">
-                <code class="fs-6 fw-bold text-color-title">def create_image_from_code(image_data) -> pygame.Surface</code>
+                <code class="fs-6 fw-bold text-color-title">def create_image_from_code(image_data: dict) -> pygame.Surface</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imageconverter-_from_pixel_array">
-                <code class="fs-6 fw-bold text-color-title">def _from_pixel_array(image_data) -> pygame.Surface</code>
+                <code class="fs-6 fw-bold text-color-title">def _from_pixel_array(image_data: dict) -> pygame.Surface</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imageconverter-_from_encoded_data">
-                <code class="fs-6 fw-bold text-color-title">def _from_encoded_data(image_data) -> pygame.Surface</code>
+                <code class="fs-6 fw-bold text-color-title">def _from_encoded_data(image_data: dict) -> pygame.Surface</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
@@ -106,27 +101,28 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">Helper class for working with embedded images</p>
                 </div>
+                
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-embeddedimage-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self, image_data) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, image_data: dict) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-embeddedimage-surface">
-                <code class="fs-6 fw-bold text-color-title">def surface(self) -> pygame.Surface</code>
+                <code class="fs-6 fw-bold text-color-title">def surface(self: Any) -> pygame.Surface</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-embeddedimage-width">
-                <code class="fs-6 fw-bold text-color-title">def width(self) -> int</code>
+                <code class="fs-6 fw-bold text-color-title">def width(self: Any) -> int</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-embeddedimage-height">
-                <code class="fs-6 fw-bold text-color-title">def height(self) -> int</code>
+                <code class="fs-6 fw-bold text-color-title">def height(self: Any) -> int</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-embeddedimage-draw">
-                <code class="fs-6 fw-bold text-color-title">def draw(self, renderer, x, y) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def draw(self: Any, renderer: Any, x: int, y: int) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
@@ -147,17 +143,17 @@
 
     
     <!-- Footer -->
-    <footer class="bg-dark text-white mt-5 py-5">
+    <footer class="footer-section">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
                     <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
-                    <p class="text-white-50">2D Game Engine for Python</p>
+                    <p class="text-white-50">2D Game Framework for Python</p>
                 </div>
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-01-15 11:32
+                        Documentation generated on 2026-01-20 14:14
                     </p>
                 </div>
             </div>
@@ -169,7 +165,7 @@
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler for GitHub Pages structure
+    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
@@ -178,30 +174,18 @@
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
                     
-                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
                         searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
                     }
                     
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
             
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -211,10 +195,8 @@
                 }
             });
             
-            // Handle click on search icon
             searchIcon.addEventListener('click', performSearch);
             
-            // Also prevent form submission if the input is inside a form
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {
@@ -227,69 +209,6 @@
     });
     </script>
     
-    
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../theme.js"></script>
-    
-    <script>
-    // Universal search handler for GitHub Pages structure
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('moduleSearch');
-        const searchIcon = document.querySelector('.input-group-text');
-        
-        if (searchInput && searchIcon) {
-            const performSearch = () => {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
-                    const currentPath = window.location.pathname;
-                    let searchPath = 'search.html';
-                    
-                    // If we're in a module subdirectory (/LunaEngine/core/)
-                    if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
-                        searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
-                    }
-                    
-                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
-                }
-            };
-            
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
-            searchInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault(); 
-                    e.stopPropagation();
-                    performSearch();
-                    return false;
-                }
-            });
-            
-            // Handle click on search icon
-            searchIcon.addEventListener('click', performSearch);
-            
-            // Also prevent form submission if the input is inside a form
-            const form = searchInput.closest('form');
-            if (form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    performSearch();
-                    return false;
-                });
-            }
-        }
-    });
-    </script>
     
 </body>
 </html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallax Demo - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Examples Hub</a></li><li class="breadcrumb-item active">Parallax Demo</li></ol></nav>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Parallax Demo</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>parallax_demo.py</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">&quot;&quot;&quot;
+parallax_demo.py - Parallax System Demonstration
+&quot;&quot;&quot;
+
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
+
+import pygame
+from lunaengine.core import LunaEngine, Scene
+from lunaengine.graphics.camera import Camera, CameraMode
+
+class ParallaxDemo(Scene):
+    &quot;&quot;&quot;Demo scene to test the parallax background system&quot;&quot;&quot;
+    
+    def __init__(self, engine: LunaEngine):
+        super().__init__(engine)
+        
+        # Game state
+        self.game_state = {
+            &#x27;camera_speed&#x27;: 200,
+            &#x27;parallax_enabled&#x27;: True,
+            &#x27;debug_info&#x27;: True
+        }
+        
+        # World configuration
+        self.world_size = (4000, 720)  # Wide world for horizontal movement
+        
+        # Player position (for camera control)
+        self.player_x = 0
+        
+        # Load background image
+        self.bg_image = self.load_background_image()
+        
+        # Setup camera and parallax
+        self.setup_camera()
+        self.setup_parallax()
+        
+        # Setup UI
+        self.setup_ui()
+        
+        print(&quot;Parallax Demo Controls:&quot;)
+        print(&quot;A/D or Left/Right Arrow - Move camera horizontally&quot;)
+        print(&quot;W/S or Up/Down Arrow - Move camera vertically&quot;) 
+        print(&quot;Mouse Wheel - Zoom in/out&quot;)
+        print(&quot;P - Toggle parallax on/off&quot;)
+        print(&quot;I - Toggle debug info&quot;)
+        print(&quot;R - Reset camera position&quot;)
+
+    def load_background_image(self):
+        &quot;&quot;&quot;Load the background image for parallax testing&quot;&quot;&quot;
+        try:
+            # Try to load from current directory first
+            image_path = &quot;background.jpg&quot;
+            if os.path.exists(image_path):
+                image = pygame.image.load(image_path)
+                print(f&quot;Loaded background image: {image_path}&quot;)
+                return image.convert_alpha()
+            else:
+                # Create a placeholder image if file not found
+                print(&quot;Background image not found. Creating placeholder...&quot;)
+                return self.create_placeholder_image()
+        except Exception as e:
+            print(f&quot;Error loading background image: {e}&quot;)
+            return self.create_placeholder_image()
+
+    def create_placeholder_image(self):
+        &quot;&quot;&quot;Create a placeholder image with gradient and grid for testing&quot;&quot;&quot;
+        surface = pygame.Surface((1280, 720), pygame.SRCALPHA)
+        
+        # Create gradient background
+        for y in range(720):
+            # Sky gradient (blue to light blue)
+            if y &lt; 360:
+                color = (100, 150, 255 - y // 3)
+                pygame.draw.line(surface, color, (0, y), (1280, y))
+            # Ground gradient (green to dark green)
+            else:
+                color = (50, 200 - (y - 360) // 2, 50)
+                pygame.draw.line(surface, color, (0, y), (1280, y))
+        
+        # Add grid lines for better parallax effect visualization
+        grid_color = (255, 255, 255, 50)
+        for x in range(0, 1280, 100):
+            pygame.draw.line(surface, grid_color, (x, 0), (x, 720), 2)
+        for y in range(0, 720, 100):
+            pygame.draw.line(surface, grid_color, (0, y), (1280, y), 2)
+        
+        # Add some landmarks
+        landmark_color = (255, 200, 100, 200)
+        
+        # Mountains in background
+        pygame.draw.polygon(surface, (150, 150, 200, 200), 
+                           [(200, 360), (400, 200), (600, 360)])
+        pygame.draw.polygon(surface, (120, 120, 180, 200), 
+                           [(600, 360), (800, 150), (1000, 360)])
+        
+        # Trees in midground
+        for x in [150, 450, 750, 1050]:
+            # Trunk
+            pygame.draw.rect(surface, (139, 69, 19, 255), (x, 360, 20, 60))
+            # Leaves
+            pygame.draw.circle(surface, (50, 150, 50, 255), (x + 10, 330), 40)
+        
+        # Foreground elements
+        for x in [100, 300, 500, 700, 900, 1100]:
+            pygame.draw.rect(surface, (100, 100, 100, 255), (x, 420, 10, 100))
+        
+        return surface
+
+    def setup_camera(self):
+        &quot;&quot;&quot;Configure camera for parallax testing&quot;&quot;&quot;
+        self.camera.position = pygame.math.Vector2(0, 0)
+        self.camera.target_position = pygame.math.Vector2(0, 0)
+        
+        self.camera.mode = CameraMode.TOPDOWN
+        self.camera.smooth_speed = 0.05
+        self.camera.lead_factor = 0.0
+        
+        # Set zoom limits
+        self.camera.zoom = 1.0
+        self.camera.target_zoom = 1.0
+        self.camera.min_zoom = 0.5
+        self.camera.max_zoom = 2.0
+        
+        # Set camera bounds to world size
+        world_rect = pygame.Rect(0, 0, self.world_size[0], self.world_size[1])
+        self.camera.set_bounds(world_rect)
+
+    def setup_parallax(self):
+        &quot;&quot;&quot;Setup parallax background with multiple layers&quot;&quot;&quot;
+        # Clear any existing layers
+        self.camera.clear_parallax_layers()
+        
+        # Create different parallax layers from the same image with different speeds
+        # This simulates depth by having background elements move slower than foreground
+        
+        # Layer 1: Far background (mountains, sky) - moves very slowly
+        far_bg = self.create_parallax_layer(self.bg_image, 0.1)
+        self.camera.add_parallax_layer(far_bg, 0.2, tile_mode=True)
+        
+        # Layer 2: Mid background (distant trees) - moves slowly
+        mid_bg = self.create_parallax_layer(self.bg_image, 0.3)
+        self.camera.add_parallax_layer(mid_bg, 0.4, tile_mode=True)
+        
+        # Layer 3: Near background (close trees) - moves at medium speed
+        near_bg = self.create_parallax_layer(self.bg_image, 0.6)
+        self.camera.add_parallax_layer(near_bg, 0.7, tile_mode=True)
+        
+        # Layer 4: Foreground (grass, rocks) - moves almost with camera
+        foreground = self.create_parallax_layer(self.bg_image, 0.9)
+        self.camera.add_parallax_layer(foreground, 0.9, tile_mode=True)
+        
+        self.camera.enable_parallax(True)
+        
+        print(&quot;Parallax layers created:&quot;)
+        print(&quot;- Far background (speed: 0.2)&quot;)
+        print(&quot;- Mid background (speed: 0.4)&quot;) 
+        print(&quot;- Near background (speed: 0.7)&quot;)
+        print(&quot;- Foreground (speed: 0.9)&quot;)
+
+    def create_parallax_layer(self, base_image, brightness_factor=1.0):
+        &quot;&quot;&quot;Create a modified version of the base image for parallax layers&quot;&quot;&quot;
+        # Create a copy of the image
+        layer = base_image.copy()
+        
+        # Adjust brightness to simulate depth (darker = further away)
+        if brightness_factor != 1.0:
+            # Fill with semi-transparent color to darken/brighten
+            overlay = pygame.Surface(layer.get_size(), pygame.SRCALPHA)
+            brightness_value = int(255 * (1 - brightness_factor))
+            overlay.fill((brightness_value, brightness_value, brightness_value, 100))
+            layer.blit(overlay, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+        
+        return layer
+
+    def setup_ui(self):
+        &quot;&quot;&quot;Setup user interface for the demo&quot;&quot;&quot;
+        from lunaengine.ui.elements import TextLabel, Button
+        
+        screen_width, screen_height = self.engine.width, self.engine.height
+        
+        # Debug info display
+        self.debug_label = TextLabel(10, 10, &quot;&quot;, 16, (255, 255, 255))
+        self.add_ui_element(self.debug_label)
+        
+        # Toggle parallax button
+        self.parallax_toggle = Button(screen_width - 150, 10, 140, 30, &quot;Parallax: ON&quot;)
+        self.parallax_toggle.set_on_click(self.toggle_parallax)
+        self.add_ui_element(self.parallax_toggle)
+        
+        # Debug info toggle
+        self.debug_toggle = Button(screen_width - 150, 50, 140, 30, &quot;Debug Info: ON&quot;)
+        self.debug_toggle.set_on_click(self.toggle_debug_info)
+        self.add_ui_element(self.debug_toggle)
+        
+        # Reset camera button
+        self.reset_button = Button(screen_width - 150, 90, 140, 30, &quot;Reset Camera&quot;)
+        self.reset_button.set_on_click(self.reset_camera)
+        self.add_ui_element(self.reset_button)
+
+    def toggle_parallax(self):
+        &quot;&quot;&quot;Toggle parallax effect on/off&quot;&quot;&quot;
+        self.game_state[&#x27;parallax_enabled&#x27;] = not self.game_state[&#x27;parallax_enabled&#x27;]
+        self.camera.enable_parallax(self.game_state[&#x27;parallax_enabled&#x27;])
+        self.parallax_toggle.set_text(f&quot;Parallax: {&#x27;ON&#x27; if self.game_state[&#x27;parallax_enabled&#x27;] else &#x27;OFF&#x27;}&quot;)
+
+    def toggle_debug_info(self):
+        &quot;&quot;&quot;Toggle debug information display&quot;&quot;&quot;
+        self.game_state[&#x27;debug_info&#x27;] = not self.game_state[&#x27;debug_info&#x27;]
+        self.debug_toggle.set_text(f&quot;Debug Info: {&#x27;ON&#x27; if self.game_state[&#x27;debug_info&#x27;] else &#x27;OFF&#x27;}&quot;)
+
+    def reset_camera(self):
+        &quot;&quot;&quot;Reset camera to starting position&quot;&quot;&quot;
+        self.player_x = 0
+        self.camera.position = pygame.math.Vector2(0, 0)
+        self.camera.target_position = pygame.math.Vector2(0, 0)
+        self.camera.set_zoom(1.0, smooth=False)
+
+    def handle_key_press(self, event):
+        &quot;&quot;&quot;Handle key presses&quot;&quot;&quot;
+        if event.key == pygame.K_p:
+            self.toggle_parallax()
+        elif event.key == pygame.K_i:
+            self.toggle_debug_info()
+        elif event.key == pygame.K_r:
+            self.reset_camera()
+
+    def update_player_movement(self, dt):
+        &quot;&quot;&quot;Update camera movement based on input&quot;&quot;&quot;
+        keys = pygame.key.get_pressed()
+        
+        movement_x = 0
+        movement_y = 0
+        
+        # Horizontal movement
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            movement_x = -1
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            movement_x = 1
+            
+        # Vertical movement  
+        if keys[pygame.K_w] or keys[pygame.K_UP]:
+            movement_y = -1
+        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
+            movement_y = 1
+        
+        # Apply movement
+        self.player_x += movement_x * self.game_state[&#x27;camera_speed&#x27;] * dt
+        movement_y = movement_y * self.game_state[&#x27;camera_speed&#x27;] * dt
+        
+        # Update camera target
+        self.camera.target_position.x = self.player_x
+        self.camera.target_position.y += movement_y
+        
+        # Mouse wheel zoom
+        if self.engine.mouse_wheel != 0:
+            zoom_speed = 0.1
+            new_zoom = self.camera.zoom + (self.engine.mouse_wheel * zoom_speed)
+            new_zoom = max(self.camera.min_zoom, min(self.camera.max_zoom, new_zoom))
+            self.camera.set_zoom(new_zoom, smooth=True)
+
+    def update_debug_info(self):
+        &quot;&quot;&quot;Update debug information display&quot;&quot;&quot;
+        if self.game_state[&#x27;debug_info&#x27;]:
+            info_text = (
+                f&quot;Camera Position: ({self.camera.position.x:.1f}, {self.camera.position.y:.1f})\n&quot;
+                f&quot;Camera Zoom: {self.camera.zoom:.2f}\n&quot;
+                f&quot;Player X: {self.player_x:.1f}\n&quot;
+                f&quot;Parallax Layers: {self.camera.get_parallax_layer_count()}\n&quot;
+                f&quot;World Size: {self.world_size[0]}x{self.world_size[1]}&quot;
+            )
+            self.debug_label.set_text(info_text)
+        else:
+            self.debug_label.set_text(&quot;&quot;)
+
+    def update(self, dt):
+        &quot;&quot;&quot;Update game logic&quot;&quot;&quot;
+        # Update player movement
+        self.update_player_movement(dt)
+        
+        # Update camera
+        self.camera.update(dt)
+        
+        # Update debug info
+        self.update_debug_info()
+
+    def render(self, renderer):
+        &quot;&quot;&quot;Render the scene&quot;&quot;&quot;
+        # Clear screen
+        renderer.get_surface().fill((30, 30, 50))
+        
+        # Render parallax background
+        if self.game_state[&#x27;parallax_enabled&#x27;]:
+            self.camera.render_parallax(renderer)
+        else:
+            # Fallback: render static background when parallax is disabled
+            bg_x = -self.camera.position.x * 0.5  # Simple parallax effect
+            renderer.blit(self.bg_image, (bg_x % 1280 - 1280, 0))
+            renderer.blit(self.bg_image, (bg_x % 1280, 0))
+        
+        # Render world boundaries for reference
+        self.render_world_boundaries(renderer)
+        
+        # Render player position indicator
+        self.render_player_indicator(renderer)
+
+    def render_world_boundaries(self, renderer):
+        &quot;&quot;&quot;Render world boundaries for visual reference&quot;&quot;&quot;
+        screen_width, screen_height = self.engine.width, self.engine.height
+        
+        # Convert world coordinates to screen coordinates
+        left_pos = self.camera.world_to_screen((0, 0))
+        right_pos = self.camera.world_to_screen((self.world_size[0], 0))
+        
+        # Draw boundary lines
+        boundary_color = (255, 0, 0, 100)
+        renderer.draw_line(left_pos.x, 0, left_pos.x, screen_height, boundary_color, 2)
+        renderer.draw_line(right_pos.x, 0, right_pos.x, screen_height, boundary_color, 2)
+
+    def render_player_indicator(self, renderer):
+        &quot;&quot;&quot;Render a simple indicator for player position&quot;&quot;&quot;
+        player_screen_pos = self.camera.world_to_screen((self.player_x, self.world_size[1] // 2))
+        
+        # Draw player indicator
+        indicator_color = (255, 255, 0)
+        renderer.draw_circle(player_screen_pos.x, player_screen_pos.y, 10, indicator_color)
+        
+        # Draw direction indicator
+        direction_length = 30
+        renderer.draw_line(
+            player_screen_pos.x, player_screen_pos.y,
+            player_screen_pos.x + direction_length, player_screen_pos.y,
+            indicator_color, 3
+        )
+
+def main():
+    &quot;&quot;&quot;Main function to run the parallax demo&quot;&quot;&quot;
+    engine = LunaEngine(&quot;Parallax System Demo - Use A/D to move, P to toggle parallax&quot;, 1024, 576)
+    engine.fps = 60
+    
+    # Register event handlers
+    @engine.on_event(pygame.KEYDOWN)
+    def on_key_press(event):
+        if engine.current_scene and hasattr(engine.current_scene, &#x27;handle_key_press&#x27;):
+            engine.current_scene.handle_key_press(event)
+    
+    # Add and start the parallax demo scene
+    engine.add_scene(&quot;parallax_demo&quot;, ParallaxDemo)
+    engine.set_scene(&quot;parallax_demo&quot;)
+    
+    print(&quot;=== Parallax System Demo ===&quot;)
+    print(&quot;This demo tests the parallax background system with horizontal movement.&quot;)
+    print(&quot;The background image will be loaded from &#x27;background.jpg&#x27; if available.&quot;)
+    print(&quot;If no image is found, a placeholder will be generated automatically.&quot;)
+    
+    engine.run()
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About This Example</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>parallax_demo.py - Parallax System Demonstration</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="parallax_demo.py" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples Hub
+                            </a>
+                            <a href="../quick-start.html" class="btn btn-outline-success">
+                                <i class="bi bi-play-circle me-2"></i>Quick Start Guide
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-01-20 14:14
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    // Universal search handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // Adjust path based on current location
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            searchIcon.addEventListener('click', performSearch);
+            
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

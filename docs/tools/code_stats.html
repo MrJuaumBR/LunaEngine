@@ -12,13 +12,13 @@
     
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
                     <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 <span class="badge bg-primary me-3">Tools</span>
@@ -31,13 +31,7 @@
     
 
     <div class="container mt-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="index.html">Tools</a></li>
-                <li class="breadcrumb-item active">code_stats.py</li>
-            </ol>
-        </nav>
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Tools</a></li><li class="breadcrumb-item active">code_stats.py</li></ol></nav>
 
         <div class="header-section mb-5">
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>code_stats.py</h1>
@@ -59,47 +53,48 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">No documentation</p>
                 </div>
+                
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self, root_dir) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, root_dir: str) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-count_themes_in_engine">
-                <code class="fs-6 fw-bold text-color-title">def count_themes_in_engine(self) -> Dict</code>
+                <code class="fs-6 fw-bold text-color-title">def count_themes_in_engine(self: Any) -> Dict</code>
                 <div class="mt-2 text-muted small">Count the number of themes available in LunaEngine<br>Returns: Dictionary with theme statistics</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-count_lines_in_file">
-                <code class="fs-6 fw-bold text-color-title">def count_lines_in_file(self, file_path) -> Tuple[int, int, int]</code>
+                <code class="fs-6 fw-bold text-color-title">def count_lines_in_file(self: Any, file_path: Path) -> Tuple[int, int, int]</code>
                 <div class="mt-2 text-muted small">Count lines in a file<br>Returns: (total_lines, code_lines, comment_lines, blank_lines)</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-get_all_files">
-                <code class="fs-6 fw-bold text-color-title">def get_all_files(self) -> List[Path]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_all_files(self: Any) -> List[Path]</code>
                 <div class="mt-2 text-muted small">Get all relevant files in the project</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-get_project_structure">
-                <code class="fs-6 fw-bold text-color-title">def get_project_structure(self) -> List[str]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_project_structure(self: Any) -> List[str]</code>
                 <div class="mt-2 text-muted small">Get the complete project structure as a list of formatted lines</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-format_structure_tree">
-                <code class="fs-6 fw-bold text-color-title">def format_structure_tree(self, structure_lines) -> str</code>
+                <code class="fs-6 fw-bold text-color-title">def format_structure_tree(self: Any, structure_lines: List[str]) -> str</code>
                 <div class="mt-2 text-muted small">Format the structure lines as a tree</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-get_file_emoji">
-                <code class="fs-6 fw-bold text-color-title">def get_file_emoji(self, extension) -> str</code>
+                <code class="fs-6 fw-bold text-color-title">def get_file_emoji(self: Any, extension: str) -> str</code>
                 <div class="mt-2 text-muted small">Get appropriate emoji for file type</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-analyze_project">
-                <code class="fs-6 fw-bold text-color-title">def analyze_project(self) -> Dict</code>
+                <code class="fs-6 fw-bold text-color-title">def analyze_project(self: Any) -> Dict</code>
                 <div class="mt-2 text-muted small">Analyze the entire project and return statistics</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-get_code_density">
-                <code class="fs-6 fw-bold text-color-title">def get_code_density(self, stats) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def get_code_density(self: Any, stats: Any) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-codestatistics-print_statistics">
-                <code class="fs-6 fw-bold text-color-title">def print_statistics(self, stats) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def print_statistics(self: Any, stats: Dict) -> Any</code>
                 <div class="mt-2 text-muted small">Print formatted statistics</div>
             </div>
                 </div>
@@ -116,7 +111,7 @@
             </div>
             <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-save_detailed_report">
                 <div class="card-body">
-                    <code class="fs-5 fw-bold text-color-title">def save_detailed_report(stats, report_file, analyzer) -> Any</code>
+                    <code class="fs-5 fw-bold text-color-title">def save_detailed_report(stats: Dict, report_file: Path, analyzer: CodeStatistics) -> Any</code>
                     <p class="mt-2 mb-0 text-muted">Save a detailed markdown report</p>
                 </div>
             </div>
@@ -132,17 +127,17 @@
 
     
     <!-- Footer -->
-    <footer class="bg-dark text-white mt-5 py-5">
+    <footer class="footer-section">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
                     <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
-                    <p class="text-white-50">2D Game Engine for Python</p>
+                    <p class="text-white-50">2D Game Framework for Python</p>
                 </div>
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-01-15 11:32
+                        Documentation generated on 2026-01-20 14:14
                     </p>
                 </div>
             </div>
@@ -154,7 +149,7 @@
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler for GitHub Pages structure
+    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
@@ -163,30 +158,18 @@
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
                     
-                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
                         searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
                     }
                     
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
             
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -196,10 +179,8 @@
                 }
             });
             
-            // Handle click on search icon
             searchIcon.addEventListener('click', performSearch);
             
-            // Also prevent form submission if the input is inside a form
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {
@@ -212,69 +193,6 @@
     });
     </script>
     
-    
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../theme.js"></script>
-    
-    <script>
-    // Universal search handler for GitHub Pages structure
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('moduleSearch');
-        const searchIcon = document.querySelector('.input-group-text');
-        
-        if (searchInput && searchIcon) {
-            const performSearch = () => {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
-                    const currentPath = window.location.pathname;
-                    let searchPath = 'search.html';
-                    
-                    // If we're in a module subdirectory (/LunaEngine/core/)
-                    if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
-                        searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
-                    }
-                    
-                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
-                }
-            };
-            
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
-            searchInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault(); 
-                    e.stopPropagation();
-                    performSearch();
-                    return false;
-                }
-            });
-            
-            // Handle click on search icon
-            searchIcon.addEventListener('click', performSearch);
-            
-            // Also prevent form submission if the input is inside a form
-            const form = searchInput.closest('form');
-            if (form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    performSearch();
-                    return false;
-                });
-            }
-        }
-    });
-    </script>
     
 </body>
 </html>

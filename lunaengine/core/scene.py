@@ -52,7 +52,7 @@ class Scene(ABC):
         _initialized (bool): Whether the scene has been initialized
         engine (LunaEngine): Reference to the game engine
     """
-    
+    name:str = ''
     def __init__(self, engine: 'LunaEngine', *args:tuple, **kwargs:dict):
         """
         Initialize a new scene with empty UI elements list.
@@ -219,8 +219,8 @@ class Scene(ABC):
         """
         uis = []
         for ui in self.ui_elements:
-            if hasattr(ui, 'group'):
-                if ui.has_group(group):
+            if hasattr(ui, 'groups'):
+                if ui.has_group(str(group).lower()):
                     uis.append(ui)
         return uis
         

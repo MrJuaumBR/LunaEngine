@@ -1,6 +1,7 @@
 # LunaEngine 🚀
 
 A modern, optimized 2D game engine built with Python and Pygame featuring advanced UI systems, procedural lighting, and embedded asset management.
+This engine have features like OpenGL and OpenAL!
 
 <b>PyGame Renderer is no longer supported, only OpenGL!</b>
 
@@ -54,6 +55,7 @@ pygame>=2.5.0
 numpy>=1.21.0
 PyOpenGL>=3.1.0
 PyOpenGL-accelerate>=3.1.0
+PyOpenAL
 ```
 
 ### Development Tools (optional):
@@ -87,31 +89,7 @@ twine upload --config-file .pypirc --repository pypi dist/*
 - OpenGL come actvated by default
 
 ## Network
-*Example usage of server scripts:*
-```py
-def auto_save_script(server: Server):
-    """Example server script for auto-saving"""
-    # This would save game state periodically
-    save_data = {
-        'timestamp': time.time(),
-        'player_count': len(server.clients),
-        'game_state': 'running'
-    }
-    print(f"Auto-save: {save_data}")
-    return save_data
-
-def day_night_cycle_script(server: Server):
-    """Example server script for day/night cycle"""
-    # Calculate current cycle phase (0-1)
-    cycle_time = time.time() % 3600  # 1 hour cycle
-    cycle_phase = cycle_time / 3600
-    
-    # Broadcast cycle update to all clients
-    cycle_msg = GameStateMessage({'day_night_cycle': cycle_phase})
-    server.broadcast(cycle_msg)
-    
-    return {'cycle_phase': cycle_phase, 'cycle_time': cycle_time}
-```
+ToDo
 
 <picture>
   <source

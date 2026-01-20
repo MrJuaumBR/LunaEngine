@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bones Demo - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Examples Hub</a></li><li class="breadcrumb-item active">Bones Demo</li></ol></nav>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Bones Demo</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>bones_demo.py</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">&quot;&quot;&quot;
+bones_demo.py - Interactive Skeletal Animation Demo for LunaEngine
+
+ENGINE PATH:
+lunaengine -&gt; examples -&gt; bones_demo.py
+
+DESCRIPTION:
+This demo showcases the bones system with interactive skeletons that can be
+manipulated, animated, and customized. Features different animal skeletons
+with bone manipulation controls.
+
+CONTROLS:
+- Use TAB to switch between skeletons
+- Click and drag to move the skeleton
+- Use sliders to adjust bone angles
+- Click animation buttons to see different movements
+- Use color pickers to customize bone colors
+&quot;&quot;&quot;
+
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
+
+from lunaengine.core import LunaEngine, Scene
+from lunaengine.ui import *
+from lunaengine.ui.tween import Tween, EasingType, AnimationHandler
+from lunaengine.misc.bones import Joint, Bone, Skeleton, HumanBones, DogBones, CatBones, HorseBones
+import pygame as pg
+import math
+from typing import Dict, List, Tuple, Optional
+
+class BonesDemo(Scene):
+    def __init__(self, engine: LunaEngine):
+        super().__init__(engine)
+        self.skeletons = {}
+        self.current_skeleton_type = &quot;Human&quot;
+        self.current_skeleton: Optional[Skeleton] = None
+        self.skeleton_position = [512, 384]  # Center of screen
+        self.is_dragging = False
+        self.drag_offset = [0, 0]
+        
+        # Animation states
+        self.animation_handler = AnimationHandler(engine)
+        self.active_animation = None
+        self.animation_speed = 1.0
+        
+        # Demo state
+        self.demo_state = {
+            &#x27;bone_color&#x27;: (255, 255, 255),
+            &#x27;show_joints&#x27;: True,
+            &#x27;bone_width&#x27;: 3,
+            &#x27;current_bone&#x27;: None,
+        }
+        
+        # Setup skeletons
+        self.setup_skeletons()
+        self.setup_ui()
+    
+    def on_enter(self, previous_scene: str = None):
+        print(&quot;=== LunaEngine Bones Demo ===&quot;)
+        print(&quot;Explore the skeletal animation system!&quot;)
+        print(&quot;Controls:&quot;)
+        print(&quot;- TAB: Switch between skeletons (Human, Dog, Cat, Horse)&quot;)
+        print(&quot;- Click and drag: Move the current skeleton&quot;)
+        print(&quot;- Use sliders: Adjust bone angles&quot;)
+        print(&quot;- Animation buttons: Play different movements&quot;)
+        print(&quot;- Color pickers: Change bone colors&quot;)
+        print(&quot;- Switch: Toggle joint visibility&quot;)
+        print(&quot;- Bone width slider: Adjust bone thickness&quot;)
+        print(&quot;- Hover over UI elements for tooltips&quot;)
+        
+    def on_exit(self, next_scene: str = None):
+        print(&quot;Exiting Bones Demo scene&quot;)
+        self.animation_handler.cancel_all()
+    
+    def setup_skeletons(self):
+        &quot;&quot;&quot;Initialize all skeleton types&quot;&quot;&quot;
+        center_x, center_y = 512, 384
+        
+        # Human skeleton
+        self.skeletons[&#x27;Human&#x27;] = HumanBones(center_x, center_y, scale=1.0)
+        
+        # Dog skeleton
+        self.skeletons[&#x27;Dog&#x27;] = DogBones(center_x, center_y, scale=1.0)
+        
+        # Cat skeleton
+        self.skeletons[&#x27;Cat&#x27;] = CatBones(center_x, center_y, scale=1.0)
+        
+        # Horse skeleton
+        self.skeletons[&#x27;Horse&#x27;] = HorseBones(center_x, center_y, scale=0.8)  # Smaller scale for horse
+        
+        # Set initial skeleton
+        self.current_skeleton = self.skeletons[&#x27;Human&#x27;]
+    
+    def setup_ui(self):
+        &quot;&quot;&quot;Set up all UI controls&quot;&quot;&quot;
+        self.engine.set_global_theme(ThemeType.DEFAULT)
+        
+        # --- TITLE AND INFO ---
+        title = TextLabel(512, 20, &quot;LunaEngine - Bones System Demo&quot;, 32, (255, 220, 100), root_point=(0.5, 0))
+        self.add_ui_element(title)
+        
+        info_text = &quot;TAB: Switch skeletons | Drag: Move skeleton | Sliders: Adjust angles&quot;
+        info_label = TextLabel(512, 50, info_text, 16, (200, 200, 255), root_point=(0.5, 0))
+        self.add_ui_element(info_label)
+        
+        # --- SKELETON INFO DISPLAY ---
+        self.skeleton_info = TextLabel(20, 80, &quot;Current: Human Skeleton&quot;, 20, (100, 255, 100))
+        self.add_ui_element(self.skeleton_info)
+        
+        # --- MAIN CONTROL PANEL (Left side) ---
+        control_panel = UiFrame(20, 110, 300, 620)
+        control_panel.set_background_color((30, 30, 50, 200))
+        control_panel.set_border((100, 150, 255), 2)
+        self.add_ui_element(control_panel)
+        
+        # Panel title
+        panel_title = TextLabel(5, 5, &quot;Skeleton Controls&quot;, 22, (255, 200, 100))
+        control_panel.add_child(panel_title)
+        
+        y_offset = 40
+        
+        # --- Skeleton Selection Buttons ---
+        selection_label = TextLabel(10, y_offset, &quot;Select Skeleton:&quot;, 16, (200, 200, 255))
+        control_panel.add_child(selection_label)
+        y_offset += 25
+        
+        # Create skeleton selection buttons in a grid
+        skeleton_types = [&#x27;Human&#x27;, &#x27;Dog&#x27;, &#x27;Cat&#x27;, &#x27;Horse&#x27;]
+        for i, skeleton_type in enumerate(skeleton_types):
+            btn_x = 10 + (i % 2) * 140
+            btn_y = y_offset + (i // 2) * 35
+            btn = Button(btn_x, btn_y, 130, 30, skeleton_type)
+            btn.set_on_click(lambda st=skeleton_type: self.switch_skeleton(st))
+            btn.set_simple_tooltip(f&quot;Switch to {skeleton_type.lower()} skeleton&quot;)
+            if skeleton_type == self.current_skeleton_type:
+                btn.set_background_color((80, 120, 200))
+            control_panel.add_child(btn)
+        y_offset += 75
+        
+        # --- Bone Color Picker ---
+        color_label = TextLabel(10, y_offset, &quot;Bone Color:&quot;, 16, (200, 200, 255))
+        control_panel.add_child(color_label)
+        y_offset += 25
+        
+        # Color preset buttons
+        color_presets = [
+            (&quot;White&quot;, (255, 255, 255)),
+            (&quot;Red&quot;, (255, 100, 100)),
+            (&quot;Green&quot;, (100, 255, 100)),
+            (&quot;Blue&quot;, (100, 150, 255)),
+            (&quot;Gold&quot;, (255, 215, 0)),
+            (&quot;Purple&quot;, (200, 100, 255)),
+        ]
+        
+        for i, (name, color) in enumerate(color_presets):
+            btn_x = 10 + (i % 3) * 95
+            btn_y = y_offset + (i // 3) * 35
+            btn = Button(btn_x, btn_y, 85, 30, name)
+            btn.set_background_color(color)
+            btn.set_on_click(lambda c=color: self.set_bone_color(c))
+            btn.set_simple_tooltip(f&quot;Set bone color to {name}&quot;)
+            control_panel.add_child(btn)
+        
+        y_offset += 80
+        
+        # --- Visual Settings ---
+        visual_label = TextLabel(10, y_offset, &quot;Visual Settings:&quot;, 16, (200, 200, 255))
+        control_panel.add_child(visual_label)
+        y_offset += 25
+        
+        # Show joints switch
+        switch_label = TextLabel(10, y_offset, &quot;Show Joints:&quot;, 14)
+        control_panel.add_child(switch_label)
+        
+        joint_switch = Switch(110, y_offset - 5, 50, 25)
+        joint_switch.toggled = self.demo_state[&#x27;show_joints&#x27;]
+        joint_switch.set_on_toggle(lambda s: self.toggle_joints(s))
+        joint_switch.set_simple_tooltip(&quot;Toggle joint visibility (red dots)&quot;)
+        control_panel.add_child(joint_switch)
+        
+        y_offset += 35
+        
+        # Bone width slider
+        width_label = TextLabel(10, y_offset, &quot;Bone Width:&quot;, 14)
+        control_panel.add_child(width_label)
+        
+        width_slider = Slider(100, y_offset - 5, 150, 20, 1, 10, self.demo_state[&#x27;bone_width&#x27;])
+        width_slider.on_value_changed = lambda v: self.set_bone_width(v)
+        width_slider.set_simple_tooltip(&quot;Adjust bone thickness&quot;)
+        control_panel.add_child(width_slider)
+        
+        self.width_display = TextLabel(260, y_offset, f&quot;{self.demo_state[&#x27;bone_width&#x27;]}&quot;, 14)
+        control_panel.add_child(self.width_display)
+        
+        y_offset += 40
+        
+        # --- Animation Controls ---
+        anim_label = TextLabel(10, y_offset, &quot;Animations:&quot;, 16, (200, 200, 255))
+        control_panel.add_child(anim_label)
+        y_offset += 25
+        
+        # Animation buttons
+        animations = [
+            (&quot;Idle&quot;, self.play_idle_animation),
+            (&quot;Walk&quot;, self.play_walk_animation),
+            (&quot;Jump&quot;, self.play_jump_animation),
+            (&quot;Attack&quot;, self.play_attack_animation),
+            (&quot;Dance&quot;, self.play_dance_animation),
+        ]
+        
+        for i, (name, func) in enumerate(animations):
+            btn_x = 10 + (i % 2) * 140
+            btn_y = y_offset + (i // 2) * 35
+            btn = Button(btn_x, btn_y, 130, 30, name)
+            btn.set_on_click(func)
+            btn.set_simple_tooltip(f&quot;Play {name.lower()} animation&quot;)
+            control_panel.add_child(btn)
+        
+        y_offset += 95
+        
+        # Animation speed control
+        speed_label = TextLabel(10, y_offset, &quot;Animation Speed:&quot;, 14)
+        control_panel.add_child(speed_label)
+        
+        speed_slider = Slider(130, y_offset - 5, 120, 20, 0.1, 3.0, self.animation_speed)
+        speed_slider.on_value_changed = lambda v: self.set_animation_speed(v)
+        speed_slider.set_simple_tooltip(&quot;Adjust animation playback speed&quot;)
+        control_panel.add_child(speed_slider)
+        
+        self.speed_display = TextLabel(260, y_offset, f&quot;{self.animation_speed:.1f}x&quot;, 14)
+        control_panel.add_child(self.speed_display)
+        
+        y_offset += 35
+        
+        # Stop animation button
+        stop_btn = Button(10, y_offset, 280, 30, &quot;Stop Animation&quot;)
+        stop_btn.set_on_click(self.stop_animation)
+        stop_btn.set_background_color((200, 100, 100))
+        stop_btn.set_simple_tooltip(&quot;Stop current animation&quot;)
+        control_panel.add_child(stop_btn)
+        
+        y_offset += 45
+        
+        # --- Bone Angle Controls (Right side panel) ---
+        angle_panel = UiFrame(self.engine.width - 320, 110, 300, 400)
+        angle_panel.set_background_color((30, 30, 50, 200))
+        angle_panel.set_border((100, 150, 255), 2)
+        self.add_ui_element(angle_panel)
+        
+        angle_title = TextLabel(5, 5, &quot;Bone Angle Controls&quot;, 22, (255, 200, 100))
+        angle_panel.add_child(angle_title)
+        
+        # Bone selection dropdown
+        self.bone_dropdown = Dropdown(10, 40, 280, 30, [&quot;Select a bone...&quot;])
+        self.bone_dropdown.set_on_selection_changed(self.on_bone_selected)
+        self.bone_dropdown.set_simple_tooltip(&quot;Select a bone to adjust its angle&quot;)
+        angle_panel.add_child(self.bone_dropdown)
+        
+        # Angle slider
+        self.angle_label = TextLabel(10, 85, &quot;Angle: 0°&quot;, 16, (200, 200, 255))
+        angle_panel.add_child(self.angle_label)
+        
+        self.angle_slider = Slider(10, 110, 280, 30, -180, 180, 0)
+        self.angle_slider.on_value_changed = self.on_angle_changed
+        self.angle_slider.set_simple_tooltip(&quot;Adjust selected bone angle (-180° to 180°)&quot;)
+        self.angle_slider.enabled = False
+        angle_panel.add_child(self.angle_slider)
+        
+        # Reset bone button
+        reset_btn = Button(10, 155, 280, 30, &quot;Reset All Bones&quot;)
+        reset_btn.set_on_click(self.reset_all_bones)
+        reset_btn.set_simple_tooltip(&quot;Reset all bones to default angles&quot;)
+        angle_panel.add_child(reset_btn)
+        
+        # Random pose button
+        random_btn = Button(10, 195, 280, 30, &quot;Random Pose&quot;)
+        random_btn.set_on_click(self.random_pose)
+        random_btn.set_simple_tooltip(&quot;Set random angles for all bones&quot;)
+        angle_panel.add_child(random_btn)
+        
+        # --- Skeleton Stats Display ---
+        stats_panel = UiFrame(self.engine.width - 320, 520, 300, 210)
+        stats_panel.set_background_color((30, 30, 50, 200))
+        stats_panel.set_border((100, 150, 255), 2)
+        self.add_ui_element(stats_panel)
+        
+        stats_title = TextLabel(5, 5, &quot;Skeleton Stats&quot;, 22, (255, 200, 100))
+        stats_panel.add_child(stats_title)
+        
+        self.stats_bone_count = TextLabel(10, 40, &quot;Bones: 0&quot;, 16)
+        stats_panel.add_child(self.stats_bone_count)
+        
+        self.stats_position = TextLabel(10, 65, &quot;Position: (0, 0)&quot;, 16)
+        stats_panel.add_child(self.stats_position)
+        
+        self.stats_animation = TextLabel(10, 90, &quot;Animation: None&quot;, 16)
+        stats_panel.add_child(self.stats_animation)
+        
+        # Instructions
+        instructions = [
+            &quot;Click and drag skeleton to move&quot;,
+            &quot;Use TAB to quickly switch skeletons&quot;,
+            &quot;Select bone from dropdown to adjust&quot;,
+            &quot;Use animation buttons for preset moves&quot;,
+            &quot;Try different bone colors!&quot;
+        ]
+        
+        for i, instruction in enumerate(instructions):
+            inst_label = TextLabel(10, 120 + i * 20, f&quot;• {instruction}&quot;, 12, (150, 200, 255))
+            stats_panel.add_child(inst_label)
+        
+        # --- FPS Display ---
+        self.fps_display = TextLabel(self.engine.width - 5, 20, &quot;FPS: --&quot;, 16, (100, 255, 100), root_point=(1, 0))
+        self.add_ui_element(self.fps_display)
+        
+        # Update bone dropdown and stats
+        self.update_bone_dropdown()
+        self.update_stats()
+    
+    def switch_skeleton(self, skeleton_type: str):
+        &quot;&quot;&quot;Switch to a different skeleton type&quot;&quot;&quot;
+        if skeleton_type in self.skeletons:
+            self.current_skeleton_type = skeleton_type
+            self.current_skeleton = self.skeletons[skeleton_type]
+            
+            # Reset position to center
+            self.skeleton_position = [512, 384]
+            
+            # Stop any current animation
+            self.stop_animation()
+            
+            # Update UI
+            self.skeleton_info.set_text(f&quot;Current: {skeleton_type} Skeleton&quot;)
+            
+            # Update bone dropdown
+            self.update_bone_dropdown()
+            
+            # Update stats
+            self.update_stats()
+            
+            print(f&quot;Switched to {skeleton_type} skeleton&quot;)
+    
+    def update_bone_dropdown(self):
+        &quot;&quot;&quot;Update the bone dropdown with current skeleton&#x27;s bones&quot;&quot;&quot;
+        if self.current_skeleton:
+            bone_names = list(self.current_skeleton.bones.keys())
+            self.bone_dropdown.set_options(bone_names)
+            if bone_names:
+                self.bone_dropdown.set_selected_index(0)
+                self.demo_state[&#x27;current_bone&#x27;] = bone_names[0]
+                self.update_angle_slider()
+            else:
+                self.demo_state[&#x27;current_bone&#x27;] = None
+    
+    def on_bone_selected(self, index: int, bone_name: str):
+        &quot;&quot;&quot;Handle bone selection from dropdown&quot;&quot;&quot;
+        self.demo_state[&#x27;current_bone&#x27;] = bone_name
+        self.update_angle_slider()
+    
+    def update_angle_slider(self):
+        &quot;&quot;&quot;Update angle slider based on selected bone&quot;&quot;&quot;
+        if self.demo_state[&#x27;current_bone&#x27;] and self.current_skeleton:
+            bone = self.current_skeleton.get_bone(self.demo_state[&#x27;current_bone&#x27;])
+            current_angle = bone.joint.angle
+            
+            # Normalize angle to -180 to 180 range for slider
+            normalized_angle = ((current_angle + 180) % 360) - 180
+            
+            self.angle_slider.set_value(normalized_angle)
+            self.angle_label.set_text(f&quot;Angle: {current_angle:.1f}°&quot;)
+            self.angle_slider.enabled = True
+        else:
+            self.angle_slider.enabled = False
+            self.angle_label.set_text(&quot;Angle: --&quot;)
+    
+    def on_angle_changed(self, angle: float):
+        &quot;&quot;&quot;Handle angle slider change&quot;&quot;&quot;
+        if self.demo_state[&#x27;current_bone&#x27;] and self.current_skeleton:
+            # Convert slider angle back to 0-360 range
+            normalized_angle = angle % 360
+            
+            self.current_skeleton.set_bone_angle(self.demo_state[&#x27;current_bone&#x27;], normalized_angle)
+            self.angle_label.set_text(f&quot;Angle: {normalized_angle:.1f}°&quot;)
+            
+            # Update child positions
+            self.current_skeleton._update_child_positions()
+    
+    def set_bone_color(self, color: Tuple[int, int, int]):
+        &quot;&quot;&quot;Set color for all bones in current skeleton&quot;&quot;&quot;
+        self.demo_state[&#x27;bone_color&#x27;] = color
+        if self.current_skeleton:
+            for bone_name, bone in self.current_skeleton.bones.items():
+                bone.set_color(color)
+    
+    def toggle_joints(self, show: bool):
+        &quot;&quot;&quot;Toggle joint visibility&quot;&quot;&quot;
+        self.demo_state[&#x27;show_joints&#x27;] = show
+        if self.current_skeleton:
+            for bone_name, bone in self.current_skeleton.bones.items():
+                bone.show_joint = show
+    
+    def set_bone_width(self, width: int):
+        &quot;&quot;&quot;Set bone width&quot;&quot;&quot;
+        self.demo_state[&#x27;bone_width&#x27;] = int(width)
+        self.width_display.set_text(f&quot;{width}&quot;)
+        if self.current_skeleton:
+            for bone_name, bone in self.current_skeleton.bones.items():
+                bone.width = int(width)
+    
+    def set_animation_speed(self, speed: float):
+        &quot;&quot;&quot;Set animation speed&quot;&quot;&quot;
+        self.animation_speed = speed
+        self.speed_display.set_text(f&quot;{speed:.1f}x&quot;)
+        # Update active animation speed if any
+        if self.active_animation:
+            self.active_animation.set_duration(2.0 / speed)
+    
+    def stop_animation(self):
+        &quot;&quot;&quot;Stop current animation&quot;&quot;&quot;
+        self.animation_handler.cancel_all()
+        self.active_animation = None
+        self.stats_animation.set_text(&quot;Animation: None&quot;)
+    
+    def play_idle_animation(self):
+        &quot;&quot;&quot;Play idle/breathing animation&quot;&quot;&quot;
+        self.stop_animation()
+        
+        if self.current_skeleton_type == &quot;Human&quot;:
+            # Gentle breathing motion for human
+            self.animate_bone_with_tween(&quot;torso&quot;, 0, 5, 2.0, EasingType.SINE_IN_OUT, loops=-1, yoyo=True)
+            self.animate_bone_with_tween(&quot;neck&quot;, 0, 3, 2.5, EasingType.SINE_IN_OUT, loops=-1, yoyo=True)
+        elif self.current_skeleton_type in [&quot;Dog&quot;, &quot;Cat&quot;]:
+            # Tail wag for animals
+            self.animate_bone_with_tween(&quot;tail&quot;, 170, 190, 1.5, EasingType.SINE_IN_OUT, loops=-1, yoyo=True)
+        
+        self.stats_animation.set_text(&quot;Animation: Idle&quot;)
+    
+    def play_walk_animation(self):
+        &quot;&quot;&quot;Play walking animation&quot;&quot;&quot;
+        self.stop_animation()
+        
+        if self.current_skeleton_type == &quot;Human&quot;:
+            # Human walk cycle
+            self.animate_bone_with_tween(&quot;left_upper_leg&quot;, 280, 300, 0.5, EasingType.SINE_IN_OUT, loops=-1, yoyo=True)
+            self.animate_bone_with_tween(&quot;right_upper_leg&quot;, 260, 280, 0.5, EasingType.SINE_IN_OUT, loops=-1, yoyo=True, delay=0.25)
+            self.animate_bone_with_tween(&quot;left_upper_arm&quot;, 45, 65, 0.5, EasingType.SINE_IN_OUT, loops=-1, yoyo=True, delay=0.25)
+            self.animate_bone_with_tween(&quot;right_upper_arm&quot;, 135, 155, 0.5, EasingType.SINE_IN_OUT, loops=-1, yoyo=True)
+        elif self.current_skeleton_type in [&quot;Dog&quot;, &quot;Cat&quot;, &quot;Horse&quot;]:
+            # Quadruped walk cycle
+            legs = []
+            if self.current_skeleton_type == &quot;Dog&quot; or self.current_skeleton_type == &quot;Cat&quot;:
+                legs = [&quot;front_right_upper&quot;, &quot;front_left_upper&quot;, &quot;back_right_upper&quot;, &quot;back_left_upper&quot;]
+            elif self.current_skeleton_type == &quot;Horse&quot;:
+                legs = [&quot;front_right_upper&quot;, &quot;front_left_upper&quot;, &quot;back_right_upper&quot;, &quot;back_left_upper&quot;]
+            
+            for i, leg in enumerate(legs):
+                if leg in self.current_skeleton.bones:
+                    base_angle = 270  # Default angle for legs
+                    self.animate_bone_with_tween(leg, base_angle - 15, base_angle + 15, 0.8, 
+                                                EasingType.SINE_IN_OUT, loops=-1, yoyo=True, 
+                                                delay=i * 0.2)
+        
+        self.stats_animation.set_text(&quot;Animation: Walking&quot;)
+    
+    def play_jump_animation(self):
+        &quot;&quot;&quot;Play jumping animation&quot;&quot;&quot;
+        self.stop_animation()
+        
+        if self.current_skeleton_type == &quot;Human&quot;:
+            # Human jump
+            self.animate_bone_with_tween(&quot;torso&quot;, 0, 15, 0.5, EasingType.BOUNCE_OUT, loops=1)
+            self.animate_bone_with_tween(&quot;left_upper_leg&quot;, 280, 320, 0.5, EasingType.BOUNCE_OUT, loops=1)
+            self.animate_bone_with_tween(&quot;right_upper_leg&quot;, 260, 300, 0.5, EasingType.BOUNCE_OUT, loops=1)
+        elif self.current_skeleton_type in [&quot;Dog&quot;, &quot;Cat&quot;]:
+            # Animal pounce
+            self.animate_bone_with_tween(&quot;spine&quot;, 5, 15, 0.5, EasingType.BOUNCE_OUT, loops=1)
+            self.animate_bone_with_tween(&quot;front_right_upper&quot;, 270, 300, 0.5, EasingType.BOUNCE_OUT, loops=1)
+            self.animate_bone_with_tween(&quot;front_left_upper&quot;, 270, 240, 0.5, EasingType.BOUNCE_OUT, loops=1)
+        
+        self.stats_animation.set_text(&quot;Animation: Jump&quot;)
+    
+    def play_attack_animation(self):
+        &quot;&quot;&quot;Play attack animation&quot;&quot;&quot;
+        self.stop_animation()
+        
+        if self.current_skeleton_type == &quot;Human&quot;:
+            # Punch/kick animation
+            self.animate_bone_with_tween(&quot;right_upper_arm&quot;, 135, 180, 0.2, EasingType.BACK_OUT, loops=1)
+            self.animate_bone_with_tween(&quot;right_lower_arm&quot;, -20, -60, 0.2, EasingType.BACK_OUT, loops=1, delay=0.1)
+        elif self.current_skeleton_type in [&quot;Dog&quot;, &quot;Cat&quot;]:
+            # Bite/pounce animation
+            self.animate_bone_with_tween(&quot;head&quot;, 0, 15, 0.3, EasingType.BACK_OUT, loops=1)
+            self.animate_bone_with_tween(&quot;neck&quot;, 355, 340, 0.3, EasingType.BACK_OUT, loops=1)
+        
+        self.stats_animation.set_text(&quot;Animation: Attack&quot;)
+    
+    def play_dance_animation(self):
+        &quot;&quot;&quot;Play fun dance animation&quot;&quot;&quot;
+        self.stop_animation()
+        
+        if self.current_skeleton_type == &quot;Human&quot;:
+            # Funky dance moves
+            self.animate_bone_with_tween(&quot;torso&quot;, 0, 10, 0.8, EasingType.SINE_IN_OUT, loops=-1, yoyo=True)
+            self.animate_bone_with_tween(&quot;left_upper_arm&quot;, 45, 90, 0.6, EasingType.SINE_IN_OUT, loops=-1, yoyo=True)
+            self.animate_bone_with_tween(&quot;right_upper_arm&quot;, 135, 180, 0.7, EasingType.SINE_IN_OUT, loops=-1, yoyo=True, delay=0.3)
+            self.animate_bone_with_tween(&quot;left_upper_leg&quot;, 280, 310, 0.5, EasingType.SINE_IN_OUT, loops=-1, yoyo=True, delay=0.1)
+            self.animate_bone_with_tween(&quot;right_upper_leg&quot;, 260, 290, 0.5, EasingType.SINE_IN_OUT, loops=-1, yoyo=True, delay=0.4)
+        
+        self.stats_animation.set_text(&quot;Animation: Dance Party!&quot;)
+    
+    def animate_bone_with_tween(self, bone_name: str, start_angle: float, end_angle: float, 
+                               duration: float, easing: EasingType, loops: int = 0, 
+                               yoyo: bool = False, delay: float = 0):
+        &quot;&quot;&quot;Create and play a tween animation for a bone&quot;&quot;&quot;
+        if not self.current_skeleton or bone_name not in self.current_skeleton.bones:
+            return
+        
+        bone = self.current_skeleton.get_bone(bone_name)
+        
+        # Save current angle
+        original_angle = bone.joint.angle
+        
+        # Create tween
+        tween = Tween.create(bone.joint)
+        tween.to(
+            angle=end_angle,
+            duration=duration / self.animation_speed,
+            easing=easing
+        )
+        
+        if loops != 0:
+            tween.set_loops(loops, yoyo=yoyo)
+        
+        tween.set_callbacks(
+            on_update=lambda t, p: self.current_skeleton._update_child_positions() if self.current_skeleton else None,
+            on_complete=lambda: self.on_animation_complete(bone_name, original_angle) if loops == 1 else None
+        )
+        
+        # Add delay if specified
+        if delay &gt; 0:
+            tween.set_delay(delay)
+        
+        self.animation_handler.add(f&quot;bone_{bone_name}&quot;, tween, auto_play=True)
+    
+    def on_animation_complete(self, bone_name: str, original_angle: float):
+        &quot;&quot;&quot;Callback when single-loop animation completes&quot;&quot;&quot;
+        # Reset to original angle for single-play animations
+        if self.current_skeleton and bone_name in self.current_skeleton.bones:
+            self.current_skeleton.set_bone_angle(bone_name, original_angle)
+            self.current_skeleton._update_child_positions()
+    
+    def reset_all_bones(self):
+        &quot;&quot;&quot;Reset all bones to default angles&quot;&quot;&quot;
+        self.stop_animation()
+        
+        # Recreate the skeleton to reset all angles
+        if self.current_skeleton_type == &quot;Human&quot;:
+            self.skeletons[&#x27;Human&#x27;] = HumanBones(512, 384, 1.0)
+            self.current_skeleton = self.skeletons[&#x27;Human&#x27;]
+        elif self.current_skeleton_type == &quot;Dog&quot;:
+            self.skeletons[&#x27;Dog&#x27;] = DogBones(512, 384, 1.0)
+            self.current_skeleton = self.skeletons[&#x27;Dog&#x27;]
+        elif self.current_skeleton_type == &quot;Cat&quot;:
+            self.skeletons[&#x27;Cat&#x27;] = CatBones(512, 384, 1.0)
+            self.current_skeleton = self.skeletons[&#x27;Cat&#x27;]
+        elif self.current_skeleton_type == &quot;Horse&quot;:
+            self.skeletons[&#x27;Horse&#x27;] = HorseBones(512, 384, 0.8)
+            self.current_skeleton = self.skeletons[&#x27;Horse&#x27;]
+        
+        # Update UI
+        self.update_bone_dropdown()
+        self.update_stats()
+        
+        print(&quot;All bones reset to default angles&quot;)
+    
+    def random_pose(self):
+        &quot;&quot;&quot;Set random angles for all bones&quot;&quot;&quot;
+        self.stop_animation()
+        
+        if self.current_skeleton:
+            for bone_name in self.current_skeleton.bones.keys():
+                random_angle = (hash(bone_name + str(pg.time.get_ticks())) % 360)
+                self.current_skeleton.set_bone_angle(bone_name, random_angle)
+            
+            self.current_skeleton._update_child_positions()
+            self.update_angle_slider()
+            
+            print(&quot;Random pose applied&quot;)
+    
+    def update_stats(self):
+        &quot;&quot;&quot;Update skeleton statistics display&quot;&quot;&quot;
+        if self.current_skeleton:
+            self.stats_bone_count.set_text(f&quot;Bones: {len(self.current_skeleton.bones)}&quot;)
+            self.stats_position.set_text(f&quot;Position: ({self.skeleton_position[0]}, {self.skeleton_position[1]})&quot;)
+    
+    def handle_events(self, events):
+        &quot;&quot;&quot;Handle input events&quot;&quot;&quot;
+        for event in events:
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_TAB:
+                    # Cycle through skeletons
+                    skeleton_types = list(self.skeletons.keys())
+                    current_index = skeleton_types.index(self.current_skeleton_type)
+                    next_index = (current_index + 1) % len(skeleton_types)
+                    self.switch_skeleton(skeleton_types[next_index])
+            
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                if event.button == 1:  # Left mouse button
+                    mouse_pos = pg.mouse.get_pos()
+                    
+                    # Check if click is within skeleton bounds (rough estimate)
+                    skeleton_radius = 150
+                    dx = mouse_pos[0] - self.skeleton_position[0]
+                    dy = mouse_pos[1] - self.skeleton_position[1]
+                    
+                    if dx*dx + dy*dy &lt; skeleton_radius*skeleton_radius:
+                        self.is_dragging = True
+                        self.drag_offset = [dx, dy]
+            
+            elif event.type == pg.MOUSEBUTTONUP:
+                if event.button == 1:  # Left mouse button
+                    self.is_dragging = False
+            
+            elif event.type == pg.MOUSEMOTION:
+                if self.is_dragging:
+                    mouse_pos = pg.mouse.get_pos()
+                    self.skeleton_position = [
+                        mouse_pos[0] - self.drag_offset[0],
+                        mouse_pos[1] - self.drag_offset[1]
+                    ]
+    
+    def update(self, dt):
+        &quot;&quot;&quot;Update scene&quot;&quot;&quot;
+        # Update animations
+        self.animation_handler.update(dt)
+        
+        # Update FPS display
+        fps_stats = self.engine.get_fps_stats()
+        self.fps_display.set_text(f&quot;FPS: {fps_stats[&#x27;current_fps&#x27;]:.1f}&quot;)
+        
+        # Update stats
+        self.update_stats()
+    
+    def render(self, renderer):
+        &quot;&quot;&quot;Render scene&quot;&quot;&quot;
+        renderer.fill_screen(ThemeManager.get_color(&#x27;background&#x27;))
+        
+        # Draw grid background
+        grid_size = 50
+        grid_color = (40, 40, 60)
+        for x in range(0, self.engine.width, grid_size):
+            renderer.draw_line(x, 0, x, self.engine.height, grid_color, 2)
+        for y in range(0, self.engine.height, grid_size):
+            renderer.draw_line(0, y, self.engine.width, y, grid_color, 2)
+        
+        # Draw center marker
+        renderer.draw_circle(512, 384, 5, (100, 100, 150, 150))
+        
+        # Draw skeleton at current position
+        if self.current_skeleton:
+            # Temporarily translate all bones
+            original_positions = {}
+            for bone_name, bone in self.current_skeleton.bones.items():
+                original_positions[bone_name] = (bone.joint.x, bone.joint.y)
+                
+                # Adjust position for rendering
+                bone.joint.x = self.skeleton_position[0] + (bone.joint.x - 512)
+                bone.joint.y = self.skeleton_position[1] + (bone.joint.y - 384)
+            
+            # Apply bone color and joint visibility
+            for bone_name, bone in self.current_skeleton.bones.items():
+                bone.set_color(self.demo_state[&#x27;bone_color&#x27;])
+                bone.show_joint = self.demo_state[&#x27;show_joints&#x27;]
+                bone.width = self.demo_state[&#x27;bone_width&#x27;]
+            
+            # Render skeleton
+            self.current_skeleton.render(renderer)
+            
+            # Draw skeleton name at position
+            renderer.draw_text(self.current_skeleton_type, self.skeleton_position[0], 
+                             self.skeleton_position[1] - 180, (255, 200, 100),
+                             FontManager.get_font(None, 24), anchor_point=(0.5, 0.5))
+            
+            # Draw drag indicator if dragging
+            if self.is_dragging:
+                renderer.draw_circle(self.skeleton_position[0], self.skeleton_position[1], 
+                                   10, (255, 255, 255, 100))
+            
+            # Restore original positions
+            for bone_name, bone in self.current_skeleton.bones.items():
+                if bone_name in original_positions:
+                    bone.joint.x, bone.joint.y = original_positions[bone_name]
+        
+        # Draw UI panels background
+        renderer.draw_rect(15, 105, 310, 630, (20, 20, 40, 200))
+        renderer.draw_rect(self.engine.width - 325, 105, 310, 630, (20, 20, 40, 200))
+
+
+def main():
+    # Create engine
+    engine = LunaEngine(&quot;LunaEngine - Bones System Demo&quot;, 1024, 768, use_opengl=True, fullscreen=False)
+    
+    # Configure the max FPS
+    engine.fps = 60
+    
+    # Add and set the main scene
+    engine.add_scene(&quot;main&quot;, BonesDemo)
+    engine.set_scene(&quot;main&quot;)
+    
+    # Run the engine
+    engine.run()
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About This Example</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>bones_demo.py - Interactive Skeletal Animation Demo for LunaEngine</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="bones_demo.py" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples Hub
+                            </a>
+                            <a href="../quick-start.html" class="btn btn-outline-success">
+                                <i class="bi bi-play-circle me-2"></i>Quick Start Guide
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Engine for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-01-19 14:16
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    // Universal search handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // Adjust path based on current location
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            searchIcon.addEventListener('click', performSearch);
+            
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

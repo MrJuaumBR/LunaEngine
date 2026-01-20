@@ -12,13 +12,13 @@
     
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
                     <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 <span class="badge bg-primary me-3">Utils</span>
@@ -31,13 +31,7 @@
     
 
     <div class="container mt-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="index.html">Utils</a></li>
-                <li class="breadcrumb-item active">performance.py</li>
-            </ol>
-        </nav>
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Utils</a></li><li class="breadcrumb-item active">performance.py</li></ol></nav>
 
         <div class="header-section mb-5">
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>performance.py</h1>
@@ -59,27 +53,28 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">Optimized performance monitoring with minimal overhead</p>
                 </div>
+                
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self, history_size) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, history_size: int = 300) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-get_hardware_info">
-                <code class="fs-6 fw-bold text-color-title">def get_hardware_info(self) -> Dict[str, str]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_hardware_info(self: Any) -> Dict[str, str]</code>
                 <div class="mt-2 text-muted small">Get system hardware information with caching</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-update_frame">
-                <code class="fs-6 fw-bold text-color-title">def update_frame(self) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update_frame(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Update frame timing - FIXED VERSION</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-get_stats">
-                <code class="fs-6 fw-bold text-color-title">def get_stats(self) -> Dict[str, float]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_stats(self: Any) -> Dict[str, float]</code>
                 <div class="mt-2 text-muted small">Get FPS statistics with optimized calculations - FIXED</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-_get_empty_stats">
-                <code class="fs-6 fw-bold text-color-title">def _get_empty_stats(self) -> Dict[str, float]</code>
+                <code class="fs-6 fw-bold text-color-title">def _get_empty_stats(self: Any) -> Dict[str, float]</code>
                 <div class="mt-2 text-muted small">Return empty stats structure - FIXED</div>
             </div>
                 </div>
@@ -94,23 +89,24 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">Manages cleanup of unused resources</p>
                 </div>
+                
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-garbagecollector-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-garbagecollector-mark_font_unused">
-                <code class="fs-6 fw-bold text-color-title">def mark_font_unused(self, font) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def mark_font_unused(self: Any, font: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Mark a font as potentially unused</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-garbagecollector-mark_surface_unused">
-                <code class="fs-6 fw-bold text-color-title">def mark_surface_unused(self, surface) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def mark_surface_unused(self: Any, surface: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Mark a surface as potentially unused</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-garbagecollector-cleanup">
-                <code class="fs-6 fw-bold text-color-title">def cleanup(self, force) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def cleanup(self: Any, force: bool = False) -> Any</code>
                 <div class="mt-2 text-muted small">Clean up unused resources</div>
             </div>
                 </div>
@@ -131,17 +127,17 @@
 
     
     <!-- Footer -->
-    <footer class="bg-dark text-white mt-5 py-5">
+    <footer class="footer-section">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
                     <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
-                    <p class="text-white-50">2D Game Engine for Python</p>
+                    <p class="text-white-50">2D Game Framework for Python</p>
                 </div>
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-01-15 11:32
+                        Documentation generated on 2026-01-20 14:14
                     </p>
                 </div>
             </div>
@@ -153,7 +149,7 @@
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler for GitHub Pages structure
+    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
@@ -162,30 +158,18 @@
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
                     
-                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
                         searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
                     }
                     
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
             
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -195,10 +179,8 @@
                 }
             });
             
-            // Handle click on search icon
             searchIcon.addEventListener('click', performSearch);
             
-            // Also prevent form submission if the input is inside a form
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {
@@ -211,69 +193,6 @@
     });
     </script>
     
-    
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../theme.js"></script>
-    
-    <script>
-    // Universal search handler for GitHub Pages structure
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('moduleSearch');
-        const searchIcon = document.querySelector('.input-group-text');
-        
-        if (searchInput && searchIcon) {
-            const performSearch = () => {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
-                    const currentPath = window.location.pathname;
-                    let searchPath = 'search.html';
-                    
-                    // If we're in a module subdirectory (/LunaEngine/core/)
-                    if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
-                        searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
-                    }
-                    
-                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
-                }
-            };
-            
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
-            searchInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault(); 
-                    e.stopPropagation();
-                    performSearch();
-                    return false;
-                }
-            });
-            
-            // Handle click on search icon
-            searchIcon.addEventListener('click', performSearch);
-            
-            // Also prevent form submission if the input is inside a form
-            const form = searchInput.closest('form');
-            if (form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    performSearch();
-                    return false;
-                });
-            }
-        }
-    });
-    </script>
     
 </body>
 </html>

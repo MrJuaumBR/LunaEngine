@@ -92,7 +92,49 @@ def individual_rgba_brightness(rgba: Tuple[int, int, int, float]) -> Tuple[float
         return (0.0, 0.0, 0.0, 0.0)
     return (r/255, g/255, b/255, a)
 
-def humanize_number(self, number: float, decimal_places: int=2) -> str:
+def get_rgba_common(color1:Tuple[int,int,int,float]|Tuple[int,int,int], color2:Tuple[int,int,int,float]|Tuple[int,int,int]) -> Tuple[int,int,int,float]:
+    """
+    This function is used to get the common RGBA values between two colors
+    
+    Parameters:
+        color1 (Tuple[int, int, int, float]): A tuple representing the first RGBA color
+        color2 (Tuple[int, int, int, float]): A tuple representing the second RGBA color
+    Returns:
+        Tuple[int, int, int, float]: A tuple representing the common RGBA values
+    """
+    if len(color1) >= 4:
+        r1,g1,b1,a1 = color1
+    elif len(color1) == 3:
+        r1,g1,b1 = color1
+        a1 = 1.0
+    else:
+        print("Invalid RGBA(color1) format. Expected (r, g, b, a) or (r, g, b)")
+        return (0, 0, 0, 0.0)
+    
+    if len(color2) >= 4:
+        r2,g2,b2,a2 = color2
+    elif len(color2) == 3:
+        r2,g2,b2 = color2
+        a2 = 1.0
+    else:
+        print("Invalid RGBA(color2) format. Expected (r, g, b, a) or (r, g, b)")
+        return (0, 0, 0, 0.0)
+    
+    # Calculate common RGBA values
+    r = r1/255 * r2/255 * 255
+    g = g1/255 * g2/255 * 255
+    b = b1/255 * b2/255 * 255
+    a = a1 * a2
+    
+    # Clamps values
+    r = int(clamp(r, 0, 255))
+    g = int(clamp(g, 0, 255))
+    b = int(clamp(b, 0, 255))
+    a = clamp(a, 0.0, 1.0)
+    
+    return (r, g, b, a)
+
+def humanize_number(number: float, decimal_places: int=2) -> str:
     """
     This function is used to format a number into a human-readable string
     Like: 1K, 1M, 1B, etc.
@@ -112,7 +154,7 @@ def humanize_number(self, number: float, decimal_places: int=2) -> str:
         number /= 1000.0
     return f"{number:.{decimal_places}f}{suffixes[index]}"
 
-def humanize_time(self, seconds: float) -> str:
+def humanize_time(seconds: float) -> str:
     """
     This function is used to format a time duration in seconds into a human-readable string
     Like: 1h 30m, 2d 5h, etc.
@@ -137,3 +179,42 @@ def humanize_time(self, seconds: float) -> str:
             seconds -= value * count
             result.append(f"{int(value)}{name}")
     return ' '.join(result) if result else '0s'
+
+def humanize_size(size:float) -> str:
+    """
+    This function will convert sizes in bytes to a human-readable format
+    Parameters:
+        size (float): A float representing the size in bytes
+    Returns:
+        str: A string representing the human-readable size
+    """
+    intervals = (
+        'B',
+        'KB',
+        'MB',
+        'GB',
+        'TB',
+        'PB',
+        'EB',
+        'ZB',
+        'YB'
+    )
+    
+    i = 0
+    while size >= 1024:
+        size /= 1024
+        i += 1
+    return f"{size:.2f} {intervals[i]}"
+
+def generate_matrix(rows, cols, dtype=np.float32) -> np.ndarray:
+    """
+    Generate matrix of zeros
+    Parameters:
+        rows (int): Number of rows in the matrix
+        cols (int): Number of columns in the matrix
+        dtype (np.dtype): Data type of the matrix
+    Returns:
+        np.ndarray: Matrix of zeros
+    """
+    
+    return np.full((rows, cols), 0.0, dtype=dtype)

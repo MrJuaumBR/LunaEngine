@@ -33,6 +33,7 @@ import pygame, threading
 import numpy as np
 from typing import Dict, List, Tuple, Callable, Optional, Type, TYPE_CHECKING
 from ..ui.layer_manager import UILayerManager
+from ..ui.notifications import (NotificationManager, NotificationPosition, NotificationType, notification_manager, show_notification, show_error, show_warning, show_success, show_info)
 from ..ui import *
 from .scene import Scene
 from ..utils import PerformanceMonitor, GarbageCollector
@@ -57,7 +58,7 @@ class LunaEngine:
         scenes (Dict[str, Scene]): Registered scenes
         current_scene (Scene): Currently active scene
     """
-    def __init__(self, title: str = "LunaEngine Game", width: int = 800, height: int = 600, fullscreen: bool = False, **kwargs):
+    def __init__(self, title: str = "LunaEngine Game", width: int = 800, height: int = 600, fullscreen: bool = False,icon:str|pygame.Surface=None, **kwargs):
         """
         Initialize the LunaEngine.
         
@@ -72,6 +73,7 @@ class LunaEngine:
         self.width = width
         self.height = height
         self.fullscreen = fullscreen
+        self.icon = icon
         self.monitor_size:pygame.display._VidInfo = None
         self.running = False
         self.clock = pygame.time.Clock()
@@ -90,6 +92,15 @@ class LunaEngine:
         self.renderer: Renderer = None
         
         self.screen = None
+        
+        # Notification system
+        self.notification_manager = notification_manager
+        self.notification_manager.set_engine(self)
+        
+        # Notification configuration
+        self.notification_max_concurrent = 5
+        self.notification_margin = 20
+        self.notification_spacing = 10
         
         # Automatically initialize
         self.initialize()
@@ -123,7 +134,8 @@ class LunaEngine:
             print("Falling back to Pygame rendering")
             self.screen = pygame.display.set_mode(size=(self.width, self.height))
         
-        pygame.display.set_caption(self.title)
+        self.set_title(self.title)
+        self.set_icon(self.icon)
         
         # Create renderer
         self.renderer: Renderer = OpenGLRenderer(self.width, self.height)
@@ -139,6 +151,16 @@ class LunaEngine:
         
         from ..ui.elements import UIElement
         UIElement._global_engine = self
+        
+    def set_title(self, title:str):
+        pygame.display.set_caption(title)
+        
+    def set_icon(self, icon:str|pygame.Surface):
+        if icon is None:
+            return
+        if isinstance(icon, str):
+            icon = pygame.image.load(icon).convert()
+        pygame.display.set_icon(icon)
         
     def update_camera_renderer(self):
         for scene in self.scenes.values():
@@ -158,6 +180,7 @@ class LunaEngine:
         if callable(scene_class): scene_instance = scene_class(self, *args, **kwargs)
         else: scene_instance = scene_class
         self.scenes[name] = scene_instance
+        scene_instance.name = name
         
     def set_scene(self, name: str):
         """
@@ -210,6 +233,114 @@ class LunaEngine:
             self._event_handlers[event_type].append({'callable':func, 'rep_id': rep_id})
             return func
         return decorator
+    
+    def setup_notifications(self, max_concurrent: int = 5, margin: int = 20, spacing: int = 10):
+        """
+        Setup notification system configuration.
+        
+        Args:
+            max_concurrent: Maximum concurrent notifications to show
+            margin: Margin from screen edges
+            spacing: Spacing between stacked notifications
+        """
+        self.notification_max_concurrent = max_concurrent
+        self.notification_margin = margin
+        self.notification_spacing = spacing
+        
+        self.notification_manager.set_max_concurrent(max_concurrent)
+        self.notification_manager.set_default_margin(margin)
+        self.notification_manager.set_spacing(spacing)
+    
+    def show_notification(self, text: str, 
+                         notification_type: NotificationType = NotificationType.INFO,
+                         duration: Optional[float] = None,
+                         position = NotificationPosition.TOP_RIGHT,
+                         width: int = 300,
+                         height: int = 60,
+                         show_close_button: bool = True,
+                         auto_close: bool = True,
+                         animation_speed: float = 0.3,
+                         show_progress_bar: bool = False,
+                         on_close: Optional[Callable] = None,
+                         on_click: Optional[Callable] = None):
+        """
+        Show a notification with advanced options.
+        
+        Args:
+            text: Notification text
+            notification_type: Type of notification
+            duration: Display duration in seconds
+            position: Position (NotificationPosition or custom (x, y) tuple)
+            width: Width of notification
+            height: Height of notification
+            show_close_button: Whether to show close button
+            auto_close: Whether notification auto-closes
+            animation_speed: Speed of slide/fade animations
+            show_progress_bar: Whether to show progress bar
+            on_close: Callback when notification is closed
+            on_click: Callback when notification is clicked
+            
+        Returns:
+            The created Notification object
+        """
+        from ..ui.notifications import NotificationConfig
+        
+        config = NotificationConfig(
+            text=text,
+            notification_type=notification_type,
+            duration=duration,
+            position=position,
+            width=width,
+            height=height,
+            show_close_button=show_close_button,
+            auto_close=auto_close,
+            animation_speed=animation_speed,
+            show_progress_bar=show_progress_bar,
+            on_close=on_close,
+            on_click=on_click
+        )
+        
+        return self.notification_manager.show_notification(config)
+    
+    def show_info(self, text: str, duration: Optional[float] = None,
+                  position = NotificationPosition.TOP_RIGHT) -> 'Notification':
+        """Show an info notification."""
+        return self.show_notification(text, NotificationType.INFO, duration, position)
+    
+    def show_success(self, text: str, duration: Optional[float] = None,
+                     position = NotificationPosition.TOP_RIGHT) -> 'Notification':
+        """Show a success notification."""
+        return self.show_notification(text, NotificationType.SUCCESS, duration, position)
+    
+    def show_warning(self, text: str, duration: Optional[float] = None,
+                     position = NotificationPosition.TOP_RIGHT) -> 'Notification':
+        """Show a warning notification."""
+        return self.show_notification(text, NotificationType.WARNING, duration, position)
+    
+    def show_error(self, text: str, duration: Optional[float] = None,
+                   position = NotificationPosition.TOP_RIGHT) -> 'Notification':
+        """Show an error notification."""
+        return self.show_notification(text, NotificationType.ERROR, duration, position)
+    
+    def clear_all_notifications(self):
+        """Clear all notifications."""
+        self.notification_manager.clear_all()
+    
+    def get_notification_count(self) -> int:
+        """Get current number of active notifications."""
+        return self.notification_manager.get_notification_count()
+    
+    def get_notification_queue_length(self) -> int:
+        """Get current notification queue length."""
+        return self.notification_manager.get_queue_length()
+    
+    def has_notifications(self) -> bool:
+        """Check if there are any active notifications."""
+        return self.notification_manager.has_notifications()
+    
+    def has_queued_notifications(self) -> bool:
+        """Check if there are any queued notifications."""
+        return self.notification_manager.has_queued_notifications()
     
     def get_all_themes(self) -> Dict[str, any]:
         """
@@ -371,6 +502,9 @@ class LunaEngine:
             self.update_mouse()
             UITooltipManager.update(self, dt)
             
+            # Update notifications
+            self.notification_manager.update(dt, self.input_state)
+            
             # Handle events
             for event in pygame.event.get():
                 if event.type == EVENTS.QUIT:
@@ -379,7 +513,6 @@ class LunaEngine:
                 if event.type in self._event_handlers:
                     for handler in self._event_handlers[event.type]:
                         handler['callable'](event)
-            
             
             # Update current scene
             if self.current_scene:
@@ -441,7 +574,10 @@ class LunaEngine:
             # 4. Render UI elements using OpenGL
             self._render_ui_elements()
             
-            # 5. Finalize OpenGL frame
+            # 5. Render notifications (on top of everything)
+            self.notification_manager.render(self.renderer)
+            
+            # 6. Finalize OpenGL frame
             self.renderer.end_frame()
             
         except Exception as e:

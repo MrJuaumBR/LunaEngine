@@ -35,7 +35,15 @@ color_name_type = Literal['button_normal', 'button_hover', 'button_pressed', 'bu
                      'background', 'background2', 'text_primary', 'text_secondary', 'border', 'border2',
                      'switch_track_on', 'switch_track_off', 'switch_thumb_on', 'switch_thumb_off',
                      'dialog_background', 'dialog_border', 'dialog_text', 'dialog_name_bg', 'dialog_name_text', 'dialog_continue_indicator',
-                     'tooltip_background', 'tooltip_border', 'tooltip_text']
+                     'tooltip_background', 'tooltip_border', 'tooltip_text',
+                     # New notification colors
+                     'notification_success_background', 'notification_success_border', 'notification_success_text',
+                     'notification_info_background', 'notification_info_border', 'notification_info_text',
+                     'notification_warning_background', 'notification_warning_border', 'notification_warning_text',
+                     'notification_custom_background', 'notification_custom_border', 'notification_custom_text',
+                     'notification_error_background', 'notification_error_border', 'notification_error_text',
+                     # New accent colors
+                     'accent1', 'accent2']
 
 @dataclass
 class UITheme:
@@ -90,6 +98,27 @@ class UITheme:
     tooltip_background: Tuple[int, int, int]
     tooltip_border: Tuple[int, int, int]
     tooltip_text: Tuple[int, int, int]
+    
+    # Notification colors
+    notification_success_background: Tuple[int, int, int]
+    notification_success_border: Tuple[int, int, int]
+    notification_success_text: Tuple[int, int, int]
+    notification_info_background: Tuple[int, int, int]
+    notification_info_border: Tuple[int, int, int]
+    notification_info_text: Tuple[int, int, int]
+    notification_warning_background: Tuple[int, int, int]
+    notification_warning_border: Tuple[int, int, int]
+    notification_warning_text: Tuple[int, int, int]
+    notification_custom_background: Tuple[int, int, int]
+    notification_custom_border: Tuple[int, int, int]
+    notification_custom_text: Tuple[int, int, int]
+    notification_error_background: Tuple[int, int, int]
+    notification_error_border: Tuple[int, int, int]
+    notification_error_text: Tuple[int, int, int]
+    
+    # Accent colors
+    accent1: Tuple[int, int, int]
+    accent2: Tuple[int, int, int]
     
     # Optional fields with defaults
     button_border: Optional[Tuple[int, int, int]] = None
@@ -384,7 +413,26 @@ class ThemeManager:
             tooltip_border=(100, 100, 120),
             tooltip_text=(240, 240, 240),
             border=(120, 120, 140),
-            border2=(100, 100, 120)
+            border2=(100, 100, 120),
+            # New notification colors
+            notification_success_background=(40, 167, 69),
+            notification_success_border=(20, 147, 49),
+            notification_success_text=(255, 255, 255),
+            notification_info_background=(23, 162, 184),
+            notification_info_border=(3, 142, 164),
+            notification_info_text=(255, 255, 255),
+            notification_warning_background=(255, 193, 7),
+            notification_warning_border=(235, 173, 0),
+            notification_warning_text=(0, 0, 0),
+            notification_custom_background=(147, 112, 219),
+            notification_custom_border=(127, 92, 199),
+            notification_custom_text=(255, 255, 255),
+            notification_error_background=(220, 53, 69),
+            notification_error_border=(200, 33, 49),
+            notification_error_text=(255, 255, 255),
+            # New accent colors
+            accent1=(70, 130, 180),  # Steel blue
+            accent2=(255, 193, 7)    # Golden yellow
         )
         cls._themes[ThemeType.DEFAULT] = fallback_theme
         cls._themes_loaded = True

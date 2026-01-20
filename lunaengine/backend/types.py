@@ -1,3 +1,9 @@
+"""
+lunaengine/backend/types.py
+
+A collection of types used in lunaengine
+"""
+
 import pygame.locals
 from dataclasses import dataclass
 from typing import Callable, Optional, Literal, Tuple

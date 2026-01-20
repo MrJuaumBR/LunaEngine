@@ -1,863 +1,774 @@
 """
-Advanced Audio System - Enhanced with Dynamic Control and Smooth Transitions
+Audio System for LunaEngine - OpenAL backend with Pygame fallback
 
-LOCATION: lunaengine/core/audio.py
+This module provides a unified audio interface with the following features:
+- OpenAL backend with Pygame fallback for compatibility
+- Sound loading and management by name
+- Automatic channel allocation or explicit channel selection
+- Smooth volume/pitch transitions
+- Stereo panning support
+- Resource pooling and management
 
-
+Author: [Your Name]
+Version: 1.0.0
 """
 
-import pygame, threading, time, os, math
-from typing import Dict, List, Callable, Optional, Union, Any, Tuple
+import pygame
+import threading
+import time
+import os
+import math
+import weakref
+from typing import Dict, List, Optional, Callable, Union, Tuple, Any
 from enum import Enum
-import numpy as np
+import json
+
+# Try to import OpenAL
+try:
+    from ..backend.openal import (
+        OpenALAudioSystem, OpenALSource, OpenALAudioEvent,
+        initialize_audio, cleanup_audio, get_audio_system,
+        OPENAL_AVAILABLE
+    )
+    USE_OPENAL = OPENAL_AVAILABLE
+except (ImportError, ModuleNotFoundError):
+    USE_OPENAL = False
+    print("OpenAL audio disabled, using pygame.mixer")
+
+class AudioError(Exception):
+    """Exception raised for audio-related errors."""
+    pass
 
 class AudioState(Enum):
-    """Enumeration for audio playback states."""
+    """Audio playback states."""
     STOPPED = "stopped"
     PLAYING = "playing"
     PAUSED = "paused"
     FADING_IN = "fading_in"
     FADING_OUT = "fading_out"
-    SPEED_CHANGING = "speed_changing"
-    VOLUME_CHANGING = "volume_changing"
 
 class AudioEvent(Enum):
-    """Enumeration for audio events."""
-    COMPLETE = "complete"
-    STOP = "stop"
-    PAUSE = "pause"
-    RESUME = "resume"
-    FADE_START = "fade_start"
+    """Audio events."""
+    PLAYBACK_STARTED = "playback_started"
+    PLAYBACK_STOPPED = "playback_stopped"
+    PLAYBACK_PAUSED = "playback_paused"
+    PLAYBACK_RESUMED = "playback_resumed"
+    PLAYBACK_COMPLETED = "playback_completed"
     FADE_COMPLETE = "fade_complete"
     LOOP = "loop"
-    SPEED_CHANGE = "speed_change"
-    VOLUME_CHANGE = "volume_change"
-    SPEED_CHANGE_START = "speed_change_start"
-    SPEED_CHANGE_COMPLETE = "speed_change_complete"
+
+class SoundInfo:
+    """
+    Information about a loaded sound.
+    
+    Attributes:
+        name (str): Name of the sound
+        filepath (str): Path to the audio file
+        duration (float): Duration in seconds
+        channels (int): Number of audio channels
+        sample_rate (int): Sample rate in Hz
+        loaded_time (float): When the sound was loaded
+    """
+    
+    def __init__(self, name: str, filepath: str, duration: float = 0.0, 
+                 channels: int = 2, sample_rate: int = 44100):
+        self.name = name
+        self.filepath = filepath
+        self.duration = duration
+        self.channels = channels
+        self.sample_rate = sample_rate
+        self.loaded_time = time.time()
+        self.ref_count = 0  # How many channels are using this sound
+    
+    def __repr__(self) -> str:
+        return f"SoundInfo(name='{self.name}', duration={self.duration:.2f}s, refs={self.ref_count})"
 
 class AudioChannel:
     """
-    Enhanced audio channel with dynamic control and smooth transitions.
+    Audio channel for playback control.
     
-    NEW FEATURES:
-    - Dynamic speed changes without stopping playback
-    - Smooth transitions for volume and speed
-    - Audio duration information
-    - Improved state management
+    Each channel can play one sound at a time with individual volume,
+    pitch, and pan controls.
+    
+    Args:
+        channel_id (int): Unique identifier for this channel
+        audio_system: Reference to the parent audio system
     """
     
-    def __init__(self, channel_id: int):
-        """
-        Initialize an enhanced audio channel.
-        
-        Args:
-            channel_id (int): Pygame mixer channel number
-        """
+    def __init__(self, channel_id: int, audio_system: 'AudioSystem'):
         self.channel_id = channel_id
-        self.sound: Optional[pygame.mixer.Sound] = None
-        self.original_sound: Optional[pygame.mixer.Sound] = None  # Store original for speed changes
+        self.audio_system = audio_system
+        self.use_openal = audio_system.use_openal
+        
+        # Playback properties
         self.volume = 1.0
-        self.target_volume = 1.0
-        self.speed = 1.0
-        self.target_speed = 1.0
+        self.pitch = 1.0
+        self.pan = 0.0
         self.loop = False
         self.state = AudioState.STOPPED
-        self._event_handlers: Dict[AudioEvent, List[Callable]] = {}
+        
+        # Sound reference
+        self.current_sound: Optional[str] = None
+        self.current_sound_info: Optional[SoundInfo] = None
+        
+        # Time tracking
+        self.start_time = 0.0
+        self.paused_time = 0.0
+        
+        # Transition control
         self._fade_thread: Optional[threading.Thread] = None
-        self._speed_thread: Optional[threading.Thread] = None
-        self._stop_threads = threading.Event()
+        self._stop_fade_event = threading.Event()
         
-        # NEW: For smooth transitions
-        self._transition_lock = threading.Lock()
-        
-    def get_duration(self) -> float:
-        """
-        Get the duration of the loaded sound in seconds.
-        
-        Returns:
-            float: Duration in seconds, or 0.0 if no sound loaded
-        """
-        if self.sound:
-            try:
-                # Pygame Sound objects have get_length() method
-                return self.sound.get_length()
-            except AttributeError:
-                # Fallback calculation based on buffer size
-                return getattr(self.sound, '_length', 0.0) / 1000.0  # Convert ms to seconds
-        return 0.0
+        # Backend-specific objects
+        if self.use_openal:
+            # Get source from OpenAL system
+            self._openal_source: Optional[OpenALSource] = None
+            system = get_audio_system()
+            self._openal_source = system.get_free_source()
+        else:
+            # Pygame mixer channel
+            self._pygame_channel: Optional[pygame.mixer.Channel] = pygame.mixer.Channel(channel_id)
+            self._pygame_sound: Optional[pygame.mixer.Sound] = None
     
-    def get_playback_position(self) -> float:
+    def play(self, sound_name: str, loop: bool = False) -> bool:
         """
-        Get current playback position in seconds.
-        
-        Note: This is an approximation since pygame doesn't provide exact position.
-        
-        Returns:
-            float: Current playback position in seconds
-        """
-        if not self.is_playing() or not self.sound:
-            return 0.0
-        
-        # This is a rough approximation - pygame doesn't provide exact playback position
-        channel = pygame.mixer.Channel(self.channel_id)
-        if hasattr(channel, 'get_position'):
-            try:
-                return channel.get_position() / 1000.0  # Convert ms to seconds
-            except:
-                pass
-        
-        # Fallback: estimate based on elapsed time (less accurate)
-        return 0.0
-    
-    def play(self, sound: pygame.mixer.Sound, loop: bool = False) -> bool:
-        """
-        Play a sound on this channel with enhanced state management.
+        Play a sound on this channel.
         
         Args:
-            sound (pygame.mixer.Sound): Sound to play
-            loop (bool, optional): Whether to loop. Defaults to False.
+            sound_name (str): Name of the sound to play
+            loop (bool): Whether to loop the sound
             
         Returns:
             bool: True if playback started successfully
         """
-        try:
-            self._stop_threads.set()  # Stop any ongoing transitions
-            time.sleep(0.01)  # Brief pause to ensure thread stops
-            self._stop_threads.clear()
-            
-            self.sound = sound
-            self.original_sound = sound  # Store original for speed changes
-            self.loop = loop
-            self.volume = 1.0
-            self.target_volume = 1.0
-            self.speed = 1.0
-            self.target_speed = 1.0
-            
-            channel = pygame.mixer.Channel(self.channel_id)
-            loops = -1 if loop else 0
-            channel.play(sound, loops=loops)
-            channel.set_volume(self.volume)
-            
-            self.state = AudioState.PLAYING
-            return True
-            
-        except Exception as e:
-            print(f"Error playing sound on channel {self.channel_id}: {e}")
+        # Stop any current playback
+        self.stop()
+        
+        # Get sound info
+        sound_info = self.audio_system.get_sound_info(sound_name)
+        if not sound_info:
+            print(f"Sound '{sound_name}' not found")
             return False
+        
+        self.current_sound = sound_name
+        self.current_sound_info = sound_info
+        self.loop = loop
+        self.state = AudioState.PLAYING
+        self.start_time = time.time()
+        self.paused_time = 0.0
+        
+        # Increment reference count
+        sound_info.ref_count += 1
+        
+        if self.use_openal and self._openal_source:
+            # OpenAL playback
+            try:
+                # Set buffer on source
+                buffer = self.audio_system.openal_system.load_sound(sound_info.filepath)
+                if buffer:
+                    self._openal_source.set_buffer(buffer)
+                    self._openal_source.set_volume(self.volume)
+                    self._openal_source.set_pitch(self.pitch)
+                    self._openal_source.set_pan(self.pan)
+                    self._openal_source.play(loop)
+                    return True
+            except Exception as e:
+                print(f"OpenAL play error: {e}")
+                return False
+        elif not self.use_openal:
+            # Pygame mixer playback
+            try:
+                sound = self.audio_system.get_sound_pygame(sound_name)
+                if sound:
+                    self._pygame_sound = sound
+                    loops = -1 if loop else 0
+                    self._pygame_channel.play(sound, loops=loops)
+                    self._update_pygame_volume()
+                    return True
+            except Exception as e:
+                print(f"Pygame play error: {e}")
+                return False
+        
+        return False
     
-    def pause(self) -> None:
-        """Pause playback on this channel with state verification."""
-        if self.state == AudioState.PLAYING:
-            channel = pygame.mixer.Channel(self.channel_id)
-            channel.pause()
-            self.state = AudioState.PAUSED
-            self._trigger_event(AudioEvent.PAUSE)
-    
-    def resume(self) -> None:
-        """Resume playback on this channel with state verification."""
-        if self.state == AudioState.PAUSED:
-            channel = pygame.mixer.Channel(self.channel_id)
-            channel.unpause()
-            self.state = AudioState.PLAYING
-            self._trigger_event(AudioEvent.RESUME)
-    
-    def set_volume(self, volume: float, duration: float = 0.0) -> None:
+    def set_volume(self, volume: float, duration: float = 0.0):
         """
-        Set channel volume with optional smooth transition.
+        Set channel volume with optional fade.
         
         Args:
-            volume (float): Volume level (0.0 to 1.0)
-            duration (float): Transition duration in seconds. 0 for immediate change.
+            volume (float): Target volume (0.0 to 1.0)
+            duration (float): Fade duration in seconds
         """
         volume = max(0.0, min(1.0, volume))
         
         if duration <= 0:
             # Immediate change
             self.volume = volume
-            self.target_volume = volume
-            channel = pygame.mixer.Channel(self.channel_id)
-            channel.set_volume(self.volume)
-            self._trigger_event(AudioEvent.VOLUME_CHANGE)
+            if self.use_openal and self._openal_source:
+                self._openal_source.set_volume(volume)
+            elif self._pygame_channel:
+                self._update_pygame_volume()
         else:
-            # Smooth transition
-            self._stop_threads.set()
-            time.sleep(0.01)
-            self._stop_threads.clear()
-            
-            self.target_volume = volume
-            self._fade_thread = threading.Thread(
-                target=self._transition_volume,
-                args=(self.volume, volume, duration)
-            )
-            self._fade_thread.daemon = True
-            self._fade_thread.start()
+            # Start fade thread
+            self._start_volume_transition(volume, duration)
     
-    def set_speed(self, speed: float, duration: float = 0.0) -> None:
-        """Change the speed of the sound playback."""
-        if duration <= 0:
-            self.speed = speed
-            self.target_speed = speed
-            self._trigger_event(AudioEvent.SPEED_CHANGE)
-        else:
-            self._smooth_speed_transition(self.speed, speed, duration)
-    
-    def _change_speed_immediate(self, speed: float) -> None:
-        """
-        Change playback speed immediately using pitch adjustment.
+    def _start_volume_transition(self, target_volume: float, duration: float):
+        """Start smooth volume transition."""
+        # Stop any existing fade
+        self._stop_fade_event.set()
+        if self._fade_thread and self._fade_thread.is_alive():
+            self._fade_thread.join(timeout=0.1)
+        self._stop_fade_event.clear()
         
-        Args:
-            speed (float): Target speed multiplier
-        """
-        self.speed = speed
-        self.target_speed = speed
+        start_volume = self.volume
         
-        if self.sound and self.original_sound:
-            try:
-                # Only repitch if significantly different from 1.0
-                if abs(speed - 1.0) > 0.05:
-                    # Get sound array from original sound
-                    array = pygame.sndarray.array(self.original_sound)
-                    
-                    # Resample based on speed
-                    length = int(len(array) / speed)
-                    indices = (np.arange(length) * speed).astype(int)
-                    indices = np.clip(indices, 0, len(array) - 1)
-                    resampled = array[indices]
-                    
-                    # Create new sound
-                    new_sound = pygame.sndarray.make_sound(resampled)
-                    
-                    # Replace the sound if currently playing
-                    was_playing = self.is_playing()
-                    was_paused = self.is_paused()
-                    
-                    if was_playing or was_paused:
-                        channel = pygame.mixer.Channel(self.channel_id)
-                        channel.stop()
-                        self.sound = new_sound
-                        if was_playing:
-                            channel.play(new_sound, loops=loops)
-                else:
-                    # Use original sound for normal speed
-                    if self.sound != self.original_sound:
-                        was_playing = self.is_playing()
-                        was_paused = self.is_paused()
-                        
-                        if was_playing or was_paused:
-                            channel = pygame.mixer.Channel(self.channel_id)
-                            channel.stop()
-                            self.sound = self.original_sound
-                            
-                            if was_playing:
-                                loops = -1 if self.loop else 0
-                                channel.play(self.original_sound, loops=loops)
-                                channel.set_volume(self.volume)
-                
-                self._trigger_event(AudioEvent.SPEED_CHANGE)
-                
-            except Exception as e:
-                print(f"Error adjusting speed: {e}")
-                
-    
-    def _smooth_speed_transition(self, start: float, end: float, duration: float):
-        """Smoothly transition between speeds."""
-        self.state = AudioState.SPEED_CHANGING
-        self._trigger_event(AudioEvent.SPEED_CHANGE_START)
-        
-        steps = int(duration * 30)  # 30 updates per second
-        step_duration = duration / steps
-        
-        for step in range(steps):
-            if self._stop_threads.is_set():
-                break
-                
-            progress = step / steps
-            eased_progress = 1 - (1 - progress) * (1 - progress)  # easeOutQuad
-            current_speed = start + (end - start) * eased_progress
-            
-            self.speed = current_speed
-            time.sleep(step_duration)
-        
-        if not self._stop_threads.is_set():
-            self.speed = end
-        
-        self.state = AudioState.PLAYING if self.is_playing() else self.state
-        self._trigger_event(AudioEvent.SPEED_CHANGE_COMPLETE)    
-    
-    def _transition_speed(self, target_speed: float, duration: float) -> None:
-        """
-        Smoothly transition between speeds.
-        
-        Args:
-            target_speed (float): Target speed multiplier
-            duration (float): Transition duration in seconds
-        """
-        self._stop_threads.set()
-        time.sleep(0.01)
-        self._stop_threads.clear()
-        
-        self.target_speed = target_speed
-        self._speed_thread = threading.Thread(
-            target=self._smooth_speed_change,
-            args=(self.speed, target_speed, duration)
-        )
-        self._speed_thread.daemon = True
-        self._speed_thread.start()
-    
-    def _smooth_speed_change(self, start_speed: float, end_speed: float, duration: float) -> None:
-        """
-        Smoothly change speed over time.
-        
-        Args:
-            start_speed (float): Starting speed
-            end_speed (float): Target speed
-            duration (float): Transition duration in seconds
-        """
-        self.state = AudioState.SPEED_CHANGING
-        self._trigger_event(AudioEvent.SPEED_CHANGE_START)
-        
-        steps = max(1, int(duration * 30))  # 30 updates per second for smooth transition
-        step_duration = duration / steps
-        speed_step = (end_speed - start_speed) / steps
-        
-        current_speed = start_speed
-        
-        for step in range(steps):
-            if self._stop_threads.is_set():
-                break
-                
-            # Use easing for smooth transition
-            progress = step / steps
-            # Quadratic ease out
-            eased_progress = 1 - (1 - progress) * (1 - progress)
-            current_speed = start_speed + (end_speed - start_speed) * eased_progress
-            
-            # Apply speed change
-            self._change_speed_immediate(current_speed)
-            time.sleep(step_duration)
-        
-        if not self._stop_threads.is_set():
-            # Ensure final speed is set
-            self._change_speed_immediate(end_speed)
-        
-        self.state = AudioState.PLAYING if self.is_playing() else self.state
-        self._trigger_event(AudioEvent.SPEED_CHANGE_COMPLETE)
-    
-    def _transition_volume(self, start_volume: float, end_volume: float, duration: float) -> None:
-        """
-        Enhanced volume transition with better state management.
-        
-        Args:
-            start_volume (float): Starting volume
-            end_volume (float): Ending volume
-            duration (float): Transition duration in seconds
-        """
-        self.state = AudioState.VOLUME_CHANGING
-        
-        steps = max(1, int(duration * 60))  # 60 updates per second
-        step_duration = duration / steps
-        
-        for step in range(steps + 1):  # +1 to ensure we reach the target
-            if self._stop_threads.is_set():
-                break
-                
-            # Calculate progress with easing
-            progress = step / steps
-            # Cubic ease in-out for smoother transitions
-            if progress < 0.5:
-                eased_progress = 4 * progress * progress * progress
-            else:
-                eased_progress = 1 - math.pow(-2 * progress + 2, 3) / 2
-                
-            current_volume = start_volume + (end_volume - start_volume) * eased_progress
-            
-            # Update volume
-            self.volume = current_volume
-            channel = pygame.mixer.Channel(self.channel_id)
-            channel.set_volume(self.volume)
-            
-            time.sleep(step_duration)
-        
-        if not self._stop_threads.is_set():
-            # Ensure final volume is set
-            self.volume = end_volume
-            channel = pygame.mixer.Channel(self.channel_id)
-            channel.set_volume(self.volume)
-        
-        self.state = AudioState.PLAYING if self.is_playing() else self.state
-        self._trigger_event(AudioEvent.VOLUME_CHANGE)
-    
-    def fade_in(self, duration: float, target_volume: float = 1.0) -> None:
-        """
-        Enhanced fade in with better state management.
-        
-        Args:
-            duration (float): Fade duration in seconds
-            target_volume (float, optional): Target volume. Defaults to 1.0.
-        """
-        self._stop_threads.clear()
-        self.set_volume(0.0)  # Start from silence
         self._fade_thread = threading.Thread(
             target=self._transition_volume,
-            args=(0.0, target_volume, duration)
+            args=(start_volume, target_volume, duration),
+            daemon=True
         )
-        self._fade_thread.daemon = True
         self._fade_thread.start()
     
-    def fade_out(self, duration: float) -> None:
+    def _transition_volume(self, start: float, end: float, duration: float):
+        """Smoothly transition volume."""
+        steps = max(1, int(duration * 60))
+        step_time = duration / steps
+        
+        for i in range(steps + 1):
+            if self._stop_fade_event.is_set():
+                break
+            
+            # Calculate eased progress
+            progress = i / steps
+            # Smooth step function
+            if progress < 0.5:
+                eased = 2 * progress * progress
+            else:
+                eased = 1 - math.pow(-2 * progress + 2, 2) / 2
+            
+            current_volume = start + (end - start) * eased
+            self.volume = current_volume
+            
+            # Apply to backend
+            if self.use_openal and self._openal_source:
+                self._openal_source.set_volume(current_volume)
+            elif self._pygame_channel:
+                self._update_pygame_volume()
+            
+            time.sleep(step_time)
+        
+        if not self._stop_fade_event.is_set():
+            self.volume = end
+            if self.use_openal and self._openal_source:
+                self._openal_source.set_volume(end)
+            elif self._pygame_channel:
+                self._update_pygame_volume()
+    
+    def set_pitch(self, pitch: float, duration: float = 0.0):
         """
-        Enhanced fade out with better state management.
+        Set playback pitch.
         
         Args:
-            duration (float): Fade duration in seconds
+            pitch (float): Pitch multiplier (0.1 to 4.0)
+            duration (float): Transition duration in seconds (OpenAL only)
         """
-        self._stop_threads.clear()
-        self._fade_thread = threading.Thread(
-            target=self._fade_volume_out,
-            args=(self.volume, 0.0, duration)
-        )
-        self._fade_thread.daemon = True
-        self._fade_thread.start()
+        pitch = max(0.1, min(4.0, pitch))
+        self.pitch = pitch
+        
+        if self.use_openal and self._openal_source:
+            self._openal_source.set_pitch(pitch, duration)
+        # Pygame doesn't support pitch directly
     
-    def _fade_volume_out(self, start_volume: float, end_volume: float, duration: float) -> None:
+    def set_pan(self, pan: float):
         """
-        Special fade out that stops playback after completion.
+        Set stereo panning.
         
         Args:
-            start_volume (float): Starting volume
-            end_volume (float): Ending volume
-            duration (float): Fade duration in seconds
+            pan (float): -1.0 (left) to 1.0 (right)
         """
-        self.state = AudioState.FADING_OUT
-        self._trigger_event(AudioEvent.FADE_START)
+        self.pan = max(-1.0, min(1.0, pan))
         
-        self._transition_volume(start_volume, end_volume, duration)
-        
-        if not self._stop_threads.is_set():
-            self.stop()
-        
-        self._trigger_event(AudioEvent.FADE_COMPLETE)
+        if self.use_openal and self._openal_source:
+            self._openal_source.set_pan(pan)
+        elif self._pygame_channel:
+            self._update_pygame_volume()
     
-    # Rest of the methods remain largely the same but with improved error handling
-    def stop(self) -> None:
-        """Enhanced stop with thread management."""
-        self._stop_threads.set()
-        channel = pygame.mixer.Channel(self.channel_id)
-        channel.stop()
+    def _update_pygame_volume(self):
+        """Update pygame channel volume with panning."""
+        if hasattr(self, '_pygame_channel') and self._pygame_channel:
+            # Simple stereo panning
+            left_vol = self.volume * (1.0 if self.pan >= 0 else 1.0 + self.pan)
+            right_vol = self.volume * (1.0 if self.pan <= 0 else 1.0 - self.pan)
+            self._pygame_channel.set_volume(left_vol, right_vol)
+    
+    def pause(self):
+        """Pause playback."""
+        if self.state != AudioState.PLAYING:
+            return
+        
+        if self.use_openal and self._openal_source:
+            self._openal_source.pause()
+        elif self._pygame_channel:
+            self._pygame_channel.pause()
+        
+        self.state = AudioState.PAUSED
+        self.paused_time = time.time() - self.start_time
+    
+    def resume(self):
+        """Resume playback."""
+        if self.state != AudioState.PAUSED:
+            return
+        
+        if self.use_openal and self._openal_source:
+            self._openal_source.resume()
+        elif hasattr(self, '_pygame_channel') and self._pygame_channel:
+            self._pygame_channel.unpause()
+        
+        self.state = AudioState.PLAYING
+        self.start_time = time.time() - self.paused_time
+    
+    def stop(self):
+        """Stop playback."""
+        self._stop_fade_event.set()
+        
+        if self.use_openal and self._openal_source:
+            self._openal_source.stop()
+            self._openal_source.rewind()
+        elif hasattr(self, '_pygame_channel') and self._pygame_channel:
+            self._pygame_channel.stop()
+        
+        # Decrement reference count
+        if self.current_sound_info:
+            self.current_sound_info.ref_count = max(0, self.current_sound_info.ref_count - 1)
+        
         self.state = AudioState.STOPPED
-        self._trigger_event(AudioEvent.STOP)
+        self.current_sound = None
+        self.current_sound_info = None
     
     def is_playing(self) -> bool:
-        """
-        Enhanced play state check.
-        
-        Returns:
-            bool: True if playing, False otherwise
-        """
-        channel = pygame.mixer.Channel(self.channel_id)
-        return channel.get_busy() and self.state in [AudioState.PLAYING, AudioState.FADING_IN, AudioState.FADING_OUT, AudioState.SPEED_CHANGING, AudioState.VOLUME_CHANGING]
+        """Check if channel is playing."""
+        if self.use_openal and self._openal_source:
+            return self._openal_source.is_playing()
+        elif self._pygame_channel:
+            return self._pygame_channel.get_busy() and self.state == AudioState.PLAYING
+        return False
     
     def is_paused(self) -> bool:
-        """
-        Enhanced pause state check.
-        
-        Returns:
-            bool: True if paused, False otherwise
-        """
+        """Check if channel is paused."""
         return self.state == AudioState.PAUSED
     
-    # Event handling methods remain the same
-    def on_event(self, event_type: AudioEvent) -> Callable:
-        """Decorator to register event handlers."""
-        def decorator(func: Callable) -> Callable:
-            if event_type not in self._event_handlers:
-                self._event_handlers[event_type] = []
-            self._event_handlers[event_type].append(func)
-            return func
-        return decorator
+    def get_playback_position(self) -> float:
+        """Get current playback position in seconds."""
+        if not self.is_playing() and not self.is_paused():
+            return 0.0
+        
+        if self.use_openal and self._openal_source:
+            return self._openal_source.get_playback_position()
+        
+        # Pygame doesn't support position query
+        if self.state == AudioState.PAUSED:
+            return self.paused_time
+        elif self.state == AudioState.PLAYING:
+            return time.time() - self.start_time
+        
+        return 0.0
     
-    def _trigger_event(self, event_type: AudioEvent) -> None:
-        """Trigger all handlers for the given event type."""
-        if event_type in self._event_handlers:
-            for handler in self._event_handlers[event_type]:
-                try:
-                    handler(self)
-                except Exception as e:
-                    print(f"Error in audio channel event handler: {e}")
+    def cleanup(self):
+        """Clean up channel resources."""
+        self.stop()
+        if self._fade_thread and self._fade_thread.is_alive():
+            self._fade_thread.join(timeout=0.1)
 
-# Enhanced SoundEffect class with duration support
-class SoundEffect:
-    """
-    Enhanced sound effect with duration information.
-    """
-    
-    def __init__(self, sound: pygame.mixer.Sound):
-        """
-        Initialize a sound effect with duration tracking.
-        
-        Args:
-            sound (pygame.mixer.Sound): The sound object
-        """
-        self.sound = sound
-        self.channels: List[AudioChannel] = []
-        self._duration = self._calculate_duration(sound)
-    
-    def _calculate_duration(self, sound: pygame.mixer.Sound) -> float:
-        """
-        Calculate sound duration.
-        
-        Args:
-            sound (pygame.mixer.Sound): Sound to calculate duration for
-            
-        Returns:
-            float: Duration in seconds
-        """
-        try:
-            return sound.get_length()
-        except AttributeError:
-            # Fallback for sounds without get_length method
-            return getattr(sound, '_length', 0.0) / 1000.0
-    
-    def get_duration(self) -> float:
-        """
-        Get the duration of this sound effect.
-        
-        Returns:
-            float: Duration in seconds
-        """
-        return self._duration
-    
-    def play(self, audio_system: 'AudioSystem', 
-             volume: float = 1.0, speed: float = 1.0, 
-             loop: bool = False) -> Optional[AudioChannel]:
-        """
-        Play the sound effect on an available channel.
-        
-        Args:
-            audio_system (AudioSystem): The audio system to get channels from
-            volume (float, optional): Volume level. Defaults to 1.0.
-            speed (float, optional): Playback speed. Defaults to 1.0.
-            loop (bool, optional): Whether to loop. Defaults to False.
-            
-        Returns:
-            Optional[AudioChannel]: The channel playing the sound, or None if failed
-        """
-        channel = audio_system.get_available_channel()
-        if channel:
-            if channel.play(self.sound, loop):
-                channel.set_volume(volume)
-                channel.set_speed(speed)
-                self.channels.append(channel)
-                
-                # Remove channel from list when it stops
-                @channel.on_event(AudioEvent.STOP)
-                def on_channel_stop(ch):
-                    if ch in self.channels:
-                        self.channels.remove(ch)
-                
-                return channel
-        return None
-    
-    def stop_all(self) -> None:
-        """Stop all instances of this sound effect."""
-        for channel in self.channels[:]:
-            channel.stop()
-        self.channels.clear()
-        
 class AudioSystem:
     """
-    Advanced audio system with multi-channel support and real speed control.
+    Main audio system with sound management and channel allocation.
     
-    Attributes:
-        music_volume (float): Global music volume
-        sfx_volume (float): Global sound effects volume
-        channels (List[AudioChannel]): All available audio channels
-        sound_effects (Dict[str, SoundEffect]): Loaded sound effects
-        music_channel (AudioChannel): Dedicated music channel
+    Features:
+    - Load sounds by name and store for reuse
+    - Automatic channel allocation or explicit channel selection
+    - Resource management and cleanup
+    - OpenAL backend with Pygame fallback
+    
+    Args:
+        num_channels (int): Maximum number of concurrent audio channels
+        use_openal (bool): Whether to use OpenAL backend
     """
     
-    def __init__(self, num_channels: int = 16):
-        """
-        Initialize the advanced audio system.
+    def __init__(self, num_channels: int = 16, use_openal: bool = None):
+        # Determine backend
+        if use_openal is None:
+            self.use_openal = USE_OPENAL
+        else:
+            self.use_openal = use_openal and USE_OPENAL
         
-        Args:
-            num_channels (int, optional): Number of audio channels. Defaults to 16.
-        """
-        self.music_volume = 1.0
-        self.sfx_volume = 1.0
+        # Sound management
+        self._sounds: Dict[str, SoundInfo] = {}  # name -> SoundInfo
+        self._pygame_sounds: Dict[str, pygame.mixer.Sound] = {}  # name -> pygame Sound
         
-        # Initialize pygame mixer if not already initialized
-        if not pygame.mixer.get_init():
-            pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=1024)
-        
-        # Ensure we have enough channels
-        current_channels = pygame.mixer.get_num_channels()
-        if current_channels < num_channels:
-            pygame.mixer.set_num_channels(num_channels)
-        
-        # Create channel objects
+        # Channel management
         self.channels: List[AudioChannel] = []
-        for i in range(num_channels):
-            self.channels.append(AudioChannel(i))
+        self.num_channels = num_channels
         
-        # Dedicated music channel (usually channel 0)
-        self.music_channel = self.channels[0]
+        # Initialize backend
+        if self.use_openal:
+            self._init_openal()
+        else:
+            self._init_pygame()
         
-        self.sound_effects: Dict[str, SoundEffect] = {}
-        self.music_tracks: Dict[str, str] = {}  # Store file paths for music
+        # System properties
+        self.master_volume = 1.0
+        self.music_volume = 0.8
+        self.sfx_volume = 0.9
+        
+        print(f"Audio System initialized: {'OpenAL' if self.use_openal else 'Pygame'} "
+              f"with {num_channels} channels")
     
-    def get_available_channel(self) -> Optional[AudioChannel]:
-        """
-        Get an available audio channel.
-        
-        Returns:
-            Optional[AudioChannel]: Available channel, or None if all busy
-        """
-        for channel in self.channels[1:]:  # Skip music channel
-            if not channel.is_playing() and not channel.is_paused():
-                return channel
-        return None
+    def _init_openal(self):
+        """Initialize OpenAL backend."""
+        try:
+            if not initialize_audio(self.num_channels):
+                raise AudioError("Failed to initialize OpenAL")
+            
+            self.openal_system = get_audio_system()
+            
+            # Create channels
+            for i in range(self.num_channels):
+                self.channels.append(AudioChannel(i, self))
+            
+        except Exception as e:
+            print(f"OpenAL initialization failed: {e}")
+            self.use_openal = False
+            self._init_pygame()
     
-    def load_sound_effect(self, name: str, file_path: str) -> bool:
+    def _init_pygame(self):
+        """Initialize Pygame mixer backend."""
+        try:
+            if not pygame.mixer.get_init():
+                pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+            
+            # Set number of channels
+            current_channels = pygame.mixer.get_num_channels()
+            if current_channels < self.num_channels:
+                pygame.mixer.set_num_channels(self.num_channels)
+            
+            # Create channels
+            for i in range(self.num_channels):
+                self.channels.append(AudioChannel(i, self))
+            
+        except Exception as e:
+            print(f"Pygame mixer initialization failed: {e}")
+            raise AudioError(f"Audio system initialization failed: {e}")
+    
+    def load_sound(self, name: str, filepath: str) -> bool:
         """
-        Load a sound effect from file.
+        Load a sound file and store it by name.
         
         Args:
-            name (str): Unique name for the sound effect
-            file_path (str): Path to the sound file
+            name (str): Name to assign to the sound
+            filepath (str): Path to the audio file
             
         Returns:
-            bool: True if loaded successfully
+            bool: True if sound was loaded successfully
+        
+        Raises:
+            FileNotFoundError: If the sound file doesn't exist
+            AudioError: If sound loading fails
         """
+        if not os.path.exists(filepath):
+            raise FileNotFoundError(f"Sound file not found: {filepath}")
+        
+        # Check if already loaded
+        if name in self._sounds:
+            print(f"Sound '{name}' already loaded")
+            return True
+        
         try:
-            if not os.path.exists(file_path):
-                print(f"Sound file not found: {file_path}")
-                return False
+            # Get sound duration (approximate)
+            duration = self._estimate_duration(filepath)
             
-            sound = pygame.mixer.Sound(file_path)
-            self.sound_effects[name] = SoundEffect(sound)
+            # Store sound info
+            sound_info = SoundInfo(name, filepath, duration)
+            self._sounds[name] = sound_info
+            
+            # Load into Pygame if using Pygame backend
+            if not self.use_openal:
+                try:
+                    sound = pygame.mixer.Sound(filepath)
+                    self._pygame_sounds[name] = sound
+                except Exception as e:
+                    print(f"Warning: Could not preload '{name}' with Pygame: {e}")
+            
+            print(f"Loaded sound '{name}' from '{filepath}' (duration: {duration:.2f}s)")
             return True
             
         except Exception as e:
-            print(f"Error loading sound effect {name}: {e}")
-            return False
+            raise AudioError(f"Failed to load sound '{name}': {e}")
     
-    def load_music(self, name: str, file_path: str) -> bool:
-        """
-        Load a music track (store path for later use).
+    def _estimate_duration(self, filepath: str) -> float:
+        """Estimate audio file duration."""
+        try:
+            # Try pygame first
+            sound = pygame.mixer.Sound(filepath)
+            return sound.get_length()
+        except:
+            pass
         
-        Args:
-            name (str): Unique name for the music track
-            file_path (str): Path to the music file
-            
-        Returns:
-            bool: True if file exists
-        """
-        if os.path.exists(file_path):
-            self.music_tracks[name] = file_path
-            return True
-        else:
-            print(f"Music file not found: {file_path}")
-            return False
+        # Fallback: estimate from file size
+        try:
+            size = os.path.getsize(filepath)
+            # Rough estimate: 1MB ≈ 6 seconds of stereo 44.1kHz audio
+            return size / (1024 * 1024) * 6
+        except:
+            return 1.0  # Default
     
-    def play_sound(self, name: str, volume: float = None, 
-                  speed: float = 1.0, loop: bool = False) -> Optional[AudioChannel]:
-        """
-        Play a sound effect on an available channel.
-        
-        Args:
-            name (str): Name of the sound effect
-            volume (float, optional): Volume level. Uses SFX volume if None.
-            speed (float, optional): Playback speed. Defaults to 1.0.
-            loop (bool, optional): Whether to loop. Defaults to False.
-            
-        Returns:
-            Optional[AudioChannel]: The channel playing the sound
-        """
-        if name in self.sound_effects:
-            if volume is None:
-                volume = self.sfx_volume
-            
-            return self.sound_effects[name].play(
-                self, volume, speed, loop
-            )
-        else:
-            print(f"Sound effect not found: {name}")
-            return None
+    def get_sound_info(self, name: str) -> Optional[SoundInfo]:
+        """Get information about a loaded sound."""
+        return self._sounds.get(name)
     
-    def play_music(self, name: str, volume: float = None,
-                  speed: float = 1.0, loop: bool = True) -> bool:
-        """
-        Play a music track on the dedicated music channel.
+    def get_sound_pygame(self, name: str) -> Optional[pygame.mixer.Sound]:
+        """Get Pygame Sound object for a loaded sound."""
+        if name in self._pygame_sounds:
+            return self._pygame_sounds[name]
         
-        Args:
-            name (str): Name of the music track
-            volume (float, optional): Volume level. Uses music volume if None.
-            speed (float, optional): Playback speed. Defaults to 1.0.
-            loop (bool, optional): Whether to loop. Defaults to True.
-            
-        Returns:
-            bool: True if playback started successfully
-        """
-        if name in self.music_tracks:
+        # Try to load on demand
+        sound_info = self.get_sound_info(name)
+        if sound_info and os.path.exists(sound_info.filepath):
             try:
-                if volume is None:
-                    volume = self.music_volume
-                
-                sound = pygame.mixer.Sound(self.music_tracks[name])
-                if self.music_channel.play(sound, loop):
-                    self.music_channel.set_volume(volume)
-                    self.music_channel.set_speed(speed)
-                    return True
-                    
+                sound = pygame.mixer.Sound(sound_info.filepath)
+                self._pygame_sounds[name] = sound
+                return sound
             except Exception as e:
-                print(f"Error playing music {name}: {e}")
+                print(f"Failed to load sound '{name}' with Pygame: {e}")
         
+        return None
+    
+    def play(self, sound_name: str, channel: Optional[int] = None, 
+             volume: float = None, pitch: float = 1.0, pan: float = 0.0, 
+             loop: bool = False) -> Optional[AudioChannel]:
+        """
+        Play a sound by name.
+        
+        Args:
+            sound_name (str): Name of the sound to play
+            channel (int, optional): Specific channel to use. If None, 
+                                    uses first available channel
+            volume (float, optional): Volume (0.0-1.0). Uses SFX volume if None
+            pitch (float): Pitch multiplier
+            pan (float): Stereo pan (-1.0 to 1.0)
+            loop (bool): Whether to loop the sound
+            
+        Returns:
+            Optional[AudioChannel]: Channel playing the sound, or None if failed
+        """
+        # Check if sound exists
+        if sound_name not in self._sounds:
+            print(f"Sound '{sound_name}' not found. Load it first with load_sound()")
+            return None
+        
+        # Find channel
+        if channel is not None:
+            # Use specific channel
+            if channel < 0 or channel >= len(self.channels):
+                print(f"Invalid channel: {channel}")
+                return None
+            target_channel = self.channels[channel]
+            
+            # Stop if channel is busy
+            if target_channel.is_playing() or target_channel.is_paused():
+                target_channel.stop()
         else:
-            print(f"Music track not found: {name}")
+            # Find first available channel
+            target_channel = None
+            for ch in self.channels:
+                if not ch.is_playing() and not ch.is_paused():
+                    target_channel = ch
+                    break
+            
+            if not target_channel:
+                print("No available audio channels")
+                return None
         
-        return False
-    
-    def stop_music(self) -> None:
-        """Stop the currently playing music."""
-        self.music_channel.stop()
-    
-    def pause_music(self) -> None:
-        """Pause the currently playing music."""
-        self.music_channel.pause()
-    
-    def resume_music(self) -> None:
-        """Resume the paused music."""
-        self.music_channel.resume()
-    
-    def set_music_volume(self, volume: float) -> None:
-        """
-        Set global music volume.
+        # Set default volume
+        if volume is None:
+            volume = self.sfx_volume
         
-        Args:
-            volume (float): Volume level (0.0 to 1.0)
-        """
-        self.music_volume = max(0.0, min(1.0, volume))
-        self.music_channel.set_volume(self.music_volume)
-    
-    def set_sfx_volume(self, volume: float) -> None:
-        """
-        Set global sound effects volume.
+        # Play sound
+        if target_channel.play(sound_name, loop):
+            target_channel.set_volume(volume)
+            target_channel.set_pitch(pitch)
+            target_channel.set_pan(pan)
+            return target_channel
         
-        Args:
-            volume (float): Volume level (0.0 to 1.0)
-        """
-        self.sfx_volume = max(0.0, min(1.0, volume))
-        # Note: Individual sound effects maintain their own volume ratios
+        return None
     
-    def fade_in_music(self, name: str, duration: float = 2.0,
-                     target_volume: float = None, speed: float = 1.0) -> bool:
+    def play_music(self, sound_name: str, volume: float = None, 
+                   pitch: float = 1.0, loop: bool = True, 
+                   fade_in: float = 0.0) -> Optional[AudioChannel]:
         """
-        Fade in a music track.
+        Play background music (uses channel 0).
         
         Args:
-            name (str): Name of the music track
-            duration (float, optional): Fade duration. Defaults to 2.0.
-            target_volume (float, optional): Target volume. Uses music volume if None.
-            speed (float, optional): Playback speed. Defaults to 1.0.
+            sound_name (str): Name of the music sound
+            volume (float, optional): Volume. Uses music volume if None
+            pitch (float): Pitch multiplier
+            loop (bool): Whether to loop
+            fade_in (float): Fade-in duration in seconds
             
         Returns:
-            bool: True if fade started successfully
+            Optional[AudioChannel]: Music channel, or None if failed
         """
-        if target_volume is None:
-            target_volume = self.music_volume
+        if volume is None:
+            volume = self.music_volume
         
-        if self.play_music(name, 0.0, speed):  # Start at volume 0
-            self.music_channel.fade_in(duration, target_volume)
-            return True
-        return False
+        # Use channel 0 for music
+        music_channel = self.channels[0] if self.channels else None
+        if not music_channel:
+            print("No channels available for music")
+            return None
+        
+        # Stop current music
+        if music_channel.is_playing() or music_channel.is_paused():
+            music_channel.stop()
+        
+        # Play music
+        if music_channel.play(sound_name, loop):
+            if fade_in > 0:
+                # Start silent and fade in
+                music_channel.volume = 0.0
+                music_channel._update_pygame_volume()
+                music_channel.set_volume(volume, fade_in)
+            else:
+                music_channel.set_volume(volume)
+            
+            music_channel.set_pitch(pitch)
+            music_channel.set_pan(0.0)  # Center pan for music
+            
+            return music_channel
+        
+        return None
     
-    def fade_out_music(self, duration: float = 2.0) -> None:
-        """
-        Fade out the current music.
-        
-        Args:
-            duration (float, optional): Fade duration. Defaults to 2.0.
-        """
-        self.music_channel.fade_out(duration)
-    
-    def stop_all_sounds(self) -> None:
-        """Stop all playing sound effects."""
-        for sound_effect in self.sound_effects.values():
-            sound_effect.stop_all()
-    
-    def get_channel_info(self) -> Dict[str, Any]:
-        """
-        Get information about all channels.
-        
-        Returns:
-            Dict[str, Any]: Channel information
-        """
-        info = {
-            'total_channels': len(self.channels),
-            'busy_channels': 0,
-            'channels': []
-        }
-        
+    def stop_all(self):
+        """Stop all audio playback."""
         for channel in self.channels:
-            channel_info = {
-                'id': channel.channel_id,
-                'state': channel.state.value,
-                'volume': channel.volume,
-                'speed': channel.speed,
-                'playing': channel.is_playing(),
-                'paused': channel.is_paused()
-            }
-            info['channels'].append(channel_info)
-            
-            if channel.is_playing() or channel.is_paused():
-                info['busy_channels'] += 1
+            channel.stop()
         
+        if self.use_openal and hasattr(self, 'openal_system'):
+            self.openal_system.stop_all()
+    
+    def pause_all(self):
+        """Pause all audio playback."""
+        for channel in self.channels:
+            if channel.is_playing():
+                channel.pause()
+    
+    def resume_all(self):
+        """Resume all paused audio."""
+        for channel in self.channels:
+            if channel.is_paused():
+                channel.resume()
+    
+    def set_master_volume(self, volume: float):
+        """Set master volume for all audio."""
+        self.master_volume = max(0.0, min(1.0, volume))
+        
+        # This would need to be applied to all channels
+        # Implementation depends on backend capabilities
+    
+    def set_music_volume(self, volume: float):
+        """Set music volume."""
+        self.music_volume = max(0.0, min(1.0, volume))
+        
+        # Update music channel if playing
+        if self.channels:
+            music_channel = self.channels[0]
+            if music_channel.is_playing() or music_channel.is_paused():
+                music_channel.set_volume(volume)
+    
+    def set_sfx_volume(self, volume: float):
+        """Set sound effects volume."""
+        self.sfx_volume = max(0.0, min(1.0, volume))
+    
+    def get_channel_info(self) -> List[Dict]:
+        """Get information about all channels."""
+        info = []
+        for i, channel in enumerate(self.channels):
+            info.append({
+                'id': i,
+                'state': channel.state.value,
+                'sound': channel.current_sound,
+                'volume': channel.volume,
+                'pitch': channel.pitch,
+                'pan': channel.pan,
+                'playing': channel.is_playing(),
+                'paused': channel.is_paused(),
+                'position': channel.get_playback_position()
+            })
         return info
     
-    def cleanup(self) -> None:
-        """Clean up audio resources."""
-        self.stop_music()
-        self.stop_all_sounds()
-        pygame.mixer.quit()
-    
-    def get_sound_duration(self, name: str) -> float:
+    def unload_sound(self, name: str, force: bool = False) -> bool:
         """
-        Get the duration of a loaded sound effect.
+        Unload a sound from memory.
         
         Args:
-            name (str): Name of the sound effect
+            name (str): Name of the sound to unload
+            force (bool): Force unload even if sound is in use
             
         Returns:
-            float: Duration in seconds, or 0.0 if not found
+            bool: True if sound was unloaded
         """
-        if name in self.sound_effects:
-            return self.sound_effects[name].get_duration()
-        return 0.0
+        if name not in self._sounds:
+            return False
+        
+        sound_info = self._sounds[name]
+        
+        # Check if sound is in use
+        if sound_info.ref_count > 0 and not force:
+            print(f"Cannot unload '{name}': {sound_info.ref_count} channels are using it")
+            return False
+        
+        # Remove from dictionaries
+        self._sounds.pop(name, None)
+        self._pygame_sounds.pop(name, None)
+        
+        print(f"Unloaded sound '{name}'")
+        return True
     
-    def get_music_duration(self, name: str) -> float:
+    def unload_unused_sounds(self, max_age: float = 300.0):
         """
-        Get the duration of a loaded music track.
+        Unload sounds that haven't been used for a while.
         
         Args:
-            name (str): Name of the music track
-            
-        Returns:
-            float: Duration in seconds, or 0.0 if not found
+            max_age (float): Maximum age in seconds
         """
-        if name in self.music_tracks:
-            try:
-                sound = pygame.mixer.Sound(self.music_tracks[name])
-                return sound.get_length()
-            except:
-                pass
-        return 0.0
-    
-    def get_current_music_position(self) -> float:
-        """
-        Get current playback position of music.
+        current_time = time.time()
+        to_unload = []
         
-        Returns:
-            float: Current position in seconds
-        """
-        return self.music_channel.get_playback_position()
+        for name, sound_info in self._sounds.items():
+            if sound_info.ref_count == 0 and (current_time - sound_info.loaded_time) > max_age:
+                to_unload.append(name)
+        
+        for name in to_unload:
+            self.unload_sound(name, force=True)
+    
+    def update(self):
+        """Update audio system (call periodically)."""
+        if self.use_openal and hasattr(self, 'openal_system'):
+            self.openal_system.update()
+    
+    def cleanup(self):
+        """Clean up all audio resources."""
+        self.stop_all()
+        
+        # Clean up channels
+        for channel in self.channels:
+            channel.cleanup()
+        
+        # Clean up backend
+        if self.use_openal and hasattr(self, 'openal_system'):
+            cleanup_audio()
+        
+        # Clear sound dictionaries
+        self._sounds.clear()
+        self._pygame_sounds.clear()
+        
+        print("Audio system cleaned up")

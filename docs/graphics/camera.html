@@ -12,13 +12,13 @@
     
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
                     <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 <span class="badge bg-primary me-3">Graphics</span>
@@ -31,13 +31,7 @@
     
 
     <div class="container mt-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="index.html">Graphics</a></li>
-                <li class="breadcrumb-item active">camera.py</li>
-            </ol>
-        </nav>
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Graphics</a></li><li class="breadcrumb-item active">camera.py</li></ol></nav>
 
         <div class="header-section mb-5">
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>camera.py</h1>
@@ -59,6 +53,19 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">Camera follow behavior modes</p>
                 </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>FIXED: Any = 'fixed'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>FOLLOW: Any = 'follow'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>PLATFORMER: Any = 'platformer'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>TOPDOWN: Any = 'topdown'</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     <p class="text-muted italic">No methods defined.</p>
@@ -74,6 +81,16 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">Types of camera shake effects</p>
                 </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>POSITIONAL: Any = 'positional'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>ROTATIONAL: Any = 'rotational'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>TRAUMA: Any = 'trauma'</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     <p class="text-muted italic">No methods defined.</p>
@@ -89,15 +106,16 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">Otimizado: Camada de parallax com renderização eficiente</p>
                 </div>
+                
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxlayer-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self, surface, speed_factor, tile_mode, offset) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, surface: pygame.Surface, speed_factor: float, tile_mode: bool = True, offset: Tuple[float, float] = (0, 0)) -> Any</code>
                 <div class="mt-2 text-muted small">Inicializa uma camada de parallax.<br><br>Args:<br> &nbsp; &nbsp;surface: Superfície pygame para a camada<br> &nbsp; &nbsp;speed_factor: Fator de velocidade (0.0 = estático, 1.0 = move com câmera)<br> &nbsp; &nbsp;tile_mode: Se True, a imagem se repete infinitamente<br> &nbsp; &nbsp;offset: Offset inicial da camada</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxlayer-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self, camera_position, camera_zoom, dt) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, camera_position: pygame.math.Vector2, camera_zoom: float, dt: float) -> Any</code>
                 <div class="mt-2 text-muted small">Atualiza a posição da camada baseado na posição da câmera.</div>
             </div>
                 </div>
@@ -112,43 +130,44 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">Sistema de parallax otimizado para múltiplas camadas</p>
                 </div>
+                
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self, camera) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, camera: Any) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-add_layer">
-                <code class="fs-6 fw-bold text-color-title">def add_layer(self, surface, speed_factor, tile_mode, offset) -> ParallaxLayer</code>
+                <code class="fs-6 fw-bold text-color-title">def add_layer(self: Any, surface: pygame.Surface, speed_factor: float, tile_mode: bool = True, offset: Tuple[float, float] = (0, 0)) -> ParallaxLayer</code>
                 <div class="mt-2 text-muted small">Adiciona uma camada ao sistema de parallax.<br><br>Args:<br> &nbsp; &nbsp;surface: Superfície pygame<br> &nbsp; &nbsp;speed_factor: Fator de velocidade do parallax<br> &nbsp; &nbsp;tile_mode: Se a imagem deve se repetir<br> &nbsp; &nbsp;offset: Offset inicial<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParallaxLayer: A camada criada</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-remove_layer">
-                <code class="fs-6 fw-bold text-color-title">def remove_layer(self, layer) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def remove_layer(self: Any, layer: ParallaxLayer) -> Any</code>
                 <div class="mt-2 text-muted small">Remove uma camada do sistema de parallax</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-clear_layers">
-                <code class="fs-6 fw-bold text-color-title">def clear_layers(self) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def clear_layers(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Remove todas as camadas</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self, dt) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float) -> Any</code>
                 <div class="mt-2 text-muted small">Atualiza todas as camadas de parallax</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self, renderer) -> bool</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Any) -> bool</code>
                 <div class="mt-2 text-muted small">Renderiza todas as camadas de parallax de forma otimizada.<br><br>Returns:<br> &nbsp; &nbsp;bool: True se o parallax foi renderizado, False caso contrário</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-_render_layer">
-                <code class="fs-6 fw-bold text-color-title">def _render_layer(self, renderer, layer) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_layer(self: Any, renderer: Any, layer: ParallaxLayer) -> Any</code>
                 <div class="mt-2 text-muted small">Renderiza uma única camada de parallax de forma otimizada</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-_render_tiled_layer">
-                <code class="fs-6 fw-bold text-color-title">def _render_tiled_layer(self, renderer, layer, base_x, base_y, viewport_size, zoom) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_tiled_layer(self: Any, renderer: Any, layer: ParallaxLayer, base_x: float, base_y: float, viewport_size: Tuple[int, int], zoom: float) -> Any</code>
                 <div class="mt-2 text-muted small">Renderiza camada em modo tile (repetição infinita)</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-_render_single_layer">
-                <code class="fs-6 fw-bold text-color-title">def _render_single_layer(self, renderer, layer, base_x, base_y, viewport_size, zoom) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_single_layer(self: Any, renderer: Any, layer: ParallaxLayer, base_x: float, base_y: float, viewport_size: Tuple[int, int], zoom: float) -> Any</code>
                 <div class="mt-2 text-muted small">Renderiza camada em modo único (uma única cópia)</div>
             </div>
                 </div>
@@ -163,151 +182,152 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">Advanced 2D Camera system with smooth movement and effects.</p>
                 </div>
+                
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self, scene, width, height) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, scene: Any, width: int, height: int) -> Any</code>
                 <div class="mt-2 text-muted small">Initialize camera with viewport dimensions.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-position">
-                <code class="fs-6 fw-bold text-color-title">def position(self) -> pygame.math.Vector2</code>
+                <code class="fs-6 fw-bold text-color-title">def position(self: Any) -> pygame.math.Vector2</code>
                 <div class="mt-2 text-muted small">Get camera position with shake offset applied</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-position">
-                <code class="fs-6 fw-bold text-color-title">def position(self, value) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def position(self: Any, value: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Set camera base position (without shake)</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-base_position">
-                <code class="fs-6 fw-bold text-color-title">def base_position(self) -> pygame.math.Vector2</code>
+                <code class="fs-6 fw-bold text-color-title">def base_position(self: Any) -> pygame.math.Vector2</code>
                 <div class="mt-2 text-muted small">Get camera base position without shake offset</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-set_target">
-                <code class="fs-6 fw-bold text-color-title">def set_target(self, target, mode) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_target(self: Any, target: Any, mode: CameraMode = CameraMode.FOLLOW) -> Any</code>
                 <div class="mt-2 text-muted small">Set camera target to follow.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-set_bounds">
-                <code class="fs-6 fw-bold text-color-title">def set_bounds(self, bounds) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_bounds(self: Any, bounds: pygame.Rect) -> Any</code>
                 <div class="mt-2 text-muted small">Set camera movement boundaries.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self, dt) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float) -> Any</code>
                 <div class="mt-2 text-muted small">Update camera position and effects.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-_update_renderer_camera_position">
-                <code class="fs-6 fw-bold text-color-title">def _update_renderer_camera_position(self) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _update_renderer_camera_position(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Update camera position in both renderers</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-_update_follow">
-                <code class="fs-6 fw-bold text-color-title">def _update_follow(self, dt) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _update_follow(self: Any, dt: float) -> Any</code>
                 <div class="mt-2 text-muted small">Update camera position based on follow mode</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-_get_target_position">
-                <code class="fs-6 fw-bold text-color-title">def _get_target_position(self) -> pygame.math.Vector2</code>
+                <code class="fs-6 fw-bold text-color-title">def _get_target_position(self: Any) -> pygame.math.Vector2</code>
                 <div class="mt-2 text-muted small">Extract position from target object</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-_update_platformer_mode">
-                <code class="fs-6 fw-bold text-color-title">def _update_platformer_mode(self, target_pos) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _update_platformer_mode(self: Any, target_pos: pygame.math.Vector2) -> Any</code>
                 <div class="mt-2 text-muted small">Platformer-style camera with deadzone</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-_update_topdown_mode">
-                <code class="fs-6 fw-bold text-color-title">def _update_topdown_mode(self, target_pos) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _update_topdown_mode(self: Any, target_pos: pygame.math.Vector2) -> Any</code>
                 <div class="mt-2 text-muted small">Top-down RPG style camera</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-_apply_smooth_movement">
-                <code class="fs-6 fw-bold text-color-title">def _apply_smooth_movement(self, dt) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _apply_smooth_movement(self: Any, dt: float) -> Any</code>
                 <div class="mt-2 text-muted small">Apply smooth interpolation to camera position</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-_apply_zoom">
-                <code class="fs-6 fw-bold text-color-title">def _apply_zoom(self, dt) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _apply_zoom(self: Any, dt: float) -> Any</code>
                 <div class="mt-2 text-muted small">Apply smooth zoom interpolation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-_apply_shake">
-                <code class="fs-6 fw-bold text-color-title">def _apply_shake(self, dt) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _apply_shake(self: Any, dt: float) -> Any</code>
                 <div class="mt-2 text-muted small">Apply camera shake effects</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-_update_trauma_shake">
-                <code class="fs-6 fw-bold text-color-title">def _update_trauma_shake(self, dt) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _update_trauma_shake(self: Any, dt: float) -> Any</code>
                 <div class="mt-2 text-muted small">Update trauma-based shake</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-_update_positional_shake">
-                <code class="fs-6 fw-bold text-color-title">def _update_positional_shake(self, dt) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _update_positional_shake(self: Any, dt: float) -> Any</code>
                 <div class="mt-2 text-muted small">Update simple positional shake</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-_apply_bounds">
-                <code class="fs-6 fw-bold text-color-title">def _apply_bounds(self) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _apply_bounds(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Constrain camera within boundaries</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-shake">
-                <code class="fs-6 fw-bold text-color-title">def shake(self, intensity, duration, shake_type) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def shake(self: Any, intensity: float = 1.0, duration: float = 0.5, shake_type: CameraShakeType = CameraShakeType.POSITIONAL) -> Any</code>
                 <div class="mt-2 text-muted small">Start camera shake effect.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-add_trauma">
-                <code class="fs-6 fw-bold text-color-title">def add_trauma(self, amount) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def add_trauma(self: Any, amount: float) -> Any</code>
                 <div class="mt-2 text-muted small">Add trauma for trauma-based shake.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-set_zoom">
-                <code class="fs-6 fw-bold text-color-title">def set_zoom(self, zoom, smooth) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_zoom(self: Any, zoom: float, smooth: bool = True) -> Any</code>
                 <div class="mt-2 text-muted small">Set camera zoom level.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-convert_size_zoom">
-                <code class="fs-6 fw-bold text-color-title">def convert_size_zoom(self, size) -> tuple</code>
+                <code class="fs-6 fw-bold text-color-title">def convert_size_zoom(self: Any, size: tuple) -> tuple</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-convert_size_zoom_list">
-                <code class="fs-6 fw-bold text-color-title">def convert_size_zoom_list(self, sizes, return_type) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def convert_size_zoom_list(self: Any, sizes: tuple, return_type: Literal['list', 'nparray', 'ndarray'] = 'list') -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-world_to_screen">
-                <code class="fs-6 fw-bold text-color-title">def world_to_screen(self, world_pos, vector_type) -> pygame.math.Vector2</code>
+                <code class="fs-6 fw-bold text-color-title">def world_to_screen(self: Any, world_pos: pygame.math.Vector2, vector_type: bool = True) -> pygame.math.Vector2</code>
                 <div class="mt-2 text-muted small">Convert world coordinates to screen coordinates<br><br>Parameters:<br> &nbsp; &nbsp;world_pos: pygame.math.Vector2 or Tuple<br> &nbsp; &nbsp;vector_type: bool = True<br>Returns:<br> &nbsp; &nbsp;pygame.math.Vector2 or Tuple</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-world_to_screen_list">
-                <code class="fs-6 fw-bold text-color-title">def world_to_screen_list(self, world_positions, vector_type, return_type) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def world_to_screen_list(self: Any, world_positions: list, vector_type: bool = True, return_type: Literal['list', 'nparray', 'ndarray'] = 'list') -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-screen_to_world">
-                <code class="fs-6 fw-bold text-color-title">def screen_to_world(self, screen_pos) -> pygame.math.Vector2</code>
+                <code class="fs-6 fw-bold text-color-title">def screen_to_world(self: Any, screen_pos: pygame.math.Vector2) -> pygame.math.Vector2</code>
                 <div class="mt-2 text-muted small">Converts the screen position to world position<br><br>Worlds position are like: 0,0 is the center of the world<br><br>Parameters:<br> &nbsp; &nbsp;screen_pos: pygame.math.Vector2 or Tuple<br>Returns:<br> &nbsp; &nbsp;pygame.math.Vector2</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-screen_to_world_list">
-                <code class="fs-6 fw-bold text-color-title">def screen_to_world_list(self, screen_positions) -> list</code>
+                <code class="fs-6 fw-bold text-color-title">def screen_to_world_list(self: Any, screen_positions: list) -> list</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-screen_to_world_vector">
-                <code class="fs-6 fw-bold text-color-title">def screen_to_world_vector(self, screen_vec) -> pygame.math.Vector2</code>
+                <code class="fs-6 fw-bold text-color-title">def screen_to_world_vector(self: Any, screen_vec: Any) -> pygame.math.Vector2</code>
                 <div class="mt-2 text-muted small">Convert screen vector to world vector (ignores camera position).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-get_visible_rect">
-                <code class="fs-6 fw-bold text-color-title">def get_visible_rect(self) -> pygame.Rect</code>
+                <code class="fs-6 fw-bold text-color-title">def get_visible_rect(self: Any) -> pygame.Rect</code>
                 <div class="mt-2 text-muted small">Get the visible world area as a rectangle.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-is_visible">
-                <code class="fs-6 fw-bold text-color-title">def is_visible(self, world_pos, margin) -> bool</code>
+                <code class="fs-6 fw-bold text-color-title">def is_visible(self: Any, world_pos: Any, margin: float = 0.0) -> bool</code>
                 <div class="mt-2 text-muted small">Check if a world position is visible on screen.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-add_parallax_layer">
-                <code class="fs-6 fw-bold text-color-title">def add_parallax_layer(self, surface, speed_factor, tile_mode, offset) -> ParallaxLayer</code>
+                <code class="fs-6 fw-bold text-color-title">def add_parallax_layer(self: Any, surface: pygame.Surface, speed_factor: float, tile_mode: bool = True, offset: Tuple[float, float] = (0, 0)) -> ParallaxLayer</code>
                 <div class="mt-2 text-muted small">Adiciona uma camada ao sistema de parallax da câmera.<br><br>Args:<br> &nbsp; &nbsp;surface: Superfície pygame para a camada<br> &nbsp; &nbsp;speed_factor: Fator de velocidade do parallax (0.0 = estático, 1.0 = move com câmera)<br> &nbsp; &nbsp;tile_mode: Se a imagem deve se repetir infinitamente<br> &nbsp; &nbsp;offset: Offset inicial da camada<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParallaxLayer: A camada criada</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-remove_parallax_layer">
-                <code class="fs-6 fw-bold text-color-title">def remove_parallax_layer(self, layer) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def remove_parallax_layer(self: Any, layer: ParallaxLayer) -> Any</code>
                 <div class="mt-2 text-muted small">Remove uma camada do sistema de parallax</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-clear_parallax_layers">
-                <code class="fs-6 fw-bold text-color-title">def clear_parallax_layers(self) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def clear_parallax_layers(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Remove todas as camadas de parallax</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-render_parallax">
-                <code class="fs-6 fw-bold text-color-title">def render_parallax(self, renderer) -> bool</code>
+                <code class="fs-6 fw-bold text-color-title">def render_parallax(self: Any, renderer: Any) -> bool</code>
                 <div class="mt-2 text-muted small">Renderiza o sistema de parallax.<br><br>Returns:<br> &nbsp; &nbsp;bool: True se o parallax foi renderizado, False caso contrário</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-enable_parallax">
-                <code class="fs-6 fw-bold text-color-title">def enable_parallax(self, enabled) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def enable_parallax(self: Any, enabled: bool = True) -> Any</code>
                 <div class="mt-2 text-muted small">Habilita ou desabilita o sistema de parallax</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-get_parallax_layer_count">
-                <code class="fs-6 fw-bold text-color-title">def get_parallax_layer_count(self) -> int</code>
+                <code class="fs-6 fw-bold text-color-title">def get_parallax_layer_count(self: Any) -> int</code>
                 <div class="mt-2 text-muted small">Retorna o número de camadas de parallax</div>
             </div>
                 </div>
@@ -328,17 +348,17 @@
 
     
     <!-- Footer -->
-    <footer class="bg-dark text-white mt-5 py-5">
+    <footer class="footer-section">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
                     <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
-                    <p class="text-white-50">2D Game Engine for Python</p>
+                    <p class="text-white-50">2D Game Framework for Python</p>
                 </div>
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-01-15 11:32
+                        Documentation generated on 2026-01-20 14:14
                     </p>
                 </div>
             </div>
@@ -350,7 +370,7 @@
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler for GitHub Pages structure
+    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
@@ -359,30 +379,18 @@
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
                     
-                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
                         searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
                     }
                     
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
             
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -392,10 +400,8 @@
                 }
             });
             
-            // Handle click on search icon
             searchIcon.addEventListener('click', performSearch);
             
-            // Also prevent form submission if the input is inside a form
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {
@@ -408,69 +414,6 @@
     });
     </script>
     
-    
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../theme.js"></script>
-    
-    <script>
-    // Universal search handler for GitHub Pages structure
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('moduleSearch');
-        const searchIcon = document.querySelector('.input-group-text');
-        
-        if (searchInput && searchIcon) {
-            const performSearch = () => {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
-                    const currentPath = window.location.pathname;
-                    let searchPath = 'search.html';
-                    
-                    // If we're in a module subdirectory (/LunaEngine/core/)
-                    if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
-                        searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
-                    }
-                    
-                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
-                }
-            };
-            
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
-            searchInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault(); 
-                    e.stopPropagation();
-                    performSearch();
-                    return false;
-                }
-            });
-            
-            // Handle click on search icon
-            searchIcon.addEventListener('click', performSearch);
-            
-            // Also prevent form submission if the input is inside a form
-            const form = searchInput.closest('form');
-            if (form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    performSearch();
-                    return false;
-                });
-            }
-        }
-    });
-    </script>
     
 </body>
 </html>

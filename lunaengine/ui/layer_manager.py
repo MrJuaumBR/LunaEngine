@@ -112,7 +112,8 @@ class UILayerManager:
             return LayerType.TOP
         
         # Check element type
-        from .elements import Dropdown, Tooltip, DialogBox
+        from .elements import Dropdown, DialogBox
+        from .tooltips import Tooltip
         
         if isinstance(element, Dropdown):
             if element.expanded:

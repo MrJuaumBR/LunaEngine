@@ -9,119 +9,138 @@
     <link href="theme.css" rel="stylesheet">
 </head>
 <body>
+    
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="index.html">
+            <a class="navbar-brand fw-bold" href="./index.html" id="navbar-logo-link">
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search documentation...">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
+                
                 <button class="btn btn-outline-secondary theme-toggle">
                     <span class="theme-icon">🌙</span>
                 </button>
             </div>
         </div>
     </nav>
-
+    
     <div class="container mt-5">
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <h1 class="text-center mb-4">👥 Community & Contact</h1>
-                
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <div class="card h-100 text-center">
-                            <div class="card-body">
-                                <i class="bi bi-github fs-1 text-primary mb-3"></i>
-                                <h5>GitHub Repository</h5>
-                                <p class="text-muted">Source code, issues, and contributions</p>
-                                <a href="https://github.com/MrJuaumBR/LunaEngine" class="btn btn-outline-primary">
-                                    Visit GitHub
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <div class="card h-100 text-center">
-                            <div class="card-body">
-                                <i class="bi bi-discord fs-1 text-info mb-3"></i>
-                                <h5>Discord Community</h5>
-                                <p class="text-muted">Join our community for help and discussions</p>
-                                <a href="https://discord.gg/fb84sHDX7R" class="btn btn-outline-info">
-                                    Join Discord
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <div class="card h-100 text-center">
-                            <div class="card-body">
-                                <i class="bi bi-youtube fs-1 text-danger mb-3"></i>
-                                <h5>YouTube Channel</h5>
-                                <p class="text-muted">Watch some of our videos!</p>
-                                <a href="https://youtube.com/@MrJuaumBR" class="btn btn-outline-danger">
-                                    Go to Channel
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <div class="card h-100 text-center">
-                            <div class="card-body">
-                                <i class="bi bi-file-text fs-1 text-success mb-3"></i>
-                                <h5>Documentation</h5>
-                                <p class="text-muted">Browse the complete documentation</p>
-                                <a href="index.html" class="btn btn-outline-success">
-                                    View Docs
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card mt-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Contributing</h5>
-                    </div>
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Home</a></li><li class="breadcrumb-item active">Community & Contact</li></ol></nav>
+        
+        <h1 class="text-center mb-4">Community & Contact</h1>
+        
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 text-center shadow-sm">
                     <div class="card-body">
-                        <p>We welcome contributions! Here's how you can help:</p>
-                        <ul>
-                            <li>Report bugs and issues on GitHub/Discord</li>
-                            <li>Suggest new features and improvements</li>
-                            <li>Submit pull requests with bug fixes</li>
-                            <li>Improve documentation and examples</li>
-                            <li>Share your projects made with LunaEngine</li>
-                        </ul>
+                        <i class="bi bi-github fs-1 text-primary mb-3"></i>
+                        <h5>GitHub Repository</h5>
+                        <p class="text-muted">Source code, issues, and contributions</p>
+                        <a href="https://github.com/MrJuaumBR/LunaEngine" class="btn btn-outline-primary" target="_blank">
+                            Visit GitHub
+                        </a>
                     </div>
                 </div>
-                
-                <div class="text-center mt-4">
-                    <a href="index.html" class="btn btn-primary me-2">
-                        <i class="bi bi-house me-2"></i>Back to Home
-                    </a>
-                    <a href="quick-start.html" class="btn btn-outline-primary">
-                        <i class="bi bi-play-circle me-2"></i>Quick Start
-                    </a>
-                    <a href="about.html" class="btn btn-outline-primary">
-                        <i class="bi bi-info-circle me-2"></i>About
-                    </a>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100 text-center shadow-sm">
+                    <div class="card-body">
+                        <i class="bi bi-discord fs-1 text-info mb-3"></i>
+                        <h5>Discord Community</h5>
+                        <p class="text-muted">Join our community for help and discussions</p>
+                        <a href="https://discord.gg/fb84sHDX7R" class="btn btn-outline-info" target="_blank">
+                            Join Discord
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100 text-center shadow-sm">
+                    <div class="card-body">
+                        <i class="bi bi-youtube fs-1 text-danger mb-3"></i>
+                        <h5>YouTube Channel</h5>
+                        <p class="text-muted">Watch tutorials and demos</p>
+                        <a href="https://youtube.com/@MrJuaumBR" class="btn btn-outline-danger" target="_blank">
+                            Go to Channel
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100 text-center shadow-sm">
+                    <div class="card-body">
+                        <i class="bi bi-code-slash fs-1 text-success mb-3"></i>
+                        <h5>Examples Hub</h5>
+                        <p class="text-muted">Browse practical examples</p>
+                        <a href="examples/" class="btn btn-outline-success">
+                            View Examples
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
+        
+        <div class="card mt-4 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Contributing</h5>
+            </div>
+            <div class="card-body">
+                <p>We welcome contributions! Here's how you can help:</p>
+                <ul>
+                    <li>Report bugs and issues on GitHub/Discord</li>
+                    <li>Suggest new features and improvements</li>
+                    <li>Submit pull requests with bug fixes</li>
+                    <li>Improve documentation and examples</li>
+                    <li>Share your projects made with LunaEngine</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="index.html" class="btn btn-primary me-2">
+                <i class="bi bi-house me-2"></i>Back to Home
+            </a>
+            <a href="quick-start.html" class="btn btn-outline-primary me-2">
+                <i class="bi bi-play-circle me-2"></i>Quick Start
+            </a>
+            <a href="examples/" class="btn btn-outline-primary">
+                <i class="bi bi-code-slash me-2"></i>Examples
+            </a>
+        </div>
     </div>
+    
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-01-20 14:14
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler for GitHub Pages structure
+    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
@@ -130,30 +149,18 @@
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
                     
-                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
                         searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
                     }
                     
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
             
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -163,10 +170,8 @@
                 }
             });
             
-            // Handle click on search icon
             searchIcon.addEventListener('click', performSearch);
             
-            // Also prevent form submission if the input is inside a form
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {
@@ -178,6 +183,7 @@
         }
     });
     </script>
+    
     
 </body>
 </html>

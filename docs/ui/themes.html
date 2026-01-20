@@ -12,13 +12,13 @@
     
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
                     <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 <span class="badge bg-primary me-3">Ui</span>
@@ -31,13 +31,7 @@
     
 
     <div class="container mt-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="index.html">Ui</a></li>
-                <li class="breadcrumb-item active">themes.py</li>
-            </ol>
-        </nav>
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Ui</a></li><li class="breadcrumb-item active">themes.py</li></ol></nav>
 
         <div class="header-section mb-5">
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>themes.py</h1>
@@ -59,6 +53,175 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">Complete UI theme configuration for all elements</p>
                 </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>button_normal: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>button_hover: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>button_pressed: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>button_disabled: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>button_text: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dropdown_normal: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dropdown_hover: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dropdown_expanded: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dropdown_text: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dropdown_option_normal: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dropdown_option_hover: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dropdown_option_selected: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>slider_track: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>slider_thumb_normal: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>slider_thumb_hover: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>slider_thumb_pressed: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>slider_text: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>label_text: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>background: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>background2: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>text_primary: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>text_secondary: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>switch_track_on: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>switch_track_off: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>switch_thumb_on: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>switch_thumb_off: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dialog_background: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dialog_border: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dialog_text: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dialog_name_bg: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dialog_name_text: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dialog_continue_indicator: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>tooltip_background: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>tooltip_border: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>tooltip_text: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_success_background: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_success_border: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_success_text: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_info_background: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_info_border: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_info_text: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_warning_background: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_warning_border: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_warning_text: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_custom_background: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_custom_border: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_custom_text: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_error_background: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_error_border: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>notification_error_text: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>accent1: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>accent2: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>button_border: Optional[Tuple[int, int, int]] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dropdown_border: Optional[Tuple[int, int, int]] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>border: Optional[Tuple[int, int, int]] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>border2: Optional[Tuple[int, int, int]] = None</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     <p class="text-muted italic">No methods defined.</p>
@@ -74,6 +237,184 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">Enumeration of all available theme types</p>
                 </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>DEFAULT: Any = 'default'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>PRIMARY: Any = 'primary'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>SECONDARY: Any = 'secondary'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>WARN: Any = 'warn'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>ERROR: Any = 'error'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>SUCCESS: Any = 'success'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>INFO: Any = 'info'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>FANTASY_DARK: Any = 'fantasy_dark'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>FANTASY_LIGHT: Any = 'fantasy_light'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>CHERRY_DARK: Any = 'cherry_dark'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>CHERRY_LIGHT: Any = 'cherry_light'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>ECLIPSE: Any = 'eclipse'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>MIDNIGHT_DARK: Any = 'midnight_dark'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>MIDNIGHT_LIGHT: Any = 'midnight_light'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>NEON: Any = 'neon'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>RUBY: Any = 'ruby'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>EMERALD: Any = 'emerald'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>DIAMOND: Any = 'diamond'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>SILVER: Any = 'silver'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>COPPER: Any = 'copper'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>BRONZE: Any = 'bronze'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>AZURE: Any = 'azure'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>EIGHTIES: Any = '80s'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>CLOUDS: Any = 'clouds'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>ROBLOX: Any = 'roblox'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>DISCORD: Any = 'discord'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>GMAIL: Any = 'gmail'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>YOUTUBE: Any = 'youtube'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>STEAM_DARK: Any = 'steam_dark'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>STEAM_LIGHT: Any = 'steam_light'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>QUEEN: Any = 'queen'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>KING: Any = 'king'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>MATRIX: Any = 'matrix'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>BUILDER: Any = 'builder'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>GALAXY_DARK: Any = 'galaxy_dark'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>GALAXY_LIGHT: Any = 'galaxy_light'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>FOREST: Any = 'forest'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>SUNSET: Any = 'sunset'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>OCEAN: Any = 'ocean'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>LAVENDER: Any = 'lavender'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>CHOCOLATE: Any = 'chocolate'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>KIWI: Any = 'kiwi'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>DEEP_SPACE: Any = 'deep_space'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>NORD_DARK: Any = 'nord_dark'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>NORD_LIGHT: Any = 'nord_light'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>DRACULA: Any = 'dracula'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>SOLARIZED_DARK: Any = 'solarized_dark'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>SOLARIZED_LIGHT: Any = 'solarized_light'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>MONOKAI: Any = 'monokai'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>GRUVBOX_DARK: Any = 'gruvbox_dark'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>GRUVBOX_LIGHT: Any = 'gruvbox_light'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>NINJA_DARK: Any = 'ninja_dark'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>NINJA_LIGHT: Any = 'ninja_light'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>BRAZIL: Any = 'brazil'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>JAPAN: Any = 'japan'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>USA: Any = 'usa'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>EUROPEAN: Any = 'european'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>DYNASTY: Any = 'dynasty'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>VIKINGS: Any = 'vikings'</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     <p class="text-muted italic">No methods defined.</p>
@@ -89,87 +430,100 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">Manages complete UI themes with local/remote loading</p>
                 </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_themes: Dict[ThemeType, UITheme] = {}</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_current_theme: ThemeType = ThemeType.DEFAULT</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_themes_loaded: bool = False</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>GITHUB_THEMES_URL: Any = 'https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/lunaengine/ui/themes.json'</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_get_themes_file_path">
-                <code class="fs-6 fw-bold text-color-title">def _get_themes_file_path(cls) -> str</code>
+                <code class="fs-6 fw-bold text-color-title">def _get_themes_file_path(cls: Any) -> str</code>
                 <div class="mt-2 text-muted small">Get the path to themes.json file (cross-platform)</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_download_from_github">
-                <code class="fs-6 fw-bold text-color-title">def _download_from_github(cls) -> Optional[dict]</code>
+                <code class="fs-6 fw-bold text-color-title">def _download_from_github(cls: Any) -> Optional[dict]</code>
                 <div class="mt-2 text-muted small">Download themes.json from GitHub</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_save_themes_to_cache">
-                <code class="fs-6 fw-bold text-color-title">def _save_themes_to_cache(cls, themes_data) -> bool</code>
+                <code class="fs-6 fw-bold text-color-title">def _save_themes_to_cache(cls: Any, themes_data: dict) -> bool</code>
                 <div class="mt-2 text-muted small">Save downloaded themes to local cache</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_load_themes_from_json">
-                <code class="fs-6 fw-bold text-color-title">def _load_themes_from_json(cls) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _load_themes_from_json(cls: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Load themes from JSON file or GitHub</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_process_themes_data">
-                <code class="fs-6 fw-bold text-color-title">def _process_themes_data(cls, themes_data) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _process_themes_data(cls: Any, themes_data: dict) -> Any</code>
                 <div class="mt-2 text-muted small">Process themes data from dictionary</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_create_fallback_theme">
-                <code class="fs-6 fw-bold text-color-title">def _create_fallback_theme(cls) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _create_fallback_theme(cls: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Create a simple fallback theme if loading fails</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-ensure_themes_loaded">
-                <code class="fs-6 fw-bold text-color-title">def ensure_themes_loaded(cls) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def ensure_themes_loaded(cls: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Ensure themes are loaded from JSON or GitHub</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_by_name">
-                <code class="fs-6 fw-bold text-color-title">def get_theme_by_name(cls, name) -> UITheme</code>
+                <code class="fs-6 fw-bold text-color-title">def get_theme_by_name(cls: Any, name: str) -> UITheme</code>
                 <div class="mt-2 text-muted small">Get theme by name string</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_type_by_name">
-                <code class="fs-6 fw-bold text-color-title">def get_theme_type_by_name(cls, name) -> ThemeType</code>
+                <code class="fs-6 fw-bold text-color-title">def get_theme_type_by_name(cls: Any, name: str) -> ThemeType</code>
                 <div class="mt-2 text-muted small">Get theme type by name string</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme">
-                <code class="fs-6 fw-bold text-color-title">def get_theme(cls, theme_type) -> UITheme</code>
+                <code class="fs-6 fw-bold text-color-title">def get_theme(cls: Any, theme_type: ThemeType) -> UITheme</code>
                 <div class="mt-2 text-muted small">Get complete theme by type</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-set_theme">
-                <code class="fs-6 fw-bold text-color-title">def set_theme(cls, theme_type, theme) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_theme(cls: Any, theme_type: ThemeType, theme: UITheme) -> Any</code>
                 <div class="mt-2 text-muted small">Set or override a theme</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-set_current_theme">
-                <code class="fs-6 fw-bold text-color-title">def set_current_theme(cls, theme_type) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_current_theme(cls: Any, theme_type: ThemeType) -> Any</code>
                 <div class="mt-2 text-muted small">Set the current default theme</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_current_theme">
-                <code class="fs-6 fw-bold text-color-title">def get_current_theme(cls) -> ThemeType</code>
+                <code class="fs-6 fw-bold text-color-title">def get_current_theme(cls: Any) -> ThemeType</code>
                 <div class="mt-2 text-muted small">Get current default theme</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_themes">
-                <code class="fs-6 fw-bold text-color-title">def get_themes(cls) -> Dict[ThemeType, UITheme]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_themes(cls: Any) -> Dict[ThemeType, UITheme]</code>
                 <div class="mt-2 text-muted small">Get all available themes</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_types">
-                <code class="fs-6 fw-bold text-color-title">def get_theme_types(cls) -> List[ThemeType]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_theme_types(cls: Any) -> List[ThemeType]</code>
                 <div class="mt-2 text-muted small">Get all available theme types</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_names">
-                <code class="fs-6 fw-bold text-color-title">def get_theme_names(cls) -> List[str]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_theme_names(cls: Any) -> List[str]</code>
                 <div class="mt-2 text-muted small">Get all available theme names</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_color">
-                <code class="fs-6 fw-bold text-color-title">def get_color(cls, color_name) -> Tuple[int, int, int]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_color(cls: Any, color_name: color_name_type) -> Tuple[int, int, int]</code>
                 <div class="mt-2 text-muted small">Get a specific color from the current theme</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-reload_themes">
-                <code class="fs-6 fw-bold text-color-title">def reload_themes(cls) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def reload_themes(cls: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Force reload themes from source</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_loaded_count">
-                <code class="fs-6 fw-bold text-color-title">def get_loaded_count(cls) -> int</code>
+                <code class="fs-6 fw-bold text-color-title">def get_loaded_count(cls: Any) -> int</code>
                 <div class="mt-2 text-muted small">Get number of loaded themes</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-is_theme_available">
-                <code class="fs-6 fw-bold text-color-title">def is_theme_available(cls, theme_name) -> bool</code>
+                <code class="fs-6 fw-bold text-color-title">def is_theme_available(cls: Any, theme_name: str) -> bool</code>
                 <div class="mt-2 text-muted small">Check if a theme is available by name</div>
             </div>
                 </div>
@@ -190,17 +544,17 @@
 
     
     <!-- Footer -->
-    <footer class="bg-dark text-white mt-5 py-5">
+    <footer class="footer-section">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
                     <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
-                    <p class="text-white-50">2D Game Engine for Python</p>
+                    <p class="text-white-50">2D Game Framework for Python</p>
                 </div>
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-01-15 11:32
+                        Documentation generated on 2026-01-20 14:14
                     </p>
                 </div>
             </div>
@@ -212,7 +566,7 @@
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler for GitHub Pages structure
+    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
@@ -221,30 +575,18 @@
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
                     
-                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
                         searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
                     }
                     
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
             
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -254,10 +596,8 @@
                 }
             });
             
-            // Handle click on search icon
             searchIcon.addEventListener('click', performSearch);
             
-            // Also prevent form submission if the input is inside a form
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {
@@ -270,69 +610,6 @@
     });
     </script>
     
-    
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../theme.js"></script>
-    
-    <script>
-    // Universal search handler for GitHub Pages structure
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('moduleSearch');
-        const searchIcon = document.querySelector('.input-group-text');
-        
-        if (searchInput && searchIcon) {
-            const performSearch = () => {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
-                    const currentPath = window.location.pathname;
-                    let searchPath = 'search.html';
-                    
-                    // If we're in a module subdirectory (/LunaEngine/core/)
-                    if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
-                        searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
-                    }
-                    
-                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
-                }
-            };
-            
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
-            searchInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault(); 
-                    e.stopPropagation();
-                    performSearch();
-                    return false;
-                }
-            });
-            
-            // Handle click on search icon
-            searchIcon.addEventListener('click', performSearch);
-            
-            // Also prevent form submission if the input is inside a form
-            const form = searchInput.closest('form');
-            if (form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    performSearch();
-                    return false;
-                });
-            }
-        }
-    });
-    </script>
     
 </body>
 </html>

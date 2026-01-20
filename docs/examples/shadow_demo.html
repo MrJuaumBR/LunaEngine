@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadow Demo - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Examples Hub</a></li><li class="breadcrumb-item active">Shadow Demo</li></ol></nav>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Shadow Demo</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>shadow_demo.py</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">&quot;&quot;&quot;
+Shadow System Test Demo - LunaEngine
+&quot;&quot;&quot;
+
+import sys
+import os
+import math
+import random
+
+sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
+
+import pygame
+from lunaengine.core import LunaEngine, Scene
+from lunaengine.ui.elements import *
+from lunaengine.graphics.camera import Camera, CameraMode
+from lunaengine.graphics.shadows import ShadowSystem, Light, ShadowCaster
+
+class ShadowTestScene(Scene):
+    &quot;&quot;&quot;Simple scene to test the shadow system&quot;&quot;&quot;
+    
+    def __init__(self, engine: LunaEngine):
+        super().__init__(engine)
+        
+        # Test objects
+        self.test_objects = []
+        self.lights = []
+        self.shadow_casters = []
+        
+        # Camera setup
+        self.camera.position = pygame.math.Vector2(400, 300)
+        self.camera.target_position = pygame.math.Vector2(400, 300)
+        self.camera.mode = CameraMode.TOPDOWN
+        self.camera.zoom = 1.0
+        self.camera.target_zoom = 1.0
+        
+        # Player for movement
+        self.player = {
+            &#x27;position&#x27;: [400, 300],
+            &#x27;velocity&#x27;: [0, 0],
+            &#x27;speed&#x27;: 200,
+            &#x27;size&#x27;: 15
+        }
+        
+        # Generate test objects
+        self.generate_test_objects()
+        
+        # Setup UI
+        self.setup_ui()
+        
+        # Debug info
+        self.debug_info = {
+            &#x27;mouse_world_pos&#x27;: (0, 0),
+            &#x27;camera_pos&#x27;: (0, 0),
+            &#x27;shadow_stats&#x27;: {}
+        }
+
+    def generate_test_objects(self):
+        &quot;&quot;&quot;Generate test objects for shadow casting&quot;&quot;&quot;
+        
+        # Create some rectangular objects
+        rectangles = [
+            (100, 100, 80, 40),    # x, y, width, height
+            (600, 200, 60, 100),
+            (300, 400, 120, 60),
+            (200, 500, 70, 70),
+            (500, 100, 50, 150)
+        ]
+        
+        for x, y, w, h in rectangles:
+            rect_data = {
+                &#x27;type&#x27;: &#x27;rectangle&#x27;,
+                &#x27;position&#x27;: [x, y],
+                &#x27;size&#x27;: [w, h],
+                &#x27;color&#x27;: (random.randint(100, 200), random.randint(100, 200), random.randint(100, 200))
+            }
+            self.test_objects.append(rect_data)
+            
+            # Add as shadow caster
+            caster = self.shadow_system.add_rectangle_caster(x, y, w, h)
+            self.shadow_casters.append(caster)
+        
+        # Create some circular objects
+        circles = [
+            (400, 200, 30),
+            (150, 300, 40),
+            (550, 350, 25),
+            (250, 150, 35)
+        ]
+        
+        for x, y, radius in circles:
+            circle_data = {
+                &#x27;type&#x27;: &#x27;circle&#x27;,
+                &#x27;position&#x27;: [x, y],
+                &#x27;radius&#x27;: radius,
+                &#x27;color&#x27;: (random.randint(100, 200), random.randint(100, 200), random.randint(100, 200))
+            }
+            self.test_objects.append(circle_data)
+            
+            # Add as shadow caster
+            caster = self.shadow_system.add_circle_caster(x, y, radius)
+            self.shadow_casters.append(caster)
+        
+        # Create lights
+        # Main light (sun)
+        self.sun_light = self.shadow_system.add_light(400, -100, 600, (255, 255, 200), 0.8)
+        self.lights.append(self.sun_light)
+        
+        # Player light
+        self.player_light = self.shadow_system.add_light(
+            self.player[&#x27;position&#x27;][0],
+            self.player[&#x27;position&#x27;][1],
+            150,
+            (255, 220, 180),
+            0.6
+        )
+        self.lights.append(self.player_light)
+        
+        # Some static lights
+        static_lights = [
+            (200, 200, 120, (255, 200, 150), 0.7),
+            (600, 400, 180, (200, 220, 255), 0.5),
+            (100, 450, 100, (200, 255, 200), 0.6)
+        ]
+        
+        for x, y, radius, color, intensity in static_lights:
+            light = self.shadow_system.add_light(x, y, radius, color, intensity)
+            self.lights.append(light)
+
+    def setup_ui(self):
+        &quot;&quot;&quot;Setup user interface&quot;&quot;&quot;
+        screen_width, screen_height = self.engine.width, self.engine.height
+        
+        # Control panel
+        control_bg = UiFrame(10, 10, 300, 160)
+        self.add_ui_element(control_bg)
+        
+        # Title
+        title = TextLabel(20, 15, &quot;Shadow System Test&quot;, 20, (255, 255, 255))
+        self.add_ui_element(title)
+        
+        # Instructions
+        instructions = [
+            &quot;WASD: Move camera&quot;,
+            &quot;Mouse Wheel: Zoom&quot;,
+            &quot;Click: Add light at mouse&quot;,
+            &quot;R: Reset lights&quot;,
+            &quot;C: Clear shadow casters&quot;,
+            &quot;T: Toggle shadows&quot;
+        ]
+        
+        for i, instruction in enumerate(instructions):
+            label = TextLabel(20, 45 + i * 18, instruction, 14, (200, 200, 200))
+            self.add_ui_element(label)
+        
+        # Debug info display
+        self.debug_label = TextLabel(10, screen_height - 100, &quot;Debug Info&quot;, 14, (255, 255, 200))
+        self.add_ui_element(self.debug_label)
+
+    def handle_key_press(self, event):
+        &quot;&quot;&quot;Handle key presses&quot;&quot;&quot;
+        if event.key == pygame.K_r:
+            # Reset lights
+            self.shadow_system.clear_lights()
+            self.lights.clear()
+            
+            # Recreate player light
+            self.player_light = self.shadow_system.add_light(
+                self.player[&#x27;position&#x27;][0],
+                self.player[&#x27;position&#x27;][1],
+                150,
+                (255, 220, 180),
+                0.6
+            )
+            self.lights.append(self.player_light)
+            print(&quot;Lights reset&quot;)
+            
+        elif event.key == pygame.K_c:
+            # Clear shadow casters
+            self.shadow_system.clear_shadow_casters()
+            self.shadow_casters.clear()
+            print(&quot;Shadow casters cleared&quot;)
+            
+        elif event.key == pygame.K_t:
+            # Toggle shadows
+            self.engine.current_scene.shadows_enabled = not self.engine.current_scene.shadows_enabled
+            print(f&quot;Shadows {&#x27;enabled&#x27; if self.engine.current_scene.shadows_enabled else &#x27;disabled&#x27;}&quot;)
+
+    def handle_mouse_click(self, pos):
+        &quot;&quot;&quot;Handle mouse clicks to add lights&quot;&quot;&quot;
+        world_pos = self.camera.screen_to_world(pos)
+        
+        # Add a new light at mouse position
+        new_light = self.shadow_system.add_light(
+            world_pos.x,
+            world_pos.y,
+            random.randint(80, 200),
+            (random.randint(150, 255), random.randint(150, 255), random.randint(150, 255)),
+            random.uniform(0.4, 0.8)
+        )
+        self.lights.append(new_light)
+        print(f&quot;Added light at ({world_pos.x:.1f}, {world_pos.y:.1f})&quot;)
+
+    def update_player_movement(self, dt):
+        &quot;&quot;&quot;Update player/camera movement&quot;&quot;&quot;
+        keys = pygame.key.get_pressed()
+        
+        # Reset velocity
+        self.player[&#x27;velocity&#x27;] = [0, 0]
+        
+        # Movement input
+        if keys[pygame.K_w]:
+            self.player[&#x27;velocity&#x27;][1] = -1
+        if keys[pygame.K_s]:
+            self.player[&#x27;velocity&#x27;][1] = 1
+        if keys[pygame.K_a]:
+            self.player[&#x27;velocity&#x27;][0] = -1
+        if keys[pygame.K_d]:
+            self.player[&#x27;velocity&#x27;][0] = 1
+        
+        # Mouse wheel zoom
+        if self.engine.mouse_wheel != 0:
+            zoom_speed = 0.1
+            new_zoom = self.camera.zoom + (self.engine.mouse_wheel * zoom_speed)
+            new_zoom = max(0.3, min(3.0, new_zoom))
+            self.camera.set_zoom(new_zoom, smooth=True)
+        
+        # Normalize diagonal movement
+        if self.player[&#x27;velocity&#x27;][0] != 0 and self.player[&#x27;velocity&#x27;][1] != 0:
+            self.player[&#x27;velocity&#x27;][0] *= 0.7071
+            self.player[&#x27;velocity&#x27;][1] *= 0.7071
+        
+        # Apply movement
+        self.player[&#x27;position&#x27;][0] += self.player[&#x27;velocity&#x27;][0] * self.player[&#x27;speed&#x27;] * dt
+        self.player[&#x27;position&#x27;][1] += self.player[&#x27;velocity&#x27;][1] * self.player[&#x27;speed&#x27;] * dt
+        
+        # Update camera to follow player
+        self.camera.position.x = self.player[&#x27;position&#x27;][0]
+        self.camera.position.y = self.player[&#x27;position&#x27;][1]
+        self.camera.target_position.x = self.player[&#x27;position&#x27;][0]
+        self.camera.target_position.y = self.player[&#x27;position&#x27;][1]
+        
+        # Update player light
+        self.player_light.position.x = self.player[&#x27;position&#x27;][0]
+        self.player_light.position.y = self.player[&#x27;position&#x27;][1]
+        
+        # Animate sun light
+        self.sun_light.position.x = 400 + math.cos(pygame.time.get_ticks() * 0.0005) * 300
+        self.sun_light.position.y = -100 + math.sin(pygame.time.get_ticks() * 0.0005) * 200
+
+    def update(self, dt):
+        &quot;&quot;&quot;Update game logic&quot;&quot;&quot;
+        # Update player movement
+        self.update_player_movement(dt)
+        
+        # Update camera
+        self.camera.update(dt)
+        
+        # Update mouse world position for debug
+        mouse_screen_pos = self.engine.mouse_pos
+        mouse_world_pos = self.camera.screen_to_world(mouse_screen_pos)
+        self.debug_info[&#x27;mouse_world_pos&#x27;] = (mouse_world_pos.x, mouse_world_pos.y)
+        self.debug_info[&#x27;camera_pos&#x27;] = (self.camera.position.x, self.camera.position.y)
+        
+        # Get shadow system stats
+        self.debug_info[&#x27;shadow_stats&#x27;] = self.shadow_system.get_stats()
+        
+        # Handle mouse clicks
+        if self.engine.input_state.mouse_buttons_pressed.left:
+            self.handle_mouse_click(mouse_screen_pos)
+        
+        # Update debug display
+        self.update_debug_info()
+
+    def update_debug_info(self):
+        &quot;&quot;&quot;Update debug information display&quot;&quot;&quot;
+        stats = self.debug_info[&#x27;shadow_stats&#x27;]
+        mouse_pos = self.debug_info[&#x27;mouse_world_pos&#x27;]
+        camera_pos = self.debug_info[&#x27;camera_pos&#x27;]
+        
+        debug_text = f&quot;Mouse World: ({mouse_pos[0]:.1f}, {mouse_pos[1]:.1f}), Camera: ({camera_pos[0]:.1f}, {camera_pos[1]:.1f}), Zoom: {self.camera.zoom:.2f}, Lights: {stats.get(&#x27;total_lights&#x27;, 0)} (visible: {stats.get(&#x27;visible_lights&#x27;, 0)}), Casters: {stats.get(&#x27;total_casters&#x27;, 0)} (visible: {stats.get(&#x27;visible_casters&#x27;, 0)}), Render Time: {stats.get(&#x27;render_time_ms&#x27;, 0):.1f}ms, FPS: {stats.get(&#x27;current_fps&#x27;, 0):.1f}&quot;
+        
+        self.debug_label.set_text(debug_text)
+
+    def render(self, renderer):
+        &quot;&quot;&quot;Render the scene&quot;&quot;&quot;
+        # Clear screen
+        renderer.get_surface().fill((30, 30, 50))
+        
+        # Draw grid for reference
+        self.draw_grid(renderer)
+        
+        # Draw test objects
+        self.draw_objects(renderer)
+        
+        # Draw player
+        self.draw_player(renderer)
+        
+        # Draw lights (for visualization)
+        self.draw_lights_debug(renderer)
+        
+        # Render shadows
+        if hasattr(self, &#x27;shadows_enabled&#x27;) and self.shadows_enabled:
+            try:
+                shadow_surface = self.shadow_system.render(self.camera.position, renderer)
+                if shadow_surface and isinstance(shadow_surface, pygame.Surface):
+                    renderer.blit(shadow_surface, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+            except Exception as e:
+                print(f&quot;Shadow rendering error: {e}&quot;)
+                import traceback
+                traceback.print_exc()
+
+    def draw_grid(self, renderer):
+        &quot;&quot;&quot;Draw a grid for spatial reference&quot;&quot;&quot;
+        grid_size = 100
+        grid_color = (60, 60, 80)
+        
+        # Get visible area
+        visible_rect = self.camera.get_visible_rect()
+        
+        start_x = int(visible_rect.left // grid_size) * grid_size
+        start_y = int(visible_rect.top // grid_size) * grid_size
+        end_x = int(visible_rect.right) + grid_size
+        end_y = int(visible_rect.bottom) + grid_size
+        
+        for x in range(start_x, end_x, grid_size):
+            screen_pos = self.camera.world_to_screen((x, start_y))
+            screen_end = self.camera.world_to_screen((x, end_y))
+            renderer.draw_line(
+                screen_pos.x, screen_pos.y,
+                screen_end.x, screen_end.y,
+                grid_color, 1
+            )
+        
+        for y in range(start_y, end_y, grid_size):
+            screen_pos = self.camera.world_to_screen((start_x, y))
+            screen_end = self.camera.world_to_screen((end_x, y))
+            renderer.draw_line(
+                screen_pos.x, screen_pos.y,
+                screen_end.x, screen_end.y,
+                grid_color, 1
+            )
+
+    def draw_objects(self, renderer):
+        &quot;&quot;&quot;Draw all test objects&quot;&quot;&quot;
+        for obj in self.test_objects:
+            screen_pos = self.camera.world_to_screen(obj[&#x27;position&#x27;])
+            
+            if obj[&#x27;type&#x27;] == &#x27;rectangle&#x27;:
+                width, height = obj[&#x27;size&#x27;]
+                screen_width = width * self.camera.zoom
+                screen_height = height * self.camera.zoom
+                
+                renderer.draw_rect(
+                    screen_pos.x - screen_width / 2,
+                    screen_pos.y - screen_height / 2,
+                    screen_width,
+                    screen_height,
+                    obj[&#x27;color&#x27;],
+                    fill=True
+                )
+                
+            elif obj[&#x27;type&#x27;] == &#x27;circle&#x27;:
+                radius = obj[&#x27;radius&#x27;] * self.camera.zoom
+                renderer.draw_circle(
+                    screen_pos.x,
+                    screen_pos.y,
+                    radius,
+                    obj[&#x27;color&#x27;],
+                    fill=True
+                )
+
+    def draw_player(self, renderer):
+        &quot;&quot;&quot;Draw the player&quot;&quot;&quot;
+        screen_pos = self.camera.world_to_screen(self.player[&#x27;position&#x27;])
+        size = self.player[&#x27;size&#x27;] * self.camera.zoom
+        
+        renderer.draw_circle(
+            screen_pos.x,
+            screen_pos.y,
+            size,
+            (255, 100, 100),
+            fill=True
+        )
+        
+        # Draw direction indicator
+        if self.player[&#x27;velocity&#x27;][0] != 0 or self.player[&#x27;velocity&#x27;][1] != 0:
+            end_x = screen_pos.x + self.player[&#x27;velocity&#x27;][0] * size * 1.5
+            end_y = screen_pos.y + self.player[&#x27;velocity&#x27;][1] * size * 1.5
+            renderer.draw_line(
+                screen_pos.x, screen_pos.y,
+                end_x, end_y,
+                (255, 255, 255), 3
+            )
+
+    def draw_lights_debug(self, renderer):
+        &quot;&quot;&quot;Draw light positions for visualization&quot;&quot;&quot;
+        for light in self.lights:
+            screen_pos = self.camera.world_to_screen(light.position)
+            radius = light.radius * self.camera.zoom
+            
+            # Draw light center
+            renderer.draw_circle(
+                screen_pos.x,
+                screen_pos.y,
+                5,
+                light.color,
+                fill=True
+            )
+            
+            # Draw light radius (outline)
+            renderer.draw_circle(
+                screen_pos.x,
+                screen_pos.y,
+                radius,
+                (*light.color, 128),  # Semi-transparent
+                fill=False,
+                border_width=2
+            )
+
+def main():
+    &quot;&quot;&quot;Main function to run the shadow test demo&quot;&quot;&quot;
+    engine = LunaEngine(&quot;Shadow System Test - LunaEngine&quot;, 1024, 768)
+    engine.fps = 60
+    
+    # Register event handlers
+    @engine.on_event(pygame.KEYDOWN)
+    def on_key_press(event):
+        if engine.current_scene and hasattr(engine.current_scene, &#x27;handle_key_press&#x27;):
+            engine.current_scene.handle_key_press(event)
+    
+    # Add and set the test scene
+    engine.add_scene(&quot;shadow_test&quot;, ShadowTestScene)
+    engine.set_scene(&quot;shadow_test&quot;)
+    
+    # Enable shadows by default
+    engine.current_scene.shadows_enabled = True
+    
+    print(&quot;=== Shadow System Test Demo ===&quot;)
+    print(&quot;Controls:&quot;)
+    print(&quot;WASD - Move camera/player&quot;)
+    print(&quot;Mouse Wheel - Zoom in/out&quot;)
+    print(&quot;Click - Add light at mouse position&quot;)
+    print(&quot;R - Reset lights&quot;)
+    print(&quot;C - Clear shadow casters&quot;)
+    print(&quot;T - Toggle shadows on/off&quot;)
+    print(&quot;\nDebug information shown at bottom of screen&quot;)
+    
+    engine.run()
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About This Example</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Shadow System Test Demo - LunaEngine</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="shadow_demo.py" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples Hub
+                            </a>
+                            <a href="../quick-start.html" class="btn btn-outline-success">
+                                <i class="bi bi-play-circle me-2"></i>Quick Start Guide
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-01-20 14:14
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    // Universal search handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // Adjust path based on current location
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            searchIcon.addEventListener('click', performSearch);
+            
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

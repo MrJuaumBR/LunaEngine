@@ -2,6 +2,8 @@
 Image Converter - Embedded Image Management and Conversion System
 LOCATION: lunaengine/utils/image_converter.py
 DESCRIPTION: Comprehensive image conversion and embedding system
+
+Probably you will never use this shit :)
 """
 
 import pygame

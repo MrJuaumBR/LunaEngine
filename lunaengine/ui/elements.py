@@ -94,15 +94,18 @@ This module forms the core of LunaEngine's UI system, providing a flexible and
 themeable foundation for building complex user interfaces in Pygame applications.
 """
 
-import pygame, time
+import pygame, time, math
 import numpy as np
-from typing import Optional, Callable, List, Tuple, Any, TYPE_CHECKING, Dict, Literal
+from typing import Optional, Callable, List, Tuple, Any, Dict, Literal, TYPE_CHECKING
 from enum import Enum
-from abc import ABC, abstractmethod
+from abc import ABC
 from .themes import ThemeManager, ThemeType
 from ..core.renderer import Renderer
-from ..backend.types import InputState, ElementsList, ElementsListEvents, LayerType
+from ..backend.types import InputState, ElementsList, LayerType
 from ..backend.opengl import OpenGLRenderer
+
+if TYPE_CHECKING:
+    from .tooltips import Tooltip, TooltipConfig, UITooltipManager
 
 class _UIDGenerator:
     """
@@ -229,13 +232,21 @@ class UIElement(ABC):
         self.render_layer:LayerType = LayerType.NORMAL
         self.always_on_top:bool = False
         self.groups:List[str] = []
+        self.corner_radius = 0
+        self.border_width:int = 0
         
         # Generate unique ID using element type name
         self.element_type = self.__class__.__name__.lower()
         self.element_id = element_id if element_id else _uid_generator.generate_id(self.element_type)
+
+    def set_enabled(self, enabled: bool):
+        self.enabled = enabled
         
     def get_engine(self) -> 'LunaEngine':
         return self._global_engine
+    
+    def set_corner_radius(self, radius: int|Tuple[int, int, int, int]):
+        self.corner_radius = radius
     
     def add_group(self, group:str):
         if group not in self.groups:
@@ -252,7 +263,7 @@ class UIElement(ABC):
         return str(group).lower() in self.groups
     
     def __str__(self) -> str:
-        return str(self.element_type)
+        return f'{str(self.element_type)}-{self.element_id}'
             
     def get_id(self) -> str:
         """
@@ -322,6 +333,8 @@ class UIElement(ABC):
         Args:
             tooltip (Tooltip): Tooltip instance to associate with this element
         """
+        # Import here to avoid circular imports
+        from .tooltips import UITooltipManager
         UITooltipManager.register_tooltip(self, tooltip)
     
     def set_simple_tooltip(self, text: str, **kwargs):
@@ -332,12 +345,17 @@ class UIElement(ABC):
             text (str): Tooltip text
             **kwargs: Additional arguments for TooltipConfig
         """
+        # Import here to avoid circular imports
+        from .tooltips import Tooltip, TooltipConfig
+        
         config = TooltipConfig(text=text, **kwargs)
         tooltip = Tooltip(config)
         self.set_tooltip(tooltip)
     
     def remove_tooltip(self):
         """Remove tooltip from this element."""
+        # Import here to avoid circular imports
+        from .tooltips import UITooltipManager
         UITooltipManager.unregister_tooltip(self)
     
     def update(self, dt: float, inputState:InputState):
@@ -408,346 +426,6 @@ class UIElement(ABC):
     def on_hover(self):
         """Called when mouse hovers over the element."""
         pass
-
-class TooltipConfig:
-    """
-    Configuration class for tooltip appearance and behavior.
-    Allows easy customization of tooltips without passing multiple parameters.
-    """
-    
-    def __init__(self, 
-                 text: str = "",
-                 font_size: int = 14,
-                 padding: int = 8,
-                 corner_radius: int = 4,
-                 offset_x: int = 10,
-                 offset_y: int = 10,
-                 show_delay: float = 0.5,
-                 max_width: int = 300,
-                 theme: ThemeType = None):
-        """
-        Initialize tooltip configuration.
-        
-        Args:
-            text (str): Tooltip text content
-            font_size (int): Font size for tooltip text
-            padding (int): Padding around text
-            corner_radius (int): Border radius for rounded corners
-            offset_x (int): Horizontal offset from target element
-            offset_y (int): Vertical offset from target element
-            show_delay (float): Delay in seconds before showing tooltip
-            max_width (int): Maximum width before text wraps
-            theme (ThemeType): Custom theme for tooltip
-        """
-        self.text = text
-        self.font_size = font_size
-        self.padding = padding
-        self.corner_radius = corner_radius
-        self.offset_x = offset_x
-        self.offset_y = offset_y
-        self.show_delay = show_delay
-        self.max_width = max_width
-        self.theme = theme
-
-class Tooltip(UIElement):
-    """
-    Tooltip element that displays helpful information when hovering over UI elements.
-    Automatically adjusts position to stay within screen boundaries.
-    """
-    
-    def __init__(self, config: TooltipConfig = None, element_id: Optional[str] = None):
-        """
-        Initialize a tooltip with configuration.
-        
-        Args:
-            config (TooltipConfig): Configuration object for tooltip appearance
-            element_id (Optional[str]): Custom element ID
-        """
-        self.config = config or TooltipConfig()
-        FontManager.initialize()
-        
-        # Calculate initial size based on text and configuration
-        self.font = FontManager.get_font(None, self.config.font_size)
-        self._calculate_size()
-        
-        super().__init__(0, 0, self.width, self.height, (0, 0), element_id)
-        self.theme_type = self.config.theme or ThemeManager.get_current_theme()
-        self.target_element = None
-        self._visible = False
-        self._hover_time = 0.0
-    
-    def _calculate_size(self):
-        """Calculate tooltip size based on text and configuration."""
-        if not self.config.text:
-            self.width = 100
-            self.height = 30
-            return
-            
-        # Wrap text to fit max width
-        wrapped_lines = self._wrap_text(self.config.text)
-        
-        # Calculate maximum line width
-        max_line_width = 0
-        for line in wrapped_lines:
-            line_width = self.font.size(line)[0]
-            max_line_width = max(max_line_width, line_width)
-        
-        # Set dimensions with padding
-        self.width = min(self.config.max_width, max_line_width + self.config.padding * 2)
-        self.height = len(wrapped_lines) * self.font.get_height() + self.config.padding * 2
-    
-    def _wrap_text(self, text: str) -> List[str]:
-        """
-        Wrap text to fit within max width.
-        
-        Args:
-            text (str): Text to wrap
-            
-        Returns:
-            List[str]: List of wrapped lines
-        """
-        if not text:
-            return [""]
-            
-        words = text.split(' ')
-        lines = []
-        current_line = []
-        
-        for word in words:
-            test_line = ' '.join(current_line + [word])
-            test_width = self.font.size(test_line)[0]
-            
-            if test_width <= (self.config.max_width - self.config.padding * 2):
-                current_line.append(word)
-            else:
-                if current_line:
-                    lines.append(' '.join(current_line))
-                current_line = [word]
-        
-        if current_line:
-            lines.append(' '.join(current_line))
-            
-        return lines
-    
-    def set_text(self, text: str):
-        """
-        Update tooltip text and recalculate size.
-        
-        Args:
-            text (str): New tooltip text
-        """
-        self.config.text = text
-        self._calculate_size()
-    
-    def set_config(self, config: TooltipConfig):
-        """
-        Update tooltip configuration.
-        
-        Args:
-            config (TooltipConfig): New configuration
-        """
-        self.config = config
-        self.theme_type = config.theme or ThemeManager.get_current_theme()
-        self._calculate_size()
-    
-    def set_target(self, element: UIElement):
-        """
-        Set the target element for this tooltip.
-        
-        Args:
-            element (UIElement): Element to attach tooltip to
-        """
-        self.target_element = element
-    
-    def update_tooltip(self, inputState: InputState, dt: float, 
-                      screen_width: int, screen_height: int) -> bool:
-        """
-        Update tooltip state and position.
-        
-        Args:
-            mouse_pos (Tuple[int, int]): Current mouse position
-            dt (float): Delta time in seconds
-            screen_width (int): Screen width for boundary checking
-            screen_height (int): Screen height for boundary checking
-            
-        Returns:
-            bool: True if tooltip should be visible, False otherwise
-        """
-        if not self.target_element or not self.config.text:
-            self._visible = False
-            self._hover_time = 0.0
-            return False
-        if self.target_element.state == UIState.HOVERED:
-            self._hover_time += dt
-            if self._hover_time >= self.config.show_delay:
-                self._visible = True
-                self._update_position(screen_width, screen_height, inputState.mouse_pos)
-            else:
-                self._visible = False
-        elif self.target_element.state == UIState.NORMAL:
-            self._visible = False
-            self._hover_time = 0.0
-        else:
-            self._visible = False
-        
-        return self._visible
-    
-    def _update_position(self, screen_width: int, screen_height: int, mouse_pos: Tuple[int, int]):
-        """
-        Update tooltip position to follow mouse and stay within screen bounds.
-        
-        Args:
-            screen_width (int): Screen width for boundary checking
-            screen_height (int): Screen height for boundary checking
-            mouse_pos (Tuple[int, int]): Current mouse position
-        """
-        # Default position (bottom-right of mouse)
-        x = mouse_pos[0] + self.config.offset_x
-        y = mouse_pos[1] + self.config.offset_y
-        
-        # Adjust if going off-screen right
-        if x + self.width > screen_width:
-            x = mouse_pos[0] - self.width - self.config.offset_x
-        
-        # Adjust if going off-screen bottom
-        if y + self.height > screen_height:
-            y = mouse_pos[1] - self.height - self.config.offset_y
-        
-        # Ensure minimum position
-        x = max(0, min(x, screen_width - self.width))
-        y = max(0, min(y, screen_height - self.height))
-        
-        self.x = x
-        self.y = y
-    
-    def render(self, renderer):
-        """Render tooltip using OpenGL backend"""
-        if not self._visible:
-            return
-        actual_x, actual_y = self.get_actual_position()
-        theme = ThemeManager.get_theme(self.theme_type)
-        
-        # Draw border
-        if theme.tooltip_border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                             theme.tooltip_border, fill=False)
-        
-        # Draw background (simplified rectangle for OpenGL)
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.tooltip_background)
-        
-        # Draw wrapped text
-        self._render_wrapped_text(renderer, actual_x, actual_y, theme)
-    
-    def _render_wrapped_text(self, renderer, x: int, y: int, theme):
-        """Render wrapped text inside tooltip."""
-        if not self.config.text:
-            return
-            
-        lines = self._wrap_text(self.config.text)
-        line_height = self.font.get_height()
-        
-        for i, line in enumerate(lines):
-            text_surface = self.font.render(line, True, theme.tooltip_text)
-            text_x = x + (self.width - text_surface.get_width()) // 2
-            text_y = y + self.config.padding + i * line_height
-            
-            if hasattr(renderer, 'render_surface'):
-                renderer.render_surface(text_surface, text_x, text_y)
-            else:
-                renderer.draw_surface(text_surface, text_x, text_y)
-
-class UITooltipManager:
-    """
-    Manages tooltips globally to ensure proper display and positioning.
-    Supports multiple tooltips for different UI elements.
-    """
-    
-    _instance = None
-    _tooltips: Dict[str, Tooltip] = {}  # element_id -> Tooltip mapping
-    _active_tooltip: Optional[Tooltip] = None
-    
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(UITooltipManager, cls).__new__(cls)
-        return cls._instance
-    
-    @classmethod
-    def register_tooltip(cls, element: UIElement, tooltip: Tooltip):
-        """
-        Register a tooltip for a UI element.
-        
-        Args:
-            element (UIElement): The UI element that triggers the tooltip
-            tooltip (Tooltip): The tooltip to show
-        """
-        tooltip.set_target(element)
-        cls._tooltips[element.element_id] = tooltip
-    
-    @classmethod
-    def unregister_tooltip(cls, element: UIElement):
-        """
-        Unregister tooltip for a UI element.
-        
-        Args:
-            element (UIElement): The UI element to remove tooltip from
-        """
-        if element.element_id in cls._tooltips:
-            del cls._tooltips[element.element_id]
-    
-    @classmethod
-    def update(cls, engine: 'LunaEngine', dt: float):
-        """
-        Update all tooltips and determine which one should be active.
-        
-        Args:
-            engine (LunaEngine): The main engine instance
-            dt (float): Delta time in seconds
-        """
-        cls._active_tooltip = None
-        
-        # Find the tooltip that should be active (prioritize by hover time)
-        best_tooltip = None
-        best_hover_time = 0
-        
-        for tooltip in cls._tooltips.values():
-            if engine.current_scene and engine.current_scene == tooltip.target_element.scene:
-                if tooltip.update_tooltip(engine.input_state, dt, engine.width, engine.height):
-                    if tooltip._hover_time > best_hover_time:
-                        best_tooltip = tooltip
-                        best_hover_time = tooltip._hover_time
-        
-        cls._active_tooltip = best_tooltip
-    
-    @classmethod
-    def get_tooltip_to_render(cls, engine: 'LunaEngine') -> List[Tooltip]:
-        """
-        Get the currently active tooltip to render.
-        
-        Args:
-            engine (LunaEngine): The main engine instance
-            
-        Returns:
-            List[Tooltip]: List containing the active tooltip, or empty if none
-        """
-        l = []
-        for tooltip in cls._tooltips.values():
-            if engine.current_scene and engine.current_scene == tooltip.target_element.scene:
-                if tooltip._visible:
-                    l.append(tooltip)
-                    
-        return l
-    
-    @classmethod
-    def render(cls, renderer):
-        """Render the active tooltip."""
-        if cls._active_tooltip:
-            cls._active_tooltip.render(renderer)
-    
-    @classmethod
-    def clear_all(cls):
-        """Clear all registered tooltips."""
-        cls._tooltips.clear()
-        cls._active_tooltip = None
 
 class TextLabel(UIElement):
     """UI element for displaying text labels."""
@@ -1048,11 +726,11 @@ class Button(UIElement):
         # First: Draw the border if applicable
         if theme.button_border:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                            theme.button_border, fill=False, border_width=1)
+                            theme.button_border, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # SECOND: Draw the button background
         color = self._get_color_for_state()
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color, corner_radius=self.corner_radius)
         
         # Finally: Draw the text on top
         if self.text:
@@ -1195,6 +873,12 @@ class TextBox(UIElement):
         if self._font is None:
             self._font = FontManager.get_font(self.font_name, self.font_size)
         return self._font
+    
+    def get_text(self) -> str:
+        return str(self.text)
+    
+    def has_focus(self) -> bool:
+        return self.focused
     
     def on_key_down(self, event:pygame.event.Event):
         """
@@ -1406,14 +1090,14 @@ class TextBox(UIElement):
         # FIRST: Draw border
         if theme.dropdown_border:
             border_color = theme.text_primary if self.focused else theme.dropdown_border
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, fill=False)
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # THEN: Draw background
         bg_color = self._get_background_color()
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, corner_radius=self.corner_radius)
         
         # Draw text
-        self._render_text_content(renderer, actual_x, actual_y, theme, opengl=True)
+        self._render_text_content(renderer, actual_x, actual_y, theme)
         
         if self.focused and self.cursor_visible:
             cursor_x, cursor_y = self._get_cursor_position(actual_x, actual_y)
@@ -1432,7 +1116,7 @@ class TextBox(UIElement):
         for child in self.children:
             child.render_opengl(renderer)
     
-    def _render_text_content(self, renderer, actual_x: int, actual_y: int, theme, opengl=False):
+    def _render_text_content(self, renderer, actual_x: int, actual_y: int, theme):
         """Helper method to render text content - FIXED subsurface error"""
         if self._text_surface is None:
             return
@@ -1459,19 +1143,19 @@ class TextBox(UIElement):
                         source_rect.right <= self._text_rect.width and 
                         source_rect.bottom <= self._text_rect.height):
                         clipped_surface = self._text_surface.subsurface(source_rect)
-                        if opengl and hasattr(renderer, 'render_surface'):
+                        if hasattr(renderer, 'render_surface'):
                             renderer.render_surface(clipped_surface, actual_x + 5, text_y)
                         else:
                             renderer.draw_surface(clipped_surface, actual_x + 5, text_y)
                     else:
                         # Fallback: render without clipping if bounds are invalid
-                        if opengl and hasattr(renderer, 'render_surface'):
+                        if hasattr(renderer, 'render_surface'):
                             renderer.render_surface(self._text_surface, actual_x + 5, text_y)
                         else:
                             renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
                 else:
                     # Text fits without scrolling
-                    if opengl and hasattr(renderer, 'render_surface'):
+                    if hasattr(renderer, 'render_surface'):
                         renderer.render_surface(self._text_surface, actual_x + 5, text_y)
                     else:
                         renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
@@ -1482,19 +1166,19 @@ class TextBox(UIElement):
                     source_rect.right <= self._text_rect.width and 
                     source_rect.bottom <= self._text_rect.height):
                     clipped_surface = self._text_surface.subsurface(source_rect)
-                    if opengl and hasattr(renderer, 'render_surface'):
+                    if hasattr(renderer, 'render_surface'):
                         renderer.render_surface(clipped_surface, actual_x + 5, text_y)
                     else:
                         renderer.draw_surface(clipped_surface, actual_x + 5, text_y)
                 else:
                     # Fallback: render without clipping
-                    if opengl and hasattr(renderer, 'render_surface'):
+                    if hasattr(renderer, 'render_surface'):
                         renderer.render_surface(self._text_surface, actual_x + 5, text_y)
                     else:
                         renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
         else:
             # Text fits normally
-            if opengl and hasattr(renderer, 'render_surface'):
+            if hasattr(renderer, 'render_surface'):
                 renderer.render_surface(self._text_surface, actual_x + 5, text_y)
             else:
                 renderer.draw_surface(self._text_surface, actual_x + 5, text_y)
@@ -1670,10 +1354,11 @@ class DialogBox(UIElement):
         # Draw border
         if theme.dialog_border:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height,
-                             theme.dialog_border, fill=False, border_width=2)
+                             theme.dialog_border, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
 
         # Draw main dialog box (simplified for OpenGL)
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.dialog_background)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.dialog_background, 
+                          corner_radius=self.corner_radius)
 
         # Draw speaker name
         if self.speaker_name:
@@ -1682,7 +1367,8 @@ class DialogBox(UIElement):
             name_x = actual_x + 10
             name_y = actual_y - name_height // 2
             
-            renderer.draw_rect(name_x, name_y, name_width, name_height, theme.dialog_name_bg)
+            renderer.draw_rect(name_x, name_y, name_width, name_height, theme.dialog_name_bg, 
+                              corner_radius=self.corner_radius)
             
             name_surface = self.name_font.render(self.speaker_name, True, theme.dialog_name_text)
             if hasattr(renderer, 'render_surface'):
@@ -1696,7 +1382,7 @@ class DialogBox(UIElement):
         text_x = actual_x + self.padding
         text_y = actual_y + self.padding
         
-        self._render_wrapped_text(renderer, text_x, text_y, text_area_width, text_area_height, theme, opengl=True)
+        self._render_wrapped_text(renderer, text_x, text_y, text_area_width, text_area_height, theme)
         
         # Continue indicator
         if self.show_continue_indicator and self.waiting_for_advance and self.continue_indicator_blink:
@@ -1718,7 +1404,7 @@ class DialogBox(UIElement):
                 renderer.draw_rect(indicator_x, indicator_y, indicator_size, indicator_size, 
                                  theme.dialog_continue_indicator)
     
-    def _render_wrapped_text(self, renderer, x: int, y: int, width: int, height: int, theme, opengl=False):
+    def _render_wrapped_text(self, renderer, x: int, y: int, width: int, height: int, theme):
         """Render text with word wrapping."""
         if not self.displayed_text:
             return
@@ -1748,12 +1434,8 @@ class DialogBox(UIElement):
         for i, line in enumerate(lines[:max_lines]):
             line_y = y + i * line_height
             
-            if opengl:
-                renderer.draw_text(line, x, line_y, theme.dialog_text, self.font)
-            else:
-                text_surface = self.font.render(line, True, theme.dialog_text)
-                renderer.draw_surface(text_surface, x, line_y)
-
+            renderer.draw_text(line, x, line_y, theme.dialog_text, self.font)
+            
 class ProgressBar(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int,
                  min_val: float = 0, max_val: float = 100, value: float = 0,
@@ -1830,15 +1512,15 @@ class ProgressBar(UIElement):
         
         # Draw border
         if theme.border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.border_color, fill=False)
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.border_color, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.background_color)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.background_color, fill=True, corner_radius=self.corner_radius)
         
         # Draw progress
         progress_width = int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
         if progress_width > 0:
-            renderer.draw_rect(actual_x, actual_y, progress_width, self.height, self.foreground_color)
+            renderer.draw_rect(actual_x, actual_y, progress_width, self.height, self.foreground_color, fill=True, corner_radius=self.corner_radius)
         
         # Draw text
         if self.draw_value:
@@ -1900,10 +1582,10 @@ class UIDraggable(UIElement):
         
         # Draw border
         if theme.button_border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.button_border, fill=False)
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.button_border, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
             
         # Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color, fill=True, corner_radius=self.corner_radius)
         
         
         super().render(renderer)
@@ -2144,7 +1826,7 @@ class Select(UIElement):
         # FIRST: Draw border
         if theme.dropdown_border:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                            theme.dropdown_border, fill=False, border_width=1)
+                            theme.dropdown_border, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # THEN: Draw background
         if self.state == UIState.NORMAL:
@@ -2152,7 +1834,7 @@ class Select(UIElement):
         else:
             bg_color = theme.dropdown_hover
             
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, corner_radius=self.corner_radius)
         
         # FINALLY: Draw arrows and text
         self._render_select_content(renderer, actual_x, actual_y, theme)
@@ -2331,15 +2013,16 @@ class Switch(UIElement):
         actual_x, actual_y = self.get_actual_position()
         track_color, thumb_color = self._get_colors()
         
-        # PRIMEIRO: desenhar a borda
+        # First, draw the border
         border_color = (150, 150, 150)
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, 
-                        fill=False, border_width=1)
+                        fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
         
-        # DEPOIS: desenhar o track
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, track_color)
+        # Then, draw the track
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, track_color, 
+                        fill=True, border_width=0, corner_radius=self.corner_radius)
         
-        # FINALMENTE: desenhar o thumb
+        # Then draw the thumb
         thumb_size = max(10, int(self.height * 0.7))
         thumb_margin = max(2, (self.height - thumb_size) // 2)
         max_thumb_travel = max(10, self.width - thumb_size - (thumb_margin * 2))
@@ -2347,7 +2030,8 @@ class Switch(UIElement):
         thumb_x = actual_x + thumb_margin + int(max_thumb_travel * self.animation_progress)
         thumb_y = actual_y + thumb_margin
         
-        renderer.draw_rect(thumb_x, thumb_y, thumb_size, thumb_size, thumb_color)
+        renderer.draw_rect(thumb_x, thumb_y, thumb_size, thumb_size, thumb_color, 
+                        fill=True, border_width=0, corner_radius=thumb_size // 2)
         
         super().render(renderer)
 
@@ -2422,7 +2106,8 @@ class Slider(UIElement):
         
         # Draw track
         renderer.draw_rect(actual_x, actual_y + self.height//2 - 2, 
-                         self.width, 4, theme.slider_track)
+                         self.width, 4, theme.slider_track, 
+                        fill=True, corner_radius=self.corner_radius)
         
         # Draw thumb
         thumb_x = actual_x + int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
@@ -2434,7 +2119,8 @@ class Slider(UIElement):
         else:
             thumb_color = theme.slider_thumb_normal
             
-        renderer.draw_rect(thumb_x - 5, actual_y, 10, self.height, thumb_color)
+        renderer.draw_rect(thumb_x - 5, actual_y, 10, self.height, thumb_color, 
+                        fill=True, corner_radius=self.corner_radius)
         
         # Draw value text
         font = pygame.font.Font(None, 12)
@@ -2630,7 +2316,7 @@ class Dropdown(UIElement):
         # First: draw border
         if theme.dropdown_border:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                            theme.dropdown_border, fill=False, border_width=1)
+                            theme.dropdown_border, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # Then: draw main box
         if self.state == UIState.NORMAL:
@@ -2638,7 +2324,7 @@ class Dropdown(UIElement):
         else:
             main_color = theme.dropdown_hover
             
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, main_color)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, main_color, corner_radius=self.corner_radius)
         
         # Draw selected text
         if self.options:
@@ -2718,7 +2404,7 @@ class Dropdown(UIElement):
                 renderer.draw_rect(arrow_rect[0], arrow_rect[1], 
                                  arrow_rect[2], arrow_rect[3], color)
     
-    def _render_expanded_options(self, renderer, actual_x: int, actual_y: int, theme):
+    def _render_expanded_options(self, renderer:OpenGLRenderer, actual_x: int, actual_y: int, theme):
         """Helper method to render expanded options - WITH OPTION SEPARATORS"""
         visible_options = self._get_visible_options()
         total_options_height = self.max_visible_options * self._option_height
@@ -2729,11 +2415,11 @@ class Dropdown(UIElement):
         # FIRST: Draw the main expanded options container border
         if theme.dropdown_border:
             renderer.draw_rect(actual_x, actual_y + self.height, options_bg_width, total_options_height, 
-                            theme.dropdown_border, fill=False, border_width=1)
+                            theme.dropdown_border, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # SECOND: Draw the main expanded options background (inset by border)
         renderer.draw_rect(actual_x, actual_y + self.height, options_bg_width, total_options_height, 
-                        theme.dropdown_expanded, fill=True, border_width=1)
+                        theme.dropdown_expanded, fill=True, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # THIRD: Draw individual options with subtle separators
         for i, option_index in enumerate(visible_options):
@@ -2756,7 +2442,7 @@ class Dropdown(UIElement):
                 option_color = theme.dropdown_option_hover
             
             # Draw option background (full height, no individual borders)
-            renderer.draw_rect(actual_x, option_y, options_bg_width, self._option_height, option_color, fill=True, border_width=0)
+            renderer.draw_rect(actual_x, option_y, options_bg_width, self._option_height, option_color, fill=True, border_width=0, corner_radius=0)
             
             # Draw subtle separator line between options (except for the last one)
             if i < len(visible_options) - 1 and theme.dropdown_border:
@@ -2768,22 +2454,17 @@ class Dropdown(UIElement):
             option_text = self.options[option_index]
             if len(option_text) > 20:
                 option_text = option_text[:20] + "..."
-            text_surface = self.font.render(option_text, True, theme.dropdown_text)
             
-            text_x = actual_x + 5 + 1  # Adjust for main container border
-            text_y = option_y + (self._option_height - text_surface.get_height()) // 2
+            text_x = actual_x + 5 + 1
             
-            if hasattr(renderer, 'render_surface'):
-                renderer.render_surface(text_surface, text_x, text_y)
-            else:
-                renderer.draw_surface(text_surface, text_x, text_y)
+            renderer.draw_text(option_text, text_x, option_y+int(self._option_height*0.9), theme.dropdown_text, self.font, anchor_point=(0, 1))
         
         # FOURTH: Draw scrollbar if needed
         if len(self.options) > self.max_visible_options:
             scrollbar_rect = self._get_scrollbar_rect(actual_x, actual_y)
             scrollbar_color = (150, 150, 150) if self.is_scrolling else (100, 100, 100)
             renderer.draw_rect(scrollbar_rect[0], scrollbar_rect[1], 
-                            scrollbar_rect[2], scrollbar_rect[3], scrollbar_color)
+                            scrollbar_rect[2], scrollbar_rect[3], scrollbar_color, fill=True, border_width=0, corner_radius=self.corner_radius)
     
     def add_option(self, option: str):
         """Add an option to the dropdown"""
@@ -2833,6 +2514,7 @@ class UiFrame(UIElement):
         self.border_color = None      # None means no border
         self.border_width = 1
         self.padding = 5  # Padding inside the frame
+        self.corner_radius = 0
         
     def add_child(self, child: UIElement):
         """
@@ -2882,6 +2564,9 @@ class UiFrame(UIElement):
         """
         self.padding = padding
         
+    def set_corner_radius(self, radius: int|Tuple[int, int, int, int]):
+        self.corner_radius = radius
+        
     def get_content_rect(self) -> Tuple[int, int, int, int]:
         """
         Get the rectangle area available for child elements (inside padding).
@@ -2924,11 +2609,11 @@ class UiFrame(UIElement):
         border_color = self.border_color or (theme.border if theme.border else None)
         if border_color:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                             border_color, fill=False, border_width=self.border_width)
+                             border_color, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # Draw background
         bg_color = self.background_color or theme.background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, corner_radius=self.corner_radius)
         
         # Render children
         super().render(renderer)
@@ -3072,6 +2757,9 @@ class NumberSelector(UIElement):
             int: The current numeric value.
         """
         return self._value
+    
+    def get_value(self) -> int:
+        return self.value
 
     @value.setter
     def value(self, new_value: int):
@@ -3294,7 +2982,7 @@ class Checkbox(UIElement):
     Internal Attributes:
         _font (pygame.font.Font): Cached font object for rendering the label.
     """
-    on_toggle: Callable[[bool], None]
+    on_toggle: Callable[[bool], None] = None
     
     def __init__(self, x: int, y: int, width: int, height: int, checked: bool,
                  label: Optional[str] = None, label_position: str = 'right',
@@ -3335,6 +3023,12 @@ class Checkbox(UIElement):
 
     def set_on_toggle(self, callback: Callable[[bool], None]):
         self.on_toggle = callback
+    
+    def get_state(self) -> bool:
+        return self.checked
+    
+    def value(self) -> bool:
+        return self.checked
     
     def _get_colors(self) -> Tuple[Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int]]:
         """
@@ -3439,10 +3133,10 @@ class Checkbox(UIElement):
                 label_x = actual_x
 
         # 2. Draw the border
-        renderer.draw_rect(box_x, actual_y, self.box_size, self.box_size, border_color, border_width=2)
+        renderer.draw_rect(box_x, actual_y, self.box_size, self.box_size, border_color, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # 3. Draw the main box background
-        renderer.draw_rect(box_x, actual_y, self.box_size, self.box_size, box_color)
+        renderer.draw_rect(box_x, actual_y, self.box_size, self.box_size, box_color, corner_radius=self.corner_radius)
         
         # 4. Draw the checkmark if checked
         if self.checked:
@@ -3670,10 +3364,10 @@ class ScrollingFrame(UiFrame):
         border_color = self.border_color or (theme.border if theme.border else None)
         if border_color:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                             border_color, fill=False, border_width=self.border_width)
+                             border_color, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # THEN: Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, corner_radius=self.corner_radius)
         
         # Enable clipping for content area
         if hasattr(renderer, 'enable_scissor'):
@@ -4202,7 +3896,7 @@ class Tabination(UiFrame):
             if hasattr(active_frame, 'update'):
                 active_frame.update(dt, inputState)
     
-    def render(self, renderer):
+    def render(self, renderer:OpenGLRenderer):
         """
         Render the tabination element with tabs and active content.
         
@@ -4219,15 +3913,15 @@ class Tabination(UiFrame):
         border_color = self.border_color or (theme.border if theme.border else None)
         if border_color:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                             border_color, fill=False, border_width=self.border_width)
+                             border_color, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # 2. Draw main background
         bg_color = self.background_color or theme.background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, corner_radius=self.corner_radius)
         
         # 3. Draw tab headers area background
         tab_area_bg = tuple(min(255, c + 30) for c in bg_color) if bg_color else (240, 240, 240)
-        renderer.draw_rect(actual_x, actual_y, self.width, self.tab_height, tab_area_bg)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.tab_height, tab_area_bg, corner_radius=self.corner_radius)
         
         # 4. Draw tab headers
         for i, tab in enumerate(self.tabs):
@@ -4245,14 +3939,14 @@ class Tabination(UiFrame):
             if is_active:
                 # Active tab has border on top and sides
                 renderer.draw_rect(tab_rect[0], tab_rect[1], tab_rect[2], tab_rect[3], 
-                                 theme.border or (0, 0, 0), fill=False)
+                                 theme.border or (0, 0, 0), fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
             else:
                 # Inactive tabs have bottom border only
                 renderer.draw_rect(tab_rect[0], tab_rect[1] + tab_rect[3] - 1, 
-                                 tab_rect[2], 1, theme.border or (200, 200, 200))
+                                 tab_rect[2], 1, theme.border or (200, 200, 200), border_width=self.border_width, corner_radius=self.corner_radius)
             
             # Draw tab background
-            renderer.draw_rect(tab_rect[0], tab_rect[1], tab_rect[2], tab_rect[3], bg_color)
+            renderer.draw_rect(tab_rect[0], tab_rect[1], tab_rect[2], tab_rect[3], bg_color, corner_radius=self.corner_radius)
             
             # Draw tab text
             text_surface = self.font.render(tab['name'], True, text_color)
@@ -4273,3 +3967,392 @@ class Tabination(UiFrame):
         if self.current_tab is not None:
             active_frame:UiFrame = self.tabs[self.current_tab]['frame']
             active_frame.render(renderer)
+            
+class Clock(UIElement):
+    """
+    A clock UI element that can display both analog and digital time.
+    
+    Supports both 12-hour and 24-hour formats, real-time or custom time,
+    and various customization options.
+    
+    Attributes:
+        diameter (int): Diameter of the analog clock face.
+        use_real_time (bool): Whether to use the system's real time.
+        show_numbers (bool): Whether to show numbers on the analog clock.
+        time_style (str): '12hr' or '24hr' format.
+        mode (str): 'analog', 'digital', or 'both'.
+        custom_time (datetime): Custom time to display (if not using real time).
+    """
+    
+    def __init__(self, x: int, y: int, diameter: int = 100, 
+                 font_name: Optional[str] = None, font_size: int = 16,
+                 use_real_time: bool = True, show_numbers: bool = True,
+                 time_style: Literal['12hr', '24hr'] = '24hr',
+                 mode: Literal['analog', 'digital', 'both'] = 'analog',
+                 root_point: Tuple[float, float] = (0, 0),
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):
+        """
+        Initialize a Clock element.
+        
+        Args:
+            x (int): X coordinate position.
+            y (int): Y coordinate position.
+            diameter (int): Diameter of the analog clock face.
+            font_name (Optional[str]): Font for digital display and numbers.
+            font_size (int): Font size for digital display.
+            use_real_time (bool): Whether to use system time.
+            show_numbers (bool): Whether to show numbers on analog clock.
+            time_style (str): '12hr' or '24hr' format.
+            mode (str): 'analog', 'digital', or 'both'.
+            root_point (Tuple[float, float]): Anchor point for positioning.
+            theme (ThemeType): Theme for styling.
+            element_id (Optional[str]): Custom element ID.
+        """
+        # Calculate width and height based on mode
+        if mode == 'analog':
+            width = height = diameter
+        elif mode == 'digital':
+            width = 120  # Default width for digital clock
+            height = 40  # Default height for digital clock
+        else:  # 'both'
+            width = max(diameter, 120)
+            height = diameter + 50  # Clock face + digital display
+        
+        super().__init__(x, y, width, height, root_point, element_id)
+        
+        # Clock properties
+        self.diameter = diameter
+        self.use_real_time = use_real_time
+        self.show_numbers = show_numbers
+        self.time_style = time_style
+        self.mode = mode
+        self.font_name = font_name
+        self.font_size = font_size
+        
+        # Time properties
+        self.custom_time = None
+        self.current_time = time.time()
+        self.last_update = 0
+        
+        # Styling
+        self.theme_type = theme or ThemeManager.get_current_theme()
+        self.face_color = None
+        self.border_color = None
+        self.hour_hand_color = None
+        self.minute_hand_color = None
+        self.second_hand_color = None
+        self.number_color = None
+        self.digital_text_color = None
+        
+        # Font
+        self._font = None
+        self._small_font = None  # For numbers on analog clock
+        
+        # Update colors from theme
+        self.update_theme(self.theme_type)
+        
+        # If not using real time, set to current time
+        if not use_real_time:
+            self.set_time(time.localtime())
+    
+    @property
+    def font(self):
+        """Get the main font object."""
+        if self._font is None:
+            FontManager.initialize()
+            self._font = FontManager.get_font(self.font_name, self.font_size)
+        return self._font
+    
+    @property
+    def small_font(self):
+        """Get the smaller font for analog clock numbers."""
+        if self._small_font is None:
+            FontManager.initialize()
+            self._small_font = FontManager.get_font(self.font_name, max(10, self.font_size - 4))
+        return self._small_font
+    
+    def update_theme(self, theme_type: ThemeType):
+        """Update theme colors for the clock."""
+        super().update_theme(theme_type)
+        theme = ThemeManager.get_theme(theme_type)
+        
+        # Set default colors from theme
+        self.face_color = theme.background if hasattr(theme, 'background') else (240, 240, 240)
+        self.border_color = theme.border if hasattr(theme, 'border') else (100, 100, 100)
+        self.hour_hand_color = theme.button_pressed if hasattr(theme, 'button_pressed') else (0, 0, 0)
+        self.minute_hand_color = theme.button_hover if hasattr(theme, 'button_hover') else (50, 50, 50)
+        self.second_hand_color = theme.button_normal if hasattr(theme, 'button_normal') else (255, 0, 0)
+        self.number_color = theme.text_primary if hasattr(theme, 'text_primary') else (0, 0, 0)
+        self.digital_text_color = theme.text_primary if hasattr(theme, 'text_primary') else (0, 0, 0)
+    
+    def set_face_color(self, color: Tuple[int, int, int]):
+        """Set the clock face color."""
+        self.face_color = color
+    
+    def set_border_color(self, color: Tuple[int, int, int]):
+        """Set the clock border color."""
+        self.border_color = color
+    
+    def set_hand_colors(self, hour: Tuple[int, int, int], 
+                        minute: Tuple[int, int, int], 
+                        second: Tuple[int, int, int]):
+        """Set the colors for clock hands."""
+        self.hour_hand_color = hour
+        self.minute_hand_color = minute
+        self.second_hand_color = second
+    
+    def set_number_color(self, color: Tuple[int, int, int]):
+        """Set the color for analog clock numbers."""
+        self.number_color = color
+    
+    def set_digital_text_color(self, color: Tuple[int, int, int]):
+        """Set the color for digital display text."""
+        self.digital_text_color = color
+    
+    def set_time(self, time_struct: time.struct_time):
+        """
+        Set a custom time for the clock.
+        
+        Args:
+            time_struct (time.struct_time): Time structure from time.localtime()
+        """
+        self.custom_time = time_struct
+        self.current_time = time.mktime(time_struct)
+    
+    def set_time_from_string(self, time_str: str, format_str: str = "%H:%M:%S"):
+        """
+        Set time from a string.
+        
+        Args:
+            time_str (str): Time string.
+            format_str (str): Format string for parsing.
+        """
+        try:
+            import datetime
+            dt = datetime.datetime.strptime(time_str, format_str)
+            self.set_time(dt.timetuple())
+        except ValueError:
+            print(f"Invalid time string: {time_str}")
+    
+    def get_time_string(self) -> str:
+        """Get the current time as a formatted string."""
+        if self.custom_time:
+            tm = self.custom_time
+        else:
+            tm = time.localtime(self.current_time)
+        
+        if self.time_style == '12hr':
+            # Convert to 12-hour format
+            hour = tm.tm_hour % 12
+            if hour == 0:
+                hour = 12
+            am_pm = "AM" if tm.tm_hour < 12 else "PM"
+            return f"{hour:02d}:{tm.tm_min:02d}:{tm.tm_sec:02d} {am_pm}"
+        else:
+            # 24-hour format
+            return f"{tm.tm_hour:02d}:{tm.tm_min:02d}:{tm.tm_sec:02d}"
+    
+    def update(self, dt: float, inputState: InputState):
+        """Update the clock time."""
+        super().update(dt, inputState)
+        
+        # Update time if using real time
+        if self.use_real_time and not self.custom_time:
+            current = time.time()
+            # Only update if at least 0.1 seconds have passed (for performance)
+            if current - self.last_update >= 0.1:
+                self.current_time = current
+                self.last_update = current
+    
+    def render(self, renderer: Renderer):
+        """Render the clock."""
+        if not self.visible:
+            return
+        
+        actual_x, actual_y = self.get_actual_position()
+        
+        if self.mode in ['analog', 'both']:
+            self._render_analog_clock(renderer, actual_x, actual_y)
+        
+        if self.mode in ['digital', 'both']:
+            self._render_digital_clock(renderer, actual_x, actual_y)
+        
+        # Render children
+        super().render(renderer)
+    
+    def _render_analog_clock(self, renderer: Renderer, x: int, y: int):
+        """Render the analog clock face and hands."""
+        # Calculate center and radius
+        center_x = x + self.diameter // 2
+        center_y = y + self.diameter // 2
+        radius = self.diameter // 2
+        
+        # Draw clock face
+        renderer.draw_circle(center_x, center_y, radius, self.face_color)
+        
+        # Draw border
+        if self.border_color:
+            renderer.draw_circle(center_x, center_y, radius, self.border_color, 
+                               fill=False, border_width=2)
+        
+        # Draw numbers if enabled
+        if self.show_numbers:
+            self._draw_clock_numbers(renderer, center_x, center_y, radius)
+        
+        # Draw tick marks
+        self._draw_tick_marks(renderer, center_x, center_y, radius)
+        
+        # Get current time
+        if self.custom_time:
+            tm = self.custom_time
+        else:
+            tm = time.localtime(self.current_time)
+        
+        # Calculate hand angles (in radians)
+        # Convert to radians: 0 radians is at 3 o'clock, we want 0 at 12 o'clock
+        # So subtract 90 degrees (π/2 radians)
+        
+        # Second hand: 6 degrees per second
+        second_angle = math.radians(tm.tm_sec * 6 - 90)
+        
+        # Minute hand: 6 degrees per minute + 0.1 degrees per second
+        minute_angle = math.radians(tm.tm_min * 6 + tm.tm_sec * 0.1 - 90)
+        
+        # Hour hand: 30 degrees per hour + 0.5 degrees per minute
+        hour_angle = math.radians((tm.tm_hour % 12) * 30 + tm.tm_min * 0.5 - 90)
+        
+        # Draw hands
+        self._draw_hand(renderer, center_x, center_y, hour_angle, 
+                       radius * 0.5, 6, self.hour_hand_color)  # Hour hand
+        self._draw_hand(renderer, center_x, center_y, minute_angle, 
+                       radius * 0.7, 4, self.minute_hand_color)  # Minute hand
+        self._draw_hand(renderer, center_x, center_y, second_angle, 
+                       radius * 0.9, 2, self.second_hand_color)  # Second hand
+        
+        # Draw center dot
+        renderer.draw_circle(center_x, center_y, 4, self.second_hand_color)
+    
+    def _draw_clock_numbers(self, renderer: Renderer, center_x: int, center_y: int, radius: int):
+        """Draw numbers around the clock face."""
+        for hour in range(1, 13):
+            # Calculate angle for this hour (in radians)
+            angle = math.radians(hour * 30 - 90)  # 30 degrees per hour, offset by -90
+            
+            # Calculate position (slightly inside the border)
+            num_radius = radius * 0.8
+            x = center_x + num_radius * math.cos(angle)
+            y = center_y + num_radius * math.sin(angle)
+            
+            renderer.draw_text(str(hour), x, y, self.number_color, self.small_font, anchor_point=(0.5, 0.5))
+    
+    def _draw_tick_marks(self, renderer: Renderer, center_x: int, center_y: int, radius: int):
+        """Draw tick marks for minutes/seconds."""
+        for minute in range(0, 60):
+            angle = math.radians(minute * 6 - 90)  # 6 degrees per minute
+            
+            # Calculate start and end points for tick mark
+            outer_radius = radius * 0.95
+            inner_radius = radius * 0.9 if minute % 5 == 0 else radius * 0.92
+            
+            x1 = center_x + inner_radius * math.cos(angle)
+            y1 = center_y + inner_radius * math.sin(angle)
+            x2 = center_x + outer_radius * math.cos(angle)
+            y2 = center_y + outer_radius * math.sin(angle)
+            
+            # Draw thicker lines for 5-minute marks
+            thickness = 2 if minute % 5 == 0 else 1
+            color = self.number_color
+            
+            if hasattr(renderer, 'draw_line'):
+                renderer.draw_line(int(x1), int(y1), int(x2), int(y2), color, thickness)
+            else:
+                # Fallback: draw a thin rectangle
+                dx = x2 - x1
+                dy = y2 - y1
+                length = math.sqrt(dx*dx + dy*dy)
+                if length > 0:
+                    # Calculate perpendicular vector for thickness
+                    perp_x = -dy / length * thickness / 2
+                    perp_y = dx / length * thickness / 2
+                    
+                    # Create polygon points
+                    points = [
+                        (x1 + perp_x, y1 + perp_y),
+                        (x1 - perp_x, y1 - perp_y),
+                        (x2 - perp_x, y2 - perp_y),
+                        (x2 + perp_x, y2 + perp_y)
+                    ]
+                    
+                    if hasattr(renderer, 'draw_polygon'):
+                        renderer.draw_polygon(points, color)
+    
+    def _draw_hand(self, renderer: Renderer, center_x: int, center_y: int, 
+                  angle: float, length: float, width: int, color: Tuple[int, int, int]):
+        """Draw a clock hand."""
+        # Calculate end point
+        x = center_x + length * math.cos(angle)
+        y = center_y + length * math.sin(angle)
+        
+        if hasattr(renderer, 'draw_line'):
+            # Draw line from center to end point
+            renderer.draw_line(center_x, center_y, int(x), int(y), color, width)
+        else:
+            # Draw as polygon for better quality
+            # Calculate perpendicular vector for width
+            dx = x - center_x
+            dy = y - center_y
+            hand_length = math.sqrt(dx*dx + dy*dy)
+            
+            if hand_length > 0:
+                # Normalize direction vector
+                dx /= hand_length
+                dy /= hand_length
+                
+                # Calculate perpendicular vector
+                perp_x = -dy * width / 2
+                perp_y = dx * width / 2
+                
+                # Create polygon points
+                points = [
+                    (center_x + perp_x, center_y + perp_y),
+                    (center_x - perp_x, center_y - perp_y),
+                    (x - perp_x * 0.5, y - perp_y * 0.5),  # Taper the end
+                    (x + perp_x * 0.5, y + perp_y * 0.5)
+                ]
+                
+                if hasattr(renderer, 'draw_polygon'):
+                    renderer.draw_polygon(points, color)
+    
+    def _render_digital_clock(self, renderer: Renderer, x: int, y: int):
+        """Render the digital clock display."""
+        time_str = self.get_time_string()
+        
+        if self.mode == 'digital':
+            # Center in the element
+            center_x = x + self.width // 2
+            center_y = y + self.height // 2
+            
+            # Draw background
+            renderer.draw_rect(x, y, self.width, self.height, self.face_color)
+            
+            # Draw border
+            if self.border_color:
+                renderer.draw_rect(x, y, self.width, self.height, 
+                                 self.border_color, fill=False, border_width=1)
+            
+            # Draw time text
+            renderer.draw_text(time_str, center_x, center_y, 
+                             self.digital_text_color, self.font, 
+                             anchor_point=(0.5, 0.5))
+        
+        elif self.mode == 'both':
+            # Position below analog clock
+            digital_y = y + self.diameter + 10
+            digital_x = x + self.diameter // 2
+            
+            # Draw time text
+            renderer.draw_text(time_str, digital_x, digital_y, 
+                             self.digital_text_color, self.font, 
+                             anchor_point=(0.5, 0))
+        

@@ -12,13 +12,13 @@
     
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html#" id="navbar-logo-link">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
                 <i class="bi bi-moon-stars-fill me-2"></i>
                 LunaEngine
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (e.g.: render(), .update())">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
                     <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 <span class="badge bg-primary me-3">Core</span>
@@ -31,13 +31,7 @@
     
 
     <div class="container mt-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="index.html">Core</a></li>
-                <li class="breadcrumb-item active">renderer.py</li>
-            </ol>
-        </nav>
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Core</a></li><li class="breadcrumb-item active">renderer.py</li></ol></nav>
 
         <div class="header-section mb-5">
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>renderer.py</h1>
@@ -59,96 +53,104 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">Abstract base class for all renderers in LunaEngine.</p>
                 </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>camera_position: pygame.math.Vector2 = pygame.math.Vector2(0, 0)</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-max_particles">
-                <code class="fs-6 fw-bold text-color-title">def max_particles(self) -> int</code>
+                <code class="fs-6 fw-bold text-color-title">def max_particles(self: Any) -> int</code>
                 <div class="mt-2 text-muted small">Get the maximum number of particles supported by the renderer.<br><br>Returns:<br> &nbsp; &nbsp;int: Maximum number of particles</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-max_particles">
-                <code class="fs-6 fw-bold text-color-title">def max_particles(self, value) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def max_particles(self: Any, value: int) -> Any</code>
                 <div class="mt-2 text-muted small">Set the maximum number of particles and trigger resize callbacks.<br><br>Args:<br> &nbsp; &nbsp;value (int): New maximum particle count</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-initialize">
-                <code class="fs-6 fw-bold text-color-title">def initialize(self) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def initialize(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Initialize the renderer and required resources.<br><br>This method should set up the rendering context, create shaders (if applicable),<br>allocate buffers, and prepare the renderer for drawing operations.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-begin_frame">
-                <code class="fs-6 fw-bold text-color-title">def begin_frame(self) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def begin_frame(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Begin a new rendering frame.<br><br>This typically involves clearing the screen, resetting render states,<br>and preparing for new drawing commands.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-end_frame">
-                <code class="fs-6 fw-bold text-color-title">def end_frame(self) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def end_frame(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">End the current rendering frame.<br><br>This typically involves swapping buffers, finalizing rendering operations,<br>and preparing for display.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-get_surface">
-                <code class="fs-6 fw-bold text-color-title">def get_surface(self) -> pygame.Surface</code>
+                <code class="fs-6 fw-bold text-color-title">def get_surface(self: Any) -> pygame.Surface</code>
                 <div class="mt-2 text-muted small">Get the main rendering surface.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The current rendering surface</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-set_surface">
-                <code class="fs-6 fw-bold text-color-title">def set_surface(self, surface) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_surface(self: Any, surface: pygame.Surface) -> Any</code>
                 <div class="mt-2 text-muted small">Set a custom surface for rendering.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Surface to use as render target</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-draw_surface">
-                <code class="fs-6 fw-bold text-color-title">def draw_surface(self, x, y, surface) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def draw_surface(self: Any, x: int, y: int, surface: pygame.Surface = None) -> Any</code>
                 <div class="mt-2 text-muted small">Draw a pygame surface at specified coordinates.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): The surface to draw<br> &nbsp; &nbsp;x (int): X coordinate<br> &nbsp; &nbsp;y (int): Y coordinate</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-render_surface">
-                <code class="fs-6 fw-bold text-color-title">def render_surface(self, surface, x, y) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def render_surface(self: Any, surface: pygame.Surface, x: int, y: int) -> Any</code>
                 <div class="mt-2 text-muted small">Alternative method for drawing surfaces (OpenGL compatibility).<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): The surface to draw<br> &nbsp; &nbsp;x (int): X coordinate<br> &nbsp; &nbsp;y (int): Y coordinate</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-draw_rect">
-                <code class="fs-6 fw-bold text-color-title">def draw_rect(self, x, y, width, height, color, fill, anchor_point, border_width, surface) -> Any</code>
-                <div class="mt-2 text-muted small">Draw a colored rectangle.<br><br>R,G,B,A = (0~255, 0~255, 0~255, 0.0~1.0)<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate of top-left corner<br> &nbsp; &nbsp;y (int): Y coordinate of top-left corner<br> &nbsp; &nbsp;width (int): Rectangle width<br> &nbsp; &nbsp;height (int): Rectangle height<br> &nbsp; &nbsp;color (Tuple[int, int, int, float]): RGBA color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the rectangle (default: True)<br> &nbsp; &nbsp;anchor_point (Tuple[float, float]): Anchor point for the rectangle<br> &nbsp; &nbsp;border_width (int): Border width for unfilled rectangles (default: 1)</div>
+                <code class="fs-6 fw-bold text-color-title">def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: Tuple[int, int, int, float], fill: bool = True, anchor_point: Tuple[float, float] = (0.0, 0.0), border_width: int = 1, surface: Optional[pygame.Surface] = None, corner_radius: Tuple[int, int, int, int] | int = 0) -> Any</code>
+                <div class="mt-2 text-muted small">Draw a colored rectangle with optional rounded corners.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate<br> &nbsp; &nbsp;y (int): Y coordinate<br> &nbsp; &nbsp;width (int): Rectangle width<br> &nbsp; &nbsp;height (int): Rectangle height<br> &nbsp; &nbsp;color (Tuple[int, int, int, float]): RGBA color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the rectangle (default: True)<br> &nbsp; &nbsp;anchor_point (Tuple[float, float]): Anchor point (default: (0.0, 0.0))<br> &nbsp; &nbsp;border_width (int): Border width for hollow rectangles (default: 1)<br> &nbsp; &nbsp;corner_radius: Radius of rounded corners in pixels (default: 0 = sharp corners)</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-draw_circle">
-                <code class="fs-6 fw-bold text-color-title">def draw_circle(self, center_x, center_y, radius, color, fill, border_width, surface) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def draw_circle(self: Any, center_x: int, center_y: int, radius: int, color: Tuple[int, int, int], fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None) -> Any</code>
                 <div class="mt-2 text-muted small">Draw a circle with specified center, radius and color.<br><br>Args:<br> &nbsp; &nbsp;center_x (int): Center X coordinate<br> &nbsp; &nbsp;center_y (int): Center Y coordinate<br> &nbsp; &nbsp;radius (int): Circle radius<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the circle (default: True)<br> &nbsp; &nbsp;border_width (int): Border width for hollow circles (default: 1)</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-draw_line">
-                <code class="fs-6 fw-bold text-color-title">def draw_line(self, start_x, start_y, end_x, end_y, color, width, surface) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def draw_line(self: Any, start_x: int, start_y: int, end_x: int, end_y: int, color: Tuple[int, int, int], width: int = 1, surface: Optional[pygame.Surface] = None) -> Any</code>
                 <div class="mt-2 text-muted small">Draw a line between two points with specified width.<br><br>Args:<br> &nbsp; &nbsp;start_x (int): Start X coordinate<br> &nbsp; &nbsp;start_y (int): Start Y coordinate<br> &nbsp; &nbsp;end_x (int): End X coordinate<br> &nbsp; &nbsp;end_y (int): End Y coordinate<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;width (int): Line width (default: 1)</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-draw_lines">
-                <code class="fs-6 fw-bold text-color-title">def draw_lines(self, points, color, width, surface) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def draw_lines(self: Any, points: List[Tuple[int, int]], color: Tuple[int, int, int], width: int = 1, surface: Optional[pygame.Surface] = None) -> Any</code>
                 <div class="mt-2 text-muted small">Draw multiple lines beetween the points specified.<br><br>Args:<br> &nbsp; &nbsp;points (List[Tuple[int, int]]): List of (x, y) points defining the lines<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;width (int): Line width (default: 1)<br> &nbsp; &nbsp;surface (Optional[pygame.Surface]): Surface to draw</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-draw_polygon">
-                <code class="fs-6 fw-bold text-color-title">def draw_polygon(self, points, color, fill, border_width, surface) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def draw_polygon(self: Any, points: List[Tuple[int, int]], color: Tuple[int, int, int], fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None) -> Any</code>
                 <div class="mt-2 text-muted small">Draw a polygon from a list of points.<br><br>Args:<br> &nbsp; &nbsp;points (List[Tuple[int, int]]): List of (x, y) points defining the polygon<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color tuple<br> &nbsp; &nbsp;fill (bool): Whether to fill the polygon (default: True)<br> &nbsp; &nbsp;border_width (int): Border width for hollow polygons (default: 1)</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-draw_text">
-                <code class="fs-6 fw-bold text-color-title">def draw_text(self, text, x, y, color, font, surface) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def draw_text(self: Any, text: str, x: int, y: int, color: Tuple[int, int, int], font: pygame.font.FontType, surface: Optional[pygame.Surface] = None, anchor_point: tuple = (0.0, 0.0)) -> Any</code>
                 <div class="mt-2 text-muted small">Draw text using pygame font rendering</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-enable_scissor">
-                <code class="fs-6 fw-bold text-color-title">def enable_scissor(self, x, y, width, height) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def enable_scissor(self: Any, x: int, y: int, width: int, height: int) -> Any</code>
                 <div class="mt-2 text-muted small">Enable scissor test for clipping region.<br><br>Args:<br> &nbsp; &nbsp;x (int): X position from left (pygame coordinate system)<br> &nbsp; &nbsp;y (int): Y position from top (pygame coordinate system) &nbsp;<br> &nbsp; &nbsp;width (int): Width of scissor region<br> &nbsp; &nbsp;height (int): Height of scissor region</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-disable_scissor">
-                <code class="fs-6 fw-bold text-color-title">def disable_scissor(self) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def disable_scissor(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Disable scissor test.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-render_particles">
-                <code class="fs-6 fw-bold text-color-title">def render_particles(self, particle_data, camera) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def render_particles(self: Any, particle_data: Dict[str, Any], camera: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Render particle systems with optimized batch processing.<br><br>Args:<br> &nbsp; &nbsp;particle_data (Dict[str, Any]): Particle system data containing:<br> &nbsp; &nbsp; &nbsp; &nbsp;- positions: Array of particle positions<br> &nbsp; &nbsp; &nbsp; &nbsp;- sizes: Array of particle sizes<br> &nbsp; &nbsp; &nbsp; &nbsp;- colors: Array of particle colors<br> &nbsp; &nbsp; &nbsp; &nbsp;- alphas: Array of particle alpha values<br> &nbsp; &nbsp; &nbsp; &nbsp;- active_count: Number of active particles<br> &nbsp; &nbsp;camera (Any): Camera object for coordinate transformations</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-render_opengl">
-                <code class="fs-6 fw-bold text-color-title">def render_opengl(self, renderer) -> bool</code>
-                <div class="mt-2 text-muted small">OpenGL-specific rendering method for profiling detection.<br><br>Args:<br> &nbsp; &nbsp;renderer: Renderer instance<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: Always returns True for OpenGL detection</div>
-            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-cleanup">
-                <code class="fs-6 fw-bold text-color-title">def cleanup(self) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def cleanup(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Clean up rendering resources and shutdown the renderer.<br><br>This method should release all allocated resources, delete shaders,<br>buffers, and perform any necessary cleanup operations.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-blit">
-                <code class="fs-6 fw-bold text-color-title">def blit(self, source_surface, dest_rect, area, special_flags) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def blit(self: Any, source_surface: pygame.Surface, dest_rect: pygame.Rect, area: Optional[pygame.Rect] = None, special_flags: int = 0) -> Any</code>
                 <div class="mt-2 text-muted small">Blit a source surface onto the current render target.<br>Works similarly to pygame.Surface.blit().<br><br>Args:<br> &nbsp; &nbsp;source_surface: Surface to blit from<br> &nbsp; &nbsp;dest_rect: Destination rectangle (x, y, width, height) or (x, y)<br> &nbsp; &nbsp;area: Source area to blit from (None for entire surface)<br> &nbsp; &nbsp;special_flags: Additional blitting flags (currently unused)</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-fill_screen">
-                <code class="fs-6 fw-bold text-color-title">def fill_screen(self, color) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def fill_screen(self: Any, color: Tuple[int, int, int, float]) -> Any</code>
                 <div class="mt-2 text-muted small">Fill the screen background with the color<br><br>R,G,B,A = (0~255, 0~255, 0~255, 0.0~1.0)<br><br>Args:<br> &nbsp; &nbsp;color (Tuple[int, int, int, float]): RGBA color tuple</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-resize">
+                <code class="fs-6 fw-bold text-color-title">def resize(self: Any, surface: pygame.Surface, width: int, height: int) -> Any</code>
+                <div class="mt-2 text-muted small">Resize a surface<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Surface to resize<br> &nbsp; &nbsp;width (int): New width<br> &nbsp; &nbsp;height (int): New height</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-renderer-scale">
+                <code class="fs-6 fw-bold text-color-title">def scale(self: Any, surface: pygame.Surface, width: float, height: float) -> Any</code>
+                <div class="mt-2 text-muted small">Scale a surface by a percentage<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Surface to scale<br> &nbsp; &nbsp;width (float): Percentage to scale width<br> &nbsp; &nbsp;height (float): Percentage to scale height</div>
             </div>
                 </div>
             </div>
@@ -168,17 +170,17 @@
 
     
     <!-- Footer -->
-    <footer class="bg-dark text-white mt-5 py-5">
+    <footer class="footer-section">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
                     <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
-                    <p class="text-white-50">2D Game Engine for Python</p>
+                    <p class="text-white-50">2D Game Framework for Python</p>
                 </div>
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-01-15 11:32
+                        Documentation generated on 2026-01-20 14:14
                     </p>
                 </div>
             </div>
@@ -190,7 +192,7 @@
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler for GitHub Pages structure
+    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
@@ -199,30 +201,18 @@
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
                     
-                    // If we're in a module subdirectory (/LunaEngine/core/)
+                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
                         searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
                     }
                     
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
             
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -232,10 +222,8 @@
                 }
             });
             
-            // Handle click on search icon
             searchIcon.addEventListener('click', performSearch);
             
-            // Also prevent form submission if the input is inside a form
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {
@@ -248,69 +236,6 @@
     });
     </script>
     
-    
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../theme.js"></script>
-    
-    <script>
-    // Universal search handler for GitHub Pages structure
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('moduleSearch');
-        const searchIcon = document.querySelector('.input-group-text');
-        
-        if (searchInput && searchIcon) {
-            const performSearch = () => {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    // GitHub Pages structure: 
-                    // - Root: https://mrjuaumbr.github.io/LunaEngine/
-                    // - Modules: https://mrjuaumbr.github.io/LunaEngine/core/
-                    // - Search: https://mrjuaumbr.github.io/LunaEngine/search.html
-                    
-                    const currentPath = window.location.pathname;
-                    let searchPath = 'search.html';
-                    
-                    // If we're in a module subdirectory (/LunaEngine/core/)
-                    if (currentPath.split('/').filter(Boolean).length > 2) {
-                        // We're in a subdirectory like /LunaEngine/core/
-                        searchPath = '../search.html';
-                    }
-                    // If we're in the root (/LunaEngine/)
-                    else {
-                        // We're in the root, search.html is at same level
-                        searchPath = 'search.html';
-                    }
-                    
-                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
-                }
-            };
-            
-            // Handle Enter key - PREVENT DEFAULT FORM SUBMISSION
-            searchInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault(); 
-                    e.stopPropagation();
-                    performSearch();
-                    return false;
-                }
-            });
-            
-            // Handle click on search icon
-            searchIcon.addEventListener('click', performSearch);
-            
-            // Also prevent form submission if the input is inside a form
-            const form = searchInput.closest('form');
-            if (form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    performSearch();
-                    return false;
-                });
-            }
-        }
-    });
-    </script>
     
 </body>
 </html>

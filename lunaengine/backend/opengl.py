@@ -1,4 +1,6 @@
 """
+lunaengine/backend/opengl.py
+
 OpenGL-based hardware-accelerated renderer for LunaEngine - DYNAMIC PARTICLE BUFFERS & FILTER SYSTEM
 """
 
@@ -828,6 +830,152 @@ class FilterShader(ShaderProgram):
         glBindBuffer(GL_ARRAY_BUFFER, 0)
         glBindVertexArray(0)
 
+class RoundedRectShader(ShaderProgram):
+    """Shader for drawing rectangles with per-corner rounded corners"""
+    
+    def __init__(self):
+        vertex_source = """
+        #version 330 core
+        layout (location = 0) in vec2 aPos;
+        
+        out vec2 vPos;
+        uniform vec2 uScreenSize;
+        uniform vec4 uTransform; // x, y, width, height
+        uniform float uFeather; // Edge smoothness
+        
+        void main() {
+            // Convert to pixel coordinates
+            vec2 pixelPos = aPos * uTransform.zw + uTransform.xy;
+            
+            // Convert to normalized device coordinates
+            vec2 ndc = vec2(
+                (pixelPos.x / uScreenSize.x) * 2.0 - 1.0,
+                (1.0 - (pixelPos.y / uScreenSize.y)) * 2.0 - 1.0
+            );
+            
+            gl_Position = vec4(ndc, 0.0, 1.0);
+            vPos = aPos;
+        }
+        """
+        
+        fragment_source = """
+        #version 330 core
+        out vec4 FragColor;
+        in vec2 vPos;
+        
+        uniform vec4 uColor;
+        uniform vec4 uCornerRadii; // top-left, top-right, bottom-right, bottom-left
+        uniform float uFeather;
+        uniform vec2 uRectSize;
+        uniform int uFill; // 1 = filled, 0 = outline
+        uniform float uBorderWidth;
+        
+        // Helper function for individual corner rounded box SDF
+        float roundedBoxSDF(vec2 p, vec2 b, vec4 r) {
+            // For each corner, we calculate distance and use max(0, r_i - distance) for rounding
+            // This is a simplified approach that works well for UI elements
+            
+            // Get distances to each edge
+            vec2 q = abs(p);
+            
+            // Calculate distance to each corner's circle
+            // Top-left (r.x)
+            vec2 tlCorner = q - b + vec2(r.x, r.x);
+            float tlDist = length(max(tlCorner, 0.0)) + min(max(tlCorner.x, tlCorner.y), 0.0) - r.x;
+            
+            // Top-right (r.y)
+            vec2 trCorner = q - vec2(b.x - r.y, b.y - r.y);
+            float trDist = length(max(trCorner, 0.0)) + min(max(trCorner.x, trCorner.y), 0.0) - r.y;
+            
+            // Bottom-right (r.z)
+            vec2 brCorner = q - b + vec2(r.z, r.z);
+            float brDist = length(max(brCorner, 0.0)) + min(max(brCorner.x, brCorner.y), 0.0) - r.z;
+            
+            // Bottom-left (r.w)
+            vec2 blCorner = q - vec2(b.x - r.w, b.y - r.w);
+            float blDist = length(max(blCorner, 0.0)) + min(max(blCorner.x, blCorner.y), 0.0) - r.w;
+            
+            // Determine which corner region we're in
+            // Top-left quadrant
+            if (p.x < 0.0 && p.y > 0.0) return tlDist;
+            // Top-right quadrant
+            else if (p.x >= 0.0 && p.y > 0.0) return trDist;
+            // Bottom-right quadrant
+            else if (p.x >= 0.0 && p.y <= 0.0) return brDist;
+            // Bottom-left quadrant
+            else return blDist;
+        }
+        
+        // Alternative: Better SDF that handles per-corner radii
+        float roundedRectSDF(vec2 p, vec2 b, vec4 r) {
+            r.xy = (p.x > 0.0) ? r.yw : r.xz;
+            r.x  = (p.y > 0.0) ? r.x : r.y;
+            
+            vec2 q = abs(p) - b + r.x;
+            return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r.x;
+        }
+        
+        void main() {
+            // Convert to pixel space
+            vec2 pixelPos = vPos * uRectSize;
+            
+            // Center coordinate system (0,0 at center of rectangle)
+            vec2 center = uRectSize * 0.5;
+            vec2 centeredPos = pixelPos - center;
+            
+            // Half size (without considering radii yet)
+            vec2 halfSize = center;
+            
+            // Calculate signed distance to rounded rectangle
+            float distance = roundedRectSDF(centeredPos, halfSize, uCornerRadii);
+            
+            if (uFill == 1) {
+                // Filled rectangle with smooth edges
+                float alpha = 1.0 - smoothstep(-uFeather, uFeather, distance);
+                if (alpha <= 0.0) discard;
+                FragColor = vec4(uColor.rgb, uColor.a * alpha);
+            } else {
+                // Outline only
+                float borderOuter = smoothstep(-uFeather, uFeather, distance);
+                float borderInner = smoothstep(-uFeather, uFeather, distance + uBorderWidth);
+                float alpha = borderOuter - borderInner;
+                if (alpha <= 0.0) discard;
+                FragColor = vec4(uColor.rgb, uColor.a * alpha);
+            }
+        }
+        """
+        
+        super().__init__(vertex_source, fragment_source)
+    
+    def _setup_geometry(self):
+        """Setup quad geometry for rectangle"""
+        vertices = np.array([
+            0.0, 0.0,  # bottom-left
+            1.0, 0.0,  # bottom-right
+            1.0, 1.0,  # top-right
+            0.0, 1.0,  # top-left
+        ], dtype=np.float32)
+        
+        indices = np.array([0, 1, 2, 2, 3, 0], dtype=np.uint32)
+        
+        self.vao = glGenVertexArrays(1)
+        self.vbo = glGenBuffers(1)
+        self.ebo = glGenBuffers(1)
+        
+        glBindVertexArray(self.vao)
+        
+        glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
+        glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
+        
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebo)
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL_STATIC_DRAW)
+        
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * vertices.itemsize, ctypes.c_void_p(0))
+        glEnableVertexAttribArray(0)
+        
+        glBindBuffer(GL_ARRAY_BUFFER, 0)
+        glBindVertexArray(0)
+
 # ============================================================================
 # MAIN OPENGL RENDERER WITH FILTER SYSTEM
 # ============================================================================
@@ -841,16 +989,16 @@ class OpenGLRenderer:
         self.simple_shader = None
         self.texture_shader = None
         self.particle_shader = None
-        self.filter_shader = None  # NEW: Filter shader
+        self.filter_shader = None
+        self.rounded_rect_shader = None
         self._initialized = False
         
         # Particle optimization with DYNAMIC buffers
-        self._max_particles = 1024  # Initial size
+        self._max_particles = 1024
         self._particle_instance_data = np.zeros((self._max_particles, 4), dtype=np.float32)
         self._particle_color_data = np.zeros((self._max_particles, 4), dtype=np.float32)
         self.on_max_particles_change: list = [] # Callbacks
         
-        # FILTER SYSTEM - NEW
         self.filters: List[Filter] = []
         self._filter_framebuffer = None
         self._filter_texture = None
@@ -893,10 +1041,12 @@ class OpenGLRenderer:
         self.simple_shader = SimpleShader()
         self.texture_shader = TextureShader()
         self.particle_shader = ParticleShader()
-        self.filter_shader = FilterShader()  # NEW: Initialize filter shader
+        self.filter_shader = FilterShader()
+        self.rounded_rect_shader = RoundedRectShader()
         
         if not all([self.simple_shader.program, self.texture_shader.program, 
-                   self.particle_shader.program, self.filter_shader.program]):
+                   self.particle_shader.program, self.filter_shader.program,
+                   self.rounded_rect_shader.program]):
             print("Shader initialization failed")
             return False
         
@@ -1483,6 +1633,7 @@ class OpenGLRenderer:
         """
         if not self._initialized:
             return
+        x, y, width, height = int(x), int(y), int(width), int(height)
             
         glEnable(GL_SCISSOR_TEST)
         
@@ -1502,9 +1653,11 @@ class OpenGLRenderer:
         glDisable(GL_SCISSOR_TEST)
     
     def draw_rect(self, x: int, y: int, width: int, height: int, 
-                  color: tuple, fill: bool = True, anchor_point: tuple = (0.0, 0.0), border_width: int = 1, surface: Optional[pygame.Surface] = None):
+              color: tuple, fill: bool = True, anchor_point: tuple = (0.0, 0.0), 
+              border_width: int = 1, surface: Optional[pygame.Surface] = None,
+              corner_radius: Tuple[int, int, int, int]|int = 0):
         """
-        Draw a colored rectangle.
+        Draw a colored rectangle with optional rounded corners.
         
         Args:
             x: X coordinate of top-left corner
@@ -1516,16 +1669,57 @@ class OpenGLRenderer:
             anchor_point: Anchor point for the rectangle
             border_width: Border width for unfilled rectangles
             surface: Target surface
+            corner_radius: Radius of rounded corners in pixels.
+                        Can be:
+                        - int: Same radius for all corners (CSS: border-radius: 10px)
+                        - tuple of 4 ints: (top-left, top-right, bottom-right, bottom-left) 
+                        (CSS: border-radius: 10px 20px 30px 40px)
         """
-        if not self._initialized or not self.simple_shader.program:
+        if not self._initialized:
             return
         
+        # Apply anchor point
         x, y = x - int(anchor_point[0] * width), y - int(anchor_point[1] * height)
         
         if surface:
             old_surface = self._current_target
             self.set_surface(surface)
         
+        # Check if we should use rounded rectangle
+        if (isinstance(corner_radius, (tuple, list)) and 
+            any(r > 0 for r in corner_radius)) or \
+        (isinstance(corner_radius, (int, float)) and corner_radius > 0):
+            
+            # Convert to tuple of 4 values
+            if isinstance(corner_radius, (int, float)):
+                # Single value: apply to all corners
+                radii = (corner_radius, corner_radius, corner_radius, corner_radius)
+            elif len(corner_radius) == 2:
+                # Two values: top-left/bottom-right, top-right/bottom-left
+                radii = (corner_radius[0], corner_radius[1], corner_radius[0], corner_radius[1])
+            elif len(corner_radius) == 3:
+                # Three values: top-left, top-right/bottom-left, bottom-right
+                radii = (corner_radius[0], corner_radius[1], corner_radius[2], corner_radius[1])
+            elif len(corner_radius) >= 4:
+                # Four or more values: top-left, top-right, bottom-right, bottom-left
+                radii = (corner_radius[0], corner_radius[1], corner_radius[2], corner_radius[3])
+            else:
+                radii = (0, 0, 0, 0)
+            
+            # Check if all corners are 0 (sharp rectangle)
+            if all(r == 0 for r in radii):
+                self._draw_sharp_rect(x, y, width, height, color, fill, border_width)
+            else:
+                self._draw_rounded_rect(x, y, width, height, color, fill, border_width, radii)
+        else:
+            self._draw_sharp_rect(x, y, width, height, color, fill, border_width)
+        
+        if surface:
+            self.set_surface(old_surface)
+
+    def _draw_sharp_rect(self, x: int, y: int, width: int, height: int, 
+                        color: tuple, fill: bool, border_width: int):
+        """Original sharp-corner rectangle drawing (existing code)"""
         r_gl, g_gl, b_gl, a_gl = self._convert_color(color)
 
         glUseProgram(self.simple_shader.program)
@@ -1556,9 +1750,54 @@ class OpenGLRenderer:
                 glBindVertexArray(0)
 
         glUseProgram(0)
+
+    def _draw_rounded_rect(self, x: int, y: int, width: int, height: int, 
+                       color: tuple, fill: bool, border_width: int, 
+                       corner_radii: Tuple[int, int, int, int]):
+        """Draw rectangle with individually rounded corners"""
+        # Clamp corner radii to maximum possible value
+        max_radius_x = width // 2
+        max_radius_y = height // 2
         
-        if surface:
-            self.set_surface(old_surface)
+        # Ensure radii don't exceed rectangle dimensions
+        radii = (
+            min(corner_radii[0], max_radius_x, max_radius_y),  # top-left
+            min(corner_radii[1], max_radius_x, max_radius_y),  # top-right
+            min(corner_radii[2], max_radius_x, max_radius_y),  # bottom-right
+            min(corner_radii[3], max_radius_x, max_radius_y)   # bottom-left
+        )
+        
+        # Convert color
+        r_gl, g_gl, b_gl, a_gl = self._convert_color(color)
+        
+        # Use rounded rectangle shader
+        glUseProgram(self.rounded_rect_shader.program)
+        
+        # Set uniforms
+        glUniform2f(self.rounded_rect_shader._get_uniform_location("uScreenSize"), 
+                    float(self.width), float(self.height))
+        glUniform4f(self.rounded_rect_shader._get_uniform_location("uTransform"), 
+                    float(x), float(y), float(width), float(height))
+        glUniform4f(self.rounded_rect_shader._get_uniform_location("uColor"), 
+                    r_gl, g_gl, b_gl, a_gl)
+        glUniform4f(self.rounded_rect_shader._get_uniform_location("uCornerRadii"), 
+                    float(radii[0]), float(radii[1]), 
+                    float(radii[2]), float(radii[3]))
+        glUniform2f(self.rounded_rect_shader._get_uniform_location("uRectSize"), 
+                    float(width), float(height))
+        glUniform1f(self.rounded_rect_shader._get_uniform_location("uFeather"), 
+                    1.5)  # Edge smoothness in pixels
+        glUniform1i(self.rounded_rect_shader._get_uniform_location("uFill"), 
+                    1 if fill else 0)
+        glUniform1f(self.rounded_rect_shader._get_uniform_location("uBorderWidth"), 
+                    float(border_width))
+        
+        # Draw the rectangle
+        glBindVertexArray(self.rounded_rect_shader.vao)
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
+        glBindVertexArray(0)
+        
+        glUseProgram(0)
     
     def draw_line(self, start_x: int, start_y: int, end_x: int, end_y: int, 
                   color: tuple, width: int = 2, surface: Optional[pygame.Surface] = None):
@@ -1680,18 +1919,22 @@ class OpenGLRenderer:
         glUseProgram(0)
     
     def draw_circle(self, center_x: int, center_y: int, radius: int, 
-                    color: tuple, fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None):
+                color: tuple, fill: bool = True, border_width: int = 1, 
+                surface: Optional[pygame.Surface] = None,
+                anchor_point: Tuple[float, float] = (0.5, 0.5)):
         """
-        Draw a circle with specified center, radius and color.
+        Draw a circle with specified center, radius, color, and anchor point.
         
         Args:
-            center_x: Center X coordinate
-            center_y: Center Y coordinate
+            center_x: X coordinate where the anchor point will be placed
+            center_y: Y coordinate where the anchor point will be placed
             radius: Circle radius
             color: RGB color tuple
             fill: Whether to fill the circle
             border_width: Border width for hollow circles
             surface: Target surface
+            anchor_point: Anchor point within the circle's bounding box (0.0-1.0)
+                        (0, 0) = top-left, (0.5, 0.5) = center, (1, 1) = bottom-right
         """
         if not self._initialized or not self.simple_shader.program:
             return
@@ -1699,14 +1942,25 @@ class OpenGLRenderer:
         if surface:
             old_surface = self._current_target
             self.set_surface(surface)
-            
+        
+        # Calculate the bounding box size
+        width = radius * 2
+        height = radius * 2
+        
+        anchor_offset_x = width * anchor_point[0]
+        anchor_offset_y = height * anchor_point[1]
+        
+        # Calculate top-left corner of bounding box
+        x = center_x - anchor_offset_x
+        y = center_y - anchor_offset_y
+        
         # Generate circle geometry with caching for performance
         cache_key = (radius, fill, border_width)
         if cache_key in self._circle_cache:
             vao, vbo, ebo, vertex_count = self._circle_cache[cache_key]
         else:
-            # Generate circle vertices
-            segments = max(16, min(64, radius // 2))  # Adaptive segment count
+            # Generate circle vertices - use more segments for larger circles
+            segments = max(24, min(128, radius // 2))  # Adaptive segment count
             
             if fill:
                 vertices, indices = self._generate_filled_circle_geometry(segments)
@@ -1723,32 +1977,50 @@ class OpenGLRenderer:
         glUseProgram(self.simple_shader.program)
         glUniform2f(self.simple_shader._get_uniform_location("uScreenSize"), 
                 float(self.width), float(self.height))
+        
+        # Pass the bounding box (x, y, width, height)
         glUniform4f(self.simple_shader._get_uniform_location("uTransform"), 
-                float(center_x - radius), float(center_y - radius), 
-                float(radius * 2), float(radius * 2))
+                float(x), float(y), float(width), float(height))
         glUniform4f(self.simple_shader._get_uniform_location("uColor"), 
                 r_gl, g_gl, b_gl, a_gl)
+        
+        # Enable blending for transparency
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         
         glBindVertexArray(vao)
         glDrawElements(GL_TRIANGLES, vertex_count, GL_UNSIGNED_INT, None)
         glBindVertexArray(0)
+        
+        glDisable(GL_BLEND)
         glUseProgram(0)
         
         if surface:
             self.set_surface(old_surface)
     
     def _generate_filled_circle_geometry(self, segments: int):
-        """Generate vertices and indices for a filled circle"""
-        vertices = [0.0, 0.0]  # Center point
+        """Generate vertices and indices for a filled circle - FIXED VERSION"""
+        # Start with the center point
+        vertices = [0.5, 0.5]  # Center is at (0.5, 0.5) in normalized coordinates
         
+        # Generate perimeter vertices
         for i in range(int(segments + 1)):
             angle = 2 * np.pi * i / int(segments)
-            vertices.extend([np.cos(angle) * 0.5 + 0.5, np.sin(angle) * 0.5 + 0.5])
+            # Circle perimeter points around the center
+            vertices.extend([
+                np.cos(angle) * 0.5 + 0.5,  # x: 0.0 to 1.0
+                np.sin(angle) * 0.5 + 0.5   # y: 0.0 to 1.0
+            ])
         
+        # Generate indices for triangle fan
         indices = []
+        # First vertex (index 0) is the center
+        # Perimeter vertices start at index 1
         for i in range(1, int(segments)):
             indices.extend([0, i, i + 1])
-        indices.extend([0, int(segments), 1])  # Close the circle
+        
+        # Close the circle
+        indices.extend([0, int(segments), 1])
         
         vertices = np.array(vertices, dtype=np.float32)
         indices = np.array(indices, dtype=np.uint32)
@@ -2150,14 +2422,15 @@ class OpenGLRenderer:
             glDeleteTextures(1, [self._filter_texture])
         if self._filter_renderbuffer:
             glDeleteRenderbuffers(1, [self._filter_renderbuffer])
-        
-        # Existing cleanup
+    
         if self.simple_shader and self.simple_shader.program:
             glDeleteProgram(self.simple_shader.program)
         if self.texture_shader and self.texture_shader.program:
             glDeleteProgram(self.texture_shader.program)
         if self.particle_shader and self.particle_shader.program:
             glDeleteProgram(self.particle_shader.program)
+        if self.rounded_rect_shader and self.rounded_rect_shader.program:
+            glDeleteProgram(self.rounded_rect_shader.program)
         
         # Clean up cached geometry
         for vao, vbo, ebo, _ in self._circle_cache.values():

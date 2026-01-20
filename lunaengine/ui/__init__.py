@@ -24,7 +24,7 @@ with consistent styling and responsive layouts across different game scenes.
 """
 
 import inspect
-from . import elements, layout, themes, styles, tween, layer_manager
+from . import elements, layout, themes, styles, tooltips, tween, layer_manager, notifications
 
 # Automatically discover all UIElement subclasses
 _ui_element_classes = []
@@ -35,7 +35,7 @@ for name, obj in inspect.getmembers(elements):
         _ui_element_classes.append(name)
 
 # Add base classes and managers
-_base_classes = ['UIElement', 'UIState', 'FontManager', 'TooltipConfig', 'Tooltip', 'UITooltipManager']
+_base_classes = ['UIElement', 'UIState', 'FontManager']
 
 # Import layout classes
 _layout_classes = ['UILayout', 'VerticalLayout', 'HorizontalLayout', 'GridLayout', 'JustifiedLayout']
@@ -52,8 +52,15 @@ _tween_classes = ['EasingType', 'TweenProperty', 'Tween', 'AnimationHandler', 'T
 # Add layer manager
 _layer_manager = ['UILayerManager']
 
+# Add tooltips
+_tooltips_classes = ['TooltipConfig', 'Tooltip', 'UITooltipManager']
+
+# Add notifications
+_notifications_classes = ['NotificationType', 'NotificationPosition', 'NotificationStyle', 'NotificationConfig', 'Notification', 'NotificationManager', 'notification_manager',
+                          'show_notification', 'show_success', 'show_warning', 'show_error', 'show_info', 'clear_all_notifications', 'get_notification_count', 'get_queue_length']
+
 # Combine all exports
-__all__ = _base_classes + _ui_element_classes + _layout_classes + _theme_classes + _style_classes +  _tween_classes
+__all__ = _base_classes + _ui_element_classes + _layout_classes + _theme_classes + _style_classes +  _tween_classes + _layer_manager + _tooltips_classes + _notifications_classes
 
 # Import everything for direct access
 from .elements import *
@@ -62,3 +69,5 @@ from .themes import *
 from .styles import *
 from .tween import *
 from .layer_manager import *
+from .tooltips import *
+from .notifications import *
