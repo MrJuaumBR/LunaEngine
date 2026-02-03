@@ -29,7 +29,7 @@ USAGE PATTERN:
 
 import pygame
 from abc import ABC, abstractmethod
-from typing import Dict, List, Any, Optional, TYPE_CHECKING
+from typing import Dict, List, Any, Optional, TYPE_CHECKING, Tuple
 from ..ui import UIElement, UiFrame, ScrollingFrame, Tabination
 from ..graphics import Camera, ParticleConfig, ParticleSystem, ParticleType, ShadowSystem
 from ..core.audio import AudioSystem
@@ -53,7 +53,7 @@ class Scene(ABC):
         engine (LunaEngine): Reference to the game engine
     """
     name:str = ''
-    def __init__(self, engine: 'LunaEngine', *args:tuple, **kwargs:dict):
+    def __init__(self, engine: 'LunaEngine', *args:tuple|Any, **kwargs:dict|Any):
         """
         Initialize a new scene with empty UI elements list.
         
@@ -183,6 +183,7 @@ class Scene(ABC):
             return True
         return False
         
+        
     def get_ui_element_by_id(self, element_id: str) -> Optional[UIElement]:
         """
         Get UI element by its unique ID.
@@ -233,6 +234,26 @@ class Scene(ABC):
         """
         for ui in self.get_ui_elements_by_group(group):
             ui.visible = visible
+            
+    def clear_element_group(self, group: str) -> None:
+        """
+        Remove all UI elements in a specific group from the scene.
+        
+        Args:
+            group (str): The group to clear
+        """
+        for ui in self.get_ui_elements_by_group(group):
+            self.remove_ui_element(ui)
+            
+    def clear_element_type(self, element_type: type) -> None:
+        """
+        Remove all UI elements of a specific type from the scene.
+        
+        Args:
+            element_type (type): The class type to filter by (e.g., Button, Label)
+        """
+        for ui in self.get_ui_elements_by_type(element_type):
+            self.remove_ui_element(ui)
         
     def get_all_ui_elements(self) -> List[UIElement]:
         """

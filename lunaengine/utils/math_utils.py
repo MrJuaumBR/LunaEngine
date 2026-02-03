@@ -218,3 +218,27 @@ def generate_matrix(rows, cols, dtype=np.float32) -> np.ndarray:
     """
     
     return np.full((rows, cols), 0.0, dtype=dtype)
+
+def get_radius_by_diameter(diameter: float) -> float:
+    return diameter / 2
+
+def get_diameter_by_radius(radius: float) -> float:
+    return radius * 2
+
+def get_circle_area(radius: float) -> float:
+    return math.pi * radius**2
+
+def get_circle_circumference(radius: float) -> float:
+    return 2 * math.pi * radius
+
+def get_diameter_by_area(area: float) -> float:
+    return math.sqrt(4 * area / math.pi)
+
+def get_diameter_by_circumference(circumference: float) -> float:
+    return circumference / (2 * math.pi)
+
+def get_area_by_diameter(diameter: float) -> float:
+    return math.pi * (diameter / 2)**2
+
+def get_area_by_radius(radius: float) -> float:
+    return math.pi * radius**2

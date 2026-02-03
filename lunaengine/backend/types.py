@@ -5,8 +5,8 @@ A collection of types used in lunaengine
 """
 
 import pygame.locals
-from dataclasses import dataclass
-from typing import Callable, Optional, Literal, Tuple
+from dataclasses import dataclass, field
+from typing import Callable, Optional, Literal, Tuple, Dict, Any
 from enum import Enum
 
 class EVENTS:
@@ -130,3 +130,41 @@ class LayerType(Enum):
     POPUP = 3          # Dropdowns, tooltips, context menus
     MODAL = 4          # Modal dialogs, alerts
     TOP = 5            # Always on top elements (cursors, debug info)
+    
+class WindowEventType(Enum):
+    """Types of window events supported."""
+    FOCUS_GAINED = "window_focus_gained"
+    FOCUS_LOST = "window_focus_lost"
+    RESIZED = "window_resized"
+    MOVED = "window_moved"
+    ENTER = "window_enter"
+    LEAVE = "window_leave"
+    CLOSE = "window_close"
+    MINIMIZED = "window_minimized"
+    RESTORED = "window_restored"
+    MAXIMIZED = "window_maximized"
+    SHOWN = "window_shown"
+    HIDDEN = "window_hidden"
+    EXPOSED = "window_exposed"
+
+@dataclass
+class WindowEventData:
+    """Data container for window events."""
+    event_type: WindowEventType
+    timestamp: int
+    window_id: int
+    data: Dict[str, Any] = field(default_factory=dict)
+    
+    @property
+    def size(self) -> Optional[Tuple[int, int]]:
+        """Get window size from resize event."""
+        if 'size' in self.data:
+            return self.data['size']
+        return None
+    
+    @property
+    def position(self) -> Optional[Tuple[int, int]]:
+        """Get window position from move event."""
+        if 'position' in self.data:
+            return self.data['position']
+        return None

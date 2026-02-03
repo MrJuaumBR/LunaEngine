@@ -31,14 +31,15 @@ DEPENDENCIES:
 
 import pygame, threading
 import numpy as np
-from typing import Dict, List, Tuple, Callable, Optional, Type, TYPE_CHECKING
+from typing import Dict, List, Tuple, Callable, Optional, Type, TYPE_CHECKING, Any
 from ..ui.layer_manager import UILayerManager
 from ..ui.notifications import (NotificationManager, NotificationPosition, NotificationType, notification_manager, show_notification, show_error, show_warning, show_success, show_info)
 from ..ui import *
 from .scene import Scene
 from ..utils import PerformanceMonitor, GarbageCollector
-from ..backend import OpenGLRenderer, EVENTS, InputState, MouseButtonPressed, LayerType
+from ..backend import OpenGLRenderer, EVENTS, InputState, MouseButtonPressed, LayerType, LExceptions
 from .renderer import Renderer
+from .window import Window
 from dataclasses import dataclass
 
 class LunaEngine:
@@ -74,7 +75,16 @@ class LunaEngine:
         self.height = height
         self.fullscreen = fullscreen
         self.icon = icon
+        # Window
+        self.window = Window(title=title, width=width, height=height, fullscreen=fullscreen, resizable=False)
         self.monitor_size:pygame.display._VidInfo = None
+        self._last_window_size = (width, height)
+        self._last_window_pos = (0, 0)
+        self._window_focused = True
+        self._window_minimized = False
+        self._window_maximized = False
+        
+        
         self.running = False
         self.clock = pygame.time.Clock()
         self.fps = 60
@@ -82,6 +92,7 @@ class LunaEngine:
         self.current_scene: Optional[Scene] = None
         self.previous_scene_name: Optional[str] = None
         self._event_handlers:Dict[str, List[Dict[str, Callable[pygame.event.EventType, None], str, Optional[str]]]] = {}
+        self.ratio:pygame.Vector2 = pygame.Vector2(1.0,1.0)
         self.input_state = InputState()
         
         # Performance monitoring
@@ -128,11 +139,10 @@ class LunaEngine:
                 self.width, self.height = self.monitor_size.current_w, self.monitor_size.current_h
                 code |= pygame.FULLSCREEN | pygame.SCALED
                 print(f"Setting fullscreen mode: {self.width}x{self.height}")
-            self.screen = pygame.display.set_mode(size=(self.width, self.height), flags=code)
+            self.window.create()
+            self.screen = self.window.surface
         except Exception as e:
-            print(f"Failed to create OpenGL display: {e}")
-            print("Falling back to Pygame rendering")
-            self.screen = pygame.display.set_mode(size=(self.width, self.height))
+            raise(LExceptions.OpenGLInitializationError(e))
         
         self.set_title(self.title)
         self.set_icon(self.icon)
@@ -486,6 +496,20 @@ class LunaEngine:
         size = (size[0] * x, size[1] * y)
         return size
 
+    def setRatio(self, base_width:int, base_height:int) -> pygame.Vector2:
+        """
+        Set the ratio of the window to the base size
+
+        Args:
+            base_width (int): The base width of the window
+            base_height (int): The base height of the window
+
+        Returns:
+            pygame.Vector2[float, float]: The ratio of the window to the base size
+        """
+        self.ratio = pygame.Vector2(base_width / self.width, base_height / self.height)
+        return self.ratio
+
     def run(self):
         """Main game loop"""
         if self.renderer is None:
@@ -509,6 +533,10 @@ class LunaEngine:
             for event in pygame.event.get():
                 if event.type == EVENTS.QUIT:
                     self.running = False
+                    
+                # Handle window events
+                self.window.handle_pygame_event(event)
+                
                 # Call registered event handlers
                 if event.type in self._event_handlers:
                     for handler in self._event_handlers[event.type]:
@@ -531,6 +559,162 @@ class LunaEngine:
             self.garbage_collector.cleanup()
         
         self.shutdown()
+        
+    def on_window_resize(self, func: Callable):
+        """
+        Decorator for window resize event.
+        
+        Args:
+            func: The resize event handler function
+            
+        Returns:
+            The decorated function
+        """
+        return self.window.on_resize(func)
+    
+    def on_window_close(self, func: Callable):
+        """
+        Decorator for window close event.
+        
+        Args:
+            func: The close event handler function
+            
+        Returns:
+            The decorated function
+        """
+        return self.window.on_close(func)
+    
+    def on_window_focus(self, func: Callable):
+        """
+        Decorator for window focus gained event.
+        
+        Args:
+            func: The focus event handler function
+            
+        Returns:
+            The decorated function
+        """
+        return self.window.on_focus(func)
+    
+    def on_window_blur(self, func: Callable):
+        """
+        Decorator for window blur (focus lost) event.
+        
+        Args:
+            func: The blur event handler function
+            
+        Returns:
+            The decorated function
+        """
+        return self.window.on_blur(func)
+    
+    def on_window_move(self, func: Callable):
+        """
+        Decorator for window move event.
+        
+        Args:
+            func: The move event handler function
+            
+        Returns:
+            The decorated function
+        """
+        return self.window.on_move(func)
+    
+    def on_window_minimize(self, func: Callable):
+        """
+        Decorator for window minimize event.
+        
+        Args:
+            func: The minimize event handler function
+            
+        Returns:
+            The decorated function
+        """
+        return self.window.on_minimize(func)
+    
+    def on_window_maximize(self, func: Callable):
+        """
+        Decorator for window maximize event.
+        
+        Args:
+            func: The maximize event handler function
+            
+        Returns:
+            The decorated function
+        """
+        return self.window.on_maximize(func)
+    
+    def on_window_restore(self, func: Callable):
+        """
+        Decorator for window restore event.
+        
+        Args:
+            func: The restore event handler function
+            
+        Returns:
+            The decorated function
+        """
+        return self.window.on_restore(func)
+    
+    def on_window_enter(self, func: Callable):
+        """
+        Decorator for mouse entering window event.
+        
+        Args:
+            func: The enter event handler function
+            
+        Returns:
+            The decorated function
+        """
+        return self.window.on_enter(func)
+    
+    def on_window_leave(self, func: Callable):
+        """
+        Decorator for mouse leaving window event.
+        
+        Args:
+            func: The leave event handler function
+            
+        Returns:
+            The decorated function
+        """
+        return self.window.on_leave(func)
+    
+    def get_window_state(self) -> Dict[str, Any]:
+        """
+        Get current window state.
+        
+        Returns:
+            Dict[str, Any]: Window state information
+        """
+        return self.window.get_window_state()
+    
+    def is_window_focused(self) -> bool:
+        """
+        Check if window is focused.
+        
+        Returns:
+            bool: True if window is focused
+        """
+        return self.window.is_focused()
+    
+    def is_window_minimized(self) -> bool:
+        """
+        Check if window is minimized.
+        
+        Returns:
+            bool: True if window is minimized
+        """
+        return self.window.is_minimized()
+    
+    def is_window_maximized(self) -> bool:
+        """
+        Check if window is maximized.
+        
+        Returns:
+            bool: True if window is maximized
+        """
+        return self.window.is_maximized()
         
     def update_mouse(self):
         """Update mouse position and button state with proper click detection"""

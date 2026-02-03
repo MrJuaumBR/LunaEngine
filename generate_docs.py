@@ -385,6 +385,9 @@ def generate_documentation():
         os.makedirs(f"docs/{module_name}", exist_ok=True)
         generate_module_index(module_name, module_info)
         
+        # Copy docs/theme.js to docs/{module_name}/theme.js
+        shutil.copy("docs/theme.js", f"docs/{module_name}/theme.js")
+        
         for file_info in module_info['files']:
             generate_file_page(module_name, file_info)
     

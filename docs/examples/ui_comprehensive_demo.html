@@ -58,6 +58,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
 from lunaengine.ui import *
 from lunaengine.core import LunaEngine, Scene
 from lunaengine.ui.tween import Tween, EasingType, AnimationHandler
+from lunaengine.misc import icons  # Import the icons module
 
 
 class ComprehensiveUIDemo(Scene):
@@ -129,7 +130,11 @@ class ComprehensiveUIDemo(Scene):
         self.main_tabs.add_tab(&#x27;Animation&#x27;)
         self.setup_animation_tab()
         
-        # --- SECTION 6: Notifications ---
+        # --- SECTION 6: Icons Gallery ---
+        self.main_tabs.add_tab(&#x27;Icons&#x27;)
+        self.setup_icons_tab()
+        
+        # --- SECTION 7: Notifications ---
         self.main_tabs.add_tab(&#x27;Notifications&#x27;)
         self.setup_notification_tab()
         
@@ -149,6 +154,152 @@ class ComprehensiveUIDemo(Scene):
         # Initialize animations
         self.setup_animations()
         self.main_tabs.set_corner_radius((10, 10, 10, 10))
+
+    def setup_icons_tab(self):
+        &quot;&quot;&quot;Sets up the icons gallery tab.&quot;&quot;&quot;
+        # Tab title
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, TextLabel(10, 10, &quot;Icons Gallery&quot;, 24, (255, 255, 0)))
+        
+        # Description
+        desc = TextLabel(10, 45, &quot;All available icons in LunaEngine (from icons.py):&quot;, 14, (200, 200, 200))
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, desc)
+        
+        # Icon size selector
+        size_label = TextLabel(10, 75, &quot;Icon Size:&quot;, 16, (200, 200, 255))
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, size_label)
+        
+        self.icon_size_selector = NumberSelector(100, 70, 80, 25, 16, 96, 32, step=8)
+        self.icon_size_selector.on_value_changed = lambda v: self.update_icons_size(v)
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, self.icon_size_selector)
+        
+        size_text = TextLabel(190, 75, &quot;pixels&quot;, 14, (150, 150, 150))
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, size_text)
+        
+        # Background color toggle
+        bg_toggle = Checkbox(250, 70, 150, 25, True, &quot;Show Background&quot;)
+        bg_toggle.set_on_toggle(lambda s: self.toggle_icons_background(s))
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, bg_toggle)
+        
+        # Scrolling frame for icons
+        self.icons_scroll = ScrollingFrame(10, 110, 960, 480, 950, 1500)
+        self.icons_scroll.set_simple_tooltip(&quot;Scroll to see all available icons&quot;)
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, self.icons_scroll)
+        
+        # Get all icons
+        self.all_icons = icons.get_all_icons(32)
+        self.icon_elements = []
+        
+        # Add icons to the scrolling frame in a grid
+        self.update_icons_display()
+    
+    def update_icons_display(self):
+        &quot;&quot;&quot;Updates the icons display with current size and settings.&quot;&quot;&quot;
+        # Clear existing icon elements
+        for element in self.icon_elements:
+            self.icons_scroll.remove_child(element)
+        self.icon_elements.clear()
+        
+        # Get current icon size
+        icon_size = self.icon_size_selector.value
+        
+        # Get updated icons with new size
+        self.all_icons = icons.get_all_icons(icon_size)
+        
+        # Grid layout
+        icons_per_row = 8
+        spacing = 20
+        icon_with_spacing = icon_size + spacing + 60  # Extra space for label
+        
+        x_offset = 20
+        y_offset = 20
+        
+        # Add each icon with label
+        for i, (icon_name, icon_surface) in enumerate(self.all_icons.items()):
+            row = i // icons_per_row
+            col = i % icons_per_row
+            
+            x = x_offset + col * icon_with_spacing
+            y = y_offset + row * (icon_size + 40)  # Extra space for label
+            
+            
+            frame_size = int(icon_size * 1.8)
+            # Create container frame
+            icon_frame = UiFrame(x, y, frame_size, frame_size)
+            icon_frame.set_background_color((40, 40, 50, 150))
+            icon_frame.set_border((80, 80, 100), 1)
+            icon_frame.set_corner_radius(5)
+            
+            # Create ImageLabel element for the icon
+            icon_img = ImageLabel(frame_size//2, frame_size//2 + 10, None, icon_size, icon_size, root_point=(0.5, 0.5))
+            icon_img.set_image(icon_surface)
+            
+            # Create label for icon name
+            label = TextLabel(frame_size//2, 5, 
+                             icon_name, 12, (200, 200, 200), root_point=(0.5, 0))
+            label.set_simple_tooltip(f&quot;Icon: {icon_name}&quot;)
+            
+            # Add to scrolling frame
+            icon_frame.add_child(icon_img)
+            icon_frame.add_child(label)
+            self.icons_scroll.add_child(icon_frame)
+            
+            # Store references
+            self.icon_elements.extend([icon_frame, icon_img, label])
+        
+        # Update total count display
+        count_label = TextLabel(10, 600, f&quot;Total Icons: {len(self.all_icons)}&quot;, 16, (200, 200, 255))
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, count_label)
+        
+        # Add icon usage example
+        usage_label = TextLabel(400, 600, &quot;Usage: icons.get_icon(&#x27;icon_name&#x27;, size)&quot;, 14, (150, 200, 255))
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, usage_label)
+        
+        # Example buttons using icons
+        example_frame = UiFrame(600, 590, 350, 60)
+        example_frame.set_background_color((40, 40, 60, 180))
+        example_frame.set_border((80, 100, 150), 1)
+        example_frame.set_corner_radius(8)
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, example_frame)
+        
+        example_label = TextLabel(610, 595, &quot;Icon Usage Examples:&quot;, 14, (220, 220, 255))
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, example_label)
+        
+        # Example 1: Button with icon
+        btn1 = Button(610, 615, 100, 30, &quot;Save&quot;)
+        btn1_icon = ImageLabel(620, 620, None, 16, 16)
+        btn1_icon.set_image(icons.get_icon(&#x27;save&#x27;, 16))
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, btn1)
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, btn1_icon)
+        
+        # Example 2: Button with icon
+        btn2 = Button(720, 615, 100, 30, &quot;Load&quot;)
+        btn2_icon = ImageLabel(730, 620, None, 16, 16)
+        btn2_icon.set_image(icons.get_icon(&#x27;load&#x27;, 16))
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, btn2)
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, btn2_icon)
+        
+        # Example 3: Button with icon
+        btn3 = Button(830, 615, 100, 30, &quot;Home&quot;)
+        btn3_icon = ImageLabel(840, 620, None, 16, 16)
+        btn3_icon.set_image(icons.get_icon(&#x27;home&#x27;, 16))
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, btn3)
+        self.main_tabs.add_to_tab(&#x27;Icons&#x27;, btn3_icon)
+    
+    def update_icons_size(self, size: int):
+        &quot;&quot;&quot;Updates all icons to new size.&quot;&quot;&quot;
+        print(f&quot;Updating icons to size: {size}&quot;)
+        self.update_icons_display()
+    
+    def toggle_icons_background(self, show: bool):
+        &quot;&quot;&quot;Toggles the background for icon containers.&quot;&quot;&quot;
+        for element in self.icon_elements:
+            if isinstance(element, UiFrame):
+                if show:
+                    element.set_background_color((40, 40, 50, 150))
+                    element.set_border((80, 80, 100), 1)
+                else:
+                    element.set_background_color((0, 0, 0, 0))
+                    element.set_border((0, 0, 0, 0), 0)
 
     def setup_notification_tab(self):
         self.main_tabs.add_to_tab(&#x27;Notifications&#x27;, TextLabel(10, 10, &quot;Notifications&quot;, 24, (255, 255, 0)))
@@ -378,14 +529,19 @@ class ComprehensiveUIDemo(Scene):
         scroll_label = TextLabel(20, 100, &quot;Scrolling Frame:&quot;, 16, (200, 200, 255))
         self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, scroll_label)
         
-        scroll_frame = ScrollingFrame(20, 130, 350, 200, 330, 300)
+        scroll_frame = ScrollingFrame(20, 130, 350, 200, 330, 600)
         scroll_frame.set_simple_tooltip(&quot;Scrollable container with multiple items&quot;)
         self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, scroll_frame)
         
         # Add items to scrolling frame
         for i in range(15):
             item_color = (100 + i * 10, 150, 200) if i % 2 == 0 else (200, 150, 100 + i * 10)
-            item = TextLabel(10, i * 30, f&quot;Scrollable Item {i + 1}&quot;, 14, item_color)
+            if i % 2 == 0: # Even = TextLabel
+                item = TextLabel(10, 15 + i * 30, f&quot;Scrollable Item {i + 1}&quot;, 14, item_color)
+            else: # Odd = Button
+                item = Button(10, 15 + i * 30, 80, 20, f&quot;Button {i + 1}&quot;)
+                item.set_on_click(print, f&quot;Button {i + 1} clicked!&quot;)
+                
             scroll_frame.add_child(item)
         
         # Dialog Button
@@ -766,7 +922,7 @@ if __name__ == &quot;__main__&quot;:
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-01-20 14:14
+                        Documentation generated on 2026-02-03 16:03
                     </p>
                 </div>
             </div>

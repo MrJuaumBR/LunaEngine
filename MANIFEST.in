@@ -1,0 +1,10 @@
+include README.md
+include LICENSE.txt
+include about.md
+include requirements.txt
+include pyproject.toml
+
+# Include all JSON files in the package
+recursive-include lunaengine *.json
+recursive-include lunaengine *.txt
+recursive-include lunaengine *.md

@@ -37,7 +37,7 @@
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>openal.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">OpenAL Audio Backend for LunaEngine - Optimized for 2D games<br><br>This module provides OpenAL-based audio with the following features:<br>- Efficient buffer management and pooling<br>- Support for WAV, OGG, MP3 formats (via Pygame)<br>- Smooth volume/pitch transitions<br>- Stereo panning support<br>- Thread-safe operations<br><br>Author: [Your Name]<br>Version: 1.0.0</span>
+                <span class="text-muted">OpenAL Audio Backend for LunaEngine - Optimized for 2D games<br><br>This module provides OpenAL-based audio with the following features:<br>- Efficient buffer management and pooling<br>- Support for WAV, OGG, MP3 formats (via Pygame)<br>- Smooth volume/pitch transitions<br>- Stereo panning support<br>- Thread-safe operations</span>
             </div>
         </div>
 
@@ -259,6 +259,50 @@
                 </div>
             </div>
         </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-openalaudiovisualizer">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class OpenALAudioVisualizer</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Audio visualizer that works with OpenAL audio system.<br><br>Provides methods to capture and analyze audio data from OpenAL sources.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, audio_system: OpenALAudioSystem) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize audio visualizer.<br><br>Args:<br> &nbsp; &nbsp;audio_system (OpenALAudioSystem): OpenAL audio system to visualize.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-_initialize_buffers">
+                <code class="fs-6 fw-bold text-color-title">def _initialize_buffers(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize data buffers.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-capture_audio_data">
+                <code class="fs-6 fw-bold text-color-title">def capture_audio_data(self: Any, source: Optional[OpenALSource] = None) -> List[float]</code>
+                <div class="mt-2 text-muted small">Capture audio data from a source or all playing sources.<br><br>Args:<br> &nbsp; &nbsp;source (Optional[OpenALSource]): Specific source to capture from.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[float]: Normalized audio data.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-perform_fft_analysis">
+                <code class="fs-6 fw-bold text-color-title">def perform_fft_analysis(self: Any, audio_data: List[float]) -> List[float]</code>
+                <div class="mt-2 text-muted small">Perform FFT analysis on audio data.<br><br>Args:<br> &nbsp; &nbsp;audio_data (List[float]): Time-domain audio data.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[float]: Frequency-domain data.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-get_peak_level">
+                <code class="fs-6 fw-bold text-color-title">def get_peak_level(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">Get current peak audio level.<br><br>Returns:<br> &nbsp; &nbsp;float: Peak level (0-1).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-get_rms_level">
+                <code class="fs-6 fw-bold text-color-title">def get_rms_level(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">Get RMS (root mean square) audio level.<br><br>Returns:<br> &nbsp; &nbsp;float: RMS level (0-1).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-_get_simulated_data">
+                <code class="fs-6 fw-bold text-color-title">def _get_simulated_data(self: Any) -> List[float]</code>
+                <div class="mt-2 text-muted small">Generate simulated audio data for demonstration.<br><br>Returns:<br> &nbsp; &nbsp;List[float]: Simulated audio data.</div>
+            </div>
+                </div>
+            </div>
+        </div>
                 
                 <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
                 
@@ -302,7 +346,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-01-20 14:14
+                        Documentation generated on 2026-02-03 16:03
                     </p>
                 </div>
             </div>

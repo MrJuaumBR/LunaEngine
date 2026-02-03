@@ -146,6 +146,14 @@
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, root_point: Tuple[float, float] = (0, 0), element_id: Optional[str] = None) -> Any</code>
                 <div class="mt-2 text-muted small">Initialize a UI element with position and dimensions.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the element in pixels.<br> &nbsp; &nbsp;height (int): Height of the element in pixels.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning where (0,0) is top-left <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;and (1,1) is bottom-right.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID. If None, generates automatic ID.</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-get_mouse_position">
+                <code class="fs-6 fw-bold text-color-title">def get_mouse_position(self: Any, input_state: InputState) -> Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-mouse_over">
+                <code class="fs-6 fw-bold text-color-title">def mouse_over(self: Any, input_state: InputState) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-set_enabled">
                 <code class="fs-6 fw-bold text-color-title">def set_enabled(self: Any, enabled: bool) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -295,7 +303,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: str, width: Optional[int] = None, height: Optional[int] = None, root_point: Tuple[float, float] = (0, 0), element_id: Optional[str] = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: str | pygame.Surface, width: Optional[int] = None, height: Optional[int] = None, root_point: Tuple[float, float] = (0, 0), element_id: Optional[str] = None) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-_load_image">
@@ -303,8 +311,12 @@
                 <div class="mt-2 text-muted small">Load and prepare the image.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-set_image">
-                <code class="fs-6 fw-bold text-color-title">def set_image(self: Any, image_path: str) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_image(self: Any, image_path: str | pygame.Surface) -> Any</code>
                 <div class="mt-2 text-muted small">Change the displayed image.<br><br>Args:<br> &nbsp; &nbsp;image_path (str): Path to the new image file.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-set_size">
+                <code class="fs-6 fw-bold text-color-title">def set_size(self: Any, width: int, height: int) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-render">
                 <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Any) -> Any</code>
@@ -351,7 +363,7 @@
                 <div class="mt-2 text-muted small">Get the font object (lazy loading).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-set_on_click">
-                <code class="fs-6 fw-bold text-color-title">def set_on_click(self: Any, callback: Callable) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_on_click(self: Any, callback: Callable, *args: tuple, **kwargs: dict) -> Any</code>
                 <div class="mt-2 text-muted small">Set the callback function for click events.<br><br>Args:<br> &nbsp; &nbsp;callback (Callable): Function to call when button is clicked.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-set_theme">
@@ -395,7 +407,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: str, width: Optional[int] = None, height: Optional[int] = None, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: str | pygame.Surface, width: Optional[int] = None, height: Optional[int] = None, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-_load_image">
@@ -403,7 +415,7 @@
                 <div class="mt-2 text-muted small">Load the button image.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-set_on_click">
-                <code class="fs-6 fw-bold text-color-title">def set_on_click(self: Any, callback: Callable) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_on_click(self: Any, callback: Callable, *args: tuple, **kwargs: dict) -> Any</code>
                 <div class="mt-2 text-muted small">Set the callback function for click events.<br><br>Args:<br> &nbsp; &nbsp;callback (Callable): Function to call when button is clicked.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-update">
@@ -991,8 +1003,8 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-numberselector-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, min_value: int, max_value: int, value: int, min_length: int = 1, max_length: int = 10, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
-                <div class="mt-2 text-muted small">Initialize the NumberSelector element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the number selector.<br> &nbsp; &nbsp;height (int): Height of the number selector.<br> &nbsp; &nbsp;min_value (int): Minimum selectable value.<br> &nbsp; &nbsp;max_value (int): Maximum selectable value.<br> &nbsp; &nbsp;value (int): Initial value for the number selector.<br> &nbsp; &nbsp;min_length (int): Minimum number of digits for display padding (defaults to 1).<br> &nbsp; &nbsp;max_length (int): Maximum number of digits allowed (defaults to 10).<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for styling.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.</div>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, min_value: int, max_value: int, value: int, min_length: int = 1, max_length: int = 10, step: int = 1, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize the NumberSelector element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the number selector.<br> &nbsp; &nbsp;height (int): Height of the number selector.<br> &nbsp; &nbsp;min_value (int): Minimum selectable value.<br> &nbsp; &nbsp;max_value (int): Maximum selectable value.<br> &nbsp; &nbsp;value (int): Initial value for the number selector.<br> &nbsp; &nbsp;min_length (int): Minimum number of digits for display padding (defaults to 1).<br> &nbsp; &nbsp;max_length (int): Maximum number of digits allowed (defaults to 10).<br> &nbsp; &nbsp;step (int): Increment/decrement step size (defaults to 1).<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for styling.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-numberselector-value">
                 <code class="fs-6 fw-bold text-color-title">def value(self: Any) -> int</code>
@@ -1116,6 +1128,14 @@
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-clear_children">
                 <code class="fs-6 fw-bold text-color-title">def clear_children(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Remove all child elements from the scrolling frame.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-get_mouse_position">
+                <code class="fs-6 fw-bold text-color-title">def get_mouse_position(self: Any, input_state: Any) -> Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">Get mouse position adjusted for scrolling.<br><br>Args:<br> &nbsp; &nbsp;input_state (InputState): Current input state<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int]: Mouse position adjusted for scroll offset</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-mouse_over">
+                <code class="fs-6 fw-bold text-color-title">def mouse_over(self: Any, input_state: InputState) -> bool</code>
+                <div class="mt-2 text-muted small">Check if mouse is over the scrolling frame (not adjusted for scroll).<br><br>Args:<br> &nbsp; &nbsp;input_state (InputState): Current input state<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if mouse is over the frame&#x27;s visible area</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: Any, inputState: Any) -> Any</code>
@@ -1316,6 +1336,114 @@
                 </div>
             </div>
         </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-audiovisualizer">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class AudioVisualizer</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Real-time audio visualization element that displays audio data in various styles.<br><br>Supports multiple visualization modes and can connect to OpenAL audio sources.<br><br>Attributes:<br> &nbsp; &nbsp;style (str): Visualization style (&#x27;bars&#x27;, &#x27;waveform&#x27;, &#x27;circle&#x27;, &#x27;particles&#x27;, &#x27;spectrum&#x27;)<br> &nbsp; &nbsp;source: OpenAL audio source to visualize<br> &nbsp; &nbsp;color_gradient (List[Tuple[int, int, int]]): Colors for gradient visualization<br> &nbsp; &nbsp;bar_width (int): Width of bars in bar mode<br> &nbsp; &nbsp;bar_spacing (int): Spacing between bars<br> &nbsp; &nbsp;sensitivity (float): Audio sensitivity/amplification<br> &nbsp; &nbsp;smoothing (float): Smoothing factor for transitions</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, style: Literal['bars', 'waveform', 'circle', 'particles', 'spectrum'] = 'bars', source: Any = None, color_gradient: Optional[List[Tuple[int, int, int]]] = None, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize an audio visualizer.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of visualizer.<br> &nbsp; &nbsp;height (int): Height of visualizer.<br> &nbsp; &nbsp;style (str): Visualization style.<br> &nbsp; &nbsp;source: OpenAL audio source or pygame Sound object.<br> &nbsp; &nbsp;color_gradient (Optional[List[Tuple[int, int, int]]]): Color gradient for visualization.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme for styling.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_initialize_audio_data">
+                <code class="fs-6 fw-bold text-color-title">def _initialize_audio_data(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize audio data buffers.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_generate_gradient_surface">
+                <code class="fs-6 fw-bold text-color-title">def _generate_gradient_surface(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Generate a gradient surface for fast color lookups.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_interpolate_gradient">
+                <code class="fs-6 fw-bold text-color-title">def _interpolate_gradient(self: Any, ratio: float) -> Tuple[int, int, int]</code>
+                <div class="mt-2 text-muted small">Interpolate color from gradient.<br><br>Args:<br> &nbsp; &nbsp;ratio (float): Position in gradient (0-1).<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: Interpolated color.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-set_style">
+                <code class="fs-6 fw-bold text-color-title">def set_style(self: Any, style: str) -> Any</code>
+                <div class="mt-2 text-muted small">Change visualization style.<br><br>Args:<br> &nbsp; &nbsp;style (str): New style (&#x27;bars&#x27;, &#x27;waveform&#x27;, &#x27;circle&#x27;, &#x27;particles&#x27;, &#x27;spectrum&#x27;).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-set_source">
+                <code class="fs-6 fw-bold text-color-title">def set_source(self: Any, source: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Set audio source for visualization.<br><br>Args:<br> &nbsp; &nbsp;source: OpenAL audio source or pygame Sound object.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-set_color_gradient">
+                <code class="fs-6 fw-bold text-color-title">def set_color_gradient(self: Any, gradient: List[Tuple[int, int, int]]) -> Any</code>
+                <div class="mt-2 text-muted small">Set color gradient for visualization.<br><br>Args:<br> &nbsp; &nbsp;gradient (List[Tuple[int, int, int]]): List of RGB colors.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-set_sensitivity">
+                <code class="fs-6 fw-bold text-color-title">def set_sensitivity(self: Any, sensitivity: float) -> Any</code>
+                <div class="mt-2 text-muted small">Set audio sensitivity/amplification.<br><br>Args:<br> &nbsp; &nbsp;sensitivity (float): Sensitivity factor (0.1-5.0).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-set_smoothing">
+                <code class="fs-6 fw-bold text-color-title">def set_smoothing(self: Any, smoothing: float) -> Any</code>
+                <div class="mt-2 text-muted small">Set smoothing factor for transitions.<br><br>Args:<br> &nbsp; &nbsp;smoothing (float): Smoothing factor (0.0-1.0).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_get_audio_data">
+                <code class="fs-6 fw-bold text-color-title">def _get_audio_data(self: Any) -> List[float]</code>
+                <div class="mt-2 text-muted small">Get audio data from source.<br><br>Returns:<br> &nbsp; &nbsp;List[float]: Audio data samples.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_process_audio_data">
+                <code class="fs-6 fw-bold text-color-title">def _process_audio_data(self: Any, raw_data: List[float]) -> Any</code>
+                <div class="mt-2 text-muted small">Process audio data with smoothing and peak detection.<br><br>Args:<br> &nbsp; &nbsp;raw_data (List[float]): Raw audio data.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <div class="mt-2 text-muted small">Update audio visualizer.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds.<br> &nbsp; &nbsp;inputState (InputState): Current input state.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> Any</code>
+                <div class="mt-2 text-muted small">Render audio visualizer.<br><br>Args:<br> &nbsp; &nbsp;renderer (Renderer): Renderer object.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_bars">
+                <code class="fs-6 fw-bold text-color-title">def _render_bars(self: Any, renderer: Renderer, x: int, y: int) -> Any</code>
+                <div class="mt-2 text-muted small">Render bar visualization.<br><br>Args:<br> &nbsp; &nbsp;renderer (Renderer): Renderer object.<br> &nbsp; &nbsp;x (int): X position.<br> &nbsp; &nbsp;y (int): Y position.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_waveform">
+                <code class="fs-6 fw-bold text-color-title">def _render_waveform(self: Any, renderer: Renderer, x: int, y: int) -> Any</code>
+                <div class="mt-2 text-muted small">Render waveform visualization.<br><br>Args:<br> &nbsp; &nbsp;renderer (Renderer): Renderer object.<br> &nbsp; &nbsp;x (int): X position.<br> &nbsp; &nbsp;y (int): Y position.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_circle">
+                <code class="fs-6 fw-bold text-color-title">def _render_circle(self: Any, renderer: Renderer, x: int, y: int) -> Any</code>
+                <div class="mt-2 text-muted small">Render circular visualization.<br><br>Args:<br> &nbsp; &nbsp;renderer (Renderer): Renderer object.<br> &nbsp; &nbsp;x (int): X position.<br> &nbsp; &nbsp;y (int): Y position.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_particles">
+                <code class="fs-6 fw-bold text-color-title">def _render_particles(self: Any, renderer: Renderer, x: int, y: int) -> Any</code>
+                <div class="mt-2 text-muted small">Render particle visualization.<br><br>Args:<br> &nbsp; &nbsp;renderer (Renderer): Renderer object.<br> &nbsp; &nbsp;x (int): X position.<br> &nbsp; &nbsp;y (int): Y position.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_spectrum">
+                <code class="fs-6 fw-bold text-color-title">def _render_spectrum(self: Any, renderer: Renderer, x: int, y: int) -> Any</code>
+                <div class="mt-2 text-muted small">Render frequency spectrum visualization.<br><br>Args:<br> &nbsp; &nbsp;renderer (Renderer): Renderer object.<br> &nbsp; &nbsp;x (int): X position.<br> &nbsp; &nbsp;y (int): Y position.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_get_bar_color">
+                <code class="fs-6 fw-bold text-color-title">def _get_bar_color(self: Any, value: float) -> Tuple[int, int, int]</code>
+                <div class="mt-2 text-muted small">Get color for bar based on value.<br><br>Args:<br> &nbsp; &nbsp;value (float): Bar value (0-1).<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_get_waveform_color">
+                <code class="fs-6 fw-bold text-color-title">def _get_waveform_color(self: Any, position: float) -> Tuple[int, int, int]</code>
+                <div class="mt-2 text-muted small">Get color for waveform segment.<br><br>Args:<br> &nbsp; &nbsp;position (float): Position along waveform (0-1).<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_get_circle_color">
+                <code class="fs-6 fw-bold text-color-title">def _get_circle_color(self: Any, position: float) -> Tuple[int, int, int]</code>
+                <div class="mt-2 text-muted small">Get color for circle segment.<br><br>Args:<br> &nbsp; &nbsp;position (float): Position around circle (0-1).<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_get_particle_color">
+                <code class="fs-6 fw-bold text-color-title">def _get_particle_color(self: Any, value: float, index: int) -> Tuple[int, int, int]</code>
+                <div class="mt-2 text-muted small">Get color for particle.<br><br>Args:<br> &nbsp; &nbsp;value (float): Particle value.<br> &nbsp; &nbsp;index (int): Particle index.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_get_spectrum_color">
+                <code class="fs-6 fw-bold text-color-title">def _get_spectrum_color(self: Any, frequency: float) -> Tuple[int, int, int]</code>
+                <div class="mt-2 text-muted small">Get color for spectrum segment.<br><br>Args:<br> &nbsp; &nbsp;frequency (float): Frequency position (0-1).<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color.</div>
+            </div>
+                </div>
+            </div>
+        </div>
                 
                 
                 
@@ -1341,7 +1469,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-01-20 14:14
+                        Documentation generated on 2026-02-03 16:03
                     </p>
                 </div>
             </div>

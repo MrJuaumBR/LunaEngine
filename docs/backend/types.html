@@ -263,6 +263,97 @@
                 </div>
             </div>
         </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-windoweventtype">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class WindowEventType</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Types of window events supported.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>FOCUS_GAINED: Any = 'window_focus_gained'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>FOCUS_LOST: Any = 'window_focus_lost'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>RESIZED: Any = 'window_resized'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>MOVED: Any = 'window_moved'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>ENTER: Any = 'window_enter'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>LEAVE: Any = 'window_leave'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>CLOSE: Any = 'window_close'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>MINIMIZED: Any = 'window_minimized'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>RESTORED: Any = 'window_restored'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>MAXIMIZED: Any = 'window_maximized'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>SHOWN: Any = 'window_shown'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>HIDDEN: Any = 'window_hidden'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>EXPOSED: Any = 'window_exposed'</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-windoweventdata">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class WindowEventData</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Data container for window events.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>event_type: WindowEventType = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>timestamp: int = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>window_id: int = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>data: Dict[str, Any] = field(default_factory=dict)</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-windoweventdata-size">
+                <code class="fs-6 fw-bold text-color-title">def size(self: Any) -> Optional[Tuple[int, int]]</code>
+                <div class="mt-2 text-muted small">Get window size from resize event.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-windoweventdata-position">
+                <code class="fs-6 fw-bold text-color-title">def position(self: Any) -> Optional[Tuple[int, int]]</code>
+                <div class="mt-2 text-muted small">Get window position from move event.</div>
+            </div>
+                </div>
+            </div>
+        </div>
                 
                 
                 
@@ -288,7 +379,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-01-20 14:14
+                        Documentation generated on 2026-02-03 16:03
                     </p>
                 </div>
             </div>

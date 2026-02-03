@@ -21,12 +21,14 @@ LIBRARIES USED:
 
 from .opengl import OpenGLRenderer, TextureShader, ParticleShader, ShaderProgram, Filter, FilterRegionType, FilterShader, FilterType
 from .openal import OpenALAudioSystem, OpenALAudioEvent, OpenALSource, OpenALBuffer, OpenALError
-from .types import EVENTS, InputState, MouseButtonPressed, LayerType
+from .types import EVENTS, InputState, MouseButtonPressed, LayerType, WindowEventData, WindowEventType
 from .network import NetworkHost, NetworkServer, NetworkClient, NetworkMessage, UserType, generate_id
+from . import exceptions as LExceptions
 
 __all__ = [
     "OpenGLRenderer", "TextureShader", "ParticleShader", "ShaderProgram", "InputState", "MouseButtonPressed", "EVENTS", "LayerType", 'PerformanceMonitor', 'RegionDetector',
-    'Filter', 'FilterRegionType', 'FilterShader', 'FilterType',
+    'Filter', 'FilterRegionType', 'FilterShader', 'FilterType', 'LayerType', 'WindowEventData', 'WindowEventType',
     'NetworkHost', 'NetworkServer', 'NetworkClient', 'NetworkMessage', 'UserType', 'generate_id',
-    'OpenALAudioSystem', 'OpenALAudioEvent', 'OpenALSource', 'OpenALBuffer', 'OpenALError'
+    'OpenALAudioSystem', 'OpenALAudioEvent', 'OpenALSource', 'OpenALBuffer', 'OpenALError',
+    'LExceptions'
 ]

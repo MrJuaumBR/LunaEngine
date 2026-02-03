@@ -169,9 +169,69 @@
                 <code class="fs-6 fw-bold text-color-title">def ScalePos(self: Any, x: float, y: float) -> Tuple[float, float] | Tuple[int, int]</code>
                 <div class="mt-2 text-muted small">Scale position is a function that will convert scales position to a pixel position<br><br>e.g.:<br>- 1.0, 1.0 = Bottom Right<br>- 0.0, 0.0 = Top Left<br>- 0.5, 0.5 = Center<br><br>Args:<br> &nbsp; &nbsp;x (float): X position<br> &nbsp; &nbsp;y (float): Y position<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float]|Tuple[int, int]: Pixel position</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-setratio">
+                <code class="fs-6 fw-bold text-color-title">def setRatio(self: Any, base_width: int, base_height: int) -> pygame.Vector2</code>
+                <div class="mt-2 text-muted small">Set the ratio of the window to the base size<br><br>Args:<br> &nbsp; &nbsp;base_width (int): The base width of the window<br> &nbsp; &nbsp;base_height (int): The base height of the window<br><br>Returns:<br> &nbsp; &nbsp;pygame.Vector2[float, float]: The ratio of the window to the base size</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-run">
                 <code class="fs-6 fw-bold text-color-title">def run(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Main game loop</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_resize">
+                <code class="fs-6 fw-bold text-color-title">def on_window_resize(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for window resize event.<br><br>Args:<br> &nbsp; &nbsp;func: The resize event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_close">
+                <code class="fs-6 fw-bold text-color-title">def on_window_close(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for window close event.<br><br>Args:<br> &nbsp; &nbsp;func: The close event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_focus">
+                <code class="fs-6 fw-bold text-color-title">def on_window_focus(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for window focus gained event.<br><br>Args:<br> &nbsp; &nbsp;func: The focus event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_blur">
+                <code class="fs-6 fw-bold text-color-title">def on_window_blur(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for window blur (focus lost) event.<br><br>Args:<br> &nbsp; &nbsp;func: The blur event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_move">
+                <code class="fs-6 fw-bold text-color-title">def on_window_move(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for window move event.<br><br>Args:<br> &nbsp; &nbsp;func: The move event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_minimize">
+                <code class="fs-6 fw-bold text-color-title">def on_window_minimize(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for window minimize event.<br><br>Args:<br> &nbsp; &nbsp;func: The minimize event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_maximize">
+                <code class="fs-6 fw-bold text-color-title">def on_window_maximize(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for window maximize event.<br><br>Args:<br> &nbsp; &nbsp;func: The maximize event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_restore">
+                <code class="fs-6 fw-bold text-color-title">def on_window_restore(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for window restore event.<br><br>Args:<br> &nbsp; &nbsp;func: The restore event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_enter">
+                <code class="fs-6 fw-bold text-color-title">def on_window_enter(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for mouse entering window event.<br><br>Args:<br> &nbsp; &nbsp;func: The enter event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_leave">
+                <code class="fs-6 fw-bold text-color-title">def on_window_leave(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator for mouse leaving window event.<br><br>Args:<br> &nbsp; &nbsp;func: The leave event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_window_state">
+                <code class="fs-6 fw-bold text-color-title">def get_window_state(self: Any) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Get current window state.<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, Any]: Window state information</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-is_window_focused">
+                <code class="fs-6 fw-bold text-color-title">def is_window_focused(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Check if window is focused.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is focused</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-is_window_minimized">
+                <code class="fs-6 fw-bold text-color-title">def is_window_minimized(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Check if window is minimized.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is minimized</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-is_window_maximized">
+                <code class="fs-6 fw-bold text-color-title">def is_window_maximized(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Check if window is maximized.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is maximized</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-update_mouse">
                 <code class="fs-6 fw-bold text-color-title">def update_mouse(self: Any) -> Any</code>
@@ -245,7 +305,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-01-20 14:14
+                        Documentation generated on 2026-02-03 16:03
                     </p>
                 </div>
             </div>

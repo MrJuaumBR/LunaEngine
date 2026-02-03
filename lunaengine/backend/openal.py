@@ -7,9 +7,6 @@ This module provides OpenAL-based audio with the following features:
 - Smooth volume/pitch transitions
 - Stereo panning support
 - Thread-safe operations
-
-Author: [Your Name]
-Version: 1.0.0
 """
 
 import ctypes
@@ -579,6 +576,170 @@ class OpenALAudioSystem:
         
         self.initialized = False
         print("OpenAL system cleaned up")
+
+
+class OpenALAudioVisualizer:
+    """
+    Audio visualizer that works with OpenAL audio system.
+    
+    Provides methods to capture and analyze audio data from OpenAL sources.
+    """
+    
+    def __init__(self, audio_system: OpenALAudioSystem):
+        """
+        Initialize audio visualizer.
+        
+        Args:
+            audio_system (OpenALAudioSystem): OpenAL audio system to visualize.
+        """
+        self.audio_system = audio_system
+        self.visualization_data = []
+        self.num_samples = 1024
+        self.sample_rate = 44100
+        
+        # FFT setup
+        self.fft_size = 512
+        self.freq_bins = []
+        
+        # Initialize data buffers
+        self._initialize_buffers()
+    
+    def _initialize_buffers(self):
+        """Initialize data buffers."""
+        self.visualization_data = [0.0] * self.num_samples
+        self.freq_bins = [0.0] * (self.fft_size // 2)
+    
+    def capture_audio_data(self, source: Optional[OpenALSource] = None) -> List[float]:
+        """
+        Capture audio data from a source or all playing sources.
+        
+        Args:
+            source (Optional[OpenALSource]): Specific source to capture from.
+            
+        Returns:
+            List[float]: Normalized audio data.
+        """
+        if not OPENAL_AVAILABLE:
+            return [0.0] * self.num_samples
+        
+        # In a real implementation, you would:
+        # 1. Query OpenAL for audio data from buffers
+        # 2. Process the raw PCM data
+        # 3. Return normalized visualization data
+        
+        # For now, return simulated data
+        return self._get_simulated_data()
+    
+    def perform_fft_analysis(self, audio_data: List[float]) -> List[float]:
+        """
+        Perform FFT analysis on audio data.
+        
+        Args:
+            audio_data (List[float]): Time-domain audio data.
+            
+        Returns:
+            List[float]: Frequency-domain data.
+        """
+        # Simple FFT simulation - in real implementation use numpy.fft
+        import random
+        result = []
+        
+        for i in range(self.fft_size // 2):
+            # Simulate frequency response
+            freq = i / (self.fft_size // 2)
+            amplitude = 0.0
+            
+            # Generate some frequency peaks
+            for peak_freq in [0.1, 0.3, 0.5, 0.7, 0.9]:
+                distance = abs(freq - peak_freq)
+                if distance < 0.1:
+                    peak_height = math.exp(-distance * 20)
+                    amplitude += peak_height * (0.5 + 0.5 * math.sin(time.time() * 2))
+            
+            # Add some noise
+            amplitude += random.uniform(0, 0.1)
+            
+            # Apply frequency roll-off (simulate natural audio)
+            amplitude *= (1.0 - freq * 0.8)
+            
+            result.append(min(1.0, amplitude))
+        
+        return result
+    
+    def get_peak_level(self) -> float:
+        """
+        Get current peak audio level.
+        
+        Returns:
+            float: Peak level (0-1).
+        """
+        if not self.visualization_data:
+            return 0.0
+        return max(self.visualization_data)
+    
+    def get_rms_level(self) -> float:
+        """
+        Get RMS (root mean square) audio level.
+        
+        Returns:
+            float: RMS level (0-1).
+        """
+        if not self.visualization_data:
+            return 0.0
+        
+        sum_squares = sum(x * x for x in self.visualization_data)
+        rms = math.sqrt(sum_squares / len(self.visualization_data))
+        return min(1.0, rms)
+    
+    def _get_simulated_data(self) -> List[float]:
+        """
+        Generate simulated audio data for demonstration.
+        
+        Returns:
+            List[float]: Simulated audio data.
+        """
+        current_time = time.time()
+        data = []
+        
+        # Check if any sources are playing
+        has_playing_source = False
+        if self.audio_system and self.audio_system.initialized:
+            for source in self.audio_system.sources:
+                if source.is_playing():
+                    has_playing_source = True
+                    break
+        
+        if has_playing_source:
+            # Simulate music/audio with multiple frequencies
+            for i in range(self.num_samples):
+                t = current_time + i / self.sample_rate
+                
+                # Bass frequency (low)
+                bass = math.sin(t * 2 * math.pi * 60) * 0.3
+                
+                # Mid frequencies
+                mid1 = math.sin(t * 2 * math.pi * 440) * 0.2
+                mid2 = math.sin(t * 2 * math.pi * 880) * 0.15
+                
+                # High frequencies
+                high = math.sin(t * 2 * math.pi * 1760) * 0.1
+                
+                # Combine with some randomness
+                value = bass + mid1 + mid2 + high
+                value += random.uniform(-0.05, 0.05)
+                
+                # Normalize
+                value = max(-1.0, min(1.0, value))
+                data.append(abs(value))
+        else:
+            # Idle/silent mode
+            for i in range(self.num_samples):
+                # Gentle pulsing
+                t = current_time + i / self.sample_rate
+                value = math.sin(t * 2 * math.pi * 2) * 0.1 + 0.1
+                data.append(value)
+        
+        return data
 
 # Global instance management
 _openal_system: Optional[OpenALAudioSystem] = None

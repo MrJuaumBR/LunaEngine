@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows Events Demo - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Examples Hub</a></li><li class="breadcrumb-item active">Windows Events Demo</li></ol></nav>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Windows Events Demo</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>windows_events_demo.py</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">&quot;&quot;&quot;
+Window Events Demo - Comprehensive Testing of Window Event Decorators
+
+ENGINE PATH:
+lunaengine/examples/window_events_demo.py
+
+DESCRIPTION:
+This demo showcases all window event features with decorators, including:
+- Window focus/blur events
+- Window resize events
+- Window move events
+- Minimize/maximize/restore events
+- Mouse enter/leave window
+- Window close events
+- Window state tracking
+
+FEATURES:
++ Decorator-based event handling
++ Real-time window state monitoring
++ Event logging with timestamps
++ Interactive event testing
++ Window manipulation controls
++ Performance monitoring during window events
+&quot;&quot;&quot;
+
+import sys
+import os
+import time
+sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
+
+from lunaengine.core import LunaEngine, Scene
+from lunaengine.ui import *
+from lunaengine.backend.types import WindowEventData, WindowEventType
+import pygame
+
+class WindowEventsDemo(Scene):
+    def __init__(self, engine: LunaEngine):
+        super().__init__(engine)
+        
+        # Demo state
+        self.event_log = []
+        self.max_log_entries = 15
+        self.window_state = {
+            &#x27;focused&#x27;: True,
+            &#x27;minimized&#x27;: False,
+            &#x27;maximized&#x27;: False,
+            &#x27;visible&#x27;: True,
+            &#x27;position&#x27;: (0, 0),
+            &#x27;size&#x27;: (800, 600)
+        }
+        self.event_counters = {
+            &#x27;resize&#x27;: 0,
+            &#x27;move&#x27;: 0,
+            &#x27;focus&#x27;: 0,
+            &#x27;blur&#x27;: 0,
+            &#x27;minimize&#x27;: 0,
+            &#x27;maximize&#x27;: 0,
+            &#x27;restore&#x27;: 0,
+            &#x27;enter&#x27;: 0,
+            &#x27;leave&#x27;: 0,
+            &#x27;close&#x27;: 0
+        }
+        self.perf_stats = {}
+        
+        # Set up UI and register events
+        self.setup_ui()
+        self.register_window_events()
+        
+        # Initial update
+        self.update_window_state_display()
+        
+    def on_enter(self, previous_scene: str = None):
+        print(&quot;=== Window Events Demo ===&quot;)
+        print(&quot;Testing window event decorators with LunaEngine&quot;)
+        print(&quot;\nTry these actions:&quot;)
+        print(&quot;+ Click outside window to trigger blur/focus events&quot;)
+        print(&quot;+ Resize the window&quot;)
+        print(&quot;+ Move the window around&quot;)
+        print(&quot;+ Minimize/Restore the window&quot;)
+        print(&quot;+ Mouse in/out of window&quot;)
+        print(&quot;+ Click the &#x27;Test Events&#x27; buttons&quot;)
+        
+        # Log initial entry
+        self.log_event(&quot;System&quot;, &quot;Scene loaded - window events ready&quot;)
+        
+    def on_exit(self, next_scene: str = None):
+        print(&quot;Exiting Window Events Demo&quot;)
+        self.log_event(&quot;System&quot;, &quot;Exiting scene&quot;)
+        
+    def register_window_events(self):
+        &quot;&quot;&quot;Register all window event handlers using decorators.&quot;&quot;&quot;
+        
+        # Window focus events
+        @self.engine.on_window_focus
+        def on_focus(event: WindowEventData):
+            self.event_counters[&#x27;focus&#x27;] += 1
+            self.window_state[&#x27;focused&#x27;] = True
+            self.log_event(&quot;WINDOW FOCUS&quot;, &quot;Window gained focus&quot;, event)
+            print(&quot;(W++) Window focused&quot;)
+            
+            # Example: Resume game audio when window is focused
+            # if hasattr(self, &#x27;audio_manager&#x27;):
+            #     self.audio_manager.unpause_all()
+        
+        @self.engine.on_window_blur
+        def on_blur(event: WindowEventData):
+            self.event_counters[&#x27;blur&#x27;] += 1
+            self.window_state[&#x27;focused&#x27;] = False
+            self.log_event(&quot;WINDOW BLUR&quot;, &quot;Window lost focus&quot;, event)
+            print(&quot;(W--)  Window blurred&quot;)
+            
+            # Example: Pause game when window loses focus
+            # self.engine.fps = 30  # Reduce FPS when not focused
+        
+        # Window resize events
+        @self.engine.on_window_resize
+        def on_resize(event: WindowEventData):
+            self.event_counters[&#x27;resize&#x27;] += 1
+            self.window_state[&#x27;size&#x27;] = event.size
+            old_size = event.data.get(&#x27;old_size&#x27;, (0, 0))
+            self.log_event(&quot;WINDOW RESIZE&quot;, f&quot;Resized from {old_size} to {event.size}&quot;, event)
+            print(f&quot;(W+-) Window resized: {event.size}&quot;)
+            
+            # Example: Update UI layout on resize
+            if hasattr(self, &#x27;resize_ui_layout&#x27;):
+                self.resize_ui_layout(event.size)
+        
+        # Window move events
+        @self.engine.on_window_move
+        def on_move(event: WindowEventData):
+            self.event_counters[&#x27;move&#x27;] += 1
+            self.window_state[&#x27;position&#x27;] = event.position
+            self.log_event(&quot;WINDOW MOVE&quot;, f&quot;Moved to {event.position}&quot;, event)
+            print(f&quot;(W/) Window moved: {event.position}&quot;)
+        
+        # Window minimize/maximize/restore events
+        @self.engine.on_window_minimize
+        def on_minimize(event: WindowEventData):
+            self.event_counters[&#x27;minimize&#x27;] += 1
+            self.window_state[&#x27;minimized&#x27;] = True
+            self.window_state[&#x27;maximized&#x27;] = False
+            self.log_event(&quot;WINDOW MINIMIZE&quot;, &quot;Window minimized&quot;, event)
+            print(&quot;(W-) Window minimized&quot;)
+            
+            # Example: Save battery when minimized
+            self.engine.fps = 30
+            self.engine.show_info(&quot;Window minimized - reducing FPS to save power&quot;, 2)
+        
+        @self.engine.on_window_maximize
+        def on_maximize(event: WindowEventData):
+            self.event_counters[&#x27;maximize&#x27;] += 1
+            self.window_state[&#x27;maximized&#x27;] = True
+            self.window_state[&#x27;minimized&#x27;] = False
+            self.log_event(&quot;WINDOW MAXIMIZE&quot;, &quot;Window maximized&quot;, event)
+            print(&quot;(W+) Window maximized&quot;)
+            
+            self.engine.show_success(&quot;Window maximized&quot;, 2)
+        
+        @self.engine.on_window_restore
+        def on_restore(event: WindowEventData):
+            self.event_counters[&#x27;restore&#x27;] += 1
+            self.window_state[&#x27;minimized&#x27;] = False
+            self.window_state[&#x27;maximized&#x27;] = False
+            self.log_event(&quot;WINDOW RESTORE&quot;, &quot;Window restored&quot;, event)
+            print(&quot;(W) Window restored&quot;)
+            
+            # Restore normal FPS
+            self.engine.fps = 60
+            self.engine.show_info(&quot;Window restored - normal FPS&quot;, 2)
+        
+        # Mouse enter/leave window
+        @self.engine.on_window_enter
+        def on_enter(event: WindowEventData):
+            self.event_counters[&#x27;enter&#x27;] += 1
+            self.log_event(&quot;MOUSE ENTER&quot;, &quot;Mouse entered window&quot;, event)
+            print(&quot;(M) Mouse entered window&quot;)
+            
+            # Example: Show custom cursor
+            # pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
+        
+        @self.engine.on_window_leave
+        def on_leave(event: WindowEventData):
+            self.event_counters[&#x27;leave&#x27;] += 1
+            self.log_event(&quot;MOUSE LEAVE&quot;, &quot;Mouse left window&quot;, event)
+            print(&quot;(M) Mouse left window&quot;)
+            
+            # Example: Hide custom cursor
+            # pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+        
+        # Window close event (with confirmation example)
+        @self.engine.on_window_close
+        def on_close(event: WindowEventData):
+            self.event_counters[&#x27;close&#x27;] += 1
+            self.log_event(&quot;WINDOW CLOSE&quot;, &quot;Close requested&quot;, event)
+            print(&quot;(X) Window close requested&quot;)
+            
+            self.engine.show_warning(&quot;Close event received (would show confirmation dialog)&quot;, 3)
+            
+            
+        # Store references to prevent garbage collection
+        self._event_handlers = [
+            on_focus, on_blur, on_resize, on_move, 
+            on_minimize, on_maximize, on_restore,
+            on_enter, on_leave, on_close
+        ]
+    
+    def setup_ui(self):
+        &quot;&quot;&quot;Set up all UI elements for the demo.&quot;&quot;&quot;
+        
+        # Title
+        title = TextLabel(400, 20, &quot;Window Events Demo&quot;, 32, root_point=(0.5, 0))
+        self.add_ui_element(title)
+        
+        subtitle = TextLabel(400, 50, &quot;Test Window Event Decorators&quot;, 18, (200, 200, 255), root_point=(0.5, 0))
+        self.add_ui_element(subtitle)
+        
+        # Event Log Section
+        log_label = TextLabel(20, 90, &quot;Event Log (Last 15 events):&quot;, 20, (255, 255, 0))
+        self.add_ui_element(log_label)
+        
+        # Event log display area (simulated with TextLabels)
+        self.event_log_labels = []
+        for i in range(self.max_log_entries):
+            label = TextLabel(30, 120 + i * 22, &quot;&quot;, 14, (200, 200, 200))
+            self.add_ui_element(label)
+            self.event_log_labels.append(label)
+        
+        # Event Counters Section
+        counters_label = TextLabel(450, 90, &quot;Event Counters:&quot;, 20, (255, 255, 0))
+        self.add_ui_element(counters_label)
+        
+        self.counter_labels = {}
+        events_y = 120
+        for i, (event_name, count) in enumerate(self.event_counters.items()):
+            label = TextLabel(450, events_y + i * 22, f&quot;{event_name}: 0&quot;, 16, (200, 200, 200))
+            self.add_ui_element(label)
+            self.counter_labels[event_name] = label
+        
+        # Window State Display
+        state_label = TextLabel(450, 350, &quot;Window State:&quot;, 20, (255, 255, 0))
+        self.add_ui_element(state_label)
+        
+        self.state_labels = {}
+        state_info = [
+            (&#x27;focused&#x27;, &#x27;Focused:&#x27;),
+            (&#x27;minimized&#x27;, &#x27;Minimized:&#x27;), 
+            (&#x27;maximized&#x27;, &#x27;Maximized:&#x27;),
+            (&#x27;visible&#x27;, &#x27;Visible:&#x27;),
+            (&#x27;position&#x27;, &#x27;Position:&#x27;),
+            (&#x27;size&#x27;, &#x27;Size:&#x27;)
+        ]
+        
+        for i, (key, label_text) in enumerate(state_info):
+            label = TextLabel(450, 380 + i * 25, f&quot;{label_text} --&quot;, 16, (200, 200, 200))
+            self.add_ui_element(label)
+            self.state_labels[key] = label
+        
+        # Interactive Controls Section
+        controls_label = TextLabel(20, 450, &quot;Interactive Controls:&quot;, 20, (255, 255, 0))
+        self.add_ui_element(controls_label)
+        
+        # Row 1: Focus/Blur test buttons
+        focus_btn = Button(20, 490, 180, 35, &quot;Test Focus Event&quot;)
+        focus_btn.set_on_click(self.trigger_focus_event)
+        focus_btn.set_simple_tooltip(&quot;Simulate window focus event&quot;)
+        self.add_ui_element(focus_btn)
+        
+        blur_btn = Button(220, 490, 180, 35, &quot;Test Blur Event&quot;)
+        blur_btn.set_on_click(self.trigger_blur_event)
+        blur_btn.set_simple_tooltip(&quot;Simulate window blur event&quot;)
+        self.add_ui_element(blur_btn)
+        
+        # Row 2: Resize/Move test buttons
+        resize_btn = Button(20, 540, 180, 35, &quot;Test Resize Event&quot;)
+        resize_btn.set_on_click(self.trigger_resize_event)
+        resize_btn.set_simple_tooltip(&quot;Simulate window resize&quot;)
+        self.add_ui_element(resize_btn)
+        
+        move_btn = Button(220, 540, 180, 35, &quot;Test Move Event&quot;)
+        move_btn.set_on_click(self.trigger_move_event)
+        move_btn.set_simple_tooltip(&quot;Simulate window move&quot;)
+        self.add_ui_element(move_btn)
+        
+        # Row 3: Minimize/Restore/Close buttons
+        minimize_btn = Button(20, 590, 120, 35, &quot;Minimize&quot;)
+        minimize_btn.set_on_click(self.minimize_window)
+        minimize_btn.set_simple_tooltip(&quot;Minimize the window&quot;)
+        self.add_ui_element(minimize_btn)
+        
+        restore_btn = Button(150, 590, 120, 35, &quot;Restore&quot;)
+        restore_btn.set_on_click(self.restore_window)
+        restore_btn.set_simple_tooltip(&quot;Restore window&quot;)
+        self.add_ui_element(restore_btn)
+        
+        toggle_fullscreen_btn = Button(280, 590, 120, 35, &quot;Toggle Fullscreen&quot;)
+        toggle_fullscreen_btn.set_on_click(self.toggle_fullscreen)
+        toggle_fullscreen_btn.set_simple_tooltip(&quot;Toggle fullscreen mode&quot;)
+        self.add_ui_element(toggle_fullscreen_btn)
+        
+        # Clear log button
+        clear_btn = Button(450, 540, 150, 35, &quot;Clear Event Log&quot;)
+        clear_btn.set_on_click(self.clear_event_log)
+        clear_btn.set_simple_tooltip(&quot;Clear all event logs&quot;)
+        self.add_ui_element(clear_btn)
+        
+        # Performance Stats
+        perf_label = TextLabel(20, 640, &quot;Performance During Events:&quot;, 18, (255, 255, 0))
+        self.add_ui_element(perf_label)
+        
+        self.perf_fps = TextLabel(20, 670, &quot;FPS: --&quot;, 16, (100, 255, 100))
+        self.add_ui_element(self.perf_fps)
+        
+        self.perf_frame_time = TextLabel(20, 695, &quot;Frame Time: -- ms&quot;, 16, (200, 150, 255))
+        self.add_ui_element(self.perf_frame_time)
+        
+        # Instructions
+        instructions = [
+            &quot;Try these window actions:&quot;,
+            &quot;+ Click outside window → Blur event&quot;,
+            &quot;+ Click back on window → Focus event&quot;,
+            &quot;+ Resize window → Resize event&quot;,
+            &quot;+ Move window → Move event&quot;,
+            &quot;+ Minimize window → Minimize event&quot;,
+            &quot;+ Restore window → Restore event&quot;,
+            &quot;+ Mouse in/out → Enter/Leave events&quot;
+        ]
+        
+        for i, instruction in enumerate(instructions):
+            instruction_label = TextLabel(650, 120 + i * 25, instruction, 14, (150, 200, 150))
+            self.add_ui_element(instruction_label)
+    
+    def log_event(self, event_type: str, message: str, event_data: WindowEventData = None):
+        &quot;&quot;&quot;Add an event to the log display.&quot;&quot;&quot;
+        timestamp = time.strftime(&quot;%H:%M:%S&quot;)
+        
+        if event_data:
+            log_entry = f&quot;[{timestamp}] {event_type}: {message}&quot;
+        else:
+            log_entry = f&quot;[{timestamp}] {event_type}: {message}&quot;
+        
+        # Add to log list
+        self.event_log.append(log_entry)
+        
+        # Keep only last N entries
+        if len(self.event_log) &gt; self.max_log_entries:
+            self.event_log = self.event_log[-self.max_log_entries:]
+        
+        # Update display
+        for i, label in enumerate(self.event_log_labels):
+            if i &lt; len(self.event_log):
+                label.set_text(self.event_log[i])
+            else:
+                label.set_text(&quot;&quot;)
+        
+        # Update counter displays
+        for event_name, label in self.counter_labels.items():
+            label.set_text(f&quot;{event_name}: {self.event_counters[event_name]}&quot;)
+    
+    def update_window_state_display(self):
+        &quot;&quot;&quot;Update the window state display.&quot;&quot;&quot;
+        state_display = {
+            &#x27;focused&#x27;: &quot;Yes&quot; if self.window_state[&#x27;focused&#x27;] else &quot;No&quot;,
+            &#x27;minimized&#x27;: &quot;Yes&quot; if self.window_state[&#x27;minimized&#x27;] else &quot;No&quot;,
+            &#x27;maximized&#x27;: &quot;Yes&quot; if self.window_state[&#x27;maximized&#x27;] else &quot;No&quot;,
+            &#x27;visible&#x27;: &quot;Yes&quot; if self.window_state[&#x27;visible&#x27;] else &quot;No&quot;,
+            &#x27;position&#x27;: f&quot;{self.window_state[&#x27;position&#x27;][0]}, {self.window_state[&#x27;position&#x27;][1]}&quot;,
+            &#x27;size&#x27;: f&quot;{self.window_state[&#x27;size&#x27;][0]}x{self.window_state[&#x27;size&#x27;][1]}&quot;
+        }
+        
+        for key, label in self.state_labels.items():
+            if key in state_display:
+                # Extract the label text before the colon
+                label_text = label.text.split(&quot;:&quot;)[0] if &quot;:&quot; in label.text else label.text
+                label.set_text(f&quot;{label_text}: {state_display[key]}&quot;)
+    
+    def trigger_focus_event(self):
+        &quot;&quot;&quot;Manually trigger a focus event (simulated).&quot;&quot;&quot;
+        # This would normally come from the OS, but we can simulate it
+        fake_event = WindowEventData(
+            event_type=WindowEventType.FOCUS_GAINED,
+            timestamp=pygame.time.get_ticks(),
+            window_id=0,
+            data={}
+        )
+        
+        # Call focus handlers directly
+        for handler in self._event_handlers:
+            if hasattr(handler, &#x27;__name__&#x27;) and &#x27;on_focus&#x27; in handler.__name__:
+                try:
+                    handler(fake_event)
+                except Exception as e:
+                    print(f&quot;Error triggering focus event: {e}&quot;)
+        
+        self.engine.show_info(&quot;Focus event triggered&quot;, 1)
+    
+    def trigger_blur_event(self):
+        &quot;&quot;&quot;Manually trigger a blur event (simulated).&quot;&quot;&quot;
+        fake_event = WindowEventData(
+            event_type=WindowEventType.FOCUS_LOST,
+            timestamp=pygame.time.get_ticks(),
+            window_id=0,
+            data={}
+        )
+        
+        # Call blur handlers directly
+        for handler in self._event_handlers:
+            if hasattr(handler, &#x27;__name__&#x27;) and &#x27;on_blur&#x27; in handler.__name__:
+                try:
+                    handler(fake_event)
+                except Exception as e:
+                    print(f&quot;Error triggering blur event: {e}&quot;)
+        
+        self.engine.show_warning(&quot;Blur event triggered&quot;, 1)
+    
+    def trigger_resize_event(self):
+        &quot;&quot;&quot;Manually trigger a resize event.&quot;&quot;&quot;
+        # Get current size
+        current_size = pygame.display.get_window_size()
+        new_size = (current_size[0] - 50, current_size[1] - 30)
+        
+        # Resize the window
+        pygame.display.set_mode(new_size, pygame.RESIZABLE)
+        
+        self.engine.show_info(f&quot;Resized to {new_size}&quot;, 1)
+    
+    def trigger_move_event(self):
+        &quot;&quot;&quot;Manually trigger a move event (simulated).&quot;&quot;&quot;
+        # Note: Pygame doesn&#x27;t have a direct way to move windows,
+        # so we&#x27;ll just log a simulated event
+        fake_event = WindowEventData(
+            event_type=WindowEventType.MOVED,
+            timestamp=pygame.time.get_ticks(),
+            window_id=0,
+            data={&#x27;position&#x27;: (100, 100)}
+        )
+        
+        # Call move handlers directly
+        for handler in self._event_handlers:
+            if hasattr(handler, &#x27;__name__&#x27;) and &#x27;on_move&#x27; in handler.__name__:
+                try:
+                    handler(fake_event)
+                except Exception as e:
+                    print(f&quot;Error triggering move event: {e}&quot;)
+        
+        self.engine.show_info(&quot;Move event simulated&quot;, 1)
+    
+    def minimize_window(self):
+        &quot;&quot;&quot;Minimize the window.&quot;&quot;&quot;
+        # Note: Pygame doesn&#x27;t have a direct minimize function
+        # This would require platform-specific code
+        # For now, we&#x27;ll simulate it
+        fake_event = WindowEventData(
+            event_type=WindowEventType.MINIMIZED,
+            timestamp=pygame.time.get_ticks(),
+            window_id=0,
+            data={}
+        )
+        
+        # Call minimize handlers directly
+        for handler in self._event_handlers:
+            if hasattr(handler, &#x27;__name__&#x27;) and &#x27;on_minimize&#x27; in handler.__name__:
+                try:
+                    handler(fake_event)
+                except Exception as e:
+                    print(f&quot;Error triggering minimize event: {e}&quot;)
+        
+        self.engine.show_warning(&quot;Minimize simulated (platform-dependent)&quot;, 2)
+    
+    def restore_window(self):
+        &quot;&quot;&quot;Restore the window.&quot;&quot;&quot;
+        fake_event = WindowEventData(
+            event_type=WindowEventType.RESTORED,
+            timestamp=pygame.time.get_ticks(),
+            window_id=0,
+            data={}
+        )
+        
+        # Call restore handlers directly
+        for handler in self._event_handlers:
+            if hasattr(handler, &#x27;__name__&#x27;) and &#x27;on_restore&#x27; in handler.__name__:
+                try:
+                    handler(fake_event)
+                except Exception as e:
+                    print(f&quot;Error triggering restore event: {e}&quot;)
+        
+        self.engine.show_success(&quot;Restore event triggered&quot;, 1)
+    
+    def toggle_fullscreen(self):
+        &quot;&quot;&quot;Toggle fullscreen mode.&quot;&quot;&quot;
+        # Toggle fullscreen
+        self.engine.fullscreen = not self.engine.fullscreen
+        
+        # Recreate window with new flags
+        flags = pygame.OPENGL | pygame.DOUBLEBUF
+        if self.engine.fullscreen:
+            flags |= pygame.FULLSCREEN
+            flags |= pygame.SCALED
+        
+        pygame.display.set_mode((self.engine.width, self.engine.height), flags)
+        
+        status = &quot;ON&quot; if self.engine.fullscreen else &quot;OFF&quot;
+        self.engine.show_info(f&quot;Fullscreen toggled: {status}&quot;, 2)
+        self.log_event(&quot;FULLSCREEN&quot;, f&quot;Toggled fullscreen {status}&quot;)
+    
+    def clear_event_log(self):
+        &quot;&quot;&quot;Clear the event log.&quot;&quot;&quot;
+        self.event_log = []
+        for label in self.event_log_labels:
+            label.set_text(&quot;&quot;)
+        
+        self.engine.show_info(&quot;Event log cleared&quot;, 1)
+    
+    def update(self, dt):
+        &quot;&quot;&quot;Update scene logic.&quot;&quot;&quot;
+        # Update window state from engine
+        if hasattr(self.engine, &#x27;get_window_state&#x27;):
+            engine_state = self.engine.get_window_state()
+            if engine_state:
+                self.window_state.update(engine_state)
+        
+        # Update displays
+        self.update_window_state_display()
+        
+        # Update performance stats
+        self.perf_stats = self.engine.get_fps_stats()
+        self.perf_fps.set_text(f&quot;FPS: {self.perf_stats.get(&#x27;current_fps&#x27;, 0):.1f}&quot;)
+        self.perf_frame_time.set_text(f&quot;Frame Time: {self.perf_stats.get(&#x27;frame_time_ms&#x27;, 0):.2f} ms&quot;)
+        
+        # Check for window state changes
+        current_size = pygame.display.get_window_size()
+        if current_size != self.window_state[&#x27;size&#x27;]:
+            # Window was resized outside our event system
+            self.window_state[&#x27;size&#x27;] = current_size
+            self.log_event(&quot;SIZE CHANGE&quot;, f&quot;Detected size change to {current_size}&quot;)
+    
+    def render(self, renderer):
+        &quot;&quot;&quot;Render the scene.&quot;&quot;&quot;
+        # Draw gradient background
+        renderer.fill_screen((20, 25, 40))
+        
+        # Draw header
+        renderer.draw_rect(0, 0, self.engine.width, 80, (30, 35, 50, 200))
+        
+        # Draw section backgrounds
+        renderer.draw_rect(10, 100, 420, 340, (40, 45, 60, 150))
+        renderer.draw_rect(440, 100, 350, 240, (40, 45, 60, 150))
+        renderer.draw_rect(10, 450, 400, 190, (40, 45, 60, 150))
+        renderer.draw_rect(10, 650, 400, 80, (40, 45, 60, 150))
+        renderer.draw_rect(650, 100, 340, 400, (40, 45, 60, 150))
+        
+        # Draw separator lines
+        renderer.draw_rect(0, 440, self.engine.width, 2, (100, 100, 100, 100))
+        renderer.draw_rect(0, 640, self.engine.width, 2, (100, 100, 100, 100))
+        
+        # Draw focus indicator
+        if self.window_state[&#x27;focused&#x27;]:
+            # x, y, w, h, color
+            renderer.draw_rect(self.engine.width - 50, 10, 40, 40, (0, 255, 0, 100))
+            
+            # text, x, y, color, font
+            renderer.draw_text(&quot;True&quot;, self.engine.width - 45, 20, (0, 255, 0), FontManager.get_font(None, 24))
+        else:
+            renderer.draw_rect(self.engine.width - 50, 10, 40, 40, (255, 0, 0, 100))
+            
+            renderer.draw_text(&quot;False&quot;, self.engine.width - 45, 20, (255, 0, 0), FontManager.get_font(None, 24))
+
+def main():
+    &quot;&quot;&quot;Main function to run the demo.&quot;&quot;&quot;
+    
+    print(&quot;=&quot; * 60)
+    print(&quot;WINDOW EVENTS DEMO&quot;)
+    print(&quot;=&quot; * 60)
+    print(&quot;Testing new window event decorator system for LunaEngine&quot;)
+    print(&quot;\nFeatures being tested:&quot;)
+    print(&quot;- Window focus/blur events&quot;)
+    print(&quot;- Window resize events&quot;)
+    print(&quot;- Window move events&quot;)
+    print(&quot;- Minimize/restore/maximize events&quot;)
+    print(&quot;- Mouse enter/leave events&quot;)
+    print(&quot;- Window close events&quot;)
+    print(&quot;- Real-time state tracking&quot;)
+    print(&quot;- Decorator-based event handling&quot;)
+    print(&quot;\nThe demo will show events in real-time as they occur.&quot;)
+    print(&quot;=&quot; * 60)
+    
+    # Create engine with resizable window
+    engine = LunaEngine(
+        title=&quot;LunaEngine - Window Events Demo&quot;,
+        width=1024,
+        height=768,
+        fullscreen=False
+    )
+    
+    # Make window resizable for testing
+    pygame.display.set_mode((1024, 768), pygame.RESIZABLE | pygame.OPENGL | pygame.DOUBLEBUF)
+    
+    # Set FPS
+    engine.fps = 60
+    
+    # Add and set the scene
+    engine.add_scene(&quot;main&quot;, WindowEventsDemo)
+    engine.set_scene(&quot;main&quot;)
+    
+    # Show welcome notification
+    engine.show_info(&quot;Window Events Demo Loaded!&quot;, 3)
+    
+    # Run the engine
+    engine.run()
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About This Example</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Window Events Demo - Comprehensive Testing of Window Event Decorators</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="windows_events_demo.py" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples Hub
+                            </a>
+                            <a href="../quick-start.html" class="btn btn-outline-success">
+                                <i class="bi bi-play-circle me-2"></i>Quick Start Guide
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-02-03 16:03
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    // Universal search handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // Adjust path based on current location
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            searchIcon.addEventListener('click', performSearch);
+            
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

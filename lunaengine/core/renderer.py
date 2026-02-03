@@ -113,7 +113,7 @@ class Renderer(ABC):
         pass
     
     @abstractmethod
-    def draw_surface(self, x: int, y: int, surface: pygame.Surface = None):
+    def draw_surface(self, surface: pygame.Surface, x: int, y: int):
         """
         Draw a pygame surface at specified coordinates.
         

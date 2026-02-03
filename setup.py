@@ -2,8 +2,10 @@ from setuptools import setup, find_packages
 
 setup(
     name="lunaengine",
-    version="0.2.0",
+    version="0.2.1",
     description="A modern 2D game engine with advanced UI and graphics",
+    author="MrJuaum",
+    url="https://github.com/MrJuaumBR/lunaengine",
     packages=find_packages(),
     install_requires=[
         "pygame>=2.5.0",
@@ -14,8 +16,6 @@ setup(
         "psutil",
     ],
     python_requires=">=3.9",
-    author="MrJuaum",
-    url="https://github.com/MrJuaumBR/lunaengine",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
@@ -26,4 +26,13 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
     ],
+    package_data={
+        'lunaengine': ['themes.json', '*.json', '*.txt', '*.md']
+    },
+    include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            
+        ],
+    },
 )

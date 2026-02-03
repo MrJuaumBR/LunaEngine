@@ -15,7 +15,7 @@
       "description": "User interface components - Buttons, Layouts, Themes",
       "link": "ui/index.html",
       "files_count": 8,
-      "classes_count": 53,
+      "classes_count": 54,
       "functions_count": 8
     },
     {
@@ -34,15 +34,15 @@
       "link": "utils/index.html",
       "files_count": 5,
       "classes_count": 8,
-      "functions_count": 13
+      "functions_count": 21
     },
     {
       "name": "backend",
       "title": "Backend",
       "description": "Renderer backends - OpenGL, Pygame",
       "link": "backend/index.html",
-      "files_count": 4,
-      "classes_count": 26,
+      "files_count": 5,
+      "classes_count": 31,
       "functions_count": 7
     },
     {
@@ -51,7 +51,7 @@
       "description": "Miscellaneous functions - Bones, Icons",
       "link": "misc/index.html",
       "files_count": 2,
-      "classes_count": 25,
+      "classes_count": 33,
       "functions_count": 2
     },
     {
@@ -119,7 +119,7 @@
       "file": "engine.py",
       "description": "Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether to start in fullscreen mode<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene",
       "link": "core/engine.html#class-lunaengine",
-      "methods_count": 40
+      "methods_count": 55
     },
     {
       "name": "Renderer",
@@ -135,15 +135,15 @@
       "file": "scene.py",
       "description": "Base class for all game scenes.<br><br>Provides lifecycle methods and UI element management. <br>All custom scenes should inherit from this class.<br><br>Attributes:<br> &nbsp; &nbsp;ui_elements (List[UIElement]): List of UI elements in this scene<br> &nbsp; &nbsp;_initialized (bool): Whether the scene has been initialized<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine",
       "link": "core/scene.html#class-scene",
-      "methods_count": 18
+      "methods_count": 20
     },
     {
       "name": "Window",
       "module": "core",
       "file": "window.py",
-      "description": "Manages the game window and display settings.<br><br>This class handles window creation, resizing, fullscreen mode,<br>and provides utility methods for window information.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether window is in fullscreen mode<br> &nbsp; &nbsp;resizable (bool): Whether window is resizable<br> &nbsp; &nbsp;surface (pygame.Surface): The window surface",
+      "description": "Manages the game window and display settings.<br><br>This class handles window creation, resizing, fullscreen mode,<br>and provides utility methods for window information.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether window is in fullscreen mode<br> &nbsp; &nbsp;resizable (bool): Whether window is resizable<br> &nbsp; &nbsp;surface (pygame.Surface): The window surface<br> &nbsp; &nbsp;_event_handlers (Dict): Registered event handlers",
       "link": "core/window.html#class-window",
-      "methods_count": 7
+      "methods_count": 25
     },
     {
       "name": "_UIDGenerator",
@@ -175,7 +175,7 @@
       "file": "elements.py",
       "description": "Base class for all UI elements providing common functionality.<br><br>Attributes:<br> &nbsp; &nbsp;element_id (str): Unique identifier for this element in format ui_{type}_{counter}<br> &nbsp; &nbsp;x (int): X coordinate position<br> &nbsp; &nbsp;y (int): Y coordinate position<br> &nbsp; &nbsp;width (int): Width of the element in pixels<br> &nbsp; &nbsp;height (int): Height of the element in pixels<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning<br> &nbsp; &nbsp;state (UIState): Current state of the element<br> &nbsp; &nbsp;visible (bool): Whether element is visible<br> &nbsp; &nbsp;enabled (bool): Whether element is enabled<br> &nbsp; &nbsp;children (List[UIElement]): Child elements<br> &nbsp; &nbsp;parent (UIElement): Parent element",
       "link": "ui/elements.html#class-uielement",
-      "methods_count": 22
+      "methods_count": 24
     },
     {
       "name": "TextLabel",
@@ -191,7 +191,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/elements.html#class-imagelabel",
-      "methods_count": 4
+      "methods_count": 5
     },
     {
       "name": "Button",
@@ -311,7 +311,7 @@
       "file": "elements.py",
       "description": "A frame container with scrollable content.<br><br>Supports both horizontal and vertical scrolling with scrollbars.<br>Automatically handles clipping of child elements to visible area.<br><br>Attributes:<br> &nbsp; &nbsp;content_width (int): Total width of scrollable content area.<br> &nbsp; &nbsp;content_height (int): Total height of scrollable content area.<br> &nbsp; &nbsp;scroll_x (int): Current horizontal scroll position.<br> &nbsp; &nbsp;scroll_y (int): Current vertical scroll position.<br> &nbsp; &nbsp;scrollbar_size (int): Width/height of scrollbars.<br> &nbsp; &nbsp;dragging_vertical (bool): Whether vertical scrollbar is being dragged.<br> &nbsp; &nbsp;dragging_horizontal (bool): Whether horizontal scrollbar is being dragged.",
       "link": "ui/elements.html#class-scrollingframe",
-      "methods_count": 11
+      "methods_count": 13
     },
     {
       "name": "Tabination",
@@ -328,6 +328,14 @@
       "description": "A clock UI element that can display both analog and digital time.<br><br>Supports both 12-hour and 24-hour formats, real-time or custom time,<br>and various customization options.<br><br>Attributes:<br> &nbsp; &nbsp;diameter (int): Diameter of the analog clock face.<br> &nbsp; &nbsp;use_real_time (bool): Whether to use the system&#x27;s real time.<br> &nbsp; &nbsp;show_numbers (bool): Whether to show numbers on the analog clock.<br> &nbsp; &nbsp;time_style (str): &#x27;12hr&#x27; or &#x27;24hr&#x27; format.<br> &nbsp; &nbsp;mode (str): &#x27;analog&#x27;, &#x27;digital&#x27;, or &#x27;both&#x27;.<br> &nbsp; &nbsp;custom_time (datetime): Custom time to display (if not using real time).",
       "link": "ui/elements.html#class-clock",
       "methods_count": 19
+    },
+    {
+      "name": "AudioVisualizer",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "Real-time audio visualization element that displays audio data in various styles.<br><br>Supports multiple visualization modes and can connect to OpenAL audio sources.<br><br>Attributes:<br> &nbsp; &nbsp;style (str): Visualization style (&#x27;bars&#x27;, &#x27;waveform&#x27;, &#x27;circle&#x27;, &#x27;particles&#x27;, &#x27;spectrum&#x27;)<br> &nbsp; &nbsp;source: OpenAL audio source to visualize<br> &nbsp; &nbsp;color_gradient (List[Tuple[int, int, int]]): Colors for gradient visualization<br> &nbsp; &nbsp;bar_width (int): Width of bars in bar mode<br> &nbsp; &nbsp;bar_spacing (int): Spacing between bars<br> &nbsp; &nbsp;sensitivity (float): Audio sensitivity/amplification<br> &nbsp; &nbsp;smoothing (float): Smoothing factor for transitions",
+      "link": "ui/elements.html#class-audiovisualizer",
+      "methods_count": 23
     },
     {
       "name": "UILayerManager",
@@ -770,6 +778,22 @@
       "methods_count": 18
     },
     {
+      "name": "LunaEngineException",
+      "module": "backend",
+      "file": "exceptions.py",
+      "description": "Base class for all LunaEngine exceptions",
+      "link": "backend/exceptions.html#class-lunaengineexception",
+      "methods_count": 0
+    },
+    {
+      "name": "OpenGLInitializationError",
+      "module": "backend",
+      "file": "exceptions.py",
+      "description": "Exception raised when OpenGL initialization fails",
+      "link": "backend/exceptions.html#class-openglinitializationerror",
+      "methods_count": 1
+    },
+    {
       "name": "MessageType",
       "module": "backend",
       "file": "network.py",
@@ -856,6 +880,14 @@
       "description": "Main OpenAL audio system for 2D games.<br><br>Manages audio sources, buffers, and provides playback functionality.<br><br>Attributes:<br> &nbsp; &nbsp;device: OpenAL device<br> &nbsp; &nbsp;context: OpenAL context<br> &nbsp; &nbsp;sources (List[OpenALSource]): Available audio sources<br> &nbsp; &nbsp;max_sources (int): Maximum number of concurrent sources<br> &nbsp; &nbsp;initialized (bool): Whether system is initialized",
       "link": "backend/openal.html#class-openalaudiosystem",
       "methods_count": 8
+    },
+    {
+      "name": "OpenALAudioVisualizer",
+      "module": "backend",
+      "file": "openal.py",
+      "description": "Audio visualizer that works with OpenAL audio system.<br><br>Provides methods to capture and analyze audio data from OpenAL sources.",
+      "link": "backend/openal.html#class-openalaudiovisualizer",
+      "methods_count": 7
     },
     {
       "name": "FilterType",
@@ -978,6 +1010,22 @@
       "methods_count": 0
     },
     {
+      "name": "WindowEventType",
+      "module": "backend",
+      "file": "types.py",
+      "description": "Types of window events supported.",
+      "link": "backend/types.html#class-windoweventtype",
+      "methods_count": 0
+    },
+    {
+      "name": "WindowEventData",
+      "module": "backend",
+      "file": "types.py",
+      "description": "Data container for window events.",
+      "link": "backend/types.html#class-windoweventdata",
+      "methods_count": 2
+    },
+    {
       "name": "Joint",
       "module": "misc",
       "file": "bones.py",
@@ -1032,6 +1080,14 @@
       "description": "Horse skeleton with proper rotation.",
       "link": "misc/bones.html#class-horsebones",
       "methods_count": 3
+    },
+    {
+      "name": "Colors",
+      "module": "misc",
+      "file": "icons.py",
+      "description": "No documentation",
+      "link": "misc/icons.html#class-colors",
+      "methods_count": 0
     },
     {
       "name": "Icon",
@@ -1159,6 +1215,62 @@
       "file": "icons.py",
       "description": "No documentation",
       "link": "misc/icons.html#class-icongear",
+      "methods_count": 1
+    },
+    {
+      "name": "IconFolder",
+      "module": "misc",
+      "file": "icons.py",
+      "description": "No documentation",
+      "link": "misc/icons.html#class-iconfolder",
+      "methods_count": 1
+    },
+    {
+      "name": "IconKey",
+      "module": "misc",
+      "file": "icons.py",
+      "description": "No documentation",
+      "link": "misc/icons.html#class-iconkey",
+      "methods_count": 1
+    },
+    {
+      "name": "IconLockLocked",
+      "module": "misc",
+      "file": "icons.py",
+      "description": "No documentation",
+      "link": "misc/icons.html#class-iconlocklocked",
+      "methods_count": 1
+    },
+    {
+      "name": "IconLockUnlocked",
+      "module": "misc",
+      "file": "icons.py",
+      "description": "No documentation",
+      "link": "misc/icons.html#class-iconlockunlocked",
+      "methods_count": 1
+    },
+    {
+      "name": "IconHome",
+      "module": "misc",
+      "file": "icons.py",
+      "description": "No documentation",
+      "link": "misc/icons.html#class-iconhome",
+      "methods_count": 1
+    },
+    {
+      "name": "IconSave",
+      "module": "misc",
+      "file": "icons.py",
+      "description": "No documentation",
+      "link": "misc/icons.html#class-iconsave",
+      "methods_count": 1
+    },
+    {
+      "name": "IconLoad",
+      "module": "misc",
+      "file": "icons.py",
+      "description": "No documentation",
+      "link": "misc/icons.html#class-iconload",
       "methods_count": 1
     },
     {
@@ -1345,6 +1457,70 @@
       "file": "math_utils.py",
       "description": "Generate matrix of zeros<br>Parameters:<br> &nbsp; &nbsp;rows (int): Number of rows in the matrix<br> &nbsp; &nbsp;cols (int): Number of columns in the matrix<br> &nbsp; &nbsp;dtype (np.dtype): Data type of the matrix<br>Returns:<br> &nbsp; &nbsp;np.ndarray: Matrix of zeros",
       "link": "utils/math_utils.html#func-generate_matrix",
+      "is_method": false
+    },
+    {
+      "name": "get_radius_by_diameter",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "No documentation",
+      "link": "utils/math_utils.html#func-get_radius_by_diameter",
+      "is_method": false
+    },
+    {
+      "name": "get_diameter_by_radius",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "No documentation",
+      "link": "utils/math_utils.html#func-get_diameter_by_radius",
+      "is_method": false
+    },
+    {
+      "name": "get_circle_area",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "No documentation",
+      "link": "utils/math_utils.html#func-get_circle_area",
+      "is_method": false
+    },
+    {
+      "name": "get_circle_circumference",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "No documentation",
+      "link": "utils/math_utils.html#func-get_circle_circumference",
+      "is_method": false
+    },
+    {
+      "name": "get_diameter_by_area",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "No documentation",
+      "link": "utils/math_utils.html#func-get_diameter_by_area",
+      "is_method": false
+    },
+    {
+      "name": "get_diameter_by_circumference",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "No documentation",
+      "link": "utils/math_utils.html#func-get_diameter_by_circumference",
+      "is_method": false
+    },
+    {
+      "name": "get_area_by_diameter",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "No documentation",
+      "link": "utils/math_utils.html#func-get_area_by_diameter",
+      "is_method": false
+    },
+    {
+      "name": "get_area_by_radius",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "No documentation",
+      "link": "utils/math_utils.html#func-get_area_by_radius",
       "is_method": false
     },
     {
@@ -1998,11 +2174,131 @@
       "is_method": true
     },
     {
+      "name": "setRatio",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Set the ratio of the window to the base size<br><br>Args:<br> &nbsp; &nbsp;base_width (int): The base width of the window<br> &nbsp; &nbsp;base_height (int): The base height of the window<br><br>Returns:<br> &nbsp; &nbsp;pygame.Vector2[float, float]: The ratio of the window to the base size",
+      "link": "core/engine.html#method-lunaengine-setratio",
+      "is_method": true
+    },
+    {
       "name": "run",
       "class": "LunaEngine",
       "module": "core",
       "description": "Main game loop",
       "link": "core/engine.html#method-lunaengine-run",
+      "is_method": true
+    },
+    {
+      "name": "on_window_resize",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Decorator for window resize event.<br><br>Args:<br> &nbsp; &nbsp;func: The resize event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function",
+      "link": "core/engine.html#method-lunaengine-on_window_resize",
+      "is_method": true
+    },
+    {
+      "name": "on_window_close",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Decorator for window close event.<br><br>Args:<br> &nbsp; &nbsp;func: The close event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function",
+      "link": "core/engine.html#method-lunaengine-on_window_close",
+      "is_method": true
+    },
+    {
+      "name": "on_window_focus",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Decorator for window focus gained event.<br><br>Args:<br> &nbsp; &nbsp;func: The focus event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function",
+      "link": "core/engine.html#method-lunaengine-on_window_focus",
+      "is_method": true
+    },
+    {
+      "name": "on_window_blur",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Decorator for window blur (focus lost) event.<br><br>Args:<br> &nbsp; &nbsp;func: The blur event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function",
+      "link": "core/engine.html#method-lunaengine-on_window_blur",
+      "is_method": true
+    },
+    {
+      "name": "on_window_move",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Decorator for window move event.<br><br>Args:<br> &nbsp; &nbsp;func: The move event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function",
+      "link": "core/engine.html#method-lunaengine-on_window_move",
+      "is_method": true
+    },
+    {
+      "name": "on_window_minimize",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Decorator for window minimize event.<br><br>Args:<br> &nbsp; &nbsp;func: The minimize event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function",
+      "link": "core/engine.html#method-lunaengine-on_window_minimize",
+      "is_method": true
+    },
+    {
+      "name": "on_window_maximize",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Decorator for window maximize event.<br><br>Args:<br> &nbsp; &nbsp;func: The maximize event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function",
+      "link": "core/engine.html#method-lunaengine-on_window_maximize",
+      "is_method": true
+    },
+    {
+      "name": "on_window_restore",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Decorator for window restore event.<br><br>Args:<br> &nbsp; &nbsp;func: The restore event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function",
+      "link": "core/engine.html#method-lunaengine-on_window_restore",
+      "is_method": true
+    },
+    {
+      "name": "on_window_enter",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Decorator for mouse entering window event.<br><br>Args:<br> &nbsp; &nbsp;func: The enter event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function",
+      "link": "core/engine.html#method-lunaengine-on_window_enter",
+      "is_method": true
+    },
+    {
+      "name": "on_window_leave",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Decorator for mouse leaving window event.<br><br>Args:<br> &nbsp; &nbsp;func: The leave event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function",
+      "link": "core/engine.html#method-lunaengine-on_window_leave",
+      "is_method": true
+    },
+    {
+      "name": "get_window_state",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get current window state.<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, Any]: Window state information",
+      "link": "core/engine.html#method-lunaengine-get_window_state",
+      "is_method": true
+    },
+    {
+      "name": "is_window_focused",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Check if window is focused.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is focused",
+      "link": "core/engine.html#method-lunaengine-is_window_focused",
+      "is_method": true
+    },
+    {
+      "name": "is_window_minimized",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Check if window is minimized.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is minimized",
+      "link": "core/engine.html#method-lunaengine-is_window_minimized",
+      "is_method": true
+    },
+    {
+      "name": "is_window_maximized",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Check if window is maximized.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is maximized",
+      "link": "core/engine.html#method-lunaengine-is_window_maximized",
       "is_method": true
     },
     {
@@ -2390,6 +2686,22 @@
       "is_method": true
     },
     {
+      "name": "clear_element_group",
+      "class": "Scene",
+      "module": "core",
+      "description": "Remove all UI elements in a specific group from the scene.<br><br>Args:<br> &nbsp; &nbsp;group (str): The group to clear",
+      "link": "core/scene.html#method-scene-clear_element_group",
+      "is_method": true
+    },
+    {
+      "name": "clear_element_type",
+      "class": "Scene",
+      "module": "core",
+      "description": "Remove all UI elements of a specific type from the scene.<br><br>Args:<br> &nbsp; &nbsp;element_type (type): The class type to filter by (e.g., Button, Label)",
+      "link": "core/scene.html#method-scene-clear_element_type",
+      "is_method": true
+    },
+    {
       "name": "get_all_ui_elements",
       "class": "Scene",
       "module": "core",
@@ -2478,6 +2790,150 @@
       "is_method": true
     },
     {
+      "name": "_register_event_handler",
+      "class": "Window",
+      "module": "core",
+      "description": "Register an event handler.",
+      "link": "core/window.html#method-window-_register_event_handler",
+      "is_method": true
+    },
+    {
+      "name": "handle_pygame_event",
+      "class": "Window",
+      "module": "core",
+      "description": "Handle pygame window events and call registered handlers.<br><br>Args:<br> &nbsp; &nbsp;event (pygame.event.Event): Pygame event to handle",
+      "link": "core/window.html#method-window-handle_pygame_event",
+      "is_method": true
+    },
+    {
+      "name": "_extract_event_data",
+      "class": "Window",
+      "module": "core",
+      "description": "Extract relevant data from pygame event.",
+      "link": "core/window.html#method-window-_extract_event_data",
+      "is_method": true
+    },
+    {
+      "name": "on_resize",
+      "class": "Window",
+      "module": "core",
+      "description": "Decorator to register window resize event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The resize event handler function.",
+      "link": "core/window.html#method-window-on_resize",
+      "is_method": true
+    },
+    {
+      "name": "on_close",
+      "class": "Window",
+      "module": "core",
+      "description": "Decorator to register window close event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window close event handler function.",
+      "link": "core/window.html#method-window-on_close",
+      "is_method": true
+    },
+    {
+      "name": "on_focus",
+      "class": "Window",
+      "module": "core",
+      "description": "Decorator to register window focus gained event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window focus event handler function.",
+      "link": "core/window.html#method-window-on_focus",
+      "is_method": true
+    },
+    {
+      "name": "on_blur",
+      "class": "Window",
+      "module": "core",
+      "description": "Decorator to register window blur (focus lost) event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window blur event handler function.",
+      "link": "core/window.html#method-window-on_blur",
+      "is_method": true
+    },
+    {
+      "name": "on_move",
+      "class": "Window",
+      "module": "core",
+      "description": "Decorator to register window move event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window move event handler function.",
+      "link": "core/window.html#method-window-on_move",
+      "is_method": true
+    },
+    {
+      "name": "on_minimize",
+      "class": "Window",
+      "module": "core",
+      "description": "Decorator to register window minimize event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window minimize event handler function.",
+      "link": "core/window.html#method-window-on_minimize",
+      "is_method": true
+    },
+    {
+      "name": "on_maximize",
+      "class": "Window",
+      "module": "core",
+      "description": "Decorator to register window maximize event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window maximize event handler function.",
+      "link": "core/window.html#method-window-on_maximize",
+      "is_method": true
+    },
+    {
+      "name": "on_restore",
+      "class": "Window",
+      "module": "core",
+      "description": "Decorator to register window restore event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window restore event handler function.",
+      "link": "core/window.html#method-window-on_restore",
+      "is_method": true
+    },
+    {
+      "name": "on_enter",
+      "class": "Window",
+      "module": "core",
+      "description": "Decorator to register mouse entering window event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window enter event handler function.",
+      "link": "core/window.html#method-window-on_enter",
+      "is_method": true
+    },
+    {
+      "name": "on_leave",
+      "class": "Window",
+      "module": "core",
+      "description": "Decorator to register mouse leaving window event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window leave event handler function.",
+      "link": "core/window.html#method-window-on_leave",
+      "is_method": true
+    },
+    {
+      "name": "get_window_state",
+      "class": "Window",
+      "module": "core",
+      "description": "Get current window state.<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, Any]: Current window state",
+      "link": "core/window.html#method-window-get_window_state",
+      "is_method": true
+    },
+    {
+      "name": "is_focused",
+      "class": "Window",
+      "module": "core",
+      "description": "Check if window is focused.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is focused",
+      "link": "core/window.html#method-window-is_focused",
+      "is_method": true
+    },
+    {
+      "name": "is_visible",
+      "class": "Window",
+      "module": "core",
+      "description": "Check if window is visible.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is visible",
+      "link": "core/window.html#method-window-is_visible",
+      "is_method": true
+    },
+    {
+      "name": "is_minimized",
+      "class": "Window",
+      "module": "core",
+      "description": "Check if window is minimized.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is minimized",
+      "link": "core/window.html#method-window-is_minimized",
+      "is_method": true
+    },
+    {
+      "name": "is_maximized",
+      "class": "Window",
+      "module": "core",
+      "description": "Check if window is maximized.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is maximized",
+      "link": "core/window.html#method-window-is_maximized",
+      "is_method": true
+    },
+    {
       "name": "__init__",
       "class": "_UIDGenerator",
       "module": "ui",
@@ -2515,6 +2971,22 @@
       "module": "ui",
       "description": "Initialize a UI element with position and dimensions.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the element in pixels.<br> &nbsp; &nbsp;height (int): Height of the element in pixels.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning where (0,0) is top-left <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;and (1,1) is bottom-right.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID. If None, generates automatic ID.",
       "link": "ui/elements.html#method-uielement-__init__",
+      "is_method": true
+    },
+    {
+      "name": "get_mouse_position",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-uielement-get_mouse_position",
+      "is_method": true
+    },
+    {
+      "name": "mouse_over",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-uielement-mouse_over",
       "is_method": true
     },
     {
@@ -2771,6 +3243,14 @@
       "module": "ui",
       "description": "Change the displayed image.<br><br>Args:<br> &nbsp; &nbsp;image_path (str): Path to the new image file.",
       "link": "ui/elements.html#method-imagelabel-set_image",
+      "is_method": true
+    },
+    {
+      "name": "set_size",
+      "class": "ImageLabel",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-imagelabel-set_size",
       "is_method": true
     },
     {
@@ -3729,7 +4209,7 @@
       "name": "__init__",
       "class": "NumberSelector",
       "module": "ui",
-      "description": "Initialize the NumberSelector element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the number selector.<br> &nbsp; &nbsp;height (int): Height of the number selector.<br> &nbsp; &nbsp;min_value (int): Minimum selectable value.<br> &nbsp; &nbsp;max_value (int): Maximum selectable value.<br> &nbsp; &nbsp;value (int): Initial value for the number selector.<br> &nbsp; &nbsp;min_length (int): Minimum number of digits for display padding (defaults to 1).<br> &nbsp; &nbsp;max_length (int): Maximum number of digits allowed (defaults to 10).<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for styling.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.",
+      "description": "Initialize the NumberSelector element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the number selector.<br> &nbsp; &nbsp;height (int): Height of the number selector.<br> &nbsp; &nbsp;min_value (int): Minimum selectable value.<br> &nbsp; &nbsp;max_value (int): Maximum selectable value.<br> &nbsp; &nbsp;value (int): Initial value for the number selector.<br> &nbsp; &nbsp;min_length (int): Minimum number of digits for display padding (defaults to 1).<br> &nbsp; &nbsp;max_length (int): Maximum number of digits allowed (defaults to 10).<br> &nbsp; &nbsp;step (int): Increment/decrement step size (defaults to 1).<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for styling.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.",
       "link": "ui/elements.html#method-numberselector-__init__",
       "is_method": true
     },
@@ -3907,6 +4387,22 @@
       "module": "ui",
       "description": "Remove all child elements from the scrolling frame.",
       "link": "ui/elements.html#method-scrollingframe-clear_children",
+      "is_method": true
+    },
+    {
+      "name": "get_mouse_position",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "Get mouse position adjusted for scrolling.<br><br>Args:<br> &nbsp; &nbsp;input_state (InputState): Current input state<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int]: Mouse position adjusted for scroll offset",
+      "link": "ui/elements.html#method-scrollingframe-get_mouse_position",
+      "is_method": true
+    },
+    {
+      "name": "mouse_over",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "Check if mouse is over the scrolling frame (not adjusted for scroll).<br><br>Args:<br> &nbsp; &nbsp;input_state (InputState): Current input state<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if mouse is over the frame&#x27;s visible area",
+      "link": "ui/elements.html#method-scrollingframe-mouse_over",
       "is_method": true
     },
     {
@@ -4235,6 +4731,190 @@
       "module": "ui",
       "description": "Render the digital clock display.",
       "link": "ui/elements.html#method-clock-_render_digital_clock",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Initialize an audio visualizer.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of visualizer.<br> &nbsp; &nbsp;height (int): Height of visualizer.<br> &nbsp; &nbsp;style (str): Visualization style.<br> &nbsp; &nbsp;source: OpenAL audio source or pygame Sound object.<br> &nbsp; &nbsp;color_gradient (Optional[List[Tuple[int, int, int]]]): Color gradient for visualization.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme for styling.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.",
+      "link": "ui/elements.html#method-audiovisualizer-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_initialize_audio_data",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Initialize audio data buffers.",
+      "link": "ui/elements.html#method-audiovisualizer-_initialize_audio_data",
+      "is_method": true
+    },
+    {
+      "name": "_generate_gradient_surface",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Generate a gradient surface for fast color lookups.",
+      "link": "ui/elements.html#method-audiovisualizer-_generate_gradient_surface",
+      "is_method": true
+    },
+    {
+      "name": "_interpolate_gradient",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Interpolate color from gradient.<br><br>Args:<br> &nbsp; &nbsp;ratio (float): Position in gradient (0-1).<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: Interpolated color.",
+      "link": "ui/elements.html#method-audiovisualizer-_interpolate_gradient",
+      "is_method": true
+    },
+    {
+      "name": "set_style",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Change visualization style.<br><br>Args:<br> &nbsp; &nbsp;style (str): New style (&#x27;bars&#x27;, &#x27;waveform&#x27;, &#x27;circle&#x27;, &#x27;particles&#x27;, &#x27;spectrum&#x27;).",
+      "link": "ui/elements.html#method-audiovisualizer-set_style",
+      "is_method": true
+    },
+    {
+      "name": "set_source",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Set audio source for visualization.<br><br>Args:<br> &nbsp; &nbsp;source: OpenAL audio source or pygame Sound object.",
+      "link": "ui/elements.html#method-audiovisualizer-set_source",
+      "is_method": true
+    },
+    {
+      "name": "set_color_gradient",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Set color gradient for visualization.<br><br>Args:<br> &nbsp; &nbsp;gradient (List[Tuple[int, int, int]]): List of RGB colors.",
+      "link": "ui/elements.html#method-audiovisualizer-set_color_gradient",
+      "is_method": true
+    },
+    {
+      "name": "set_sensitivity",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Set audio sensitivity/amplification.<br><br>Args:<br> &nbsp; &nbsp;sensitivity (float): Sensitivity factor (0.1-5.0).",
+      "link": "ui/elements.html#method-audiovisualizer-set_sensitivity",
+      "is_method": true
+    },
+    {
+      "name": "set_smoothing",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Set smoothing factor for transitions.<br><br>Args:<br> &nbsp; &nbsp;smoothing (float): Smoothing factor (0.0-1.0).",
+      "link": "ui/elements.html#method-audiovisualizer-set_smoothing",
+      "is_method": true
+    },
+    {
+      "name": "_get_audio_data",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Get audio data from source.<br><br>Returns:<br> &nbsp; &nbsp;List[float]: Audio data samples.",
+      "link": "ui/elements.html#method-audiovisualizer-_get_audio_data",
+      "is_method": true
+    },
+    {
+      "name": "_process_audio_data",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Process audio data with smoothing and peak detection.<br><br>Args:<br> &nbsp; &nbsp;raw_data (List[float]): Raw audio data.",
+      "link": "ui/elements.html#method-audiovisualizer-_process_audio_data",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Update audio visualizer.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds.<br> &nbsp; &nbsp;inputState (InputState): Current input state.",
+      "link": "ui/elements.html#method-audiovisualizer-update",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Render audio visualizer.<br><br>Args:<br> &nbsp; &nbsp;renderer (Renderer): Renderer object.",
+      "link": "ui/elements.html#method-audiovisualizer-render",
+      "is_method": true
+    },
+    {
+      "name": "_render_bars",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Render bar visualization.<br><br>Args:<br> &nbsp; &nbsp;renderer (Renderer): Renderer object.<br> &nbsp; &nbsp;x (int): X position.<br> &nbsp; &nbsp;y (int): Y position.",
+      "link": "ui/elements.html#method-audiovisualizer-_render_bars",
+      "is_method": true
+    },
+    {
+      "name": "_render_waveform",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Render waveform visualization.<br><br>Args:<br> &nbsp; &nbsp;renderer (Renderer): Renderer object.<br> &nbsp; &nbsp;x (int): X position.<br> &nbsp; &nbsp;y (int): Y position.",
+      "link": "ui/elements.html#method-audiovisualizer-_render_waveform",
+      "is_method": true
+    },
+    {
+      "name": "_render_circle",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Render circular visualization.<br><br>Args:<br> &nbsp; &nbsp;renderer (Renderer): Renderer object.<br> &nbsp; &nbsp;x (int): X position.<br> &nbsp; &nbsp;y (int): Y position.",
+      "link": "ui/elements.html#method-audiovisualizer-_render_circle",
+      "is_method": true
+    },
+    {
+      "name": "_render_particles",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Render particle visualization.<br><br>Args:<br> &nbsp; &nbsp;renderer (Renderer): Renderer object.<br> &nbsp; &nbsp;x (int): X position.<br> &nbsp; &nbsp;y (int): Y position.",
+      "link": "ui/elements.html#method-audiovisualizer-_render_particles",
+      "is_method": true
+    },
+    {
+      "name": "_render_spectrum",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Render frequency spectrum visualization.<br><br>Args:<br> &nbsp; &nbsp;renderer (Renderer): Renderer object.<br> &nbsp; &nbsp;x (int): X position.<br> &nbsp; &nbsp;y (int): Y position.",
+      "link": "ui/elements.html#method-audiovisualizer-_render_spectrum",
+      "is_method": true
+    },
+    {
+      "name": "_get_bar_color",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Get color for bar based on value.<br><br>Args:<br> &nbsp; &nbsp;value (float): Bar value (0-1).<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color.",
+      "link": "ui/elements.html#method-audiovisualizer-_get_bar_color",
+      "is_method": true
+    },
+    {
+      "name": "_get_waveform_color",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Get color for waveform segment.<br><br>Args:<br> &nbsp; &nbsp;position (float): Position along waveform (0-1).<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color.",
+      "link": "ui/elements.html#method-audiovisualizer-_get_waveform_color",
+      "is_method": true
+    },
+    {
+      "name": "_get_circle_color",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Get color for circle segment.<br><br>Args:<br> &nbsp; &nbsp;position (float): Position around circle (0-1).<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color.",
+      "link": "ui/elements.html#method-audiovisualizer-_get_circle_color",
+      "is_method": true
+    },
+    {
+      "name": "_get_particle_color",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Get color for particle.<br><br>Args:<br> &nbsp; &nbsp;value (float): Particle value.<br> &nbsp; &nbsp;index (int): Particle index.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color.",
+      "link": "ui/elements.html#method-audiovisualizer-_get_particle_color",
+      "is_method": true
+    },
+    {
+      "name": "_get_spectrum_color",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "Get color for spectrum segment.<br><br>Args:<br> &nbsp; &nbsp;frequency (float): Frequency position (0-1).<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int, int]: RGB color.",
+      "link": "ui/elements.html#method-audiovisualizer-_get_spectrum_color",
       "is_method": true
     },
     {
@@ -6766,6 +7446,14 @@
       "is_method": true
     },
     {
+      "name": "__init__",
+      "class": "OpenGLInitializationError",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/exceptions.html#method-openglinitializationerror-__init__",
+      "is_method": true
+    },
+    {
       "name": "to_dict",
       "class": "NetworkMessage",
       "module": "backend",
@@ -7379,6 +8067,62 @@
       "module": "backend",
       "description": "Clean up all audio resources.",
       "link": "backend/openal.html#method-openalaudiosystem-cleanup",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "OpenALAudioVisualizer",
+      "module": "backend",
+      "description": "Initialize audio visualizer.<br><br>Args:<br> &nbsp; &nbsp;audio_system (OpenALAudioSystem): OpenAL audio system to visualize.",
+      "link": "backend/openal.html#method-openalaudiovisualizer-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_initialize_buffers",
+      "class": "OpenALAudioVisualizer",
+      "module": "backend",
+      "description": "Initialize data buffers.",
+      "link": "backend/openal.html#method-openalaudiovisualizer-_initialize_buffers",
+      "is_method": true
+    },
+    {
+      "name": "capture_audio_data",
+      "class": "OpenALAudioVisualizer",
+      "module": "backend",
+      "description": "Capture audio data from a source or all playing sources.<br><br>Args:<br> &nbsp; &nbsp;source (Optional[OpenALSource]): Specific source to capture from.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[float]: Normalized audio data.",
+      "link": "backend/openal.html#method-openalaudiovisualizer-capture_audio_data",
+      "is_method": true
+    },
+    {
+      "name": "perform_fft_analysis",
+      "class": "OpenALAudioVisualizer",
+      "module": "backend",
+      "description": "Perform FFT analysis on audio data.<br><br>Args:<br> &nbsp; &nbsp;audio_data (List[float]): Time-domain audio data.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[float]: Frequency-domain data.",
+      "link": "backend/openal.html#method-openalaudiovisualizer-perform_fft_analysis",
+      "is_method": true
+    },
+    {
+      "name": "get_peak_level",
+      "class": "OpenALAudioVisualizer",
+      "module": "backend",
+      "description": "Get current peak audio level.<br><br>Returns:<br> &nbsp; &nbsp;float: Peak level (0-1).",
+      "link": "backend/openal.html#method-openalaudiovisualizer-get_peak_level",
+      "is_method": true
+    },
+    {
+      "name": "get_rms_level",
+      "class": "OpenALAudioVisualizer",
+      "module": "backend",
+      "description": "Get RMS (root mean square) audio level.<br><br>Returns:<br> &nbsp; &nbsp;float: RMS level (0-1).",
+      "link": "backend/openal.html#method-openalaudiovisualizer-get_rms_level",
+      "is_method": true
+    },
+    {
+      "name": "_get_simulated_data",
+      "class": "OpenALAudioVisualizer",
+      "module": "backend",
+      "description": "Generate simulated audio data for demonstration.<br><br>Returns:<br> &nbsp; &nbsp;List[float]: Simulated audio data.",
+      "link": "backend/openal.html#method-openalaudiovisualizer-_get_simulated_data",
       "is_method": true
     },
     {
@@ -8110,6 +8854,22 @@
       "is_method": true
     },
     {
+      "name": "size",
+      "class": "WindowEventData",
+      "module": "backend",
+      "description": "Get window size from resize event.",
+      "link": "backend/types.html#method-windoweventdata-size",
+      "is_method": true
+    },
+    {
+      "name": "position",
+      "class": "WindowEventData",
+      "module": "backend",
+      "description": "Get window position from move event.",
+      "link": "backend/types.html#method-windoweventdata-position",
+      "is_method": true
+    },
+    {
       "name": "__init__",
       "class": "Joint",
       "module": "misc",
@@ -8526,6 +9286,62 @@
       "is_method": true
     },
     {
+      "name": "generate",
+      "class": "IconFolder",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-iconfolder-generate",
+      "is_method": true
+    },
+    {
+      "name": "generate",
+      "class": "IconKey",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-iconkey-generate",
+      "is_method": true
+    },
+    {
+      "name": "generate",
+      "class": "IconLockLocked",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-iconlocklocked-generate",
+      "is_method": true
+    },
+    {
+      "name": "generate",
+      "class": "IconLockUnlocked",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-iconlockunlocked-generate",
+      "is_method": true
+    },
+    {
+      "name": "generate",
+      "class": "IconHome",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-iconhome-generate",
+      "is_method": true
+    },
+    {
+      "name": "generate",
+      "class": "IconSave",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-iconsave-generate",
+      "is_method": true
+    },
+    {
+      "name": "generate",
+      "class": "IconLoad",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-iconload-generate",
+      "is_method": true
+    },
+    {
       "name": "get_icon",
       "class": "IconFactory",
       "module": "misc",
@@ -8712,7 +9528,13 @@
       "file": "ui_comprehensive_demo.py",
       "link": "examples/ui_comprehensive_demo.html",
       "type": "example"
+    },
+    {
+      "name": "Windows Events Demo",
+      "file": "windows_events_demo.py",
+      "link": "examples/windows_events_demo.html",
+      "type": "example"
     }
   ],
-  "last_updated": "2026-01-20T14:14:43.065072"
+  "last_updated": "2026-02-03T16:03:42.213725"
 }

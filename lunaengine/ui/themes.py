@@ -178,6 +178,15 @@ class ThemeType(Enum):
     YOUTUBE = "youtube"
     STEAM_DARK = "steam_dark"
     STEAM_LIGHT = "steam_light"
+    WHATSAPP_DARK = "whatsapp_dark"
+    WHATSAPP_LIGHT = "whatsapp_light"
+    CRUNCHYROLL_DARK = "crunchyroll_dark"
+    CRUNCHYROLL_LIGHT = "crunchyroll_light"
+    TWITCH_DARK = "twitch_dark"
+    TWITCH_LIGHT = "twitch_light"
+    
+    CYBERPUNK_DARK = "cyberpunk_dark"
+    CYBERPUNK_LIGHT = "cyberpunk_light"
     
     QUEEN = "queen"
     KING = "king"
@@ -414,7 +423,6 @@ class ThemeManager:
             tooltip_text=(240, 240, 240),
             border=(120, 120, 140),
             border2=(100, 100, 120),
-            # New notification colors
             notification_success_background=(40, 167, 69),
             notification_success_border=(20, 147, 49),
             notification_success_text=(255, 255, 255),
@@ -430,9 +438,8 @@ class ThemeManager:
             notification_error_background=(220, 53, 69),
             notification_error_border=(200, 33, 49),
             notification_error_text=(255, 255, 255),
-            # New accent colors
-            accent1=(70, 130, 180),  # Steel blue
-            accent2=(255, 193, 7)    # Golden yellow
+            accent1=(70, 130, 180),
+            accent2=(255, 193, 7)
         )
         cls._themes[ThemeType.DEFAULT] = fallback_theme
         cls._themes_loaded = True

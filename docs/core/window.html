@@ -37,7 +37,7 @@
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>window.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">Window Management System - Display and Surface Control<br><br>LOCATION: lunaengine/core/window.py<br><br>DESCRIPTION:<br>Handles the creation, configuration, and management of the game window.<br>Provides functionality for display mode changes, window properties, and<br>surface management. Supports both windowed and fullscreen modes with<br>dynamic resizing capabilities.<br><br>KEY FEATURES:<br>- Window creation with customizable flags<br>- Fullscreen/windowed mode switching<br>- Dynamic window resizing support<br>- Display surface management<br>- Window property configuration<br><br>LIBRARIES USED:<br>- pygame: Display system, surface creation, and window flags<br>- typing: Type hints for coordinates and optional parameters<br><br>WINDOW FLAGS SUPPORTED:<br>- OPENGL: OpenGL context creation<br>- FULLSCREEN: Fullscreen display mode<br>- RESIZABLE: User-resizable window<br>- DOUBLEBUF: Double buffering for smooth rendering</span>
+                <span class="text-muted">Window Management System - Display and Surface Control<br><br>LOCATION: lunaengine/core/window.py<br><br>DESCRIPTION:<br>Handles the creation, configuration, and management of the game window.<br>Provides functionality for display mode changes, window properties, and<br>surface management. Supports both windowed and fullscreen modes with<br>dynamic resizing capabilities.<br><br>KEY FEATURES:<br>- Window creation with customizable flags<br>- Fullscreen/windowed mode switching<br>- Dynamic window resizing support<br>- Display surface management<br>- Window property configuration<br>- Window event decorators<br><br>LIBRARIES USED:<br>- pygame: Display system, surface creation, and window flags<br>- typing: Type hints for coordinates and optional parameters<br>- functools: Decorator utilities<br><br>WINDOW FLAGS SUPPORTED:<br>- OPENGL: OpenGL context creation<br>- FULLSCREEN: Fullscreen display mode<br>- RESIZABLE: User-resizable window<br>- DOUBLEBUF: Double buffering for smooth rendering</span>
             </div>
         </div>
 
@@ -51,7 +51,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Manages the game window and display settings.<br><br>This class handles window creation, resizing, fullscreen mode,<br>and provides utility methods for window information.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether window is in fullscreen mode<br> &nbsp; &nbsp;resizable (bool): Whether window is resizable<br> &nbsp; &nbsp;surface (pygame.Surface): The window surface</p>
+                    <p class="lead fs-6">Manages the game window and display settings.<br><br>This class handles window creation, resizing, fullscreen mode,<br>and provides utility methods for window information.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether window is in fullscreen mode<br> &nbsp; &nbsp;resizable (bool): Whether window is resizable<br> &nbsp; &nbsp;surface (pygame.Surface): The window surface<br> &nbsp; &nbsp;_event_handlers (Dict): Registered event handlers</p>
                 </div>
                 
                 <div class="methods-section">
@@ -85,6 +85,78 @@
                 <code class="fs-6 fw-bold text-color-title">def get_center(self: Any) -> Tuple[int, int]</code>
                 <div class="mt-2 text-muted small">Get window center coordinates.<br><br>Returns:<br> &nbsp; &nbsp;Tuple[int, int]: (x, y) coordinates of window center</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-_register_event_handler">
+                <code class="fs-6 fw-bold text-color-title">def _register_event_handler(self: Any, event_type: WindowEventType, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Register an event handler.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-handle_pygame_event">
+                <code class="fs-6 fw-bold text-color-title">def handle_pygame_event(self: Any, event: pygame.event.Event) -> Any</code>
+                <div class="mt-2 text-muted small">Handle pygame window events and call registered handlers.<br><br>Args:<br> &nbsp; &nbsp;event (pygame.event.Event): Pygame event to handle</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-_extract_event_data">
+                <code class="fs-6 fw-bold text-color-title">def _extract_event_data(self: Any, event: pygame.event.Event, event_type: WindowEventType) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Extract relevant data from pygame event.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-on_resize">
+                <code class="fs-6 fw-bold text-color-title">def on_resize(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator to register window resize event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The resize event handler function.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-on_close">
+                <code class="fs-6 fw-bold text-color-title">def on_close(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator to register window close event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window close event handler function.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-on_focus">
+                <code class="fs-6 fw-bold text-color-title">def on_focus(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator to register window focus gained event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window focus event handler function.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-on_blur">
+                <code class="fs-6 fw-bold text-color-title">def on_blur(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator to register window blur (focus lost) event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window blur event handler function.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-on_move">
+                <code class="fs-6 fw-bold text-color-title">def on_move(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator to register window move event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window move event handler function.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-on_minimize">
+                <code class="fs-6 fw-bold text-color-title">def on_minimize(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator to register window minimize event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window minimize event handler function.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-on_maximize">
+                <code class="fs-6 fw-bold text-color-title">def on_maximize(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator to register window maximize event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window maximize event handler function.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-on_restore">
+                <code class="fs-6 fw-bold text-color-title">def on_restore(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator to register window restore event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window restore event handler function.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-on_enter">
+                <code class="fs-6 fw-bold text-color-title">def on_enter(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator to register mouse entering window event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window enter event handler function.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-on_leave">
+                <code class="fs-6 fw-bold text-color-title">def on_leave(self: Any, func: Callable) -> Any</code>
+                <div class="mt-2 text-muted small">Decorator to register mouse leaving window event handler.<br><br>Args:<br> &nbsp; &nbsp;func (Callable): The window leave event handler function.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-get_window_state">
+                <code class="fs-6 fw-bold text-color-title">def get_window_state(self: Any) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Get current window state.<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, Any]: Current window state</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-is_focused">
+                <code class="fs-6 fw-bold text-color-title">def is_focused(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Check if window is focused.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is focused</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-is_visible">
+                <code class="fs-6 fw-bold text-color-title">def is_visible(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Check if window is visible.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is visible</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-is_minimized">
+                <code class="fs-6 fw-bold text-color-title">def is_minimized(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Check if window is minimized.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is minimized</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-window-is_maximized">
+                <code class="fs-6 fw-bold text-color-title">def is_maximized(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Check if window is maximized.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is maximized</div>
+            </div>
                 </div>
             </div>
         </div>
@@ -113,7 +185,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-01-20 14:14
+                        Documentation generated on 2026-02-03 16:03
                     </p>
                 </div>
             </div>

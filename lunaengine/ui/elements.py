@@ -94,7 +94,7 @@ This module forms the core of LunaEngine's UI system, providing a flexible and
 themeable foundation for building complex user interfaces in Pygame applications.
 """
 
-import pygame, time, math
+import pygame, time, math, os
 import numpy as np
 from typing import Optional, Callable, List, Tuple, Any, Dict, Literal, TYPE_CHECKING
 from enum import Enum
@@ -239,6 +239,24 @@ class UIElement(ABC):
         self.element_type = self.__class__.__name__.lower()
         self.element_id = element_id if element_id else _uid_generator.generate_id(self.element_type)
 
+    def get_mouse_position(self, input_state:InputState) -> Tuple[int, int]:
+        return input_state.mouse_pos
+    
+    def mouse_over(self, input_state:InputState) -> bool:
+        # Needs to handle if has parent too
+        if self.parent is not None:
+            parent_pos = self.parent.get_actual_position()
+        else: parent_pos = (0, 0)
+        
+        mouse_pos:tuple[int, int] = self.get_mouse_position(input_state)
+        my_pos = (parent_pos[0] + self.x, parent_pos[1] + self.y)
+        is_mouse_over:bool = (
+            mouse_pos[0] > my_pos[0] and mouse_pos[0] < my_pos[0] + self.width and
+            mouse_pos[1] > my_pos[1] and mouse_pos[1] < my_pos[1] + self.height
+        ) or False
+        
+        return is_mouse_over
+
     def set_enabled(self, enabled: bool):
         self.enabled = enabled
         
@@ -374,11 +392,7 @@ class UIElement(ABC):
             self.state = UIState.NORMAL
             return
         
-        actual_x, actual_y = self.get_actual_position()
-        mouse_over = (actual_x <= inputState.mouse_pos[0] <= actual_x + self.width and 
-                    actual_y <= inputState.mouse_pos[1] <= actual_y + self.height)
-        
-        if mouse_over:
+        if self.mouse_over(inputState):
             if inputState.mouse_just_pressed:
                 self.state = UIState.PRESSED
                 # Mark event as consumed to prevent other elements from using it
@@ -534,7 +548,7 @@ class TextLabel(UIElement):
         super().render(renderer)
 
 class ImageLabel(UIElement):
-    def __init__(self, x: int, y: int, image_path: str, 
+    def __init__(self, x: int, y: int, image_path: str | pygame.Surface, 
                  width: Optional[int] = None, height: Optional[int] = None,
                  root_point: Tuple[float, float] = (0, 0),
                  element_id: Optional[str] = None):
@@ -542,31 +556,48 @@ class ImageLabel(UIElement):
         self._image = None
         self._load_image()
         
-        if width is None:
-            width = self._image.get_width()
-        if height is None:
-            height = self._image.get_height()
-            
+        if self._image:        
+            if width is None:
+                width = self._image.get_width()
+            if height is None:
+                height = self._image.get_height()
+
         super().__init__(x, y, width, height, root_point, element_id)
 
         
     def _load_image(self):
         """Load and prepare the image."""
-        try:
-            self._image = pygame.image.load(self.image_path).convert_alpha()
-        except:
+        if self.image_path is None:
             self._image = pygame.Surface((100, 100))
             self._image.fill((255, 0, 255))
+            return
+        elif type(self.image_path) == pygame.Surface:
+            self._image = self.image_path
+            return
+        elif type(self.image_path) == str:
+            if not os.path.exists(self.image_path):
+                self._image = pygame.Surface((100, 100))
+                self._image.fill((255, 0, 255))
+                return
         
-    def set_image(self, image_path: str):
+    def set_image(self, image_path: str | pygame.Surface):
         """
         Change the displayed image.
         
         Args:
             image_path (str): Path to the new image file.
         """
-        self.image_path = image_path
-        self._load_image()
+        if type(image_path) == str:
+            self.image_path = image_path
+            self._load_image()
+        elif type(image_path) == pygame.Surface:
+            self.image_path = None
+            self._image = pygame.transform.scale(image_path, (self.width, self.height))
+    
+    def set_size(self, width: int, height: int):
+        self.width = width
+        self.height = height
+        self._image = pygame.transform.scale(self._image, (self.width, self.height))
     
     def render(self, renderer):
         """Render using OpenGL backend"""
@@ -600,6 +631,8 @@ class Button(UIElement):
         self.font_size = font_size
         self.font_name = font_name
         self.on_click_callback = None
+        self.on_click_args = None
+        self.on_click_kwargs = None
         self._font = None
         self._was_pressed = False
         
@@ -636,7 +669,7 @@ class Button(UIElement):
             self._font = FontManager.get_font(self.font_name, self.font_size)
         return self._font
         
-    def set_on_click(self, callback: Callable):
+    def set_on_click(self, callback: Callable, *args, **kwargs):
         """
         Set the callback function for click events.
         
@@ -644,6 +677,8 @@ class Button(UIElement):
             callback (Callable): Function to call when button is clicked.
         """
         self.on_click_callback = callback
+        self.on_click_args = args
+        self.on_click_kwargs = kwargs
         
     def set_theme(self, theme_type: ThemeType):
         """
@@ -667,16 +702,18 @@ class Button(UIElement):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
-            
-        actual_x, actual_y = self.get_actual_position()
         
-        mouse_over = (actual_x <= inputState.mouse_pos[0] <= actual_x + self.width and 
-                     actual_y <= inputState.mouse_pos[1] <= actual_y + self.height)
-        if mouse_over:
+        if self.mouse_over(inputState):
             if inputState.mouse_buttons_pressed.left:
                 self.state = UIState.PRESSED
                 if not self._was_pressed and self.on_click_callback:
-                    self.on_click_callback()
+                    if self.on_click_args or self.on_click_kwargs:
+                        try:
+                            self.on_click_callback(*self.on_click_args, **self.on_click_kwargs)
+                        except:
+                            self.on_click_callback()
+                    else:
+                        self.on_click_callback()
                 self._was_pressed = True
             else:
                 self.on_hover()
@@ -741,11 +778,12 @@ class Button(UIElement):
         super().render(renderer)
 
 class ImageButton(UIElement):
-    def __init__(self, x: int, y: int, image_path: str, 
+    def __init__(self, x: int, y: int, image_path: str | pygame.Surface, 
                  width: Optional[int] = None, height: Optional[int] = None,
                  root_point: Tuple[float, float] = (0, 0),
                  theme: ThemeType = None,
-                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+                 element_id: Optional[str] = None):
+        super().__init__(x, y, width, height, root_point, element_id)
         self.image_path = image_path
         self._image = None
         self._load_image()
@@ -755,21 +793,27 @@ class ImageButton(UIElement):
         if height is None:
             height = self._image.get_height()
             
-        super().__init__(x, y, width, height, root_point, element_id)
         self.on_click_callback = None
+        self.on_click_args = None
+        self.on_click_kwargs = None
         self._was_pressed = False
         
         self.theme_type = theme or ThemeManager.get_current_theme()
         
     def _load_image(self):
         """Load the button image."""
-        try:
+        if self.image_path is None:
+            self._image = pygame.Surface((self.width, self.height))
+            self._image.fill((0, 0, 0))
+            return
+        elif type(self.image_path) == str:
             self._image = pygame.image.load(self.image_path).convert_alpha()
-        except:
-            self._image = pygame.Surface((100, 100))
-            self._image.fill((0, 255, 255))
+            self._image = pygame.transform.scale(self._image, (self.width, self.height))
+        elif type(self.image_path) == pygame.Surface:
+            self._image = self.image_path
+            self._image = pygame.transform.scale(self._image, (self.width, self.height))
         
-    def set_on_click(self, callback: Callable):
+    def set_on_click(self, callback: Callable, *args, **kwargs):
         """
         Set the callback function for click events.
         
@@ -777,21 +821,25 @@ class ImageButton(UIElement):
             callback (Callable): Function to call when button is clicked.
         """
         self.on_click_callback = callback
+        self.on_click_args = args
+        self.on_click_kwargs = kwargs
     
     def update(self, dt:float, inputState:InputState):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
-            
-        actual_x, actual_y = self.get_actual_position()
         
-        mouse_over = (actual_x <= inputState.mouse_pos[0] <= actual_x + self.width and 
-                     actual_y <= inputState.mouse_pos[1] <= actual_y + self.height)
-        if mouse_over:
+        if self.mouse_over(inputState):
             if inputState.mouse_buttons_pressed.left:
                 self.state = UIState.PRESSED
                 if not self._was_pressed and self.on_click_callback:
-                    self.on_click_callback()
+                    if self.on_click_args or self.on_click_kwargs:
+                        try:
+                            self.on_click_callback(*self.on_click_args, **self.on_click_kwargs)
+                        except:
+                            self.on_click_callback()
+                    else:
+                        self.on_click_callback()
                 self._was_pressed = True
             else:
                 self.state = UIState.HOVERED
@@ -1018,11 +1066,7 @@ class TextBox(UIElement):
             self.focused = False
             return
         
-        actual_x, actual_y = self.get_actual_position()
-        mouse_over = (
-            actual_x <= inputState.mouse_pos[0] <= actual_x + self.width and 
-            actual_y <= inputState.mouse_pos[1] <= actual_y + self.height
-        )
+        mouse_over = self.mouse_over(inputState)
         
         # Handle focus changes
         old_focused = self.focused
@@ -1313,9 +1357,7 @@ class DialogBox(UIElement):
         if not self.visible or not self.enabled:
             return
             
-        actual_x, actual_y = self.get_actual_position()
-        mouse_over = (actual_x <= inputState.mouse_pos[0] <= actual_x + self.width and 
-                     actual_y <= inputState.mouse_pos[1] <= actual_y + self.height)
+        mouse_over = self.mouse_over(inputState)
         
         # Only advance on mouse click when we're waiting for advance
         if mouse_over and inputState.mouse_buttons_pressed.left and self.waiting_for_advance:
@@ -1549,8 +1591,7 @@ class UIDraggable(UIElement):
         mouse_pos, mouse_pressed = inputState.mouse_pos, inputState.mouse_buttons_pressed.left
         actual_x, actual_y = self.get_actual_position()
         
-        mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.width and 
-                     actual_y <= mouse_pos[1] <= actual_y + self.height)
+        mouse_over = self.mouse_over(inputState)
         
         if mouse_pressed and mouse_over and not self.dragging:
             self.dragging = True
@@ -1959,12 +2000,9 @@ class Switch(UIElement):
             return
             
             
-        mouse_pos = inputState.mouse_pos
         mouse_pressed = inputState.mouse_buttons_pressed.left
-        actual_x, actual_y = self.get_actual_position()
         
-        mouse_over = (actual_x <= mouse_pos[0] <= actual_x + self.width and 
-                     actual_y <= mouse_pos[1] <= actual_y + self.height)
+        mouse_over = self.mouse_over(inputState)
         
         # Handle click with cooldown
         if mouse_pressed and mouse_over and not self._was_pressed:
@@ -2198,9 +2236,7 @@ class Dropdown(UIElement):
         actual_x, actual_y = self.get_actual_position()
             
         # Check if mouse is over main dropdown
-        main_rect = (actual_x, actual_y, self.width, self.height)
-        mouse_over_main = (main_rect[0] <= mouse_pos[0] <= main_rect[0] + main_rect[2] and 
-                          main_rect[1] <= mouse_pos[1] <= main_rect[1] + main_rect[3])
+        mouse_over_main = self.mouse_over(inputState)
         
         if self.expanded:
             self.render_layer = LayerType.POPUP
@@ -2704,7 +2740,7 @@ class NumberSelector(UIElement):
     """
     
     def __init__(self, x: int, y: int, width: int, height: int, min_value: int, max_value: int, 
-                 value: int, min_length: int = 1, max_length: int = 10,
+                 value: int, min_length: int = 1, max_length: int = 10, step:int=1,
                  root_point: Tuple[float, float] = (0, 0),theme: ThemeType = None, element_id: Optional[str] = None):
         """
         Initialize the NumberSelector element.
@@ -2719,6 +2755,7 @@ class NumberSelector(UIElement):
             value (int): Initial value for the number selector.
             min_length (int): Minimum number of digits for display padding (defaults to 1).
             max_length (int): Maximum number of digits allowed (defaults to 10).
+            step (int): Increment/decrement step size (defaults to 1).
             root_point (Tuple[float, float]): Anchor point for positioning.
             theme (ThemeType): Theme to use for styling.
             element_id (Optional[str]): Custom element ID.
@@ -2731,6 +2768,7 @@ class NumberSelector(UIElement):
         self.max_value = max_value
         self.min_length = min_length
         self.max_length = max_length
+        self.step = step
         self.theme_type = theme or ThemeManager.get_current_theme()
         self.font_size = int(height * 0.6) # Dynamic font size based on element height
         
@@ -2785,12 +2823,12 @@ class NumberSelector(UIElement):
     def increment(self):
         """Increments the value, respecting max_value."""
         if self._value < self.max_value:
-            self.value += 1
+            self.value += self.step
             
     def decrement(self):
         """Decrements the value, respecting min_value."""
         if self._value > self.min_value:
-            self.value -= 1
+            self.value -= self.step
             
     def _setup_control_areas(self):
         """
@@ -2867,7 +2905,7 @@ class NumberSelector(UIElement):
         mouse_rel_y = mouse_pos[1] - actual_y
         self._last_mouse_pos_rel = (mouse_rel_x, mouse_rel_y)
         
-        mouse_over_main = (0 <= mouse_rel_x <= self.width and 0 <= mouse_rel_y <= self.height)
+        mouse_over_main = self.mouse_over(inputState)
         
         self._is_up_pressed = False
         self._is_down_pressed = False
@@ -3082,7 +3120,7 @@ class Checkbox(UIElement):
         mouse_rel_x = mouse_pos[0] - actual_x
         mouse_rel_y = mouse_pos[1] - actual_y
         
-        mouse_over_main = (0 <= mouse_rel_x <= self.width and 0 <= mouse_rel_y <= self.height)
+        mouse_over_main = self.mouse_over(inputState)
         
         # The logic relies on a single-frame "just pressed" state.
         if not hasattr(self, '_was_pressed'):
@@ -3243,6 +3281,44 @@ class ScrollingFrame(UiFrame):
         """
         self.children.clear()
 
+    def get_mouse_position(self, input_state) -> Tuple[int, int]:
+        """
+        Get mouse position adjusted for scrolling.
+        
+        Args:
+            input_state (InputState): Current input state
+            
+        Returns:
+            Tuple[int, int]: Mouse position adjusted for scroll offset
+        """
+        x, y = input_state.mouse_pos
+        return (x - self.scroll_x, y - self.scroll_y)
+    
+    def mouse_over(self, input_state: InputState) -> bool:
+        """
+        Check if mouse is over the scrolling frame (not adjusted for scroll).
+        
+        Args:
+            input_state (InputState): Current input state
+            
+        Returns:
+            bool: True if mouse is over the frame's visible area
+        """
+        if self.parent is not None:
+            parent_pos = self.parent.get_actual_position()
+        else:
+            parent_pos = (0, 0)
+        
+        mouse_pos = input_state.mouse_pos  # Use original mouse position
+        my_pos = (parent_pos[0] + self.x, parent_pos[1] + self.y)
+        
+        is_mouse_over = (
+            mouse_pos[0] > my_pos[0] and mouse_pos[0] < my_pos[0] + self.width and
+            mouse_pos[1] > my_pos[1] and mouse_pos[1] < my_pos[1] + self.height
+        )
+        
+        return is_mouse_over
+
     def update(self, dt, inputState):
         """
         Update scrolling frame state and handle user interaction.
@@ -3259,7 +3335,7 @@ class ScrollingFrame(UiFrame):
         mouse_pos = inputState.mouse_pos
         actual_x, actual_y = self.get_actual_position()
         
-        mouse_over:bool = (
+        mouse_over = (
             actual_x <= mouse_pos[0] <= actual_x + self.width and
             actual_y <= mouse_pos[1] <= actual_y + self.height
         )
@@ -3271,7 +3347,6 @@ class ScrollingFrame(UiFrame):
             self.state = UIState.NORMAL
         
         # Get mouse state
-        mouse_pos = inputState.mouse_pos
         mouse_pressed = inputState.mouse_buttons_pressed.left
         
         # Calculate max scroll values
@@ -3315,20 +3390,23 @@ class ScrollingFrame(UiFrame):
             scroll_ratio = drag_delta_x / scroll_area_width
             self.scroll_x = max(0, min(max_scroll_x, self.scroll_start_x + int(scroll_ratio * max_scroll_x)))
         
-        # Update children with scrolled mouse position for interaction
-        # Adjusted mouse position relative to scrolled content
-        scrolled_mouse_pos = (mouse_pos[0] + self.scroll_x - actual_x, 
-                             mouse_pos[1] + self.scroll_y - actual_y)
+        # THE SIMPLE FIX: Temporarily adjust mouse position for children
+        # Save original mouse position
+        original_mouse_pos = inputState.mouse_pos
         
-        # Update children manually since we're overriding the update method
+        # Adjust mouse position for scroll offset
+        inputState.mouse_pos = (
+            original_mouse_pos[0] + self.scroll_x,
+            original_mouse_pos[1] + self.scroll_y
+        )
+        
+        # Update children with adjusted mouse position
         for child in self.children:
             if hasattr(child, 'update'):
-                # Create a modified input state with adjusted mouse position
-                # This is a simplified approach - in a real implementation,
-                # you might want to create a proper InputState proxy
                 child.update(dt, inputState)
         
-        # self.state = UIState.NORMAL
+        # Restore original mouse position
+        inputState.mouse_pos = original_mouse_pos
         
     def on_scroll(self, event: pygame.event.Event):
         """
@@ -4356,3 +4434,603 @@ class Clock(UIElement):
                              self.digital_text_color, self.font, 
                              anchor_point=(0.5, 0))
         
+class AudioVisualizer(UIElement):
+    """
+    Real-time audio visualization element that displays audio data in various styles.
+    
+    Supports multiple visualization modes and can connect to OpenAL audio sources.
+    
+    Attributes:
+        style (str): Visualization style ('bars', 'waveform', 'circle', 'particles', 'spectrum')
+        source: OpenAL audio source to visualize
+        color_gradient (List[Tuple[int, int, int]]): Colors for gradient visualization
+        bar_width (int): Width of bars in bar mode
+        bar_spacing (int): Spacing between bars
+        sensitivity (float): Audio sensitivity/amplification
+        smoothing (float): Smoothing factor for transitions
+    """
+    
+    def __init__(self, x: int, y: int, width: int, height: int,
+                 style: Literal['bars', 'waveform', 'circle', 'particles', 'spectrum'] = 'bars',
+                 source = None,
+                 color_gradient: Optional[List[Tuple[int, int, int]]] = None,
+                 root_point: Tuple[float, float] = (0, 0),
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):
+        """
+        Initialize an audio visualizer.
+        
+        Args:
+            x (int): X coordinate position.
+            y (int): Y coordinate position.
+            width (int): Width of visualizer.
+            height (int): Height of visualizer.
+            style (str): Visualization style.
+            source: OpenAL audio source or pygame Sound object.
+            color_gradient (Optional[List[Tuple[int, int, int]]]): Color gradient for visualization.
+            root_point (Tuple[float, float]): Anchor point for positioning.
+            theme (ThemeType): Theme for styling.
+            element_id (Optional[str]): Custom element ID.
+        """
+        super().__init__(x, y, width, height, root_point, element_id)
+        
+        # Visualization properties
+        self.style = style
+        self.source = source
+        self.theme_type = theme or ThemeManager.get_current_theme()
+        
+        # Audio data buffers
+        self.audio_data = []
+        self.fft_data = []
+        self.peak_history = []
+        self.smoothed_data = []
+        
+        # Visualization parameters
+        self.num_bars = 64  # For bar and spectrum modes
+        self.bar_width = max(2, width // self.num_bars)
+        self.bar_spacing = 1
+        self.circle_radius = min(width, height) // 2 - 10
+        self.circle_thickness = 2
+        self.num_particles = 100
+        self.sensitivity = 1.5  # Amplification factor
+        self.smoothing = 0.7    # Smoothing factor (0-1)
+        self.decay_rate = 0.95  # Decay rate for peaks
+        self.max_history = 30   # Max frames for peak history
+        
+        # Colors
+        if color_gradient:
+            self.color_gradient = color_gradient
+        else:
+            # Default gradient from theme
+            theme_obj = ThemeManager.get_theme(self.theme_type)
+            base_color = getattr(theme_obj, 'button_normal', (100, 150, 255))
+            self.color_gradient = [
+                tuple(max(0, c - 100) for c in base_color),  # Darker
+                base_color,                                    # Base
+                tuple(min(255, c + 100) for c in base_color)  # Lighter
+            ]
+        
+        # Performance optimization
+        self._last_update = 0
+        self._update_interval = 0.016  # ~60 FPS for audio updates
+        
+        # Initialize audio data
+        self._initialize_audio_data()
+        
+        # Create gradient surface for fast rendering
+        self._gradient_surface = None
+        self._generate_gradient_surface()
+    
+    def _initialize_audio_data(self):
+        """Initialize audio data buffers."""
+        self.audio_data = [0.0] * self.num_bars
+        self.fft_data = [0.0] * self.num_bars
+        self.peak_history = []
+        self.smoothed_data = [0.0] * self.num_bars
+    
+    def _generate_gradient_surface(self):
+        """Generate a gradient surface for fast color lookups."""
+        height = 100  # Enough resolution for gradient
+        self._gradient_surface = pygame.Surface((1, height), pygame.SRCALPHA)
+        
+        # Create vertical gradient
+        for y in range(height):
+            ratio = y / height
+            color = self._interpolate_gradient(ratio)
+            self._gradient_surface.set_at((0, y), color)
+    
+    def _interpolate_gradient(self, ratio: float) -> Tuple[int, int, int]:
+        """
+        Interpolate color from gradient.
+        
+        Args:
+            ratio (float): Position in gradient (0-1).
+            
+        Returns:
+            Tuple[int, int, int]: Interpolated color.
+        """
+        if len(self.color_gradient) == 1:
+            return self.color_gradient[0]
+        
+        exact_pos = ratio * (len(self.color_gradient) - 1)
+        segment = int(exact_pos)
+        segment_ratio = exact_pos - segment
+        
+        if segment >= len(self.color_gradient) - 1:
+            return self.color_gradient[-1]
+        
+        color1 = np.array(self.color_gradient[segment], dtype=np.float32)
+        color2 = np.array(self.color_gradient[segment + 1], dtype=np.float32)
+        
+        # Linear interpolation
+        interpolated = color1 + (color2 - color1) * segment_ratio
+        
+        return tuple(np.clip(interpolated, 0, 255).astype(int))
+    
+    def set_style(self, style: str):
+        """
+        Change visualization style.
+        
+        Args:
+            style (str): New style ('bars', 'waveform', 'circle', 'particles', 'spectrum').
+        """
+        self.style = style
+        self._initialize_audio_data()
+    
+    def set_source(self, source):
+        """
+        Set audio source for visualization.
+        
+        Args:
+            source: OpenAL audio source or pygame Sound object.
+        """
+        self.source = source
+    
+    def set_color_gradient(self, gradient: List[Tuple[int, int, int]]):
+        """
+        Set color gradient for visualization.
+        
+        Args:
+            gradient (List[Tuple[int, int, int]]): List of RGB colors.
+        """
+        self.color_gradient = gradient
+        self._generate_gradient_surface()
+    
+    def set_sensitivity(self, sensitivity: float):
+        """
+        Set audio sensitivity/amplification.
+        
+        Args:
+            sensitivity (float): Sensitivity factor (0.1-5.0).
+        """
+        self.sensitivity = max(0.1, min(5.0, sensitivity))
+    
+    def set_smoothing(self, smoothing: float):
+        """
+        Set smoothing factor for transitions.
+        
+        Args:
+            smoothing (float): Smoothing factor (0.0-1.0).
+        """
+        self.smoothing = max(0.0, min(1.0, smoothing))
+    
+    def _get_audio_data(self) -> List[float]:
+        """
+        Get audio data from source.
+        
+        Returns:
+            List[float]: Audio data samples.
+        """
+        # This is a placeholder - in a real implementation, you would:
+        # 1. Get audio buffer from OpenAL source
+        # 2. Perform FFT for spectrum analysis
+        # 3. Return processed data
+        
+        # For demonstration, generate simulated audio data
+        current_time = pygame.time.get_ticks() / 1000.0
+        
+        if self.source and hasattr(self.source, 'is_playing') and self.source.is_playing():
+            # Simulate audio data with some variation
+            data = []
+            for i in range(self.num_bars):
+                # Generate frequency-based pattern
+                base_freq = 0.1 + (i / self.num_bars) * 2.0
+                value = (math.sin(current_time * base_freq * math.pi * 2) * 0.5 + 0.5)
+                value *= (1.0 - (i / self.num_bars) * 0.3)  # High frequency attenuation
+                
+                # Add some random noise
+                value += np.random.uniform(-0.05, 0.05)
+                
+                data.append(max(0.0, min(1.0, value * self.sensitivity)))
+        else:
+            # No audio source or not playing - generate idle pattern
+            data = []
+            for i in range(self.num_bars):
+                # Gentle pulsing idle animation
+                idle_freq = 0.5
+                idle_value = (math.sin(current_time * idle_freq + i * 0.1) * 0.2 + 0.3)
+                data.append(idle_value)
+        
+        return data
+    
+    def _process_audio_data(self, raw_data: List[float]):
+        """
+        Process audio data with smoothing and peak detection.
+        
+        Args:
+            raw_data (List[float]): Raw audio data.
+        """
+        # Apply smoothing
+        for i in range(len(raw_data)):
+            smoothed = self.smoothed_data[i] * self.smoothing + raw_data[i] * (1 - self.smoothing)
+            self.smoothed_data[i] = smoothed
+        
+        # Update peak history
+        self.peak_history.append(raw_data[:])
+        if len(self.peak_history) > self.max_history:
+            self.peak_history.pop(0)
+        
+        # Decay peaks
+        if len(self.peak_history) > 1:
+            for i in range(self.num_bars):
+                # Compare current value with decayed previous peak, keep the larger
+                decayed_value = self.peak_history[-2][i] * self.decay_rate
+                self.peak_history[-1][i] = max(self.peak_history[-1][i], decayed_value)
+    
+    def update(self, dt: float, inputState: InputState):
+        """
+        Update audio visualizer.
+        
+        Args:
+            dt (float): Delta time in seconds.
+            inputState (InputState): Current input state.
+        """
+        super().update(dt, inputState)
+        
+        # Update audio data at limited frequency for performance
+        current_time = time.time()
+        if current_time - self._last_update >= self._update_interval:
+            # Get and process audio data
+            audio_data = self._get_audio_data()
+            self._process_audio_data(audio_data)
+            self._last_update = current_time
+    
+    def render(self, renderer: Renderer):
+        """
+        Render audio visualizer.
+        
+        Args:
+            renderer (Renderer): Renderer object.
+        """
+        if not self.visible:
+            return
+        
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Draw background
+        bg_color = getattr(theme, 'background', (20, 20, 30))
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        
+        # Draw border
+        border_color = getattr(theme, 'border', (50, 50, 70))
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
+                         border_color, fill=False, border_width=1)
+        
+        # Render based on style
+        if self.style == 'bars':
+            self._render_bars(renderer, actual_x, actual_y)
+        elif self.style == 'waveform':
+            self._render_waveform(renderer, actual_x, actual_y)
+        elif self.style == 'circle':
+            self._render_circle(renderer, actual_x, actual_y)
+        elif self.style == 'particles':
+            self._render_particles(renderer, actual_x, actual_y)
+        elif self.style == 'spectrum':
+            self._render_spectrum(renderer, actual_x, actual_y)
+        
+        # Render children
+        super().render(renderer)
+    
+    def _render_bars(self, renderer: Renderer, x: int, y: int):
+        """
+        Render bar visualization.
+        
+        Args:
+            renderer (Renderer): Renderer object.
+            x (int): X position.
+            y (int): Y position.
+        """
+        if not self.smoothed_data:
+            return
+        
+        total_bars = min(self.num_bars, len(self.smoothed_data))
+        available_width = self.width - (total_bars - 1) * self.bar_spacing
+        bar_width = available_width // total_bars
+        
+        for i in range(total_bars):
+            value = self.smoothed_data[i]
+            bar_height = int(value * self.height)
+            
+            bar_x = x + i * (bar_width + self.bar_spacing)
+            bar_y = y + self.height - bar_height
+            
+            # Get color from gradient based on value
+            color = self._get_bar_color(value)
+            
+            # Draw bar
+            renderer.draw_rect(bar_x, bar_y, bar_width, bar_height, color)
+            
+            # Draw highlight on top
+            if bar_height > 2:
+                highlight_color = tuple(min(255, c + 30) for c in color)
+                renderer.draw_rect(bar_x, bar_y, bar_width, 2, highlight_color)
+    
+    def _render_waveform(self, renderer: Renderer, x: int, y: int):
+        """
+        Render waveform visualization.
+        
+        Args:
+            renderer (Renderer): Renderer object.
+            x (int): X position.
+            y (int): Y position.
+        """
+        if not self.smoothed_data:
+            return
+        
+        center_y = y + self.height // 2
+        points = []
+        
+        for i, value in enumerate(self.smoothed_data):
+            # Convert value to vertical position
+            point_x = x + (i / len(self.smoothed_data)) * self.width
+            point_y = center_y - (value - 0.5) * self.height
+            
+            points.append((point_x, point_y))
+        
+        # Draw waveform line
+        if len(points) > 1:
+            for i in range(len(points) - 1):
+                color = self._get_waveform_color(i / len(points))
+                renderer.draw_line(points[i][0], points[i][1], 
+                                 points[i + 1][0], points[i + 1][1], 
+                                 color, 2)
+        
+        # Draw center line
+        center_color = tuple(c // 2 for c in self.color_gradient[1])
+        renderer.draw_line(x, center_y, x + self.width, center_y, center_color, 1)
+    
+    def _render_circle(self, renderer: Renderer, x: int, y: int):
+        """
+        Render circular visualization.
+        
+        Args:
+            renderer (Renderer): Renderer object.
+            x (int): X position.
+            y (int): Y position.
+        """
+        if not self.smoothed_data:
+            return
+        
+        center_x = x + self.width // 2
+        center_y = y + self.height // 2
+        radius = min(self.circle_radius, min(self.width, self.height) // 2 - 10)
+        
+        # Draw base circle
+        renderer.draw_circle(center_x, center_y, radius, 
+                           tuple(c // 4 for c in self.color_gradient[1]), 
+                           fill=False, border_width=1)
+        
+        # Draw audio response
+        points = []
+        num_points = len(self.smoothed_data)
+        
+        for i, value in enumerate(self.smoothed_data):
+            angle = (i / num_points) * 2 * math.pi
+            response_radius = radius + value * radius * 0.5
+            
+            point_x = center_x + response_radius * math.cos(angle)
+            point_y = center_y + response_radius * math.sin(angle)
+            
+            points.append((point_x, point_y))
+        
+        # Connect points to form circle
+        if len(points) > 2:
+            for i in range(len(points)):
+                color = self._get_circle_color(i / len(points))
+                start_point = points[i]
+                end_point = points[(i + 1) % len(points)]
+                
+                renderer.draw_line(start_point[0], start_point[1],
+                                 end_point[0], end_point[1],
+                                 color, self.circle_thickness)
+        
+        # Draw center dot
+        dot_radius = 3
+        center_value = sum(self.smoothed_data) / len(self.smoothed_data)
+        dot_color = self._get_circle_color(center_value)
+        renderer.draw_circle(center_x, center_y, dot_radius, dot_color)
+    
+    def _render_particles(self, renderer: Renderer, x: int, y: int):
+        """
+        Render particle visualization.
+        
+        Args:
+            renderer (Renderer): Renderer object.
+            x (int): X position.
+            y (int): Y position.
+        """
+        if not self.smoothed_data:
+            return
+        
+        center_x = x + self.width // 2
+        center_y = y + self.height // 2
+        max_radius = min(self.width, self.height) // 2 - 10
+        
+        for i in range(self.num_particles):
+            # Map particle to audio data
+            data_index = int((i / self.num_particles) * len(self.smoothed_data))
+            value = self.smoothed_data[data_index]
+            
+            # Calculate particle position in circle
+            angle = (i / self.num_particles) * 2 * math.pi
+            radius = value * max_radius
+            
+            particle_x = center_x + radius * math.cos(angle)
+            particle_y = center_y + radius * math.sin(angle)
+            
+            # Particle size based on value
+            particle_size = max(1, int(value * 5))
+            
+            # Particle color
+            particle_color = self._get_particle_color(value, i)
+            
+            # Draw particle
+            renderer.draw_circle(particle_x, particle_y, particle_size, particle_color)
+            
+            # Draw trail (connect to previous particle)
+            if i > 0:
+                prev_index = int(((i - 1) / self.num_particles) * len(self.smoothed_data))
+                prev_value = self.smoothed_data[prev_index]
+                prev_radius = prev_value * max_radius
+                
+                prev_x = center_x + prev_radius * math.cos((i - 1) / self.num_particles * 2 * math.pi)
+                prev_y = center_y + prev_radius * math.sin((i - 1) / self.num_particles * 2 * math.pi)
+                
+                trail_color = tuple(min(255, c + 50) for c in particle_color)
+                renderer.draw_line(prev_x, prev_y, particle_x, particle_y, trail_color, 1)
+    
+    def _render_spectrum(self, renderer: Renderer, x: int, y: int):
+        """
+        Render frequency spectrum visualization.
+        
+        Args:
+            renderer (Renderer): Renderer object.
+            x (int): X position.
+            y (int): Y position.
+        """
+        if not self.smoothed_data:
+            return
+        
+        # Sort data for spectrum display (low to high frequency)
+        spectrum_data = sorted(self.smoothed_data)
+        
+        # Calculate filled area
+        points = [(x, y + self.height)]  # Start at bottom-left
+        
+        for i, value in enumerate(spectrum_data):
+            point_x = x + (i / len(spectrum_data)) * self.width
+            point_y = y + self.height - (value * self.height)
+            points.append((point_x, point_y))
+        
+        points.append((x + self.width, y + self.height))  # Bottom-right
+        
+        # Draw filled spectrum area
+        if len(points) > 2:
+            fill_color = tuple(min(255, c + 30) for c in self.color_gradient[1])
+            renderer.draw_polygon(points, fill_color)
+        
+        # Draw spectrum line
+        line_points = points[1:-1]  # Exclude bottom corners
+        if len(line_points) > 1:
+            for i in range(len(line_points) - 1):
+                color = self._get_spectrum_color(i / len(line_points))
+                renderer.draw_line(line_points[i][0], line_points[i][1],
+                                 line_points[i + 1][0], line_points[i + 1][1],
+                                 color, 2)
+    
+    def _get_bar_color(self, value: float) -> Tuple[int, int, int]:
+        """
+        Get color for bar based on value.
+        
+        Args:
+            value (float): Bar value (0-1).
+            
+        Returns:
+            Tuple[int, int, int]: RGB color.
+        """
+        # Use gradient surface for fast color lookup
+        if self._gradient_surface:
+            y_pos = int((1.0 - value) * (self._gradient_surface.get_height() - 1))
+            color = self._gradient_surface.get_at((0, y_pos))
+            return color[:3]
+        else:
+            # Fallback to interpolation
+            return self._interpolate_gradient(1.0 - value)
+    
+    def _get_waveform_color(self, position: float) -> Tuple[int, int, int]:
+        """
+        Get color for waveform segment.
+        
+        Args:
+            position (float): Position along waveform (0-1).
+            
+        Returns:
+            Tuple[int, int, int]: RGB color.
+        """
+        # Vary color based on position
+        base_color = self.color_gradient[1]
+        variation = math.sin(position * math.pi * 2) * 30
+        return tuple(max(0, min(255, c + int(variation))) for c in base_color)
+    
+    def _get_circle_color(self, position: float) -> Tuple[int, int, int]:
+        """
+        Get color for circle segment.
+        
+        Args:
+            position (float): Position around circle (0-1).
+            
+        Returns:
+            Tuple[int, int, int]: RGB color.
+        """
+        # Rotate through gradient
+        gradient_pos = (position + time.time() * 0.1) % 1.0
+        return self._interpolate_gradient(gradient_pos)
+    
+    def _get_particle_color(self, value: float, index: int) -> Tuple[int, int, int]:
+        """
+        Get color for particle.
+        
+        Args:
+            value (float): Particle value.
+            index (int): Particle index.
+            
+        Returns:
+            Tuple[int, int, int]: RGB color.
+        """
+        # Vary color based on value and index
+        base_color = self.color_gradient[index % len(self.color_gradient)]
+        
+        # Add pulsing effect
+        pulse = (math.sin(time.time() * 2 + index * 0.1) * 0.3 + 0.7)
+        
+        return tuple(int(c * pulse * value) for c in base_color)
+    
+    def _get_spectrum_color(self, frequency: float) -> Tuple[int, int, int]:
+        """
+        Get color for spectrum segment.
+        
+        Args:
+            frequency (float): Frequency position (0-1).
+            
+        Returns:
+            Tuple[int, int, int]: RGB color.
+        """
+        # Map frequency to color (low=blue, high=red)
+        if frequency < 0.33:
+            # Blue to green
+            r = 0
+            g = int(frequency * 3 * 255)
+            b = 255 - int(frequency * 3 * 255)
+        elif frequency < 0.66:
+            # Green to yellow
+            r = int((frequency - 0.33) * 3 * 255)
+            g = 255
+            b = 0
+        else:
+            # Yellow to red
+            r = 255
+            g = 255 - int((frequency - 0.66) * 3 * 255)
+            b = 0
+        
+        return (r, g, b)

@@ -50,21 +50,26 @@ Updated to use the new OpenAL audio system with:
 - Smooth volume and pitch transitions
 - Stereo panning support
 - Optimized resource management
+- Tab-based interface
+- Audio visualizer integration
 &quot;&quot;&quot;
 
 import sys
 import os
+import time
+import math
 sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
 
 from lunaengine.core import Scene, LunaEngine
-from lunaengine.core.audio import AudioSystem, AudioChannel, AudioEvent  # Nova importação
+from lunaengine.core.audio import AudioSystem, AudioChannel, AudioEvent
 from lunaengine.ui.elements import *
+from lunaengine.ui.tween import Tween, EasingType, AnimationHandler
 import pygame
 import numpy as np
 
 class AudioDemoScene(Scene):
     &quot;&quot;&quot;
-    Enhanced audio system demonstration with OpenAL support.
+    Enhanced audio system demonstration with OpenAL support and tab interface.
     &quot;&quot;&quot;
     
     def on_enter(self, previous_scene=None):
@@ -106,10 +111,20 @@ class AudioDemoScene(Scene):
             &#x27;current_position&#x27;: 0.0
         }
         
+        # Animation handler
+        self.animation_handler = AnimationHandler(engine)
+        self.animations = {}
+        
+        # Visualizer state
+        self.visualizer_style = &#x27;bars&#x27;
+        self.visualizer_sensitivity = 1.5
+        self.visualizer_smoothing = 0.7
+        self.visualizer_source = &#x27;music&#x27;  # &#x27;music&#x27; or &#x27;sfx&#x27;
+        
         # Setup audio system
         self.setup_audio_system()
         
-        # Setup UI
+        # Setup UI with tabs
         self.setup_ui()
         
         # Load audio files
@@ -123,14 +138,14 @@ class AudioDemoScene(Scene):
     def setup_audio_system(self):
         &quot;&quot;&quot;Setup audio system with OpenAL support.&quot;&quot;&quot;
         try:
-            # Inicializar o sistema de áudio
+            # Initialize audio system
             self.audio_system = AudioSystem(num_channels=16)
             print(f&quot;Audio system initialized: OpenAL={self.audio_system.use_openal}&quot;)
         except Exception as e:
             print(f&quot;Failed to initialize audio system: {e}&quot;)
-            # Fallback: criar um sistema básico
+            # Fallback: create basic system
             self.audio_system = None
-            
+    
     def load_audio_files(self):
         &quot;&quot;&quot;Load audio files for testing.&quot;&quot;&quot;
         if not self.audio_system:
@@ -188,78 +203,6 @@ class AudioDemoScene(Scene):
         except Exception as e:
             print(f&quot;Error creating placeholder music: {e}&quot;)
 
-    def play_channel_sound(self, channel_num: int, volume: float, speed: float, pan: float, loop: bool = False):
-        &quot;&quot;&quot;Play sound on specific channel with custom settings.&quot;&quot;&quot;
-        if not self.audio_system:
-            self.add_audio_event(&quot;Audio system not available&quot;)
-            return
-        
-        channel_key = f&quot;explosion_{channel_num}&quot;
-        
-        # Stop existing sound on this channel if any
-        if channel_key in self.active_channels:
-            self.active_channels[channel_key].stop()
-            del self.active_channels[channel_key]
-        
-        # Play new sound - note: we subtract 1 because channels are 0-indexed
-        channel = self.audio_system.play(
-            sound_name=self.explosion_sound_name,
-            channel=channel_num - 1,  # Convert to 0-indexed
-            volume=volume,
-            pitch=speed,
-            pan=pan,
-            loop=loop
-        )
-        
-        if channel:
-            self.active_channels[channel_key] = channel
-            self.add_audio_event(f&quot;Channel {channel_num}: vol={volume}, speed={speed}x, pan={pan}&quot;)
-            
-            # Create visual effect
-            self.create_channel_effect(channel_num, volume, speed, pan)
-        else:
-            self.add_audio_event(f&quot;Failed to play on channel {channel_num}&quot;)
-
-    def play_music(self):
-        &quot;&quot;&quot;Play background music.&quot;&quot;&quot;
-        if not self.audio_system:
-            self.add_audio_event(&quot;Audio system not available&quot;)
-            return
-        
-        volume = self.music_volume_slider.value
-        speed = self.music_speed_slider.value
-        
-        # Play music - uses channel 0 automatically
-        channel = self.audio_system.play_music(
-            sound_name=self.music_sound_name,
-            volume=volume,
-            pitch=speed,
-            loop=True
-        )
-        
-        if channel:
-            self.add_audio_event(f&quot;Music started (vol: {volume:.1f}, speed: {speed:.1f}x)&quot;)
-        else:
-            self.add_audio_event(&quot;Failed to play music&quot;)
-    
-    def get_sound_duration(self, filepath):
-        &quot;&quot;&quot;Get approximate duration of a sound file.&quot;&quot;&quot;
-        try:
-            # Tentar carregar o som para obter duração
-            if hasattr(pygame.mixer.Sound, &#x27;get_length&#x27;):
-                sound = pygame.mixer.Sound(filepath)
-                return sound.get_length()
-        except:
-            pass
-        
-        # Fallback: estimativa baseada em tamanho de arquivo
-        try:
-            size = os.path.getsize(filepath)
-            # Estimativa grosseira: 1MB ≈ 6 segundos de áudio stereo 44.1kHz
-            return size / (1024 * 1024) * 6
-        except:
-            return 1.0  # Default
-    
     def create_sine_wave_tone(self, name: str, duration: float = 1.0, frequency: float = 440.0):
         &quot;&quot;&quot;Create a simple sine wave tone as placeholder audio.&quot;&quot;&quot;
         try:
@@ -301,12 +244,12 @@ class AudioDemoScene(Scene):
     def create_placeholder_sounds(self):
         &quot;&quot;&quot;Create placeholder sounds if files are not available.&quot;&quot;&quot;
         try:
-            # Criar um som simples programaticamente
+            # Create a simple sound programmatically
             sample_rate = 44100
             duration = 1.0  # seconds
             frames = int(duration * sample_rate)
             
-            # Gerar uma onda quadrada simples
+            # Generate a simple square wave
             arr = np.zeros((frames, 2), dtype=np.int16)
             for i in range(frames):
                 # 440 Hz square wave
@@ -323,222 +266,602 @@ class AudioDemoScene(Scene):
             print(f&quot;Error creating placeholder sounds: {e}&quot;)
     
     def setup_ui(self):
-        &quot;&quot;&quot;Setup comprehensive audio controls UI.&quot;&quot;&quot;
-        # Title and basic controls
-        title = TextLabel(512, 30, &quot;OpenAL Audio Demo&quot;, 48, root_point=(0.5, 0))
+        &quot;&quot;&quot;Setup comprehensive audio controls UI with tabs.&quot;&quot;&quot;
+        # Title and basic info
+        title = TextLabel(512, 20, &quot;OpenAL Audio Demo&quot;, 48, root_point=(0.5, 0))
         self.ui_elements.append(title)
         
         subtitle_text = &quot;OpenAL Backend&quot; if self.audio_system and self.audio_system.use_openal else &quot;Pygame Fallback&quot;
-        subtitle = TextLabel(512, 80, f&quot;{subtitle_text} - Smooth Transitions&quot;, 24, root_point=(0.5, 0))
+        subtitle = TextLabel(512, 65, f&quot;{subtitle_text} - Smooth Transitions&quot;, 20, root_point=(0.5, 0))
         self.ui_elements.append(subtitle)
         
-        # Multi-channel explosion controls
-        self.setup_multi_channel_ui()
+        # Create main tabs container
+        self.main_tabs = Tabination(25, 100, 980, 600, 20)
         
-        # Music controls with enhanced features
-        self.setup_music_ui()
+        # Add tabs
+        self.main_tabs.add_tab(&#x27;Sound Effects&#x27;)
+        self.setup_sound_effects_tab()
         
-        # Transition controls section
-        self.setup_transition_controls()
+        self.main_tabs.add_tab(&#x27;Music&#x27;)
+        self.setup_music_tab()
         
-        # Audio information display
-        self.setup_audio_info_display()
+        self.main_tabs.add_tab(&#x27;Transitions&#x27;)
+        self.setup_transitions_tab()
         
-        # Channel monitor
-        self.setup_channel_monitor()
+        self.main_tabs.add_tab(&#x27;Visualizer&#x27;)
+        self.setup_visualizer_tab()
+        
+        self.main_tabs.add_tab(&#x27;Monitor&#x27;)
+        self.setup_monitor_tab()
+        
+        # Add tabs to UI
+        self.ui_elements.append(self.main_tabs)
+        
+        # Add corner radius to tabs
+        self.main_tabs.set_corner_radius((10, 10, 10, 10))
+        
+        # FPS display
+        self.fps_display = TextLabel(self.engine.width - 10, 20, &quot;FPS: --&quot;, 16, (100, 255, 100), root_point=(1, 0))
+        self.ui_elements.append(self.fps_display)
     
-    def setup_multi_channel_ui(self):
-        &quot;&quot;&quot;Setup multi-channel sound effect controls.&quot;&quot;&quot;
-        self.ui_elements.append(TextLabel(100, 130, &quot;Multi-Channel Sound Effects&quot;, 28, root_point=(0, 0)))
+    def setup_sound_effects_tab(self):
+        &quot;&quot;&quot;Setup sound effects controls tab.&quot;&quot;&quot;
+        # Tab title
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, TextLabel(10, 10, &quot;Multi-Channel Sound Effects&quot;, 28, (255, 255, 0)))
         
         # Sound duration info
-        duration_label = TextLabel(100, 160, f&quot;Sound Duration: {self.audio_info[&#x27;sound_duration&#x27;]:.2f}s&quot;, 16, 
-                                 (150, 170, 190), root_point=(0, 0))
-        self.ui_elements.append(duration_label)
+        duration_label = TextLabel(10, 45, f&quot;Sound Duration: {self.audio_info[&#x27;sound_duration&#x27;]:.2f}s&quot;, 16, 
+                                 (150, 170, 190))
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, duration_label)
         
         # Channel 1 controls
-        self.ui_elements.append(TextLabel(100, 190, &quot;Channel 1:&quot;, 20, root_point=(0, 0)))
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, TextLabel(10, 75, &quot;Channel 1:&quot;, 20))
         
-        ch1_play = Button(200, 190, 120, 30, &quot;Play&quot;, 18, root_point=(0, 0))
+        ch1_play = Button(110, 70, 120, 30, &quot;Play&quot;, 18)
         ch1_play.set_on_click(lambda: self.play_channel_sound(1, 1.0, 1.0, 0.0))
-        self.ui_elements.append(ch1_play)
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, ch1_play)
         
-        ch1_slow = Button(330, 190, 120, 30, &quot;Slow (0.5x)&quot;, 18, root_point=(0, 0))
+        ch1_slow = Button(240, 70, 120, 30, &quot;Slow (0.5x)&quot;, 18)
         ch1_slow.set_on_click(lambda: self.play_channel_sound(1, 1.0, 0.5, 0.0))
-        self.ui_elements.append(ch1_slow)
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, ch1_slow)
         
-        ch1_fast = Button(460, 190, 120, 30, &quot;Fast (2.0x)&quot;, 18, root_point=(0, 0))
+        ch1_fast = Button(370, 70, 120, 30, &quot;Fast (2.0x)&quot;, 18)
         ch1_fast.set_on_click(lambda: self.play_channel_sound(1, 1.0, 2.0, 0.0))
-        self.ui_elements.append(ch1_fast)
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, ch1_fast)
         
         # Channel 2 controls
-        self.ui_elements.append(TextLabel(100, 230, &quot;Channel 2:&quot;, 20, root_point=(0, 0)))
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, TextLabel(10, 115, &quot;Channel 2:&quot;, 20))
         
-        ch2_play = Button(200, 230, 120, 30, &quot;Play&quot;, 18, root_point=(0, 0))
+        ch2_play = Button(110, 110, 120, 30, &quot;Play&quot;, 18)
         ch2_play.set_on_click(lambda: self.play_channel_sound(2, 0.7, 1.0, 0.0))
-        self.ui_elements.append(ch2_play)
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, ch2_play)
         
-        ch2_quiet = Button(330, 230, 120, 30, &quot;Quiet (0.3x)&quot;, 18, root_point=(0, 0))
+        ch2_quiet = Button(240, 110, 120, 30, &quot;Quiet (0.3x)&quot;, 18)
         ch2_quiet.set_on_click(lambda: self.play_channel_sound(2, 0.3, 1.0, 0.0))
-        self.ui_elements.append(ch2_quiet)
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, ch2_quiet)
         
-        ch2_loop = Button(460, 230, 120, 30, &quot;Loop&quot;, 18, root_point=(0, 0))
+        ch2_loop = Button(370, 110, 120, 30, &quot;Loop&quot;, 18)
         ch2_loop.set_on_click(lambda: self.play_channel_sound(2, 0.7, 1.0, 0.0, True))
-        self.ui_elements.append(ch2_loop)
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, ch2_loop)
         
         # Pan controls
-        pan_label = TextLabel(100, 270, &quot;Pan Controls:&quot;, 20, root_point=(0, 0))
-        self.ui_elements.append(pan_label)
+        pan_label = TextLabel(10, 155, &quot;Pan Controls:&quot;, 20)
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, pan_label)
         
-        pan_left = Button(220, 270, 80, 30, &quot;Left&quot;, 16, root_point=(0, 0))
+        pan_left = Button(130, 150, 80, 30, &quot;Left&quot;, 16)
         pan_left.set_on_click(lambda: self.play_channel_sound(3, 0.8, 1.0, -1.0))
-        self.ui_elements.append(pan_left)
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, pan_left)
         
-        pan_center = Button(330, 270, 80, 30, &quot;Center&quot;, 16, root_point=(0, 0))
+        pan_center = Button(230, 150, 80, 30, &quot;Center&quot;, 16)
         pan_center.set_on_click(lambda: self.play_channel_sound(3, 0.8, 1.0, 0.0))
-        self.ui_elements.append(pan_center)
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, pan_center)
         
-        pan_right = Button(440, 270, 80, 30, &quot;Right&quot;, 16, root_point=(0, 0))
+        pan_right = Button(330, 150, 80, 30, &quot;Right&quot;, 16)
         pan_right.set_on_click(lambda: self.play_channel_sound(3, 0.8, 1.0, 1.0))
-        self.ui_elements.append(pan_right)
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, pan_right)
         
-        self.add_ui_element(TextLabel(100,  310, &quot;Dynamic Control &amp; Transitions&quot;, 20, root_point=(0, 0)))
+        # Dynamic controls
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, TextLabel(10, 195, &quot;Dynamic Control &amp; Transitions&quot;, 20))
         
         # Dynamic control for channel 1
-        ch1_dynamic = Button(200, 335, 140, 30, &quot;Speed Change&quot;, 16, root_point=(0, 0))
+        ch1_dynamic = Button(10, 220, 140, 30, &quot;Speed Change&quot;, 16)
         ch1_dynamic.set_on_click(lambda: self.dynamic_speed_change(1))
-        self.ui_elements.append(ch1_dynamic)
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, ch1_dynamic)
         
         # Smooth volume change for channel 2
-        ch2_smooth_vol = Button(360, 335, 140, 30, &quot;Volume Fade&quot;, 16, root_point=(0, 0))
+        ch2_smooth_vol = Button(160, 220, 140, 30, &quot;Volume Fade&quot;, 16)
         ch2_smooth_vol.set_on_click(lambda: self.smooth_volume_change(2))
-        self.ui_elements.append(ch2_smooth_vol)
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, ch2_smooth_vol)
         
         # Stop all channels
-        stop_all = Button(520, 335, 140, 30, &quot;Stop All SFX&quot;, 16, root_point=(0, 0))
+        stop_all = Button(310, 220, 140, 30, &quot;Stop All SFX&quot;, 16)
         stop_all.set_on_click(self.stop_all_channels)
-        self.ui_elements.append(stop_all)
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, stop_all)
+        
+        # Channel status display
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, TextLabel(10, 270, &quot;Channel Status:&quot;, 20, (255, 200, 100)))
+        
+        self.channel_status = TextLabel(10, 300, &quot;No active channels&quot;, 16, (150, 170, 190))
+        self.main_tabs.add_to_tab(&#x27;Sound Effects&#x27;, self.channel_status)
     
-    def setup_music_ui(self):
-        &quot;&quot;&quot;Setup music controls with enhanced features.&quot;&quot;&quot;
-        self.ui_elements.append(TextLabel(100, 375, &quot;Music Controls&quot;, 28, root_point=(0, 0)))
+    def setup_music_tab(self):
+        &quot;&quot;&quot;Setup music controls tab.&quot;&quot;&quot;
+        # Tab title
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, TextLabel(10, 10, &quot;Music Controls&quot;, 28, (255, 255, 0)))
         
         # Music duration info
-        music_duration_label = TextLabel(100, 410, f&quot;Music Duration: {self.audio_info[&#x27;music_duration&#x27;]:.2f}s&quot;, 16, 
-                                       (150, 170, 190), root_point=(0, 0))
-        self.ui_elements.append(music_duration_label)
+        music_duration_label = TextLabel(10, 45, f&quot;Music Duration: {self.audio_info[&#x27;music_duration&#x27;]:.2f}s&quot;, 16, 
+                                       (150, 170, 190))
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, music_duration_label)
         
         # Current position display
-        self.music_position_label = TextLabel(300, 410, &quot;Position: 0.00s&quot;, 16, (150, 170, 190), root_point=(0, 0))
-        self.ui_elements.append(self.music_position_label)
+        self.music_position_label = TextLabel(250, 45, &quot;Position: 0.00s&quot;, 16, (150, 170, 190))
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, self.music_position_label)
         
         # Music speed controls
-        self.ui_elements.append(TextLabel(100, 430, &quot;Music Speed:&quot;, 20, root_point=(0, 0)))
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, TextLabel(10, 75, &quot;Music Speed:&quot;, 20))
         
-        self.music_speed_slider = Slider(220, 430, 200, 20, 0.5, 2.0, 1.0, root_point=(0, 0))
+        self.music_speed_slider = Slider(130, 70, 200, 20, 0.5, 2.0, 1.0)
         self.music_speed_slider.on_value_changed = self.on_music_speed_changed
-        self.ui_elements.append(self.music_speed_slider)
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, self.music_speed_slider)
         
-        self.music_speed_value = TextLabel(430, 430, &quot;1.0x&quot;, 20, root_point=(0, 0.5))
-        self.ui_elements.append(self.music_speed_value)
+        self.music_speed_value = TextLabel(340, 75, &quot;1.0x&quot;, 20)
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, self.music_speed_value)
         
         # Music volume controls
-        self.ui_elements.append(TextLabel(100, 460, &quot;Music Volume:&quot;, 20, root_point=(0, 0)))
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, TextLabel(10, 105, &quot;Music Volume:&quot;, 20))
         
-        self.music_volume_slider = Slider(220, 460, 200, 20, 0.0, 1.0, 0.8, root_point=(0, 0))
+        self.music_volume_slider = Slider(130, 100, 200, 20, 0.0, 1.0, 0.8)
         self.music_volume_slider.on_value_changed = self.on_music_volume_changed
-        self.ui_elements.append(self.music_volume_slider)
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, self.music_volume_slider)
         
-        self.music_volume_value = TextLabel(430, 460, &quot;0.8&quot;, 20, root_point=(0, 0.5))
-        self.ui_elements.append(self.music_volume_value)
+        self.music_volume_value = TextLabel(340, 105, &quot;0.8&quot;, 20)
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, self.music_volume_value)
         
-        # Music controls
-        play_music = Button(100, 495, 100, 30, &quot;Play&quot;, 18, root_point=(0, 0))
+        # Music control buttons
+        play_music = Button(10, 140, 100, 30, &quot;Play&quot;, 18)
         play_music.set_on_click(self.play_music)
-        self.ui_elements.append(play_music)
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, play_music)
         
-        pause_music = Button(210, 495, 100, 30, &quot;Pause&quot;, 18, root_point=(0, 0))
+        pause_music = Button(120, 140, 100, 30, &quot;Pause&quot;, 18)
         pause_music.set_on_click(self.pause_music)
-        self.ui_elements.append(pause_music)
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, pause_music)
         
-        resume_music = Button(320, 495, 100, 30, &quot;Resume&quot;, 18, root_point=(0, 0))
+        resume_music = Button(230, 140, 100, 30, &quot;Resume&quot;, 18)
         resume_music.set_on_click(self.resume_music)
-        self.ui_elements.append(resume_music)
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, resume_music)
         
-        stop_music = Button(430, 495, 100, 30, &quot;Stop&quot;, 18, root_point=(0, 0))
+        stop_music = Button(340, 140, 100, 30, &quot;Stop&quot;, 18)
         stop_music.set_on_click(self.stop_music)
-        self.ui_elements.append(stop_music)
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, stop_music)
         
         # Apply speed with transition
-        apply_speed_smooth = Button(540, 495, 150, 30, &quot;Smooth Speed&quot;, 16, root_point=(0, 0))
+        apply_speed_smooth = Button(450, 140, 150, 30, &quot;Smooth Speed&quot;, 16)
         apply_speed_smooth.set_on_click(self.apply_music_speed_smooth)
-        self.ui_elements.append(apply_speed_smooth)
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, apply_speed_smooth)
+        
+        # Music status
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, TextLabel(10, 190, &quot;Music Status:&quot;, 20, (255, 200, 100)))
+        
+        self.music_status_label = TextLabel(10, 220, &quot;Stopped&quot;, 18, (255, 100, 100))
+        self.main_tabs.add_to_tab(&#x27;Music&#x27;, self.music_status_label)
     
-    def setup_transition_controls(self):
-        &quot;&quot;&quot;Setup controls for smooth transitions.&quot;&quot;&quot;
-        self.ui_elements.append(TextLabel(100, 530, &quot;Smooth Transition Controls&quot;, 28, root_point=(0, 0)))
+    def setup_transitions_tab(self):
+        &quot;&quot;&quot;Setup transition controls tab.&quot;&quot;&quot;
+        # Tab title
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, TextLabel(10, 10, &quot;Smooth Transition Controls&quot;, 28, (255, 255, 0)))
         
         # Volume transition controls
-        self.ui_elements.append(TextLabel(100, 570, &quot;Volume Transition:&quot;, 18, root_point=(0, 0)))
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, TextLabel(10, 50, &quot;Volume Transition:&quot;, 18))
         
-        self.vol_transition_slider = Slider(260, 570, 150, 20, 0.1, 3.0, self.volume_transition_duration, root_point=(0, 0))
+        self.vol_transition_slider = Slider(170, 45, 150, 20, 0.1, 3.0, self.volume_transition_duration)
         self.vol_transition_slider.on_value_changed = self.on_volume_transition_changed
-        self.ui_elements.append(self.vol_transition_slider)
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, self.vol_transition_slider)
         
-        self.vol_transition_value = TextLabel(420, 575, f&quot;{self.volume_transition_duration:.1f}s&quot;, 18, root_point=(0, 0.5))
-        self.ui_elements.append(self.vol_transition_value)
+        self.vol_transition_value = TextLabel(330, 50, f&quot;{self.volume_transition_duration:.1f}s&quot;, 18)
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, self.vol_transition_value)
         
         # Speed transition controls
-        self.ui_elements.append(TextLabel(100, 605, &quot;Speed Transition:&quot;, 18, root_point=(0, 0)))
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, TextLabel(10, 85, &quot;Speed Transition:&quot;, 18))
         
-        self.speed_transition_slider = Slider(260, 605, 150, 20, 0.1, 3.0, self.speed_transition_duration, root_point=(0, 0))
+        self.speed_transition_slider = Slider(170, 80, 150, 20, 0.1, 3.0, self.speed_transition_duration)
         self.speed_transition_slider.on_value_changed = self.on_speed_transition_changed
-        self.ui_elements.append(self.speed_transition_slider)
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, self.speed_transition_slider)
         
-        self.speed_transition_value = TextLabel(420, 610, f&quot;{self.speed_transition_duration:.1f}s&quot;, 18, root_point=(0, 0.5))
-        self.ui_elements.append(self.speed_transition_value)
+        self.speed_transition_value = TextLabel(330, 85, f&quot;{self.speed_transition_duration:.1f}s&quot;, 18)
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, self.speed_transition_value)
         
         # Transition demo buttons
-        fade_in_music = Button(100, 645, 140, 30, &quot;Fade In Music&quot;, 16, root_point=(0, 0))
+        fade_in_music = Button(10, 120, 140, 30, &quot;Fade In Music&quot;, 16)
         fade_in_music.set_on_click(self.fade_in_music_demo)
-        self.ui_elements.append(fade_in_music)
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, fade_in_music)
         
-        fade_out_music = Button(250, 645, 140, 30, &quot;Fade Out Music&quot;, 16, root_point=(0, 0))
+        fade_out_music = Button(160, 120, 140, 30, &quot;Fade Out Music&quot;, 16)
         fade_out_music.set_on_click(self.fade_out_music_demo)
-        self.ui_elements.append(fade_out_music)
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, fade_out_music)
         
-        smooth_volume_test = Button(400, 645, 160, 30, &quot;Volume Test&quot;, 16, root_point=(0, 0))
+        smooth_volume_test = Button(310, 120, 160, 30, &quot;Volume Test&quot;, 16)
         smooth_volume_test.set_on_click(self.smooth_volume_test)
-        self.ui_elements.append(smooth_volume_test)
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, smooth_volume_test)
+        
+        # Advanced transitions
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, TextLabel(10, 170, &quot;Advanced Transitions:&quot;, 20, (255, 200, 100)))
+        
+        # Crossfade example
+        crossfade_btn = Button(10, 200, 150, 30, &quot;Crossfade Demo&quot;, 16)
+        crossfade_btn.set_on_click(self.crossfade_demo)
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, crossfade_btn)
+        
+        # Speed ramp example
+        speed_ramp_btn = Button(170, 200, 150, 30, &quot;Speed Ramp Demo&quot;, 16)
+        speed_ramp_btn.set_on_click(self.speed_ramp_demo)
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, speed_ramp_btn)
+        
+        # Transition log
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, TextLabel(10, 250, &quot;Transition Log:&quot;, 20, (200, 200, 255)))
+        
+        self.transition_log = TextLabel(10, 280, &quot;No transitions yet&quot;, 14, (150, 170, 190))
+        self.main_tabs.add_to_tab(&#x27;Transitions&#x27;, self.transition_log)
     
-    def setup_audio_info_display(self):
-        &quot;&quot;&quot;Setup real-time audio information display.&quot;&quot;&quot;
-        self.ui_elements.append(TextLabel(700, 130, &quot;Real-time Audio Info&quot;, 24, root_point=(0, 0)))
+    def setup_visualizer_tab(self):
+        &quot;&quot;&quot;Setup audio visualizer tab.&quot;&quot;&quot;
+        # Tab title
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, TextLabel(10, 10, &quot;Audio Visualizer&quot;, 28, (255, 255, 0)))
         
-        self.ui_elements.append(TextLabel(700, 160, f&quot;Backend: {&#x27;OpenAL&#x27; if self.audio_system and self.audio_system.use_openal else &#x27;Pygame&#x27;}&quot;, 
-                                           16, (150, 170, 190), root_point=(0, 0)))
+        # Create visualizer container frame
+        visualizer_frame = UiFrame(10, 50, 450, 200)
+        visualizer_frame.set_background_color((30, 30, 40))
+        visualizer_frame.set_border((60, 60, 80), 2)
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, visualizer_frame)
         
-        self.music_state_label = TextLabel(700, 180, &quot;Music: Stopped&quot;, 16, (200, 200, 200), root_point=(0, 0))
-        self.ui_elements.append(self.music_state_label)
+        # Create the audio visualizer
+        self.audio_visualizer = AudioVisualizer(
+            x=15, 
+            y=55, 
+            width=440, 
+            height=190,
+            style=self.visualizer_style,
+            source=None,  # Will be set dynamically
+            color_gradient=[
+                (100, 0, 200),    # Purple
+                (0, 150, 255),    # Blue
+                (0, 255, 200),    # Cyan
+                (100, 255, 100)   # Green
+            ]
+        )
         
-        self.music_speed_label = TextLabel(700, 200, &quot;Speed: 1.0x&quot;, 16, (200, 200, 200), root_point=(0, 0))
-        self.ui_elements.append(self.music_speed_label)
+        # Set initial source based on what&#x27;s playing
+        self.update_visualizer_source()
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, self.audio_visualizer)
         
-        self.music_volume_label = TextLabel(700, 220, &quot;Volume: 0.0&quot;, 16, (200, 200, 200), root_point=(0, 0))
-        self.ui_elements.append(self.music_volume_label)
+        # Controls section
+        controls_frame = UiFrame(470, 50, 280, 200)
+        controls_frame.set_background_color((40, 40, 50, 200))
+        controls_frame.set_border((80, 80, 100), 1)
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, controls_frame)
         
-        self.active_channels_label = TextLabel(700, 240, &quot;Active Channels: 0&quot;, 16, (200, 200, 200), root_point=(0, 0))
-        self.ui_elements.append(self.active_channels_label)
+        # Visualizer style selection
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, TextLabel(475, 55, &quot;Visualization Style:&quot;, 16, (200, 200, 255)))
+        
+        self.style_dropdown = Dropdown(475, 80, 150, 30, 
+                                      [&#x27;Bars&#x27;, &#x27;Waveform&#x27;, &#x27;Circle&#x27;, &#x27;Particles&#x27;, &#x27;Spectrum&#x27;])
+        self.style_dropdown.set_on_selection_changed(lambda i, v: self.change_visualizer_style(v.lower()))
+        self.style_dropdown.set_simple_tooltip(&quot;Change visualization style&quot;)
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, self.style_dropdown)
+        
+        # Audio source selection
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, TextLabel(475, 120, &quot;Audio Source:&quot;, 16, (200, 200, 255)))
+        
+        self.source_dropdown = Dropdown(475, 145, 150, 30, 
+                                       [&#x27;Music&#x27;, &#x27;Sound Effects&#x27;, &#x27;Mixed&#x27;])
+        self.source_dropdown.set_on_selection_changed(lambda i, v: self.change_visualizer_source(v))
+        self.source_dropdown.set_simple_tooltip(&quot;Select which audio to visualize&quot;)
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, self.source_dropdown)
+        
+        # Sensitivity control
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, TextLabel(475, 185, &quot;Sensitivity:&quot;, 16, (200, 200, 255)))
+        
+        self.sensitivity_slider = Slider(560, 185, 120, 20, 0.5, 3.0, self.visualizer_sensitivity)
+        self.sensitivity_slider.on_value_changed = lambda v: self.change_visualizer_sensitivity(v)
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, self.sensitivity_slider)
+        
+        self.sensitivity_value = TextLabel(690, 190, f&quot;{self.visualizer_sensitivity:.1f}&quot;, 14)
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, self.sensitivity_value)
+        
+        # Smoothing control
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, TextLabel(475, 215, &quot;Smoothing:&quot;, 16, (200, 200, 255)))
+        
+        self.smoothing_slider = Slider(560, 215, 120, 20, 0.1, 0.9, self.visualizer_smoothing)
+        self.smoothing_slider.on_value_changed = lambda v: self.change_visualizer_smoothing(v)
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, self.smoothing_slider)
+        
+        self.smoothing_value = TextLabel(690, 220, f&quot;{self.visualizer_smoothing:.1f}&quot;, 14)
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, self.smoothing_value)
+        
+        # Preset buttons
+        preset_label = TextLabel(10, 260, &quot;Preset Themes:&quot;, 18, (255, 200, 100))
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, preset_label)
+        
+        # Color gradient presets
+        fire_btn = Button(10, 290, 100, 30, &quot;Fire&quot;, 14)
+        fire_btn.set_on_click(lambda: self.apply_color_preset([
+            (50, 10, 10),    # Dark red
+            (200, 50, 0),    # Orange-red
+            (255, 150, 0),   # Orange
+            (255, 255, 100)  # Yellow
+        ]))
+        fire_btn.set_simple_tooltip(&quot;Fire color theme&quot;)
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, fire_btn)
+        
+        ocean_btn = Button(120, 290, 100, 30, &quot;Ocean&quot;, 14)
+        ocean_btn.set_on_click(lambda: self.apply_color_preset([
+            (0, 20, 40),     # Deep blue
+            (0, 80, 120),    # Medium blue
+            (0, 180, 200),   # Cyan-blue
+            (100, 220, 255)  # Light cyan
+        ]))
+        ocean_btn.set_simple_tooltip(&quot;Ocean color theme&quot;)
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, ocean_btn)
+        
+        neon_btn = Button(230, 290, 100, 30, &quot;Neon&quot;, 14)
+        neon_btn.set_on_click(lambda: self.apply_color_preset([
+            (255, 0, 200),   # Pink
+            (200, 0, 255),   # Purple
+            (0, 200, 255),   # Cyan
+            (0, 255, 150)    # Green
+        ]))
+        neon_btn.set_simple_tooltip(&quot;Neon color theme&quot;)
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, neon_btn)
+        
+        # Visualizer info
+        info_text = &quot;The visualizer responds to audio in real-time.\nTry different styles and sources!&quot;
+        info_label = TextLabel(10, 330, info_text, 14, (150, 200, 255))
+        self.main_tabs.add_to_tab(&#x27;Visualizer&#x27;, info_label)
     
-    def setup_channel_monitor(self):
-        &quot;&quot;&quot;Setup channel monitoring display.&quot;&quot;&quot;
-        self.ui_elements.append(TextLabel(700, 570, &quot;Channel Monitor&quot;, 24, root_point=(0, 0)))
+    def setup_monitor_tab(self):
+        &quot;&quot;&quot;Setup audio monitoring tab.&quot;&quot;&quot;
+        # Tab title
+        self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, TextLabel(10, 10, &quot;Audio System Monitor&quot;, 28, (255, 255, 0)))
         
-        self.channel_monitor = TextLabel(700, 600, &quot;Channels: 0/16 active&quot;, 18, (150, 170, 190), root_point=(0, 0))
-        self.ui_elements.append(self.channel_monitor)
+        # System info
+        backend_text = f&quot;Backend: {&#x27;OpenAL&#x27; if self.audio_system and self.audio_system.use_openal else &#x27;Pygame&#x27;}&quot;
+        self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, TextLabel(10, 50, backend_text, 16, (150, 170, 190)))
         
-        self.channel_details = TextLabel(700, 620, &quot;No active channels&quot;, 14, (150, 170, 190), root_point=(0, 0))
-        self.ui_elements.append(self.channel_details)
+        # Active channels display
+        self.active_channels_label = TextLabel(10, 80, &quot;Active Channels: 0&quot;, 16, (200, 200, 200))
+        self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, self.active_channels_label)
+        
+        # Channel grid visualization
+        self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, TextLabel(10, 110, &quot;Channel Grid (0-15):&quot;, 20, (255, 200, 100)))
+        
+        # Create channel grid
+        self.channel_grid_elements = []
+        for i in range(16):
+            x = 10 + (i % 8) * 60
+            y = 140 + (i // 8) * 60
+            
+            # Channel box background
+            channel_bg = UiFrame(x, y, 50, 50)
+            channel_bg.set_background_color((40, 40, 50))
+            channel_bg.set_border((100, 100, 120), 1)
+            self.channel_grid_elements.append(channel_bg)
+            self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, channel_bg)
+            
+            # Channel number
+            channel_num = TextLabel(x + 20, y + 15, str(i), 20, (200, 200, 200))
+            self.channel_grid_elements.append(channel_num)
+            self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, channel_num)
+            
+            # Status indicator (will be updated)
+            status_indicator = UiFrame(x + 10, y + 35, 30, 10)
+            status_indicator.set_background_color((60, 60, 80))
+            self.channel_grid_elements.append(status_indicator)
+            self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, status_indicator)
+        
+        # Pan visualization
+        self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, TextLabel(10, 320, &quot;Stereo Pan Visualization:&quot;, 20, (255, 200, 100)))
+        
+        # Pan visualization background
+        pan_bg = UiFrame(10, 350, 300, 40)
+        pan_bg.set_background_color((40, 40, 50))
+        self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, pan_bg)
+        
+        # Center line
+        center_line = UiFrame(160, 350, 2, 40)
+        center_line.set_background_color((100, 100, 120))
+        self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, center_line)
+        
+        # Labels
+        left_label = TextLabel(20, 360, &quot;L&quot;, 16, (200, 200, 200))
+        self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, left_label)
+        
+        right_label = TextLabel(290, 360, &quot;R&quot;, 16, (200, 200, 200))
+        self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, right_label)
+        
+        # Audio events log
+        self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, TextLabel(350, 50, &quot;Audio Events Log:&quot;, 20, (255, 200, 100)))
+        
+        self.event_log_labels = []
+        for i in range(6):
+            event_label = TextLabel(350, 80 + i * 25, &quot;&quot;, 14, (200, 200, 200))
+            self.event_log_labels.append(event_label)
+            self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, event_label)
+        
+        # Performance info
+        self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, TextLabel(350, 250, &quot;Performance Info:&quot;, 20, (255, 200, 100)))
+        
+        self.performance_label = TextLabel(350, 280, &quot;CPU Usage: --\nMemory: --&quot;, 14, (200, 200, 200))
+        self.main_tabs.add_to_tab(&#x27;Monitor&#x27;, self.performance_label)
+    
+    def change_visualizer_style(self, style: str):
+        &quot;&quot;&quot;Change visualizer style.&quot;&quot;&quot;
+        self.visualizer_style = style
+        if hasattr(self, &#x27;audio_visualizer&#x27;):
+            self.audio_visualizer.set_style(style)
+        self.add_audio_event(f&quot;Visualizer style: {style}&quot;)
+    
+    def change_visualizer_source(self, source: str):
+        &quot;&quot;&quot;Change visualizer audio source.&quot;&quot;&quot;
+        self.visualizer_source = source.lower()
+        self.update_visualizer_source()
+        self.add_audio_event(f&quot;Visualizer source: {source}&quot;)
+    
+    def change_visualizer_sensitivity(self, sensitivity: float):
+        &quot;&quot;&quot;Change visualizer sensitivity.&quot;&quot;&quot;
+        self.visualizer_sensitivity = sensitivity
+        self.sensitivity_value.set_text(f&quot;{sensitivity:.1f}&quot;)
+        if hasattr(self, &#x27;audio_visualizer&#x27;):
+            self.audio_visualizer.set_sensitivity(sensitivity)
+    
+    def change_visualizer_smoothing(self, smoothing: float):
+        &quot;&quot;&quot;Change visualizer smoothing.&quot;&quot;&quot;
+        self.visualizer_smoothing = smoothing
+        self.smoothing_value.set_text(f&quot;{smoothing:.1f}&quot;)
+        if hasattr(self, &#x27;audio_visualizer&#x27;):
+            self.audio_visualizer.set_smoothing(smoothing)
+    
+    def apply_color_preset(self, gradient):
+        &quot;&quot;&quot;Apply a color gradient preset to the visualizer.&quot;&quot;&quot;
+        if hasattr(self, &#x27;audio_visualizer&#x27;):
+            self.audio_visualizer.set_color_gradient(gradient)
+        self.add_audio_event(f&quot;Applied color preset&quot;)
+    
+    def update_visualizer_source(self):
+        &quot;&quot;&quot;Update the visualizer&#x27;s audio source based on current state.&quot;&quot;&quot;
+        if not hasattr(self, &#x27;audio_visualizer&#x27;):
+            return
+        
+        if self.visualizer_source == &#x27;music&#x27;:
+            # Use music channel (channel 0)
+            if self.audio_system and self.audio_system.channels and len(self.audio_system.channels) &gt; 0:
+                music_channel = self.audio_system.channels[0]
+                if hasattr(music_channel, &#x27;is_playing&#x27;) and music_channel.is_playing():
+                    self.audio_visualizer.set_source(music_channel)
+                else:
+                    self.audio_visualizer.set_source(None)
+        elif self.visualizer_source == &#x27;sound effects&#x27;:
+            # Use the first active sound effect channel
+            if self.active_channels:
+                first_channel = next(iter(self.active_channels.values()))
+                self.audio_visualizer.set_source(first_channel)
+            else:
+                self.audio_visualizer.set_source(None)
+        elif self.visualizer_source == &#x27;mixed&#x27;:
+            # For mixed, we&#x27;d ideally combine audio from multiple sources
+            # For simplicity, use music if available, otherwise SFX
+            if self.audio_system and self.audio_system.channels and len(self.audio_system.channels) &gt; 0:
+                music_channel = self.audio_system.channels[0]
+                if hasattr(music_channel, &#x27;is_playing&#x27;) and music_channel.is_playing():
+                    self.audio_visualizer.set_source(music_channel)
+                elif self.active_channels:
+                    first_channel = next(iter(self.active_channels.values()))
+                    self.audio_visualizer.set_source(first_channel)
+                else:
+                    self.audio_visualizer.set_source(None)
+            else:
+                self.audio_visualizer.set_source(None)
+    
+    def play_channel_sound(self, channel_num: int, volume: float, speed: float, pan: float, loop: bool = False):
+        &quot;&quot;&quot;Play sound on specific channel with custom settings.&quot;&quot;&quot;
+        if not self.audio_system:
+            self.add_audio_event(&quot;Audio system not available&quot;)
+            return
+        
+        channel_key = f&quot;explosion_{channel_num}&quot;
+        
+        # Stop existing sound on this channel if any
+        if channel_key in self.active_channels:
+            self.active_channels[channel_key].stop()
+            del self.active_channels[channel_key]
+        
+        # Play new sound - note: we subtract 1 because channels are 0-indexed
+        channel = self.audio_system.play(
+            sound_name=self.explosion_sound_name,
+            channel=channel_num - 1,  # Convert to 0-indexed
+            volume=volume,
+            pitch=speed,
+            pan=pan,
+            loop=loop
+        )
+        
+        if channel:
+            self.active_channels[channel_key] = channel
+            self.add_audio_event(f&quot;Channel {channel_num}: vol={volume}, speed={speed}x, pan={pan}&quot;)
+            
+            # Update visualizer if using SFX source
+            if self.visualizer_source == &#x27;sound effects&#x27; or self.visualizer_source == &#x27;mixed&#x27;:
+                self.update_visualizer_source()
+            
+            # Update channel status
+            self.update_channel_status()
+        else:
+            self.add_audio_event(f&quot;Failed to play on channel {channel_num}&quot;)
+    
+    def play_music(self):
+        &quot;&quot;&quot;Play background music.&quot;&quot;&quot;
+        if not self.audio_system:
+            self.add_audio_event(&quot;Audio system not available&quot;)
+            return
+        
+        volume = self.music_volume_slider.value
+        speed = self.music_speed_slider.value
+        
+        # Play music - uses channel 0 automatically
+        channel = self.audio_system.play_music(
+            sound_name=self.music_sound_name,
+            volume=volume,
+            pitch=speed,
+            loop=True
+        )
+        
+        if channel:
+            self.add_audio_event(f&quot;Music started (vol: {volume:.1f}, speed: {speed:.1f}x)&quot;)
+            self.music_status_label.set_text(&quot;Playing&quot;)
+            self.music_status_label.color = (100, 255, 100)
+            
+            # Update visualizer if using music source
+            if self.visualizer_source == &#x27;music&#x27; or self.visualizer_source == &#x27;mixed&#x27;:
+                self.update_visualizer_source()
+        else:
+            self.add_audio_event(&quot;Failed to play music&quot;)
+    
+    def pause_music(self):
+        &quot;&quot;&quot;Pause music.&quot;&quot;&quot;
+        if self.audio_system:
+            # Get music channel (channel 0)
+            if self.audio_system.channels and len(self.audio_system.channels) &gt; 0:
+                music_channel = self.audio_system.channels[0]
+                if music_channel.is_playing():
+                    music_channel.pause()
+                    self.add_audio_event(&quot;Music paused&quot;)
+                    self.music_status_label.set_text(&quot;Paused&quot;)
+                    self.music_status_label.color = (255, 255, 100)
+    
+    def resume_music(self):
+        &quot;&quot;&quot;Resume paused music.&quot;&quot;&quot;
+        if self.audio_system:
+            # Get music channel (channel 0)
+            if self.audio_system.channels and len(self.audio_system.channels) &gt; 0:
+                music_channel = self.audio_system.channels[0]
+                if music_channel.is_paused():
+                    music_channel.resume()
+                    self.add_audio_event(&quot;Music resumed&quot;)
+                    self.music_status_label.set_text(&quot;Playing&quot;)
+                    self.music_status_label.color = (100, 255, 100)
+    
+    def stop_music(self):
+        &quot;&quot;&quot;Stop music.&quot;&quot;&quot;
+        if self.audio_system:
+            # Get music channel (channel 0)
+            if self.audio_system.channels and len(self.audio_system.channels) &gt; 0:
+                music_channel = self.audio_system.channels[0]
+                music_channel.stop()
+                self.add_audio_event(&quot;Music stopped&quot;)
+                self.music_status_label.set_text(&quot;Stopped&quot;)
+                self.music_status_label.color = (255, 100, 100)
+                
+                # Update visualizer
+                self.update_visualizer_source()
     
     def dynamic_speed_change(self, channel_num: int):
         &quot;&quot;&quot;Change speed dynamically with smooth transition.&quot;&quot;&quot;
@@ -561,6 +884,7 @@ class AudioDemoScene(Scene):
             # Apply smooth speed transition
             channel.set_pitch(new_speed, self.speed_transition_duration)
             self.add_audio_event(f&quot;Speed transition: {current_pitch:.1f}x → {new_speed:.1f}x&quot;)
+            self.add_transition_log(f&quot;Ch{channel_num}: Speed {current_pitch:.1f}→{new_speed:.1f}x&quot;)
     
     def smooth_volume_change(self, channel_num: int):
         &quot;&quot;&quot;Demonstrate smooth volume transition.&quot;&quot;&quot;
@@ -580,37 +904,9 @@ class AudioDemoScene(Scene):
             # Apply smooth volume transition
             channel.set_volume(new_volume, self.volume_transition_duration)
             self.add_audio_event(f&quot;Ch{channel_num} volume: {current_volume:.1f} → {new_volume:.1f}&quot;)
+            self.add_transition_log(f&quot;Ch{channel_num}: Volume {current_volume:.1f}→{new_volume:.1f}&quot;)
         else:
             self.add_audio_event(f&quot;Channel {channel_num} not active&quot;)
-    
-    def pause_music(self):
-        &quot;&quot;&quot;Pause music.&quot;&quot;&quot;
-        if self.audio_system:
-            # Get music channel (channel 0)
-            if self.audio_system.channels and len(self.audio_system.channels) &gt; 0:
-                music_channel = self.audio_system.channels[0]
-                if music_channel.is_playing():
-                    music_channel.pause()
-                    self.add_audio_event(&quot;Music paused&quot;)
-    
-    def resume_music(self):
-        &quot;&quot;&quot;Resume paused music.&quot;&quot;&quot;
-        if self.audio_system:
-            # Get music channel (channel 0)
-            if self.audio_system.channels and len(self.audio_system.channels) &gt; 0:
-                music_channel = self.audio_system.channels[0]
-                if music_channel.is_paused():
-                    music_channel.resume()
-                    self.add_audio_event(&quot;Music resumed&quot;)
-    
-    def stop_music(self):
-        &quot;&quot;&quot;Stop music.&quot;&quot;&quot;
-        if self.audio_system:
-            # Get music channel (channel 0)
-            if self.audio_system.channels and len(self.audio_system.channels) &gt; 0:
-                music_channel = self.audio_system.channels[0]
-                music_channel.stop()
-                self.add_audio_event(&quot;Music stopped&quot;)
     
     def on_music_speed_changed(self, value):
         &quot;&quot;&quot;Handle music speed slider change.&quot;&quot;&quot;
@@ -636,6 +932,7 @@ class AudioDemoScene(Scene):
                 new_speed = self.music_speed_slider.value
                 music_channel.set_pitch(new_speed, self.speed_transition_duration)
                 self.add_audio_event(f&quot;Music speed: {new_speed:.1f}x ({self.speed_transition_duration:.1f}s)&quot;)
+                self.add_transition_log(f&quot;Music: Speed → {new_speed:.1f}x&quot;)
             else:
                 self.add_audio_event(&quot;No music playing&quot;)
     
@@ -671,6 +968,12 @@ class AudioDemoScene(Scene):
             # Set target volume after starting (with fade)
             channel.set_volume(volume, self.volume_transition_duration)
             self.add_audio_event(f&quot;Music fade in ({self.volume_transition_duration:.1f}s)&quot;)
+            self.add_transition_log(f&quot;Music: Fade in {self.volume_transition_duration:.1f}s&quot;)
+            self.music_status_label.set_text(&quot;Playing (Fade in)&quot;)
+            self.music_status_label.color = (100, 255, 100)
+            
+            # Update visualizer
+            self.update_visualizer_source()
         else:
             self.add_audio_event(&quot;Failed to fade in music&quot;)
     
@@ -685,6 +988,9 @@ class AudioDemoScene(Scene):
                 import threading
                 threading.Timer(self.volume_transition_duration, music_channel.stop).start()
                 self.add_audio_event(f&quot;Music fade out ({self.volume_transition_duration:.1f}s)&quot;)
+                self.add_transition_log(f&quot;Music: Fade out {self.volume_transition_duration:.1f}s&quot;)
+                self.music_status_label.set_text(&quot;Fading out&quot;)
+                self.music_status_label.color = (255, 200, 100)
             else:
                 self.add_audio_event(&quot;No music playing&quot;)
     
@@ -702,8 +1008,29 @@ class AudioDemoScene(Scene):
                 self.music_volume_value.set_text(f&quot;{new_volume:.1f}&quot;)
                 
                 self.add_audio_event(f&quot;Music volume: {current_volume:.1f} → {new_volume:.1f}&quot;)
+                self.add_transition_log(f&quot;Music: Volume {current_volume:.1f}→{new_volume:.1f}&quot;)
             else:
                 self.add_audio_event(&quot;No music playing&quot;)
+    
+    def crossfade_demo(self):
+        &quot;&quot;&quot;Demonstrate crossfade between two sounds.&quot;&quot;&quot;
+        self.add_transition_log(&quot;Crossfade demo: Not implemented yet&quot;)
+        self.add_audio_event(&quot;Crossfade demo requires additional audio files&quot;)
+    
+    def speed_ramp_demo(self):
+        &quot;&quot;&quot;Demonstrate speed ramping.&quot;&quot;&quot;
+        if self.audio_system and self.audio_system.channels and len(self.audio_system.channels) &gt; 0:
+            music_channel = self.audio_system.channels[0]
+            if music_channel.is_playing():
+                # Ramp speed up and down
+                original_speed = music_channel.pitch
+                music_channel.set_pitch(2.0, 1.0)
+                # Schedule ramp back down
+                import threading
+                threading.Timer(1.5, lambda: music_channel.set_pitch(original_speed, 1.0)).start()
+                self.add_transition_log(f&quot;Speed ramp: {original_speed:.1f}→2.0→{original_speed:.1f}x&quot;)
+            else:
+                self.add_transition_log(&quot;No music playing for speed ramp&quot;)
     
     def stop_all_channels(self):
         &quot;&quot;&quot;Stop all sound effect channels.&quot;&quot;&quot;
@@ -713,34 +1040,53 @@ class AudioDemoScene(Scene):
                 del self.active_channels[channel_key]
         
         if self.audio_system:
-            self.audio_system.stop_all_sounds()
+            self.audio_system.stop_all()
         self.add_audio_event(&quot;All channels stopped&quot;)
-    
-    def create_channel_effect(self, channel_num: int, volume: float, speed: float, pan: float):
-        &quot;&quot;&quot;Create visual effect for channel playback.&quot;&quot;&quot;
-        x = 700 + (channel_num - 1) * 60
-        y = 280
+        self.update_channel_status()
         
-        self.visual_effects.append({
-            &#x27;type&#x27;: &#x27;channel&#x27;,
-            &#x27;channel&#x27;: channel_num,
-            &#x27;x&#x27;: x,
-            &#x27;y&#x27;: y,
-            &#x27;volume&#x27;: volume,
-            &#x27;speed&#x27;: speed,
-            &#x27;pan&#x27;: pan,
-            &#x27;timer&#x27;: 0,
-            &#x27;max_time&#x27;: 2.0
-        })
+        # Update visualizer
+        self.update_visualizer_source()
     
     def add_audio_event(self, event_text):
         &quot;&quot;&quot;Add event to log.&quot;&quot;&quot;
         self.audio_events_log.append(event_text)
-        if len(self.audio_events_log) &gt; 4:
+        if len(self.audio_events_log) &gt; 6:
             self.audio_events_log.pop(0)
+        
+        # Update event log display
+        for i, label in enumerate(self.event_log_labels):
+            if i &lt; len(self.audio_events_log):
+                label.set_text(self.audio_events_log[i])
+            else:
+                label.set_text(&quot;&quot;)
         
         # Print to console
         print(f&quot;Audio Event: {event_text}&quot;)
+    
+    def add_transition_log(self, event_text):
+        &quot;&quot;&quot;Add transition event to log.&quot;&quot;&quot;
+        current_text = self.transition_log.text
+        if current_text == &quot;No transitions yet&quot;:
+            new_text = event_text
+        else:
+            new_text = current_text + &quot;\n&quot; + event_text
+        
+        # Keep only last 3 lines
+        lines = new_text.split(&#x27;\n&#x27;)
+        if len(lines) &gt; 3:
+            new_text = &#x27;\n&#x27;.join(lines[-3:])
+        
+        self.transition_log.set_text(new_text)
+    
+    def update_channel_status(self):
+        &quot;&quot;&quot;Update channel status display.&quot;&quot;&quot;
+        active_channels = len(self.active_channels)
+        if active_channels == 0:
+            self.channel_status.set_text(&quot;No active channels&quot;)
+            self.channel_status.color = (150, 150, 150)
+        else:
+            self.channel_status.set_text(f&quot;{active_channels} active channel(s)&quot;)
+            self.channel_status.color = (100, 255, 100)
     
     def handle_key_press(self, key):
         &quot;&quot;&quot;Enhanced keyboard input with new features.&quot;&quot;&quot;
@@ -768,6 +1114,22 @@ class AudioDemoScene(Scene):
             self.play_channel_sound(3, 0.8, 1.0, 1.0)
         elif key == pygame.K_UP:
             self.play_channel_sound(3, 0.8, 1.0, 0.0)
+        elif key == pygame.K_TAB:
+            # Cycle through tabs (if we have a reference to main_tabs)
+            if hasattr(self, &#x27;main_tabs&#x27;):
+                current_index = self.main_tabs.current_tab_index
+                next_index = (current_index + 1) % len(self.main_tabs.tabs)
+                self.main_tabs.switch_tab(next_index)
+        elif key == pygame.K_v:
+            # Switch to visualizer tab
+            if hasattr(self, &#x27;main_tabs&#x27;):
+                self.main_tabs.switch_tab(3)  # Visualizer tab is index 3
+        elif key == pygame.K_c:
+            # Cycle through visualizer styles
+            styles = [&#x27;bars&#x27;, &#x27;waveform&#x27;, &#x27;circle&#x27;, &#x27;particles&#x27;, &#x27;spectrum&#x27;]
+            current_idx = styles.index(self.visualizer_style) if self.visualizer_style in styles else 0
+            next_idx = (current_idx + 1) % len(styles)
+            self.change_visualizer_style(styles[next_idx])
     
     def update(self, dt):
         &quot;&quot;&quot;Update scene logic with enhanced audio information.&quot;&quot;&quot;
@@ -781,39 +1143,59 @@ class AudioDemoScene(Scene):
         if self.audio_system:
             self.audio_system.update()
         
+        # Update visualizer source if needed
+        if hasattr(self, &#x27;audio_visualizer&#x27;):
+            # Update the visualizer&#x27;s source periodically
+            current_time = time.time()
+            if not hasattr(self, &#x27;_last_source_update&#x27;):
+                self._last_source_update = 0
+            
+            if current_time - self._last_source_update &gt; 0.5:  # Update every 0.5 seconds
+                self.update_visualizer_source()
+                self._last_source_update = current_time
+        
         # Update real-time audio information
         self.update_audio_info()
         
-        # Update channel monitor
-        self.update_channel_monitor()
+        # Update FPS display
+        fps_stats = self.engine.get_fps_stats()
+        self.fps_display.set_text(f&quot;FPS: {fps_stats[&#x27;current_fps&#x27;]:.1f}&quot;)
+        
+        # Update performance info (simulated)
+        import random
+        cpu_usage = random.randint(5, 25)
+        memory_usage = random.randint(100, 300)
+        self.performance_label.set_text(f&quot;CPU Usage: {cpu_usage}%\nMemory: {memory_usage}MB&quot;)
     
     def update_audio_info(self):
         &quot;&quot;&quot;Update real-time audio information display.&quot;&quot;&quot;
         if not self.audio_system:
             return
         
+        # Update active channels count
+        active_count = 0
+        if self.audio_system.channels:
+            active_count = sum(1 for channel in self.audio_system.channels 
+                            if channel.is_playing() or channel.is_paused())
+        
+        self.active_channels_label.set_text(f&quot;Active Channels: {active_count}&quot;)
+        
+        # Update channel grid
+        for i, channel in enumerate(self.audio_system.channels[:16]):
+            if i * 3 + 2 &lt; len(self.channel_grid_elements):
+                status_indicator = self.channel_grid_elements[i * 3 + 2]
+                if channel.is_playing():
+                    status_indicator.set_background_color((50, 200, 50))
+                elif hasattr(channel, &#x27;is_paused&#x27;) and channel.is_paused():
+                    status_indicator.set_background_color((200, 200, 50))
+                else:
+                    status_indicator.set_background_color((60, 60, 80))
+        
         # Music state - get channel 0 for music
         if self.audio_system.channels and len(self.audio_system.channels) &gt; 0:
             music_channel = self.audio_system.channels[0]
             if music_channel.is_playing():
-                music_state = &quot;Playing&quot;
-                color = (100, 255, 100)  # Green
-            elif music_channel.is_paused():
-                music_state = &quot;Paused&quot;
-                color = (255, 255, 100)  # Yellow
-            else:
-                music_state = &quot;Stopped&quot;
-                color = (255, 100, 100)  # Red
-            
-            self.music_state_label.set_text(f&quot;Music: {music_state}&quot;)
-            self.music_state_label.color = color
-            
-            # Music speed and volume
-            self.music_speed_label.set_text(f&quot;Speed: {music_channel.pitch:.1f}x&quot;)
-            self.music_volume_label.set_text(f&quot;Volume: {music_channel.volume:.1f}&quot;)
-            
-            # Music position (if playing)
-            if music_channel.is_playing():
+                # Music position (if playing)
                 position = music_channel.get_playback_position()
                 # Get duration from sound info
                 sound_info = self.audio_system.get_sound_info(self.music_sound_name)
@@ -825,43 +1207,7 @@ class AudioDemoScene(Scene):
             else:
                 self.music_position_label.set_text(&quot;Position: 0.00s&quot;)
         else:
-            self.music_state_label.set_text(&quot;Music: Stopped&quot;)
-            self.music_state_label.color = (255, 100, 100)
-            self.music_speed_label.set_text(&quot;Speed: 1.0x&quot;)
-            self.music_volume_label.set_text(&quot;Volume: 0.0&quot;)
             self.music_position_label.set_text(&quot;Position: 0.00s&quot;)
-        
-        # Active channels count
-        active_count = 0
-        if self.audio_system.channels:
-            active_count = sum(1 for channel in self.audio_system.channels 
-                            if channel.is_playing() or channel.is_paused())
-        
-        self.active_channels_label.set_text(f&quot;Active Channels: {active_count}&quot;)
-    
-    def update_channel_monitor(self):
-        &quot;&quot;&quot;Update channel monitor display.&quot;&quot;&quot;
-        if not self.audio_system:
-            return
-        
-        # Count active channels
-        active_count = 0
-        channel_details = []
-        
-        for i, channel in enumerate(self.audio_system.channels[:8]):  # Mostrar só os primeiros 8
-            if channel.is_playing() or (hasattr(channel, &#x27;is_paused&#x27;) and channel.is_paused()):
-                active_count += 1
-                status = &quot;PLAY&quot; if channel.is_playing() else &quot;PAUS&quot;
-                volume = getattr(channel, &#x27;volume&#x27;, 0.0)
-                pitch = getattr(channel, &#x27;pitch&#x27;, 1.0)
-                channel_details.append(f&quot;Ch{i}:{status} v:{volume:.1f} p:{pitch:.1f}&quot;)
-        
-        self.channel_monitor.set_text(f&quot;Channels: {active_count}/{len(self.audio_system.channels)} active&quot;)
-        
-        if channel_details:
-            self.channel_details.set_text(&quot;, &quot;.join(channel_details[:4]))  # Show first 4
-        else:
-            self.channel_details.set_text(&quot;No active channels&quot;)
     
     def render(self, renderer):
         &quot;&quot;&quot;Render the scene with enhanced visualizations.&quot;&quot;&quot;
@@ -869,100 +1215,12 @@ class AudioDemoScene(Scene):
         current_theme = ThemeManager.get_theme(ThemeManager.get_current_theme())
         renderer.draw_rect(0, 0, 1024, 720, current_theme.background)
         
-        # Draw channel visualizations
-        self.draw_channel_visualizations(renderer)
-        
-        # Draw pan visualization
-        self.draw_pan_visualization(renderer)
+        # Draw header background
+        renderer.draw_rect(0, 0, 1024, 90, current_theme.background2)
         
         # Draw UI elements
         for element in self.ui_elements:
             element.render(renderer)
-        
-        # Draw visual effects
-        self.draw_visual_effects(renderer)
-    
-    def draw_channel_visualizations(self, renderer:OpenGLRenderer):
-        &quot;&quot;&quot;Draw channel activity visualization.&quot;&quot;&quot;
-        # Draw channel grid
-        for i in range(16):
-            x = 700 + (i % 4) * 60
-            y = 320 + (i // 4) * 60
-            
-            # Channel box
-            color = (60, 60, 80)
-            renderer.draw_rect(x, y, 50, 50, color)
-            renderer.draw_rect(x, y, 50, 50, (100, 100, 120), fill=False)
-            
-            # Channel number
-            renderer.draw_text(str(i), x+20, y+15, (200, 200, 200), FontManager.get_font(None, 20))
-            
-            # Activity indicator
-            if self.audio_system and i &lt; len(self.audio_system.channels):
-                channel = self.audio_system.channels[i]
-                if channel.is_playing():
-                    # Green for playing
-                    renderer.draw_rect(x + 5, y + 35, 40, 10, (50, 200, 50))
-                elif hasattr(channel, &#x27;is_paused&#x27;) and channel.is_paused():
-                    # Yellow for paused
-                    renderer.draw_rect(x + 5, y + 35, 40, 10, (200, 200, 50))
-    
-    def draw_pan_visualization(self, renderer:OpenGLRenderer):
-        &quot;&quot;&quot;Draw stereo pan visualization.&quot;&quot;&quot;
-        x, y = 700, 270
-        width, height = 200, 40
-        
-        # Background
-        renderer.draw_rect(x, y, width, height, (40, 40, 50))
-        
-        # Center line
-        renderer.draw_rect(x + width/2 - 1, y, 2, height, (100, 100, 120))
-        
-        # Labels
-        renderer.draw_text(&quot;L&quot;, x + 10, y + height//2 - 8, (200, 200, 200), FontManager.get_font(None, 16))
-        renderer.draw_text(&quot;R&quot;, x + width - 20, y + height//2 - 8, (200, 200, 200), FontManager.get_font(None, 16))
-        
-        # Active pan indicators
-        for effect in self.visual_effects:
-            if effect[&#x27;type&#x27;] == &#x27;channel&#x27; and effect[&#x27;timer&#x27;] &lt; effect[&#x27;max_time&#x27;]:
-                pan = effect[&#x27;pan&#x27;]
-                pan_x = x + width/2 + (pan * width/2)
-                pan_y = y + height//2
-                radius = 8
-                
-                # Color based on channel
-                colors = [(255, 100, 100), (100, 255, 100), (100, 100, 255)]
-                color_idx = (effect[&#x27;channel&#x27;] - 1) % len(colors)
-                
-                renderer.draw_circle(pan_x, pan_y, radius, colors[color_idx])
-    
-    def draw_visual_effects(self, renderer):
-        &quot;&quot;&quot;Draw visual effects for channel playback.&quot;&quot;&quot;
-        for effect in self.visual_effects:
-            if effect[&#x27;type&#x27;] == &#x27;channel&#x27;:
-                x, y = effect[&#x27;x&#x27;], effect[&#x27;y&#x27;]
-                progress = effect[&#x27;timer&#x27;] / effect[&#x27;max_time&#x27;]
-                
-                # Draw expanding circle
-                radius = 20 + progress * 30
-                alpha = int(255 * (1 - progress))
-                
-                # Color based on speed
-                speed = effect[&#x27;speed&#x27;]
-                if speed &gt; 1.5:
-                    color = (255, 100, 100, alpha)  # Red for fast
-                elif speed &lt; 0.7:
-                    color = (100, 100, 255, alpha)  # Blue for slow
-                else:
-                    color = (100, 255, 100, alpha)  # Green for normal
-                
-                # Draw the effect
-                renderer.draw_circle(x, y, int(radius), color, fill=False)
-                
-                # Draw channel number
-                font = pygame.font.Font(None, 24)
-                text = font.render(str(effect[&#x27;channel&#x27;]), True, (255, 255, 255))
-                renderer.draw_surface(text, x - 6, y - 12)
 
 # Main function
 def main():
@@ -978,6 +1236,8 @@ def main():
     print(&quot;- Stereo panning (left/right)&quot;)
     print(&quot;- Real-time audio state monitoring&quot;)
     print(&quot;- Multi-channel sound effects&quot;)
+    print(&quot;- Tab-based interface&quot;)
+    print(&quot;- Audio visualizer with 5 styles&quot;)
     print(&quot;\nKEYBOARD CONTROLS:&quot;)
     print(&quot;1-2: Play sounds on channels 1-2&quot;)
     print(&quot;3: Dynamic speed change (Channel 1)&quot;)
@@ -987,6 +1247,9 @@ def main():
     print(&quot;P: Pause music&quot;)
     print(&quot;R: Resume music&quot;)
     print(&quot;← → ↑: Test panning (left, right, center)&quot;)
+    print(&quot;TAB: Cycle through tabs&quot;)
+    print(&quot;V: Jump to Visualizer tab&quot;)
+    print(&quot;C: Cycle visualizer styles&quot;)
     print(&quot;ESC: Back to menu&quot;)
     
     # Add and start scene
@@ -1036,7 +1299,7 @@ if __name__ == &quot;__main__&quot;:
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-01-20 14:14
+                        Documentation generated on 2026-02-03 16:03
                     </p>
                 </div>
             </div>
