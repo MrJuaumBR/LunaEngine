@@ -1049,6 +1049,10 @@ class OpenGLRenderer:
                    self.rounded_rect_shader.program]):
             print("Shader initialization failed")
             return False
+
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        glEnable(GL_PROGRAM_POINT_SIZE)
         
         # Initialize filter framebuffer
         self._initialize_filter_framebuffer()
@@ -1848,7 +1852,7 @@ class OpenGLRenderer:
             start_point, end_point = point
             self.draw_line(start_point[0], start_point[1], end_point[0], end_point[1], color, width, surface)
 
-    def draw_text(self, text: str, x: int, y: int, color: tuple, font:pygame.font.FontType, surface: Optional[pygame.Surface] = None, anchor_point: tuple = (0.0, 0.0)):
+    def draw_text(self, text: str, x: int, y: int, color: tuple, font:pygame.font.FontType, surface: Optional[pygame.Surface] = None, anchor_point: Optional[Tuple[int, int]] = (0.0, 0.0)):
         """
         Draw text using pygame font rendering
         """
@@ -2060,7 +2064,7 @@ class OpenGLRenderer:
         return vertices, indices
     
     def draw_polygon(self, points: List[Tuple[int, int]], color: tuple, 
-                     fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None):
+                     fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None, anchor_point: Tuple[float, float] = (0.0, 0.0)):
         """
         Draw a polygon from a list of points.
         
@@ -2070,6 +2074,7 @@ class OpenGLRenderer:
             fill: Whether to fill the polygon
             border_width: Border width for hollow polygons,
             surface: Target surface
+            anchor_point: Anchor point
         """
         if not self._initialized or not self.simple_shader.program or len(points) < 3:
             return
@@ -2077,6 +2082,9 @@ class OpenGLRenderer:
         if surface:
             old_surface = self._current_target
             self.set_surface(surface)
+            
+        # Update points to use anchor point
+        points = [(p[0] + anchor_point[0], p[1] + anchor_point[1]) for p in points]
             
         # Generate polygon geometry with caching
         cache_key = tuple(points) + (fill, border_width)
@@ -2311,13 +2319,22 @@ class OpenGLRenderer:
         glUniform2f(self.particle_shader._get_uniform_location("uScreenSize"), 
                 float(self.width), float(self.height))
         
-        # Upload all instance data in one call
+        # Instace data
         glBindBuffer(GL_ARRAY_BUFFER, self.particle_shader.instance_data_vbo)
-        glBufferSubData(GL_ARRAY_BUFFER, 0, active_count * 4 * 4, self._particle_instance_data)
-        
-        # Upload all color data in one call  
+        ptr = glMapBufferRange(GL_ARRAY_BUFFER, 0, active_count * 4 * 4,
+                            GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT)
+        if ptr:
+            # Copy data (using ctypes or numpy to buffer)
+            ctypes.memmove(ptr, self._particle_instance_data.ctypes.data, active_count * 4 * 4)
+            glUnmapBuffer(GL_ARRAY_BUFFER)
+
+        # color data
         glBindBuffer(GL_ARRAY_BUFFER, self.particle_shader.instance_color_vbo)
-        glBufferSubData(GL_ARRAY_BUFFER, 0, active_count * 4 * 4, self._particle_color_data)
+        ptr = glMapBufferRange(GL_ARRAY_BUFFER, 0, active_count * 4 * 4,
+                            GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT)
+        if ptr:
+            ctypes.memmove(ptr, self._particle_color_data.ctypes.data, active_count * 4 * 4)
+            glUnmapBuffer(GL_ARRAY_BUFFER)
         
         # SINGLE DRAW CALL for all particles
         glBindVertexArray(self.particle_shader.vao)

@@ -23,11 +23,13 @@ from .opengl import OpenGLRenderer, TextureShader, ParticleShader, ShaderProgram
 from .openal import OpenALAudioSystem, OpenALAudioEvent, OpenALSource, OpenALBuffer, OpenALError
 from .types import EVENTS, InputState, MouseButtonPressed, LayerType, WindowEventData, WindowEventType
 from .network import NetworkHost, NetworkServer, NetworkClient, NetworkMessage, UserType, generate_id
+from .controller import Controller, ControllerManager, ControllerState, ControllerType, ConnectionType, TouchPoint, JButton, Axis
 from . import exceptions as LExceptions
 
 __all__ = [
-    "OpenGLRenderer", "TextureShader", "ParticleShader", "ShaderProgram", "InputState", "MouseButtonPressed", "EVENTS", "LayerType", 'PerformanceMonitor', 'RegionDetector',
+    "OpenGLRenderer", "TextureShader", "ParticleShader", "ShaderProgram", "InputState", "MouseButtonPressed", "EVENTS", "LayerType",
     'Filter', 'FilterRegionType', 'FilterShader', 'FilterType', 'LayerType', 'WindowEventData', 'WindowEventType',
+    'Controller', 'ControllerManager', 'ControllerState', 'ControllerType', 'ConnectionType', 'TouchPoint', 'JButton', 'Axis',
     'NetworkHost', 'NetworkServer', 'NetworkClient', 'NetworkMessage', 'UserType', 'generate_id',
     'OpenALAudioSystem', 'OpenALAudioEvent', 'OpenALSource', 'OpenALBuffer', 'OpenALError',
     'LExceptions'

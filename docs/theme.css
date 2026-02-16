@@ -725,3 +725,26 @@ a:hover {
     background-color: var(--primary-color);
     color: white !important;
 }
+
+/* Code Statistics preview mode */
+.code-stats-content.preview {
+    max-height: 150px;
+    overflow: hidden;
+    position: relative;
+}
+
+.code-stats-content.preview::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(transparent, var(--card-bg));
+    pointer-events: none;
+}
+
+/* Optional: smooth transition when toggling */
+.code-stats-content {
+    transition: max-height 0.3s ease;
+}

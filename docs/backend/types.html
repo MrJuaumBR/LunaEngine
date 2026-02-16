@@ -154,6 +154,15 @@
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>consumed_events: set = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>active_controller: Optional['Controller'] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>controller_count: int = 0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>using_controller: bool = False</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
@@ -161,6 +170,14 @@
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-inputstate-__post_init__">
                 <code class="fs-6 fw-bold text-color-title">def __post_init__(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-inputstate-consume_global_mouse">
+                <code class="fs-6 fw-bold text-color-title">def consume_global_mouse(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Mark that a mouse event has been handled globally.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-inputstate-is_global_mouse_consumed">
+                <code class="fs-6 fw-bold text-color-title">def is_global_mouse_consumed(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Check if any element has consumed the current mouse event.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-inputstate-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, mouse_pos: tuple, mouse_pressed: tuple, mouse_wheel: float = 0) -> Any</code>
@@ -379,7 +396,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-02-03 16:03
+                        Documentation generated on 2026-02-16 14:06
                     </p>
                 </div>
             </div>

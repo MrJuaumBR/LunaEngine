@@ -53,6 +53,15 @@ class UILayerManager:
             LayerType.TOP
         ]
     
+    def get_all_elements(self):
+        """
+        Get all UI elements across all layers.
+        
+        Returns:
+            List[UIElement]: A list of all UI elements
+        """
+        return [element for layer_elements in self.layers.values() for element in layer_elements]
+    
     def add_element(self, element: UIElement, layer: LayerType = None):
         """
         Add a UI element to the appropriate layer.

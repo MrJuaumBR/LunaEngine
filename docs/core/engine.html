@@ -233,6 +233,26 @@
                 <code class="fs-6 fw-bold text-color-title">def is_window_maximized(self: Any) -> bool</code>
                 <div class="mt-2 text-muted small">Check if window is maximized.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is maximized</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_controllers">
+                <code class="fs-6 fw-bold text-color-title">def get_controllers(self: Any) -> List['Controller']</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_controller">
+                <code class="fs-6 fw-bold text-color-title">def get_controller(self: Any, index: int) -> Optional['Controller']</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-is_using_controller">
+                <code class="fs-6 fw-bold text-color-title">def is_using_controller(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_controller_connect">
+                <code class="fs-6 fw-bold text-color-title">def on_controller_connect(self: Any, callback: Callable[['Controller'], None]) -> Any</code>
+                <div class="mt-2 text-muted small">Register callback when a controller connects.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_controller_disconnect">
+                <code class="fs-6 fw-bold text-color-title">def on_controller_disconnect(self: Any, callback: Callable[['Controller'], None]) -> Any</code>
+                <div class="mt-2 text-muted small">Register callback when a controller disconnects.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-update_mouse">
                 <code class="fs-6 fw-bold text-color-title">def update_mouse(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Update mouse position and button state with proper click detection</div>
@@ -255,11 +275,11 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_render">
                 <code class="fs-6 fw-bold text-color-title">def _render(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Rendering</div>
+                <div class="mt-2 text-muted small">Rendering with performance profiling</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_render_ui_elements">
                 <code class="fs-6 fw-bold text-color-title">def _render_ui_elements(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Render UI elements using the layer manager system.</div>
+                <div class="mt-2 text-muted small">Render UI elements with individual profiling if enabled</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_render_particles">
                 <code class="fs-6 fw-bold text-color-title">def _render_particles(self: Any) -> Any</code>
@@ -267,11 +287,59 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_update_ui_elements">
                 <code class="fs-6 fw-bold text-color-title">def _update_ui_elements(self: Any, dt: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Update UI elements using the layer manager system.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds</div>
+                <div class="mt-2 text-muted small">Update UI elements with individual profiling if enabled</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_process_ui_element_tree">
                 <code class="fs-6 fw-bold text-color-title">def _process_ui_element_tree(self: Any, root_element: Any, dt: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Process a UI element and all its children with proper event consumption<br><br>Args:<br> &nbsp; &nbsp;root_element (UIElement): The root element to process<br> &nbsp; &nbsp;dt (float): Delta time in seconds</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-enable_performance_profiling">
+                <code class="fs-6 fw-bold text-color-title">def enable_performance_profiling(self: Any, enabled: bool = True) -> Any</code>
+                <div class="mt-2 text-muted small">Enable/disable detailed performance profiling.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_frame_timing_breakdown">
+                <code class="fs-6 fw-bold text-color-title">def get_frame_timing_breakdown(self: Any) -> Dict[str, float]</code>
+                <div class="mt-2 text-muted small">Get the timing breakdown (ms) for the last completed frame.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_performance_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_performance_stats(self: Any) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Return both FPS stats and frame timing breakdown.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_update_timing_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_update_timing_stats(self: Any, category: str = 'all') -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Get update timing statistics for a specific category</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_render_timing_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_render_timing_stats(self: Any, category: str = 'all') -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Get render timing statistics for a specific category</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_ui_update_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_ui_update_stats(self: Any) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Get UI update timing statistics</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_ui_render_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_ui_render_stats(self: Any) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Get UI render timing statistics</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_individual_ui_update_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_individual_ui_update_stats(self: Any) -> Dict[str, float]</code>
+                <div class="mt-2 text-muted small">Get individual UI element update timing statistics</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_individual_ui_render_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_individual_ui_render_stats(self: Any) -> Dict[str, float]</code>
+                <div class="mt-2 text-muted small">Get individual UI element render timing statistics</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_scene_update_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_scene_update_stats(self: Any) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Get scene update timing statistics</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_scene_render_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_scene_render_stats(self: Any) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Get scene render timing statistics</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_total_frame_time">
+                <code class="fs-6 fw-bold text-color-title">def get_total_frame_time(self: Any) -> Dict[str, float]</code>
+                <div class="mt-2 text-muted small">Get total frame time breakdown</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-shutdown">
                 <code class="fs-6 fw-bold text-color-title">def shutdown(self: Any) -> Any</code>
@@ -305,7 +373,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-02-03 16:03
+                        Documentation generated on 2026-02-16 14:06
                     </p>
                 </div>
             </div>

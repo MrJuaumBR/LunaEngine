@@ -1,5 +1,9 @@
 """
 parallax_demo.py - Parallax System Demonstration
+
+Updated for LunaEngine 0.2.0 Camera System:
+- Uses CameraConstraints for zoom limits
+- Unified world‑to‑screen conversion (camera.position = viewport centre)
 """
 
 import sys
@@ -87,8 +91,6 @@ class ParallaxDemo(Scene):
             pygame.draw.line(surface, grid_color, (0, y), (1280, y), 2)
         
         # Add some landmarks
-        landmark_color = (255, 200, 100, 200)
-        
         # Mountains in background
         pygame.draw.polygon(surface, (150, 150, 200, 200), 
                            [(200, 360), (400, 200), (600, 360)])
@@ -109,7 +111,7 @@ class ParallaxDemo(Scene):
         return surface
 
     def setup_camera(self):
-        """Configure camera for parallax testing"""
+        """Configure camera for parallax testing (updated for new camera system)"""
         self.camera.position = pygame.math.Vector2(0, 0)
         self.camera.target_position = pygame.math.Vector2(0, 0)
         
@@ -117,11 +119,11 @@ class ParallaxDemo(Scene):
         self.camera.smooth_speed = 0.05
         self.camera.lead_factor = 0.0
         
-        # Set zoom limits
+        # Set zoom limits via CameraConstraints
+        self.camera.constraints.min_zoom = 0.5
+        self.camera.constraints.max_zoom = 2.0
         self.camera.zoom = 1.0
         self.camera.target_zoom = 1.0
-        self.camera.min_zoom = 0.5
-        self.camera.max_zoom = 2.0
         
         # Set camera bounds to world size
         world_rect = pygame.Rect(0, 0, self.world_size[0], self.world_size[1])
@@ -253,11 +255,13 @@ class ParallaxDemo(Scene):
         self.camera.target_position.x = self.player_x
         self.camera.target_position.y += movement_y
         
-        # Mouse wheel zoom
+        # Mouse wheel zoom – now uses constraints for clamping
         if self.engine.mouse_wheel != 0:
             zoom_speed = 0.1
             new_zoom = self.camera.zoom + (self.engine.mouse_wheel * zoom_speed)
-            new_zoom = max(self.camera.min_zoom, min(self.camera.max_zoom, new_zoom))
+            # Clamp using constraints
+            new_zoom = max(self.camera.constraints.min_zoom,
+                          min(self.camera.constraints.max_zoom, new_zoom))
             self.camera.set_zoom(new_zoom, smooth=True)
 
     def update_debug_info(self):
@@ -309,14 +313,14 @@ class ParallaxDemo(Scene):
         """Render world boundaries for visual reference"""
         screen_width, screen_height = self.engine.width, self.engine.height
         
-        # Convert world coordinates to screen coordinates
+        # Convert world coordinates to screen coordinates (returns pygame.Vector2)
         left_pos = self.camera.world_to_screen((0, 0))
         right_pos = self.camera.world_to_screen((self.world_size[0], 0))
         
-        # Draw boundary lines
+        # Draw boundary lines – cast to int for rendering safety
         boundary_color = (255, 0, 0, 100)
-        renderer.draw_line(left_pos.x, 0, left_pos.x, screen_height, boundary_color, 2)
-        renderer.draw_line(right_pos.x, 0, right_pos.x, screen_height, boundary_color, 2)
+        renderer.draw_line(int(left_pos.x), 0, int(left_pos.x), screen_height, boundary_color, 2)
+        renderer.draw_line(int(right_pos.x), 0, int(right_pos.x), screen_height, boundary_color, 2)
 
     def render_player_indicator(self, renderer):
         """Render a simple indicator for player position"""
@@ -324,13 +328,13 @@ class ParallaxDemo(Scene):
         
         # Draw player indicator
         indicator_color = (255, 255, 0)
-        renderer.draw_circle(player_screen_pos.x, player_screen_pos.y, 10, indicator_color)
+        renderer.draw_circle(int(player_screen_pos.x), int(player_screen_pos.y), 10, indicator_color)
         
         # Draw direction indicator
         direction_length = 30
         renderer.draw_line(
-            player_screen_pos.x, player_screen_pos.y,
-            player_screen_pos.x + direction_length, player_screen_pos.y,
+            int(player_screen_pos.x), int(player_screen_pos.y),
+            int(player_screen_pos.x + direction_length), int(player_screen_pos.y),
             indicator_color, 3
         )
 

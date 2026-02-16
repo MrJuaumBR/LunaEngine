@@ -483,6 +483,40 @@ def generate_main_page(project):
         </div>
     </div>
 
+    <!-- Installer Selector -->
+    <div class="container mt-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-download me-2"></i>Install LunaEngine</h5>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="btn-group" role="group" aria-label="Installation options">
+                            <input type="radio" class="btn-check" name="installOption" id="optWindows" value="windows" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary" for="optWindows">Windows</label>
+
+                            <input type="radio" class="btn-check" name="installOption" id="optLinux" value="linux" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="optLinux">Linux</label>
+
+                            <input type="radio" class="btn-check" name="installOption" id="optTestPyPi" value="testpypi" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="optTestPyPi">TestPyPi</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <code class="form-control bg-light" id="installCommand">pip install lunaengine</code>
+                            <button class="btn btn-outline-secondary copy-install-btn" type="button" title="Copy to clipboard">
+                                <i class="bi bi-clipboard"></i>
+                            </button>
+                        </div>
+                        <small class="text-muted">Click the copy button to copy the command.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Code Statistics Section -->
     <div class="container mt-5">
         <div class="row">
@@ -490,15 +524,13 @@ def generate_main_page(project):
                 <div class="card shadow-sm">
                     <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Code Statistics</h5>
-                        <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#codeStatsCollapse" aria-expanded="false" aria-controls="codeStatsCollapse">
-                            <i class="bi bi-chevron-down"></i>
+                        <button class="btn btn-sm btn-light" type="button" id="toggleStatsBtn">
+                            <i class="bi bi-chevron-down" id="statsToggleIcon"></i>
                         </button>
                     </div>
-                    <div class="collapse show" id="codeStatsCollapse">
-                        <div class="card-body">
-                            <div class="code-stats-content markdown-content">
-                                {stats_content}
-                            </div>
+                    <div class="card-body p-0">
+                        <div id="codeStatsContent" class="code-stats-content markdown-content preview">
+                            {stats_content}
                         </div>
                     </div>
                 </div>
@@ -510,7 +542,69 @@ def generate_main_page(project):
     <div class="container mt-5">
         <h2 class="mb-4">LunaEngine Modules</h2>
         <div class="row g-4">
-"""
+"""+"""
+    <script>
+    
+    // Installation command switcher
+    document.addEventListener('DOMContentLoaded', function() {
+        const installRadios = document.querySelectorAll('input[name="installOption"]');
+        const installCommandSpan = document.getElementById('installCommand');
+        const copyBtn = document.querySelector('.copy-install-btn');
+
+        const toggleBtn = document.getElementById('toggleStatsBtn');
+        const contentDiv = document.getElementById('codeStatsContent');
+        const icon = document.getElementById('statsToggleIcon');
+
+        if (toggleBtn && contentDiv && icon) {{
+            toggleBtn.addEventListener('click', function() {{
+                const isPreview = contentDiv.classList.contains('preview');
+                if (isPreview) {{
+                    contentDiv.classList.remove('preview');
+                    icon.classList.replace('bi-chevron-down', 'bi-chevron-up');
+                }} else {{
+                    contentDiv.classList.add('preview');
+                    icon.classList.replace('bi-chevron-up', 'bi-chevron-down');
+                }}
+            }});
+        }}
+
+        function updateCommand() {
+            const selected = document.querySelector('input[name="installOption"]:checked').value;
+            switch(selected) {
+                case 'windows':
+                    installCommandSpan.textContent = 'pip install lunaengine';
+                    break;
+                case 'linux':
+                    installCommandSpan.textContent = 'pip3 install lunaengine';
+                    break;
+                case 'testpypi':
+                    installCommandSpan.textContent = 'pip install -i https://test.pypi.org/simple/ lunaengine';
+                    break;
+            }
+        }
+
+        installRadios.forEach(radio => {
+            radio.addEventListener('change', updateCommand);
+        });
+
+        // Copy button functionality
+        copyBtn.addEventListener('click', function() {
+            const textToCopy = installCommandSpan.textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalIcon = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="bi bi-check"></i>';
+                copyBtn.classList.add('btn-success');
+                copyBtn.classList.remove('btn-outline-secondary');
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalIcon;
+                    copyBtn.classList.remove('btn-success');
+                    copyBtn.classList.add('btn-outline-secondary');
+                }, 2000);
+            });
+        });
+    });
+    </script>
+    """
     
     module_styles = {
         "core": {"icon": "bi-cpu", "color": "primary", "name": "Core Systems"},

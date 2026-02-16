@@ -15,7 +15,7 @@
       "description": "User interface components - Buttons, Layouts, Themes",
       "link": "ui/index.html",
       "files_count": 8,
-      "classes_count": 54,
+      "classes_count": 58,
       "functions_count": 8
     },
     {
@@ -24,8 +24,8 @@
       "description": "Graphics and rendering - Sprites, Lighting, Particles",
       "link": "graphics/index.html",
       "files_count": 4,
-      "classes_count": 17,
-      "functions_count": 0
+      "classes_count": 27,
+      "functions_count": 9
     },
     {
       "name": "utils",
@@ -33,16 +33,16 @@
       "description": "Utility functions - Performance, Math, Threading",
       "link": "utils/index.html",
       "files_count": 5,
-      "classes_count": 8,
-      "functions_count": 21
+      "classes_count": 10,
+      "functions_count": 22
     },
     {
       "name": "backend",
       "title": "Backend",
       "description": "Renderer backends - OpenGL, Pygame",
       "link": "backend/index.html",
-      "files_count": 5,
-      "classes_count": 31,
+      "files_count": 6,
+      "classes_count": 39,
       "functions_count": 7
     },
     {
@@ -119,7 +119,7 @@
       "file": "engine.py",
       "description": "Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether to start in fullscreen mode<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene",
       "link": "core/engine.html#class-lunaengine",
-      "methods_count": 55
+      "methods_count": 72
     },
     {
       "name": "Renderer",
@@ -135,7 +135,7 @@
       "file": "scene.py",
       "description": "Base class for all game scenes.<br><br>Provides lifecycle methods and UI element management. <br>All custom scenes should inherit from this class.<br><br>Attributes:<br> &nbsp; &nbsp;ui_elements (List[UIElement]): List of UI elements in this scene<br> &nbsp; &nbsp;_initialized (bool): Whether the scene has been initialized<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine",
       "link": "core/scene.html#class-scene",
-      "methods_count": 20
+      "methods_count": 23
     },
     {
       "name": "Window",
@@ -175,7 +175,7 @@
       "file": "elements.py",
       "description": "Base class for all UI elements providing common functionality.<br><br>Attributes:<br> &nbsp; &nbsp;element_id (str): Unique identifier for this element in format ui_{type}_{counter}<br> &nbsp; &nbsp;x (int): X coordinate position<br> &nbsp; &nbsp;y (int): Y coordinate position<br> &nbsp; &nbsp;width (int): Width of the element in pixels<br> &nbsp; &nbsp;height (int): Height of the element in pixels<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning<br> &nbsp; &nbsp;state (UIState): Current state of the element<br> &nbsp; &nbsp;visible (bool): Whether element is visible<br> &nbsp; &nbsp;enabled (bool): Whether element is enabled<br> &nbsp; &nbsp;children (List[UIElement]): Child elements<br> &nbsp; &nbsp;parent (UIElement): Parent element",
       "link": "ui/elements.html#class-uielement",
-      "methods_count": 24
+      "methods_count": 25
     },
     {
       "name": "TextLabel",
@@ -183,7 +183,7 @@
       "file": "elements.py",
       "description": "UI element for displaying text labels.",
       "link": "ui/elements.html#class-textlabel",
-      "methods_count": 8
+      "methods_count": 9
     },
     {
       "name": "ImageLabel",
@@ -191,7 +191,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/elements.html#class-imagelabel",
-      "methods_count": 5
+      "methods_count": 6
     },
     {
       "name": "Button",
@@ -199,7 +199,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/elements.html#class-button",
-      "methods_count": 13
+      "methods_count": 14
     },
     {
       "name": "ImageButton",
@@ -207,7 +207,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/elements.html#class-imagebutton",
-      "methods_count": 6
+      "methods_count": 8
     },
     {
       "name": "TextBox",
@@ -279,7 +279,7 @@
       "file": "elements.py",
       "description": "No documentation",
       "link": "ui/elements.html#class-dropdown",
-      "methods_count": 16
+      "methods_count": 20
     },
     {
       "name": "UiFrame",
@@ -338,12 +338,44 @@
       "methods_count": 23
     },
     {
+      "name": "Pagination",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "Pagination control for navigating through multiple pages of content.<br><br>Displays page numbers and navigation buttons to switch between pages.<br>Supports custom button styles and ellipsis for large page ranges.<br><br>Attributes:<br> &nbsp; &nbsp;total_pages (int): Total number of pages.<br> &nbsp; &nbsp;current_page (int): Currently selected page (1-indexed).<br> &nbsp; &nbsp;max_visible_pages (int): Maximum number of page buttons to show.<br> &nbsp; &nbsp;show_prev_next (bool): Whether to show previous/next buttons.<br> &nbsp; &nbsp;show_first_last (bool): Whether to show first/last page buttons.<br> &nbsp; &nbsp;button_style (str): Style for page buttons (&#x27;numbers&#x27;, &#x27;dots&#x27;, &#x27;compact&#x27;).",
+      "link": "ui/elements.html#class-pagination",
+      "methods_count": 15
+    },
+    {
+      "name": "TextArea",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "Multi-line text input area with word wrapping and scrollbars.<br><br>Supports text editing, selection, copy/paste, and line numbers.<br><br>Attributes:<br> &nbsp; &nbsp;text (str): The text content.<br> &nbsp; &nbsp;line_numbers (bool): Whether to show line numbers.<br> &nbsp; &nbsp;word_wrap (bool): Whether to wrap long lines.<br> &nbsp; &nbsp;read_only (bool): Whether text is read-only.<br> &nbsp; &nbsp;tab_size (int): Number of spaces for tab character.",
+      "link": "ui/elements.html#class-textarea",
+      "methods_count": 28
+    },
+    {
+      "name": "FileFinder",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "File selection element with text field and browse button.<br><br>Displays selected file path and allows browsing filesystem via dialog.<br>Supports file filtering and custom icons.<br><br>Attributes:<br> &nbsp; &nbsp;file_path (str): Currently selected file path.<br> &nbsp; &nbsp;file_filter (List[str]): List of file extensions to filter.<br> &nbsp; &nbsp;dialog_title (str): Title for file dialog.<br> &nbsp; &nbsp;button_text (str): Text for browse button.<br> &nbsp; &nbsp;show_icon (bool): Whether to show file icon.",
+      "link": "ui/elements.html#class-filefinder",
+      "methods_count": 14
+    },
+    {
+      "name": "ChartVisualizer",
+      "module": "ui",
+      "file": "elements.py",
+      "description": "A versatile data visualization component that can display various chart types:<br>bar charts (vertical/horizontal), pie charts, line charts, and scatter plots.<br><br>Supports animated transitions when data changes, automatic normalization,<br>legends, titles, and customizable colors. Designed to work with any renderer<br>that provides basic drawing primitives.",
+      "link": "ui/elements.html#class-chartvisualizer",
+      "methods_count": 15
+    },
+    {
       "name": "UILayerManager",
       "module": "ui",
       "file": "layer_manager.py",
       "description": "Manages UI elements across different render layers to ensure proper<br>visual hierarchy and interaction.<br><br>Attributes:<br> &nbsp; &nbsp;layers (Dict[LayerType, List[UIElement]]): Elements organized by layer<br> &nbsp; &nbsp;layer_order (List[LayerType]): Order in which layers should be rendered",
       "link": "ui/layer_manager.html#class-uilayermanager",
-      "methods_count": 10
+      "methods_count": 11
     },
     {
       "name": "AnimationTypes",
@@ -581,7 +613,7 @@
       "name": "CameraMode",
       "module": "graphics",
       "file": "camera.py",
-      "description": "Camera follow behavior modes",
+      "description": "Legacy follow modes \u2013 kept for backward compatibility.<br>Internally mapped to FollowStrategy instances.",
       "link": "graphics/camera.html#class-cameramode",
       "methods_count": 0
     },
@@ -589,33 +621,113 @@
       "name": "CameraShakeType",
       "module": "graphics",
       "file": "camera.py",
-      "description": "Types of camera shake effects",
+      "description": "Type of camera shake effect.",
       "link": "graphics/camera.html#class-camerashaketype",
       "methods_count": 0
+    },
+    {
+      "name": "InterpolationType",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Easing functions for smooth camera movement.",
+      "link": "graphics/camera.html#class-interpolationtype",
+      "methods_count": 0
+    },
+    {
+      "name": "FollowStrategy",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Abstract base class for camera follow behaviours.",
+      "link": "graphics/camera.html#class-followstrategy",
+      "methods_count": 1
+    },
+    {
+      "name": "SimpleFollow",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Follow the target&#x27;s world position directly.",
+      "link": "graphics/camera.html#class-simplefollow",
+      "methods_count": 1
+    },
+    {
+      "name": "FixedFollow",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Keep the camera at a fixed world position, ignoring the target.",
+      "link": "graphics/camera.html#class-fixedfollow",
+      "methods_count": 2
+    },
+    {
+      "name": "PlatformerFollow",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Platformer-style camera with a deadzone in screen space.<br>The camera moves only when the target leaves the deadzone rectangle.",
+      "link": "graphics/camera.html#class-platformerfollow",
+      "methods_count": 2
+    },
+    {
+      "name": "TopDownFollow",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Top-down RPG style camera with look\u2011ahead based on target velocity/direction.",
+      "link": "graphics/camera.html#class-topdownfollow",
+      "methods_count": 2
+    },
+    {
+      "name": "CameraConstraints",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Limits applied to camera movement and zoom.",
+      "link": "graphics/camera.html#class-cameraconstraints",
+      "methods_count": 0
+    },
+    {
+      "name": "CameraEffect",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Base class for temporary camera effects (shake, fade, flash, etc.).",
+      "link": "graphics/camera.html#class-cameraeffect",
+      "methods_count": 2
+    },
+    {
+      "name": "ShakeEffect",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Positional or rotational shake with intensity decay.",
+      "link": "graphics/camera.html#class-shakeeffect",
+      "methods_count": 3
+    },
+    {
+      "name": "TraumaEffect",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Trauma\u2011based shake \u2013 intensity scales with trauma^2.",
+      "link": "graphics/camera.html#class-traumaeffect",
+      "methods_count": 3
     },
     {
       "name": "ParallaxLayer",
       "module": "graphics",
       "file": "camera.py",
-      "description": "Otimizado: Camada de parallax com renderiza\u00e7\u00e3o eficiente",
+      "description": "A single parallax layer with tile support.",
       "link": "graphics/camera.html#class-parallaxlayer",
-      "methods_count": 2
+      "methods_count": 4
     },
     {
       "name": "ParallaxBackground",
       "module": "graphics",
       "file": "camera.py",
-      "description": "Sistema de parallax otimizado para m\u00faltiplas camadas",
+      "description": "Collection of parallax layers with optional caching.",
       "link": "graphics/camera.html#class-parallaxbackground",
-      "methods_count": 9
+      "methods_count": 6
     },
     {
       "name": "Camera",
       "module": "graphics",
       "file": "camera.py",
-      "description": "Advanced 2D Camera system with smooth movement and effects.",
+      "description": "Advanced 2D Camera with unified coordinate system (position = viewport center).<br>Supports multiple follow strategies, constraints, effects, and parallax.",
       "link": "graphics/camera.html#class-camera",
-      "methods_count": 36
+      "methods_count": 39
     },
     {
       "name": "ParticleType",
@@ -730,12 +842,28 @@
       "methods_count": 5
     },
     {
+      "name": "TimeProfile",
+      "module": "utils",
+      "file": "performance.py",
+      "description": "No documentation",
+      "link": "utils/performance.html#class-timeprofile",
+      "methods_count": 6
+    },
+    {
+      "name": "PerformanceProfiler",
+      "module": "utils",
+      "file": "performance.py",
+      "description": "Performance profiling with detailed timing breakdown",
+      "link": "utils/performance.html#class-performanceprofiler",
+      "methods_count": 14
+    },
+    {
       "name": "PerformanceMonitor",
       "module": "utils",
       "file": "performance.py",
       "description": "Optimized performance monitoring with minimal overhead",
       "link": "utils/performance.html#class-performancemonitor",
-      "methods_count": 5
+      "methods_count": 19
     },
     {
       "name": "GarbageCollector",
@@ -776,6 +904,70 @@
       "description": "Main timer manager for LunaEngine.<br><br>Manages multiple timers, updates them, and triggers callbacks.<br>Should be updated every frame in the game loop via update() method.<br><br>Example:<br> &nbsp; &nbsp;&gt;&gt;&gt; timer = Timer()<br> &nbsp; &nbsp;&gt;&gt;&gt; timer.add(&quot;enemy_spawn&quot;, 2.0, spawn_enemy, repeats=True)<br> &nbsp; &nbsp;&gt;&gt;&gt; # In game loop:<br> &nbsp; &nbsp;&gt;&gt;&gt; while running:<br> &nbsp; &nbsp;&gt;&gt;&gt; &nbsp; &nbsp; timer.update()",
       "link": "utils/timer.html#class-timer",
       "methods_count": 18
+    },
+    {
+      "name": "ControllerType",
+      "module": "backend",
+      "file": "controller.py",
+      "description": "No documentation",
+      "link": "backend/controller.html#class-controllertype",
+      "methods_count": 0
+    },
+    {
+      "name": "ConnectionType",
+      "module": "backend",
+      "file": "controller.py",
+      "description": "No documentation",
+      "link": "backend/controller.html#class-connectiontype",
+      "methods_count": 0
+    },
+    {
+      "name": "JButton",
+      "module": "backend",
+      "file": "controller.py",
+      "description": "No documentation",
+      "link": "backend/controller.html#class-jbutton",
+      "methods_count": 0
+    },
+    {
+      "name": "Axis",
+      "module": "backend",
+      "file": "controller.py",
+      "description": "No documentation",
+      "link": "backend/controller.html#class-axis",
+      "methods_count": 0
+    },
+    {
+      "name": "TouchPoint",
+      "module": "backend",
+      "file": "controller.py",
+      "description": "No documentation",
+      "link": "backend/controller.html#class-touchpoint",
+      "methods_count": 0
+    },
+    {
+      "name": "ControllerState",
+      "module": "backend",
+      "file": "controller.py",
+      "description": "No documentation",
+      "link": "backend/controller.html#class-controllerstate",
+      "methods_count": 0
+    },
+    {
+      "name": "Controller",
+      "module": "backend",
+      "file": "controller.py",
+      "description": "No documentation",
+      "link": "backend/controller.html#class-controller",
+      "methods_count": 32
+    },
+    {
+      "name": "ControllerManager",
+      "module": "backend",
+      "file": "controller.py",
+      "description": "Manages multiple controllers, detects hot\u2011plug events, and tracks<br>which input device (keyboard/mouse vs. controller) was last used.",
+      "link": "backend/controller.html#class-controllermanager",
+      "methods_count": 12
     },
     {
       "name": "LunaEngineException",
@@ -991,7 +1183,7 @@
       "file": "types.py",
       "description": "Tracks input state with proper click detection",
       "link": "backend/types.html#class-inputstate",
-      "methods_count": 6
+      "methods_count": 8
     },
     {
       "name": "ElementsList",
@@ -1364,6 +1556,78 @@
       "is_method": false
     },
     {
+      "name": "_interpolate_linear",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "No documentation",
+      "link": "graphics/camera.html#func-_interpolate_linear",
+      "is_method": false
+    },
+    {
+      "name": "_interpolate_smoothstep",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "No documentation",
+      "link": "graphics/camera.html#func-_interpolate_smoothstep",
+      "is_method": false
+    },
+    {
+      "name": "_interpolate_quadratic_in",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "No documentation",
+      "link": "graphics/camera.html#func-_interpolate_quadratic_in",
+      "is_method": false
+    },
+    {
+      "name": "_interpolate_quadratic_out",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "No documentation",
+      "link": "graphics/camera.html#func-_interpolate_quadratic_out",
+      "is_method": false
+    },
+    {
+      "name": "_interpolate_quadratic_in_out",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "No documentation",
+      "link": "graphics/camera.html#func-_interpolate_quadratic_in_out",
+      "is_method": false
+    },
+    {
+      "name": "_interpolate_cubic_in",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "No documentation",
+      "link": "graphics/camera.html#func-_interpolate_cubic_in",
+      "is_method": false
+    },
+    {
+      "name": "_interpolate_cubic_out",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "No documentation",
+      "link": "graphics/camera.html#func-_interpolate_cubic_out",
+      "is_method": false
+    },
+    {
+      "name": "_interpolate_cubic_in_out",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "No documentation",
+      "link": "graphics/camera.html#func-_interpolate_cubic_in_out",
+      "is_method": false
+    },
+    {
+      "name": "interpolate",
+      "module": "graphics",
+      "file": "camera.py",
+      "description": "Interpolate between start and end using the specified easing function.",
+      "link": "graphics/camera.html#func-interpolate",
+      "is_method": false
+    },
+    {
       "name": "lerp",
       "module": "utils",
       "file": "math_utils.py",
@@ -1521,6 +1785,14 @@
       "file": "math_utils.py",
       "description": "No documentation",
       "link": "utils/math_utils.html#func-get_area_by_radius",
+      "is_method": false
+    },
+    {
+      "name": "get_mid_colors",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "Get the middle color between two colors<br><br>Parameters:<br> &nbsp; &nbsp;color1 (Tuple[int,int,int,float]|Tuple[int,int,int]): First color<br> &nbsp; &nbsp;color2 (Tuple[int,int,int,float]|Tuple[int,int,int]): Second color<br>Returns:<br> &nbsp; &nbsp;Tuple[int,int,int]|Tuple[int,int,int,float]: Middle color",
+      "link": "utils/math_utils.html#func-get_mid_colors",
       "is_method": false
     },
     {
@@ -2302,6 +2574,46 @@
       "is_method": true
     },
     {
+      "name": "get_controllers",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/engine.html#method-lunaengine-get_controllers",
+      "is_method": true
+    },
+    {
+      "name": "get_controller",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/engine.html#method-lunaengine-get_controller",
+      "is_method": true
+    },
+    {
+      "name": "is_using_controller",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/engine.html#method-lunaengine-is_using_controller",
+      "is_method": true
+    },
+    {
+      "name": "on_controller_connect",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Register callback when a controller connects.",
+      "link": "core/engine.html#method-lunaengine-on_controller_connect",
+      "is_method": true
+    },
+    {
+      "name": "on_controller_disconnect",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Register callback when a controller disconnects.",
+      "link": "core/engine.html#method-lunaengine-on_controller_disconnect",
+      "is_method": true
+    },
+    {
       "name": "update_mouse",
       "class": "LunaEngine",
       "module": "core",
@@ -2345,7 +2657,7 @@
       "name": "_render",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Rendering",
+      "description": "Rendering with performance profiling",
       "link": "core/engine.html#method-lunaengine-_render",
       "is_method": true
     },
@@ -2353,7 +2665,7 @@
       "name": "_render_ui_elements",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Render UI elements using the layer manager system.",
+      "description": "Render UI elements with individual profiling if enabled",
       "link": "core/engine.html#method-lunaengine-_render_ui_elements",
       "is_method": true
     },
@@ -2369,7 +2681,7 @@
       "name": "_update_ui_elements",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Update UI elements using the layer manager system.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds",
+      "description": "Update UI elements with individual profiling if enabled",
       "link": "core/engine.html#method-lunaengine-_update_ui_elements",
       "is_method": true
     },
@@ -2379,6 +2691,102 @@
       "module": "core",
       "description": "Process a UI element and all its children with proper event consumption<br><br>Args:<br> &nbsp; &nbsp;root_element (UIElement): The root element to process<br> &nbsp; &nbsp;dt (float): Delta time in seconds",
       "link": "core/engine.html#method-lunaengine-_process_ui_element_tree",
+      "is_method": true
+    },
+    {
+      "name": "enable_performance_profiling",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Enable/disable detailed performance profiling.",
+      "link": "core/engine.html#method-lunaengine-enable_performance_profiling",
+      "is_method": true
+    },
+    {
+      "name": "get_frame_timing_breakdown",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get the timing breakdown (ms) for the last completed frame.",
+      "link": "core/engine.html#method-lunaengine-get_frame_timing_breakdown",
+      "is_method": true
+    },
+    {
+      "name": "get_performance_stats",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Return both FPS stats and frame timing breakdown.",
+      "link": "core/engine.html#method-lunaengine-get_performance_stats",
+      "is_method": true
+    },
+    {
+      "name": "get_update_timing_stats",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get update timing statistics for a specific category",
+      "link": "core/engine.html#method-lunaengine-get_update_timing_stats",
+      "is_method": true
+    },
+    {
+      "name": "get_render_timing_stats",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get render timing statistics for a specific category",
+      "link": "core/engine.html#method-lunaengine-get_render_timing_stats",
+      "is_method": true
+    },
+    {
+      "name": "get_ui_update_stats",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get UI update timing statistics",
+      "link": "core/engine.html#method-lunaengine-get_ui_update_stats",
+      "is_method": true
+    },
+    {
+      "name": "get_ui_render_stats",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get UI render timing statistics",
+      "link": "core/engine.html#method-lunaengine-get_ui_render_stats",
+      "is_method": true
+    },
+    {
+      "name": "get_individual_ui_update_stats",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get individual UI element update timing statistics",
+      "link": "core/engine.html#method-lunaengine-get_individual_ui_update_stats",
+      "is_method": true
+    },
+    {
+      "name": "get_individual_ui_render_stats",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get individual UI element render timing statistics",
+      "link": "core/engine.html#method-lunaengine-get_individual_ui_render_stats",
+      "is_method": true
+    },
+    {
+      "name": "get_scene_update_stats",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get scene update timing statistics",
+      "link": "core/engine.html#method-lunaengine-get_scene_update_stats",
+      "is_method": true
+    },
+    {
+      "name": "get_scene_render_stats",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get scene render timing statistics",
+      "link": "core/engine.html#method-lunaengine-get_scene_render_stats",
+      "is_method": true
+    },
+    {
+      "name": "get_total_frame_time",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get total frame time breakdown",
+      "link": "core/engine.html#method-lunaengine-get_total_frame_time",
       "is_method": true
     },
     {
@@ -2582,6 +2990,14 @@
       "is_method": true
     },
     {
+      "name": "update_window_size",
+      "class": "Scene",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/scene.html#method-scene-update_window_size",
+      "is_method": true
+    },
+    {
       "name": "_add_event_to_handler",
       "class": "Scene",
       "module": "core",
@@ -2630,11 +3046,27 @@
       "is_method": true
     },
     {
+      "name": "_update",
+      "class": "Scene",
+      "module": "core",
+      "description": "Update scene logic with profiling.",
+      "link": "core/scene.html#method-scene-_update",
+      "is_method": true
+    },
+    {
       "name": "render",
       "class": "Scene",
       "module": "core",
       "description": "Render the scene.<br><br>Called every frame to draw the scene content.<br><br>Args:<br> &nbsp; &nbsp;renderer: The renderer to use for drawing operations",
       "link": "core/scene.html#method-scene-render",
+      "is_method": true
+    },
+    {
+      "name": "get_scene_performance_stats",
+      "class": "Scene",
+      "module": "core",
+      "description": "Get performance statistics for this scene",
+      "link": "core/scene.html#method-scene-get_scene_performance_stats",
       "is_method": true
     },
     {
@@ -2982,6 +3414,14 @@
       "is_method": true
     },
     {
+      "name": "convert_mouse_pos",
+      "class": "UIElement",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-uielement-convert_mouse_pos",
+      "is_method": true
+    },
+    {
       "name": "mouse_over",
       "class": "UIElement",
       "module": "ui",
@@ -3166,6 +3606,14 @@
       "is_method": true
     },
     {
+      "name": "get_text",
+      "class": "TextLabel",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-textlabel-get_text",
+      "is_method": true
+    },
+    {
       "name": "update_theme",
       "class": "TextLabel",
       "module": "ui",
@@ -3246,6 +3694,14 @@
       "is_method": true
     },
     {
+      "name": "get_image",
+      "class": "ImageLabel",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-imagelabel-get_image",
+      "is_method": true
+    },
+    {
       "name": "set_size",
       "class": "ImageLabel",
       "module": "ui",
@@ -3291,6 +3747,14 @@
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements.html#method-button-set_text",
+      "is_method": true
+    },
+    {
+      "name": "get_text",
+      "class": "Button",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-button-get_text",
       "is_method": true
     },
     {
@@ -3387,6 +3851,22 @@
       "module": "ui",
       "description": "Set the callback function for click events.<br><br>Args:<br> &nbsp; &nbsp;callback (Callable): Function to call when button is clicked.",
       "link": "ui/elements.html#method-imagebutton-set_on_click",
+      "is_method": true
+    },
+    {
+      "name": "get_image",
+      "class": "ImageButton",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-imagebutton-get_image",
+      "is_method": true
+    },
+    {
+      "name": "set_image",
+      "class": "ImageButton",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-imagebutton-set_image",
       "is_method": true
     },
     {
@@ -3489,7 +3969,7 @@
       "name": "set_text",
       "class": "TextBox",
       "module": "ui",
-      "description": "Set the text content.<br><br>Args:<br> &nbsp; &nbsp;text (str): New text content.",
+      "description": "Set the text content and trigger callback if changed.",
       "link": "ui/elements.html#method-textbox-set_text",
       "is_method": true
     },
@@ -3697,7 +4177,7 @@
       "name": "render",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Render using OpenGL backend",
+      "description": "Render using OpenGL backend, respecting orientation.",
       "link": "ui/elements.html#method-progressbar-render",
       "is_method": true
     },
@@ -3974,10 +4454,34 @@
       "is_method": true
     },
     {
+      "name": "_create_search_box",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-dropdown-_create_search_box",
+      "is_method": true
+    },
+    {
+      "name": "_on_search_text_changed",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-dropdown-_on_search_text_changed",
+      "is_method": true
+    },
+    {
+      "name": "_update_filtered_options",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-dropdown-_update_filtered_options",
+      "is_method": true
+    },
+    {
       "name": "font",
       "class": "Dropdown",
       "module": "ui",
-      "description": "Lazy font loading",
+      "description": "No documentation",
       "link": "ui/elements.html#method-dropdown-font",
       "is_method": true
     },
@@ -3993,7 +4497,7 @@
       "name": "set_theme",
       "class": "Dropdown",
       "module": "ui",
-      "description": "Set dropdown theme",
+      "description": "No documentation",
       "link": "ui/elements.html#method-dropdown-set_theme",
       "is_method": true
     },
@@ -4001,8 +4505,40 @@
       "name": "_get_colors",
       "class": "Dropdown",
       "module": "ui",
-      "description": "Get colors from current theme",
+      "description": "No documentation",
       "link": "ui/elements.html#method-dropdown-_get_colors",
+      "is_method": true
+    },
+    {
+      "name": "_get_visible_options",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-dropdown-_get_visible_options",
+      "is_method": true
+    },
+    {
+      "name": "on_scroll",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-dropdown-on_scroll",
+      "is_method": true
+    },
+    {
+      "name": "_get_scrollbar_track_rect",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Full rectangle of the vertical scrollbar (track + thumb).",
+      "link": "ui/elements.html#method-dropdown-_get_scrollbar_track_rect",
+      "is_method": true
+    },
+    {
+      "name": "_get_scrollbar_thumb_rect",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Rectangle of the scrollbar thumb.",
+      "link": "ui/elements.html#method-dropdown-_get_scrollbar_thumb_rect",
       "is_method": true
     },
     {
@@ -4014,34 +4550,10 @@
       "is_method": true
     },
     {
-      "name": "on_scroll",
-      "class": "Dropdown",
-      "module": "ui",
-      "description": "Handle mouse wheel scrolling",
-      "link": "ui/elements.html#method-dropdown-on_scroll",
-      "is_method": true
-    },
-    {
-      "name": "_get_visible_options",
-      "class": "Dropdown",
-      "module": "ui",
-      "description": "Get the list of option indices that are currently visible",
-      "link": "ui/elements.html#method-dropdown-_get_visible_options",
-      "is_method": true
-    },
-    {
-      "name": "_get_scrollbar_rect",
-      "class": "Dropdown",
-      "module": "ui",
-      "description": "Get the scrollbar rectangle",
-      "link": "ui/elements.html#method-dropdown-_get_scrollbar_rect",
-      "is_method": true
-    },
-    {
       "name": "render",
       "class": "Dropdown",
       "module": "ui",
-      "description": "Render using OpenGL backend",
+      "description": "No documentation",
       "link": "ui/elements.html#method-dropdown-render",
       "is_method": true
     },
@@ -4049,7 +4561,7 @@
       "name": "_draw_arrow_polygon",
       "class": "Dropdown",
       "module": "ui",
-      "description": "Draw arrow polygon in a way compatible with both Pygame and OpenGL.<br><br>Args:<br> &nbsp; &nbsp;renderer: The renderer object<br> &nbsp; &nbsp;points: List of (x, y) points for the polygon<br> &nbsp; &nbsp;color: RGB color tuple",
+      "description": "No documentation",
       "link": "ui/elements.html#method-dropdown-_draw_arrow_polygon",
       "is_method": true
     },
@@ -4057,7 +4569,7 @@
       "name": "_render_expanded_options",
       "class": "Dropdown",
       "module": "ui",
-      "description": "Helper method to render expanded options - WITH OPTION SEPARATORS",
+      "description": "No documentation",
       "link": "ui/elements.html#method-dropdown-_render_expanded_options",
       "is_method": true
     },
@@ -4065,7 +4577,7 @@
       "name": "add_option",
       "class": "Dropdown",
       "module": "ui",
-      "description": "Add an option to the dropdown",
+      "description": "No documentation",
       "link": "ui/elements.html#method-dropdown-add_option",
       "is_method": true
     },
@@ -4073,7 +4585,7 @@
       "name": "remove_option",
       "class": "Dropdown",
       "module": "ui",
-      "description": "Remove an option from the dropdown",
+      "description": "No documentation",
       "link": "ui/elements.html#method-dropdown-remove_option",
       "is_method": true
     },
@@ -4081,7 +4593,7 @@
       "name": "set_selected_index",
       "class": "Dropdown",
       "module": "ui",
-      "description": "Set the selected option by index",
+      "description": "No documentation",
       "link": "ui/elements.html#method-dropdown-set_selected_index",
       "is_method": true
     },
@@ -4089,7 +4601,7 @@
       "name": "set_on_selection_changed",
       "class": "Dropdown",
       "module": "ui",
-      "description": "Set callback for when selection changes",
+      "description": "No documentation",
       "link": "ui/elements.html#method-dropdown-set_on_selection_changed",
       "is_method": true
     },
@@ -4919,10 +5431,594 @@
     },
     {
       "name": "__init__",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Initialize a Pagination element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of pagination control.<br> &nbsp; &nbsp;height (int): Height of pagination control.<br> &nbsp; &nbsp;total_pages (int): Total number of pages.<br> &nbsp; &nbsp;current_page (int): Starting page (1-indexed).<br> &nbsp; &nbsp;max_visible_pages (int): Max page buttons to display.<br> &nbsp; &nbsp;show_prev_next (bool): Show previous/next buttons.<br> &nbsp; &nbsp;show_first_last (bool): Show first/last page buttons.<br> &nbsp; &nbsp;button_style (str): Style of page buttons.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme for styling.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.",
+      "link": "ui/elements.html#method-pagination-__init__",
+      "is_method": true
+    },
+    {
+      "name": "set_page",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Set the current page.<br><br>Args:<br> &nbsp; &nbsp;page (int): New page number (1-indexed).",
+      "link": "ui/elements.html#method-pagination-set_page",
+      "is_method": true
+    },
+    {
+      "name": "set_total_pages",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Set the total number of pages.<br><br>Args:<br> &nbsp; &nbsp;total_pages (int): New total pages.",
+      "link": "ui/elements.html#method-pagination-set_total_pages",
+      "is_method": true
+    },
+    {
+      "name": "set_current_page",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Set the current page.<br><br>Args:<br> &nbsp; &nbsp;page (int): New page number (1-indexed).",
+      "link": "ui/elements.html#method-pagination-set_current_page",
+      "is_method": true
+    },
+    {
+      "name": "next_page",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Go to the next page.",
+      "link": "ui/elements.html#method-pagination-next_page",
+      "is_method": true
+    },
+    {
+      "name": "previous_page",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Go to the previous page.",
+      "link": "ui/elements.html#method-pagination-previous_page",
+      "is_method": true
+    },
+    {
+      "name": "first_page",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Go to the first page.",
+      "link": "ui/elements.html#method-pagination-first_page",
+      "is_method": true
+    },
+    {
+      "name": "last_page",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Go to the last page.",
+      "link": "ui/elements.html#method-pagination-last_page",
+      "is_method": true
+    },
+    {
+      "name": "set_on_page_change",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Set callback for page changes.<br><br>Args:<br> &nbsp; &nbsp;callback (Callable): Function called when page changes.",
+      "link": "ui/elements.html#method-pagination-set_on_page_change",
+      "is_method": true
+    },
+    {
+      "name": "_trigger_page_change",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Trigger page change callback.",
+      "link": "ui/elements.html#method-pagination-_trigger_page_change",
+      "is_method": true
+    },
+    {
+      "name": "_calculate_visible_pages",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Calculate which page numbers to display.<br><br>Returns:<br> &nbsp; &nbsp;List[int]: List of page numbers to show.",
+      "link": "ui/elements.html#method-pagination-_calculate_visible_pages",
+      "is_method": true
+    },
+    {
+      "name": "_create_buttons",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Create or update page navigation buttons.",
+      "link": "ui/elements.html#method-pagination-_create_buttons",
+      "is_method": true
+    },
+    {
+      "name": "_update_button_states",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Update enabled/disabled states of navigation buttons.",
+      "link": "ui/elements.html#method-pagination-_update_button_states",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Update pagination state.",
+      "link": "ui/elements.html#method-pagination-update",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "Render pagination.",
+      "link": "ui/elements.html#method-pagination-render",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Initialize a TextArea element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of text area.<br> &nbsp; &nbsp;height (int): Height of text area.<br> &nbsp; &nbsp;text (str): Initial text content.<br> &nbsp; &nbsp;font_size (int): Font size for text.<br> &nbsp; &nbsp;font_name (Optional[str]): Font name.<br> &nbsp; &nbsp;line_numbers (bool): Show line numbers.<br> &nbsp; &nbsp;word_wrap (bool): Enable word wrapping.<br> &nbsp; &nbsp;read_only (bool): Make text read-only.<br> &nbsp; &nbsp;tab_size (int): Spaces per tab.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point.<br> &nbsp; &nbsp;theme (ThemeType): Theme for styling.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.",
+      "link": "ui/elements.html#method-textarea-__init__",
+      "is_method": true
+    },
+    {
+      "name": "font",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Get font with lazy loading.",
+      "link": "ui/elements.html#method-textarea-font",
+      "is_method": true
+    },
+    {
+      "name": "get_text",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Get the text content.",
+      "link": "ui/elements.html#method-textarea-get_text",
+      "is_method": true
+    },
+    {
+      "name": "set_text",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Set the text content.",
+      "link": "ui/elements.html#method-textarea-set_text",
+      "is_method": true
+    },
+    {
+      "name": "_update_dimensions",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Update text area dimensions based on settings.",
+      "link": "ui/elements.html#method-textarea-_update_dimensions",
+      "is_method": true
+    },
+    {
+      "name": "_update_text_buffer",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Update text buffer when text changes.",
+      "link": "ui/elements.html#method-textarea-_update_text_buffer",
+      "is_method": true
+    },
+    {
+      "name": "_save_to_undo_stack",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Save current state to undo stack.",
+      "link": "ui/elements.html#method-textarea-_save_to_undo_stack",
+      "is_method": true
+    },
+    {
+      "name": "undo",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Undo the last change.",
+      "link": "ui/elements.html#method-textarea-undo",
+      "is_method": true
+    },
+    {
+      "name": "redo",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Redo the last undone change.",
+      "link": "ui/elements.html#method-textarea-redo",
+      "is_method": true
+    },
+    {
+      "name": "_get_visible_lines",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Get list of line indices visible in current view.",
+      "link": "ui/elements.html#method-textarea-_get_visible_lines",
+      "is_method": true
+    },
+    {
+      "name": "_get_cursor_screen_pos",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Get cursor position in screen coordinates.",
+      "link": "ui/elements.html#method-textarea-_get_cursor_screen_pos",
+      "is_method": true
+    },
+    {
+      "name": "_scroll_to_cursor",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Scroll to ensure cursor is visible.",
+      "link": "ui/elements.html#method-textarea-_scroll_to_cursor",
+      "is_method": true
+    },
+    {
+      "name": "_insert_text",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Insert text at cursor position.",
+      "link": "ui/elements.html#method-textarea-_insert_text",
+      "is_method": true
+    },
+    {
+      "name": "_delete_selection",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Delete currently selected text.",
+      "link": "ui/elements.html#method-textarea-_delete_selection",
+      "is_method": true
+    },
+    {
+      "name": "_get_selection_text",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Get text from current selection.",
+      "link": "ui/elements.html#method-textarea-_get_selection_text",
+      "is_method": true
+    },
+    {
+      "name": "copy",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Copy selected text to clipboard.",
+      "link": "ui/elements.html#method-textarea-copy",
+      "is_method": true
+    },
+    {
+      "name": "cut",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Cut selected text to clipboard.",
+      "link": "ui/elements.html#method-textarea-cut",
+      "is_method": true
+    },
+    {
+      "name": "paste",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Paste text from clipboard.",
+      "link": "ui/elements.html#method-textarea-paste",
+      "is_method": true
+    },
+    {
+      "name": "select_all",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Select all text.",
+      "link": "ui/elements.html#method-textarea-select_all",
+      "is_method": true
+    },
+    {
+      "name": "_move_cursor",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Move cursor position.",
+      "link": "ui/elements.html#method-textarea-_move_cursor",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Update text area state.",
+      "link": "ui/elements.html#method-textarea-update",
+      "is_method": true
+    },
+    {
+      "name": "on_key_down",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Handle key down events for text editing.<br><br>Args:<br> &nbsp; &nbsp;event (pygame.event.Event): Key down event.",
+      "link": "ui/elements.html#method-textarea-on_key_down",
+      "is_method": true
+    },
+    {
+      "name": "on_key_up",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Handle key up events for text input.<br><br>Args:<br> &nbsp; &nbsp;event (pygame.event.Event): Key up event.",
+      "link": "ui/elements.html#method-textarea-on_key_up",
+      "is_method": true
+    },
+    {
+      "name": "_get_cursor_from_mouse",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Get cursor position from mouse coordinates.",
+      "link": "ui/elements.html#method-textarea-_get_cursor_from_mouse",
+      "is_method": true
+    },
+    {
+      "name": "handle_key_event",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Handle keyboard event.",
+      "link": "ui/elements.html#method-textarea-handle_key_event",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Render text area.",
+      "link": "ui/elements.html#method-textarea-render",
+      "is_method": true
+    },
+    {
+      "name": "_draw_selection_highlight",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Draw selection highlight for a line.",
+      "link": "ui/elements.html#method-textarea-_draw_selection_highlight",
+      "is_method": true
+    },
+    {
+      "name": "_calculate_text_width",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "Calculate pixel width of text (with tab support).",
+      "link": "ui/elements.html#method-textarea-_calculate_text_width",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Initialize a FileFinder element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of element.<br> &nbsp; &nbsp;height (int): Height of element.<br> &nbsp; &nbsp;file_path (str): Initial file path.<br> &nbsp; &nbsp;file_filter (Optional[List[str]]): File extension filters (e.g., [&#x27;.txt&#x27;, &#x27;.py&#x27;]).<br> &nbsp; &nbsp;dialog_title (str): Title for file dialog.<br> &nbsp; &nbsp;button_text (str): Text for browse button.<br> &nbsp; &nbsp;show_icon (bool): Show file icon.<br> &nbsp; &nbsp;icon_path (Optional[str]): Custom icon path.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point.<br> &nbsp; &nbsp;theme (ThemeType): Theme for styling.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.",
+      "link": "ui/elements.html#method-filefinder-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_check_tkinter",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Check if tkinter is available.",
+      "link": "ui/elements.html#method-filefinder-_check_tkinter",
+      "is_method": true
+    },
+    {
+      "name": "_create_child_elements",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Create child UI elements.",
+      "link": "ui/elements.html#method-filefinder-_create_child_elements",
+      "is_method": true
+    },
+    {
+      "name": "_get_default_icon",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Create default file icon.",
+      "link": "ui/elements.html#method-filefinder-_get_default_icon",
+      "is_method": true
+    },
+    {
+      "name": "set_file_path",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Set the file path programmatically.<br><br>Args:<br> &nbsp; &nbsp;path (str): New file path.",
+      "link": "ui/elements.html#method-filefinder-set_file_path",
+      "is_method": true
+    },
+    {
+      "name": "_update_icon",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Update icon based on current file type.",
+      "link": "ui/elements.html#method-filefinder-_update_icon",
+      "is_method": true
+    },
+    {
+      "name": "_open_file_dialog",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Open file selection dialog.",
+      "link": "ui/elements.html#method-filefinder-_open_file_dialog",
+      "is_method": true
+    },
+    {
+      "name": "_open_tkinter_dialog",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Open tkinter file dialog.",
+      "link": "ui/elements.html#method-filefinder-_open_tkinter_dialog",
+      "is_method": true
+    },
+    {
+      "name": "_open_simple_dialog",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Open simple pygame-based file dialog.",
+      "link": "ui/elements.html#method-filefinder-_open_simple_dialog",
+      "is_method": true
+    },
+    {
+      "name": "_get_initial_directory",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Get initial directory for file dialog.",
+      "link": "ui/elements.html#method-filefinder-_get_initial_directory",
+      "is_method": true
+    },
+    {
+      "name": "set_on_file_selected",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Set callback for when file is selected.<br><br>Args:<br> &nbsp; &nbsp;callback (Callable): Function called with selected file path.",
+      "link": "ui/elements.html#method-filefinder-set_on_file_selected",
+      "is_method": true
+    },
+    {
+      "name": "get_file_path",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Get current file path.",
+      "link": "ui/elements.html#method-filefinder-get_file_path",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Update file finder state.",
+      "link": "ui/elements.html#method-filefinder-update",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "FileFinder",
+      "module": "ui",
+      "description": "Render file finder.",
+      "link": "ui/elements.html#method-filefinder-render",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Initialize a ChartVisualizer.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate.<br> &nbsp; &nbsp;y (int): Y coordinate.<br> &nbsp; &nbsp;width (int): Width of the element.<br> &nbsp; &nbsp;height (int): Height of the element.<br> &nbsp; &nbsp;data (Optional[List[float]]): Numeric data to plot.<br> &nbsp; &nbsp;labels (Optional[List[str]]): Labels for each data point/slice.<br> &nbsp; &nbsp;colors (Optional[List[Tuple[int,int,int]]]): RGB colors per data point.<br> &nbsp; &nbsp;chart_type (str): &#x27;bar&#x27;, &#x27;pie&#x27;, &#x27;line&#x27;, or &#x27;scatter&#x27;.<br> &nbsp; &nbsp;orientation (str): For bar charts: &#x27;vertical&#x27; or &#x27;horizontal&#x27;.<br> &nbsp; &nbsp;title (str): Chart title displayed at the top.<br> &nbsp; &nbsp;show_labels (bool): Whether to draw data labels.<br> &nbsp; &nbsp;show_legend (bool): Whether to draw a legend at the bottom.<br> &nbsp; &nbsp;min_value (Optional[float]): Override minimum Y value (for non-pie charts).<br> &nbsp; &nbsp;max_value (Optional[float]): Override maximum Y value.<br> &nbsp; &nbsp;root_point (Tuple[float,float]): Anchor point.<br> &nbsp; &nbsp;theme (ThemeType): Theme to apply.<br> &nbsp; &nbsp;element_id (Optional[str]): Unique element ID.",
+      "link": "ui/elements.html#method-chartvisualizer-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_default_colors",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Return a default color palette for charts.",
+      "link": "ui/elements.html#method-chartvisualizer-_default_colors",
+      "is_method": true
+    },
+    {
+      "name": "title_font",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-chartvisualizer-title_font",
+      "is_method": true
+    },
+    {
+      "name": "label_font",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-chartvisualizer-label_font",
+      "is_method": true
+    },
+    {
+      "name": "legend_font",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-chartvisualizer-legend_font",
+      "is_method": true
+    },
+    {
+      "name": "set_data",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Update the chart&#x27;s data, optionally with a smooth transition.<br><br>Args:<br> &nbsp; &nbsp;data (List[float]): New data values.<br> &nbsp; &nbsp;labels (Optional[List[str]]): New labels (if None, existing labels are kept).<br> &nbsp; &nbsp;animate (bool): If True, transitions over &#x27;duration&#x27; seconds.<br> &nbsp; &nbsp;duration (float): Duration of animation in seconds.",
+      "link": "ui/elements.html#method-chartvisualizer-set_data",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Update animations and recalculate if needed.",
+      "link": "ui/elements.html#method-chartvisualizer-update",
+      "is_method": true
+    },
+    {
+      "name": "_recalc",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Recalculate internal data (normalized values, angles) for rendering.",
+      "link": "ui/elements.html#method-chartvisualizer-_recalc",
+      "is_method": true
+    },
+    {
+      "name": "_get_color",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Return the color for a given data index, cycling if necessary.",
+      "link": "ui/elements.html#method-chartvisualizer-_get_color",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Main render entry point \u2013 draws background, title, chart, and legend.",
+      "link": "ui/elements.html#method-chartvisualizer-render",
+      "is_method": true
+    },
+    {
+      "name": "_render_bar",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Draw a bar chart (vertical or horizontal) with labels.",
+      "link": "ui/elements.html#method-chartvisualizer-_render_bar",
+      "is_method": true
+    },
+    {
+      "name": "_render_pie",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Draw a pie chart with optional labels.",
+      "link": "ui/elements.html#method-chartvisualizer-_render_pie",
+      "is_method": true
+    },
+    {
+      "name": "_render_line",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Draw a line chart with data points and labels.",
+      "link": "ui/elements.html#method-chartvisualizer-_render_line",
+      "is_method": true
+    },
+    {
+      "name": "_render_scatter",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Draw a scatter plot (points only) with optional labels.",
+      "link": "ui/elements.html#method-chartvisualizer-_render_scatter",
+      "is_method": true
+    },
+    {
+      "name": "_render_legend",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Draw a simple color\u2011coded legend at the bottom.",
+      "link": "ui/elements.html#method-chartvisualizer-_render_legend",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
       "class": "UILayerManager",
       "module": "ui",
       "description": "Initialize the layer manager with empty layers.",
       "link": "ui/layer_manager.html#method-uilayermanager-__init__",
+      "is_method": true
+    },
+    {
+      "name": "get_all_elements",
+      "class": "UILayerManager",
+      "module": "ui",
+      "description": "Get all UI elements across all layers.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: A list of all UI elements",
+      "link": "ui/layer_manager.html#method-uilayermanager-get_all_elements",
       "is_method": true
     },
     {
@@ -6158,10 +7254,138 @@
       "is_method": true
     },
     {
+      "name": "get_target_position",
+      "class": "FollowStrategy",
+      "module": "graphics",
+      "description": "Return the desired world position of the camera (center).",
+      "link": "graphics/camera.html#method-followstrategy-get_target_position",
+      "is_method": true
+    },
+    {
+      "name": "get_target_position",
+      "class": "SimpleFollow",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-simplefollow-get_target_position",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "FixedFollow",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-fixedfollow-__init__",
+      "is_method": true
+    },
+    {
+      "name": "get_target_position",
+      "class": "FixedFollow",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-fixedfollow-get_target_position",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "PlatformerFollow",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-platformerfollow-__init__",
+      "is_method": true
+    },
+    {
+      "name": "get_target_position",
+      "class": "PlatformerFollow",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-platformerfollow-get_target_position",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "TopDownFollow",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-topdownfollow-__init__",
+      "is_method": true
+    },
+    {
+      "name": "get_target_position",
+      "class": "TopDownFollow",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-topdownfollow-get_target_position",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "CameraEffect",
+      "module": "graphics",
+      "description": "Update effect state. Return True if still active, False when finished.",
+      "link": "graphics/camera.html#method-cameraeffect-update",
+      "is_method": true
+    },
+    {
+      "name": "apply",
+      "class": "CameraEffect",
+      "module": "graphics",
+      "description": "Modify the camera&#x27;s offset, rotation, zoom, etc.",
+      "link": "graphics/camera.html#method-cameraeffect-apply",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "ShakeEffect",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-shakeeffect-__init__",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "ShakeEffect",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-shakeeffect-update",
+      "is_method": true
+    },
+    {
+      "name": "apply",
+      "class": "ShakeEffect",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-shakeeffect-apply",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "TraumaEffect",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-traumaeffect-__init__",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "TraumaEffect",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-traumaeffect-update",
+      "is_method": true
+    },
+    {
+      "name": "apply",
+      "class": "TraumaEffect",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-traumaeffect-apply",
+      "is_method": true
+    },
+    {
       "name": "__init__",
       "class": "ParallaxLayer",
       "module": "graphics",
-      "description": "Inicializa uma camada de parallax.<br><br>Args:<br> &nbsp; &nbsp;surface: Superf\u00edcie pygame para a camada<br> &nbsp; &nbsp;speed_factor: Fator de velocidade (0.0 = est\u00e1tico, 1.0 = move com c\u00e2mera)<br> &nbsp; &nbsp;tile_mode: Se True, a imagem se repete infinitamente<br> &nbsp; &nbsp;offset: Offset inicial da camada",
+      "description": "No documentation",
       "link": "graphics/camera.html#method-parallaxlayer-__init__",
       "is_method": true
     },
@@ -6169,8 +7393,24 @@
       "name": "update",
       "class": "ParallaxLayer",
       "module": "graphics",
-      "description": "Atualiza a posi\u00e7\u00e3o da camada baseado na posi\u00e7\u00e3o da c\u00e2mera.",
+      "description": "Update the layer&#x27;s world offset based on camera position.",
       "link": "graphics/camera.html#method-parallaxlayer-update",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "ParallaxLayer",
+      "module": "graphics",
+      "description": "Render the layer using the provided renderer.",
+      "link": "graphics/camera.html#method-parallaxlayer-render",
+      "is_method": true
+    },
+    {
+      "name": "_draw_surface",
+      "class": "ParallaxLayer",
+      "module": "graphics",
+      "description": "Renderer\u2011agnostic surface drawing.",
+      "link": "graphics/camera.html#method-parallaxlayer-_draw_surface",
       "is_method": true
     },
     {
@@ -6185,7 +7425,7 @@
       "name": "add_layer",
       "class": "ParallaxBackground",
       "module": "graphics",
-      "description": "Adiciona uma camada ao sistema de parallax.<br><br>Args:<br> &nbsp; &nbsp;surface: Superf\u00edcie pygame<br> &nbsp; &nbsp;speed_factor: Fator de velocidade do parallax<br> &nbsp; &nbsp;tile_mode: Se a imagem deve se repetir<br> &nbsp; &nbsp;offset: Offset inicial<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParallaxLayer: A camada criada",
+      "description": "Add a new layer and return it.",
       "link": "graphics/camera.html#method-parallaxbackground-add_layer",
       "is_method": true
     },
@@ -6193,7 +7433,7 @@
       "name": "remove_layer",
       "class": "ParallaxBackground",
       "module": "graphics",
-      "description": "Remove uma camada do sistema de parallax",
+      "description": "Remove a layer if present.",
       "link": "graphics/camera.html#method-parallaxbackground-remove_layer",
       "is_method": true
     },
@@ -6201,7 +7441,7 @@
       "name": "clear_layers",
       "class": "ParallaxBackground",
       "module": "graphics",
-      "description": "Remove todas as camadas",
+      "description": "Remove all layers.",
       "link": "graphics/camera.html#method-parallaxbackground-clear_layers",
       "is_method": true
     },
@@ -6209,7 +7449,7 @@
       "name": "update",
       "class": "ParallaxBackground",
       "module": "graphics",
-      "description": "Atualiza todas as camadas de parallax",
+      "description": "Update all layers.",
       "link": "graphics/camera.html#method-parallaxbackground-update",
       "is_method": true
     },
@@ -6217,39 +7457,15 @@
       "name": "render",
       "class": "ParallaxBackground",
       "module": "graphics",
-      "description": "Renderiza todas as camadas de parallax de forma otimizada.<br><br>Returns:<br> &nbsp; &nbsp;bool: True se o parallax foi renderizado, False caso contr\u00e1rio",
+      "description": "Render all layers in order (back to front).",
       "link": "graphics/camera.html#method-parallaxbackground-render",
-      "is_method": true
-    },
-    {
-      "name": "_render_layer",
-      "class": "ParallaxBackground",
-      "module": "graphics",
-      "description": "Renderiza uma \u00fanica camada de parallax de forma otimizada",
-      "link": "graphics/camera.html#method-parallaxbackground-_render_layer",
-      "is_method": true
-    },
-    {
-      "name": "_render_tiled_layer",
-      "class": "ParallaxBackground",
-      "module": "graphics",
-      "description": "Renderiza camada em modo tile (repeti\u00e7\u00e3o infinita)",
-      "link": "graphics/camera.html#method-parallaxbackground-_render_tiled_layer",
-      "is_method": true
-    },
-    {
-      "name": "_render_single_layer",
-      "class": "ParallaxBackground",
-      "module": "graphics",
-      "description": "Renderiza camada em modo \u00fanico (uma \u00fanica c\u00f3pia)",
-      "link": "graphics/camera.html#method-parallaxbackground-_render_single_layer",
       "is_method": true
     },
     {
       "name": "__init__",
       "class": "Camera",
       "module": "graphics",
-      "description": "Initialize camera with viewport dimensions.",
+      "description": "No documentation",
       "link": "graphics/camera.html#method-camera-__init__",
       "is_method": true
     },
@@ -6257,7 +7473,7 @@
       "name": "position",
       "class": "Camera",
       "module": "graphics",
-      "description": "Get camera position with shake offset applied",
+      "description": "Camera position with active shake offset applied.",
       "link": "graphics/camera.html#method-camera-position",
       "is_method": true
     },
@@ -6265,7 +7481,7 @@
       "name": "position",
       "class": "Camera",
       "module": "graphics",
-      "description": "Set camera base position (without shake)",
+      "description": "Set the base camera position (center of viewport).",
       "link": "graphics/camera.html#method-camera-position",
       "is_method": true
     },
@@ -6273,127 +7489,71 @@
       "name": "base_position",
       "class": "Camera",
       "module": "graphics",
-      "description": "Get camera base position without shake offset",
+      "description": "Base camera position without shake offset.",
       "link": "graphics/camera.html#method-camera-base_position",
+      "is_method": true
+    },
+    {
+      "name": "mode",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Legacy: get current follow mode (maps to strategy).",
+      "link": "graphics/camera.html#method-camera-mode",
+      "is_method": true
+    },
+    {
+      "name": "mode",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Legacy: set follow mode and update strategy accordingly.",
+      "link": "graphics/camera.html#method-camera-mode",
+      "is_method": true
+    },
+    {
+      "name": "viewport_rect",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "World rectangle visible through the camera (topleft in world coordinates).",
+      "link": "graphics/camera.html#method-camera-viewport_rect",
       "is_method": true
     },
     {
       "name": "set_target",
       "class": "Camera",
       "module": "graphics",
-      "description": "Set camera target to follow.",
+      "description": "Set the camera target. If mode is provided, it updates the follow strategy.",
       "link": "graphics/camera.html#method-camera-set_target",
+      "is_method": true
+    },
+    {
+      "name": "set_follow_strategy",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Set a custom follow strategy.",
+      "link": "graphics/camera.html#method-camera-set_follow_strategy",
       "is_method": true
     },
     {
       "name": "set_bounds",
       "class": "Camera",
       "module": "graphics",
-      "description": "Set camera movement boundaries.",
+      "description": "Set world boundaries (legacy).",
       "link": "graphics/camera.html#method-camera-set_bounds",
       "is_method": true
     },
     {
-      "name": "update",
+      "name": "set_zoom",
       "class": "Camera",
       "module": "graphics",
-      "description": "Update camera position and effects.",
-      "link": "graphics/camera.html#method-camera-update",
-      "is_method": true
-    },
-    {
-      "name": "_update_renderer_camera_position",
-      "class": "Camera",
-      "module": "graphics",
-      "description": "Update camera position in both renderers",
-      "link": "graphics/camera.html#method-camera-_update_renderer_camera_position",
-      "is_method": true
-    },
-    {
-      "name": "_update_follow",
-      "class": "Camera",
-      "module": "graphics",
-      "description": "Update camera position based on follow mode",
-      "link": "graphics/camera.html#method-camera-_update_follow",
-      "is_method": true
-    },
-    {
-      "name": "_get_target_position",
-      "class": "Camera",
-      "module": "graphics",
-      "description": "Extract position from target object",
-      "link": "graphics/camera.html#method-camera-_get_target_position",
-      "is_method": true
-    },
-    {
-      "name": "_update_platformer_mode",
-      "class": "Camera",
-      "module": "graphics",
-      "description": "Platformer-style camera with deadzone",
-      "link": "graphics/camera.html#method-camera-_update_platformer_mode",
-      "is_method": true
-    },
-    {
-      "name": "_update_topdown_mode",
-      "class": "Camera",
-      "module": "graphics",
-      "description": "Top-down RPG style camera",
-      "link": "graphics/camera.html#method-camera-_update_topdown_mode",
-      "is_method": true
-    },
-    {
-      "name": "_apply_smooth_movement",
-      "class": "Camera",
-      "module": "graphics",
-      "description": "Apply smooth interpolation to camera position",
-      "link": "graphics/camera.html#method-camera-_apply_smooth_movement",
-      "is_method": true
-    },
-    {
-      "name": "_apply_zoom",
-      "class": "Camera",
-      "module": "graphics",
-      "description": "Apply smooth zoom interpolation",
-      "link": "graphics/camera.html#method-camera-_apply_zoom",
-      "is_method": true
-    },
-    {
-      "name": "_apply_shake",
-      "class": "Camera",
-      "module": "graphics",
-      "description": "Apply camera shake effects",
-      "link": "graphics/camera.html#method-camera-_apply_shake",
-      "is_method": true
-    },
-    {
-      "name": "_update_trauma_shake",
-      "class": "Camera",
-      "module": "graphics",
-      "description": "Update trauma-based shake",
-      "link": "graphics/camera.html#method-camera-_update_trauma_shake",
-      "is_method": true
-    },
-    {
-      "name": "_update_positional_shake",
-      "class": "Camera",
-      "module": "graphics",
-      "description": "Update simple positional shake",
-      "link": "graphics/camera.html#method-camera-_update_positional_shake",
-      "is_method": true
-    },
-    {
-      "name": "_apply_bounds",
-      "class": "Camera",
-      "module": "graphics",
-      "description": "Constrain camera within boundaries",
-      "link": "graphics/camera.html#method-camera-_apply_bounds",
+      "description": "Set target zoom level.",
+      "link": "graphics/camera.html#method-camera-set_zoom",
       "is_method": true
     },
     {
       "name": "shake",
       "class": "Camera",
       "module": "graphics",
-      "description": "Start camera shake effect.",
+      "description": "Start a camera shake effect.",
       "link": "graphics/camera.html#method-camera-shake",
       "is_method": true
     },
@@ -6401,39 +7561,95 @@
       "name": "add_trauma",
       "class": "Camera",
       "module": "graphics",
-      "description": "Add trauma for trauma-based shake.",
+      "description": "Add trauma (if a TraumaEffect exists, increase it; otherwise create one).",
       "link": "graphics/camera.html#method-camera-add_trauma",
       "is_method": true
     },
     {
-      "name": "set_zoom",
+      "name": "add_effect",
       "class": "Camera",
       "module": "graphics",
-      "description": "Set camera zoom level.",
-      "link": "graphics/camera.html#method-camera-set_zoom",
+      "description": "Add a new camera effect (will be updated/removed automatically).",
+      "link": "graphics/camera.html#method-camera-add_effect",
       "is_method": true
     },
     {
-      "name": "convert_size_zoom",
+      "name": "remove_effect",
       "class": "Camera",
       "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/camera.html#method-camera-convert_size_zoom",
+      "description": "Remove a specific effect.",
+      "link": "graphics/camera.html#method-camera-remove_effect",
       "is_method": true
     },
     {
-      "name": "convert_size_zoom_list",
+      "name": "clear_effects",
       "class": "Camera",
       "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/camera.html#method-camera-convert_size_zoom_list",
+      "description": "Remove all active effects.",
+      "link": "graphics/camera.html#method-camera-clear_effects",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Update camera position, zoom, effects, and parallax.",
+      "link": "graphics/camera.html#method-camera-update",
+      "is_method": true
+    },
+    {
+      "name": "_apply_smooth_movement",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Interpolate _position towards target_position.",
+      "link": "graphics/camera.html#method-camera-_apply_smooth_movement",
+      "is_method": true
+    },
+    {
+      "name": "_apply_smooth_zoom",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Interpolate zoom towards target_zoom.",
+      "link": "graphics/camera.html#method-camera-_apply_smooth_zoom",
+      "is_method": true
+    },
+    {
+      "name": "_update_effects",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Update all active effects and remove finished ones.",
+      "link": "graphics/camera.html#method-camera-_update_effects",
+      "is_method": true
+    },
+    {
+      "name": "_apply_constraints",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Apply world bounds and zoom limits.",
+      "link": "graphics/camera.html#method-camera-_apply_constraints",
+      "is_method": true
+    },
+    {
+      "name": "_update_viewport_rect",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Recalculate viewport_rect based on current position and zoom.",
+      "link": "graphics/camera.html#method-camera-_update_viewport_rect",
+      "is_method": true
+    },
+    {
+      "name": "_update_renderer_camera_position",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Push camera position to the renderer.",
+      "link": "graphics/camera.html#method-camera-_update_renderer_camera_position",
       "is_method": true
     },
     {
       "name": "world_to_screen",
       "class": "Camera",
       "module": "graphics",
-      "description": "Convert world coordinates to screen coordinates<br><br>Parameters:<br> &nbsp; &nbsp;world_pos: pygame.math.Vector2 or Tuple<br> &nbsp; &nbsp;vector_type: bool = True<br>Returns:<br> &nbsp; &nbsp;pygame.math.Vector2 or Tuple",
+      "description": "Convert world coordinates to screen pixels (top\u2011left origin).",
       "link": "graphics/camera.html#method-camera-world_to_screen",
       "is_method": true
     },
@@ -6441,7 +7657,7 @@
       "name": "world_to_screen_list",
       "class": "Camera",
       "module": "graphics",
-      "description": "No documentation",
+      "description": "Batch conversion for lists of world positions.",
       "link": "graphics/camera.html#method-camera-world_to_screen_list",
       "is_method": true
     },
@@ -6449,7 +7665,7 @@
       "name": "screen_to_world",
       "class": "Camera",
       "module": "graphics",
-      "description": "Converts the screen position to world position<br><br>Worlds position are like: 0,0 is the center of the world<br><br>Parameters:<br> &nbsp; &nbsp;screen_pos: pygame.math.Vector2 or Tuple<br>Returns:<br> &nbsp; &nbsp;pygame.math.Vector2",
+      "description": "Convert screen pixel coordinates to world coordinates.",
       "link": "graphics/camera.html#method-camera-screen_to_world",
       "is_method": true
     },
@@ -6457,7 +7673,7 @@
       "name": "screen_to_world_list",
       "class": "Camera",
       "module": "graphics",
-      "description": "No documentation",
+      "description": "Batch conversion for lists of screen positions.",
       "link": "graphics/camera.html#method-camera-screen_to_world_list",
       "is_method": true
     },
@@ -6465,15 +7681,31 @@
       "name": "screen_to_world_vector",
       "class": "Camera",
       "module": "graphics",
-      "description": "Convert screen vector to world vector (ignores camera position).",
+      "description": "Convert a screen vector (e.g., movement) to world vector (ignores viewport offset).",
       "link": "graphics/camera.html#method-camera-screen_to_world_vector",
+      "is_method": true
+    },
+    {
+      "name": "convert_size_zoom",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Scale a size from world units to screen pixels, or vice\u2011versa.",
+      "link": "graphics/camera.html#method-camera-convert_size_zoom",
+      "is_method": true
+    },
+    {
+      "name": "convert_size_zoom_list",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Batch version of convert_size_zoom.",
+      "link": "graphics/camera.html#method-camera-convert_size_zoom_list",
       "is_method": true
     },
     {
       "name": "get_visible_rect",
       "class": "Camera",
       "module": "graphics",
-      "description": "Get the visible world area as a rectangle.",
+      "description": "Alias for viewport_rect.",
       "link": "graphics/camera.html#method-camera-get_visible_rect",
       "is_method": true
     },
@@ -6481,15 +7713,23 @@
       "name": "is_visible",
       "class": "Camera",
       "module": "graphics",
-      "description": "Check if a world position is visible on screen.",
+      "description": "Check if a world point is inside the viewport (plus optional margin).",
       "link": "graphics/camera.html#method-camera-is_visible",
+      "is_method": true
+    },
+    {
+      "name": "_get_target_position",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Extract the world position of the current target (if any).",
+      "link": "graphics/camera.html#method-camera-_get_target_position",
       "is_method": true
     },
     {
       "name": "add_parallax_layer",
       "class": "Camera",
       "module": "graphics",
-      "description": "Adiciona uma camada ao sistema de parallax da c\u00e2mera.<br><br>Args:<br> &nbsp; &nbsp;surface: Superf\u00edcie pygame para a camada<br> &nbsp; &nbsp;speed_factor: Fator de velocidade do parallax (0.0 = est\u00e1tico, 1.0 = move com c\u00e2mera)<br> &nbsp; &nbsp;tile_mode: Se a imagem deve se repetir infinitamente<br> &nbsp; &nbsp;offset: Offset inicial da camada<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParallaxLayer: A camada criada",
+      "description": "Add a new parallax layer to the camera.",
       "link": "graphics/camera.html#method-camera-add_parallax_layer",
       "is_method": true
     },
@@ -6497,7 +7737,7 @@
       "name": "remove_parallax_layer",
       "class": "Camera",
       "module": "graphics",
-      "description": "Remove uma camada do sistema de parallax",
+      "description": "Remove a parallax layer.",
       "link": "graphics/camera.html#method-camera-remove_parallax_layer",
       "is_method": true
     },
@@ -6505,7 +7745,7 @@
       "name": "clear_parallax_layers",
       "class": "Camera",
       "module": "graphics",
-      "description": "Remove todas as camadas de parallax",
+      "description": "Remove all parallax layers.",
       "link": "graphics/camera.html#method-camera-clear_parallax_layers",
       "is_method": true
     },
@@ -6513,7 +7753,7 @@
       "name": "render_parallax",
       "class": "Camera",
       "module": "graphics",
-      "description": "Renderiza o sistema de parallax.<br><br>Returns:<br> &nbsp; &nbsp;bool: True se o parallax foi renderizado, False caso contr\u00e1rio",
+      "description": "Render the parallax background.",
       "link": "graphics/camera.html#method-camera-render_parallax",
       "is_method": true
     },
@@ -6521,7 +7761,7 @@
       "name": "enable_parallax",
       "class": "Camera",
       "module": "graphics",
-      "description": "Habilita ou desabilita o sistema de parallax",
+      "description": "Enable/disable parallax rendering.",
       "link": "graphics/camera.html#method-camera-enable_parallax",
       "is_method": true
     },
@@ -6529,7 +7769,7 @@
       "name": "get_parallax_layer_count",
       "class": "Camera",
       "module": "graphics",
-      "description": "Retorna o n\u00famero de camadas de parallax",
+      "description": "Number of active parallax layers.",
       "link": "graphics/camera.html#method-camera-get_parallax_layer_count",
       "is_method": true
     },
@@ -7175,10 +8415,274 @@
     },
     {
       "name": "__init__",
+      "class": "TimeProfile",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-timeprofile-__init__",
+      "is_method": true
+    },
+    {
+      "name": "start",
+      "class": "TimeProfile",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-timeprofile-start",
+      "is_method": true
+    },
+    {
+      "name": "stop",
+      "class": "TimeProfile",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-timeprofile-stop",
+      "is_method": true
+    },
+    {
+      "name": "_insert_new_history",
+      "class": "TimeProfile",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-timeprofile-_insert_new_history",
+      "is_method": true
+    },
+    {
+      "name": "duration",
+      "class": "TimeProfile",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-timeprofile-duration",
+      "is_method": true
+    },
+    {
+      "name": "record_current",
+      "class": "TimeProfile",
+      "module": "utils",
+      "description": "Record the current duration into history.",
+      "link": "utils/performance.html#method-timeprofile-record_current",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performanceprofiler-__init__",
+      "is_method": true
+    },
+    {
+      "name": "enable",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performanceprofiler-enable",
+      "is_method": true
+    },
+    {
+      "name": "disable",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performanceprofiler-disable",
+      "is_method": true
+    },
+    {
+      "name": "is_enabled",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performanceprofiler-is_enabled",
+      "is_method": true
+    },
+    {
+      "name": "get_timer",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performanceprofiler-get_timer",
+      "is_method": true
+    },
+    {
+      "name": "get_all_timers",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performanceprofiler-get_all_timers",
+      "is_method": true
+    },
+    {
+      "name": "get_timers_list",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performanceprofiler-get_timers_list",
+      "is_method": true
+    },
+    {
+      "name": "start_timer",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performanceprofiler-start_timer",
+      "is_method": true
+    },
+    {
+      "name": "stop_timer",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performanceprofiler-stop_timer",
+      "is_method": true
+    },
+    {
+      "name": "create_timer",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performanceprofiler-create_timer",
+      "is_method": true
+    },
+    {
+      "name": "begin_frame",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "Begin a new frame of profiling",
+      "link": "utils/performance.html#method-performanceprofiler-begin_frame",
+      "is_method": true
+    },
+    {
+      "name": "end_frame",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "End current frame: record all used timers and store durations.",
+      "link": "utils/performance.html#method-performanceprofiler-end_frame",
+      "is_method": true
+    },
+    {
+      "name": "get_frame_timings",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "Get durations (ms) of the last completed frame.",
+      "link": "utils/performance.html#method-performanceprofiler-get_frame_timings",
+      "is_method": true
+    },
+    {
+      "name": "get_timing_stats",
+      "class": "PerformanceProfiler",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performanceprofiler-get_timing_stats",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
       "class": "PerformanceMonitor",
       "module": "utils",
       "description": "No documentation",
       "link": "utils/performance.html#method-performancemonitor-__init__",
+      "is_method": true
+    },
+    {
+      "name": "get_frame_timing_breakdown",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Convenience: get last frame&#x27;s timing per category.",
+      "link": "utils/performance.html#method-performancemonitor-get_frame_timing_breakdown",
+      "is_method": true
+    },
+    {
+      "name": "get_performance_summary",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Comprehensive summary including FPS and last frame timings.",
+      "link": "utils/performance.html#method-performancemonitor-get_performance_summary",
+      "is_method": true
+    },
+    {
+      "name": "enable_profiling",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Enable or disable detailed performance profiling",
+      "link": "utils/performance.html#method-performancemonitor-enable_profiling",
+      "is_method": true
+    },
+    {
+      "name": "is_profiling_enabled",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Check if detailed profiling is enabled",
+      "link": "utils/performance.html#method-performancemonitor-is_profiling_enabled",
+      "is_method": true
+    },
+    {
+      "name": "create_timer",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performancemonitor-create_timer",
+      "is_method": true
+    },
+    {
+      "name": "start_timer",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performancemonitor-start_timer",
+      "is_method": true
+    },
+    {
+      "name": "end_timer",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performancemonitor-end_timer",
+      "is_method": true
+    },
+    {
+      "name": "get_all_timers",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performancemonitor-get_all_timers",
+      "is_method": true
+    },
+    {
+      "name": "get_list_timers",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performancemonitor-get_list_timers",
+      "is_method": true
+    },
+    {
+      "name": "timers_names",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "No documentation",
+      "link": "utils/performance.html#method-performancemonitor-timers_names",
+      "is_method": true
+    },
+    {
+      "name": "get_update_timing_stats",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Get update timing statistics",
+      "link": "utils/performance.html#method-performancemonitor-get_update_timing_stats",
+      "is_method": true
+    },
+    {
+      "name": "get_render_timing_stats",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Get render timing statistics",
+      "link": "utils/performance.html#method-performancemonitor-get_render_timing_stats",
+      "is_method": true
+    },
+    {
+      "name": "get_performance_summary",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Get comprehensive performance summary",
+      "link": "utils/performance.html#method-performancemonitor-get_performance_summary",
       "is_method": true
     },
     {
@@ -7195,6 +8699,14 @@
       "module": "utils",
       "description": "Update frame timing - FIXED VERSION",
       "link": "utils/performance.html#method-performancemonitor-update_frame",
+      "is_method": true
+    },
+    {
+      "name": "end_frame",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "End the current frame and record profiling data",
+      "link": "utils/performance.html#method-performancemonitor-end_frame",
       "is_method": true
     },
     {
@@ -7443,6 +8955,358 @@
       "module": "utils",
       "description": "Get the number of active timers.<br><br>Returns:<br> &nbsp; &nbsp;int: Number of timers",
       "link": "utils/timer.html#method-timer-get_timer_count",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_open",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_open",
+      "is_method": true
+    },
+    {
+      "name": "_detect_type",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_detect_type",
+      "is_method": true
+    },
+    {
+      "name": "_guess_connection_type",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_guess_connection_type",
+      "is_method": true
+    },
+    {
+      "name": "_build_default_maps",
+      "class": "Controller",
+      "module": "backend",
+      "description": "Build button and axis maps based on detected controller type.",
+      "link": "backend/controller.html#method-controller-_build_default_maps",
+      "is_method": true
+    },
+    {
+      "name": "_build_xbox_map",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_build_xbox_map",
+      "is_method": true
+    },
+    {
+      "name": "_build_playstation_map",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_build_playstation_map",
+      "is_method": true
+    },
+    {
+      "name": "_build_switch_map",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_build_switch_map",
+      "is_method": true
+    },
+    {
+      "name": "_build_generic_map",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_build_generic_map",
+      "is_method": true
+    },
+    {
+      "name": "_detect_touchpad",
+      "class": "Controller",
+      "module": "backend",
+      "description": "For PlayStation controllers, try to find a second joystick that handles touchpad.",
+      "link": "backend/controller.html#method-controller-_detect_touchpad",
+      "is_method": true
+    },
+    {
+      "name": "_check_rumble",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_check_rumble",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-update",
+      "is_method": true
+    },
+    {
+      "name": "_handle_axis_event",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_handle_axis_event",
+      "is_method": true
+    },
+    {
+      "name": "_handle_button_event",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_handle_button_event",
+      "is_method": true
+    },
+    {
+      "name": "_handle_hat_event",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_handle_hat_event",
+      "is_method": true
+    },
+    {
+      "name": "_poll_axes",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_poll_axes",
+      "is_method": true
+    },
+    {
+      "name": "_apply_deadzone",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_apply_deadzone",
+      "is_method": true
+    },
+    {
+      "name": "_update_mouse_emulation",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-_update_mouse_emulation",
+      "is_method": true
+    },
+    {
+      "name": "remap_button",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-remap_button",
+      "is_method": true
+    },
+    {
+      "name": "remap_axis",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-remap_axis",
+      "is_method": true
+    },
+    {
+      "name": "set_deadzone",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-set_deadzone",
+      "is_method": true
+    },
+    {
+      "name": "rumble",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-rumble",
+      "is_method": true
+    },
+    {
+      "name": "stop_rumble",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-stop_rumble",
+      "is_method": true
+    },
+    {
+      "name": "get_guid",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-get_guid",
+      "is_method": true
+    },
+    {
+      "name": "get_name",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-get_name",
+      "is_method": true
+    },
+    {
+      "name": "is_connected",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-is_connected",
+      "is_method": true
+    },
+    {
+      "name": "close",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-close",
+      "is_method": true
+    },
+    {
+      "name": "get_button_pressed",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-get_button_pressed",
+      "is_method": true
+    },
+    {
+      "name": "get_axis",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-get_axis",
+      "is_method": true
+    },
+    {
+      "name": "get_hat",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-get_hat",
+      "is_method": true
+    },
+    {
+      "name": "get_touch_points",
+      "class": "Controller",
+      "module": "backend",
+      "description": "Read touch points from the touchpad joystick (if any).",
+      "link": "backend/controller.html#method-controller-get_touch_points",
+      "is_method": true
+    },
+    {
+      "name": "__repr__",
+      "class": "Controller",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controller-__repr__",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "ControllerManager",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controllermanager-__init__",
+      "is_method": true
+    },
+    {
+      "name": "scan_controllers",
+      "class": "ControllerManager",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controllermanager-scan_controllers",
+      "is_method": true
+    },
+    {
+      "name": "handle_events",
+      "class": "ControllerManager",
+      "module": "backend",
+      "description": "Process device events and update controllers.<br>Also tracks last input time for source detection.",
+      "link": "backend/controller.html#method-controllermanager-handle_events",
+      "is_method": true
+    },
+    {
+      "name": "get_active_source",
+      "class": "ControllerManager",
+      "module": "backend",
+      "description": "Return &#x27;keyboard&#x27;, &#x27;mouse&#x27;, or &#x27;controller&#x27;.",
+      "link": "backend/controller.html#method-controllermanager-get_active_source",
+      "is_method": true
+    },
+    {
+      "name": "is_using_controller",
+      "class": "ControllerManager",
+      "module": "backend",
+      "description": "Convenience: whether a controller was used recently.",
+      "link": "backend/controller.html#method-controllermanager-is_using_controller",
+      "is_method": true
+    },
+    {
+      "name": "get_controller",
+      "class": "ControllerManager",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controllermanager-get_controller",
+      "is_method": true
+    },
+    {
+      "name": "get_controllers_by_type",
+      "class": "ControllerManager",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controllermanager-get_controllers_by_type",
+      "is_method": true
+    },
+    {
+      "name": "get_all_controllers",
+      "class": "ControllerManager",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controllermanager-get_all_controllers",
+      "is_method": true
+    },
+    {
+      "name": "get_first_connected",
+      "class": "ControllerManager",
+      "module": "backend",
+      "description": "Return the first (lowest index) connected controller.",
+      "link": "backend/controller.html#method-controllermanager-get_first_connected",
+      "is_method": true
+    },
+    {
+      "name": "set_mouse_emulation",
+      "class": "ControllerManager",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controllermanager-set_mouse_emulation",
+      "is_method": true
+    },
+    {
+      "name": "shutdown",
+      "class": "ControllerManager",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controllermanager-shutdown",
+      "is_method": true
+    },
+    {
+      "name": "__len__",
+      "class": "ControllerManager",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/controller.html#method-controllermanager-__len__",
       "is_method": true
     },
     {
@@ -8657,7 +10521,7 @@
       "name": "draw_polygon",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a polygon from a list of points.<br><br>Args:<br> &nbsp; &nbsp;points: List of (x, y) points defining the polygon<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the polygon<br> &nbsp; &nbsp;border_width: Border width for hollow polygons,<br> &nbsp; &nbsp;surface: Target surface",
+      "description": "Draw a polygon from a list of points.<br><br>Args:<br> &nbsp; &nbsp;points: List of (x, y) points defining the polygon<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the polygon<br> &nbsp; &nbsp;border_width: Border width for hollow polygons,<br> &nbsp; &nbsp;surface: Target surface<br> &nbsp; &nbsp;anchor_point: Anchor point",
       "link": "backend/opengl.html#method-openglrenderer-draw_polygon",
       "is_method": true
     },
@@ -8755,6 +10619,22 @@
       "module": "backend",
       "description": "No documentation",
       "link": "backend/types.html#method-inputstate-__post_init__",
+      "is_method": true
+    },
+    {
+      "name": "consume_global_mouse",
+      "class": "InputState",
+      "module": "backend",
+      "description": "Mark that a mouse event has been handled globally.",
+      "link": "backend/types.html#method-inputstate-consume_global_mouse",
+      "is_method": true
+    },
+    {
+      "name": "is_global_mouse_consumed",
+      "class": "InputState",
+      "module": "backend",
+      "description": "Check if any element has consumed the current mouse event.",
+      "link": "backend/types.html#method-inputstate-is_global_mouse_consumed",
       "is_method": true
     },
     {
@@ -9536,5 +11416,5 @@
       "type": "example"
     }
   ],
-  "last_updated": "2026-02-03T16:03:42.213725"
+  "last_updated": "2026-02-16T14:06:37.163176"
 }

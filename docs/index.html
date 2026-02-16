@@ -59,10 +59,10 @@
                         <h3 class="text-white mb-2">7</h3>
                         <p class="text-white-50 mb-1">Modules</p>
                         <div class="d-flex justify-content-center gap-3 flex-wrap">
-                            <small class="text-white-50">31 files</small>
-                            <small class="text-white-50">154 classes</small>
-                            <small class="text-white-50">44 functions</small>
-                            <small class="text-white-50">972 methods</small>
+                            <small class="text-white-50">32 files</small>
+                            <small class="text-white-50">178 classes</small>
+                            <small class="text-white-50">54 functions</small>
+                            <small class="text-white-50">1173 methods</small>
                         </div>
                     </div>
                 </div>
@@ -101,6 +101,40 @@
         </div>
     </div>
 
+    <!-- Installer Selector -->
+    <div class="container mt-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-download me-2"></i>Install LunaEngine</h5>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="btn-group" role="group" aria-label="Installation options">
+                            <input type="radio" class="btn-check" name="installOption" id="optWindows" value="windows" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary" for="optWindows">Windows</label>
+
+                            <input type="radio" class="btn-check" name="installOption" id="optLinux" value="linux" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="optLinux">Linux</label>
+
+                            <input type="radio" class="btn-check" name="installOption" id="optTestPyPi" value="testpypi" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="optTestPyPi">TestPyPi</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <code class="form-control bg-light" id="installCommand">pip install lunaengine</code>
+                            <button class="btn btn-outline-secondary copy-install-btn" type="button" title="Copy to clipboard">
+                                <i class="bi bi-clipboard"></i>
+                            </button>
+                        </div>
+                        <small class="text-muted">Click the copy button to copy the command.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Code Statistics Section -->
     <div class="container mt-5">
         <div class="row">
@@ -108,30 +142,29 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Code Statistics</h5>
-                        <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#codeStatsCollapse" aria-expanded="false" aria-controls="codeStatsCollapse">
-                            <i class="bi bi-chevron-down"></i>
+                        <button class="btn btn-sm btn-light" type="button" id="toggleStatsBtn">
+                            <i class="bi bi-chevron-down" id="statsToggleIcon"></i>
                         </button>
                     </div>
-                    <div class="collapse show" id="codeStatsCollapse">
-                        <div class="card-body">
-                            <div class="code-stats-content markdown-content">
-                                # LunaEngine Code Statistics
+                    <div class="card-body p-0">
+                        <div id="codeStatsContent" class="code-stats-content markdown-content preview">
+                            # LunaEngine Code Statistics
 
 ## Overview
 
-- **Total Files**: 41
-- **Total Lines**: 25291
-- **Code Lines**: 15856
-- **Comment Lines**: 5491
-- **Blank Lines**: 3944
+- **Total Files**: 42
+- **Total Lines**: 29470
+- **Code Lines**: 18998
+- **Comment Lines**: 5998
+- **Blank Lines**: 4474
 
 ## Theme Statistics
 
-- **Total Themes**: 66
+- **Total Themes**: 83
 
 ## Code Density
 
-- **Code Density**: 62.7%
+- **Code Density**: 64.5%
 - Balanced code and comments
 
 ## Project Structure
@@ -141,6 +174,7 @@
 ├── 🐍 __init__.py
 ├── 📁 backend/
 │   ├── 🐍 __init__.py
+│   ├── 🐍 controller.py
 │   ├── 🐍 exceptions.py
 │   ├── 🐍 network.py
 │   ├── 🐍 openal.py
@@ -194,13 +228,13 @@
 |-----------|-------|------------|
 | `.json` | 1 | 2.4% |
 | `.md` | 1 | 2.4% |
-| `.py` | 39 | 95.1% |
+| `.py` | 40 | 95.2% |
 
 ## Files by Directory
 
 | Directory | File Count |
 |-----------|------------|
-| `backend` | 6 |
+| `backend` | 7 |
 | `core` | 6 |
 | `graphics` | 5 |
 | `misc` | 3 |
@@ -213,49 +247,49 @@
 
 | File | Total Lines | Code | Comments | Blank | Size (KB) |
 |------|------------|------|----------|-------|-----------|
-| `ui\elements.py` | 5036 | 2696 | 1386 | 954 | 195.5 |
-| `ui\themes.json` | 3830 | 3830 | 0 | 0 | 149.7 |
-| `backend\opengl.py` | 2449 | 1584 | 399 | 466 | 92.4 |
+| `ui\elements.py` | 6966 | 3926 | 1769 | 1271 | 270.9 |
+| `ui\themes.json` | 4816 | 4816 | 0 | 0 | 188.1 |
+| `backend\opengl.py` | 2466 | 1596 | 402 | 468 | 93.2 |
 | `ui\tween.py` | 1202 | 550 | 423 | 229 | 36.7 |
 | `backend\network.py` | 1092 | 770 | 140 | 182 | 40.1 |
+| `core\engine.py` | 989 | 439 | 346 | 204 | 36.4 |
 | `ui\notifications.py` | 932 | 576 | 199 | 157 | 37.9 |
-| `core\engine.py` | 844 | 345 | 326 | 173 | 29.4 |
+| `graphics\camera.py` | 814 | 483 | 174 | 157 | 31.8 |
 | `core\audio.py` | 774 | 431 | 200 | 143 | 26.1 |
 | `backend\openal.py` | 766 | 433 | 185 | 148 | 25.5 |
 | `graphics\particles.py` | 693 | 465 | 128 | 100 | 24.4 |
-| `graphics\camera.py` | 681 | 383 | 178 | 120 | 27.1 |
+| `backend\controller.py` | 640 | 493 | 63 | 84 | 23.0 |
 | `graphics\spritesheet.py` | 613 | 279 | 223 | 111 | 21.5 |
 | `misc\icons.py` | 578 | 418 | 63 | 97 | 21.1 |
-| `ui\themes.py` | 546 | 385 | 80 | 81 | 19.3 |
+| `ui\themes.py` | 567 | 402 | 82 | 83 | 19.9 |
 | `misc\bones.py` | 493 | 313 | 72 | 108 | 20.5 |
 | `utils\timer.py` | 427 | 164 | 179 | 84 | 13.8 |
 | `graphics\shadows.py` | 392 | 247 | 65 | 80 | 15.4 |
+| `utils\performance.py` | 377 | 238 | 66 | 73 | 13.3 |
 | `tools\code_stats.py` | 369 | 249 | 55 | 65 | 14.8 |
 | `ui\tooltips.py` | 364 | 179 | 118 | 67 | 12.9 |
 | `core\window.py` | 358 | 138 | 158 | 62 | 12.0 |
+| `core\scene.py` | 333 | 124 | 139 | 70 | 11.7 |
 | `core\renderer.py` | 332 | 93 | 184 | 55 | 11.1 |
 | `tools\image_conversion_tool.py` | 308 | 195 | 51 | 62 | 12.4 |
-| `core\scene.py` | 291 | 100 | 131 | 60 | 10.2 |
+| `utils\math_utils.py` | 268 | 131 | 95 | 42 | 8.4 |
 | `utils\image_converter.py` | 251 | 177 | 25 | 49 | 9.2 |
-| `utils\math_utils.py` | 244 | 119 | 87 | 38 | 7.6 |
 | `ui\layout.py` | 231 | 97 | 91 | 43 | 7.3 |
-| `ui\layer_manager.py` | 216 | 92 | 80 | 44 | 7.2 |
-| `utils\performance.py` | 191 | 108 | 48 | 35 | 7.0 |
-| `backend\types.py` | 170 | 126 | 16 | 28 | 5.5 |
+| `ui\layer_manager.py` | 225 | 94 | 85 | 46 | 7.5 |
+| `backend\types.py` | 187 | 135 | 19 | 33 | 6.1 |
 | `CODE_STATISTICS.md` | 139 | 117 | 8 | 14 | 4.5 |
 | `ui\styles.py` | 91 | 35 | 38 | 18 | 2.7 |
 | `utils\threading.py` | 87 | 43 | 29 | 15 | 2.5 |
+| `graphics\__init__.py` | 73 | 49 | 19 | 5 | 1.7 |
 | `ui\__init__.py` | 73 | 26 | 30 | 17 | 2.7 |
-| `utils\__init__.py` | 66 | 37 | 22 | 7 | 2.3 |
-| `graphics\__init__.py` | 49 | 21 | 21 | 7 | 1.6 |
-| `backend\__init__.py` | 34 | 12 | 16 | 6 | 1.6 |
+| `utils\__init__.py` | 69 | 40 | 22 | 7 | 2.4 |
+| `backend\__init__.py` | 36 | 14 | 16 | 6 | 1.8 |
 | `core\__init__.py` | 28 | 7 | 15 | 6 | 0.8 |
 | `backend\exceptions.py` | 21 | 5 | 11 | 5 | 0.6 |
 | `misc\__init__.py` | 16 | 6 | 7 | 3 | 0.9 |
 | `__init__.py` | 11 | 4 | 3 | 4 | 0.3 |
 | `tools\__init__.py` | 3 | 1 | 1 | 1 | 0.0 |
 
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -268,6 +302,68 @@
         <h2 class="mb-4">LunaEngine Modules</h2>
         <div class="row g-4">
 
+    <script>
+    
+    // Installation command switcher
+    document.addEventListener('DOMContentLoaded', function() {
+        const installRadios = document.querySelectorAll('input[name="installOption"]');
+        const installCommandSpan = document.getElementById('installCommand');
+        const copyBtn = document.querySelector('.copy-install-btn');
+
+        const toggleBtn = document.getElementById('toggleStatsBtn');
+        const contentDiv = document.getElementById('codeStatsContent');
+        const icon = document.getElementById('statsToggleIcon');
+
+        if (toggleBtn && contentDiv && icon) {{
+            toggleBtn.addEventListener('click', function() {{
+                const isPreview = contentDiv.classList.contains('preview');
+                if (isPreview) {{
+                    contentDiv.classList.remove('preview');
+                    icon.classList.replace('bi-chevron-down', 'bi-chevron-up');
+                }} else {{
+                    contentDiv.classList.add('preview');
+                    icon.classList.replace('bi-chevron-up', 'bi-chevron-down');
+                }}
+            }});
+        }}
+
+        function updateCommand() {
+            const selected = document.querySelector('input[name="installOption"]:checked').value;
+            switch(selected) {
+                case 'windows':
+                    installCommandSpan.textContent = 'pip install lunaengine';
+                    break;
+                case 'linux':
+                    installCommandSpan.textContent = 'pip3 install lunaengine';
+                    break;
+                case 'testpypi':
+                    installCommandSpan.textContent = 'pip install -i https://test.pypi.org/simple/ lunaengine';
+                    break;
+            }
+        }
+
+        installRadios.forEach(radio => {
+            radio.addEventListener('change', updateCommand);
+        });
+
+        // Copy button functionality
+        copyBtn.addEventListener('click', function() {
+            const textToCopy = installCommandSpan.textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalIcon = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="bi bi-check"></i>';
+                copyBtn.classList.add('btn-success');
+                copyBtn.classList.remove('btn-outline-secondary');
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalIcon;
+                    copyBtn.classList.remove('btn-success');
+                    copyBtn.classList.add('btn-outline-secondary');
+                }, 2000);
+            });
+        });
+    });
+    </script>
+    
             <div class="col-lg-4 col-md-6">
                 <div class="card module-card h-100 shadow-sm">
                     <div class="card-header bg-primary text-white">
@@ -292,7 +388,7 @@
                                 <i class="bi bi-gear me-1"></i>0 functions
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>160 methods
+                                <i class="bi bi-hammer me-1"></i>180 methods
                             </span>
                         </div>
                     </div>
@@ -322,13 +418,13 @@
                                 <i class="bi bi-file-text me-1"></i>8 files
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>54 classes
+                                <i class="bi bi-box me-1"></i>58 classes
                             </span>
                             <span class="badge bg-light text-dark">
                                 <i class="bi bi-gear me-1"></i>8 functions
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>403 methods
+                                <i class="bi bi-hammer me-1"></i>486 methods
                             </span>
                         </div>
                     </div>
@@ -358,13 +454,13 @@
                                 <i class="bi bi-file-text me-1"></i>4 files
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>17 classes
+                                <i class="bi bi-box me-1"></i>27 classes
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-gear me-1"></i>0 functions
+                                <i class="bi bi-gear me-1"></i>9 functions
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>114 methods
+                                <i class="bi bi-hammer me-1"></i>132 methods
                             </span>
                         </div>
                     </div>
@@ -394,13 +490,13 @@
                                 <i class="bi bi-file-text me-1"></i>5 files
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>8 classes
+                                <i class="bi bi-box me-1"></i>10 classes
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-gear me-1"></i>21 functions
+                                <i class="bi bi-gear me-1"></i>22 functions
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>47 methods
+                                <i class="bi bi-hammer me-1"></i>81 methods
                             </span>
                         </div>
                     </div>
@@ -427,16 +523,16 @@
                         <p class="text-muted">Renderer backends - OpenGL, Pygame</p>
                         <div class="module-stats d-flex flex-wrap gap-2">
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-file-text me-1"></i>5 files
+                                <i class="bi bi-file-text me-1"></i>6 files
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>31 classes
+                                <i class="bi bi-box me-1"></i>39 classes
                             </span>
                             <span class="badge bg-light text-dark">
                                 <i class="bi bi-gear me-1"></i>7 functions
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>178 methods
+                                <i class="bi bi-hammer me-1"></i>224 methods
                             </span>
                         </div>
                     </div>
@@ -535,7 +631,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-02-03 16:03
+                        Documentation generated on 2026-02-16 14:06
                     </p>
                 </div>
             </div>

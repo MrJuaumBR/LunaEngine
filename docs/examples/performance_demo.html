@@ -40,124 +40,826 @@
                         <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>performance_demo.py</h5>
                     </div>
                     <div class="card-body">
-                        <pre><code class="language-python">import sys
+                        <pre><code class="language-python">&quot;&quot;&quot;
+LunaEngine Performance Profiling Demo
+
+This thing isn&#x27;t working properly
+&quot;&quot;&quot;
+
+import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
 
 from lunaengine.core import LunaEngine, Scene
-from lunaengine.ui import TextLabel, Button, Slider, Dropdown
+from lunaengine.ui import *
+from lunaengine.ui.themes import ThemeManager, ThemeType
+from lunaengine.backend import OpenGLRenderer
 
 class PerformanceDemoScene(Scene):
+    &quot;&quot;&quot;
+    Performance profiling demonstration scene.
     
-    def on_enter(self, previous_scene = None):
-        return super().on_enter(previous_scene)
+    This scene showcases all performance monitoring features of LunaEngine
+    with interactive controls to test different performance scenarios.
+    &quot;&quot;&quot;
     
-    def on_exit(self, next_scene = None):
+    # =========================================================================
+    # LAYOUT CONSTANTS
+    # =========================================================================
+    WINDOW_WIDTH = 800
+    WINDOW_HEIGHT = 600
+    
+    # Control Panel
+    CONTROL_PANEL_X = 10
+    CONTROL_PANEL_Y = 10
+    CONTROL_PANEL_WIDTH = 780
+    CONTROL_PANEL_HEIGHT = 100
+    
+    # Stats Panel (left side)
+    STATS_PANEL_X = 10
+    STATS_PANEL_Y = 120
+    STATS_PANEL_WIDTH = 380
+    STATS_PANEL_HEIGHT = 450
+    
+    # Graph Panel (right side)
+    GRAPH_PANEL_X = 400
+    GRAPH_PANEL_Y = 120
+    GRAPH_PANEL_WIDTH = 390
+    GRAPH_PANEL_HEIGHT = 450
+    
+    # Graph Area within Graph Panel
+    GRAPH_AREA_X = 10
+    GRAPH_AREA_Y = 110
+    GRAPH_AREA_WIDTH = 370
+    GRAPH_AREA_HEIGHT = 300
+    
+    # Bar Graph Constants
+    BAR_WIDTH = 40
+    BAR_SPACING = 20
+    
+    # =========================================================================
+    # SCENE LIFECYCLE
+    # =========================================================================
+    
+    def on_enter(self, previous_scene=None):
+        &quot;&quot;&quot;Called when the scene becomes active.&quot;&quot;&quot;
+        super().on_enter(previous_scene)
+        
+        print(&quot;\n&quot; + &quot;=&quot;*60)
+        print(&quot;LUNAENGINE PERFORMANCE PROFILING DEMO&quot;)
+        print(&quot;=&quot;*60)
+        print(&quot;FEATURES:&quot;)
+        print(&quot;  ✓ Real-time FPS tracking with 1% and 0.1% lows&quot;)
+        print(&quot;  ✓ Update time breakdown (scene, UI, animations, events)&quot;)
+        print(&quot;  ✓ Render time breakdown (UI, particles, notifications)&quot;)
+        print(&quot;  ✓ Individual UI element profiling&quot;)
+        print(&quot;  ✓ Hardware information display&quot;)
+        print(&quot;  ✓ Performance graph visualization&quot;)
+        print(&quot;  ✓ Bottleneck detection&quot;)
+        print(&quot;  ✓ Frame time history tracking&quot;)
+        print(&quot;\nCONTROLS:&quot;)
+        print(&quot;  • Toggle profiling on/off&quot;)
+        print(&quot;  • Enable individual UI element profiling&quot;)
+        print(&quot;  • Adjust test element count (10-2000)&quot;)
+        print(&quot;  • Toggle test elements rendering&quot;)
+        print(&quot;  • Toggle complex UI elements&quot;)
+        print(&quot;=&quot;*60)
+        print(&quot;\nStarting demo...&quot;)
+    
+    def on_exit(self, next_scene=None):
+        &quot;&quot;&quot;Called when the scene is being replaced.&quot;&quot;&quot;
+        print(&quot;\nPerformance demo exiting...&quot;)
         return super().on_exit(next_scene)
     
     def __init__(self, engine: LunaEngine):
+        &quot;&quot;&quot;Initialize the performance demo scene.&quot;&quot;&quot;
         super().__init__(engine)
-        self.test_count = 100  # Number of test elements
+        
+        # Performance tracking settings
+        self.test_count = 100
         self.show_test_elements = False
-
-        # Hardware Info Display
-        hardware_info = self.engine.get_hardware_info()
-        hardware_text = TextLabel(20, 50, f&quot;System: {hardware_info.get(&#x27;system&#x27;, &#x27;Unknown&#x27;)} | CPU: {hardware_info.get(&#x27;cpu_cores&#x27;, &#x27;?&#x27;)} cores | RAM: {hardware_info.get(&#x27;memory_gb&#x27;, &#x27;Unknown&#x27;)}&quot;, 
-                                16, (200, 200, 255))
-        self.ui_elements.append(hardware_text)
+        self.show_complex_elements = False
+        self.profiling_enabled = True
+        self.individual_ui_profiling = False
         
-        # FPS Display
-        self.ui_elements.append(TextLabel(20, 80, &quot;Performance Statistics:&quot;, 24, (255, 255, 0)))
+        # Performance data storage
+        self.performance_data = {}
+        self.frame_time_history = []
+        self.history_size = 60  # 1 second at 60 FPS
         
-        self.fps_current = TextLabel(20, 110, &quot;Current FPS: --&quot;, 18, (100, 255, 100))
-        self.ui_elements.append(self.fps_current)
+        # Performance display elements
+        self.fps_display = None
+        self.update_displays = {}
         
-        self.fps_avg = TextLabel(20, 135, &quot;Average FPS: --&quot;, 16, (200, 200, 255))
-        self.ui_elements.append(self.fps_avg)
+        # Complex elements for testing
+        self.complex_elements = []
         
-        self.fps_lows = TextLabel(20, 155, &quot;1% Low: -- | 0.1% Low: --&quot;, 16, (255, 150, 100))
-        self.ui_elements.append(self.fps_lows)
+        # Setup all UI components
+        self.setup_control_panel()
+        self.setup_performance_displays()
+        self.setup_performance_graph()
+        self.setup_hardware_info()
+        self.setup_instructions()
         
-        self.frame_time = TextLabel(20, 175, &quot;Frame Time: -- ms&quot;, 16, (200, 150, 255))
-        self.ui_elements.append(self.frame_time)
+        print(&quot;Performance demo initialized successfully!&quot;)
+    
+    # =========================================================================
+    # UI SETUP METHODS
+    # =========================================================================
+    
+    def setup_control_panel(self):
+        &quot;&quot;&quot;Setup the main control panel with all interactive controls.&quot;&quot;&quot;
+        # Control Panel Background
+        control_panel = UiFrame(
+            self.CONTROL_PANEL_X, self.CONTROL_PANEL_Y,
+            self.CONTROL_PANEL_WIDTH, self.CONTROL_PANEL_HEIGHT
+        )
+        control_panel.set_background_color((30, 30, 40, 200))
+        control_panel.set_border((80, 80, 100), 1)
+        self.ui_elements.append(control_panel)
         
-        # Performance Controls
-        self.toggle_btn = Button(20, 210, 200, 40, &quot;Toggle Test Elements&quot;)
-        self.toggle_btn.set_on_click(self.toggle_test_elements)
-        self.ui_elements.append(self.toggle_btn)
+        # Title
+        title = TextLabel(
+            self.CONTROL_PANEL_X + 20, self.CONTROL_PANEL_Y + 15,
+            &quot;Performance Profiling Demo&quot;, 24, (255, 255, 0)
+        )
+        self.ui_elements.append(title)
         
-        self.count_slider = Slider(20, 270, 200, 30, 10, 1000, 100)
+        # Subtitle
+        subtitle = TextLabel(
+            self.CONTROL_PANEL_X + 20, self.CONTROL_PANEL_Y + 45,
+            &quot;Test and analyze LunaEngine performance in real-time&quot;, 12, (200, 200, 200)
+        )
+        self.ui_elements.append(subtitle)
+        
+        # Row 2: Buttons and Slider
+        row2_y = self.CONTROL_PANEL_Y + 70
+        
+        # Test Elements Toggle Button
+        self.toggle_test_btn = Button(
+            self.CONTROL_PANEL_X + 440, row2_y,
+            150, 30, &quot;Test Elements&quot;
+        )
+        self.toggle_test_btn.set_on_click(self.toggle_test_elements)
+        self.ui_elements.append(self.toggle_test_btn)
+        
+        # Complex UI Toggle Button
+        self.toggle_complex_btn = Button(
+            self.CONTROL_PANEL_X + 600, row2_y,
+            150, 30, &quot;Complex UI&quot;
+        )
+        self.toggle_complex_btn.set_on_click(self.toggle_complex_elements)
+        self.ui_elements.append(self.toggle_complex_btn)
+        
+        # Element Count Control
+        slider_x = self.CONTROL_PANEL_X + 20
+        slider_y = self.CONTROL_PANEL_Y + 70
+        
+        # Slider Label
+        slider_label = TextLabel(
+            slider_x, slider_y - 20,
+            &quot;Element Count:&quot;, 12, (200, 200, 200)
+        )
+        self.ui_elements.append(slider_label)
+        
+        # Element Count Slider
+        self.count_slider = Slider(
+            slider_x, slider_y,
+            180, 20, 10, 2000, self.test_count
+        )
         self.count_slider.on_value_changed = self.change_test_count
         self.ui_elements.append(self.count_slider)
         
-        self.count_text = TextLabel(20, 325, f&quot;Test Elements: {self.test_count}&quot;, 16, (150, 200, 150))
-        self.ui_elements.append(self.count_text)
+        # Element Count Display
+        self.count_display = TextLabel(
+            slider_x + 190, slider_y,
+            f&quot;{self.test_count} elements&quot;, 12, (150, 200, 150)
+        )
+        self.ui_elements.append(self.count_display)
+    
+    def setup_performance_displays(self):
+        &quot;&quot;&quot;Setup the performance statistics display area.&quot;&quot;&quot;
+        # Stats Panel Background
+        stats_panel = UiFrame(
+            self.STATS_PANEL_X, self.STATS_PANEL_Y,
+            self.STATS_PANEL_WIDTH, self.STATS_PANEL_HEIGHT
+        )
+        stats_panel.set_background_color((30, 30, 40, 200))
+        stats_panel.set_border((80, 80, 100), 1)
+        self.ui_elements.append(stats_panel)
         
-        # Instructions
-        instructions = [
-            &quot;Performance Monitoring Features:&quot;,
-            &quot;• Optimized FPS tracking with minimal overhead&quot;,
-            &quot;• Hardware detection (Windows/Linux)&quot;,
-            &quot;• Automatic garbage collection&quot;, 
-            &quot;• 1% and 0.1% low FPS tracking&quot;,
-            &quot;• Toggle test elements to see performance impact&quot;
+        # Panel Title
+        panel_title = TextLabel(
+            self.STATS_PANEL_X + 10, self.STATS_PANEL_Y + 10,
+            &quot;Performance Metrics&quot;, 20, (255, 255, 0)
+        )
+        self.ui_elements.append(panel_title)
+        
+        # Create all performance displays
+        self.create_fps_displays()
+        self.create_displays()
+        
+    
+    def create_fps_displays(self):
+        &quot;&quot;&quot;Create FPS statistics displays.&quot;&quot;&quot;
+        y = self.STATS_PANEL_Y + 40
+        spacing = 20
+        
+        # FPS Section Title
+        fps_title = TextLabel(
+            self.STATS_PANEL_X + 20, y,
+            &quot;Frame Rate&quot;, 16, (100, 200, 255)
+        )
+        self.ui_elements.append(fps_title)
+        y += 25
+        
+        # Current FPS
+        self.fps_current = TextLabel(
+            self.STATS_PANEL_X + 30, y,
+            &quot;Current: --&quot;, 14, (100, 255, 100)
+        )
+        self.ui_elements.append(self.fps_current)
+        y += spacing
+        
+        # Average FPS
+        self.fps_avg = TextLabel(
+            self.STATS_PANEL_X + 30, y,
+            &quot;Average: --&quot;, 14, (200, 200, 255)
+        )
+        self.ui_elements.append(self.fps_avg)
+        y += spacing
+        
+        # 1% and 0.1% Lows
+        self.fps_lows = TextLabel(
+            self.STATS_PANEL_X + 30, y,
+            &quot;1% Low: -- | 0.1% Low: --&quot;, 14, (255, 150, 100)
+        )
+        self.ui_elements.append(self.fps_lows)
+        y += spacing
+        
+        # Frame Time
+        self.frame_time = TextLabel(
+            self.STATS_PANEL_X + 30, y,
+            &quot;Frame Time: -- ms&quot;, 14, (200, 150, 255)
+        )
+        self.ui_elements.append(self.frame_time)
+        y += spacing + 10
+    
+    def create_displays(self):
+        &quot;&quot;&quot;Create update timing displays (only for categories that exist).&quot;&quot;&quot;
+        y = self.STATS_PANEL_Y + 160
+
+        # Update Section Title
+        update_title = TextLabel(
+            self.STATS_PANEL_X + 20, y,
+            &quot;Update Times (ms)&quot;, 16, (100, 200, 255)
+        )
+        self.ui_elements.append(update_title)
+        y += 25
+
+        # Important categories we want to show
+        categories_to_show = [&quot;scene&quot;, &quot;ui&quot;, &quot;ui_total&quot;, &quot;notifications&quot;, &quot;particles&quot;, &quot;frame&quot;]
+        for cat in categories_to_show:
+            label = TextLabel(
+                self.STATS_PANEL_X + 30, y,
+                f&quot;{cat.capitalize()}: --&quot;, 14, (200, 200, 255)
+            )
+            self.ui_elements.append(label)
+            self.update_displays[cat] = label
+            y += 18
+    
+    def setup_performance_graph(self):
+        &quot;&quot;&quot;Setup the performance graph panel.&quot;&quot;&quot;
+        # Graph Panel Background
+        graph_panel = UiFrame(
+            self.GRAPH_PANEL_X, self.GRAPH_PANEL_Y,
+            self.GRAPH_PANEL_WIDTH, self.GRAPH_PANEL_HEIGHT
+        )
+        graph_panel.set_background_color((30, 30, 40, 200))
+        graph_panel.set_border((80, 80, 100), 1)
+        self.ui_elements.append(graph_panel)
+        
+        # Panel Title
+        graph_title = TextLabel(
+            self.GRAPH_PANEL_X + 10, self.GRAPH_PANEL_Y + 10,
+            &quot;Performance Visualization&quot;, 20, (255, 255, 0)
+        )
+        self.ui_elements.append(graph_title)
+        
+        # Graph Info
+        info_y = self.GRAPH_PANEL_Y + 40
+        info_lines = [
+            (&quot;Frame Time History (ms)&quot;, 14, (200, 200, 255)),
+            (&quot;Green: &lt;16.7ms (60+ FPS)&quot;, 12, (100, 255, 100)),
+            (&quot;Yellow: &lt;33.3ms (30-60 FPS)&quot;, 12, (255, 255, 100)),
+            (&quot;Red: &gt;33.3ms (&lt;30 FPS)&quot;, 12, (255, 100, 100))
         ]
         
+        for text, size, color in info_lines:
+            label = TextLabel(
+                self.GRAPH_PANEL_X + 20, info_y,
+                text, size, color
+            )
+            self.ui_elements.append(label)
+            info_y += 18
+        
+        # Graph Area Background
+        graph_area = UiFrame(
+            self.GRAPH_PANEL_X + self.GRAPH_AREA_X,
+            self.GRAPH_PANEL_Y + self.GRAPH_AREA_Y,
+            self.GRAPH_AREA_WIDTH,
+            self.GRAPH_AREA_HEIGHT
+        )
+        graph_area.set_background_color((20, 20, 30))
+        graph_area.set_border((50, 50, 60), 1)
+        self.ui_elements.append(graph_area)
+        
+        # Bottleneck Display
+        self.bottleneck_display = TextLabel(
+            self.GRAPH_PANEL_X + 20, self.GRAPH_PANEL_Y + self.GRAPH_PANEL_HEIGHT - 40,
+            &quot;Main Bottleneck: Analyzing...&quot;, 14, (255, 150, 100)
+        )
+        self.ui_elements.append(self.bottleneck_display)
+        
+        # Performance Summary
+        self.performance_summary = TextLabel(
+            self.GRAPH_PANEL_X + 20, self.GRAPH_PANEL_Y + self.GRAPH_PANEL_HEIGHT - 60,
+            &quot;Profiling: Enabled | Individual UI: Disabled&quot;, 12, (200, 200, 255)
+        )
+        self.ui_elements.append(self.performance_summary)
+    
+    def setup_hardware_info(self):
+        &quot;&quot;&quot;Display hardware information.&quot;&quot;&quot;
+        hardware_info = self.engine.get_hardware_info()
+        
+        # Format hardware info
+        system_info = f&quot;💻 {hardware_info.get(&#x27;system&#x27;, &#x27;Unknown&#x27;)} {hardware_info.get(&#x27;release&#x27;, &#x27;&#x27;)}&quot;
+        cpu_info = f&quot;⚡ CPU: {hardware_info.get(&#x27;cpu_cores&#x27;, &#x27;?&#x27;)} cores @ {hardware_info.get(&#x27;cpu_freq&#x27;, &#x27;?&#x27;)}&quot;
+        ram_info = f&quot;🧠 RAM: {hardware_info.get(&#x27;memory_total_gb&#x27;, &#x27;Unknown&#x27;)}&quot;
+        
+        # Create hardware info display
+        hardware_text = TextLabel(
+            self.STATS_PANEL_X, self.STATS_PANEL_Y + self.STATS_PANEL_HEIGHT + 5,
+            f&quot;{system_info} | {cpu_info} | {ram_info}&quot;, 
+            11, (180, 180, 220)
+        )
+        self.ui_elements.append(hardware_text)
+    
+    def setup_instructions(self):
+        &quot;&quot;&quot;Setup instructions panel.&quot;&quot;&quot;
+        instructions = [
+            &quot;🎯 PERFORMANCE TESTING INSTRUCTIONS:&quot;,
+            &quot;1. Toggle profiling to enable/disable performance tracking&quot;,
+            &quot;2. Enable individual UI profiling to see per-element stats&quot;,
+            &quot;3. Adjust element count to test rendering performance&quot;,
+            &quot;4. Toggle test elements to see basic shape rendering impact&quot;,
+            &quot;5. Toggle complex UI to test interactive UI performance&quot;,
+            &quot;&quot;,
+            &quot;INTERPRETING RESULTS:&quot;,
+            &quot;• Frame time &lt; 16.7ms = 60+ FPS (Good)&quot;,
+            &quot;• Frame time &lt; 33.3ms = 30-60 FPS (Acceptable)&quot;,
+            &quot;• Frame time &gt; 33.3ms = &lt;30 FPS (Needs Optimization)&quot;,
+            &quot;&quot;,
+            &quot;💡 TIP: Watch for bottleneck detection to identify performance issues&quot;
+        ]
+        
+        start_y = self.GRAPH_PANEL_Y + self.GRAPH_PANEL_HEIGHT + 10
+        
         for i, instruction in enumerate(instructions):
-            instruction_text = TextLabel(400, 80 + i * 25, instruction, 16, (150, 200, 150))
+            color = (255, 255, 200) if i == 0 else (150, 200, 150)
+            size = 12 if i == 0 else 10
+            
+            instruction_text = TextLabel(
+                self.GRAPH_PANEL_X, start_y + i * 14,
+                instruction, size, color
+            )
             self.ui_elements.append(instruction_text)
-        
+    
+    # =========================================================================
+    # UPDATE METHODS
+    # =========================================================================
+    
     def update(self, dt):
-        self.update_ui()
+        &quot;&quot;&quot;Update scene logic.&quot;&quot;&quot;
+        self.update_performance_ui()
+        self.update_performance_data()
         
-    def update_ui(self):
+        # Update frame time history
+        fps_stats = self.engine.get_fps_stats()
+        frame_time_ms = fps_stats.get(&#x27;frame_time_ms&#x27;, 0)
+        self.frame_time_history.append(frame_time_ms)
+        
+        if len(self.frame_time_history) &gt; self.history_size:
+            self.frame_time_history.pop(0)
+    
+    def update_performance_ui(self):
+        &quot;&quot;&quot;Update UI elements with current performance data.&quot;&quot;&quot;
+        # Get FPS stats
         fps_stats = self.engine.get_fps_stats()
         
-        self.fps_current.set_text(f&quot;Current FPS: {fps_stats[&#x27;current_fps&#x27;]:.1f}&quot;)
-        self.fps_avg.set_text(f&quot;Average FPS: {fps_stats[&#x27;average_fps&#x27;]:.1f}&quot;)
+        # Update FPS displays
+        self.fps_current.set_text(f&quot;Current: {fps_stats[&#x27;current_fps&#x27;]:.1f}&quot;)
+        self.fps_avg.set_text(f&quot;Average: {fps_stats[&#x27;average_fps&#x27;]:.1f}&quot;)
         self.fps_lows.set_text(f&quot;1% Low: {fps_stats[&#x27;percentile_1&#x27;]:.1f} | 0.1% Low: {fps_stats[&#x27;percentile_01&#x27;]:.1f}&quot;)
         self.frame_time.set_text(f&quot;Frame Time: {fps_stats[&#x27;frame_time_ms&#x27;]:.2f} ms&quot;)
-        self.count_text.set_text(f&quot;Test Elements: {self.test_count}&quot;)
+        
+        # Update element count display
+        test_status = &quot;ON&quot; if self.show_test_elements else &quot;OFF&quot;
+        complex_status = &quot;ON&quot; if self.show_complex_elements else &quot;OFF&quot;
+        self.count_display.set_text(f&quot;{self.test_count} elements | Test: {test_status} | Complex: {complex_status}&quot;)
+        
+        # Update performance summary
+        profiling_status = &quot;Enabled&quot; if self.profiling_enabled else &quot;Disabled&quot;
+        ui_profiling_status = &quot;Enabled&quot; if self.individual_ui_profiling else &quot;Disabled&quot;
+        self.performance_summary.set_text(f&quot;Profiling: {profiling_status} | Individual UI: {ui_profiling_status}&quot;)
+    
+    def update_performance_data(self):
+        &quot;&quot;&quot;Update performance timing data displays.&quot;&quot;&quot;
+        if not self.profiling_enabled:
+            self.clear_performance_displays()
+            return
+
+        try:
+            # Get the timing breakdown from the LAST completed frame
+            timings = self.engine.get_frame_timing_breakdown()
+            self.update_timing_displays(timings)
+
+            # Also get full stats for bottleneck detection
+            perf_stats = self.engine.get_performance_stats()
+            self.detect_bottleneck(perf_stats)
+
+        except Exception as e:
+            print(f&quot;⚠️ Error updating performance data: {e}&quot;)
+    
+    def update_timing_displays(self, timings: dict[str, float]):
+        &quot;&quot;&quot;Update all timing labels with the given dict of category-&gt;ms.&quot;&quot;&quot;
+        for category, label in self.update_displays.items():
+            duration = timings.get(category, 0.0)
+            label.set_text(f&quot;{category.capitalize()}: {duration:.2f} ms&quot;)
+    
+    def clear_performance_displays(self):
+        &quot;&quot;&quot;Clear all performance displays when profiling is disabled.&quot;&quot;&quot;
+        for display in list(self.update_displays.values()):
+            display.set_text(f&quot;{display.text.split(&#x27;:&#x27;)[0]}: --&quot;)
+        
+        self.bottleneck_display.set_text(&quot;Main Bottleneck: Profiling Disabled&quot;)
+        self.bottleneck_display.color = (150, 150, 150)
+    
+    def detect_bottleneck(self, perf_stats):
+        &quot;&quot;&quot;Detect and display the main performance bottleneck.&quot;&quot;&quot;
+        # Use the frame timings from perf_stats (added in engine fix)
+        timings = perf_stats.get(&quot;frame_timings&quot;, {})
+        if not timings:
+            self.bottleneck_display.set_text(&quot;Main Bottleneck: No data&quot;)
+            return
+
+        # Find slowest category
+        slowest_cat = max(timings, key=timings.get)
+        slowest_time = timings[slowest_cat]
+        total_frame = perf_stats.get(&quot;frame_time_ms&quot;, 0)
+
+        # Color coding
+        if total_frame &gt; 33.3:
+            color = (255, 100, 100)
+        elif total_frame &gt; 16.7:
+            color = (255, 255, 100)
+        else:
+            color = (100, 255, 100)
+
+        self.bottleneck_display.set_text(
+            f&quot;Main Bottleneck: {slowest_cat} ({slowest_time:.1f} ms)&quot;
+        )
+        self.bottleneck_display.color = color
+    
+    # =========================================================================
+    # RENDERING METHODS
+    # =========================================================================
+    
+    def render(self, renderer):
+        &quot;&quot;&quot;Render the scene.&quot;&quot;&quot;
+        # Draw background
+        renderer.draw_rect(0, 0, self.WINDOW_WIDTH, self.WINDOW_HEIGHT, (15, 15, 25))
+        
+        # Draw header gradient
+        renderer.draw_rect(0, 0, self.WINDOW_WIDTH, 120, (25, 25, 35))
+        renderer.draw_rect(0, 100, self.WINDOW_WIDTH, 20, (30, 30, 40, 150))
+        
+        # Draw test elements if enabled
+        if self.show_test_elements:
+            self.draw_test_elements(renderer)
+        
+        # Draw complex UI elements if enabled
+        if self.show_complex_elements:
+            for element in self.complex_elements:
+                element.render(renderer)
+        
+        # Draw performance graph
+        self.draw_performance_graph(renderer)
+    
+    def draw_test_elements(self, renderer):
+        &quot;&quot;&quot;Draw test elements for performance testing.&quot;&quot;&quot;
+        for i in range(self.test_count):
+            # Calculate position in a grid
+            cols = 35  # Number of columns in the grid
+            row = i // cols
+            col = i % cols
+            
+            x = 50 + col * 20
+            y = 120 + row * 20
+            
+            # Skip if outside visible area
+            if y &gt; 500:
+                continue
+            
+            # Vary colors and sizes
+            size = 8 + (i % 7)
+            hue = (i * 137) % 360  # Golden ratio for distribution
+            r = min(255, int(150 + 100 * (hue / 360)))
+            g = min(255, int(150 + 100 * ((hue + 120) % 360) / 360))
+            b = min(255, int(150 + 100 * ((hue + 240) % 360) / 360))
+            
+            # Draw element
+            renderer.draw_rect(x, y, size, size, (r, g, b))
+            
+            # Add some variety
+            if i % 4 == 0:
+                renderer.draw_circle(x + size/2, y + size/2, size/2, (r, g, b, 180))
+            elif i % 7 == 0:
+                renderer.draw_circle(x + size/2, y + size/2, size/2, (r, g, b, 120), fill=False)
+    
+    def draw_performance_graph(self, renderer: OpenGLRenderer):
+        &quot;&quot;&quot;Draw the performance graph visualization.&quot;&quot;&quot;
+        if not self.frame_time_history:
+            return
+        
+        # Graph area coordinates
+        graph_x = self.GRAPH_PANEL_X + self.GRAPH_AREA_X
+        graph_y = self.GRAPH_PANEL_Y + self.GRAPH_AREA_Y
+        graph_width = self.GRAPH_AREA_WIDTH
+        graph_height = self.GRAPH_AREA_HEIGHT
+        
+        # Draw graph background
+        renderer.draw_rect(graph_x, graph_y, graph_width, graph_height, (20, 20, 30, 200))
+        
+        # Draw grid
+        self.draw_graph_grid(renderer, graph_x, graph_y, graph_width, graph_height)
+        
+        # Draw FPS thresholds
+        self.draw_fps_thresholds(renderer, graph_x, graph_y, graph_width, graph_height)
+        
+        # Draw frame time line graph
+        self.draw_frame_time_graph(renderer, graph_x, graph_y, graph_width, graph_height)
+        
+        # Draw current frame time indicator
+        if self.performance_data:
+            self.draw_current_frame_indicator(renderer, graph_x, graph_y, graph_width, graph_height)
+    
+    def draw_graph_grid(self, renderer, x, y, width, height):
+        &quot;&quot;&quot;Draw graph grid lines.&quot;&quot;&quot;
+        grid_color = (40, 40, 50)
+        
+        # Vertical grid lines
+        for i in range(0, 6):
+            x_pos = x + (i * width / 5)
+            renderer.draw_line(x_pos, y, x_pos, y + height, grid_color, 1)
+        
+        # Horizontal grid lines (every 10ms)
+        max_time = 60.0
+        for time_ms in [10, 20, 30, 40, 50, 60]:
+            y_pos = y + height - (time_ms / max_time) * height
+            renderer.draw_line(x, y_pos, x + width, y_pos, grid_color, 1)
+    
+    def draw_fps_thresholds(self, renderer, x, y, width, height):
+        &quot;&quot;&quot;Draw FPS threshold lines.&quot;&quot;&quot;
+        max_time = 60.0
+        
+        # 60 FPS line (16.7ms)
+        fps60_y = y + height - (16.7 / max_time) * height
+        renderer.draw_line(x, fps60_y, x + width, fps60_y, (100, 255, 100, 150), 2)
+        
+        # 30 FPS line (33.3ms)
+        fps30_y = y + height - (33.3 / max_time) * height
+        renderer.draw_line(x, fps30_y, x + width, fps30_y, (255, 255, 100, 150), 2)
+        
+        # Add labels
+        renderer.draw_text(&quot;60 FPS&quot;, x + 5, fps60_y - 15, (100, 255, 100), FontManager.get_font(None, 10))
+        renderer.draw_text(&quot;30 FPS&quot;, x + 5, fps30_y - 15, (255, 255, 100), FontManager.get_font(None, 10))
+    
+    def draw_frame_time_graph(self, renderer, x, y, width, height):
+        &quot;&quot;&quot;Draw line graph of frame time history.&quot;&quot;&quot;
+        if len(self.frame_time_history) &lt; 2:
+            return
+        
+        max_time = max(max(self.frame_time_history), 60.0)
+        
+        # Draw line segments
+        for i in range(len(self.frame_time_history) - 1):
+            x1 = x + (i / (len(self.frame_time_history) - 1)) * width
+            y1 = y + height - (self.frame_time_history[i] / max_time) * height
+            
+            x2 = x + ((i + 1) / (len(self.frame_time_history) - 1)) * width
+            y2 = y + height - (self.frame_time_history[i + 1] / max_time) * height
+            
+            # Color based on frame time
+            avg_time = (self.frame_time_history[i] + self.frame_time_history[i + 1]) / 2
+            if avg_time &lt;= 16.7:
+                color = (100, 255, 100)  # Green
+            elif avg_time &lt;= 33.3:
+                color = (255, 255, 100)  # Yellow
+            else:
+                color = (255, 100, 100)  # Red
+            
+            renderer.draw_line(x1, y1, x2, y2, color, 2)
+    
+    def draw_current_frame_indicator(self, renderer, x, y, width, height):
+        &quot;&quot;&quot;Draw indicator for current frame time.&quot;&quot;&quot;
+        if not self.performance_data:
+            return
+        
+        frame_time = self.performance_data.get(&#x27;frame_time&#x27;, 0)
+        max_time = 60.0
+        
+        y_pos = y + height - (frame_time / max_time) * height
+        
+        # Draw indicator line
+        renderer.draw_line(x, y_pos, x + width, y_pos, (255, 255, 255, 100), 1)
+        
+        # Draw value label
+        if frame_time &gt; 0:
+            label_x = x + width - 80
+            label_y = y_pos - 20 if y_pos &gt; y + 30 else y_pos + 10
+            
+            color = (255, 255, 255)
+            if frame_time &gt; 33.3:
+                color = (255, 100, 100)
+            elif frame_time &gt; 16.7:
+                color = (255, 255, 100)
+            else:
+                color = (100, 255, 100)
+            
+            renderer.draw_text(f&quot;{frame_time:.1f} ms&quot;, label_x, label_y, color, FontManager.get_font(None, 10))
+    
+    # =========================================================================
+    # CONTROL METHODS
+    # =========================================================================
+    
+    def toggle_profiling(self, enabled):
+        &quot;&quot;&quot;Toggle performance profiling on/off.&quot;&quot;&quot;
+        self.profiling_enabled = enabled
+        self.engine.enable_performance_profiling(enabled)
+        
+        print(f&quot;Performance profiling: {&#x27;ENABLED&#x27; if enabled else &#x27;DISABLED&#x27;}&quot;)
+        
+        # Update UI profiling toggle state
+        self.ui_profiling_toggle.checked = enabled and self.individual_ui_profiling
+        self.ui_profiling_toggle.enabled = enabled
+        
+        if not enabled:
+            self.clear_performance_displays()
+
     
     def toggle_test_elements(self):
+        &quot;&quot;&quot;Toggle test element rendering.&quot;&quot;&quot;
         self.show_test_elements = not self.show_test_elements
-        print(f&quot;Test elements: {&#x27;ON&#x27; if self.show_test_elements else &#x27;OFF&#x27;}&quot;)
         
+        status = &quot;ENABLED&quot; if self.show_test_elements else &quot;DISABLED&quot;
+        print(f&quot;Test elements: {status} ({self.test_count} elements)&quot;)
+        
+        # Clear complex elements when disabling test elements
+        if not self.show_test_elements:
+            self.show_complex_elements = False
+            self.clear_complex_elements()
+    
+    def toggle_complex_elements(self):
+        &quot;&quot;&quot;Toggle complex UI elements.&quot;&quot;&quot;
+        self.show_complex_elements = not self.show_complex_elements
+        
+        if self.show_complex_elements:
+            self.create_complex_elements()
+            print(f&quot;🏗️ Complex UI elements: ENABLED ({len(self.complex_elements)} elements)&quot;)
+        else:
+            self.clear_complex_elements()
+            print(f&quot;🏗️ Complex UI elements: DISABLED&quot;)
+    
+    def create_complex_elements(self):
+        &quot;&quot;&quot;Create complex UI elements for performance testing.&quot;&quot;&quot;
+        self.clear_complex_elements()
+        
+        # Calculate grid dimensions
+        cols = 8
+        rows = min(6, (self.test_count + cols - 1) // cols)
+        
+        for i in range(min(self.test_count, cols * rows)):
+            row = i // cols
+            col = i % cols
+            
+            x = 50 + col * 90
+            y = 120 + row * 70
+            
+            # Create a complex container with multiple children
+            container = UiFrame(x, y, 80, 60)
+            container.set_background_color((40, 40, 60, 200))
+            container.set_border((80, 80, 100), 2)
+            container.set_corner_radius(8)
+            
+            # Add child elements
+            label = TextLabel(5, 5, f&quot;#{i+1:03d}&quot;, 10, (200, 200, 200))
+            container.add_child(label)
+            
+            # Add a mini progress bar
+            progress = 0.3 + (i % 7) * 0.1
+            progress_bar = UiFrame(10, 30, 60, 8)
+            progress_bar.set_background_color((60, 60, 80))
+            progress_bar.set_corner_radius(4)
+            
+            progress_fill = UiFrame(10, 30, int(60 * progress), 8)
+            progress_fill.set_background_color((100, 150, 255))
+            progress_fill.set_corner_radius(4)
+            
+            container.add_child(progress_bar)
+            container.add_child(progress_fill)
+            
+            # Add hover effect
+            original_color = container.background_color
+            
+            def make_hover_handler(cont, orig_color):
+                def on_hover():
+                    cont.set_background_color((60, 60, 80, 200))
+                    cont.set_border((100, 100, 120), 2)
+                
+                def on_leave():
+                    cont.set_background_color(orig_color)
+                    cont.set_border((80, 80, 100), 2)
+                
+                return on_hover, on_leave
+            
+            hover_handler, leave_handler = make_hover_handler(container, original_color)
+            container.on_hover = hover_handler
+            container.on_hover_leave = leave_handler
+            
+            self.complex_elements.append(container)
+    
+    def clear_complex_elements(self):
+        &quot;&quot;&quot;Clear all complex UI elements.&quot;&quot;&quot;
+        self.complex_elements.clear()
+    
     def change_test_count(self, value):
+        &quot;&quot;&quot;Change the number of test elements.&quot;&quot;&quot;
         self.test_count = int(value)
-        print(f&quot;Test elements: {self.test_count}&quot;)
+        print(f&quot;📦 Test elements count: {self.test_count}&quot;)
         
-    def render(self, renderer):
-        # Draw background
-        renderer.draw_rect(0, 0, 800, 600, (20, 20, 40))
-        
-        # Draw header
-        renderer.draw_rect(0, 0, 800, 40, (40, 40, 60))
-        
-        # Draw test elements if enabled (for performance testing)
-        if self.show_test_elements:
-            for i in range(self.test_count):
-                x = (i * 10) % 700
-                y = 400 + ((i * 15) // 700) * 20
-                renderer.draw_rect(x, y, 8, 8, (100, 100, 200))
+        # Update complex elements if they&#x27;re visible
+        if self.show_complex_elements:
+            self.create_complex_elements()
+
+
+# =============================================================================
+# MAIN ENTRY POINT
+# =============================================================================
 
 def main():
-    engine = LunaEngine(&quot;LunaEngine - Performance Demo&quot;, 800, 600, False)
+    &quot;&quot;&quot;Main entry point for the performance profiling demo.&quot;&quot;&quot;
+    print(&quot;\n&quot; + &quot;=&quot;*60)
+    print(&quot;🚀 LUNAENGINE PERFORMANCE PROFILING DEMO&quot;)
+    print(&quot;=&quot;*60)
+    print(&quot;Initializing engine with performance monitoring...&quot;)
+    
+    # Create engine with performance profiling enabled
+    engine = LunaEngine(
+        title=&quot;LunaEngine - Performance Profiling Demo&quot;,
+        width=800,
+        height=600,
+        enable_performance_profiling=True,
+        profile_individual_ui_elements=False
+    )
+    
+    # Set high FPS for accurate performance measurements
     engine.fps = 240
     
+    # Add and set the performance demo scene
+    engine.add_scene(&quot;performance_demo&quot;, PerformanceDemoScene)
+    engine.set_scene(&quot;performance_demo&quot;)
     
-    engine.add_scene(&quot;main&quot;, PerformanceDemoScene)
-    engine.set_scene(&quot;main&quot;)
+    print(&quot;\n✅ Engine initialized successfully!&quot;)
+    print(&quot;Performance profiling is ACTIVE&quot;)
+    print(&quot;🎮 Use the UI controls to test different scenarios&quot;)
+    print(&quot;⏱️  Watch the performance metrics update in real-time&quot;)
+    print(&quot;=&quot;*60)
+    print(&quot;\nStarting main loop...&quot;)
     
-    print(&quot;=== Performance Demo ===&quot;)
-    print(&quot;Features:&quot;)
-    print(&quot;✅ Fixed button click handling&quot;)
-    print(&quot;✅ Optimized FPS tracking&quot;) 
-    print(&quot;✅ Hardware detection&quot;)
-    print(&quot;✅ Garbage collection&quot;)
-    print(&quot;✅ Minimal performance overhead&quot;)
-    print(&quot;\nStarting demo...&quot;)
-    engine.run()
+    # Run the engine
+    try:
+        engine.run()
+        print(&quot;\n👋 Performance demo completed successfully!&quot;)
+    except KeyboardInterrupt:
+        print(&quot;\n🛑 Demo interrupted by user&quot;)
+    except Exception as e:
+        print(f&quot;\n❌ Error running demo: {e}&quot;)
+        import traceback
+        traceback.print_exc()
+    
+    print(&quot;=&quot;*60)
+
 
 if __name__ == &quot;__main__&quot;:
     main()</code></pre>
@@ -170,7 +872,7 @@ if __name__ == &quot;__main__&quot;:
                         <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About This Example</h5>
                     </div>
                     <div class="card-body">
-                        <p>No description provided</p>
+                        <p>LunaEngine Performance Profiling Demo</p>
                         <hr>
                         <div class="d-grid gap-2">
                             <a href="performance_demo.py" download class="btn btn-outline-primary">
@@ -200,7 +902,7 @@ if __name__ == &quot;__main__&quot;:
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-02-03 16:03
+                        Documentation generated on 2026-02-16 14:06
                     </p>
                 </div>
             </div>

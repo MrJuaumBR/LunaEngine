@@ -17,7 +17,7 @@ LIBRARIES USED:
 - enum: For enum definitions (UI states)
 - time: For animation timing
 
-MAIN CLASSES:
+MAIN CLASSES (in order of appearance):
 
 1. UIState (Enum):
    - Defines possible UI element states (NORMAL, HOVERED, PRESSED, DISABLED)
@@ -50,29 +50,29 @@ MAIN CLASSES:
    - Interactive text input field with cursor
    - Supports keyboard input and text editing
 
-9. ProgressBar:
-   - Visual progress indicator for loading or value display
-   - Shows percentage and customizable range
+9. DialogBox:
+   - RPG-style dialog boxes with multiple styles and animations
+   - Supports multiple lines of text and custom themes
 
-10. UIDraggable:
+10. ProgressBar:
+    - Visual progress indicator for loading or value display
+    - Shows percentage and customizable range
+
+11. UIDraggable:
     - UI element that can be dragged around the screen
     - Provides visual feedback during dragging
 
-11. UIGradient:
+12. UIGradient:
     - UI element with gradient background
     - Supports horizontal and vertical gradients with multiple colors
 
-12. Select:
+13. Select:
     - Selection element with arrow buttons to cycle through options
     - Compact alternative to dropdowns
 
-13. Switch:
+14. Switch:
     - Toggle switch element with sliding animation
     - Alternative to checkboxes with smooth transitions
-
-14. ScrollingFrame:
-    - Container element with scrollable content
-    - Supports both horizontal and vertical scrolling
 
 15. Slider:
     - Interactive slider for selecting numeric values
@@ -81,14 +81,50 @@ MAIN CLASSES:
 16. Dropdown:
     - Dropdown menu for selecting from a list of options
     - Supports scrolling for long lists and custom themes
-    
-17. Frame:
+
+17. UiFrame:
     - Container element for grouping UI elements
     - Supports nested frames and theme-based styling
-    
-18. DialogBox:
-    - RPG-style dialog boxes with multiple styles and animations
-    - Supports multiple lines of text and custom themes
+
+18. NumberSelector:
+    - Numeric input control with increment/decrement buttons
+    - Supports min/max values and digit padding
+
+19. Checkbox:
+    - Binary state control with optional label
+    - Supports theme-based styling and toggle callbacks
+
+20. ScrollingFrame:
+    - Frame with scrollable content area
+    - Supports both vertical and horizontal scrolling with scrollbars
+
+21. Tabination:
+    - Tabbed container for organizing content into multiple pages
+    - Supports clickable tabs and alternating background colors
+
+22. Clock:
+    - Real‑time or custom time display (analog/digital)
+    - Supports 12/24‑hour formats and extensive styling
+
+23. AudioVisualizer:
+    - Real‑time audio visualization (bars, waveform, circle, particles, spectrum)
+    - Connects to audio sources and supports animated transitions
+
+24. Pagination:
+    - Page navigation control for paged content
+    - Shows page numbers with ellipsis and navigation buttons
+
+25. TextArea:
+    - Multi‑line text input area with word wrapping, line numbers, and scrollbars
+    - Supports selection, copy/paste, undo/redo, and read‑only mode
+
+26. FileFinder:
+    - File selection element with text field and browse button
+    - Integrates with system file dialog and supports file filtering
+
+27. ChartVisualizer:
+    - Versatile data visualization component (bar, pie, line, scatter)
+    - Includes animations, legends, and customizable colors
 
 This module forms the core of LunaEngine's UI system, providing a flexible and
 themeable foundation for building complex user interfaces in Pygame applications.
@@ -242,6 +278,12 @@ class UIElement(ABC):
     def get_mouse_position(self, input_state:InputState) -> Tuple[int, int]:
         return input_state.mouse_pos
     
+    def convert_mouse_pos(self, mouse_pos:Tuple[int,int]) -> Tuple[int,int]:
+        if self.parent:
+            parent_pos = self.parent.get_actual_position()
+            mouse_pos = (mouse_pos[0] - parent_pos[0], mouse_pos[1] - parent_pos[1])
+        return mouse_pos
+    
     def mouse_over(self, input_state:InputState) -> bool:
         # Needs to handle if has parent too
         if self.parent is not None:
@@ -249,7 +291,8 @@ class UIElement(ABC):
         else: parent_pos = (0, 0)
         
         mouse_pos:tuple[int, int] = self.get_mouse_position(input_state)
-        my_pos = (parent_pos[0] + self.x, parent_pos[1] + self.y)
+        # Adjusted to support root_point/anchor_point(I'm dumb as fuck)
+        my_pos = (parent_pos[0] + self.x + int(self.width * self.root_point[0]), parent_pos[1] + self.y + int(self.height * self.root_point[1]))
         is_mouse_over:bool = (
             mouse_pos[0] > my_pos[0] and mouse_pos[0] < my_pos[0] + self.width and
             mouse_pos[1] > my_pos[1] and mouse_pos[1] < my_pos[1] + self.height
@@ -301,7 +344,7 @@ class UIElement(ABC):
         """
         self.element_id = new_id
         
-    def get_actual_position(self, parent_width: int = 0, parent_height: int = 0) -> Tuple[int, int]:
+    def get_actual_position(self, x:int|float=None, y:int|float=None) -> Tuple[int, int]:
         """
         Calculate actual screen position based on root_point anchor.
         
@@ -313,14 +356,19 @@ class UIElement(ABC):
             Tuple[int, int]: The actual (x, y) screen coordinates.
         """
         anchor_x, anchor_y = self.root_point
+        if not type(x) in [int, float] or x is None:
+            x = self.x
+        if not type(y) in [int, float] or y is None:
+            y = self.y
+        
         
         if self.parent:
             parent_x, parent_y = self.parent.get_actual_position()
-            actual_x = parent_x + self.x - int(self.width * anchor_x)
-            actual_y = parent_y + self.y - int(self.height * anchor_y)
+            actual_x = parent_x + x - int(self.width * anchor_x)
+            actual_y = parent_y + y - int(self.height * anchor_y)
         else:
-            actual_x = self.x - int(self.width * anchor_x)
-            actual_y = self.y - int(self.height * anchor_y)
+            actual_x = x - int(self.width * anchor_x)
+            actual_y = y - int(self.height * anchor_y)
             
         return (actual_x, actual_y)
         
@@ -386,6 +434,14 @@ class UIElement(ABC):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
+
+        # If a global mouse event has been consumed this frame, skip all mouse logic.
+        if inputState.is_global_mouse_consumed():
+            self.state = UIState.NORMAL
+            # Still update children (they will also skip mouse logic because they check the same flag)
+            for child in self.children:
+                child.update(dt, inputState)
+            return
             
         # Check if event was already consumed by another element
         if inputState.is_event_consumed(self.element_id):
@@ -409,7 +465,7 @@ class UIElement(ABC):
         
         for child in self.children:
             if hasattr(child, 'update'):
-                child.update(dt)
+                child.update(dt, inputState)
     
     def update_theme(self, theme_type: ThemeType):
         """
@@ -477,6 +533,9 @@ class TextLabel(UIElement):
         self._font = None
         
         self.theme_type = theme or ThemeManager.get_current_theme()
+
+    def get_text(self) -> str:
+        return self.text
     
     def update_theme(self, theme_type):
         """Update theme for text label."""
@@ -594,6 +653,9 @@ class ImageLabel(UIElement):
             self.image_path = None
             self._image = pygame.transform.scale(image_path, (self.width, self.height))
     
+    def get_image(self) -> pygame.Surface:
+        return self._image
+    
     def set_size(self, width: int, height: int):
         self.width = width
         self.height = height
@@ -625,7 +687,7 @@ class Button(UIElement):
                  font_size: int = 20, font_name: Optional[str] = None, 
                  root_point: Tuple[float, float] = (0, 0),
                  theme: ThemeType = None,
-                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+                 element_id: Optional[str] = None):
         super().__init__(x, y, width, height, root_point, element_id)
         self.text = text
         self.font_size = font_size
@@ -655,6 +717,9 @@ class Button(UIElement):
         
     def set_text(self, text:str):
         self.text = text
+        
+    def get_text(self) -> str:
+        return self.text
     
     def update_theme(self, theme_type):
         super().update_theme(theme_type)
@@ -823,6 +888,17 @@ class ImageButton(UIElement):
         self.on_click_callback = callback
         self.on_click_args = args
         self.on_click_kwargs = kwargs
+        
+    def get_image(self):
+        return self._image
+    
+    def set_image(self, image_path: str | pygame.Surface):
+        if type(image_path) == str:
+            self.image_path = image_path
+            self._load_image()
+        elif type(image_path) == pygame.Surface:
+            self.image_path = None
+            self._image = image_path
     
     def update(self, dt:float, inputState:InputState):
         if not self.visible or not self.enabled:
@@ -914,6 +990,9 @@ class TextBox(UIElement):
         self._backspace_repeat_delay = 0.05
         
         self.theme_type = theme or ThemeManager.get_current_theme()
+        self.set_text(self.text)
+        
+        self.on_text_changed: Optional[Callable[[str,], None]] = None
         
     @property
     def font(self):
@@ -994,10 +1073,8 @@ class TextBox(UIElement):
         
         # Handle special keys
         if event.key in [pygame.K_BACKSPACE, pygame.K_DELETE, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_HOME, pygame.K_END]:
-            # This ones are handled in on_key_down
             pass
         elif event.unicode and event.unicode.isprintable():
-            # NEW: Check max_length before inserting
             if self.max_length > 0 and len(self.text) >= self.max_length:
                 # At max length, don't add more characters
                 pass
@@ -1008,9 +1085,12 @@ class TextBox(UIElement):
                 text_changed = True
                 cursor_moved = True
         
+        
         # Update rendering if needed
         if text_changed:
             self._update_text_surface()
+            if self.on_text_changed and callable(self.on_text_changed):
+                self.on_text_changed(self.text)
         elif cursor_moved:
             self.cursor_visible = True
             self.cursor_timer = 0
@@ -1049,16 +1129,13 @@ class TextBox(UIElement):
             return theme.dropdown_normal
     
     def set_text(self, text: str):
-        """
-        Set the text content.
-        
-        Args:
-            text (str): New text content.
-        """
+        """Set the text content and trigger callback if changed."""
         if self.text != text:
             self.text = text
             self.cursor_pos = len(text)
             self._update_text_surface()
+            if self.on_text_changed:
+                self.on_text_changed(self.text)
     
     def update(self, dt, inputState):
         if not self.visible or not self.enabled:
@@ -1069,13 +1146,13 @@ class TextBox(UIElement):
         mouse_over = self.mouse_over(inputState)
         
         # Handle focus changes
-        old_focused = self.focused
         if inputState.mouse_buttons_pressed.left:
-            self.focused = mouse_over
             if mouse_over:
-                self.state = UIState.PRESSED
+                self.focused = True
+                inputState.consume_global_mouse()
                 self._needs_redraw = True
             else:
+                self.focused = False
                 self.state = UIState.NORMAL
                 self._needs_redraw = True
         else:
@@ -1483,17 +1560,19 @@ class ProgressBar(UIElement):
                  min_val: float = 0, max_val: float = 100, value: float = 0,
                  root_point: Tuple[float, float] = (0, 0),
                  theme: ThemeType = None,
-                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+                 orientation: Literal['vertical', 'horizontal'] = "horizontal",
+                 element_id: Optional[str] = None):
         super().__init__(x, y, width, height, root_point, element_id)
         self.min_val = min_val
         self.max_val = max_val
         self.value = value
         
         self.theme_type = theme or ThemeManager.get_current_theme()
+        self.orientation = orientation.lower()
         
-        self.draw_value:bool = False
-        self.font_size:int = int(self.height * 0.8)
-        self.font_draw:str = None
+        self.draw_value: bool = False
+        self.font_size: int = int(self.height * 0.8)
+        self.font_draw: str = None
         
         theme = ThemeManager.get_theme(self.theme_type)
         self.background_color = theme.slider_track
@@ -1510,10 +1589,10 @@ class ProgressBar(UIElement):
     def set_font_color(self, color):
         self.font_color = color
         
-    def set_font(self, font_name:str, font_size:int):
+    def set_font(self, font_name: str, font_size: int):
         self.font_size = font_size
         self.font_draw = font_name
-        self.font_draw = True
+        self.draw_value = True          # corrigido: ativa desenho do texto
     
     def set_border_color(self, color):
         self.border_color = color
@@ -1545,7 +1624,7 @@ class ProgressBar(UIElement):
         return (self.value - self.min_val) / (self.max_val - self.min_val) * 100    
     
     def render(self, renderer):
-        """Render using OpenGL backend"""
+        """Render using OpenGL backend, respecting orientation."""
         if not self.visible:
             return
             
@@ -1554,23 +1633,58 @@ class ProgressBar(UIElement):
         
         # Draw border
         if theme.border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.border_color, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height,
+                               self.border_color, fill=False,
+                               border_width=self.border_width,
+                               corner_radius=self.corner_radius)
         
         # Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, self.background_color, fill=True, corner_radius=self.corner_radius)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height,
+                           self.background_color, fill=True,
+                           corner_radius=self.corner_radius)
         
-        # Draw progress
-        progress_width = int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
-        if progress_width > 0:
-            renderer.draw_rect(actual_x, actual_y, progress_width, self.height, self.foreground_color, fill=True, corner_radius=self.corner_radius)
+        # Draw progress according to orientation
+        percentage = self.get_percentage() / 100.0
         
-        # Draw text
+        if self.orientation == "vertical":
+            # Vertical bar: fills from bottom to top
+            progress_height = int(percentage * self.height)
+            if progress_height > 0:
+                renderer.draw_rect(
+                    actual_x,
+                    actual_y + self.height - progress_height,
+                    self.width,
+                    progress_height,
+                    self.foreground_color,
+                    fill=True,
+                    corner_radius=self.corner_radius
+                )
+        else:  # horizontal (default)
+            progress_width = int(percentage * self.width)
+            if progress_width > 0:
+                renderer.draw_rect(
+                    actual_x,
+                    actual_y,
+                    progress_width,
+                    self.height,
+                    self.foreground_color,
+                    fill=True,
+                    corner_radius=self.corner_radius
+                )
+        
+        # Draw centered text (if enabled)
         if self.draw_value:
             font = FontManager.get_font(self.font_draw, self.font_size)
-            renderer.draw_text(f"{self.get_percentage():.1f}%", actual_x, actual_y, self.font_color, font, anchor_point=(0.5, 0.5))
+            renderer.draw_text(
+                f"{self.get_percentage():.1f}%",
+                actual_x + self.width // 2,
+                actual_y + self.height // 2,
+                self.font_color,
+                font,
+                anchor_point=(0.5, 0.5)
+            )
                 
         super().render(renderer)
-
 class UIDraggable(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int,
                  root_point: Tuple[float, float] = (0, 0),
@@ -1589,6 +1703,8 @@ class UIDraggable(UIElement):
             
             
         mouse_pos, mouse_pressed = inputState.mouse_pos, inputState.mouse_buttons_pressed.left
+        # Convert real mouse pos to element parents pos
+        mouse_pos = self.convert_mouse_pos(mouse_pos)
         actual_x, actual_y = self.get_actual_position()
         
         mouse_over = self.mouse_over(inputState)
@@ -1604,8 +1720,7 @@ class UIDraggable(UIElement):
         if self.dragging and mouse_pressed:
             new_x = mouse_pos[0] - self.drag_offset[0] + int(self.width * self.root_point[0])
             new_y = mouse_pos[1] - self.drag_offset[1] + int(self.height * self.root_point[1])
-            self.x = new_x
-            self.y = new_y
+            self.x, self.y = self.get_actual_position(new_x, new_y)
     
     def render(self, renderer):
         """Render using OpenGL backend"""
@@ -2175,14 +2290,16 @@ class Slider(UIElement):
         super().render(renderer)
 
 class Dropdown(UIElement):
-    def __init__(self, x: int, y: int, width: int, height: int, 
-                 options: List[str] = None, font_size: int = 20, 
-                 font_name: Optional[str] = None, 
+    def __init__(self, x: int, y: int, width: int, height: int,
+                 options: List[str] = None, font_size: int = 20,
+                 font_name: Optional[str] = None,
                  root_point: Tuple[float, float] = (0, 0),
                  theme: ThemeType = None,
                  max_visible_options: int = 10,
-                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+                 element_id: Optional[str] = None,
+                 searchable: bool = False):
         super().__init__(x, y, width, height, root_point, element_id)
+
         self.options = options or []
         self.selected_index = 0
         self.expanded = False
@@ -2192,338 +2309,401 @@ class Dropdown(UIElement):
         self._option_height = 25
         self.on_selection_changed = None
         self._just_opened = False
-        
-        # Scroll functionality
+
+        # Scroll
         self.max_visible_options = max_visible_options
-        self.scroll_offset = 0
+        self.scroll_offset = 0          # persistent
         self.scrollbar_width = 10
         self.is_scrolling = False
-        
+
+        # Search
+        self.searchable = searchable
+        self.search_text = ""
+        self.filtered_options: Optional[List[int]] = None
+        self.search_box: Optional[TextBox] = None
+        self._search_box_height = 25 if searchable else 0
+
         self.theme_type = theme or ThemeManager.get_current_theme()
-        
+
+        if self.searchable:
+            self._create_search_box()
+
+    def _create_search_box(self):
+        self.search_box = TextBox(
+            0, 0,
+            self.width - self.scrollbar_width,
+            self._search_box_height,
+            text="",
+            font_size=self.font_size,
+            font_name=self.font_name,
+            theme=self.theme_type,
+            element_id=f"{self.element_id}_search"
+        )
+        self.search_box.visible = False
+        self.search_box.on_text_changed = self._on_search_text_changed
+        self.add_child(self.search_box)
+
+    def _on_search_text_changed(self, text: str):
+        self.search_text = text
+        self._update_filtered_options()
+        self.scroll_offset = 0
+
+    def _update_filtered_options(self):
+        if not self.search_text:
+            self.filtered_options = None
+        else:
+            lower = self.search_text.lower()
+            self.filtered_options = [i for i, opt in enumerate(self.options) if lower in opt.lower()]
+        total = len(self.filtered_options) if self.filtered_options else len(self.options)
+        max_scroll = max(0, total - self.max_visible_options)
+        self.scroll_offset = min(self.scroll_offset, max_scroll)
+
     @property
     def font(self):
-        """Lazy font loading"""
         if self._font is None:
             FontManager.initialize()
             self._font = FontManager.get_font(self.font_name, self.font_size)
         return self._font
-    
+
     def set_options(self, options: List[str], selected_index: int = 0):
         self.options = options
         self.selected_index = max(0, min(selected_index, len(options) - 1))
-        
-        # Reset dropdown
-        self.expanded = False
+        self.search_text = ""
+        self.filtered_options = None
+        if self.search_box:
+            self.search_box.set_text("")
         self.scroll_offset = 0
+        self.expanded = False
         self.is_scrolling = False
         self._just_opened = False
-        
+
     def set_theme(self, theme_type: ThemeType):
-        """Set dropdown theme"""
         self.theme_type = theme_type
-    
+        if self.search_box:
+            self.search_box.update_theme(theme_type)
+
     def _get_colors(self):
-        """Get colors from current theme"""
         return ThemeManager.get_theme(self.theme_type)
-    
-    def update(self, dt, inputState):
+
+    def _get_visible_options(self) -> List[int]:
+        options_to_show = self.filtered_options if self.filtered_options is not None else list(range(len(self.options)))
+        total = len(options_to_show)
+        if total <= self.max_visible_options:
+            return options_to_show
+        start = self.scroll_offset
+        end = min(start + self.max_visible_options, total)
+        return options_to_show[start:end]
+
+    def on_scroll(self, event: pygame.event.Event):
+        if not self.expanded or not self.visible or not self.enabled:
+            return
+        options_to_use = self.filtered_options if self.filtered_options is not None else list(range(len(self.options)))
+        total = len(options_to_use)
+        if total <= self.max_visible_options:
+            return
+        self.scroll_offset = max(0, min(total - self.max_visible_options, self.scroll_offset - event.y))
+
+    def _get_scrollbar_track_rect(self, actual_x: int, actual_y: int) -> Tuple[int, int, int, int]:
+        """Full rectangle of the vertical scrollbar (track + thumb)."""
+        if len(self.options) <= self.max_visible_options:
+            return (0, 0, 0, 0)
+        track_x = actual_x + self.width - self.scrollbar_width
+        track_y = actual_y + self.height + (self._search_box_height if self.searchable else 0)
+        track_height = self.max_visible_options * self._option_height
+        return (track_x, track_y, self.scrollbar_width, track_height)
+
+    def _get_scrollbar_thumb_rect(self, actual_x: int, actual_y: int) -> Tuple[int, int, int, int]:
+        """Rectangle of the scrollbar thumb."""
+        options_to_use = self.filtered_options if self.filtered_options is not None else list(range(len(self.options)))
+        total = len(options_to_use)
+        if total <= self.max_visible_options:
+            return (0, 0, 0, 0)
+
+        visible_count = min(self.max_visible_options, total)
+        visible_height = visible_count * self._option_height
+        visible_ratio = self.max_visible_options / total
+        thumb_height = max(20, int(visible_height * visible_ratio))
+
+        max_scroll = max(0, total - self.max_visible_options)
+        scroll_ratio = self.scroll_offset / max_scroll if max_scroll > 0 else 0
+
+        thumb_x = actual_x + self.width - self.scrollbar_width
+        thumb_y = (actual_y + self.height +
+                   (self._search_box_height if self.searchable else 0) +
+                   int((visible_height - thumb_height) * scroll_ratio))
+        return (thumb_x, thumb_y, self.scrollbar_width, thumb_height)
+
+    def update(self, dt: float, inputState: InputState):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
-            
-        mouse_pos, mouse_pressed = inputState.get_mouse_state()
+
         actual_x, actual_y = self.get_actual_position()
-            
-        # Check if mouse is over main dropdown
+        mouse_pos = inputState.mouse_pos
+        mouse_pressed = inputState.mouse_buttons_pressed.left
+
+        # Update search box (if expanded)
+        mouse_over_search = False
+        if self.expanded and self.searchable and self.search_box:
+            self.search_box.x = 0
+            self.search_box.y = self.height
+            self.search_box.width = self.width - (self.scrollbar_width if len(self.options) > self.max_visible_options else 0)
+            self.search_box.height = self._search_box_height
+            self.search_box.visible = True
+            self.search_box.update(dt, inputState)
+            if self.search_box.mouse_over(inputState):
+                mouse_over_search = True
+        elif self.search_box:
+            self.search_box.visible = False
+
         mouse_over_main = self.mouse_over(inputState)
-        
-        if self.expanded:
-            self.render_layer = LayerType.POPUP
-        else:
-            self.render_layer = LayerType.NORMAL
-        
-        # Handle scrollbar interaction
-        if self.expanded and len(self.options) > self.max_visible_options:
-            scrollbar_rect = self._get_scrollbar_rect(actual_x, actual_y)
-            if mouse_pressed.left and scrollbar_rect[0] <= mouse_pos[0] <= scrollbar_rect[0] + scrollbar_rect[2] and \
-               scrollbar_rect[1] <= mouse_pos[1] <= scrollbar_rect[1] + scrollbar_rect[3]:
-                self.is_scrolling = True
+
+        # --- Scrollbar interaction ---
+        track_rect = self._get_scrollbar_track_rect(actual_x, actual_y)
+        thumb_rect = self._get_scrollbar_thumb_rect(actual_x, actual_y)
+
+        # Start dragging if mouse pressed on thumb
+        if self.expanded and track_rect[2] > 0 and track_rect[3] > 0:
+            if mouse_pressed and not self._just_opened:
+                if (thumb_rect[0] <= mouse_pos[0] <= thumb_rect[0] + thumb_rect[2] and
+                    thumb_rect[1] <= mouse_pos[1] <= thumb_rect[1] + thumb_rect[3]):
+                    self.is_scrolling = True
+                    inputState.consume_global_mouse()          # global consumption
+                elif (track_rect[0] <= mouse_pos[0] <= track_rect[0] + track_rect[2] and
+                      track_rect[1] <= mouse_pos[1] <= track_rect[1] + track_rect[3]):
+                    # Click on track (not thumb) – jump scroll position (optional)
+                    # For simplicity, we just prevent closing and don't jump.
+                    # But we must consume the click so it doesn't close the dropdown.
+                    inputState.consume_global_mouse()
             elif not mouse_pressed:
                 self.is_scrolling = False
-            
-            if self.is_scrolling and mouse_pressed.left:
-                # Calculate scroll position based on mouse Y
-                options_height = len(self.options) * self._option_height
-                visible_height = self.max_visible_options * self._option_height
-                scroll_area_height = visible_height - (self.scrollbar_width * 2)
-                
-                relative_y = mouse_pos[1] - (actual_y + self.height + self.scrollbar_width)
+
+            # Update scroll position while dragging
+            if self.is_scrolling and mouse_pressed:
+                options_to_use = self.filtered_options if self.filtered_options is not None else list(range(len(self.options)))
+                total = len(options_to_use)
+                scroll_area_top = actual_y + self.height + (self._search_box_height if self.searchable else 0)
+                scroll_area_height = self.max_visible_options * self._option_height
+                relative_y = mouse_pos[1] - scroll_area_top
                 scroll_ratio = max(0, min(1, relative_y / scroll_area_height))
-                max_scroll = max(0, len(self.options) - self.max_visible_options)
+                max_scroll = max(0, total - self.max_visible_options)
                 self.scroll_offset = int(scroll_ratio * max_scroll)
-        
-        # Handle mouse press
-        if mouse_pressed.left and not self._just_opened and not self.is_scrolling:
+                inputState.consume_global_mouse()
+
+        # --- Mouse press handling for toggle / selection / closing ---
+        if mouse_pressed and not self._just_opened and not self.is_scrolling:
+            # Click on main box
             if mouse_over_main:
-                # Toggle expansion
                 self.expanded = not self.expanded
                 self._just_opened = self.expanded
-                self.scroll_offset = 0  # Reset scroll when opening
+                inputState.consume_global_mouse()
+            # Click on expanded area
             elif self.expanded:
-                # Check if clicking on an option
-                option_clicked = False
-                visible_options = self._get_visible_options()
-                
-                for i, option_index in enumerate(visible_options):
-                    option_rect = (actual_x, actual_y + self.height + i * self._option_height, 
-                                 self.width - (self.scrollbar_width if len(self.options) > self.max_visible_options else 0), 
-                                 self._option_height)
-                    if (option_rect[0] <= mouse_pos[0] <= option_rect[0] + option_rect[2] and 
-                        option_rect[1] <= mouse_pos[1] <= option_rect[1] + option_rect[3]):
-                        old_index = self.selected_index
-                        self.selected_index = option_index
+                # Check if click is inside the scrollbar track (including thumb) – do not close
+                if (track_rect[2] > 0 and
+                    track_rect[0] <= mouse_pos[0] <= track_rect[0] + track_rect[2] and
+                    track_rect[1] <= mouse_pos[1] <= track_rect[1] + track_rect[3]):
+                    # Click on scrollbar area – just consume, no close
+                    inputState.consume_global_mouse()
+                else:
+                    # Check options
+                    option_clicked = False
+                    visible_indices = self._get_visible_options()
+                    options_start_y = actual_y + self.height + (self._search_box_height if self.searchable else 0)
+
+                    for i, opt_index in enumerate(visible_indices):
+                        option_rect = (
+                            actual_x,
+                            options_start_y + i * self._option_height,
+                            self.width - (self.scrollbar_width if len(self.options) > self.max_visible_options else 0),
+                            self._option_height
+                        )
+                        if (option_rect[0] <= mouse_pos[0] <= option_rect[0] + option_rect[2] and
+                            option_rect[1] <= mouse_pos[1] <= option_rect[1] + option_rect[3]):
+                            old_index = self.selected_index
+                            self.selected_index = opt_index
+                            self.expanded = False
+                            self._just_opened = False
+                            if old_index != opt_index and self.on_selection_changed:
+                                self.on_selection_changed(opt_index, self.options[opt_index])
+                            option_clicked = True
+                            inputState.consume_global_mouse()
+                            break
+
+                    # Click outside everything → close dropdown
+                    if not option_clicked and not mouse_over_search:
                         self.expanded = False
                         self._just_opened = False
-                        self.scroll_offset = 0  # Reset scroll when selecting
-                        if old_index != option_index and self.on_selection_changed:
-                            self.on_selection_changed(option_index, self.options[option_index])
-                        option_clicked = True
-                        break
-                
-                # Clicked outside dropdown, close it
-                if not option_clicked:
-                    self.expanded = False
-                    self._just_opened = False
         else:
-            # Reset the just_opened flag when mouse is released
-            if not mouse_pressed.left:
+            if not mouse_pressed:
                 self._just_opened = False
-                self.is_scrolling = False
-            
-            if mouse_over_main or self.expanded:
-                self.state = UIState.HOVERED
-            else:
-                self.state = UIState.NORMAL
-    
-    def on_scroll(self, event: pygame.event.Event):
-        """Handle mouse wheel scrolling"""
-        if not self.expanded or len(self.options) <= self.max_visible_options or self.visible == False or self.enabled == False:
-            return
-        
-        scroll_y = event.y
-        if self.expanded and len(self.options) > self.max_visible_options:
-            self.scroll_offset = max(0, min(
-                len(self.options) - self.max_visible_options,
-                self.scroll_offset - scroll_y  # Invert for natural scrolling
-            ))
-    
-    def _get_visible_options(self):
-        """Get the list of option indices that are currently visible"""
-        if len(self.options) <= self.max_visible_options:
-            return list(range(len(self.options)))
-        
-        start_idx = self.scroll_offset
-        end_idx = min(start_idx + self.max_visible_options, len(self.options))
-        return list(range(start_idx, end_idx))
-    
-    def _get_scrollbar_rect(self, actual_x: int, actual_y: int) -> Tuple[int, int, int, int]:
-        """Get the scrollbar rectangle"""
-        total_height = self.max_visible_options * self._option_height
-        visible_ratio = self.max_visible_options / len(self.options)
-        scrollbar_height = max(20, int(total_height * visible_ratio))
-        
-        max_scroll = max(0, len(self.options) - self.max_visible_options)
-        scroll_ratio = self.scroll_offset / max_scroll if max_scroll > 0 else 0
-        
-        scrollbar_y = actual_y + self.height + int((total_height - scrollbar_height) * scroll_ratio)
-        scrollbar_x = actual_x + self.width - self.scrollbar_width
-        
-        return (scrollbar_x, scrollbar_y, self.scrollbar_width, scrollbar_height)
-    
-    def render(self, renderer):
-        """Render using OpenGL backend"""
+
+        # Update hover state
+        if mouse_over_main or (self.expanded and (mouse_over_search or self.is_scrolling)):
+            self.state = UIState.HOVERED
+        else:
+            self.state = UIState.NORMAL
+
+    def render(self, renderer: Renderer):
         if not self.visible:
             return
-            
+
         theme = self._get_colors()
         actual_x, actual_y = self.get_actual_position()
-        
-        # First: draw border
+
+        # Border
         if theme.dropdown_border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                            theme.dropdown_border, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
-        
-        # Then: draw main box
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height,
+                               theme.dropdown_border, fill=False,
+                               border_width=self.border_width,
+                               corner_radius=self.corner_radius)
+
+        # Main box background
         if self.state == UIState.NORMAL:
             main_color = theme.dropdown_normal
         else:
             main_color = theme.dropdown_hover
-            
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, main_color, corner_radius=self.corner_radius)
-        
-        # Draw selected text
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height,
+                           main_color, corner_radius=self.corner_radius)
+
+        # Selected text
         if self.options:
             text = self.options[self.selected_index]
-            # Truncate text if too long
             if len(text) > 15:
                 text = text[:15] + "..."
             text_surface = self.font.render(text, True, theme.dropdown_text)
-            
             if hasattr(renderer, 'render_surface'):
-                renderer.render_surface(text_surface, actual_x + 5, 
-                                    actual_y + (self.height - text_surface.get_height()) // 2)
+                renderer.render_surface(text_surface, actual_x + 5,
+                                        actual_y + (self.height - text_surface.get_height()) // 2)
             else:
-                renderer.draw_surface(text_surface, actual_x + 5, 
-                                    actual_y + (self.height - text_surface.get_height()) // 2)
-        
-        # Draw dropdown arrow - OpenGL compatible
+                renderer.draw_surface(text_surface, actual_x + 5,
+                                      actual_y + (self.height - text_surface.get_height()) // 2)
+
+        # Dropdown arrow
         arrow_color = theme.dropdown_text
         arrow_points = [
-            (actual_x + self.width - 15, actual_y + self.height//2 - 3),
-            (actual_x + self.width - 5, actual_y + self.height//2 - 3),
-            (actual_x + self.width - 10, actual_y + self.height//2 + 3)
+            (actual_x + self.width - 15, actual_y + self.height // 2 - 3),
+            (actual_x + self.width - 5,  actual_y + self.height // 2 - 3),
+            (actual_x + self.width - 10, actual_y + self.height // 2 + 3)
         ]
-        
-        # Use polygon drawing method compatible with OpenGL
         self._draw_arrow_polygon(renderer, arrow_points, arrow_color)
-        
-        # Draw expanded options with scroll
+
+        # Expanded options
         if self.expanded:
             self._render_expanded_options(renderer, actual_x, actual_y, theme)
-        
+
+        # Render children (including search box)
         super().render(renderer)
-    
+
     def _draw_arrow_polygon(self, renderer, points, color):
-        """
-        Draw arrow polygon in a way compatible with both Pygame and OpenGL.
-        
-        Args:
-            renderer: The renderer object
-            points: List of (x, y) points for the polygon
-            color: RGB color tuple
-        """
-        # For OpenGL renderers, we need to draw the polygon differently
-        # This is a simplified approach - you might need to adjust based on your OpenGL renderer
-        
-        # Method 1: Try using renderer's polygon drawing if available
         if hasattr(renderer, 'draw_polygon'):
             renderer.draw_polygon(points, color)
-        # Method 2: Draw as individual triangles/lines
         elif hasattr(renderer, 'draw_line'):
-            # Draw the arrow as connected lines
             for i in range(len(points)):
-                start_point = points[i]
-                end_point = points[(i + 1) % len(points)]
-                renderer.draw_line(start_point[0], start_point[1], 
-                                 end_point[0], end_point[1], color, 2)
-        # Method 3: Fallback - create a small surface with the arrow
+                start = points[i]
+                end = points[(i + 1) % len(points)]
+                renderer.draw_line(start[0], start[1], end[0], end[1], color, 2)
         else:
             try:
-                # Create a small surface for the arrow
                 arrow_surface = pygame.Surface((20, 10), pygame.SRCALPHA)
-                pygame.draw.polygon(arrow_surface, color, [
-                    (5, 0), (15, 0), (10, 5)
-                ])
-                
-                # Calculate position for the arrow surface
-                arrow_x = points[0][0] - 10  # Center the arrow
-                arrow_y = points[0][1] - 2   # Adjust vertical position
-                
+                pygame.draw.polygon(arrow_surface, color, [(5, 0), (15, 0), (10, 5)])
+                arrow_x = points[0][0] - 10
+                arrow_y = points[0][1] - 2
                 if hasattr(renderer, 'render_surface'):
                     renderer.render_surface(arrow_surface, arrow_x, arrow_y)
                 else:
                     renderer.draw_surface(arrow_surface, arrow_x, arrow_y)
             except:
-                # Final fallback - just draw a simple rectangle as arrow indicator
-                arrow_rect = (points[0][0] - 5, points[0][1] - 2, 10, 5)
-                renderer.draw_rect(arrow_rect[0], arrow_rect[1], 
-                                 arrow_rect[2], arrow_rect[3], color)
-    
-    def _render_expanded_options(self, renderer:OpenGLRenderer, actual_x: int, actual_y: int, theme):
-        """Helper method to render expanded options - WITH OPTION SEPARATORS"""
-        visible_options = self._get_visible_options()
+                renderer.draw_rect(points[0][0] - 5, points[0][1] - 2, 10, 5, color)
+
+    def _render_expanded_options(self, renderer, actual_x, actual_y, theme):
+        options_to_use = self.filtered_options if self.filtered_options is not None else list(range(len(self.options)))
+        visible_indices = self._get_visible_options()
+        if not visible_indices:
+            return
+
+        options_start_y = actual_y + self.height + (self._search_box_height if self.searchable else 0)
         total_options_height = self.max_visible_options * self._option_height
-        
-        # Calculate width for options area
-        options_bg_width = self.width - (self.scrollbar_width if len(self.options) > self.max_visible_options else 0)
-        
-        # FIRST: Draw the main expanded options container border
+        bg_width = self.width - (self.scrollbar_width if len(options_to_use) > self.max_visible_options else 0)
+
+        # Container border
         if theme.dropdown_border:
-            renderer.draw_rect(actual_x, actual_y + self.height, options_bg_width, total_options_height, 
-                            theme.dropdown_border, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
-        
-        # SECOND: Draw the main expanded options background (inset by border)
-        renderer.draw_rect(actual_x, actual_y + self.height, options_bg_width, total_options_height, 
-                        theme.dropdown_expanded, fill=True, border_width=self.border_width, corner_radius=self.corner_radius)
-        
-        # THIRD: Draw individual options with subtle separators
-        for i, option_index in enumerate(visible_options):
-            option_y = actual_y + self.height + i * self._option_height
-            is_selected = option_index == self.selected_index
-            
-            # Determine option background color
+            renderer.draw_rect(actual_x, options_start_y, bg_width, total_options_height,
+                               theme.dropdown_border, fill=False,
+                               border_width=self.border_width,
+                               corner_radius=self.corner_radius)
+
+        # Container background
+        renderer.draw_rect(actual_x, options_start_y, bg_width, total_options_height,
+                           theme.dropdown_expanded, fill=True,
+                           border_width=self.border_width,
+                           corner_radius=self.corner_radius)
+
+        # Draw each visible option
+        for i, opt_index in enumerate(visible_indices):
+            option_y = options_start_y + i * self._option_height
+            is_selected = (opt_index == self.selected_index)
+
             if is_selected:
                 option_color = theme.dropdown_option_selected
             else:
                 option_color = theme.dropdown_option_normal
-            
-            # Check hover state
+
+            # Hover effect
             mouse_pos = pygame.mouse.get_pos()
-            option_rect = (actual_x, option_y, options_bg_width, self._option_height)
-            mouse_over_option = (option_rect[0] <= mouse_pos[0] <= option_rect[0] + option_rect[2] and 
-                            option_rect[1] <= mouse_pos[1] <= option_rect[1] + option_rect[3])
-            
-            if mouse_over_option:
+            option_rect = (actual_x, option_y, bg_width, self._option_height)
+            if (option_rect[0] <= mouse_pos[0] <= option_rect[0] + option_rect[2] and
+                option_rect[1] <= mouse_pos[1] <= option_rect[1] + option_rect[3]):
                 option_color = theme.dropdown_option_hover
-            
-            # Draw option background (full height, no individual borders)
-            renderer.draw_rect(actual_x, option_y, options_bg_width, self._option_height, option_color, fill=True, border_width=0, corner_radius=0)
-            
-            # Draw subtle separator line between options (except for the last one)
-            if i < len(visible_options) - 1 and theme.dropdown_border:
-                separator_y = option_y + self._option_height - 1
-                separator_color = (theme.dropdown_border[0]//2, theme.dropdown_border[1]//2, theme.dropdown_border[2]//2)
-                renderer.draw_rect(actual_x + 1, separator_y, options_bg_width - 2, 1, separator_color)
-            
-            # Draw option text
-            option_text = self.options[option_index]
+
+            renderer.draw_rect(actual_x, option_y, bg_width, self._option_height,
+                               option_color, fill=True, border_width=0, corner_radius=0)
+
+            # Separator line
+            if i < len(visible_indices) - 1 and theme.dropdown_border:
+                sep_y = option_y + self._option_height - 1
+                sep_color = tuple(c // 2 for c in theme.dropdown_border)
+                renderer.draw_rect(actual_x + 1, sep_y, bg_width - 2, 1, sep_color)
+
+            # Option text
+            option_text = self.options[opt_index]
             if len(option_text) > 20:
                 option_text = option_text[:20] + "..."
-            
-            text_x = actual_x + 5 + 1
-            
-            renderer.draw_text(option_text, text_x, option_y+int(self._option_height*0.9), theme.dropdown_text, self.font, anchor_point=(0, 1))
-        
-        # FOURTH: Draw scrollbar if needed
-        if len(self.options) > self.max_visible_options:
-            scrollbar_rect = self._get_scrollbar_rect(actual_x, actual_y)
+            text_x = actual_x + 5
+            renderer.draw_text(option_text, text_x, option_y + int(self._option_height * 0.9),
+                               theme.dropdown_text, self.font, anchor_point=(0, 1))
+
+        # Scrollbar
+        if len(options_to_use) > self.max_visible_options:
+            thumb_rect = self._get_scrollbar_thumb_rect(actual_x, actual_y)
             scrollbar_color = (150, 150, 150) if self.is_scrolling else (100, 100, 100)
-            renderer.draw_rect(scrollbar_rect[0], scrollbar_rect[1], 
-                            scrollbar_rect[2], scrollbar_rect[3], scrollbar_color, fill=True, border_width=0, corner_radius=self.corner_radius)
-    
+            renderer.draw_rect(thumb_rect[0], thumb_rect[1],
+                               thumb_rect[2], thumb_rect[3],
+                               scrollbar_color, fill=True, border_width=0,
+                               corner_radius=self.corner_radius)
+
     def add_option(self, option: str):
-        """Add an option to the dropdown"""
         self.options.append(option)
-    
+        self._update_filtered_options()
+
     def remove_option(self, option: str):
-        """Remove an option from the dropdown"""
         if option in self.options:
+            index = self.options.index(option)
             self.options.remove(option)
-            # Adjust selected index if needed
-            if self.selected_index >= len(self.options):
+            if self.selected_index > index:
+                self.selected_index -= 1
+            elif self.selected_index == index:
                 self.selected_index = max(0, len(self.options) - 1)
-    
+            self._update_filtered_options()
+
     def set_selected_index(self, index: int):
-        """Set the selected option by index"""
         if 0 <= index < len(self.options):
             old_index = self.selected_index
             self.selected_index = index
             if old_index != index and self.on_selection_changed:
                 self.on_selection_changed(index, self.options[index])
-    
+
     def set_on_selection_changed(self, callback: Callable[[int, str], None]):
-        """Set callback for when selection changes"""
         self.on_selection_changed = callback
         
 class UiFrame(UIElement):
@@ -2610,9 +2790,12 @@ class UiFrame(UIElement):
         Returns:
             Tuple[int, int, int, int]: (x, y, width, height) of content area.
         """
+        # Needs to consideer root_point
         actual_x, actual_y = self.get_actual_position()
-        content_x = actual_x + self.padding
-        content_y = actual_y + self.padding
+        #content_x = actual_x + self.padding
+        content_x = actual_x + (self.root_point[0] * self.width) + self.padding
+        # content_y = actual_y + self.padding
+        content_y = actual_y + (self.root_point[1] * self.height) + self.padding
         content_width = self.width - (self.padding * 2)
         content_height = self.height - (self.padding * 2)
         
@@ -3310,7 +3493,9 @@ class ScrollingFrame(UiFrame):
             parent_pos = (0, 0)
         
         mouse_pos = input_state.mouse_pos  # Use original mouse position
-        my_pos = (parent_pos[0] + self.x, parent_pos[1] + self.y)
+        # my_pos = (parent_pos[0] + self.x, parent_pos[1] + self.y)
+        # my_pos needs to consideer root_point too
+        my_pos = (parent_pos[0] + (self.width*self.root_point[0]) + self.x, parent_pos[1] + (self.height*self.root_point[1]) + self.y)
         
         is_mouse_over = (
             mouse_pos[0] > my_pos[0] and mouse_pos[0] < my_pos[0] + self.width and
@@ -3335,10 +3520,7 @@ class ScrollingFrame(UiFrame):
         mouse_pos = inputState.mouse_pos
         actual_x, actual_y = self.get_actual_position()
         
-        mouse_over = (
-            actual_x <= mouse_pos[0] <= actual_x + self.width and
-            actual_y <= mouse_pos[1] <= actual_y + self.height
-        )
+        mouse_over = self.mouse_over(inputState)
         
         # Update state
         if mouse_over:
@@ -5034,3 +5216,1751 @@ class AudioVisualizer(UIElement):
             b = 0
         
         return (r, g, b)
+
+class Pagination(UiFrame):
+    """
+    Pagination control for navigating through multiple pages of content.
+    
+    Displays page numbers and navigation buttons to switch between pages.
+    Supports custom button styles and ellipsis for large page ranges.
+    
+    Attributes:
+        total_pages (int): Total number of pages.
+        current_page (int): Currently selected page (1-indexed).
+        max_visible_pages (int): Maximum number of page buttons to show.
+        show_prev_next (bool): Whether to show previous/next buttons.
+        show_first_last (bool): Whether to show first/last page buttons.
+        button_style (str): Style for page buttons ('numbers', 'dots', 'compact').
+    """
+    
+    def __init__(self, x: int, y: int, width: int, height: int,
+                 total_pages: int = 1, current_page: int = 1,
+                 max_visible_pages: int = 7,
+                 show_prev_next: bool = True, show_first_last: bool = True,
+                 button_style: Literal['numbers', 'dots', 'compact'] = 'numbers',
+                 root_point: Tuple[float, float] = (0, 0),
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):
+        """
+        Initialize a Pagination element.
+        
+        Args:
+            x (int): X coordinate position.
+            y (int): Y coordinate position.
+            width (int): Width of pagination control.
+            height (int): Height of pagination control.
+            total_pages (int): Total number of pages.
+            current_page (int): Starting page (1-indexed).
+            max_visible_pages (int): Max page buttons to display.
+            show_prev_next (bool): Show previous/next buttons.
+            show_first_last (bool): Show first/last page buttons.
+            button_style (str): Style of page buttons.
+            root_point (Tuple[float, float]): Anchor point for positioning.
+            theme (ThemeType): Theme for styling.
+            element_id (Optional[str]): Custom element ID.
+        """
+        super().__init__(x, y, width, height, root_point, theme, element_id)
+        
+        # Pagination properties
+        self.total_pages = max(1, total_pages)
+        self.current_page = max(1, min(current_page, self.total_pages))
+        self.max_visible_pages = max_visible_pages
+        self.show_prev_next = show_prev_next
+        self.show_first_last = show_first_last
+        self.button_style = button_style
+        
+        # Styling
+        self.button_size = (30, 30)  # (width, height) for page buttons
+        self.button_margin = 5  # Space between buttons
+        self.ellipsis_text = "..."
+        
+        # Callbacks
+        self.on_page_change = None  # Callback: (new_page, old_page)
+        
+        # Button cache
+        self._page_buttons = {}  # page_number -> Button element
+        self._prev_button = None
+        self._next_button = None
+        self._first_button = None
+        self._last_button = None
+        
+        # Create initial buttons
+        self._create_buttons()
+
+    def set_page(self, page: int):
+        """
+        Set the current page.
+        
+        Args:
+            page (int): New page number (1-indexed).
+        """
+        self.set_current_page(page)
+    
+    def set_total_pages(self, total_pages: int):
+        """
+        Set the total number of pages.
+        
+        Args:
+            total_pages (int): New total pages.
+        """
+        old_total = self.total_pages
+        self.total_pages = max(1, total_pages)
+        
+        # Adjust current page if needed
+        if self.current_page > self.total_pages:
+            old_page = self.current_page
+            self.current_page = self.total_pages
+            self._trigger_page_change(old_page)
+        
+        # Recreate buttons if total changed
+        if old_total != self.total_pages:
+            self._create_buttons()
+    
+    def set_current_page(self, page: int):
+        """
+        Set the current page.
+        
+        Args:
+            page (int): New page number (1-indexed).
+        """
+        if 1 <= page <= self.total_pages and page != self.current_page:
+            old_page = self.current_page
+            self.current_page = page
+            self._update_button_states()
+            self._trigger_page_change(old_page)
+    
+    def next_page(self):
+        """Go to the next page."""
+        if self.current_page < self.total_pages:
+            self.set_current_page(self.current_page + 1)
+    
+    def previous_page(self):
+        """Go to the previous page."""
+        if self.current_page > 1:
+            self.set_current_page(self.current_page - 1)
+    
+    def first_page(self):
+        """Go to the first page."""
+        self.set_current_page(1)
+    
+    def last_page(self):
+        """Go to the last page."""
+        self.set_current_page(self.total_pages)
+    
+    def set_on_page_change(self, callback: Callable[[int, int], None]):
+        """
+        Set callback for page changes.
+        
+        Args:
+            callback (Callable): Function called when page changes.
+        """
+        self.on_page_change = callback
+    
+    def _trigger_page_change(self, old_page: int):
+        """Trigger page change callback."""
+        if self.on_page_change:
+            self.on_page_change(self.current_page, old_page)
+    
+    def _calculate_visible_pages(self) -> List[int]:
+        """
+        Calculate which page numbers to display.
+        
+        Returns:
+            List[int]: List of page numbers to show.
+        """
+        if self.total_pages <= self.max_visible_pages:
+            return list(range(1, self.total_pages + 1))
+        
+        # Calculate range with current page in middle when possible
+        half_visible = self.max_visible_pages // 2
+        
+        start_page = max(1, self.current_page - half_visible)
+        end_page = min(self.total_pages, self.current_page + half_visible)
+        
+        # Adjust if at beginning or end
+        if start_page == 1:
+            end_page = min(self.total_pages, self.max_visible_pages)
+        elif end_page == self.total_pages:
+            start_page = max(1, self.total_pages - self.max_visible_pages + 1)
+        
+        pages = list(range(start_page, end_page + 1))
+        
+        # Add ellipsis markers if needed
+        if start_page > 1:
+            pages.insert(0, 1)
+            if start_page > 2:
+                pages.insert(1, -1)  # -1 represents ellipsis
+        
+        if end_page < self.total_pages:
+            if end_page < self.total_pages - 1:
+                pages.append(-1)  # -1 represents ellipsis
+            pages.append(self.total_pages)
+        
+        return pages
+    
+    def _create_buttons(self):
+        """Create or update page navigation buttons."""
+        # Clear existing buttons
+        for btn in list(self._page_buttons.values()):
+            self.remove_child(btn)
+        self._page_buttons.clear()
+        
+        if self._prev_button:
+            self.remove_child(self._prev_button)
+            self._prev_button = None
+        
+        if self._next_button:
+            self.remove_child(self._next_button)
+            self._next_button = None
+        
+        if self._first_button:
+            self.remove_child(self._first_button)
+            self._first_button = None
+        
+        if self._last_button:
+            self.remove_child(self._last_button)
+            self._last_button = None
+        
+        # Calculate available width for buttons
+        button_width, button_height = self.button_size
+        total_buttons = 0
+        
+        # Count buttons we'll have
+        visible_pages = self._calculate_visible_pages()
+        total_buttons += len([p for p in visible_pages if p != -1])
+        
+        if self.show_prev_next:
+            total_buttons += 2
+        if self.show_first_last:
+            total_buttons += 2
+        
+        # Calculate total width needed
+        total_width_needed = total_buttons * button_width + (total_buttons - 1) * self.button_margin
+        
+        # Adjust button size if needed
+        if total_width_needed > self.width - 20:  # 10px padding on each side
+            # Reduce button size proportionally
+            available_width = self.width - 20 - (total_buttons - 1) * self.button_margin
+            button_width = max(20, available_width // total_buttons)
+            self.button_size = (button_width, self.button_size[1])
+        
+        # Create navigation buttons
+        current_x = 10
+        button_y = (self.height - button_height) // 2
+        
+        # First page button
+        if self.show_first_last:
+            self._first_button = Button(current_x, button_y, button_width, button_height,
+                                       text="«", font_size=12,
+                                       theme=self.theme_type)
+            self._first_button.set_on_click(self.first_page)
+            self.add_child(self._first_button)
+            current_x += button_width + self.button_margin
+        
+        # Previous button
+        if self.show_prev_next:
+            self._prev_button = Button(current_x, button_y, button_width, button_height,
+                                      text="‹", font_size=14,
+                                      theme=self.theme_type)
+            self._prev_button.set_on_click(self.previous_page)
+            self.add_child(self._prev_button)
+            current_x += button_width + self.button_margin
+        
+        # Page number buttons
+        visible_pages = self._calculate_visible_pages()
+        for page_num in visible_pages:
+            if page_num == -1:  # Ellipsis
+                # Create a label for ellipsis
+                ellipsis_label = TextLabel(current_x, button_y + button_height//2 - 8,
+                                          self.ellipsis_text, font_size=14,
+                                          theme=self.theme_type)
+                ellipsis_label.root_point = (0, 0.5)
+                self.add_child(ellipsis_label)
+                current_x += button_width + self.button_margin
+            else:
+                # Create page button
+                btn_text = str(page_num) if self.button_style == 'numbers' else "•"
+                btn = Button(current_x, button_y, button_width, button_height,
+                            text=btn_text, font_size=14 if self.button_style == 'numbers' else 18,
+                            theme=self.theme_type)
+                
+                # Highlight current page
+                if page_num == self.current_page:
+                    btn.set_background_color(ThemeManager.get_theme(self.theme_type).button_pressed)
+                    btn.enabled = False
+                
+                # Set click handler
+                btn.set_on_click(lambda p=page_num: self.set_current_page(p))
+                
+                self._page_buttons[page_num] = btn
+                self.add_child(btn)
+                current_x += button_width + self.button_margin
+        
+        # Next button
+        if self.show_prev_next:
+            self._next_button = Button(current_x, button_y, button_width, button_height,
+                                      text="›", font_size=14,
+                                      theme=self.theme_type)
+            self._next_button.set_on_click(self.next_page)
+            self.add_child(self._next_button)
+            current_x += button_width + self.button_margin
+        
+        # Last page button
+        if self.show_first_last:
+            self._last_button = Button(current_x, button_y, button_width, button_height,
+                                      text="»", font_size=12,
+                                      theme=self.theme_type)
+            self._last_button.set_on_click(self.last_page)
+            self.add_child(self._last_button)
+        
+        # Update button states
+        self._update_button_states()
+    
+    def _update_button_states(self):
+        """Update enabled/disabled states of navigation buttons."""
+        # Previous/First buttons
+        if self._prev_button:
+            self._prev_button.enabled = self.current_page > 1
+        if self._first_button:
+            self._first_button.enabled = self.current_page > 1
+        
+        # Next/Last buttons
+        if self._next_button:
+            self._next_button.enabled = self.current_page < self.total_pages
+        if self._last_button:
+            self._last_button.enabled = self.current_page < self.total_pages
+        
+        # Update page button highlights
+        theme = ThemeManager.get_theme(self.theme_type)
+        for page_num, btn in self._page_buttons.items():
+            if page_num == self.current_page:
+                btn.set_background_color(theme.button_pressed)
+                btn.enabled = False
+            else:
+                btn.set_background_color(theme.button_normal)
+                btn.enabled = True
+    
+    def update(self, dt: float, inputState: InputState):
+        """Update pagination state."""
+        super().update(dt, inputState)
+        
+        # Update button states
+        self._update_button_states()
+    
+    def render(self, renderer: Renderer):
+        """Render pagination."""
+        if not self.visible:
+            return
+        
+        # Draw frame background
+        super().render(renderer)
+        
+        # Render children (buttons) are already rendered by super()
+
+class TextArea(UIElement):
+    """
+    Multi-line text input area with word wrapping and scrollbars.
+    
+    Supports text editing, selection, copy/paste, and line numbers.
+    
+    Attributes:
+        text (str): The text content.
+        line_numbers (bool): Whether to show line numbers.
+        word_wrap (bool): Whether to wrap long lines.
+        read_only (bool): Whether text is read-only.
+        tab_size (int): Number of spaces for tab character.
+    """
+    
+    def __init__(self, x: int, y: int, width: int, height: int,
+                 text: str = "", font_size: int = 16, font_name: Optional[str] = None,
+                 line_numbers: bool = True, word_wrap: bool = True,
+                 read_only: bool = False, tab_size: int = 4,
+                 root_point: Tuple[float, float] = (0, 0),
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):
+        """
+        Initialize a TextArea element.
+        
+        Args:
+            x (int): X coordinate position.
+            y (int): Y coordinate position.
+            width (int): Width of text area.
+            height (int): Height of text area.
+            text (str): Initial text content.
+            font_size (int): Font size for text.
+            font_name (Optional[str]): Font name.
+            line_numbers (bool): Show line numbers.
+            word_wrap (bool): Enable word wrapping.
+            read_only (bool): Make text read-only.
+            tab_size (int): Spaces per tab.
+            root_point (Tuple[float, float]): Anchor point.
+            theme (ThemeType): Theme for styling.
+            element_id (Optional[str]): Custom element ID.
+        """
+        super().__init__(x, y, width, height, root_point, element_id)
+        
+        # Text properties
+        self.text = text
+        self.lines = text.split('\n')
+        self.font_size = font_size
+        self.font_name = font_name
+        self.line_numbers = line_numbers
+        self.word_wrap = word_wrap
+        self.read_only = read_only
+        self.tab_size = tab_size
+        
+        # Theme
+        self.theme_type = theme or ThemeManager.get_current_theme()
+        
+        # Cursor and selection
+        self.cursor_line = 0
+        self.cursor_column = 0
+        self.selection_start = None  # (line, column)
+        self.selection_end = None
+        self.cursor_visible = True
+        self.cursor_timer = 0.0
+        
+        # Scroll
+        self.scroll_x = 0
+        self.scroll_y = 0
+        self.line_height = font_size + 4
+        self.char_width = 8  # Approximate, will be updated
+        
+        # Line number area
+        self.line_number_width = 0
+        self.line_number_padding = 10
+        
+        # Text area dimensions
+        self.text_area_x = 0
+        self.text_area_y = 0
+        self.text_area_width = width
+        self.text_area_height = height
+        
+        # Font
+        self._font = None
+        self._update_dimensions()
+        
+        # Focus state
+        self.focused = False
+        self._dragging = False
+        self._drag_start_pos = None
+        
+        # Clipboard (simple in-memory clipboard)
+        self._clipboard = ""
+        
+        # Undo/redo stack
+        self._undo_stack = []
+        self._redo_stack = []
+        self._last_text = text
+        
+        # Update initial text
+        self._update_text_buffer()
+    
+    @property
+    def font(self):
+        """Get font with lazy loading."""
+        if self._font is None:
+            FontManager.initialize()
+            self._font = FontManager.get_font(self.font_name, self.font_size)
+        return self._font
+    
+    def get_text(self) -> str:
+        """Get the text content."""
+        return self.text
+    
+    def set_text(self, text: str):
+        """Set the text content."""
+        if text != self.text:
+            # Save to undo stack
+            self._save_to_undo_stack()
+            
+            self.text = text
+            self.lines = text.split('\n')
+            self._update_text_buffer()
+            
+            # Reset cursor to beginning
+            self.cursor_line = 0
+            self.cursor_column = 0
+            self.selection_start = None
+            self.selection_end = None
+            
+            # Ensure cursor is visible
+            self._scroll_to_cursor()
+    
+    def _update_dimensions(self):
+        """Update text area dimensions based on settings."""
+        if self.line_numbers:
+            # Calculate line number width
+            max_lines = len(self.lines)
+            digits = len(str(max_lines))
+            self.line_number_width = self.font.size(" " * digits)[0] + self.line_number_padding * 2
+        else:
+            self.line_number_width = 0
+        
+        # Update text area position and size
+        self.text_area_x = self.line_number_width
+        self.text_area_y = 0
+        self.text_area_width = self.width - self.line_number_width
+        self.text_area_height = self.height
+        
+        # Update character width (approximate)
+        char_surface = self.font.render("M", True, (255, 255, 255))
+        self.char_width = char_surface.get_width()
+    
+    def _update_text_buffer(self):
+        """Update text buffer when text changes."""
+        self.lines = self.text.split('\n')
+        self._update_dimensions()
+    
+    def _save_to_undo_stack(self):
+        """Save current state to undo stack."""
+        self._undo_stack.append(self.text)
+        self._redo_stack.clear()  # Clear redo when new change is made
+        if len(self._undo_stack) > 50:  # Limit stack size
+            self._undo_stack.pop(0)
+    
+    def undo(self):
+        """Undo the last change."""
+        if self._undo_stack:
+            self._redo_stack.append(self.text)
+            self.text = self._undo_stack.pop()
+            self._update_text_buffer()
+            self._scroll_to_cursor()
+    
+    def redo(self):
+        """Redo the last undone change."""
+        if self._redo_stack:
+            self._undo_stack.append(self.text)
+            self.text = self._redo_stack.pop()
+            self._update_text_buffer()
+            self._scroll_to_cursor()
+    
+    def _get_visible_lines(self) -> List[int]:
+        """Get list of line indices visible in current view."""
+        start_line = self.scroll_y // self.line_height
+        visible_lines = self.text_area_height // self.line_height + 1
+        end_line = min(len(self.lines), start_line + visible_lines)
+        
+        return list(range(start_line, end_line))
+    
+    def _get_cursor_screen_pos(self) -> Tuple[int, int]:
+        """Get cursor position in screen coordinates."""
+        # Calculate line position
+        line_y = self.text_area_y + (self.cursor_line * self.line_height) - self.scroll_y
+        
+        # Calculate column position (considering tabs)
+        line_before_cursor = self.lines[self.cursor_line][:self.cursor_column]
+        column_x = 0
+        for char in line_before_cursor:
+            if char == '\t':
+                column_x += self.tab_size * self.char_width
+            else:
+                column_x += self.char_width
+        
+        column_x = self.text_area_x + column_x - self.scroll_x
+        
+        return column_x, line_y
+    
+    def _scroll_to_cursor(self):
+        """Scroll to ensure cursor is visible."""
+        # Get cursor position
+        cursor_x, cursor_y = self._get_cursor_screen_pos()
+        
+        # Calculate visible area
+        visible_x1 = self.text_area_x
+        visible_x2 = self.text_area_x + self.text_area_width
+        visible_y1 = self.text_area_y
+        visible_y2 = self.text_area_y + self.text_area_height
+        
+        # Adjust horizontal scroll
+        if cursor_x < visible_x1:
+            self.scroll_x -= (visible_x1 - cursor_x)
+        elif cursor_x > visible_x2 - self.char_width:
+            self.scroll_x += (cursor_x - (visible_x2 - self.char_width))
+        
+        # Adjust vertical scroll
+        if cursor_y < visible_y1:
+            self.scroll_y -= (visible_y1 - cursor_y)
+        elif cursor_y + self.line_height > visible_y2:
+            self.scroll_y += (cursor_y + self.line_height - visible_y2)
+        
+        # Ensure scroll bounds
+        self.scroll_x = max(0, self.scroll_x)
+        max_scroll_y = max(0, len(self.lines) * self.line_height - self.text_area_height)
+        self.scroll_y = max(0, min(self.scroll_y, max_scroll_y))
+    
+    def _insert_text(self, text: str):
+        """Insert text at cursor position."""
+        if self.read_only:
+            return
+        
+        self._save_to_undo_stack()
+        
+        # Replace tabs with spaces
+        text = text.replace('\t', ' ' * self.tab_size)
+        
+        # Get current line
+        current_line = self.lines[self.cursor_line]
+        
+        # Insert text
+        new_line = current_line[:self.cursor_column] + text + current_line[self.cursor_column:]
+        
+        # Handle newlines in inserted text
+        if '\n' in text:
+            lines = text.split('\n')
+            # First part goes on current line
+            self.lines[self.cursor_line] = current_line[:self.cursor_column] + lines[0]
+            
+            # Insert remaining lines
+            for i in range(1, len(lines)):
+                self.lines.insert(self.cursor_line + i, lines[i])
+            
+            # Last part becomes continuation of last inserted line
+            if current_line[self.cursor_column:]:
+                self.lines[self.cursor_line + len(lines) - 1] += current_line[self.cursor_column:]
+            
+            # Move cursor
+            self.cursor_line += len(lines) - 1
+            self.cursor_column = len(lines[-1])
+        else:
+            # No newlines, simple insertion
+            self.lines[self.cursor_line] = new_line
+            self.cursor_column += len(text)
+        
+        # Update text
+        self.text = '\n'.join(self.lines)
+        self._scroll_to_cursor()
+    
+    def _delete_selection(self):
+        """Delete currently selected text."""
+        if not self.selection_start or not self.selection_end:
+            return
+        
+        # Normalize selection
+        start_line, start_col = self.selection_start
+        end_line, end_col = self.selection_end
+        
+        if (end_line < start_line) or (end_line == start_line and end_col < start_col):
+            start_line, start_col, end_line, end_col = end_line, end_col, start_line, start_col
+        
+        self._save_to_undo_stack()
+        
+        if start_line == end_line:
+            # Delete within same line
+            line = self.lines[start_line]
+            self.lines[start_line] = line[:start_col] + line[end_col:]
+        else:
+            # Delete across multiple lines
+            first_part = self.lines[start_line][:start_col]
+            last_part = self.lines[end_line][end_col:]
+            
+            # Replace lines from start to end
+            self.lines[start_line] = first_part + last_part
+            del self.lines[start_line + 1:end_line + 1]
+        
+        # Update cursor and selection
+        self.cursor_line = start_line
+        self.cursor_column = start_col
+        self.selection_start = None
+        self.selection_end = None
+        
+        # Update text
+        self.text = '\n'.join(self.lines)
+        self._scroll_to_cursor()
+    
+    def _get_selection_text(self) -> str:
+        """Get text from current selection."""
+        if not self.selection_start or not self.selection_end:
+            return ""
+        
+        # Normalize selection
+        start_line, start_col = self.selection_start
+        end_line, end_col = self.selection_end
+        
+        if (end_line < start_line) or (end_line == start_line and end_col < start_col):
+            start_line, start_col, end_line, end_col = end_line, end_col, start_line, start_col
+        
+        if start_line == end_line:
+            # Selection within same line
+            return self.lines[start_line][start_col:end_col]
+        else:
+            # Multi-line selection
+            result = []
+            
+            # First line
+            result.append(self.lines[start_line][start_col:])
+            
+            # Middle lines
+            for line_num in range(start_line + 1, end_line):
+                result.append(self.lines[line_num])
+            
+            # Last line
+            result.append(self.lines[end_line][:end_col])
+            
+            return '\n'.join(result)
+    
+    def copy(self):
+        """Copy selected text to clipboard."""
+        if self.selection_start and self.selection_end:
+            self._clipboard = self._get_selection_text()
+    
+    def cut(self):
+        """Cut selected text to clipboard."""
+        if self.selection_start and self.selection_end:
+            self._clipboard = self._get_selection_text()
+            self._delete_selection()
+    
+    def paste(self):
+        """Paste text from clipboard."""
+        if self._clipboard:
+            self._insert_text(self._clipboard)
+    
+    def select_all(self):
+        """Select all text."""
+        self.selection_start = (0, 0)
+        self.selection_end = (len(self.lines) - 1, len(self.lines[-1]))
+    
+    def _move_cursor(self, line_delta: int, column_delta: int, extend_selection: bool = False):
+        """Move cursor position."""
+        # Clear selection if not extending
+        if not extend_selection:
+            self.selection_start = None
+            self.selection_end = None
+        elif self.selection_start is None:
+            # Start new selection
+            self.selection_start = (self.cursor_line, self.cursor_column)
+        
+        # Calculate new position
+        new_line = max(0, min(len(self.lines) - 1, self.cursor_line + line_delta))
+        
+        # Handle column movement
+        if column_delta != 0:
+            current_line = self.lines[new_line]
+            new_column = max(0, min(len(current_line), self.cursor_column + column_delta))
+            self.cursor_column = new_column
+        
+        self.cursor_line = new_line
+        
+        # Update selection end if extending
+        if extend_selection:
+            self.selection_end = (self.cursor_line, self.cursor_column)
+        
+        self._scroll_to_cursor()
+    
+    def update(self, dt: float, inputState: InputState):
+        """Update text area state."""
+        if not self.visible:
+            return
+        
+        # Check for focus
+        mouse_over = self.mouse_over(inputState)
+        
+        if inputState.mouse_buttons_pressed.left:
+            if mouse_over:
+                self.focused = True
+                self._dragging = True
+                self._drag_start_pos = self._get_cursor_from_mouse(inputState.mouse_pos)
+                
+                # Start selection at click position
+                self.selection_start = self._drag_start_pos
+                self.selection_end = self._drag_start_pos
+                self.cursor_line, self.cursor_column = self._drag_start_pos
+            else:
+                self.focused = False
+        
+        # Handle dragging for selection
+        if self._dragging and inputState.mouse_buttons_pressed.left:
+            drag_end_pos = self._get_cursor_from_mouse(inputState.mouse_pos)
+            self.selection_end = drag_end_pos
+            self.cursor_line, self.cursor_column = drag_end_pos
+        elif not inputState.mouse_buttons_pressed.left:
+            self._dragging = False
+        
+        # Update cursor blink
+        if self.focused:
+            self.cursor_timer += dt
+            if self.cursor_timer >= 0.5:  # Blink every 0.5 seconds
+                self.cursor_timer = 0.0
+                self.cursor_visible = not self.cursor_visible
+    
+    def on_key_down(self, event: pygame.event.Event):
+        """
+        Handle key down events for text editing.
+        
+        Args:
+            event (pygame.event.Event): Key down event.
+        """
+        if not self.focused or event.type != pygame.KEYDOWN:
+            return
+        pass
+    
+    def on_key_up(self, event: pygame.event.Event):
+        """
+        Handle key up events for text input.
+        
+        Args:
+            event (pygame.event.Event): Key up event.
+        """
+        if not self.focused or event.type != pygame.KEYUP:
+            return
+        self.handle_key_event(event)    
+
+    def _get_cursor_from_mouse(self, mouse_pos: Tuple[int, int]) -> Tuple[int, int]:
+        """Get cursor position from mouse coordinates."""
+        actual_x, actual_y = self.get_actual_position()
+        
+        # Adjust for scroll
+        rel_x = mouse_pos[0] - actual_x - self.text_area_x + self.scroll_x
+        rel_y = mouse_pos[1] - actual_y - self.text_area_y + self.scroll_y
+        
+        # Calculate line
+        line = min(len(self.lines) - 1, max(0, rel_y // self.line_height))
+        
+        # Calculate column
+        line_text = self.lines[line]
+        column = 0
+        current_x = 0
+        
+        for char in line_text:
+            char_width = self.tab_size * self.char_width if char == '\t' else self.char_width
+            if current_x + char_width / 2 > rel_x:
+                break
+            current_x += char_width
+            column += 1
+        
+        return line, column
+    
+    def handle_key_event(self, event):
+        """Handle keyboard event."""
+        if event.type == pygame.KEYUP:
+            # Handle special keys
+            if event.key == pygame.K_BACKSPACE:
+                if self.selection_start and self.selection_end:
+                    self._delete_selection()
+                elif self.cursor_column > 0:
+                    # Delete character before cursor
+                    self._save_to_undo_stack()
+                    line = self.lines[self.cursor_line]
+                    self.lines[self.cursor_line] = line[:self.cursor_column - 1] + line[self.cursor_column:]
+                    self.cursor_column -= 1
+                    self.text = '\n'.join(self.lines)
+                    self._scroll_to_cursor()
+                elif self.cursor_line > 0:
+                    # Merge with previous line
+                    self._save_to_undo_stack()
+                    prev_line = self.lines[self.cursor_line - 1]
+                    current_line = self.lines[self.cursor_line]
+                    
+                    self.lines[self.cursor_line - 1] = prev_line + current_line
+                    del self.lines[self.cursor_line]
+                    
+                    self.cursor_line -= 1
+                    self.cursor_column = len(prev_line)
+                    self.text = '\n'.join(self.lines)
+                    self._scroll_to_cursor()
+            
+            elif event.key == pygame.K_DELETE:
+                if self.selection_start and self.selection_end:
+                    self._delete_selection()
+                elif self.cursor_column < len(self.lines[self.cursor_line]):
+                    # Delete character at cursor
+                    self._save_to_undo_stack()
+                    line = self.lines[self.cursor_line]
+                    self.lines[self.cursor_line] = line[:self.cursor_column] + line[self.cursor_column + 1:]
+                    self.text = '\n'.join(self.lines)
+                elif self.cursor_line < len(self.lines) - 1:
+                    # Merge with next line
+                    self._save_to_undo_stack()
+                    current_line = self.lines[self.cursor_line]
+                    next_line = self.lines[self.cursor_line + 1]
+                    
+                    self.lines[self.cursor_line] = current_line + next_line
+                    del self.lines[self.cursor_line + 1]
+                    
+                    self.text = '\n'.join(self.lines)
+                    self._scroll_to_cursor()
+            
+            elif event.key == pygame.K_RETURN:
+                # Insert newline
+                self._insert_text('\n')
+            
+            elif event.key == pygame.K_TAB:
+                # Insert tab
+                self._insert_text(' ' * self.tab_size)
+            
+            elif event.key == pygame.K_LEFT:
+                extend = pygame.key.get_mods() & pygame.KMOD_SHIFT
+                if self.cursor_column > 0:
+                    self._move_cursor(0, -1, extend)
+                elif self.cursor_line > 0:
+                    self.cursor_line -= 1
+                    self.cursor_column = len(self.lines[self.cursor_line])
+                    self._scroll_to_cursor()
+            
+            elif event.key == pygame.K_RIGHT:
+                extend = pygame.key.get_mods() & pygame.KMOD_SHIFT
+                if self.cursor_column < len(self.lines[self.cursor_line]):
+                    self._move_cursor(0, 1, extend)
+                elif self.cursor_line < len(self.lines) - 1:
+                    self.cursor_line += 1
+                    self.cursor_column = 0
+                    self._scroll_to_cursor()
+            
+            elif event.key == pygame.K_UP:
+                extend = pygame.key.get_mods() & pygame.KMOD_SHIFT
+                self._move_cursor(-1, 0, extend)
+            
+            elif event.key == pygame.K_DOWN:
+                extend = pygame.key.get_mods() & pygame.KMOD_SHIFT
+                self._move_cursor(1, 0, extend)
+            
+            elif event.key == pygame.K_HOME:
+                extend = pygame.key.get_mods() & pygame.KMOD_SHIFT
+                self.cursor_column = 0
+                if extend:
+                    self.selection_end = (self.cursor_line, self.cursor_column)
+                else:
+                    self.selection_start = None
+                    self.selection_end = None
+                self._scroll_to_cursor()
+            
+            elif event.key == pygame.K_END:
+                extend = pygame.key.get_mods() & pygame.KMOD_SHIFT
+                self.cursor_column = len(self.lines[self.cursor_line])
+                if extend:
+                    self.selection_end = (self.cursor_line, self.cursor_column)
+                else:
+                    self.selection_start = None
+                    self.selection_end = None
+                self._scroll_to_cursor()
+            
+            elif event.key == pygame.K_PAGEUP:
+                visible_lines = self.text_area_height // self.line_height
+                self._move_cursor(-visible_lines, 0, False)
+            
+            elif event.key == pygame.K_PAGEDOWN:
+                visible_lines = self.text_area_height // self.line_height
+                self._move_cursor(visible_lines, 0, False)
+            
+            elif pygame.key.get_mods() & pygame.KMOD_CTRL:
+                # Ctrl combinations
+                if event.key == pygame.K_a:  # Select all
+                    self.select_all()
+                elif event.key == pygame.K_c:  # Copy
+                    self.copy()
+                elif event.key == pygame.K_x:  # Cut
+                    self.cut()
+                elif event.key == pygame.K_v:  # Paste
+                    self.paste()
+                elif event.key == pygame.K_z:  # Undo
+                    self.undo()
+                elif event.key == pygame.K_y:  # Redo
+                    self.redo()
+            elif self.focused and not self.read_only:
+                text:str = event.unicode
+                self._insert_text(text)
+        elif event.type == pygame.TEXTINPUT and self.focused and not self.read_only:
+            # Insert typed character
+            self._insert_text(event.text)
+    
+    def render(self, renderer: Renderer):
+        """Render text area."""
+        if not self.visible:
+            return
+        
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Draw background
+        bg_color = theme.background if self.focused else theme.button_disabled
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
+        
+        # Draw border
+        border_color = theme.button_border if self.focused else theme.border
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height,
+                         border_color, fill=False, border_width=self.border_width)
+        
+        # Enable scissor for text area
+        if hasattr(renderer, 'enable_scissor'):
+            renderer.enable_scissor(actual_x, actual_y, self.width, self.height)
+        
+        # Draw line numbers
+        if self.line_numbers:
+            visible_lines = self._get_visible_lines()
+            for line_num in visible_lines:
+                line_y = actual_y + (line_num * self.line_height) - self.scroll_y
+                number_text = str(line_num + 1)
+                number_surface = self.font.render(number_text, True, theme.text_secondary)
+                
+                # Right-align numbers
+                number_x = actual_x + self.line_number_width - self.line_number_padding - number_surface.get_width()
+                
+                if hasattr(renderer, 'render_surface'):
+                    renderer.render_surface(number_surface, number_x, line_y)
+                else:
+                    renderer.draw_surface(number_surface, number_x, line_y)
+            
+            # Draw line number separator
+            separator_x = actual_x + self.line_number_width - 1
+            renderer.draw_rect(separator_x, actual_y, 1, self.height, theme.border)
+        
+        # Draw text lines
+        visible_lines = self._get_visible_lines()
+        for line_num in visible_lines:
+            if line_num < len(self.lines):
+                line_text = self.lines[line_num]
+                line_y = actual_y + (line_num * self.line_height) - self.scroll_y
+                
+                # Draw line text
+                text_x = actual_x + self.text_area_x - self.scroll_x
+                
+                # Handle selection highlighting
+                if self.selection_start and self.selection_end:
+                    self._draw_selection_highlight(renderer, actual_x, actual_y, line_num, line_y)
+                
+                # Draw line text
+                text_color = theme.text_primary
+                renderer.draw_text(line_text, text_x, line_y, text_color, self.font)
+        
+        # Draw cursor
+        if self.focused and self.cursor_visible:
+            cursor_x, cursor_y = self._get_cursor_screen_pos()
+            cursor_actual_x = actual_x + cursor_x
+            cursor_actual_y = actual_y + cursor_y
+            
+            renderer.draw_rect(cursor_actual_x, cursor_actual_y,
+                             2, self.line_height, theme.text_primary)
+        
+        # Disable scissor
+        if hasattr(renderer, 'disable_scissor'):
+            renderer.disable_scissor()
+    
+    def _draw_selection_highlight(self, renderer: Renderer, actual_x: int, actual_y: int,
+                                 line_num: int, line_y: int):
+        """Draw selection highlight for a line."""
+        # Normalize selection
+        start_line, start_col = self.selection_start
+        end_line, end_col = self.selection_end
+        
+        if (end_line < start_line) or (end_line == start_line and end_col < start_col):
+            start_line, start_col, end_line, end_col = end_line, end_col, start_line, start_col
+        
+        # Check if this line is in selection
+        if line_num < start_line or line_num > end_line:
+            return
+        
+        theme = ThemeManager.get_theme(self.theme_type)
+        highlight_color = (100, 150, 255, 100)  # Semi-transparent blue
+        
+        # Calculate selection bounds for this line
+        if line_num == start_line and line_num == end_line:
+            # Selection within this line
+            sel_start_col = start_col
+            sel_end_col = end_col
+        elif line_num == start_line:
+            # Selection starts on this line
+            sel_start_col = start_col
+            sel_end_col = len(self.lines[line_num])
+        elif line_num == end_line:
+            # Selection ends on this line
+            sel_start_col = 0
+            sel_end_col = end_col
+        else:
+            # Selection spans across this line
+            sel_start_col = 0
+            sel_end_col = len(self.lines[line_num])
+        
+        # Calculate pixel positions
+        text_before_start = self.lines[line_num][:sel_start_col]
+        text_before_end = self.lines[line_num][:sel_end_col]
+        
+        # Calculate widths
+        start_x = self._calculate_text_width(text_before_start)
+        end_x = self._calculate_text_width(text_before_end)
+        
+        # Draw highlight rectangle
+        highlight_x = actual_x + self.text_area_x + start_x - self.scroll_x
+        highlight_width = end_x - start_x
+        
+        if highlight_width > 0:
+            renderer.draw_rect(highlight_x, actual_y + line_y,
+                             highlight_width, self.line_height, highlight_color)
+    
+    def _calculate_text_width(self, text: str) -> int:
+        """Calculate pixel width of text (with tab support)."""
+        width = 0
+        for char in text:
+            if char == '\t':
+                width += self.tab_size * self.char_width
+            else:
+                width += self.char_width
+        return width
+
+class FileFinder(UIElement):
+    """
+    File selection element with text field and browse button.
+    
+    Displays selected file path and allows browsing filesystem via dialog.
+    Supports file filtering and custom icons.
+    
+    Attributes:
+        file_path (str): Currently selected file path.
+        file_filter (List[str]): List of file extensions to filter.
+        dialog_title (str): Title for file dialog.
+        button_text (str): Text for browse button.
+        show_icon (bool): Whether to show file icon.
+    """
+    
+    def __init__(self, x: int, y: int, width: int, height: int,
+                 file_path: str = "", file_filter: Optional[List[str]] = None,
+                 dialog_title: str = "Select File", button_text: str = "Browse...",
+                 show_icon: bool = True, icon_path: Optional[str] = None,
+                 root_point: Tuple[float, float] = (0, 0),
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):
+        """
+        Initialize a FileFinder element.
+        
+        Args:
+            x (int): X coordinate position.
+            y (int): Y coordinate position.
+            width (int): Width of element.
+            height (int): Height of element.
+            file_path (str): Initial file path.
+            file_filter (Optional[List[str]]): File extension filters (e.g., ['.txt', '.py']).
+            dialog_title (str): Title for file dialog.
+            button_text (str): Text for browse button.
+            show_icon (bool): Show file icon.
+            icon_path (Optional[str]): Custom icon path.
+            root_point (Tuple[float, float]): Anchor point.
+            theme (ThemeType): Theme for styling.
+            element_id (Optional[str]): Custom element ID.
+        """
+        super().__init__(x, y, width, height, root_point, element_id)
+        
+        # File properties
+        self.file_path = file_path
+        self.file_filter = file_filter or []
+        self.dialog_title = dialog_title
+        self.button_text = button_text
+        
+        # Icon
+        self.show_icon = show_icon
+        self.icon_path = icon_path
+        
+        # Theme
+        self.theme_type = theme or ThemeManager.get_current_theme()
+        
+        # Child elements
+        self._path_textbox = None
+        self._browse_button = None
+        self._icon_label = None
+        
+        # Callbacks
+        self.on_file_selected = None  # Callback: (file_path)
+        
+        # Create child elements
+        self._create_child_elements()
+        
+        # Try to import tkinter for file dialog
+        self._tkinter_available = self._check_tkinter()
+        if not self._tkinter_available:
+            print("Warning: tkinter not available. FileFinder will use pygame's simple input.")
+    
+    def _check_tkinter(self) -> bool:
+        """Check if tkinter is available."""
+        try:
+            import tkinter as tk
+            from tkinter import filedialog
+            return True
+        except ImportError:
+            return False
+    
+    def _create_child_elements(self):
+        """Create child UI elements."""
+        # Calculate dimensions
+        icon_width = 0
+        if self.show_icon:
+            icon_width = self.height - 10  # Icon size
+        
+        button_width = 80  # Browse button width
+        textbox_width = self.width - icon_width - button_width - 10  # 10px spacing
+        
+        # Create icon
+        if self.show_icon:
+            self._icon_label = ImageLabel(5, 5, self.icon_path or self._get_default_icon(),
+                                         width=icon_width, height=self.height - 10,
+                                         root_point=(0, 0))
+            self.add_child(self._icon_label)
+        
+        # Create textbox for file path
+        textbox_x = icon_width + 5 if self.show_icon else 5
+        self._path_textbox = TextBox(textbox_x, 5, textbox_width, self.height - 10,
+                                    text=self.file_path, font_size=14,
+                                    root_point=(0, 0))
+        self._path_textbox.focused = False
+        self.add_child(self._path_textbox)
+        
+        # Create browse button
+        button_x = self.width - button_width - 5
+        self._browse_button = Button(button_x, 5, button_width, self.height - 10,
+                                    text=self.button_text, font_size=14,
+                                    root_point=(0, 0))
+        self._browse_button.set_on_click(self._open_file_dialog)
+        self.add_child(self._browse_button)
+    
+    def _get_default_icon(self) -> pygame.Surface:
+        """Create default file icon."""
+        icon_size = self.height - 10
+        icon = pygame.Surface((icon_size, icon_size), pygame.SRCALPHA)
+        
+        # Draw simple file icon
+        icon.fill((0, 0, 0, 0))  # Transparent
+        
+        # File body
+        body_color = (100, 150, 255)
+        pygame.draw.rect(icon, body_color, (0, 0, icon_size * 0.8, icon_size * 0.9))
+        
+        # File tab
+        tab_color = (80, 130, 235)
+        tab_points = [
+            (icon_size * 0.8, 0),
+            (icon_size, icon_size * 0.2),
+            (icon_size * 0.8, icon_size * 0.2)
+        ]
+        pygame.draw.polygon(icon, tab_color, tab_points)
+        
+        # File lines (simulating text)
+        line_color = (240, 240, 240)
+        for i in range(3, 8):
+            y_pos = icon_size * (i / 10)
+            line_height = icon_size * 0.05
+            pygame.draw.rect(icon, line_color,
+                           (icon_size * 0.1, y_pos, icon_size * 0.6, line_height))
+        
+        return icon
+    
+    def set_file_path(self, path: str):
+        """
+        Set the file path programmatically.
+        
+        Args:
+            path (str): New file path.
+        """
+        self.file_path = path
+        if self._path_textbox:
+            self._path_textbox.set_text(path)
+        
+        # Update icon based on file type
+        self._update_icon()
+        
+        # Trigger callback
+        if self.on_file_selected:
+            self.on_file_selected(path)
+    
+    def _update_icon(self):
+        """Update icon based on current file type."""
+        if self._icon_label and self.show_icon:
+            # In a full implementation, you could load different icons
+            # based on file extension (image, document, folder, etc.)
+            pass
+    
+    def _open_file_dialog(self):
+        """Open file selection dialog."""
+        if self._tkinter_available:
+            self._open_tkinter_dialog()
+        else:
+            self._open_simple_dialog()
+    
+    def _open_tkinter_dialog(self):
+        """Open tkinter file dialog."""
+        try:
+            import tkinter as tk
+            from tkinter import filedialog
+            
+            # Create hidden tkinter root window
+            root = tk.Tk()
+            root.withdraw()  # Hide main window
+            root.attributes('-topmost', True)  # Bring to front
+            
+            # Set up file filters
+            filetypes = []
+            if self.file_filter:
+                # Group filters by extension type
+                extensions = {}
+                for ext in self.file_filter:
+                    if ext.startswith('.'):
+                        ext_type = ext[1:].upper() + " files"
+                        if ext_type not in extensions:
+                            extensions[ext_type] = []
+                        extensions[ext_type].append(f"*{ext}")
+                
+                for filetype, patterns in extensions.items():
+                    filetypes.append((filetype, ";".join(patterns)))
+            else:
+                filetypes = [("All files", "*.*")]
+            
+            # Open file dialog
+            file_path = filedialog.askopenfilename(
+                title=self.dialog_title,
+                filetypes=filetypes,
+                initialdir=self._get_initial_directory()
+            )
+            
+            # Destroy tkinter window
+            root.destroy()
+            
+            # Set selected file
+            if file_path:
+                self.set_file_path(file_path)
+                
+        except Exception as e:
+            print(f"Error opening file dialog: {e}")
+            self._open_simple_dialog()
+    
+    def _open_simple_dialog(self):
+        """Open simple pygame-based file dialog."""
+        # For simplicity, just update textbox to show we'd open a dialog
+        # In a real implementation, you'd create a custom file browser
+        print("Simple file dialog would open here")
+        # You could implement a custom file browser using UiFrame and ListBox
+    
+    def _get_initial_directory(self) -> Optional[str]:
+        """Get initial directory for file dialog."""
+        if self.file_path:
+            import os
+            dir_path = os.path.dirname(self.file_path)
+            if os.path.exists(dir_path):
+                return dir_path
+        return None
+    
+    def set_on_file_selected(self, callback: Callable[[str], None]):
+        """
+        Set callback for when file is selected.
+        
+        Args:
+            callback (Callable): Function called with selected file path.
+        """
+        self.on_file_selected = callback
+    
+    def get_file_path(self) -> str:
+        """Get current file path."""
+        return self.file_path
+    
+    def update(self, dt: float, inputState: InputState):
+        """Update file finder state."""
+        super().update(dt, inputState)
+        
+        # Update file path from textbox if changed
+        if self._path_textbox and self._path_textbox.get_text() != self.file_path:
+            self.file_path = self._path_textbox.get_text()
+            if self.on_file_selected:
+                self.on_file_selected(self.file_path)
+    
+    def render(self, renderer: Renderer):
+        """Render file finder."""
+        if not self.visible:
+            return
+        
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+        
+        # Draw background
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.background)
+        
+        # Draw border
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height,
+                         theme.border, fill=False, border_width=self.border_width)
+        
+        # Render children (icon, textbox, button)
+        super().render(renderer)
+        
+class ChartVisualizer(UIElement):
+    """
+    A versatile data visualization component that can display various chart types:
+    bar charts (vertical/horizontal), pie charts, line charts, and scatter plots.
+
+    Supports animated transitions when data changes, automatic normalization,
+    legends, titles, and customizable colors. Designed to work with any renderer
+    that provides basic drawing primitives.
+    """
+
+    def __init__(self, x: int, y: int, width: int, height: int,
+                 data: Optional[List[float]] = None,
+                 labels: Optional[List[str]] = None,
+                 colors: Optional[List[Tuple[int, int, int]]] = None,
+                 chart_type: Literal['bar', 'pie', 'line', 'scatter'] = 'bar',
+                 orientation: Literal['vertical', 'horizontal'] = 'vertical',
+                 title: str = "",
+                 show_labels: bool = True,
+                 show_legend: bool = False,
+                 min_value: Optional[float] = None,
+                 max_value: Optional[float] = None,
+                 root_point: Tuple[float, float] = (0, 0),
+                 theme: ThemeType = None,
+                 element_id: Optional[str] = None):
+        """
+        Initialize a ChartVisualizer.
+
+        Args:
+            x (int): X coordinate.
+            y (int): Y coordinate.
+            width (int): Width of the element.
+            height (int): Height of the element.
+            data (Optional[List[float]]): Numeric data to plot.
+            labels (Optional[List[str]]): Labels for each data point/slice.
+            colors (Optional[List[Tuple[int,int,int]]]): RGB colors per data point.
+            chart_type (str): 'bar', 'pie', 'line', or 'scatter'.
+            orientation (str): For bar charts: 'vertical' or 'horizontal'.
+            title (str): Chart title displayed at the top.
+            show_labels (bool): Whether to draw data labels.
+            show_legend (bool): Whether to draw a legend at the bottom.
+            min_value (Optional[float]): Override minimum Y value (for non-pie charts).
+            max_value (Optional[float]): Override maximum Y value.
+            root_point (Tuple[float,float]): Anchor point.
+            theme (ThemeType): Theme to apply.
+            element_id (Optional[str]): Unique element ID.
+        """
+        super().__init__(x, y, width, height, root_point, element_id)
+
+        self.data = data if data is not None else []
+        self.labels = labels if labels is not None else [f"Item {i+1}" for i in range(len(self.data))]
+        self.colors = colors or self._default_colors()
+
+        self.chart_type = chart_type
+        self.orientation = orientation
+        self.title = title
+        self.show_labels = show_labels
+        self.show_legend = show_legend
+        self.min_value = min_value
+        self.max_value = max_value
+        self.padding = 10
+        self.bar_spacing = 2
+        self.line_width = 2
+        self.point_radius = 3
+
+        self.theme_type = theme or ThemeManager.get_current_theme()
+
+        self._title_font = None
+        self._label_font = None
+        self._legend_font = None
+
+        self._needs_recalc = True
+        self._normalized_data = []
+        self._angles = []
+        self._bar_positions = []
+        self._legend_items = []
+
+        # Animation support
+        self._anim_target_data = None
+        self._anim_target_labels = None
+        self._anim_start_data = []
+        self._anim_start_labels = []
+        self._anim_progress = 0.0
+        self._anim_duration = 0.5
+        self._anim_elapsed = 0.0
+        self._anim_active = False
+        self._current_display_data = list(self.data) if self.data else []
+
+    def _default_colors(self) -> List[Tuple[int, int, int]]:
+        """Return a default color palette for charts."""
+        return [
+            (255, 99, 132), (54, 162, 235), (255, 206, 86),
+            (75, 192, 192), (153, 102, 255), (255, 159, 64),
+            (199, 199, 199), (83, 102, 255), (255, 99, 255)
+        ]
+
+    @property
+    def title_font(self):
+        if self._title_font is None:
+            FontManager.initialize()
+            self._title_font = FontManager.get_font(None, 20)
+        return self._title_font
+
+    @property
+    def label_font(self):
+        if self._label_font is None:
+            FontManager.initialize()
+            self._label_font = FontManager.get_font(None, 12)
+        return self._label_font
+
+    @property
+    def legend_font(self):
+        if self._legend_font is None:
+            FontManager.initialize()
+            self._legend_font = FontManager.get_font(None, 10)
+        return self._legend_font
+
+    def set_data(self, data: List[float], labels: Optional[List[str]] = None,
+                 animate: bool = False, duration: float = 0.5):
+        """
+        Update the chart's data, optionally with a smooth transition.
+
+        Args:
+            data (List[float]): New data values.
+            labels (Optional[List[str]]): New labels (if None, existing labels are kept).
+            animate (bool): If True, transitions over 'duration' seconds.
+            duration (float): Duration of animation in seconds.
+        """
+        if not animate:
+            self.data = data
+            if labels is not None:
+                self.labels = labels
+            self._current_display_data = list(data)
+            self._needs_recalc = True
+        else:
+            self._anim_target_data = data
+            self._anim_target_labels = labels
+            self._anim_duration = duration
+            self._anim_elapsed = 0.0
+            self._anim_active = True
+            self._anim_start_data = list(self._current_display_data)
+            self._anim_start_labels = list(self.labels) if labels else None
+
+    def update(self, dt: float, inputState: InputState):
+        """Update animations and recalculate if needed."""
+        super().update(dt, inputState)
+        if self._anim_active:
+            self._anim_elapsed += dt
+            self._anim_progress = min(1.0, self._anim_elapsed / self._anim_duration)
+            if self._anim_target_data is not None:
+                self._current_display_data = [
+                    start + (target - start) * self._anim_progress
+                    for start, target in zip(self._anim_start_data, self._anim_target_data)
+                ]
+            if self._anim_progress >= 1.0:
+                self.data = self._anim_target_data
+                if self._anim_target_labels:
+                    self.labels = self._anim_target_labels
+                self._current_display_data = list(self.data)
+                self._anim_active = False
+            self._needs_recalc = True
+
+    def _recalc(self):
+        """Recalculate internal data (normalized values, angles) for rendering."""
+        data_to_use = self._current_display_data if self._anim_active else self.data
+        if not data_to_use:
+            self._normalized_data = []
+            return
+
+        if self.chart_type != 'pie':
+            data_min = min(data_to_use) if self.min_value is None else self.min_value
+            data_max = max(data_to_use) if self.max_value is None else self.max_value
+            if data_max == data_min:
+                self._normalized_data = [0.5] * len(data_to_use)
+            else:
+                self._normalized_data = [(v - data_min) / (data_max - data_min) for v in data_to_use]
+
+        if self.chart_type == 'pie':
+            total = sum(data_to_use)
+            if total == 0:
+                self._angles = [0] * len(data_to_use)
+            else:
+                self._angles = [v / total * 360 for v in data_to_use]
+
+        self._needs_recalc = False
+
+    def _get_color(self, index: int) -> Tuple[int, int, int]:
+        """Return the color for a given data index, cycling if necessary."""
+        if index < len(self.colors):
+            return self.colors[index]
+        return self.colors[index % len(self.colors)]
+
+    def render(self, renderer: Renderer):
+        """Main render entry point – draws background, title, chart, and legend."""
+        if not self.visible or not self.data:
+            return
+
+        if self._needs_recalc:
+            self._recalc()
+
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.background)
+
+        title_height = self.title_font.get_height() + 5 if self.title else 0
+        legend_height = 20 if self.show_legend else 0
+
+        chart_top = actual_y + self.padding + title_height
+        chart_bottom = actual_y + self.height - self.padding - legend_height
+        chart_left = actual_x + self.padding
+        chart_right = actual_x + self.width - self.padding
+        chart_height = chart_bottom - chart_top
+        chart_width = chart_right - chart_left
+
+        if self.title:
+            title_x = actual_x + self.width // 2
+            title_y = actual_y + self.padding
+            renderer.draw_text(self.title, title_x, title_y, theme.text_primary,
+                               self.title_font, anchor_point=(0.5, 0))
+
+        if self.chart_type == 'bar':
+            self._render_bar(renderer, chart_left, chart_top, chart_width, chart_height, theme)
+        elif self.chart_type == 'pie':
+            self._render_pie(renderer, chart_left, chart_top, chart_width, chart_height, theme)
+        elif self.chart_type == 'line':
+            self._render_line(renderer, chart_left, chart_top, chart_width, chart_height, theme)
+        elif self.chart_type == 'scatter':
+            self._render_scatter(renderer, chart_left, chart_top, chart_width, chart_height, theme)
+
+        if self.show_legend:
+            self._render_legend(renderer, actual_x, actual_y + self.height - 18, theme)
+
+        super().render(renderer)
+
+    def _render_bar(self, renderer, left, top, width, height, theme):
+        """Draw a bar chart (vertical or horizontal) with labels."""
+        n = len(self.data)
+        if n == 0:
+            return
+
+        data_to_use = self._current_display_data if self._anim_active else self.data
+
+        if self.orientation == 'vertical':
+            bar_width = (width - (n - 1) * self.bar_spacing) / n
+            max_val = max(data_to_use) if self.max_value is None else self.max_value
+            min_val = min(data_to_use) if self.min_value is None else self.min_value
+            val_range = max_val - min_val if max_val != min_val else 1
+
+            for i, val in enumerate(data_to_use):
+                bar_height = ((val - min_val) / val_range) * (height - 20)
+                bar_x = left + i * (bar_width + self.bar_spacing)
+                bar_y = top + height - 10 - bar_height
+
+                color = self._get_color(i)
+                renderer.draw_rect(bar_x, bar_y, bar_width, bar_height, color)
+
+                if self.show_labels:
+                    label = self.labels[i] if i < len(self.labels) else str(i)
+                    label_x = bar_x + bar_width // 2
+                    label_y = top + height - 5
+                    renderer.draw_text(label, label_x, label_y, theme.text_secondary,
+                                       self.label_font, anchor_point=(0.5, 1))
+
+        else:  # horizontal
+            bar_height = (height - (n - 1) * self.bar_spacing) / n
+            max_val = max(data_to_use) if self.max_value is None else self.max_value
+            min_val = min(data_to_use) if self.min_value is None else self.min_value
+            val_range = max_val - min_val if max_val != min_val else 1
+
+            for i, val in enumerate(data_to_use):
+                bar_width = ((val - min_val) / val_range) * (width - 40)
+                bar_x = left + 40
+                bar_y = top + i * (bar_height + self.bar_spacing)
+
+                color = self._get_color(i)
+                renderer.draw_rect(bar_x, bar_y, bar_width, bar_height, color)
+
+                if self.show_labels:
+                    label = self.labels[i] if i < len(self.labels) else str(i)
+                    label_x = left + 35
+                    label_y = bar_y + bar_height // 2
+                    renderer.draw_text(label, label_x, label_y, theme.text_secondary,
+                                       self.label_font, anchor_point=(1, 0.5))
+
+    def _render_pie(self, renderer, left, top, width, height, theme):
+        """Draw a pie chart with optional labels."""
+        center_x = left + width // 2
+        center_y = top + height // 2
+        radius = min(width, height) // 2 - 10
+
+        start_angle = 0
+        for i, angle in enumerate(self._angles):
+            if angle <= 0:
+                continue
+            color = self._get_color(i)
+            end_angle = start_angle + angle
+
+            points = [(center_x, center_y)]
+            steps = max(3, int(angle / 5))
+            for step in range(steps + 1):
+                a = math.radians(start_angle + (step / steps) * angle)
+                x = center_x + radius * math.cos(a)
+                y = center_y + radius * math.sin(a)
+                points.append((x, y))
+            renderer.draw_polygon(points, color)
+
+            if self.show_labels:
+                mid_angle = math.radians(start_angle + angle / 2)
+                label_x = center_x + (radius + 15) * math.cos(mid_angle)
+                label_y = center_y + (radius + 15) * math.sin(mid_angle)
+                label = self.labels[i] if i < len(self.labels) else str(i)
+                renderer.draw_text(label, label_x, label_y, theme.text_primary,
+                                   self.label_font, anchor_point=(0.5, 0.5))
+
+            start_angle = end_angle
+
+    def _render_line(self, renderer, left, top, width, height, theme):
+        """Draw a line chart with data points and labels."""
+        if len(self.data) < 2:
+            return
+
+        data_to_use = self._current_display_data if self._anim_active else self.data
+        max_val = max(data_to_use) if self.max_value is None else self.max_value
+        min_val = min(data_to_use) if self.min_value is None else self.min_value
+        val_range = max_val - min_val if max_val != min_val else 1
+
+        points = []
+        for i, val in enumerate(data_to_use):
+            x = left + (i / (len(data_to_use) - 1)) * width
+            y = top + height - ((val - min_val) / val_range) * height
+            points.append((x, y))
+
+        for i in range(len(points) - 1):
+            color = self._get_color(i)
+            renderer.draw_line(points[i][0], points[i][1],
+                               points[i + 1][0], points[i + 1][1],
+                               color, self.line_width)
+
+        for i, (x, y) in enumerate(points):
+            color = self._get_color(i)
+            renderer.draw_circle(x, y, self.point_radius, color)
+
+            if self.show_labels:
+                label = f"{data_to_use[i]:.1f}"
+                if y - 15 > top:
+                    label_y = y - 10
+                    anchor = (0.5, 1)
+                else:
+                    label_y = y + 15
+                    anchor = (0.5, 0)
+                renderer.draw_text(label, x, label_y, theme.text_secondary,
+                                   self.label_font, anchor_point=anchor)
+
+    def _render_scatter(self, renderer, left, top, width, height, theme):
+        """Draw a scatter plot (points only) with optional labels."""
+        if len(self.data) < 1:
+            return
+
+        data_to_use = self._current_display_data if self._anim_active else self.data
+        max_val = max(data_to_use) if self.max_value is None else self.max_value
+        min_val = min(data_to_use) if self.min_value is None else self.min_value
+        val_range = max_val - min_val if max_val != min_val else 1
+
+        for i, val in enumerate(data_to_use):
+            x = left + (i / (len(data_to_use) - 1)) * width
+            y = top + height - ((val - min_val) / val_range) * height
+            color = self._get_color(i)
+            renderer.draw_circle(x, y, self.point_radius, color)
+
+            if self.show_labels:
+                label = f"{data_to_use[i]:.1f}"
+                if y - 15 > top:
+                    label_y = y - 10
+                    anchor = (0.5, 1)
+                else:
+                    label_y = y + 15
+                    anchor = (0.5, 0)
+                renderer.draw_text(label, x, label_y, theme.text_secondary,
+                                   self.label_font, anchor_point=anchor)
+
+    def _render_legend(self, renderer, x, y, theme):
+        """Draw a simple color‑coded legend at the bottom."""
+        item_width = 80
+        start_x = x + self.padding
+        for i, label in enumerate(self.labels[:5]):
+            color = self._get_color(i)
+            renderer.draw_rect(start_x + i * item_width, y, 12, 12, color)
+            renderer.draw_text(label[:10], start_x + i * item_width + 15, y + 6,
+                               theme.text_secondary, self.legend_font, anchor_point=(0, 0.5))

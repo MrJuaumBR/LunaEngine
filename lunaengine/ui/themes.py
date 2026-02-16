@@ -184,6 +184,14 @@ class ThemeType(Enum):
     CRUNCHYROLL_LIGHT = "crunchyroll_light"
     TWITCH_DARK = "twitch_dark"
     TWITCH_LIGHT = "twitch_light"
+    TELEGRAM_DARK = "telegram_dark"
+    TELEGRAM_LIGHT = "telegram_light"
+    XBOX_DARK = "xbox_dark"
+    XBOX_LIGHT = "xbox_light"
+    PLAYSTATION_DARK = "playstation_dark"
+    PLAYSTATION_LIGHT = "playstation_light"
+    MINECRAFT_DARK = "minecraft_dark"
+    MINECRAFT_LIGHT = "minecraft_light"
     
     CYBERPUNK_DARK = "cyberpunk_dark"
     CYBERPUNK_LIGHT = "cyberpunk_light"
@@ -215,6 +223,19 @@ class ThemeType(Enum):
     MONOKAI = "monokai"
     GRUVBOX_DARK = "gruvbox_dark"
     GRUVBOX_LIGHT = "gruvbox_light"
+    
+    # Neutral Themes
+    BLACK = "black"
+    
+    # OS Themes
+    WINDOWS_DARK = "windows_dark"
+    WINDOWS_LIGHT = "windows_light"
+    LINUX_DARK = "linux_dark"
+    LINUX_LIGHT = "linux_light"
+    IOS_DARK = "ios_dark"
+    IOS_LIGHT = "ios_light"
+    ANDROID_DARK = "android_dark"
+    ANDROID_LIGHT = "android_light"
     
     # Ninja themes
     NINJA_DARK = "ninja_dark"

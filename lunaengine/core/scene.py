@@ -30,7 +30,7 @@ USAGE PATTERN:
 import pygame
 from abc import ABC, abstractmethod
 from typing import Dict, List, Any, Optional, TYPE_CHECKING, Tuple
-from ..ui import UIElement, UiFrame, ScrollingFrame, Tabination
+from ..ui import UIElement, UiFrame, ScrollingFrame, Tabination, AnimationHandler
 from ..graphics import Camera, ParticleConfig, ParticleSystem, ParticleType, ShadowSystem
 from ..core.audio import AudioSystem
 from ..backend.opengl import OpenGLRenderer
@@ -53,6 +53,8 @@ class Scene(ABC):
         engine (LunaEngine): Reference to the game engine
     """
     name:str = ''
+    WIDTH:int = 0
+    HEIGHT:int = 0
     def __init__(self, engine: 'LunaEngine', *args:tuple|Any, **kwargs:dict|Any):
         """
         Initialize a new scene with empty UI elements list.
@@ -64,6 +66,12 @@ class Scene(ABC):
         self._initialized = False
         self.engine: LunaEngine = engine
         
+        self.WIDTH, self.HEIGHT = self.engine.window.width, self.engine.window.height
+        
+        # Performance tracking
+        self._last_update_time = 0.0
+        self._last_render_time = 0.0
+        
         # Camera Start
         self.camera: Camera = Camera(self, engine.width, engine.height)
         
@@ -74,11 +82,20 @@ class Scene(ABC):
         # Shadows System
         self.shadow_system: ShadowSystem = ShadowSystem(self.engine.width, self.engine.height, engine)
         
+        # Animation System
+        self.animation_handler = AnimationHandler(engine)
+        
         # Audio System
         self.audio_system: AudioSystem = AudioSystem(num_channels=16)
     
+        # Window Events
+        self.engine.window.on_resize(self.update_window_size)
+        
+    def update_window_size(self):
+        self.WIDTH, self.HEIGHT = self.engine.window.width, self.engine.window.height
+    
     def _add_event_to_handler(self, element: UIElement):
-        if element.element_type == 'textbox': # Textbox on_key_down and on_key_up events
+        if element.element_type in ['textbox', 'textarea']: # Textbox on_key_down and on_key_up events
             @self.engine.on_event(pygame.KEYDOWN, element.element_id)
             def on_key_down(event):
                 if element.focused and element.enabled:
@@ -142,11 +159,27 @@ class Scene(ABC):
         """
         Update scene logic.
         """
-        # Update Camera
-        self.camera.update(dt)
+        pass
         
-        # Update particle system with camera position
+    def _update(self, dt:float):
+        """
+        Update scene logic with profiling.
+        """
+        # Profile camera update
+        self.engine.performance_monitor.start_timer("scene_camera")
+        self.camera.update(dt)
+        self.engine.performance_monitor.end_timer("scene_camera")
+        
+        # Profile particle system update
+        self.engine.performance_monitor.start_timer("scene_particles")
         self.particle_system.update(dt, self.camera.position)
+        self.engine.performance_monitor.end_timer("scene_particles")
+        self.update(dt)
+        
+        # Animation Update
+        self.animation_handler.update(dt)
+        
+    
         
     def render(self, renderer: Renderer|OpenGLRenderer) -> None:
         """
@@ -158,6 +191,15 @@ class Scene(ABC):
             renderer: The renderer to use for drawing operations
         """
         pass
+    
+    def get_scene_performance_stats(self) -> Dict[str, float]:
+        """Get performance statistics for this scene"""
+        return {
+            "last_update_time_ms": self._last_update_time * 1000,
+            "last_render_time_ms": self._last_render_time * 1000,
+            "ui_element_count": len(self.ui_elements),
+            "particle_count": self.particle_system.get_active_count() if hasattr(self, 'particle_system') else 0
+        }
         
     def add_ui_element(self, ui_element: UIElement) -> None:
         """

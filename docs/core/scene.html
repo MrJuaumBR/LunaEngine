@@ -56,6 +56,12 @@
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
                     <code>name: str = ''</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>WIDTH: int = 0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>HEIGHT: int = 0</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
@@ -63,6 +69,10 @@
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, engine: 'LunaEngine', *args: tuple, **kwargs: dict) -> Any</code>
                 <div class="mt-2 text-muted small">Initialize a new scene with empty UI elements list.<br><br>Args:<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-update_window_size">
+                <code class="fs-6 fw-bold text-color-title">def update_window_size(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-_add_event_to_handler">
                 <code class="fs-6 fw-bold text-color-title">def _add_event_to_handler(self: Any, element: UIElement) -> Any</code>
@@ -88,9 +98,17 @@
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float) -> None</code>
                 <div class="mt-2 text-muted small">Update scene logic.</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-_update">
+                <code class="fs-6 fw-bold text-color-title">def _update(self: Any, dt: float) -> Any</code>
+                <div class="mt-2 text-muted small">Update scene logic with profiling.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-render">
                 <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer | OpenGLRenderer) -> None</code>
                 <div class="mt-2 text-muted small">Render the scene.<br><br>Called every frame to draw the scene content.<br><br>Args:<br> &nbsp; &nbsp;renderer: The renderer to use for drawing operations</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-get_scene_performance_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_scene_performance_stats(self: Any) -> Dict[str, float]</code>
+                <div class="mt-2 text-muted small">Get performance statistics for this scene</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-add_ui_element">
                 <code class="fs-6 fw-bold text-color-title">def add_ui_element(self: Any, ui_element: UIElement) -> None</code>
@@ -168,7 +186,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-02-03 16:03
+                        Documentation generated on 2026-02-16 14:06
                     </p>
                 </div>
             </div>

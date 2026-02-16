@@ -1,7 +1,10 @@
 """
 topdown_farming_demo.py - Top-Down Farming Game Demo with Optimized Shadows
 
-Downgraded to 0.1.4 (0.1.4.2)
+Updated for LunaEngine 0.2.0 Camera System:
+- Unified world‑to‑screen conversion (camera.position = viewport centre)
+- Constraints via CameraConstraints
+- Compatible with legacy CameraMode / set_target
 """
 
 import sys
@@ -222,26 +225,25 @@ class TopDownFarmingGame(Scene):
             self.player_light.intensity = 0.8  # Bright player light at night
 
     def setup_camera(self):
-        """Configure camera for top-down mode"""
+        """Configure camera for top-down mode (updated for new camera system)"""
         # Reset camera position to player position
         self.camera.position = pygame.math.Vector2(self.player['position'])
         self.camera.target_position = pygame.math.Vector2(self.player['position'])
         
-        self.camera.mode = CameraMode.TOPDOWN
         self.camera.smooth_speed = 0.1
         self.camera.lead_factor = 0.2
         
-        # Set zoom limits
+        # Zoom limits – now stored in CameraConstraints
+        self.camera.constraints.min_zoom = 0.7
+        self.camera.constraints.max_zoom = 2.0
         self.camera.zoom = 1.0
         self.camera.target_zoom = 1.0
-        self.camera.min_zoom = 0.7
-        self.camera.max_zoom = 2.0
         
         # Set camera bounds to world size
         world_rect = pygame.Rect(0, 0, self.world_size[0], self.world_size[1])
         self.camera.set_bounds(world_rect)
         
-        # Set camera to follow player
+        # Set camera to follow player (dict with position + velocity for look‑ahead)
         self.camera.set_target({
             'position': self.player['position'],
             'velocity': self.player['velocity']
@@ -411,11 +413,13 @@ class TopDownFarmingGame(Scene):
         if keys[pygame.K_d]:
             self.player['velocity'][0] = 1
         
-        # Mouse wheel zoom
+        # Mouse wheel zoom (updated to use constraints)
         if self.engine.mouse_wheel != 0:
             zoom_speed = 0.05
             new_zoom = self.camera.zoom + (self.engine.mouse_wheel * zoom_speed)
-            new_zoom = max(self.camera.min_zoom, min(self.camera.max_zoom, new_zoom))
+            # Use constraints for min/max zoom
+            new_zoom = max(self.camera.constraints.min_zoom, 
+                          min(self.camera.constraints.max_zoom, new_zoom))
             self.camera.set_zoom(new_zoom, smooth=True)
         
         # Normalize diagonal movement
@@ -431,7 +435,7 @@ class TopDownFarmingGame(Scene):
         self.player['position'][0] = max(self.player['size'], min(self.world_size[0] - self.player['size'], self.player['position'][0]))
         self.player['position'][1] = max(self.player['size'], min(self.world_size[1] - self.player['size'], self.player['position'][1]))
         
-        # Update camera target
+        # Update camera target (look‑ahead works because we pass velocity)
         self.camera.set_target({
             'position': self.player['position'],
             'velocity': self.player['velocity']
@@ -601,9 +605,6 @@ class TopDownFarmingGame(Scene):
         # Update player movement
         self.update_player_movement(dt)
         
-        # Update camera
-        self.camera.update(dt)
-        
         # Update shadow system (less frequently for performance)
         static_frame_count = getattr(self, '_static_frame_count', 0)
         self._static_frame_count = static_frame_count + 1
@@ -624,7 +625,7 @@ class TopDownFarmingGame(Scene):
         self.update_ui()
 
     def apply_camera_offset(self, position):
-        """Apply camera offset to convert world coordinates to screen coordinates"""
+        """Convert world coordinates to screen coordinates (uses new unified method)"""
         if isinstance(position, (list, tuple)):
             screen_pos = self.camera.world_to_screen(position)
             return (screen_pos.x, screen_pos.y)

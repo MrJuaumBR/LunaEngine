@@ -242,3 +242,27 @@ def get_area_by_diameter(diameter: float) -> float:
 
 def get_area_by_radius(radius: float) -> float:
     return math.pi * radius**2
+
+def get_mid_colors(color1: Tuple[int,int,int,float]|Tuple[int,int,int], color2: Tuple[int,int,int,float]|Tuple[int,int,int]) -> Tuple[int,int,int]|Tuple[int,int,int,float]:
+    """
+    Get the middle color between two colors
+    
+    Parameters:
+        color1 (Tuple[int,int,int,float]|Tuple[int,int,int]): First color
+        color2 (Tuple[int,int,int,float]|Tuple[int,int,int]): Second color
+    Returns:
+        Tuple[int,int,int]|Tuple[int,int,int,float]: Middle color
+    """
+    if len(color1) >= 4:
+        r1, g1, b1, a1 = color1
+    else:
+        r1, g1, b1 = color1
+        a1 = 1.0
+        
+    if len(color2) >= 4:
+        r2, g2, b2, a2 = color2
+    else:
+        r2, g2, b2 = color2
+        a2 = 1.0
+        
+    return (int((r1 + r2) / 2), int((g1 + g2) / 2), int((b1 + b2) / 2), int((a1 + a2) / 2))

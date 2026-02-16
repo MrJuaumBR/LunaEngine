@@ -27,7 +27,7 @@ game development, performance optimization, and resource management.
 """
 
 from .image_converter import ImageConverter, EmbeddedImage
-from .performance import PerformanceMonitor, GarbageCollector
+from .performance import PerformanceMonitor, GarbageCollector, PerformanceProfiler, TimeProfile
 from .math_utils import (clamp, lerp, normalize_vector, angle_between_points,
                          distance, rgba_brightness, individual_rgba_brightness, get_rgba_common,
                          humanize_number, humanize_time, humanize_size, generate_matrix,
@@ -40,6 +40,9 @@ __all__ = [
     "EmbeddedImage",
     "PerformanceMonitor",
     "GarbageCollector",
+    "PerformanceProfiler",
+    "TimeCategory",
+    "TimingResult",
     "clamp",
     "lerp",
     "normalize_vector",

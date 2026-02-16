@@ -37,7 +37,7 @@ from ..ui.notifications import (NotificationManager, NotificationPosition, Notif
 from ..ui import *
 from .scene import Scene
 from ..utils import PerformanceMonitor, GarbageCollector
-from ..backend import OpenGLRenderer, EVENTS, InputState, MouseButtonPressed, LayerType, LExceptions
+from ..backend import OpenGLRenderer, EVENTS, InputState, MouseButtonPressed, LayerType, LExceptions, ControllerManager
 from .renderer import Renderer
 from .window import Window
 from dataclasses import dataclass
@@ -75,6 +75,7 @@ class LunaEngine:
         self.height = height
         self.fullscreen = fullscreen
         self.icon = icon
+        
         # Window
         self.window = Window(title=title, width=width, height=height, fullscreen=fullscreen, resizable=False)
         self.monitor_size:pygame.display._VidInfo = None
@@ -99,6 +100,9 @@ class LunaEngine:
         self.performance_monitor = PerformanceMonitor()
         self.garbage_collector = GarbageCollector()
         
+        # Performance profilling settings
+        self.enable_performance_profiling(kwargs.get('enable_performance_profiling', True))
+        
         # Render
         self.renderer: Renderer = None
         
@@ -117,6 +121,8 @@ class LunaEngine:
         self.initialize()
         self.animation_handler = AnimationHandler(self)
         self.layer_manager = UILayerManager()
+        
+        self.controller_manager = ControllerManager(self)
         
     def initialize(self):
         """Initialize the engine and create the game window."""
@@ -442,8 +448,7 @@ class LunaEngine:
             for attr_name in dir(self.current_scene):
                 attr = getattr(self.current_scene, attr_name)
                 if hasattr(attr, 'update_theme'):
-                    attr.update_theme(theme_enum)
-    
+                    attr.update_theme(theme_enum) 
     
     def get_fps_stats(self) -> dict:
         """
@@ -516,21 +521,38 @@ class LunaEngine:
             self.initialize()
         
         while self.running:
-            # Update performance monitoring
+            self.performance_monitor.start_timer('frame')
+            # Update performance monitoring - start of frame
             self.performance_monitor.update_frame()
             
             dt = self.clock.tick(self.fps) / 1000.0
             
             self.input_state.clear_consumed()
             
+            # Profile mouse update
+            self.performance_monitor.start_timer("mouse")
             self.update_mouse()
             UITooltipManager.update(self, dt)
+            self.performance_monitor.end_timer("mouse")
             
-            # Update notifications
+            # Profile notification update
+            self.performance_monitor.start_timer("notifications")
             self.notification_manager.update(dt, self.input_state)
+            self.performance_monitor.end_timer("notifications")
             
-            # Handle events
-            for event in pygame.event.get():
+            # Profile event handling
+            self.performance_monitor.start_timer("events")
+            events = pygame.event.get()
+            
+            # Handle controller events
+            self.controller_manager.handle_events(events)
+            
+            # Update input state with controller info
+            self.input_state.using_controller = self.controller_manager.is_using_controller()
+            self.input_state.active_controller = self.controller_manager.get_first_connected()
+            self.input_state.controller_count = len(self.controller_manager)
+            
+            for event in events:
                 if event.type == EVENTS.QUIT:
                     self.running = False
                     
@@ -541,19 +563,33 @@ class LunaEngine:
                 if event.type in self._event_handlers:
                     for handler in self._event_handlers[event.type]:
                         handler['callable'](event)
+            self.performance_monitor.end_timer("events")
             
-            # Update current scene
+            # Update current scene with profiling
             if self.current_scene:
-                self.current_scene.update(dt)
+                self.performance_monitor.start_timer("scene")
+                self.current_scene._update(dt)
+                self.performance_monitor.end_timer("scene")
                 
-            # Update all animations
+            # Update all animations with profiling
+            self.performance_monitor.start_timer("animations")
             self.animation_handler.update(dt)
+            self.performance_monitor.end_timer("animations")
             
-            # Update UI elements
+            # Update UI elements with profiling
+            self.performance_monitor.start_timer("ui")
             self._update_ui_elements(dt)
+            self.performance_monitor.end_timer("ui")
             
-            # Render
+            # Render with profiling
+            self.performance_monitor.start_timer("render")
             self._render()
+            self.performance_monitor.end_timer("render")
+            
+            self.performance_monitor.end_timer('frame')
+            
+            # End frame profiling
+            self.performance_monitor.end_frame()
             
             # Periodic garbage collection
             self.garbage_collector.cleanup()
@@ -716,6 +752,23 @@ class LunaEngine:
         """
         return self.window.is_maximized()
         
+    def get_controllers(self) -> List['Controller']:
+        return self.controller_manager.get_all_controllers()
+
+    def get_controller(self, index: int) -> Optional['Controller']:
+        return self.controller_manager.get_controller(index)
+
+    def is_using_controller(self) -> bool:
+        return self.controller_manager.is_using_controller()
+
+    def on_controller_connect(self, callback: Callable[['Controller'], None]):
+        """Register callback when a controller connects."""
+        self.controller_manager.on_connect.append(callback)
+
+    def on_controller_disconnect(self, callback: Callable[['Controller'], None]):
+        """Register callback when a controller disconnects."""
+        self.controller_manager.on_disconnect.append(callback)
+        
     def update_mouse(self):
         """Update mouse position and button state with proper click detection"""
         mouse_pos = pygame.mouse.get_pos()
@@ -743,26 +796,36 @@ class LunaEngine:
         return self.input_state.mouse_wheel
 
     def _render(self):
-        """Rendering"""
+        """Rendering with performance profiling"""
         try:
             # 1. Start OpenGL frame
             self.renderer.begin_frame()
             
-            # 2. Render main scene objects
+            # 2. Render main scene objects with profiling
             if self.current_scene:
+                self.performance_monitor.start_timer("scene")
                 self.current_scene.render(self.renderer)
+                self.performance_monitor.end_timer("scene")
             
-            # 3. Render particles using OpenGL
+            # 3. Render particles with profiling
+            self.performance_monitor.start_timer("particles")
             self._render_particles()
+            self.performance_monitor.end_timer("particles")
             
-            # 4. Render UI elements using OpenGL
+            # 4. Render UI elements with profiling
+            self.performance_monitor.start_timer("ui")
             self._render_ui_elements()
+            self.performance_monitor.end_timer("ui")
             
-            # 5. Render notifications (on top of everything)
+            # 5. Render notifications with profiling
+            self.performance_monitor.start_timer("notifications")
             self.notification_manager.render(self.renderer)
+            self.performance_monitor.end_timer("notifications")
             
-            # 6. Finalize OpenGL frame
+            # 6. Finalize OpenGL frame with profiling
+            self.performance_monitor.start_timer("frame_finalize")
             self.renderer.end_frame()
+            self.performance_monitor.end_timer("frame_finalize")
             
         except Exception as e:
             print(f"OpenGL rendering error: {e}")
@@ -770,24 +833,29 @@ class LunaEngine:
             traceback.print_exc()
 
     def _render_ui_elements(self):
-        """Render UI elements using the layer manager system."""
+        """Render UI elements with individual profiling if enabled"""
         if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
             return
         
         # Get elements in correct render order
         elements_to_render = self.layer_manager.get_elements_in_order()
         
+        # Profile entire UI rendering
+        self.performance_monitor.start_timer("ui_total")
+        
         # Render elements
         for ui_element in elements_to_render:
             # Skip elements inside ScrollingFrame (they're rendered by the ScrollingFrame itself)
             if hasattr(ui_element, 'parent') and ui_element.parent and isinstance(ui_element.parent, ScrollingFrame):
                 continue
-                
+            
             ui_element.render(self.renderer)
         
-        # Render tooltips (they're managed separately by UITooltipManager)
+        # Render tooltips
         for tooltip in UITooltipManager.get_tooltip_to_render(engine=self):
             tooltip.render(self.renderer)
+        
+        self.performance_monitor.end_timer("ui_total")
             
     def _render_particles(self):
         """Render particles using OpenGL"""
@@ -804,10 +872,7 @@ class LunaEngine:
 
     def _update_ui_elements(self, dt):
         """
-        Update UI elements using the layer manager system.
-        
-        Args:
-            dt (float): Delta time in seconds
+        Update UI elements with individual profiling if enabled
         """
         if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
             return
@@ -818,8 +883,14 @@ class LunaEngine:
         for ui_element in self.current_scene.ui_elements:
             self.layer_manager.add_element(ui_element)
         
-        # Update all elements through layer manager
+        # Profile entire UI update
+        self.performance_monitor.start_timer("ui_total")
+        
+        
         self.layer_manager.update(dt, self.input_state)
+        
+        self.performance_monitor.end_timer("ui_total")
+
 
     def _process_ui_element_tree(self, root_element, dt):
         """
@@ -836,6 +907,80 @@ class LunaEngine:
         # Process all children recursively
         for child in getattr(root_element, 'children', []):
             self._process_ui_element_tree(child, dt)
+    
+    def enable_performance_profiling(self, enabled: bool = True):
+        """Enable/disable detailed performance profiling."""
+        # Pre-alloc timers
+        self.performance_monitor.create_timer("frame")
+        self.performance_monitor.create_timer("mouse")
+        self.performance_monitor.create_timer("events")
+        self.performance_monitor.create_timer("scene")
+        self.performance_monitor.create_timer("particles")
+        self.performance_monitor.create_timer("ui")
+        self.performance_monitor.create_timer("ui_total")
+        self.performance_monitor.create_timer("notifications")
+        self.performance_monitor.create_timer("frame_finalize")
+        # Actually enable/disable profiling
+        self.performance_monitor.enable_profiling(enabled)
+    
+    def get_frame_timing_breakdown(self) -> Dict[str, float]:
+        """Get the timing breakdown (ms) for the last completed frame."""
+        return self.performance_monitor.get_frame_timing_breakdown()
+
+    def get_performance_stats(self) -> Dict[str, Any]:
+        """Return both FPS stats and frame timing breakdown."""
+        stats = self.performance_monitor.get_stats()
+        stats["frame_timings"] = self.get_frame_timing_breakdown()
+        return stats
+    
+    def get_update_timing_stats(self, category: str = "all") -> Dict[str, Any]:
+        """Get update timing statistics for a specific category"""
+        return self.performance_monitor.get_update_timing_stats(category)
+    
+    def get_render_timing_stats(self, category: str = "all") -> Dict[str, Any]:
+        """Get render timing statistics for a specific category"""
+        return self.performance_monitor.get_render_timing_stats(category)
+    
+    def get_ui_update_stats(self) -> Dict[str, Any]:
+        """Get UI update timing statistics"""
+        return self.performance_monitor.get_update_timing_stats("ui")
+    
+    def get_ui_render_stats(self) -> Dict[str, Any]:
+        """Get UI render timing statistics"""
+        return self.performance_monitor.get_render_timing_stats("ui")
+    
+    def get_individual_ui_update_stats(self) -> Dict[str, float]:
+        """Get individual UI element update timing statistics"""
+        stats = self.performance_monitor.get_update_timing_stats("ui_individual")
+        return stats.get("individual_times", {})
+    
+    def get_individual_ui_render_stats(self) -> Dict[str, float]:
+        """Get individual UI element render timing statistics"""
+        stats = self.performance_monitor.get_render_timing_stats("ui_individual")
+        return stats.get("individual_times", {})
+    
+    def get_scene_update_stats(self) -> Dict[str, Any]:
+        """Get scene update timing statistics"""
+        return self.performance_monitor.get_update_timing_stats("scene")
+    
+    def get_scene_render_stats(self) -> Dict[str, Any]:
+        """Get scene render timing statistics"""
+        return self.performance_monitor.get_render_timing_stats("scene")
+    
+    def get_total_frame_time(self) -> Dict[str, float]:
+        """Get total frame time breakdown"""
+        update_stats = self.performance_monitor.get_all_update_timing_stats()
+        render_stats = self.performance_monitor.get_all_render_timing_stats()
+        
+        total_update = sum(cat.get("current_ms", 0) for cat in update_stats.values())
+        total_render = sum(cat.get("current_ms", 0) for cat in render_stats.values())
+        
+        return {
+            "total_ms": total_update + total_render,
+            "update_ms": total_update,
+            "render_ms": total_render,
+            "other_ms": self.performance_monitor.get_stats().get("frame_time_ms", 0) - (total_update + total_render)
+        }
     
     def shutdown(self):
         """Cleanup resources"""

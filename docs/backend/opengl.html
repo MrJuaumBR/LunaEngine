@@ -518,7 +518,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_text">
-                <code class="fs-6 fw-bold text-color-title">def draw_text(self: Any, text: str, x: int, y: int, color: tuple, font: pygame.font.FontType, surface: Optional[pygame.Surface] = None, anchor_point: tuple = (0.0, 0.0)) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def draw_text(self: Any, text: str, x: int, y: int, color: tuple, font: pygame.font.FontType, surface: Optional[pygame.Surface] = None, anchor_point: Optional[Tuple[int, int]] = (0.0, 0.0)) -> Any</code>
                 <div class="mt-2 text-muted small">Draw text using pygame font rendering</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_draw_thick_line_optimized">
@@ -538,8 +538,8 @@
                 <div class="mt-2 text-muted small">Generate vertices and indices for a hollow circle (outline)</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_polygon">
-                <code class="fs-6 fw-bold text-color-title">def draw_polygon(self: Any, points: List[Tuple[int, int]], color: tuple, fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None) -> Any</code>
-                <div class="mt-2 text-muted small">Draw a polygon from a list of points.<br><br>Args:<br> &nbsp; &nbsp;points: List of (x, y) points defining the polygon<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the polygon<br> &nbsp; &nbsp;border_width: Border width for hollow polygons,<br> &nbsp; &nbsp;surface: Target surface</div>
+                <code class="fs-6 fw-bold text-color-title">def draw_polygon(self: Any, points: List[Tuple[int, int]], color: tuple, fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None, anchor_point: Tuple[float, float] = (0.0, 0.0)) -> Any</code>
+                <div class="mt-2 text-muted small">Draw a polygon from a list of points.<br><br>Args:<br> &nbsp; &nbsp;points: List of (x, y) points defining the polygon<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the polygon<br> &nbsp; &nbsp;border_width: Border width for hollow polygons,<br> &nbsp; &nbsp;surface: Target surface<br> &nbsp; &nbsp;anchor_point: Anchor point</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_generate_filled_polygon_geometry">
                 <code class="fs-6 fw-bold text-color-title">def _generate_filled_polygon_geometry(self: Any, points: List[Tuple[int, int]]) -> Any</code>
@@ -613,7 +613,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-02-03 16:03
+                        Documentation generated on 2026-02-16 14:06
                     </p>
                 </div>
             </div>

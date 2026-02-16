@@ -26,6 +26,8 @@ This engine have features like OpenGL and OpenAL!
 
 [PyPi](https://pypi.org/project/lunaengine/)
 
+[Changelog](https://github.com/MrJuaumBR/LunaEngine/blob/main/changelod.md)
+
 ## 🚀 Quick Start
 
 ### Installation
@@ -85,8 +87,8 @@ twine upload --config-file .pypirc --repository pypi dist/*
 ```
 
 ## OpenGL
-- Require OpenGL 2.0+
-- OpenGL come actvated by default
+- Require OpenGL 3.3+
+- OpenGL come activated by default
 
 ## Network
 ToDo

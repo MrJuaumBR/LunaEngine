@@ -59,6 +59,7 @@ from lunaengine.ui import *
 from lunaengine.core import LunaEngine, Scene
 from lunaengine.ui.tween import Tween, EasingType, AnimationHandler
 from lunaengine.misc import icons  # Import the icons module
+from lunaengine.backend import *
 
 
 class ComprehensiveUIDemo(Scene):
@@ -75,9 +76,21 @@ class ComprehensiveUIDemo(Scene):
             &#x27;dialog_active&#x27;: False,
             &#x27;number_selector_value&#x27;: 10,
             &#x27;checkbox_state&#x27;: True,
+            &#x27;text_area_content&#x27;: &quot;This is a multi-line text area.\nYou can type here...\nIt supports line numbers and word wrapping.\nTry editing this text!&quot;,
+            &#x27;file_finder_path&#x27;: &quot;C:/example.txt&quot;,
+            &#x27;current_page&#x27;: 1,
         }
         self.animations = {}
-        self.animation_handler = AnimationHandler(engine)
+        
+        self.last_controller_count = 0
+        self.controller_dropdown = None
+        self.controller_info_labels = {}
+        self.left_stick_indicator = None
+        self.right_stick_indicator = None
+        self.dpad_indicator = None
+        self.button_indicators = {}  # for some key buttons
+        self.selected_controller_idx = None
+        
         self.setup_ui()
         
     def on_enter(self, previous_scene: str = None):
@@ -137,6 +150,16 @@ class ComprehensiveUIDemo(Scene):
         # --- SECTION 7: Notifications ---
         self.main_tabs.add_tab(&#x27;Notifications&#x27;)
         self.setup_notification_tab()
+        
+        # --- SECTION 8: Charts ---
+        self.main_tabs.add_tab(&#x27;Charts&#x27;)
+        self.setup_charts_tab()
+        
+        # --- SECTION 9: Controller ---
+        self.main_tabs.add_tab(&#x27;Controller&#x27;)
+        self.setup_controller_tab()
+
+        
         
         # Add the main tabs container to the scene
         self.add_ui_element(self.main_tabs)
@@ -325,6 +348,338 @@ class ComprehensiveUIDemo(Scene):
         self.notification_button = Button(20, 200, 200, 40, &quot;Show Notification&quot;)
         self.notification_button.set_on_click(self.show_notification)
         self.main_tabs.add_to_tab(&#x27;Notifications&#x27;, self.notification_button)
+        
+    def setup_charts_tab(self):
+        &quot;&quot;&quot;Sets up the charts tab with various GraphicVisualizer examples.&quot;&quot;&quot;
+        # Tab title
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, TextLabel(10, 10, &quot;Charts Gallery&quot;, 24, (255, 255, 0)))
+
+        # Description
+        desc = TextLabel(10, 45, &quot;Various chart types using GraphicVisualizer:&quot;, 14, (200, 200, 200))
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, desc)
+
+        # Store references to charts for randomisation
+        self.charts = []
+
+        # Bar chart
+        bar_label = TextLabel(20, 75, &quot;Bar Chart&quot;, 16, (100, 255, 100))
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, bar_label)
+        bar_chart = ChartVisualizer(20, 100, 200, 150,
+                                    data=[15, 30, 45, 25, 60, 35],
+                                    labels=[&#x27;Jan&#x27;,&#x27;Feb&#x27;,&#x27;Mar&#x27;,&#x27;Apr&#x27;,&#x27;May&#x27;,&#x27;Jun&#x27;],
+                                    chart_type=&#x27;bar&#x27;,
+                                    title=&#x27;Monthly Sales&#x27;,
+                                    show_labels=True,
+                                    show_legend=False,
+                                    colors=[(54,162,235)])
+        bar_chart.set_simple_tooltip(&quot;Bar chart showing monthly data&quot;)
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, bar_chart)
+        self.charts.append(bar_chart)
+
+        # Pie chart
+        pie_label = TextLabel(250, 75, &quot;Pie Chart&quot;, 16, (255, 200, 100))
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, pie_label)
+        pie_chart = ChartVisualizer(250, 100, 200, 150,
+                                    data=[30, 20, 25, 15, 10],
+                                    labels=[&#x27;A&#x27;,&#x27;B&#x27;,&#x27;C&#x27;,&#x27;D&#x27;,&#x27;E&#x27;],
+                                    chart_type=&#x27;pie&#x27;,
+                                    title=&#x27;Distribution&#x27;,
+                                    show_labels=True,
+                                    show_legend=True)
+        pie_chart.set_simple_tooltip(&quot;Pie chart with legend&quot;)
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, pie_chart)
+        self.charts.append(pie_chart)
+
+        # Line chart
+        line_label = TextLabel(20, 270, &quot;Line Chart&quot;, 16, (100, 200, 255))
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, line_label)
+        line_chart = ChartVisualizer(20, 295, 200, 150,
+                                    data=[10, 25, 15, 30, 20, 35],
+                                    labels=[&#x27;Mon&#x27;,&#x27;Tue&#x27;,&#x27;Wed&#x27;,&#x27;Thu&#x27;,&#x27;Fri&#x27;,&#x27;Sat&#x27;],
+                                    chart_type=&#x27;line&#x27;,
+                                    title=&#x27;Weekly Trend&#x27;,
+                                    show_labels=True,
+                                    show_legend=False)
+        line_chart.set_simple_tooltip(&quot;Line chart with points&quot;)
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, line_chart)
+        self.charts.append(line_chart)
+
+        # Scatter plot
+        scatter_label = TextLabel(250, 270, &quot;Scatter Plot&quot;, 16, (255, 100, 255))
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, scatter_label)
+        scatter_chart = ChartVisualizer(250, 295, 200, 150,
+                                        data=[5, 12, 9, 15, 7, 20],
+                                        labels=[&#x27;P1&#x27;,&#x27;P2&#x27;,&#x27;P3&#x27;,&#x27;P4&#x27;,&#x27;P5&#x27;,&#x27;P6&#x27;],
+                                        chart_type=&#x27;scatter&#x27;,
+                                        title=&#x27;Data Points&#x27;,
+                                        show_labels=True,
+                                        show_legend=False)
+        scatter_chart.set_simple_tooltip(&quot;Scatter plot&quot;)
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, scatter_chart)
+        self.charts.append(scatter_chart)
+
+        # Additional note
+        note = TextLabel(20, 470, &quot;You can create custom charts with your own data and colors.&quot;, 14, (150, 200, 255))
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, note)
+
+        # Randomize button
+        randomize_btn = Button(20, 500, 150, 30, &quot;Randomize Charts&quot;)
+        randomize_btn.set_on_click(self.randomize_charts)
+        randomize_btn.set_simple_tooltip(&quot;Click to randomize all chart data with smooth animation&quot;)
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, randomize_btn)
+        
+    def setup_controller_tab(self):
+        &quot;&quot;&quot;Build the UI elements for the Controller information tab.&quot;&quot;&quot;
+        tab = &#x27;Controller&#x27;
+
+        # Title
+        self.main_tabs.add_to_tab(tab, TextLabel(10, 10, &quot;Controller Status&quot;, 24, (255, 255, 0)))
+
+        # Dropdown to select controller (if multiple)
+        self.controller_dropdown = Dropdown(10, 50, 300, 30, [&quot;No controller&quot;])
+        self.controller_dropdown.set_on_selection_changed(self.on_controller_selected)
+        self.controller_dropdown.set_simple_tooltip(&quot;Choose which controller to display&quot;)
+        self.main_tabs.add_to_tab(tab, self.controller_dropdown)
+
+        # Info frame
+        info_frame = UiFrame(10, 100, 460, 150)
+        info_frame.set_background_color((30, 30, 40, 200))
+        info_frame.set_border((80, 80, 100), 1)
+        self.main_tabs.add_to_tab(tab, info_frame)
+
+        # Info labels (will be updated dynamically)
+        self.controller_info_labels[&#x27;type&#x27;] = TextLabel(20, 10, &quot;Type: --&quot;, 16, (200, 200, 200))
+        info_frame.add_child(self.controller_info_labels[&#x27;type&#x27;])
+        self.controller_info_labels[&#x27;connection&#x27;] = TextLabel(20, 30, &quot;Connection: --&quot;, 16, (200, 200, 200))
+        info_frame.add_child(self.controller_info_labels[&#x27;connection&#x27;])
+        self.controller_info_labels[&#x27;touchpad&#x27;] = TextLabel(20, 50, &quot;Touchpad: --&quot;, 16, (200, 200, 200))
+        info_frame.add_child(self.controller_info_labels[&#x27;touchpad&#x27;])
+        self.controller_info_labels[&#x27;gyro&#x27;] = TextLabel(20, 70, &quot;Gyro: --&quot;, 16, (200, 200, 200))
+        info_frame.add_child(self.controller_info_labels[&#x27;gyro&#x27;])
+        self.controller_info_labels[&#x27;rumble&#x27;] = TextLabel(20, 90, &quot;Rumble: --&quot;, 16, (200, 200, 200))
+        info_frame.add_child(self.controller_info_labels[&#x27;rumble&#x27;])
+
+        # Right column of info
+        self.controller_info_labels[&#x27;axes&#x27;] = TextLabel(250, 10, &quot;Axes: --&quot;, 16, (200, 200, 200))
+        info_frame.add_child(self.controller_info_labels[&#x27;axes&#x27;])
+        self.controller_info_labels[&#x27;buttons&#x27;] = TextLabel(250, 30, &quot;Buttons: --&quot;, 16, (200, 200, 200))
+        info_frame.add_child(self.controller_info_labels[&#x27;buttons&#x27;])
+        self.controller_info_labels[&#x27;hats&#x27;] = TextLabel(250, 50, &quot;Hats: --&quot;, 16, (200, 200, 200))
+        info_frame.add_child(self.controller_info_labels[&#x27;hats&#x27;])
+
+        # Joystick visualizations
+        joy_label = TextLabel(10, 270, &quot;Joysticks:&quot;, 20, (200, 200, 255))
+        self.main_tabs.add_to_tab(tab, joy_label)
+
+        # Left stick
+        left_frame = UiFrame(10, 310, 120, 120)
+        left_frame.set_background_color((50, 50, 60))
+        left_frame.set_border((100, 100, 150), 1)
+        left_frame.set_corner_radius(5)
+        self.main_tabs.add_to_tab(tab, left_frame)
+
+        self.left_stick_indicator = UiFrame(60, 60, 10, 10, root_point=(0.5, 0.5))  # centered initially
+        self.left_stick_indicator.set_background_color((255, 100, 100))
+        self.left_stick_indicator.set_corner_radius(5)
+        left_frame.add_child(self.left_stick_indicator)
+
+        left_label = TextLabel(10, 435, &quot;Left Stick&quot;, 14, (180, 180, 180))
+        self.main_tabs.add_to_tab(tab, left_label)
+
+        # Right stick
+        right_frame = UiFrame(150, 310, 120, 120)
+        right_frame.set_background_color((50, 50, 60))
+        right_frame.set_border((100, 100, 150), 1)
+        right_frame.set_corner_radius(5)
+        self.main_tabs.add_to_tab(tab, right_frame)
+
+        self.right_stick_indicator = UiFrame(60, 60, 10, 10, root_point=(0.5, 0.5))
+        self.right_stick_indicator.set_background_color((100, 255, 100))
+        self.right_stick_indicator.set_corner_radius(5)
+        right_frame.add_child(self.right_stick_indicator)
+
+        right_label = TextLabel(150, 435, &quot;Right Stick&quot;, 14, (180, 180, 180))
+        self.main_tabs.add_to_tab(tab, right_label)
+
+        # D‑pad visual (simple cross)
+        dpad_label = TextLabel(300, 270, &quot;D-Pad:&quot;, 20, (200, 200, 255))
+        self.main_tabs.add_to_tab(tab, dpad_label)
+
+        dpad_frame = UiFrame(300, 310, 100, 100)
+        dpad_frame.set_background_color((40, 40, 50))
+        dpad_frame.set_border((100, 100, 150), 1)
+        self.main_tabs.add_to_tab(tab, dpad_frame)
+
+        self.dpad_indicator = UiFrame(50, 50, 10, 10, root_point=(0.5, 0.5))  # center
+        self.dpad_indicator.set_background_color((200, 200, 0))
+        self.dpad_indicator.set_corner_radius(5)
+        dpad_frame.add_child(self.dpad_indicator)
+        
+        # R2, L2, LT, RT
+        triggers_indicators = UiFrame(425, 310, 80, 100)
+        triggers_indicators.set_background_color((40, 40, 50))
+        
+        self.right_trigger = ProgressBar(75, 50, 30, 90, min_val=-1, max_val=1, value=0, root_point=(1, 0.5), orientation=&#x27;vertical&#x27;)
+        triggers_indicators.add_child(self.right_trigger)
+        
+        self.left_trigger = ProgressBar(5, 50, 30, 90,min_val=-1, max_val=1, value=0, root_point=(0, 0.5), orientation=&#x27;vertical&#x27;)
+        triggers_indicators.add_child(self.left_trigger)
+        self.main_tabs.add_to_tab(tab, triggers_indicators)
+
+        # Button indicators (A, B, X, Y)
+        btn_label = TextLabel(10, 470, &quot;Buttons:&quot;, 20, (200, 200, 255))
+        self.main_tabs.add_to_tab(tab, btn_label)
+
+        btn_frame = UiFrame(10, 510, 400, 90)
+        btn_frame.set_background_color((30, 30, 40, 200))
+        btn_frame.set_border((80, 80, 100), 1)
+        self.main_tabs.add_to_tab(tab, btn_frame)
+
+        button_names = [&#x27;A&#x27;, &#x27;B&#x27;, &#x27;X&#x27;, &#x27;Y&#x27;, &#x27;LB&#x27;, &#x27;RB&#x27;, &#x27;Back&#x27;, &#x27;Start&#x27;, &#x27;RSC&#x27;, &#x27;LSC&#x27;]
+        x_pos = 10
+        y_pos = 10
+        for index, name in enumerate(button_names): # Frame can handle 7 per line
+            # Create a small colored circle for each button
+            circle = UiFrame(x_pos, y_pos, 45, 30)
+            circle.set_background_color((80, 80, 80))  # default grey
+            circle.set_corner_radius(20)
+            btn_frame.add_child(circle)
+            self.button_indicators[name] = circle
+
+            # Label under circle
+            lbl = TextLabel(22.5, 15, name, 18, (200, 200, 200), root_point=(0.5, 0.5))
+            circle.add_child(lbl)
+
+            x_pos += 55
+            if index % 7 == 6:
+                x_pos = 10
+                y_pos += 40
+
+        # Update the dropdown with currently connected controllers
+        self.refresh_controller_dropdown()
+
+    def refresh_controller_dropdown(self):
+        &quot;&quot;&quot;Update the dropdown list with current controllers.&quot;&quot;&quot;
+        controllers = self.engine.controller_manager.get_all_controllers()
+        if controllers:
+            names = [f&quot;{c.name} (ID:{c.joystick_id})&quot; for c in controllers]
+            self.controller_dropdown.set_options(names)
+            if self.selected_controller_idx is None or self.selected_controller_idx &gt;= len(controllers):
+                self.selected_controller_idx = 0
+                self.controller_dropdown.selected_index = 0
+        else:
+            self.controller_dropdown.set_options([&quot;No controller&quot;])
+            self.selected_controller_idx = None
+
+    def on_controller_selected(self, index: int, value: str):
+        &quot;&quot;&quot;Handle selection of a controller from dropdown.&quot;&quot;&quot;
+        controllers = self.engine.controller_manager.get_all_controllers()
+        if controllers and 0 &lt;= index &lt; len(controllers):
+            self.selected_controller_idx = index
+
+    def update_controller_display(self):
+        &quot;&quot;&quot;Update the UI elements with current data from the selected controller.&quot;&quot;&quot;
+        if self.selected_controller_idx is None:
+            # No controller selected, set all indicators to default
+            for label in self.controller_info_labels.values():
+                label.set_text(label.text.split(&#x27;:&#x27;)[0] + &quot;: --&quot;)
+            # Reset joystick indicators to center
+            self.left_stick_indicator.x = 60
+            self.left_stick_indicator.y = 60
+            self.right_stick_indicator.x = 60
+            self.right_stick_indicator.y = 60
+            self.dpad_indicator.x = 50
+            self.dpad_indicator.y = 50
+            for circle in self.button_indicators.values():
+                circle.set_background_color((80, 80, 80))
+            return
+
+        controllers = self.engine.controller_manager.get_all_controllers()
+        if not controllers or self.selected_controller_idx &gt;= len(controllers):
+            return
+
+        ctrl = controllers[self.selected_controller_idx]
+
+        # Update info labels
+        self.controller_info_labels[&#x27;type&#x27;].set_text(f&quot;Type: {ctrl.type.name}&quot;)
+        self.controller_info_labels[&#x27;connection&#x27;].set_text(f&quot;Connection: {ctrl.connection.name}&quot;)
+        self.controller_info_labels[&#x27;touchpad&#x27;].set_text(f&quot;Touchpad: {&#x27;Yes&#x27; if ctrl._touch_joystick else &#x27;No&#x27;}&quot;)
+        self.controller_info_labels[&#x27;gyro&#x27;].set_text(f&quot;Gyro: {&#x27;Yes&#x27; if Axis.GYRO_X in ctrl._axis_map else &#x27;No&#x27;}&quot;)
+        self.controller_info_labels[&#x27;rumble&#x27;].set_text(f&quot;Rumble: {&#x27;Yes&#x27; if ctrl._has_rumble else &#x27;No&#x27;}&quot;)
+        self.controller_info_labels[&#x27;axes&#x27;].set_text(f&quot;Axes: {ctrl.num_axes}&quot;)
+        self.controller_info_labels[&#x27;buttons&#x27;].set_text(f&quot;Buttons: {ctrl.num_buttons}&quot;)
+        self.controller_info_labels[&#x27;hats&#x27;].set_text(f&quot;Hats: {ctrl.num_hats}&quot;)
+
+        # Update joystick positions
+        # Left stick: map axis values (-1..1) to frame coordinates (0..120) with offset
+        lx = ctrl.get_axis(Axis.LEFT_X)
+        ly = ctrl.get_axis(Axis.LEFT_Y)
+        # Invert Y because screen Y increases downwards
+        left_x = 60 + int(lx * 50)   # range -50..50 around center 55
+        left_y = 60 + int(-ly * 50)  # negative ly moves up
+        # Clamp to frame bounds
+        left_x = max(5, min(115, left_x))
+        left_y = max(5, min(115, left_y))
+        self.left_stick_indicator.x = left_x
+        self.left_stick_indicator.y = left_y
+
+        rx = ctrl.get_axis(Axis.RIGHT_X)
+        ry = ctrl.get_axis(Axis.RIGHT_Y)
+        right_x = 60 + int(rx * 50)
+        right_y = 60 + int(-ry * 50)
+        right_x = max(5, min(115, right_x))
+        right_y = max(5, min(115, right_y))
+        self.right_stick_indicator.x = right_x
+        self.right_stick_indicator.y = right_y
+
+        # D‑pad
+        hat_x = -1 if ctrl.get_button_pressed(JButton.DPAD_LEFT) else (1 if ctrl.get_button_pressed(JButton.DPAD_RIGHT) else 0)
+        hat_y = 1 if ctrl.get_button_pressed(JButton.DPAD_UP) else (-1 if ctrl.get_button_pressed(JButton.DPAD_DOWN) else 0)
+        dpad_x = 50 + int(hat_x * 40)   # max displacement 40
+        dpad_y = 50 + int(-hat_y * 40)
+        dpad_x = max(5, min(95, dpad_x))
+        dpad_y = max(5, min(95, dpad_y))
+        self.dpad_indicator.x = dpad_x
+        self.dpad_indicator.y = dpad_y
+        
+        # (R2, L2), (LT, RT)
+        self.right_trigger.set_value(ctrl.get_axis(Axis.RIGHT_TRIGGER))
+        self.left_trigger.set_value(ctrl.get_axis(Axis.LEFT_TRIGGER))
+
+        # Button indicators
+        button_map = {
+            &#x27;A&#x27;: JButton.A,
+            &#x27;B&#x27;: JButton.B,
+            &#x27;X&#x27;: JButton.X,
+            &#x27;Y&#x27;: JButton.Y,
+            &#x27;LB&#x27;: JButton.LEFT_BUMPER,
+            &#x27;RB&#x27;: JButton.RIGHT_BUMPER,
+            &#x27;Back&#x27;: JButton.BACK,
+            &#x27;Start&#x27;: JButton.START,
+            &#x27;RSC&#x27;: JButton.RIGHT_STICK,
+            &#x27;LSC&#x27;: JButton.LEFT_STICK,
+        }
+        for name, btn in button_map.items():
+            if ctrl.get_button_pressed(btn):
+                self.button_indicators[name].set_background_color((0, 255, 0))  # green when pressed
+            else:
+                self.button_indicators[name].set_background_color((80, 80, 80))
+
+    def randomize_charts(self):
+        &quot;&quot;&quot;Generate new random data for each chart and animate the change.&quot;&quot;&quot;
+        import random
+        for chart in self.charts:
+            n = len(chart.data)
+            if chart.chart_type == &#x27;pie&#x27;:
+                # Random values for pie
+                new_data = [random.randint(5, 40) for _ in range(n)]
+            else:
+                new_data = [random.randint(5, 70) for _ in range(n)]
+
+            # Animate the change over 0.8 seconds
+            chart.set_data(new_data, animate=True, duration=0.8)
+
+        print(&quot;Charts randomized with smooth transition!&quot;)
     
     def show_notification(self):
         notification_type = [NotificationType.SUCCESS, NotificationType.INFO, NotificationType.WARNING, NotificationType.ERROR][self.notification_type.selected_index]
@@ -337,8 +692,8 @@ class ComprehensiveUIDemo(Scene):
         self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, TextLabel(10, 10, &quot;Interactive Elements&quot;, 24, (255, 255, 0)))
         
         # Button Example
-        button1 = Button(20, 50, 150, 40, &quot;Click Me&quot;)
-        button1.set_on_click(lambda: self.update_state(&#x27;button_clicks&#x27;, self.demo_state[&#x27;button_clicks&#x27;] + 1))
+        button1 = Button(x=20, y=50, width=150, height=40, text=&quot;Click Me&quot;)
+        button1.set_on_click(self.update_state, &#x27;button_clicks&#x27;, self.demo_state[&#x27;button_clicks&#x27;] + 1)
         button1.set_simple_tooltip(&quot;This button counts your clicks!&quot;)
         self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, button1)
         
@@ -401,7 +756,7 @@ class ComprehensiveUIDemo(Scene):
         theme_label = TextLabel(20, 100, &quot;Theme Selector:&quot;, 16, (200, 200, 255))
         self.main_tabs.add_to_tab(&#x27;Selection&#x27;, theme_label)
         
-        theme_dropdown = Dropdown(150, 90, 150, 30, ThemeManager.get_theme_names(), font_size=16)
+        theme_dropdown = Dropdown(150, 90, 150, 30, ThemeManager.get_theme_names(), font_size=16, searchable=True)
         theme_dropdown.set_on_selection_changed(lambda i, v: self.engine.set_global_theme(v))
         theme_dropdown.set_simple_tooltip(&quot;Change the global theme&quot;)
         self.main_tabs.add_to_tab(&#x27;Selection&#x27;, theme_dropdown)
@@ -518,18 +873,94 @@ class ComprehensiveUIDemo(Scene):
         self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, TextLabel(10, 10, &quot;Advanced Elements&quot;, 24, (255, 255, 0)))
         
         # TextBox Example
-        textbox_label = TextLabel(20, 60, &quot;TextBox:&quot;, 16, (200, 200, 255))
+        textbox_label = TextLabel(20, 60, &quot;TextBox (Single-line):&quot;, 16, (200, 200, 255))
         self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, textbox_label)
         
-        textbox = TextBox(100, 50, 250, 30, &quot;Type here...&quot;)
+        textbox = TextBox(150, 50, 250, 30, &quot;Type here...&quot;)
         textbox.set_simple_tooltip(&quot;Click and type to enter text&quot;)
         self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, textbox)
         
-        # ScrollingFrame Example
-        scroll_label = TextLabel(20, 100, &quot;Scrolling Frame:&quot;, 16, (200, 200, 255))
+        # NEW: TextArea Example
+        textarea_label = TextLabel(20, 100, &quot;TextArea (Multi-line):&quot;, 16, (200, 200, 255))
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, textarea_label)
+        
+        self.text_area = TextArea(20, 130, 350, 200, 
+                                text=self.demo_state[&#x27;text_area_content&#x27;],
+                                font_size=14,
+                                line_numbers=True,
+                                word_wrap=True,
+                                read_only=False,
+                                tab_size=4)
+        self.text_area.set_simple_tooltip(&quot;A multi-line text editor with line numbers and word wrap&quot;)
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, self.text_area)
+        
+        # TextArea controls
+        textarea_controls_y = 340
+        textarea_clear_btn = Button(20, textarea_controls_y, 80, 25, &quot;Clear&quot;)
+        textarea_clear_btn.set_on_click(lambda: self.clear_text_area())
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, textarea_clear_btn)
+        
+        textarea_undo_btn = Button(110, textarea_controls_y, 80, 25, &quot;Undo&quot;)
+        textarea_undo_btn.set_on_click(lambda: self.text_area.undo())
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, textarea_undo_btn)
+        
+        textarea_redo_btn = Button(200, textarea_controls_y, 80, 25, &quot;Redo&quot;)
+        textarea_redo_btn.set_on_click(lambda: self.text_area.redo())
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, textarea_redo_btn)
+        
+        textarea_select_all_btn = Button(290, textarea_controls_y, 80, 25, &quot;Select All&quot;)
+        textarea_select_all_btn.set_on_click(lambda: self.text_area.select_all())
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, textarea_select_all_btn)
+        
+        # NEW: FileFinder Example
+        filefinder_label = TextLabel(420, 60, &quot;FileFinder:&quot;, 16, (200, 200, 255))
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, filefinder_label)
+        
+        self.file_finder = FileFinder(420, 90, 350, 40, 
+                                    file_path=self.demo_state[&#x27;file_finder_path&#x27;],
+                                    file_filter=[&#x27;.txt&#x27;, &#x27;.py&#x27;, &#x27;.json&#x27;, &#x27;.png&#x27;, &#x27;.jpg&#x27;],
+                                    dialog_title=&quot;Select a file&quot;,
+                                    button_text=&quot;Browse...&quot;,
+                                    show_icon=True)
+        self.file_finder.set_simple_tooltip(&quot;Select a file from your computer&quot;)
+        self.file_finder.on_file_selected = lambda path: self.on_file_selected(path)
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, self.file_finder)
+        
+        # FileFinder status display
+        self.file_finder_status = TextLabel(420, 135, f&quot;Selected: {self.demo_state[&#x27;file_finder_path&#x27;]}&quot;, 14, (200, 200, 200))
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, self.file_finder_status)
+        
+        # NEW: Pagination Example
+        pagination_label = TextLabel(420, 210, &quot;Pagination:&quot;, 16, (200, 200, 255))
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, pagination_label)
+        
+        self.pagination = Pagination(420, 230, 350, 40, total_pages=10, current_page=self.demo_state[&#x27;current_page&#x27;])
+        self.pagination.set_on_page_change(lambda page, _: self.on_page_change(page))
+        self.pagination.set_simple_tooltip(&quot;Navigate through pages&quot;)
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, self.pagination)
+        
+        # Pagination controls
+        pagination_controls_y = 290
+        pagination_prev_btn = Button(420, pagination_controls_y, 80, 25, &quot;Previous&quot;)
+        pagination_prev_btn.set_on_click(lambda: self.pagination.previous_page())
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, pagination_prev_btn)
+        
+        pagination_next_btn = Button(510, pagination_controls_y, 80, 25, &quot;Next&quot;)
+        pagination_next_btn.set_on_click(lambda: self.pagination.next_page())
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, pagination_next_btn)
+        
+        pagination_goto_btn = Button(600, pagination_controls_y, 80, 25, &quot;Go to 5&quot;)
+        pagination_goto_btn.set_on_click(lambda: self.pagination.set_page(5))
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, pagination_goto_btn)
+        
+        self.pagination_display = TextLabel(690, pagination_controls_y + 5, f&quot;Page: {self.demo_state[&#x27;current_page&#x27;]}/10&quot;, 14)
+        self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, self.pagination_display)
+        
+        # ScrollingFrame Example (moved to make room)
+        scroll_label = TextLabel(20, 380, &quot;Scrolling Frame:&quot;, 16, (200, 200, 255))
         self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, scroll_label)
         
-        scroll_frame = ScrollingFrame(20, 130, 350, 200, 330, 600)
+        scroll_frame = ScrollingFrame(20, 410, 350, 200, 330, 600)
         scroll_frame.set_simple_tooltip(&quot;Scrollable container with multiple items&quot;)
         self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, scroll_frame)
         
@@ -544,20 +975,20 @@ class ComprehensiveUIDemo(Scene):
                 
             scroll_frame.add_child(item)
         
-        # Dialog Button
-        dialog_label = TextLabel(390, 65, &quot;Dialog Box:&quot;, 16, (200, 200, 255))
+        # Dialog Button (moved to right side)
+        dialog_label = TextLabel(400, 360, &quot;Dialog Box:&quot;, 16, (200, 200, 255))
         self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, dialog_label)
         
-        dialog_btn = Button(500, 50, 150, 40, &quot;Show Dialog&quot;)
+        dialog_btn = Button(500, 355, 150, 40, &quot;Show Dialog&quot;)
         dialog_btn.set_on_click(lambda: self.show_dialog())
         dialog_btn.set_simple_tooltip(&quot;Click to show an RPG-style dialog box&quot;)
         self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, dialog_btn)
         
         # Advanced Tooltip Button
-        tooltip_label = TextLabel(390, 115, &quot;Advanced Tooltip:&quot;, 16, (200, 200, 255))
+        tooltip_label = TextLabel(400, 410, &quot;Advanced Tooltip:&quot;, 16, (200, 200, 255))
         self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, tooltip_label)
         
-        advanced_tooltip_btn = Button(500, 100, 180, 40, &quot;Hover for Tooltip&quot;)
+        advanced_tooltip_btn = Button(500, 405, 180, 40, &quot;Hover for Tooltip&quot;)
         advanced_tooltip_config = TooltipConfig(
             text=&quot;This is an advanced tooltip with custom styling! It has more padding, and a delay.&quot;,
             font_size=16,
@@ -688,6 +1119,24 @@ class ComprehensiveUIDemo(Scene):
         desc_text = &quot;Animations use the Tween system with Yoyo effect (forward-backward motion).&quot;
         desc_label = TextLabel(20, 460, desc_text, 14, (150, 200, 255))
         self.main_tabs.add_to_tab(&#x27;Animation&#x27;, desc_label)
+        
+    def clear_text_area(self):
+        &quot;&quot;&quot;Clear the text area content.&quot;&quot;&quot;
+        self.text_area.set_text(&quot;&quot;)
+        self.demo_state[&#x27;text_area_content&#x27;] = &quot;&quot;
+        print(&quot;Text area cleared&quot;)
+
+    def on_file_selected(self, file_path):
+        &quot;&quot;&quot;Handle file selection.&quot;&quot;&quot;
+        self.demo_state[&#x27;file_finder_path&#x27;] = file_path
+        self.file_finder_status.set_text(f&quot;Selected: {file_path}&quot;)
+        print(f&quot;File selected: {file_path}&quot;)
+
+    def on_page_change(self, page):
+        &quot;&quot;&quot;Handle pagination page change.&quot;&quot;&quot;
+        self.demo_state[&#x27;current_page&#x27;] = page
+        self.pagination_display.set_text(f&quot;Page: {page}/10&quot;)
+        print(f&quot;Page changed to: {page}&quot;)
     
     def set_animations_loops(self, loops: int):
         &quot;&quot;&quot;Set loop count for all animations&quot;&quot;&quot;
@@ -843,23 +1292,40 @@ class ComprehensiveUIDemo(Scene):
         self.progress_display.set_text(f&quot;Progress: {self.demo_state[&#x27;progress_value&#x27;]}%&quot;)
         self.select_display.set_text(f&quot;Choice: {self.demo_state[&#x27;select_index&#x27;] + 1}&quot;)
         
-        # NEW ELEMENT DISPLAYS
+        # Existing element displays
         self.number_selector_display.set_text(f&quot;Number: {self.demo_state[&#x27;number_selector_value&#x27;]:02d}&quot;)
         self.checkbox_display.set_text(f&quot;Feature X: {&#x27;ON&#x27; if self.demo_state[&#x27;checkbox_state&#x27;] else &#x27;OFF&#x27;}&quot;)
         
         self.fps_display.set_text(f&quot;FPS: {self.engine.get_fps_stats()[&#x27;current_fps&#x27;]:.1f}&quot;)
+        
+        # Update text area content if it exists
+        if hasattr(self, &#x27;text_area&#x27;):
+            current_text = self.text_area.get_text()
+            if current_text != self.demo_state.get(&#x27;text_area_content&#x27;):
+                self.demo_state[&#x27;text_area_content&#x27;] = current_text
+    
+    def on_controller_connected(self, controller):
+        print(f&quot;[Controller] Connected: {controller.name}&quot;)
+        self.refresh_controller_dropdown()
+
+    def on_controller_disconnected(self, controller):
+        print(f&quot;[Controller] Disconnected: {controller.name}&quot;)
+        self.refresh_controller_dropdown()
     
     def update(self, dt):
         # Update UI displays
         self.update_ui_displays()
+        self.update_controller_display()
+
+        current_count = len(self.engine.controller_manager.get_all_controllers())
+        if current_count != self.last_controller_count:
+            self.refresh_controller_dropdown()
+            self.last_controller_count = current_count
         
         # Update progress bar animation
         if self.demo_state[&#x27;progress_value&#x27;] &lt; 100:
             self.demo_state[&#x27;progress_value&#x27;] += dt * 2
             self.progress_bar.set_value(self.demo_state[&#x27;progress_value&#x27;])
-        
-        # Update all animations through the handler
-        self.animation_handler.update(dt)
     
     def render(self, renderer):
         renderer.fill_screen(ThemeManager.get_color(&#x27;background&#x27;))
@@ -922,7 +1388,7 @@ if __name__ == &quot;__main__&quot;:
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-02-03 16:03
+                        Documentation generated on 2026-02-16 14:06
                     </p>
                 </div>
             </div>

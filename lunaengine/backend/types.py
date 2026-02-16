@@ -43,12 +43,28 @@ class InputState:
     mouse_wheel: float = 0
     consumed_events: set = None
     
+    # Controller-related
+    active_controller: Optional['Controller'] = None
+    controller_count: int = 0
+    using_controller: bool = False
+    
     def __post_init__(self):
+        self._global_mouse_consumed = False
+        
         if self.mouse_buttons_pressed is None:
             self.mouse_buttons_pressed = MouseButtonPressed()
             
         if self.consumed_events is None:
             self.consumed_events = set()
+            
+    
+    def consume_global_mouse(self):
+        """Mark that a mouse event has been handled globally."""
+        self._global_mouse_consumed = True
+
+    def is_global_mouse_consumed(self):
+        """Check if any element has consumed the current mouse event."""
+        return self._global_mouse_consumed
     
     def update(self, mouse_pos: tuple, mouse_pressed:tuple, mouse_wheel: float = 0):
         """Update input state with proper click detection"""
@@ -76,6 +92,7 @@ class InputState:
     
     def clear_consumed(self):
         """Clear consumed events for new frame"""
+        self._global_mouse_consumed = False
         self.consumed_events.clear()
         
     def get_mouse_state(self) -> Tuple[Tuple[int, int], MouseButtonPressed]:

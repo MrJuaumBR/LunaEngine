@@ -238,8 +238,6 @@ class ParticleDemoScene(Scene):
 
     def update(self, dt):
         """Update scene logic"""
-        # Update particle system
-        self.particle_system.update(dt)
         
         # Auto emission from fixed positions
         if self.demo_state['auto_emit']:

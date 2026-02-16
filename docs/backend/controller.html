@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>controller.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Backend</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Backend</a></li><li class="breadcrumb-item active">controller.py</li></ol></nav>
+
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>controller.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">lunaengine/backend/controller.py<br><br>Advanced game controller support with hot‑plug, multiple controllers,<br>gyro, touchpad, mouse emulation, and input source detection.</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-controllertype">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ControllerType</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>XBOX: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>PLAYSTATION: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>NINTENDO_SWITCH: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>GENERIC: Any = auto()</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-connectiontype">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ConnectionType</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>USB: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>BLUETOOTH: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>WIRELESS_DONGLE: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>UNKNOWN: Any = auto()</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-jbutton">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class JButton</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>A: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>B: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>X: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>Y: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>BACK: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>GUIDE: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>START: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>LEFT_STICK: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>RIGHT_STICK: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>LEFT_BUMPER: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>RIGHT_BUMPER: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>DPAD_UP: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>DPAD_DOWN: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>DPAD_LEFT: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>DPAD_RIGHT: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>CROSS: Any = A</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>CIRCLE: Any = B</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>SQUARE: Any = X</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>TRIANGLE: Any = Y</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>SHARE: Any = BACK</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>OPTIONS: Any = START</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>TOUCHPAD: Any = auto()</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-axis">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Axis</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>LEFT_X: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>LEFT_Y: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>RIGHT_X: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>RIGHT_Y: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>LEFT_TRIGGER: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>RIGHT_TRIGGER: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>GYRO_X: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>GYRO_Y: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>GYRO_Z: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>ACCEL_X: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>ACCEL_Y: Any = auto()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>ACCEL_Z: Any = auto()</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-touchpoint">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class TouchPoint</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>x: float = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>y: float = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>pressure: float = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>finger_id: int = None</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-controllerstate">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ControllerState</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>buttons: Dict[JButton, bool] = field(default_factory=dict)</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>axes: Dict[Axis, float] = field(default_factory=dict)</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>hat: Tuple[float, float] = (0.0, 0.0)</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>touch_points: List[TouchPoint] = field(default_factory=list)</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>gyro: Tuple[float, float, float] = (0.0, 0.0, 0.0)</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>accelerometer: Tuple[float, float, float] = (0.0, 0.0, 0.0)</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>last_button_time: Dict[JButton, float] = field(default_factory=dict)</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-controller">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Controller</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_XBOX_IDS: Any = {'xbox', 'x-box', 'microsoft', 'xinput'}</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_PS_IDS: Any = {'playstation', 'ps4', 'ps5', 'sony', 'dualshock', 'dualsense', 'wireless controller'}</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_NINTENDO_IDS: Any = {'nintendo', 'switch', 'pro controller'}</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, joystick_id: int, manager: 'ControllerManager') -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_open">
+                <code class="fs-6 fw-bold text-color-title">def _open(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_detect_type">
+                <code class="fs-6 fw-bold text-color-title">def _detect_type(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_guess_connection_type">
+                <code class="fs-6 fw-bold text-color-title">def _guess_connection_type(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_build_default_maps">
+                <code class="fs-6 fw-bold text-color-title">def _build_default_maps(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Build button and axis maps based on detected controller type.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_build_xbox_map">
+                <code class="fs-6 fw-bold text-color-title">def _build_xbox_map(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_build_playstation_map">
+                <code class="fs-6 fw-bold text-color-title">def _build_playstation_map(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_build_switch_map">
+                <code class="fs-6 fw-bold text-color-title">def _build_switch_map(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_build_generic_map">
+                <code class="fs-6 fw-bold text-color-title">def _build_generic_map(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_detect_touchpad">
+                <code class="fs-6 fw-bold text-color-title">def _detect_touchpad(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">For PlayStation controllers, try to find a second joystick that handles touchpad.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_check_rumble">
+                <code class="fs-6 fw-bold text-color-title">def _check_rumble(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, events: List[pygame.event.Event]) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_handle_axis_event">
+                <code class="fs-6 fw-bold text-color-title">def _handle_axis_event(self: Any, event: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_handle_button_event">
+                <code class="fs-6 fw-bold text-color-title">def _handle_button_event(self: Any, event: Any, pressed: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_handle_hat_event">
+                <code class="fs-6 fw-bold text-color-title">def _handle_hat_event(self: Any, event: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_poll_axes">
+                <code class="fs-6 fw-bold text-color-title">def _poll_axes(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_apply_deadzone">
+                <code class="fs-6 fw-bold text-color-title">def _apply_deadzone(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-_update_mouse_emulation">
+                <code class="fs-6 fw-bold text-color-title">def _update_mouse_emulation(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-remap_button">
+                <code class="fs-6 fw-bold text-color-title">def remap_button(self: Any, logical: JButton, raw_index: int) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-remap_axis">
+                <code class="fs-6 fw-bold text-color-title">def remap_axis(self: Any, logical: Axis, raw_index: int, invert: bool = False) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-set_deadzone">
+                <code class="fs-6 fw-bold text-color-title">def set_deadzone(self: Any, value: float) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-rumble">
+                <code class="fs-6 fw-bold text-color-title">def rumble(self: Any, low: float, high: float, duration_ms: int) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-stop_rumble">
+                <code class="fs-6 fw-bold text-color-title">def stop_rumble(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-get_guid">
+                <code class="fs-6 fw-bold text-color-title">def get_guid(self: Any) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-get_name">
+                <code class="fs-6 fw-bold text-color-title">def get_name(self: Any) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-is_connected">
+                <code class="fs-6 fw-bold text-color-title">def is_connected(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-close">
+                <code class="fs-6 fw-bold text-color-title">def close(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-get_button_pressed">
+                <code class="fs-6 fw-bold text-color-title">def get_button_pressed(self: Any, button: JButton) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-get_axis">
+                <code class="fs-6 fw-bold text-color-title">def get_axis(self: Any, axis: Axis) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-get_hat">
+                <code class="fs-6 fw-bold text-color-title">def get_hat(self: Any) -> Tuple[float, float]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-get_touch_points">
+                <code class="fs-6 fw-bold text-color-title">def get_touch_points(self: Any) -> List[TouchPoint]</code>
+                <div class="mt-2 text-muted small">Read touch points from the touchpad joystick (if any).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controller-__repr__">
+                <code class="fs-6 fw-bold text-color-title">def __repr__(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-controllermanager">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ControllerManager</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Manages multiple controllers, detects hot‑plug events, and tracks<br>which input device (keyboard/mouse vs. controller) was last used.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controllermanager-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, engine: Optional['LunaEngine'] = None) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controllermanager-scan_controllers">
+                <code class="fs-6 fw-bold text-color-title">def scan_controllers(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controllermanager-handle_events">
+                <code class="fs-6 fw-bold text-color-title">def handle_events(self: Any, events: List[pygame.event.Event]) -> Any</code>
+                <div class="mt-2 text-muted small">Process device events and update controllers.<br>Also tracks last input time for source detection.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controllermanager-get_active_source">
+                <code class="fs-6 fw-bold text-color-title">def get_active_source(self: Any) -> str</code>
+                <div class="mt-2 text-muted small">Return &#x27;keyboard&#x27;, &#x27;mouse&#x27;, or &#x27;controller&#x27;.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controllermanager-is_using_controller">
+                <code class="fs-6 fw-bold text-color-title">def is_using_controller(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Convenience: whether a controller was used recently.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controllermanager-get_controller">
+                <code class="fs-6 fw-bold text-color-title">def get_controller(self: Any, index: int) -> Optional[Controller]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controllermanager-get_controllers_by_type">
+                <code class="fs-6 fw-bold text-color-title">def get_controllers_by_type(self: Any, ctype: ControllerType) -> List[Controller]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controllermanager-get_all_controllers">
+                <code class="fs-6 fw-bold text-color-title">def get_all_controllers(self: Any) -> List[Controller]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controllermanager-get_first_connected">
+                <code class="fs-6 fw-bold text-color-title">def get_first_connected(self: Any) -> Optional[Controller]</code>
+                <div class="mt-2 text-muted small">Return the first (lowest index) connected controller.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controllermanager-set_mouse_emulation">
+                <code class="fs-6 fw-bold text-color-title">def set_mouse_emulation(self: Any, enabled: bool, controller_index: Optional[int] = None) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controllermanager-shutdown">
+                <code class="fs-6 fw-bold text-color-title">def shutdown(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-controllermanager-__len__">
+                <code class="fs-6 fw-bold text-color-title">def __len__(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                
+                
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Backend Module
+            </a>
+        </div>
+    </div>
+
+    
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-02-16 14:06
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    // Universal search handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    
+                    // Adjust path based on current location
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            
+            searchIcon.addEventListener('click', performSearch);
+            
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>
