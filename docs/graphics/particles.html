@@ -37,7 +37,7 @@
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>particles.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">Particle System - Optimized Version</span>
+                <span class="text-muted">Particle System - CPU-based with threaded physics and renderer integration<br>v0.2.3</span>
             </div>
         </div>
 
@@ -89,6 +89,24 @@
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>PLASMA: Any = 'plasma'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>ANTIMATTER: Any = 'antimatter'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>RADIOACTIVE: Any = 'radioactive'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>MAGIC: Any = 'magic'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>BUBBLE: Any = 'bubble'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>LEAF: Any = 'leaf'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>RAIN: Any = 'rain'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>CUSTOM: Any = 'custom'</code>
@@ -214,12 +232,9 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Particle System</p>
+                    <p class="lead fs-6">CPU-based particle system using NumPy arrays.<br>All physics updates happen when you call update().</p>
                 </div>
-                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>PARTICLE_CONFIGS: Dict[ParticleType, ParticleConfig] = {ParticleType.FIRE: ParticleConfig(color_start=(255, 100, 0), color_end=(255, 255, 0), size_start=8.0, size_end=2.0, lifetime=1.5, speed=150.0, gravity=-100.0, spread=60.0, fade_out=True, grow=False), ParticleType.WATER: ParticleConfig(color_start=(0, 100, 255), color_end=(0, 200, 255), size_start=6.0, size_end=4.0, lifetime=2.0, speed=80.0, gravity=300.0, spread=30.0, damping=0.9, fade_out=True), ParticleType.SMOKE: ParticleConfig(color_start=(100, 100, 100), color_end=(50, 50, 50), size_start=4.0, size_end=12.0, lifetime=3.0, speed=60.0, gravity=-50.0, spread=120.0, fade_out=True, grow=True), ParticleType.DUST: ParticleConfig(color_start=(200, 200, 150), color_end=(150, 150, 100), size_start=3.0, size_end=1.0, lifetime=1.0, speed=40.0, gravity=50.0, spread=180.0, fade_out=True), ParticleType.SPARK: ParticleConfig(color_start=(255, 255, 200), color_end=(255, 100, 0), size_start=2.0, size_end=1.0, lifetime=0.5, speed=200.0, gravity=200.0, spread=15.0, fade_out=True), ParticleType.SNOW: ParticleConfig(color_start=(250, 250, 255), color_end=(225, 225, 235), size_start=3.0, size_end=1.0, lifetime=1.0, speed=50.0, gravity=100.0, spread=180.0, fade_out=True), ParticleType.SAND: ParticleConfig(color_start=(230, 230, 0), color_end=(255, 255, 0), size_start=1.0, size_end=1.0, lifetime=5.0, speed=200.0, gravity=100.0, spread=180.0, fade_out=True), ParticleType.EXHAUST: ParticleConfig(color_start=(0, 100, 255), color_end=(255, 50, 0), size_start=4.0, size_end=1.0, lifetime=0.3, speed=100.0, gravity=0.0, spread=30.0, fade_out=True, grow=False), ParticleType.EXPLOSION: ParticleConfig(color_start=(255, 200, 0), color_end=(255, 50, 0), size_start=10.0, size_end=2.0, lifetime=1.0, speed=300.0, gravity=0.0, spread=360.0, fade_out=True, grow=False), ParticleType.ENERGY: ParticleConfig(color_start=(0, 255, 255), color_end=(0, 100, 255), size_start=6.0, size_end=2.0, lifetime=1.2, speed=150.0, gravity=0.0, spread=90.0, fade_out=True, grow=False), ParticleType.PLASMA: ParticleConfig(color_start=(255, 0, 255), color_end=(100, 0, 255), size_start=5.0, size_end=1.0, lifetime=0.8, speed=250.0, gravity=0.0, spread=45.0, fade_out=True, grow=False)}</code>
-                </div></div>
+                
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
@@ -227,77 +242,133 @@
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, max_particles: int) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-_init_arrays">
+                <code class="fs-6 fw-bold text-color-title">def _init_arrays(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">(Re)initialise all particle arrays to zero size.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-get_particles_names">
                 <code class="fs-6 fw-bold text-color-title">def get_particles_names(self: Any, sort_name: bool = False, capitalize: bool = False) -> List[str]</code>
-                <div class="mt-2 text-muted small">Get list of all registered particle names</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-get_physics_names">
                 <code class="fs-6 fw-bold text-color-title">def get_physics_names(self: Any, sort_name: bool = False, capitalize: bool = False) -> List[str]</code>
-                <div class="mt-2 text-muted small">Get a list of physics names</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-update_max_particles">
-                <code class="fs-6 fw-bold text-color-title">def update_max_particles(self: Any, value: int) -> Any</code>
-                <div class="mt-2 text-muted small">Callback for the renderer update max_particles.<br>Preserves active particles during resize.</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-_init_arrays">
-                <code class="fs-6 fw-bold text-color-title">def _init_arrays(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Initialize optimized NumPy arrays using current max_particles</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-register_custom_particle">
-                <code class="fs-6 fw-bold text-color-title">def register_custom_particle(self: Any, name: str, config: ParticleConfig) -> bool</code>
-                <div class="mt-2 text-muted small">Register a custom particle type for user-defined effects<br><br>Args:<br> &nbsp; &nbsp;name (str): Unique name for the custom particle type<br> &nbsp; &nbsp;config (ParticleConfig): Configuration for the custom particle<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if registration was successful<br> &nbsp; &nbsp;<br>Raises:<br> &nbsp; &nbsp;ValueError: If particle name is already registered</div>
+                <code class="fs-6 fw-bold text-color-title">def register_custom_particle(self: Any, name: str, config: ParticleConfig) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-get_custom_particle">
                 <code class="fs-6 fw-bold text-color-title">def get_custom_particle(self: Any, name: str) -> Optional[ParticleConfig]</code>
-                <div class="mt-2 text-muted small">Get configuration for a custom particle<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the custom particle type<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[ParticleConfig]: The particle configuration or None if not found</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-list_custom_particles">
                 <code class="fs-6 fw-bold text-color-title">def list_custom_particles(self: Any) -> List[str]</code>
-                <div class="mt-2 text-muted small">Get list of all registered custom particle names<br><br>Returns:<br> &nbsp; &nbsp;List[str]: List of custom particle names</div>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-update_max_particles">
+                <code class="fs-6 fw-bold text-color-title">def update_max_particles(self: Any, new_max: int) -> Any</code>
+                <div class="mt-2 text-muted small">Resize internal arrays, preserving active particles.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-get_render_data">
                 <code class="fs-6 fw-bold text-color-title">def get_render_data(self: Any) -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Get particle data for rendering with caching</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-_resolve_particle_config">
-                <code class="fs-6 fw-bold text-color-title">def _resolve_particle_config(self: Any, particle_type: Union[ParticleType, str], custom_config: Optional[ParticleConfig]) -> Optional[ParticleConfig]</code>
-                <div class="mt-2 text-muted small">Resolve particle configuration from various sources<br><br>Args:<br> &nbsp; &nbsp;particle_type: The particle type identifier<br> &nbsp; &nbsp;custom_config: Optional custom configuration<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParticleConfig or None if not found</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-_get_exit_offset">
-                <code class="fs-6 fw-bold text-color-title">def _get_exit_offset(self: Any, exit_point: ExitPoint) -> float</code>
-                <div class="mt-2 text-muted small">Get offset distance for exit points</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-_get_exit_position">
-                <code class="fs-6 fw-bold text-color-title">def _get_exit_position(self: Any, x: float, y: float, exit_point: ExitPoint, offset: float) -> Tuple[float, float]</code>
-                <div class="mt-2 text-muted small">Calculate initial position based on exit point</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-_get_initial_velocity">
-                <code class="fs-6 fw-bold text-color-title">def _get_initial_velocity(self: Any, exit_point: ExitPoint, speed: float, spread: float, base_angle: float) -> Tuple[float, float]</code>
-                <div class="mt-2 text-muted small">Calculate initial velocity vector with spread</div>
+                <div class="mt-2 text-muted small">Return a copy of active particle data for rendering.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-emit">
                 <code class="fs-6 fw-bold text-color-title">def emit(self: Any, x: float, y: float, particle_type: Union[ParticleType, str], count: int = 1, exit_point: ExitPoint = ExitPoint.CENTER, physics_type: PhysicsType = PhysicsType.TOPDOWN, spread: Optional[float] = None, angle: float = 0.0, custom_config: Optional[ParticleConfig] = None) -> Any</code>
-                <div class="mt-2 text-muted small">Emit particles with optimizations<br><br>Parameters:<br> &nbsp; &nbsp;x: The x position of the emitter (int or float)<br> &nbsp; &nbsp;y: The y position of the emitter (int or float)<br> &nbsp; &nbsp;particle_type: The particle type identifier<br> &nbsp; &nbsp;count: The number of particles to emit (default: 1)<br> &nbsp; &nbsp;exit_point: The exit point of the particle (default: ExitPoint.CENTER)<br> &nbsp; &nbsp;physics_type: The physics type of the particle (default: PhysicsType.TOPDOWN)<br> &nbsp; &nbsp;spread: The spread of the particle (default: None) is in degrees<br> &nbsp; &nbsp;angle: The angle of the particle (default: 0.0)<br> &nbsp; &nbsp;custom_config: Optional custom configuration</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-_setup_particle_properties">
-                <code class="fs-6 fw-bold text-color-title">def _setup_particle_properties(self: Any, idx: int, config: ParticleConfig, physics_type: PhysicsType) -> Any</code>
-                <div class="mt-2 text-muted small">Setup particle properties optimized for different physics types</div>
+                <div class="mt-2 text-muted small">Emit new particles.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, camera_position: Any = None) -> Any</code>
-                <div class="mt-2 text-muted small">Update particles with vectorized operations</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-_update_properties">
-                <code class="fs-6 fw-bold text-color-title">def _update_properties(self: Any, indices: np.ndarray) -> Any</code>
-                <div class="mt-2 text-muted small">Update particle properties using vectorized operations - FIXED COLOR BUG</div>
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float) -> Any</code>
+                <div class="mt-2 text-muted small">Update particle physics (called from main thread in single‑threaded mode).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-clear">
                 <code class="fs-6 fw-bold text-color-title">def clear(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Clear all particles</div>
+                <div class="mt-2 text-muted small">Deactivate all particles.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-get_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_stats(self: Any) -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Get comprehensive system statistics<br><br>Returns:<br> &nbsp; &nbsp;Dict with system statistics</div>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-_resolve_config">
+                <code class="fs-6 fw-bold text-color-title">def _resolve_config(self: Any, particle_type: Union[ParticleType, str], custom_config: Optional[ParticleConfig]) -> Optional[ParticleConfig]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-_get_exit_position">
+                <code class="fs-6 fw-bold text-color-title">def _get_exit_position(self: Any, x: float, y: float, exit_point: ExitPoint, offset: float) -> Tuple[float, float]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-_get_initial_velocity">
+                <code class="fs-6 fw-bold text-color-title">def _get_initial_velocity(self: Any, config: ParticleConfig, exit_point: ExitPoint, spread: float, base_angle: float) -> Tuple[float, float]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particlesystem-_update_properties">
+                <code class="fs-6 fw-bold text-color-title">def _update_properties(self: Any, indices: np.ndarray) -> Any</code>
+                <div class="mt-2 text-muted small">Update particle color and size based on remaining life.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-threadedparticlesystem">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ThreadedParticleSystem</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">ParticleSystem variant that updates physics in a separate thread.<br>The main thread&#x27;s update() call becomes a no‑op – the thread runs<br>continuously at a fixed timestep.<br><br>Also provides a render(camera) method that uses the renderer passed<br>during construction, making it a drop‑in replacement for the old<br>GPUParticleSystem.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadedparticlesystem-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, renderer: Any, max_particles: int, target_fps: int = 60, auto_start: bool = True) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadedparticlesystem-start_thread">
+                <code class="fs-6 fw-bold text-color-title">def start_thread(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Start the background physics thread.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadedparticlesystem-stop_thread">
+                <code class="fs-6 fw-bold text-color-title">def stop_thread(self: Any, join: bool = True) -> Any</code>
+                <div class="mt-2 text-muted small">Stop the background thread.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadedparticlesystem-_thread_loop">
+                <code class="fs-6 fw-bold text-color-title">def _thread_loop(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Thread main loop: run physics at fixed timestep.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadedparticlesystem-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float) -> Any</code>
+                <div class="mt-2 text-muted small">In threaded mode, do nothing (thread handles updates).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadedparticlesystem-emit">
+                <code class="fs-6 fw-bold text-color-title">def emit(self: Any, *args: tuple, **kwargs: dict) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadedparticlesystem-clear">
+                <code class="fs-6 fw-bold text-color-title">def clear(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadedparticlesystem-update_max_particles">
+                <code class="fs-6 fw-bold text-color-title">def update_max_particles(self: Any, new_max: int) -> Any</code>
+                <div class="mt-2 text-muted small">Stop thread, resize, then restart.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadedparticlesystem-get_render_data">
+                <code class="fs-6 fw-bold text-color-title">def get_render_data(self: Any) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Return a copy of data while holding the lock.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadedparticlesystem-get_stats">
+                <code class="fs-6 fw-bold text-color-title">def get_stats(self: Any) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadedparticlesystem-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, camera: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Render all active particles using the stored renderer.<br>This method matches the interface expected by the engine.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadedparticlesystem-__del__">
+                <code class="fs-6 fw-bold text-color-title">def __del__(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
             </div>
@@ -327,7 +398,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-02-16 14:06
+                        Documentation generated on 2026-03-12 17:38
                     </p>
                 </div>
             </div>

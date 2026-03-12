@@ -11,6 +11,22 @@
 
 !!! The older versions don't have a clear list of the changes that occurred between them, so I simply ignored them.
 
+## 0.2.3 
+<small>Really small update</small>
+- Simplified mouse hovering **UiElements**;
+- Fixed mouse position wrong detection(again);
+- Mouse Scroll on **ScrollingFrame** now will change it value;
+- OpenGL render system rework;
+- Bug fixes;
+- Rework on the particles system(please, see the changes and update the old systems for your games);
+- A fresh-new Splash screen - "seco, seco, seco";
+- New Logo;
+- OpenGL now uses external shaders, so make sure to have it;
+- More 6 new particles;
+- Math functions for shadow casting;
+- New shadow system;
+- Optimized Rendering.
+
 ## 0.2.2
 - Fixed mouse position wrong detecting(I'm dumb, forgot to add support to root_point/anchor_point);
 - Add get_text to **TextLabel** and **Button**;

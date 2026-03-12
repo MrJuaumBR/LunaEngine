@@ -541,7 +541,7 @@ def generate_main_page(project):
     <!-- Modules Grid -->
     <div class="container mt-5">
         <h2 class="mb-4">LunaEngine Modules</h2>
-        <div class="row g-4">
+        <div class="row g-4" style="margin-bottom: 1vw;">
 """+"""
     <script>
     

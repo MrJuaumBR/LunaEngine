@@ -236,6 +236,13 @@ class Renderer(ABC):
             height (int): Height of scissor region
         """
         pass
+
+    @abstractmethod
+    def clear(self):
+        """
+        Clear the current render target (e.g., clear the screen).
+        """
+        pass
     
     @abstractmethod
     def disable_scissor(self):

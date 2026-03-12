@@ -51,6 +51,8 @@ class ComprehensiveUIDemo(Scene):
         
         self.setup_ui()
         
+        self.shadow_system.enabled = False
+        
     def on_enter(self, previous_scene: str = None):
         print("=== LunaEngine UI Demo ===")
         print("Explore all UI elements organized by section!")
@@ -666,6 +668,10 @@ class ComprehensiveUIDemo(Scene):
         slider.on_value_changed = lambda v: self.update_state('slider_value', v)
         slider.set_simple_tooltip("Drag to change the value")
         self.main_tabs.add_to_tab('Interactive', slider)
+        
+        vertical_slider = Slider(350, 110, 30, 90, 0, 100, 50, orientation='vertical', root_point=(0, 1))
+        vertical_slider.set_simple_tooltip("Drag to change the value")
+        self.main_tabs.add_to_tab('Interactive', vertical_slider)
         
         self.slider_display = TextLabel(310, 125, "Value: 50.0", 14)
         self.main_tabs.add_to_tab('Interactive', self.slider_display)
@@ -1286,6 +1292,7 @@ class ComprehensiveUIDemo(Scene):
             self.progress_bar.set_value(self.demo_state['progress_value'])
     
     def render(self, renderer):
+        renderer.clear()
         renderer.fill_screen(ThemeManager.get_color('background'))
         
         # Header background

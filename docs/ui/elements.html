@@ -150,12 +150,12 @@
                 <code class="fs-6 fw-bold text-color-title">def get_mouse_position(self: Any, input_state: InputState) -> Tuple[int, int]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-convert_mouse_pos">
-                <code class="fs-6 fw-bold text-color-title">def convert_mouse_pos(self: Any, mouse_pos: Tuple[int, int]) -> Tuple[int, int]</code>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-getcolliderect">
+                <code class="fs-6 fw-bold text-color-title">def getCollideRect(self: Any) -> pygame.Rect</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-mouse_over">
-                <code class="fs-6 fw-bold text-color-title">def mouse_over(self: Any, input_state: InputState) -> bool</code>
+                <code class="fs-6 fw-bold text-color-title">def mouse_over(self: Any, input_state: InputState | Tuple) -> bool</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-set_enabled">
@@ -768,7 +768,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-select-_render_select_content">
                 <code class="fs-6 fw-bold text-color-title">def _render_select_content(self: Any, renderer: Any, actual_x: int, actual_y: int, theme: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Helper method to render select content for both backends</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-select-_draw_fallback_arrows">
                 <code class="fs-6 fw-bold text-color-title">def _draw_fallback_arrows(self: Any, renderer: Any, actual_x: int, actual_y: int, arrow_color: Any) -> Any</code>
@@ -828,14 +828,18 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
+                    <p class="lead fs-6">Interactive slider for selecting a numeric value.<br>Supports both horizontal and vertical orientations.</p>
                 </div>
                 
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-slider-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, min_val: float = 0, max_val: float = 100, value: float = 50, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, min_val: float = 0, max_val: float = 100, value: float = 50, orientation: Literal['horizontal', 'vertical'] = 'horizontal', root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize a slider.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the slider (for horizontal) or thumb width (for vertical).<br> &nbsp; &nbsp;height (int): Height of the slider (for vertical) or thumb height (for horizontal).<br> &nbsp; &nbsp;min_val (float): Minimum selectable value.<br> &nbsp; &nbsp;max_val (float): Maximum selectable value.<br> &nbsp; &nbsp;value (float): Initial value.<br> &nbsp; &nbsp;orientation (str): &#x27;horizontal&#x27; or &#x27;vertical&#x27;.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-slider-set_on_value_changed">
+                <code class="fs-6 fw-bold text-color-title">def set_on_value_changed(self: Any, callback: Callable[[float], None]) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-slider-set_theme">
@@ -848,7 +852,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-slider-set_value">
                 <code class="fs-6 fw-bold text-color-title">def set_value(self: Any, value: float) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Set the current value, clamped to min/max.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-slider-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: Any, inputState: Any) -> Any</code>
@@ -856,7 +860,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-slider-render">
                 <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Render using OpenGL backend</div>
+                <div class="mt-2 text-muted small">Render the slider using OpenGL backend.</div>
             </div>
                 </div>
             </div>
@@ -1861,7 +1865,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-02-16 14:06
+                        Documentation generated on 2026-03-12 17:38
                     </p>
                 </div>
             </div>

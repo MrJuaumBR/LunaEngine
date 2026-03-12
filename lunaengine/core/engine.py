@@ -29,7 +29,7 @@ DEPENDENCIES:
 - .scene: Scene management base class
 """
 
-import pygame, threading
+import pygame, threading, time, os
 import numpy as np
 from typing import Dict, List, Tuple, Callable, Optional, Type, TYPE_CHECKING, Any
 from ..ui.layer_manager import UILayerManager
@@ -37,10 +37,11 @@ from ..ui.notifications import (NotificationManager, NotificationPosition, Notif
 from ..ui import *
 from .scene import Scene
 from ..utils import PerformanceMonitor, GarbageCollector
-from ..backend import OpenGLRenderer, EVENTS, InputState, MouseButtonPressed, LayerType, LExceptions, ControllerManager
+from ..backend import OpenGLRenderer, EVENTS, InputState, MouseButtonPressed, LayerType, LExceptions, ControllerManager, glEnable, glDisable, GL_DEPTH_TEST
 from .renderer import Renderer
 from .window import Window
 from dataclasses import dataclass
+from .. import __version__
 
 class LunaEngine:
     """
@@ -75,6 +76,9 @@ class LunaEngine:
         self.height = height
         self.fullscreen = fullscreen
         self.icon = icon
+        self.show_splash = kwargs.get('show_splash', True)
+        self.splash_logo = kwargs.get('splash_logo', None)
+        self.splash_logo_size = kwargs.get('splash_logo_size', 64)
         
         # Window
         self.window = Window(title=title, width=width, height=height, fullscreen=fullscreen, resizable=False)
@@ -167,6 +171,120 @@ class LunaEngine:
         
         from ..ui.elements import UIElement
         UIElement._global_engine = self
+        
+        self.splash_logo = self.get_logo_surface() or None
+        
+        if self.show_splash:
+            self._show_splash()
+        
+    def get_logo_surface(self) -> Optional[pygame.Surface]:
+        cur_path = os.path.dirname(os.path.abspath(__file__))
+        logo_file = os.path.join(cur_path, '..', 'assets', 'lunaengine-icon.png')
+        if os.path.exists(logo_file):
+            return pygame.image.load(logo_file).convert_alpha()
+        return None
+            
+    def _show_splash(self):
+        """Display an animated splash screen with logo, title, subtitle and version."""
+        if not self.running:
+            return
+
+        version = __version__
+        splash_duration = 2.0
+        anim_duration = 0.5
+        start_time = time.time()
+        clock = pygame.time.Clock()
+
+        # Load logo if provided
+        logo_surf = None
+        if self.splash_logo:
+            orig_w, orig_h = self.splash_logo.get_size()
+            scale = self.splash_logo_size / orig_h
+            new_w = int(orig_w * (scale * 1.1))
+            new_h = self.splash_logo_size
+            logo_surf = pygame.transform.smoothscale(self.splash_logo, (new_w, new_h))
+
+        # Pre‑render text surfaces
+        title_font = FontManager.get_font(font_size=int(self.splash_logo_size*0.9))
+        subtitle_font = FontManager.get_font(font_size=int(self.splash_logo_size*0.65))
+        version_font = FontManager.get_font(font_size=int(self.splash_logo_size*0.45))
+
+        title_surf = title_font.render("LunaEngine", True, (255, 255, 255))
+        subtitle_surf = subtitle_font.render("It is a Framework, not an engine", True, (200, 200, 200))
+        version_surf = version_font.render(f"Version {version}", True, (150, 150, 150))
+
+        # Pre‑compute final positions
+        screen_center_x = self.width // 2
+        screen_center_y = self.height // 2
+
+        # Title final position (centered, but shifted right if logo exists)
+        title_final_x = screen_center_x + (logo_surf.get_width() // 2 if logo_surf else 0)
+        title_final_y = screen_center_y - self.splash_logo_size * 0.8
+        title_final_rect = title_surf.get_rect(center=(title_final_x, title_final_y))
+
+        # Logo final position (to the left of title)
+        if logo_surf:
+            logo_final_x = title_final_rect.left - logo_surf.get_width() - 10
+            logo_final_y = title_final_y - logo_surf.get_height() // 2
+
+        # Subtitle and version final positions (centered)
+        sub_final_rect = subtitle_surf.get_rect(center=(screen_center_x, screen_center_y + 10))
+        ver_final_rect = version_surf.get_rect(center=(screen_center_x, screen_center_y + 60))
+
+        while time.time() - start_time < splash_duration:
+            # Handle quit / skip
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    return
+                if event.type in (pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN):
+                    return
+
+            elapsed = time.time() - start_time
+            t = min(1.0, elapsed / anim_duration)   # animation factor [0..1]
+
+            # Begin frame
+            self.renderer.begin_frame()
+            self.renderer.fill_screen((30, 30, 40, 255))
+
+            # --- Logo animation (scale and slide from left) ---
+            if logo_surf:
+                logo_scale = 0.5 + 0.5 * t
+                logo_w = int(logo_surf.get_width() * logo_scale)
+                logo_h = int(logo_surf.get_height() * logo_scale)
+                # Slide from left: start at x = -logo_w, end at logo_final_x
+                logo_x = int((-logo_w) + (logo_final_x + logo_w) * t)
+                logo_y = int(logo_final_y - (logo_h - logo_surf.get_height()) / 2)
+                self.renderer.blit(logo_surf, pygame.Rect(logo_x, logo_y, logo_w, logo_h))
+
+            # --- Title animation (scale and slide from right) ---
+            title_scale = 0.5 + 0.5 * t
+            title_w = int(title_surf.get_width() * title_scale)
+            title_h = int(title_surf.get_height() * title_scale)
+            # Start from right edge of screen
+            start_title_x = self.width
+            end_title_x = title_final_rect.centerx - title_w // 2
+            title_x = int(start_title_x + (end_title_x - start_title_x) * t)
+            title_y = int(title_final_rect.centery - title_h // 2)
+            self.renderer.blit(title_surf, pygame.Rect(title_x, title_y, title_w, title_h))
+
+            # --- Subtitle fade-in (alpha) ---
+            if t > 0:
+                alpha = int(255 * t)
+                # Create a faded copy (we do this each frame; for 2 seconds it's fine)
+                faded_sub = subtitle_surf.copy()
+                faded_sub.set_alpha(alpha)
+                self.renderer.blit(faded_sub, sub_final_rect)
+
+            # --- Version fade-in ---
+            if t > 0:
+                alpha = int(255 * t)
+                faded_ver = version_surf.copy()
+                faded_ver.set_alpha(alpha)
+                self.renderer.blit(faded_ver, ver_final_rect)
+
+            self.renderer.end_frame()
+            clock.tick(60)
         
     def set_title(self, title:str):
         pygame.display.set_caption(title)
@@ -796,42 +914,48 @@ class LunaEngine:
         return self.input_state.mouse_wheel
 
     def _render(self):
-        """Rendering with performance profiling"""
+        """Rendering with GPU particles and shadows."""
         try:
-            # 1. Start OpenGL frame
+            self.renderer.clear()
+            # Start OpenGL frame
             self.renderer.begin_frame()
-            
-            # 2. Render main scene objects with profiling
+
+            # Render main scene objects
             if self.current_scene:
-                self.performance_monitor.start_timer("scene")
+                self.performance_monitor.start_timer("scene_render")
                 self.current_scene.render(self.renderer)
-                self.performance_monitor.end_timer("scene")
+                self.performance_monitor.end_timer("scene_render")
             
-            # 3. Render particles with profiling
+            # Render shadows
+            if self.current_scene and hasattr(self.current_scene, 'shadow_system'):
+                self.performance_monitor.start_timer("shadows")
+                self.current_scene.shadow_system.render_shadows_simple(self.renderer, self.current_scene.camera)
+                self.performance_monitor.end_timer("shadows")
+                
+                self.performance_monitor.start_timer("apply_lighting")
+                self.current_scene.shadow_system.apply_lighting(self.renderer, self.current_scene.camera)
+                self.performance_monitor.end_timer("apply_lighting")
+            
+            # Render particles (GPU‑based)
             self.performance_monitor.start_timer("particles")
-            self._render_particles()
+            if self.current_scene and hasattr(self.current_scene, 'particle_system'):
+                self.current_scene.particle_system.render(self.current_scene.camera)
             self.performance_monitor.end_timer("particles")
-            
-            # 4. Render UI elements with profiling
-            self.performance_monitor.start_timer("ui")
+
+            # Render UI elements
+            self.performance_monitor.start_timer("ui_render")
             self._render_ui_elements()
-            self.performance_monitor.end_timer("ui")
-            
-            # 5. Render notifications with profiling
-            self.performance_monitor.start_timer("notifications")
             self.notification_manager.render(self.renderer)
-            self.performance_monitor.end_timer("notifications")
-            
-            # 6. Finalize OpenGL frame with profiling
-            self.performance_monitor.start_timer("frame_finalize")
+            self.performance_monitor.end_timer("ui_render")
+
+            # Finalize frame
             self.renderer.end_frame()
-            self.performance_monitor.end_timer("frame_finalize")
-            
+
         except Exception as e:
             print(f"OpenGL rendering error: {e}")
             import traceback
             traceback.print_exc()
-
+    
     def _render_ui_elements(self):
         """Render UI elements with individual profiling if enabled"""
         if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
@@ -845,8 +969,8 @@ class LunaEngine:
         
         # Render elements
         for ui_element in elements_to_render:
-            # Skip elements inside ScrollingFrame (they're rendered by the ScrollingFrame itself)
-            if hasattr(ui_element, 'parent') and ui_element.parent and isinstance(ui_element.parent, ScrollingFrame):
+            # Skip elements inside
+            if hasattr(ui_element, 'parent') and ui_element.parent:
                 continue
             
             ui_element.render(self.renderer)
@@ -910,7 +1034,6 @@ class LunaEngine:
     
     def enable_performance_profiling(self, enabled: bool = True):
         """Enable/disable detailed performance profiling."""
-        # Pre-alloc timers
         self.performance_monitor.create_timer("frame")
         self.performance_monitor.create_timer("mouse")
         self.performance_monitor.create_timer("events")
@@ -920,7 +1043,7 @@ class LunaEngine:
         self.performance_monitor.create_timer("ui_total")
         self.performance_monitor.create_timer("notifications")
         self.performance_monitor.create_timer("frame_finalize")
-        # Actually enable/disable profiling
+        self.performance_monitor.create_timer("shadows")
         self.performance_monitor.enable_profiling(enabled)
     
     def get_frame_timing_breakdown(self) -> Dict[str, float]:

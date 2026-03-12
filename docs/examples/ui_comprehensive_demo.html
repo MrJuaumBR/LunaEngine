@@ -93,6 +93,8 @@ class ComprehensiveUIDemo(Scene):
         
         self.setup_ui()
         
+        self.shadow_system.enabled = False
+        
     def on_enter(self, previous_scene: str = None):
         print(&quot;=== LunaEngine UI Demo ===&quot;)
         print(&quot;Explore all UI elements organized by section!&quot;)
@@ -708,6 +710,10 @@ class ComprehensiveUIDemo(Scene):
         slider.on_value_changed = lambda v: self.update_state(&#x27;slider_value&#x27;, v)
         slider.set_simple_tooltip(&quot;Drag to change the value&quot;)
         self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, slider)
+        
+        vertical_slider = Slider(350, 110, 30, 90, 0, 100, 50, orientation=&#x27;vertical&#x27;, root_point=(0, 1))
+        vertical_slider.set_simple_tooltip(&quot;Drag to change the value&quot;)
+        self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, vertical_slider)
         
         self.slider_display = TextLabel(310, 125, &quot;Value: 50.0&quot;, 14)
         self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, self.slider_display)
@@ -1328,6 +1334,7 @@ class ComprehensiveUIDemo(Scene):
             self.progress_bar.set_value(self.demo_state[&#x27;progress_value&#x27;])
     
     def render(self, renderer):
+        renderer.clear()
         renderer.fill_screen(ThemeManager.get_color(&#x27;background&#x27;))
         
         # Header background
@@ -1388,7 +1395,7 @@ if __name__ == &quot;__main__&quot;:
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-02-16 14:06
+                        Documentation generated on 2026-03-12 17:38
                     </p>
                 </div>
             </div>

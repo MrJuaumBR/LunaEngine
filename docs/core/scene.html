@@ -37,7 +37,7 @@
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>scene.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">Scene Management System - Game State and UI Container<br><br>LOCATION: lunaengine/core/scene.py<br><br>DESCRIPTION:<br>Provides the foundation for organizing game content into manageable states.<br>Each scene represents a distinct game state (menu, gameplay, pause screen)<br>with its own logic, rendering, and UI elements. Supports seamless transitions<br>between scenes with proper lifecycle management.<br><br>KEY FEATURES:<br>- Scene lifecycle hooks (on_enter/on_exit)<br>- UI element management with unique identifiers<br>- Type-based element filtering and retrieval<br>- Scene transition state tracking<br><br>LIBRARIES USED:<br>- abc: Abstract base class for scene interface<br>- typing: Type hints for collections and optional values<br>- TYPE_CHECKING: For circular import resolution<br><br>USAGE PATTERN:<br>1. Inherit from Scene class<br>2. Implement abstract methods (on_enter, on_exit, update, render)<br>3. Add UI elements in on_enter method<br>4. Manage scene-specific logic in update method</span>
+                <span class="text-muted">Scene Management System - Game State and UI Container<br><br>LOCATION: lunaengine/core/scene.py</span>
             </div>
         </div>
 
@@ -51,7 +51,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Base class for all game scenes.<br><br>Provides lifecycle methods and UI element management. <br>All custom scenes should inherit from this class.<br><br>Attributes:<br> &nbsp; &nbsp;ui_elements (List[UIElement]): List of UI elements in this scene<br> &nbsp; &nbsp;_initialized (bool): Whether the scene has been initialized<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine</p>
+                    <p class="lead fs-6">No documentation</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -68,7 +68,7 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, engine: 'LunaEngine', *args: tuple, **kwargs: dict) -> Any</code>
-                <div class="mt-2 text-muted small">Initialize a new scene with empty UI elements list.<br><br>Args:<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-update_window_size">
                 <code class="fs-6 fw-bold text-color-title">def update_window_size(self: Any) -> Any</code>
@@ -88,75 +88,75 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-on_enter">
                 <code class="fs-6 fw-bold text-color-title">def on_enter(self: Any, previous_scene: Optional[str] = None) -> None</code>
-                <div class="mt-2 text-muted small">Called when the scene becomes active.<br><br>Use this to initialize resources, create UI elements, or reset game state.<br><br>Args:<br> &nbsp; &nbsp;previous_scene (str, optional): Name of the previous scene</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-on_exit">
                 <code class="fs-6 fw-bold text-color-title">def on_exit(self: Any, next_scene: Optional[str] = None) -> None</code>
-                <div class="mt-2 text-muted small">Called when the scene is being replaced.<br><br>Use this to clean up resources, save game state, or perform transitions.<br><br>Args:<br> &nbsp; &nbsp;next_scene (str, optional): Name of the next scene</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float) -> None</code>
-                <div class="mt-2 text-muted small">Update scene logic.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-_update">
                 <code class="fs-6 fw-bold text-color-title">def _update(self: Any, dt: float) -> Any</code>
-                <div class="mt-2 text-muted small">Update scene logic with profiling.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-render">
                 <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer | OpenGLRenderer) -> None</code>
-                <div class="mt-2 text-muted small">Render the scene.<br><br>Called every frame to draw the scene content.<br><br>Args:<br> &nbsp; &nbsp;renderer: The renderer to use for drawing operations</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-get_scene_performance_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_scene_performance_stats(self: Any) -> Dict[str, float]</code>
-                <div class="mt-2 text-muted small">Get performance statistics for this scene</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-add_ui_element">
                 <code class="fs-6 fw-bold text-color-title">def add_ui_element(self: Any, ui_element: UIElement) -> None</code>
-                <div class="mt-2 text-muted small">Add a UI element to the scene.<br><br>Args:<br> &nbsp; &nbsp;ui_element (UIElement): The UI element to add to the scene</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-remove_ui_element">
                 <code class="fs-6 fw-bold text-color-title">def remove_ui_element(self: Any, ui_element: UIElement) -> bool</code>
-                <div class="mt-2 text-muted small">Remove a UI element from the scene.<br><br>Args:<br> &nbsp; &nbsp;ui_element (UIElement): The UI element to remove<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if element was found and removed, False otherwise</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-get_ui_element_by_id">
                 <code class="fs-6 fw-bold text-color-title">def get_ui_element_by_id(self: Any, element_id: str) -> Optional[UIElement]</code>
-                <div class="mt-2 text-muted small">Get UI element by its unique ID.<br><br>Args:<br> &nbsp; &nbsp;element_id (str): The unique ID of the element to find<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;UIElement: The found UI element or None if not found</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-get_ui_elements_by_type">
                 <code class="fs-6 fw-bold text-color-title">def get_ui_elements_by_type(self: Any, element_type: type) -> List[UIElement]</code>
-                <div class="mt-2 text-muted small">Get all UI elements of a specific type.<br><br>Args:<br> &nbsp; &nbsp;element_type (type): The class type to filter by (e.g., Button, Label)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[UIElement]: List of UI elements matching the specified type</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-get_ui_elements_by_group">
                 <code class="fs-6 fw-bold text-color-title">def get_ui_elements_by_group(self: Any, group: str) -> List[UIElement]</code>
-                <div class="mt-2 text-muted small">Get all UI elements in the scene.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: All UI elements in the scene</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-toggle_element_group">
                 <code class="fs-6 fw-bold text-color-title">def toggle_element_group(self: Any, group: str, visible: bool) -> None</code>
-                <div class="mt-2 text-muted small">Toggle the visibility of UI elements in a specific group.<br><br>Args:<br> &nbsp; &nbsp;group (str): The group to toggle</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-clear_element_group">
                 <code class="fs-6 fw-bold text-color-title">def clear_element_group(self: Any, group: str) -> None</code>
-                <div class="mt-2 text-muted small">Remove all UI elements in a specific group from the scene.<br><br>Args:<br> &nbsp; &nbsp;group (str): The group to clear</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-clear_element_type">
                 <code class="fs-6 fw-bold text-color-title">def clear_element_type(self: Any, element_type: type) -> None</code>
-                <div class="mt-2 text-muted small">Remove all UI elements of a specific type from the scene.<br><br>Args:<br> &nbsp; &nbsp;element_type (type): The class type to filter by (e.g., Button, Label)</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-get_all_ui_elements">
                 <code class="fs-6 fw-bold text-color-title">def get_all_ui_elements(self: Any) -> List[UIElement]</code>
-                <div class="mt-2 text-muted small">Get all UI elements in the scene.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: All UI elements in the scene</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-has_element_by_id">
                 <code class="fs-6 fw-bold text-color-title">def has_element_by_id(self: Any, element_id: str) -> bool</code>
-                <div class="mt-2 text-muted small">Check if a UI element with the given ID exists in the scene.<br><br>Args:<br> &nbsp; &nbsp;element_id (str): The unique ID of the element to check<br>Returns:<br> &nbsp; &nbsp;bool: True if element exists, False otherwise</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-has_element">
                 <code class="fs-6 fw-bold text-color-title">def has_element(self: Any, element: UIElement) -> bool</code>
-                <div class="mt-2 text-muted small">Check if a specific UI element exists in the scene.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to check<br>Returns:<br> &nbsp; &nbsp;bool: True if element exists, False otherwise</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scene-clear_ui_elements">
                 <code class="fs-6 fw-bold text-color-title">def clear_ui_elements(self: Any) -> None</code>
-                <div class="mt-2 text-muted small">Remove all UI elements from the scene.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
             </div>
@@ -186,7 +186,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-02-16 14:06
+                        Documentation generated on 2026-03-12 17:38
                     </p>
                 </div>
             </div>

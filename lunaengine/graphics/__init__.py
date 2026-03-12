@@ -7,12 +7,19 @@ DESCRIPTION:
 Initialization file for the graphics module. Exports all public classes,
 enums, and utilities for rendering, camera, particles, shadows, and sprites.
 
-UPDATED: Camera system refactored with unified coordinates, strategy pattern,
-         constraints, effects, and enhanced parallax.
+UPDATED: Replaced GPU particle system with CPU-based threaded particle system.
+         Added ParticleSystem, ThreadedParticleSystem, PhysicsType, ExitPoint.
 """
 
 from .spritesheet import SpriteSheet, Animation
-from .particles import ParticleSystem, ParticleConfig, ParticleType, PhysicsType, ExitPoint
+from .particles import (
+    ParticleSystem,
+    ThreadedParticleSystem,
+    ParticleConfig,
+    ParticleType,
+    ExitPoint,
+    PhysicsType,
+)
 from .camera import (
     # Main class
     Camera,
@@ -36,7 +43,7 @@ from .camera import (
     ParallaxLayer,
     ParallaxBackground,
 )
-from .shadows import ShadowSystem, ShadowCaster, PerformanceLevel, Light, ShadowTechnique
+from .shadows import ShadowSystem, ShadowCaster, Light, LightType
 
 __all__ = [
     # Sprite
@@ -44,10 +51,11 @@ __all__ = [
     "Animation",
     # Particles
     "ParticleSystem",
+    "ThreadedParticleSystem",
     "ParticleConfig",
     "ParticleType",
-    "PhysicsType",
     "ExitPoint",
+    "PhysicsType",
     # Camera
     "Camera",
     "CameraMode",
@@ -65,9 +73,5 @@ __all__ = [
     "ParallaxLayer",
     "ParallaxBackground",
     # Shadows
-    "ShadowSystem",
-    "ShadowCaster",
-    "PerformanceLevel",
-    "Light",
-    "ShadowTechnique",
+    "ShadowSystem", "ShadowCaster", 'Light', "LightType"
 ]

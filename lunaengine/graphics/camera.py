@@ -752,6 +752,73 @@ class Camera:
         return (-margin <= screen_pos.x <= self.viewport_width + margin and
                 -margin <= screen_pos.y <= self.viewport_height + margin)
 
+    def get_transform_matrix(self):
+        # Assuming zoom factors sx, sy and translation tx, ty (screen offset)
+        return np.array([[self.zoom_x, 0, self.tx],
+                        [0, self.zoom_y, self.ty]], dtype=np.float32)
+        
+    def get_view_projection_matrix(self,
+                               width: Optional[int] = None,
+                               height: Optional[int] = None,
+                               column_major: bool = False) -> np.ndarray:
+        """
+        Return a 4x4 view-projection matrix that maps world coordinates to clip space
+        (normalized device coordinates, range [-1, 1] on both axes, Y up).
+
+        The matrix is constructed as: clip = S * R * T
+        where:
+            T = translation by -camera position
+            R = rotation by -camera.rotation (around the camera center)
+            S = scale by (2 * zoom / viewport_width, 2 * zoom / viewport_height)
+
+        Args:
+            width:  Viewport width in pixels. If None, uses self.viewport_width.
+            height: Viewport height in pixels. If None, uses self.viewport_height.
+            column_major: If True, return the matrix in column‑major order (for OpenGL).
+                        Otherwise, return row‑major.
+
+        Returns:
+            A 4x4 numpy array of float32.
+        """
+        w = self.viewport_width if width is None else width
+        h = self.viewport_height if height is None else height
+        zoom = self.zoom
+        pos = self._position
+
+        # Rotation angle (in radians) – negative to align with world_to_screen convention
+        angle = -math.radians(self.rotation)
+
+        cos_a = math.cos(angle)
+        sin_a = math.sin(angle)
+
+        # Scale factors
+        sx = 2.0 * zoom / w
+        sy = 2.0 * zoom / h
+
+        # Upper 2x2 = S * R
+        m00 = sx * cos_a
+        m01 = -sx * sin_a
+        m10 = sy * sin_a
+        m11 = sy * cos_a
+
+        # Translation part = - (S * R) * pos
+        tx = -(m00 * pos.x + m01 * pos.y)
+        ty = -(m10 * pos.x + m11 * pos.y)
+
+        # Build 4x4 matrix (row‑major)
+        matrix = np.array([
+            [m00, m01, 0.0, tx],
+            [m10, m11, 0.0, ty],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0]
+        ], dtype=np.float32)
+
+        if column_major:
+            # OpenGL expects column‑major, so transpose
+            matrix = matrix.T
+
+        return matrix
+
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------

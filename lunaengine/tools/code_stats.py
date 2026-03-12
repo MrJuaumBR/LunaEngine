@@ -14,16 +14,18 @@ class CodeStatistics:
         self.root_dir = Path(root_dir)
         self.exclude_dirs = {'__pycache__', '.git', 'build', 'dist', 'venv', 'env', '.vscode', '.idea'}
         self.exclude_files = {'*.pyc', '*.pyo', '*.pyd', '*.so', '*.dll'}
-        self.file_extensions = {'.py', '.txt', '.md', '.toml', '.cfg', '.ini','.json'}
+        self.file_extensions = {'.py', '.txt', '.md', '.toml', '.cfg', '.ini','.json', '.vert', '.frag', '.comp', '.geom'}
         
-    def count_themes_in_engine(self) -> Dict:
+    def get_some_stats(self) -> Dict:
         """
         Count the number of themes available in LunaEngine
         Returns: Dictionary with theme statistics
         """
-        themes_stats = {
+        stats = {
             'total_themes': 0,
-            'error': None
+            'total_elements': 0,
+            'themes_error': None,
+            'elements_error': None
         }
         
         try:
@@ -34,18 +36,36 @@ class CodeStatistics:
             
             # Get all themes and count them
             themes = ThemeManager.get_themes()
-            themes_stats['total_themes'] = len(themes)
+            stats['total_themes'] = len(themes)
                     
         except ImportError as e:
-            themes_stats['error'] = f"Could not import ThemeManager: {e}"
+            stats['themes_error'] = f"Could not import ThemeManager: {e}"
         except Exception as e:
-            themes_stats['error'] = f"Error counting themes: {e}"
+            stats['themes_error'] = f"Error counting themes: {e}"
         finally:
             # Remove the path we added
             if str(self.root_dir) in sys.path:
                 sys.path.remove(str(self.root_dir))
         
-        return themes_stats
+        try:
+            sys.path.append(str(self.root_dir))
+            
+            from lunaengine.ui.elements import UIElement, UiFrame
+            
+            total_elements_list = UIElement.__subclasses__().copy()
+            total_elements_list.extend(UiFrame.__subclasses__())
+            
+            stats['total_elements'] = len(total_elements_list)
+        except ImportError as e:
+            stats['elements_error'] = f"Could not import UIElement: {e}"
+        except Exception as e:
+            stats['elements_error'] = f"Error counting elements: {e}"
+        finally:
+            # Remove the path we added
+            if str(self.root_dir) in sys.path:
+                sys.path.remove(str(self.root_dir))
+        
+        return stats
     
     def count_lines_in_file(self, file_path: Path) -> Tuple[int, int, int]:
         """
@@ -133,7 +153,7 @@ class CodeStatistics:
                 if item.is_dir():
                     # Directory
                     connector = "└── " if is_last_item else "├── "
-                    lines.append(prefix + connector + "📁 " + item.name + "/")
+                    lines.append(prefix + connector + "[DIR] " + item.name + "/")
                     
                     # Recursively process subdirectory
                     new_prefix = prefix + ("    " if is_last_item else "│   ")
@@ -146,7 +166,7 @@ class CodeStatistics:
                     lines.append(prefix + connector + emoji + " " + item.name)
         
         # Start from root
-        lines.append("📁 " + str(self.root_dir.name) + "/")
+        lines.append("[ROT] " + str(self.root_dir.name) + "/")
         add_directory(self.root_dir, "", True)
         
         return lines
@@ -158,21 +178,26 @@ class CodeStatistics:
     def get_file_emoji(self, extension: str) -> str:
         """Get appropriate emoji for file type"""
         emoji_map = {
-            '.py': '🐍',
-            '.md': '📝',
-            '.txt': '📄',
-            '.toml': '⚙️',
-            '.cfg': '⚙️',
-            '.ini': '⚙️',
-            '.json': '📋',
-            '.yml': '📋',
-            '.yaml': '📋',
+            '.py': '[PYT]',
+            '.md': '[MDN]',
+            '.txt': '[TXT]',
+            '.toml': '[TML]',
+            '.cfg': '[CFG]',
+            '.ini': '[INI]',
+            '.json': '[JSN]',
+            '.yml': '[YML]',
+            '.yaml': '[YAL]',
+            '.vert': '[SHD]',
+            '.frag': '[SHD]',
+            '.comp': '[SHD]',
+            '.geom': '[SHD]',
         }
-        return emoji_map.get(extension, '📄')
+        return emoji_map.get(extension, '[UNK]')
     
     def analyze_project(self) -> Dict:
         """Analyze the entire project and return statistics"""
         files = self.get_all_files()
+        _stats = self.get_some_stats()
         stats = {
             'total_files': len(files),
             'files_by_extension': {},
@@ -182,7 +207,8 @@ class CodeStatistics:
             'comment_lines': 0,
             'blank_lines': 0,
             'files': [],
-            'themes': self.count_themes_in_engine(),
+            'themes': {'total_themes':_stats['total_themes'], 'error': _stats['themes_error']},
+            'elements': {'total_elements':_stats['total_elements'], 'error': _stats['elements_error']},
             'project_structure': self.get_project_structure()  # Now returns list of lines
         }
         
@@ -325,11 +351,16 @@ def save_detailed_report(stats: Dict, report_file: Path, analyzer: CodeStatistic
         f.write(f"- **Blank Lines**: {stats['blank_lines']}\n")
         
         # Add theme statistics to report
-        f.write("\n## Theme Statistics\n\n")
+        f.write("\n## Statistics\n\n")
         if stats['themes']['error']:
-            f.write(f"- **Error**: {stats['themes']['error']}\n")
+            f.write(f"- Themes **Error**: {stats['themes']['error']}\n")
         else:
             f.write(f"- **Total Themes**: {stats['themes']['total_themes']}\n")
+        
+        if stats['elements']['error']:
+            f.write(f"- Elements **Error**: {stats['elements']['error']}\n")
+        else:
+            f.write(f"- **Total Elements**: {stats['elements']['total_elements']}\n")
         
         f.write("\n## Code Density\n\n")
         code_density = (stats['code_lines'] / max(1, stats['total_lines'])) * 100

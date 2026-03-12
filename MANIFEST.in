@@ -8,3 +8,8 @@ include pyproject.toml
 recursive-include lunaengine *.json
 recursive-include lunaengine *.txt
 recursive-include lunaengine *.md
+recursive-include lunaengine *.vert
+recursive-include lunaengine *.frag
+recursive-include lunaengine *.geom
+recursive-include lunaengine *.comp
+recursive-include lunaengine *.png

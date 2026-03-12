@@ -24,7 +24,7 @@
       "description": "Graphics and rendering - Sprites, Lighting, Particles",
       "link": "graphics/index.html",
       "files_count": 4,
-      "classes_count": 27,
+      "classes_count": 30,
       "functions_count": 9
     },
     {
@@ -34,7 +34,7 @@
       "link": "utils/index.html",
       "files_count": 5,
       "classes_count": 10,
-      "functions_count": 22
+      "functions_count": 25
     },
     {
       "name": "backend",
@@ -119,7 +119,7 @@
       "file": "engine.py",
       "description": "Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether to start in fullscreen mode<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene",
       "link": "core/engine.html#class-lunaengine",
-      "methods_count": 72
+      "methods_count": 74
     },
     {
       "name": "Renderer",
@@ -127,13 +127,13 @@
       "file": "renderer.py",
       "description": "Abstract base class for all renderers in LunaEngine.",
       "link": "core/renderer.html#class-renderer",
-      "methods_count": 23
+      "methods_count": 24
     },
     {
       "name": "Scene",
       "module": "core",
       "file": "scene.py",
-      "description": "Base class for all game scenes.<br><br>Provides lifecycle methods and UI element management. <br>All custom scenes should inherit from this class.<br><br>Attributes:<br> &nbsp; &nbsp;ui_elements (List[UIElement]): List of UI elements in this scene<br> &nbsp; &nbsp;_initialized (bool): Whether the scene has been initialized<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine",
+      "description": "No documentation",
       "link": "core/scene.html#class-scene",
       "methods_count": 23
     },
@@ -269,9 +269,9 @@
       "name": "Slider",
       "module": "ui",
       "file": "elements.py",
-      "description": "No documentation",
+      "description": "Interactive slider for selecting a numeric value.<br>Supports both horizontal and vertical orientations.",
       "link": "ui/elements.html#class-slider",
-      "methods_count": 6
+      "methods_count": 7
     },
     {
       "name": "Dropdown",
@@ -727,7 +727,7 @@
       "file": "camera.py",
       "description": "Advanced 2D Camera with unified coordinate system (position = viewport center).<br>Supports multiple follow strategies, constraints, effects, and parallax.",
       "link": "graphics/camera.html#class-camera",
-      "methods_count": 39
+      "methods_count": 41
     },
     {
       "name": "ParticleType",
@@ -765,49 +765,73 @@
       "name": "ParticleSystem",
       "module": "graphics",
       "file": "particles.py",
-      "description": "Particle System",
+      "description": "CPU-based particle system using NumPy arrays.<br>All physics updates happen when you call update().",
       "link": "graphics/particles.html#class-particlesystem",
-      "methods_count": 19
+      "methods_count": 17
     },
     {
-      "name": "ShadowTechnique",
+      "name": "ThreadedParticleSystem",
+      "module": "graphics",
+      "file": "particles.py",
+      "description": "ParticleSystem variant that updates physics in a separate thread.<br>The main thread&#x27;s update() call becomes a no\u2011op \u2013 the thread runs<br>continuously at a fixed timestep.<br><br>Also provides a render(camera) method that uses the renderer passed<br>during construction, making it a drop\u2011in replacement for the old<br>GPUParticleSystem.",
+      "link": "graphics/particles.html#class-threadedparticlesystem",
+      "methods_count": 12
+    },
+    {
+      "name": "LightType",
       "module": "graphics",
       "file": "shadows.py",
       "description": "No documentation",
-      "link": "graphics/shadows.html#class-shadowtechnique",
+      "link": "graphics/shadows.html#class-lighttype",
       "methods_count": 0
     },
     {
-      "name": "PerformanceLevel",
+      "name": "LightShape",
       "module": "graphics",
       "file": "shadows.py",
       "description": "No documentation",
-      "link": "graphics/shadows.html#class-performancelevel",
+      "link": "graphics/shadows.html#class-lightshape",
+      "methods_count": 0
+    },
+    {
+      "name": "ShadowType",
+      "module": "graphics",
+      "file": "shadows.py",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#class-shadowtype",
+      "methods_count": 0
+    },
+    {
+      "name": "ShadowShape",
+      "module": "graphics",
+      "file": "shadows.py",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#class-shadowshape",
       "methods_count": 0
     },
     {
       "name": "Light",
       "module": "graphics",
       "file": "shadows.py",
-      "description": "Light source for shadow casting",
+      "description": "Light source that can cast shadows.",
       "link": "graphics/shadows.html#class-light",
-      "methods_count": 2
+      "methods_count": 1
     },
     {
       "name": "ShadowCaster",
       "module": "graphics",
       "file": "shadows.py",
-      "description": "Object that can cast shadows",
+      "description": "An object that can cast shadows.",
       "link": "graphics/shadows.html#class-shadowcaster",
-      "methods_count": 4
+      "methods_count": 1
     },
     {
       "name": "ShadowSystem",
       "module": "graphics",
       "file": "shadows.py",
-      "description": "Optimized shadow system for OpenGL rendering with stable performance",
+      "description": "Manages lights and casters, and renders simple projected shadows.",
       "link": "graphics/shadows.html#class-shadowsystem",
-      "methods_count": 20
+      "methods_count": 14
     },
     {
       "name": "SpriteSheet",
@@ -1085,7 +1109,7 @@
       "name": "FilterType",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Enumeration of available filter types",
+      "description": "No documentation",
       "link": "backend/opengl.html#class-filtertype",
       "methods_count": 0
     },
@@ -1093,7 +1117,7 @@
       "name": "FilterRegionType",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Enumeration of filter region shapes",
+      "description": "No documentation",
       "link": "backend/opengl.html#class-filterregiontype",
       "methods_count": 0
     },
@@ -1109,15 +1133,15 @@
       "name": "ShaderProgram",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Generic shader program for 2D rendering with caching",
+      "description": "Base class for all shader programs with uniform caching.",
       "link": "backend/opengl.html#class-shaderprogram",
-      "methods_count": 3
+      "methods_count": 7
     },
     {
       "name": "ParticleShader",
       "module": "backend",
       "file": "opengl.py",
-      "description": "OPTIMIZED shader for particle rendering with instancing",
+      "description": "Instanced particle shader.",
       "link": "backend/opengl.html#class-particleshader",
       "methods_count": 2
     },
@@ -1125,7 +1149,7 @@
       "name": "SimpleShader",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Simple shader for solid color rendering",
+      "description": "Simple shader for solid color rectangles and shapes.",
       "link": "backend/opengl.html#class-simpleshader",
       "methods_count": 2
     },
@@ -1133,24 +1157,24 @@
       "name": "TextureShader",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Shader for textured rendering",
+      "description": "Shader for textured rendering.",
       "link": "backend/opengl.html#class-textureshader",
-      "methods_count": 2
-    },
-    {
-      "name": "FilterShader",
-      "module": "backend",
-      "file": "opengl.py",
-      "description": "Shader for applying post-processing filters",
-      "link": "backend/opengl.html#class-filtershader",
       "methods_count": 2
     },
     {
       "name": "RoundedRectShader",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Shader for drawing rectangles with per-corner rounded corners",
+      "description": "Shader for drawing rectangles with per-corner rounded corners.",
       "link": "backend/opengl.html#class-roundedrectshader",
+      "methods_count": 2
+    },
+    {
+      "name": "FilterShader",
+      "module": "backend",
+      "file": "opengl.py",
+      "description": "Shader for applying post-processing filters.",
+      "link": "backend/opengl.html#class-filtershader",
       "methods_count": 2
     },
     {
@@ -1796,6 +1820,30 @@
       "is_method": false
     },
     {
+      "name": "perspective_matrix",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "No documentation",
+      "link": "utils/math_utils.html#func-perspective_matrix",
+      "is_method": false
+    },
+    {
+      "name": "look_at",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "No documentation",
+      "link": "utils/math_utils.html#func-look_at",
+      "is_method": false
+    },
+    {
+      "name": "interpolate_color",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "Interpolate between a list of colors.<br>colors: list of (r,g,b) or (r,g,b,a) tuples, values 0-1.<br>t: float between 0 and 1.<br>Returns an RGBA tuple with values 0-1.",
+      "link": "utils/math_utils.html#func-interpolate_color",
+      "is_method": false
+    },
+    {
       "name": "get_global_timer",
       "module": "utils",
       "file": "timer.py",
@@ -2238,6 +2286,22 @@
       "is_method": true
     },
     {
+      "name": "get_logo_surface",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/engine.html#method-lunaengine-get_logo_surface",
+      "is_method": true
+    },
+    {
+      "name": "_show_splash",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Display an animated splash screen with logo, title, subtitle and version.",
+      "link": "core/engine.html#method-lunaengine-_show_splash",
+      "is_method": true
+    },
+    {
       "name": "set_title",
       "class": "LunaEngine",
       "module": "core",
@@ -2657,7 +2721,7 @@
       "name": "_render",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Rendering with performance profiling",
+      "description": "Rendering with GPU particles and shadows.",
       "link": "core/engine.html#method-lunaengine-_render",
       "is_method": true
     },
@@ -2926,6 +2990,14 @@
       "is_method": true
     },
     {
+      "name": "clear",
+      "class": "Renderer",
+      "module": "core",
+      "description": "Clear the current render target (e.g., clear the screen).",
+      "link": "core/renderer.html#method-renderer-clear",
+      "is_method": true
+    },
+    {
       "name": "disable_scissor",
       "class": "Renderer",
       "module": "core",
@@ -2985,7 +3057,7 @@
       "name": "__init__",
       "class": "Scene",
       "module": "core",
-      "description": "Initialize a new scene with empty UI elements list.<br><br>Args:<br> &nbsp; &nbsp;engine (LunaEngine): Reference to the game engine",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-__init__",
       "is_method": true
     },
@@ -3025,7 +3097,7 @@
       "name": "on_enter",
       "class": "Scene",
       "module": "core",
-      "description": "Called when the scene becomes active.<br><br>Use this to initialize resources, create UI elements, or reset game state.<br><br>Args:<br> &nbsp; &nbsp;previous_scene (str, optional): Name of the previous scene",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-on_enter",
       "is_method": true
     },
@@ -3033,7 +3105,7 @@
       "name": "on_exit",
       "class": "Scene",
       "module": "core",
-      "description": "Called when the scene is being replaced.<br><br>Use this to clean up resources, save game state, or perform transitions.<br><br>Args:<br> &nbsp; &nbsp;next_scene (str, optional): Name of the next scene",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-on_exit",
       "is_method": true
     },
@@ -3041,7 +3113,7 @@
       "name": "update",
       "class": "Scene",
       "module": "core",
-      "description": "Update scene logic.",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-update",
       "is_method": true
     },
@@ -3049,7 +3121,7 @@
       "name": "_update",
       "class": "Scene",
       "module": "core",
-      "description": "Update scene logic with profiling.",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-_update",
       "is_method": true
     },
@@ -3057,7 +3129,7 @@
       "name": "render",
       "class": "Scene",
       "module": "core",
-      "description": "Render the scene.<br><br>Called every frame to draw the scene content.<br><br>Args:<br> &nbsp; &nbsp;renderer: The renderer to use for drawing operations",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-render",
       "is_method": true
     },
@@ -3065,7 +3137,7 @@
       "name": "get_scene_performance_stats",
       "class": "Scene",
       "module": "core",
-      "description": "Get performance statistics for this scene",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-get_scene_performance_stats",
       "is_method": true
     },
@@ -3073,7 +3145,7 @@
       "name": "add_ui_element",
       "class": "Scene",
       "module": "core",
-      "description": "Add a UI element to the scene.<br><br>Args:<br> &nbsp; &nbsp;ui_element (UIElement): The UI element to add to the scene",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-add_ui_element",
       "is_method": true
     },
@@ -3081,7 +3153,7 @@
       "name": "remove_ui_element",
       "class": "Scene",
       "module": "core",
-      "description": "Remove a UI element from the scene.<br><br>Args:<br> &nbsp; &nbsp;ui_element (UIElement): The UI element to remove<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if element was found and removed, False otherwise",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-remove_ui_element",
       "is_method": true
     },
@@ -3089,7 +3161,7 @@
       "name": "get_ui_element_by_id",
       "class": "Scene",
       "module": "core",
-      "description": "Get UI element by its unique ID.<br><br>Args:<br> &nbsp; &nbsp;element_id (str): The unique ID of the element to find<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;UIElement: The found UI element or None if not found",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-get_ui_element_by_id",
       "is_method": true
     },
@@ -3097,7 +3169,7 @@
       "name": "get_ui_elements_by_type",
       "class": "Scene",
       "module": "core",
-      "description": "Get all UI elements of a specific type.<br><br>Args:<br> &nbsp; &nbsp;element_type (type): The class type to filter by (e.g., Button, Label)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[UIElement]: List of UI elements matching the specified type",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-get_ui_elements_by_type",
       "is_method": true
     },
@@ -3105,7 +3177,7 @@
       "name": "get_ui_elements_by_group",
       "class": "Scene",
       "module": "core",
-      "description": "Get all UI elements in the scene.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: All UI elements in the scene",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-get_ui_elements_by_group",
       "is_method": true
     },
@@ -3113,7 +3185,7 @@
       "name": "toggle_element_group",
       "class": "Scene",
       "module": "core",
-      "description": "Toggle the visibility of UI elements in a specific group.<br><br>Args:<br> &nbsp; &nbsp;group (str): The group to toggle",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-toggle_element_group",
       "is_method": true
     },
@@ -3121,7 +3193,7 @@
       "name": "clear_element_group",
       "class": "Scene",
       "module": "core",
-      "description": "Remove all UI elements in a specific group from the scene.<br><br>Args:<br> &nbsp; &nbsp;group (str): The group to clear",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-clear_element_group",
       "is_method": true
     },
@@ -3129,7 +3201,7 @@
       "name": "clear_element_type",
       "class": "Scene",
       "module": "core",
-      "description": "Remove all UI elements of a specific type from the scene.<br><br>Args:<br> &nbsp; &nbsp;element_type (type): The class type to filter by (e.g., Button, Label)",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-clear_element_type",
       "is_method": true
     },
@@ -3137,7 +3209,7 @@
       "name": "get_all_ui_elements",
       "class": "Scene",
       "module": "core",
-      "description": "Get all UI elements in the scene.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: All UI elements in the scene",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-get_all_ui_elements",
       "is_method": true
     },
@@ -3145,7 +3217,7 @@
       "name": "has_element_by_id",
       "class": "Scene",
       "module": "core",
-      "description": "Check if a UI element with the given ID exists in the scene.<br><br>Args:<br> &nbsp; &nbsp;element_id (str): The unique ID of the element to check<br>Returns:<br> &nbsp; &nbsp;bool: True if element exists, False otherwise",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-has_element_by_id",
       "is_method": true
     },
@@ -3153,7 +3225,7 @@
       "name": "has_element",
       "class": "Scene",
       "module": "core",
-      "description": "Check if a specific UI element exists in the scene.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to check<br>Returns:<br> &nbsp; &nbsp;bool: True if element exists, False otherwise",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-has_element",
       "is_method": true
     },
@@ -3161,7 +3233,7 @@
       "name": "clear_ui_elements",
       "class": "Scene",
       "module": "core",
-      "description": "Remove all UI elements from the scene.",
+      "description": "No documentation",
       "link": "core/scene.html#method-scene-clear_ui_elements",
       "is_method": true
     },
@@ -3414,11 +3486,11 @@
       "is_method": true
     },
     {
-      "name": "convert_mouse_pos",
+      "name": "getCollideRect",
       "class": "UIElement",
       "module": "ui",
       "description": "No documentation",
-      "link": "ui/elements.html#method-uielement-convert_mouse_pos",
+      "link": "ui/elements.html#method-uielement-getcolliderect",
       "is_method": true
     },
     {
@@ -4329,7 +4401,7 @@
       "name": "_render_select_content",
       "class": "Select",
       "module": "ui",
-      "description": "Helper method to render select content for both backends",
+      "description": "No documentation",
       "link": "ui/elements.html#method-select-_render_select_content",
       "is_method": true
     },
@@ -4401,8 +4473,16 @@
       "name": "__init__",
       "class": "Slider",
       "module": "ui",
-      "description": "No documentation",
+      "description": "Initialize a slider.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the slider (for horizontal) or thumb width (for vertical).<br> &nbsp; &nbsp;height (int): Height of the slider (for vertical) or thumb height (for horizontal).<br> &nbsp; &nbsp;min_val (float): Minimum selectable value.<br> &nbsp; &nbsp;max_val (float): Maximum selectable value.<br> &nbsp; &nbsp;value (float): Initial value.<br> &nbsp; &nbsp;orientation (str): &#x27;horizontal&#x27; or &#x27;vertical&#x27;.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point.<br> &nbsp; &nbsp;theme (ThemeType): Theme to use.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.",
       "link": "ui/elements.html#method-slider-__init__",
+      "is_method": true
+    },
+    {
+      "name": "set_on_value_changed",
+      "class": "Slider",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements.html#method-slider-set_on_value_changed",
       "is_method": true
     },
     {
@@ -4425,7 +4505,7 @@
       "name": "set_value",
       "class": "Slider",
       "module": "ui",
-      "description": "No documentation",
+      "description": "Set the current value, clamped to min/max.",
       "link": "ui/elements.html#method-slider-set_value",
       "is_method": true
     },
@@ -4441,7 +4521,7 @@
       "name": "render",
       "class": "Slider",
       "module": "ui",
-      "description": "Render using OpenGL backend",
+      "description": "Render the slider using OpenGL backend.",
       "link": "ui/elements.html#method-slider-render",
       "is_method": true
     },
@@ -7718,6 +7798,22 @@
       "is_method": true
     },
     {
+      "name": "get_transform_matrix",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/camera.html#method-camera-get_transform_matrix",
+      "is_method": true
+    },
+    {
+      "name": "get_view_projection_matrix",
+      "class": "Camera",
+      "module": "graphics",
+      "description": "Return a 4x4 view-projection matrix that maps world coordinates to clip space<br>(normalized device coordinates, range [-1, 1] on both axes, Y up).<br><br>The matrix is constructed as: clip = S * R * T<br>where:<br> &nbsp; &nbsp;T = translation by -camera position<br> &nbsp; &nbsp;R = rotation by -camera.rotation (around the camera center)<br> &nbsp; &nbsp;S = scale by (2 * zoom / viewport_width, 2 * zoom / viewport_height)<br><br>Args:<br> &nbsp; &nbsp;width: &nbsp;Viewport width in pixels. If None, uses self.viewport_width.<br> &nbsp; &nbsp;height: Viewport height in pixels. If None, uses self.viewport_height.<br> &nbsp; &nbsp;column_major: If True, return the matrix in column\u2011major order (for OpenGL).<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Otherwise, return row\u2011major.<br><br>Returns:<br> &nbsp; &nbsp;A 4x4 numpy array of float32.",
+      "link": "graphics/camera.html#method-camera-get_view_projection_matrix",
+      "is_method": true
+    },
+    {
       "name": "_get_target_position",
       "class": "Camera",
       "module": "graphics",
@@ -7782,10 +7878,18 @@
       "is_method": true
     },
     {
+      "name": "_init_arrays",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "(Re)initialise all particle arrays to zero size.",
+      "link": "graphics/particles.html#method-particlesystem-_init_arrays",
+      "is_method": true
+    },
+    {
       "name": "get_particles_names",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Get list of all registered particle names",
+      "description": "No documentation",
       "link": "graphics/particles.html#method-particlesystem-get_particles_names",
       "is_method": true
     },
@@ -7793,31 +7897,15 @@
       "name": "get_physics_names",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Get a list of physics names",
+      "description": "No documentation",
       "link": "graphics/particles.html#method-particlesystem-get_physics_names",
-      "is_method": true
-    },
-    {
-      "name": "update_max_particles",
-      "class": "ParticleSystem",
-      "module": "graphics",
-      "description": "Callback for the renderer update max_particles.<br>Preserves active particles during resize.",
-      "link": "graphics/particles.html#method-particlesystem-update_max_particles",
-      "is_method": true
-    },
-    {
-      "name": "_init_arrays",
-      "class": "ParticleSystem",
-      "module": "graphics",
-      "description": "Initialize optimized NumPy arrays using current max_particles",
-      "link": "graphics/particles.html#method-particlesystem-_init_arrays",
       "is_method": true
     },
     {
       "name": "register_custom_particle",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Register a custom particle type for user-defined effects<br><br>Args:<br> &nbsp; &nbsp;name (str): Unique name for the custom particle type<br> &nbsp; &nbsp;config (ParticleConfig): Configuration for the custom particle<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if registration was successful<br> &nbsp; &nbsp;<br>Raises:<br> &nbsp; &nbsp;ValueError: If particle name is already registered",
+      "description": "No documentation",
       "link": "graphics/particles.html#method-particlesystem-register_custom_particle",
       "is_method": true
     },
@@ -7825,7 +7913,7 @@
       "name": "get_custom_particle",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Get configuration for a custom particle<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the custom particle type<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[ParticleConfig]: The particle configuration or None if not found",
+      "description": "No documentation",
       "link": "graphics/particles.html#method-particlesystem-get_custom_particle",
       "is_method": true
     },
@@ -7833,87 +7921,47 @@
       "name": "list_custom_particles",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Get list of all registered custom particle names<br><br>Returns:<br> &nbsp; &nbsp;List[str]: List of custom particle names",
+      "description": "No documentation",
       "link": "graphics/particles.html#method-particlesystem-list_custom_particles",
+      "is_method": true
+    },
+    {
+      "name": "update_max_particles",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Resize internal arrays, preserving active particles.",
+      "link": "graphics/particles.html#method-particlesystem-update_max_particles",
       "is_method": true
     },
     {
       "name": "get_render_data",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Get particle data for rendering with caching",
+      "description": "Return a copy of active particle data for rendering.",
       "link": "graphics/particles.html#method-particlesystem-get_render_data",
-      "is_method": true
-    },
-    {
-      "name": "_resolve_particle_config",
-      "class": "ParticleSystem",
-      "module": "graphics",
-      "description": "Resolve particle configuration from various sources<br><br>Args:<br> &nbsp; &nbsp;particle_type: The particle type identifier<br> &nbsp; &nbsp;custom_config: Optional custom configuration<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;ParticleConfig or None if not found",
-      "link": "graphics/particles.html#method-particlesystem-_resolve_particle_config",
-      "is_method": true
-    },
-    {
-      "name": "_get_exit_offset",
-      "class": "ParticleSystem",
-      "module": "graphics",
-      "description": "Get offset distance for exit points",
-      "link": "graphics/particles.html#method-particlesystem-_get_exit_offset",
-      "is_method": true
-    },
-    {
-      "name": "_get_exit_position",
-      "class": "ParticleSystem",
-      "module": "graphics",
-      "description": "Calculate initial position based on exit point",
-      "link": "graphics/particles.html#method-particlesystem-_get_exit_position",
-      "is_method": true
-    },
-    {
-      "name": "_get_initial_velocity",
-      "class": "ParticleSystem",
-      "module": "graphics",
-      "description": "Calculate initial velocity vector with spread",
-      "link": "graphics/particles.html#method-particlesystem-_get_initial_velocity",
       "is_method": true
     },
     {
       "name": "emit",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Emit particles with optimizations<br><br>Parameters:<br> &nbsp; &nbsp;x: The x position of the emitter (int or float)<br> &nbsp; &nbsp;y: The y position of the emitter (int or float)<br> &nbsp; &nbsp;particle_type: The particle type identifier<br> &nbsp; &nbsp;count: The number of particles to emit (default: 1)<br> &nbsp; &nbsp;exit_point: The exit point of the particle (default: ExitPoint.CENTER)<br> &nbsp; &nbsp;physics_type: The physics type of the particle (default: PhysicsType.TOPDOWN)<br> &nbsp; &nbsp;spread: The spread of the particle (default: None) is in degrees<br> &nbsp; &nbsp;angle: The angle of the particle (default: 0.0)<br> &nbsp; &nbsp;custom_config: Optional custom configuration",
+      "description": "Emit new particles.",
       "link": "graphics/particles.html#method-particlesystem-emit",
-      "is_method": true
-    },
-    {
-      "name": "_setup_particle_properties",
-      "class": "ParticleSystem",
-      "module": "graphics",
-      "description": "Setup particle properties optimized for different physics types",
-      "link": "graphics/particles.html#method-particlesystem-_setup_particle_properties",
       "is_method": true
     },
     {
       "name": "update",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Update particles with vectorized operations",
+      "description": "Update particle physics (called from main thread in single\u2011threaded mode).",
       "link": "graphics/particles.html#method-particlesystem-update",
-      "is_method": true
-    },
-    {
-      "name": "_update_properties",
-      "class": "ParticleSystem",
-      "module": "graphics",
-      "description": "Update particle properties using vectorized operations - FIXED COLOR BUG",
-      "link": "graphics/particles.html#method-particlesystem-_update_properties",
       "is_method": true
     },
     {
       "name": "clear",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Clear all particles",
+      "description": "Deactivate all particles.",
       "link": "graphics/particles.html#method-particlesystem-clear",
       "is_method": true
     },
@@ -7921,8 +7969,136 @@
       "name": "get_stats",
       "class": "ParticleSystem",
       "module": "graphics",
-      "description": "Get comprehensive system statistics<br><br>Returns:<br> &nbsp; &nbsp;Dict with system statistics",
+      "description": "No documentation",
       "link": "graphics/particles.html#method-particlesystem-get_stats",
+      "is_method": true
+    },
+    {
+      "name": "_resolve_config",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/particles.html#method-particlesystem-_resolve_config",
+      "is_method": true
+    },
+    {
+      "name": "_get_exit_position",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/particles.html#method-particlesystem-_get_exit_position",
+      "is_method": true
+    },
+    {
+      "name": "_get_initial_velocity",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/particles.html#method-particlesystem-_get_initial_velocity",
+      "is_method": true
+    },
+    {
+      "name": "_update_properties",
+      "class": "ParticleSystem",
+      "module": "graphics",
+      "description": "Update particle color and size based on remaining life.",
+      "link": "graphics/particles.html#method-particlesystem-_update_properties",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "ThreadedParticleSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/particles.html#method-threadedparticlesystem-__init__",
+      "is_method": true
+    },
+    {
+      "name": "start_thread",
+      "class": "ThreadedParticleSystem",
+      "module": "graphics",
+      "description": "Start the background physics thread.",
+      "link": "graphics/particles.html#method-threadedparticlesystem-start_thread",
+      "is_method": true
+    },
+    {
+      "name": "stop_thread",
+      "class": "ThreadedParticleSystem",
+      "module": "graphics",
+      "description": "Stop the background thread.",
+      "link": "graphics/particles.html#method-threadedparticlesystem-stop_thread",
+      "is_method": true
+    },
+    {
+      "name": "_thread_loop",
+      "class": "ThreadedParticleSystem",
+      "module": "graphics",
+      "description": "Thread main loop: run physics at fixed timestep.",
+      "link": "graphics/particles.html#method-threadedparticlesystem-_thread_loop",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "ThreadedParticleSystem",
+      "module": "graphics",
+      "description": "In threaded mode, do nothing (thread handles updates).",
+      "link": "graphics/particles.html#method-threadedparticlesystem-update",
+      "is_method": true
+    },
+    {
+      "name": "emit",
+      "class": "ThreadedParticleSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/particles.html#method-threadedparticlesystem-emit",
+      "is_method": true
+    },
+    {
+      "name": "clear",
+      "class": "ThreadedParticleSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/particles.html#method-threadedparticlesystem-clear",
+      "is_method": true
+    },
+    {
+      "name": "update_max_particles",
+      "class": "ThreadedParticleSystem",
+      "module": "graphics",
+      "description": "Stop thread, resize, then restart.",
+      "link": "graphics/particles.html#method-threadedparticlesystem-update_max_particles",
+      "is_method": true
+    },
+    {
+      "name": "get_render_data",
+      "class": "ThreadedParticleSystem",
+      "module": "graphics",
+      "description": "Return a copy of data while holding the lock.",
+      "link": "graphics/particles.html#method-threadedparticlesystem-get_render_data",
+      "is_method": true
+    },
+    {
+      "name": "get_stats",
+      "class": "ThreadedParticleSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/particles.html#method-threadedparticlesystem-get_stats",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "ThreadedParticleSystem",
+      "module": "graphics",
+      "description": "Render all active particles using the stored renderer.<br>This method matches the interface expected by the engine.",
+      "link": "graphics/particles.html#method-threadedparticlesystem-render",
+      "is_method": true
+    },
+    {
+      "name": "__del__",
+      "class": "ThreadedParticleSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/particles.html#method-threadedparticlesystem-__del__",
       "is_method": true
     },
     {
@@ -7934,43 +8110,11 @@
       "is_method": true
     },
     {
-      "name": "get_hash",
-      "class": "Light",
-      "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/shadows.html#method-light-get_hash",
-      "is_method": true
-    },
-    {
       "name": "__init__",
       "class": "ShadowCaster",
       "module": "graphics",
       "description": "No documentation",
       "link": "graphics/shadows.html#method-shadowcaster-__init__",
-      "is_method": true
-    },
-    {
-      "name": "_calculate_bounds",
-      "class": "ShadowCaster",
-      "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/shadows.html#method-shadowcaster-_calculate_bounds",
-      "is_method": true
-    },
-    {
-      "name": "get_hash",
-      "class": "ShadowCaster",
-      "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/shadows.html#method-shadowcaster-get_hash",
-      "is_method": true
-    },
-    {
-      "name": "bounds",
-      "class": "ShadowCaster",
-      "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/shadows.html#method-shadowcaster-bounds",
       "is_method": true
     },
     {
@@ -7985,23 +8129,55 @@
       "name": "add_light",
       "class": "ShadowSystem",
       "module": "graphics",
-      "description": "Add a light source to the shadow system",
+      "description": "No documentation",
       "link": "graphics/shadows.html#method-shadowsystem-add_light",
       "is_method": true
     },
     {
-      "name": "add_shadow_caster",
+      "name": "remove_light",
       "class": "ShadowSystem",
       "module": "graphics",
-      "description": "Add an object that can cast shadows",
-      "link": "graphics/shadows.html#method-shadowsystem-add_shadow_caster",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#method-shadowsystem-remove_light",
+      "is_method": true
+    },
+    {
+      "name": "clear_lights",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#method-shadowsystem-clear_lights",
+      "is_method": true
+    },
+    {
+      "name": "add_caster",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#method-shadowsystem-add_caster",
+      "is_method": true
+    },
+    {
+      "name": "remove_caster",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#method-shadowsystem-remove_caster",
+      "is_method": true
+    },
+    {
+      "name": "clear_casters",
+      "class": "ShadowSystem",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#method-shadowsystem-clear_casters",
       "is_method": true
     },
     {
       "name": "add_rectangle_caster",
       "class": "ShadowSystem",
       "module": "graphics",
-      "description": "Add a rectangular shadow caster",
+      "description": "Create a rectangular caster (centered at x,y).",
       "link": "graphics/shadows.html#method-shadowsystem-add_rectangle_caster",
       "is_method": true
     },
@@ -8009,128 +8185,48 @@
       "name": "add_circle_caster",
       "class": "ShadowSystem",
       "module": "graphics",
-      "description": "Add a circular shadow caster (approximated as polygon)",
+      "description": "Create a circular caster approximated by a polygon.",
       "link": "graphics/shadows.html#method-shadowsystem-add_circle_caster",
       "is_method": true
     },
     {
-      "name": "clear_lights",
+      "name": "add_point_light",
       "class": "ShadowSystem",
       "module": "graphics",
-      "description": "Remove all light sources",
-      "link": "graphics/shadows.html#method-shadowsystem-clear_lights",
+      "description": "Helper to create a point light.",
+      "link": "graphics/shadows.html#method-shadowsystem-add_point_light",
       "is_method": true
     },
     {
-      "name": "clear_shadow_casters",
+      "name": "add_directional_light",
       "class": "ShadowSystem",
       "module": "graphics",
-      "description": "Remove all shadow casting objects",
-      "link": "graphics/shadows.html#method-shadowsystem-clear_shadow_casters",
+      "description": "Helper to create a directional light (simulated with a distant point).",
+      "link": "graphics/shadows.html#method-shadowsystem-add_directional_light",
       "is_method": true
     },
     {
-      "name": "_calculate_scene_hash",
+      "name": "render_shadows_simple",
       "class": "ShadowSystem",
       "module": "graphics",
-      "description": "Calculate hash of current scene state",
-      "link": "graphics/shadows.html#method-shadowsystem-_calculate_scene_hash",
+      "description": "Draw simple projected shadows for all lights and casters.<br><br>Args:<br> &nbsp; &nbsp;renderer: The OpenGLRenderer instance.<br> &nbsp; &nbsp;camera: The camera (to convert world to screen).",
+      "link": "graphics/shadows.html#method-shadowsystem-render_shadows_simple",
       "is_method": true
     },
     {
-      "name": "_get_visible_lights",
+      "name": "apply_lighting",
       "class": "ShadowSystem",
       "module": "graphics",
-      "description": "Get lights that are visible in the current viewport",
-      "link": "graphics/shadows.html#method-shadowsystem-_get_visible_lights",
-      "is_method": true
-    },
-    {
-      "name": "_get_visible_shadow_casters",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Get shadow casters that are visible in the current viewport",
-      "link": "graphics/shadows.html#method-shadowsystem-_get_visible_shadow_casters",
-      "is_method": true
-    },
-    {
-      "name": "_get_current_viewport",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Get current camera viewport in world coordinates",
-      "link": "graphics/shadows.html#method-shadowsystem-_get_current_viewport",
-      "is_method": true
-    },
-    {
-      "name": "_world_to_screen",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Convert world coordinates to screen coordinates",
-      "link": "graphics/shadows.html#method-shadowsystem-_world_to_screen",
-      "is_method": true
-    },
-    {
-      "name": "_get_current_zoom",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Get current camera zoom",
-      "link": "graphics/shadows.html#method-shadowsystem-_get_current_zoom",
-      "is_method": true
-    },
-    {
-      "name": "_geometry_fast_technique",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Fast and stable shadow technique for OpenGL - FIXED",
-      "link": "graphics/shadows.html#method-shadowsystem-_geometry_fast_technique",
-      "is_method": true
-    },
-    {
-      "name": "_draw_simple_shadow",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Draw simple shadow using vertex extrusion - FIXED",
-      "link": "graphics/shadows.html#method-shadowsystem-_draw_simple_shadow",
-      "is_method": true
-    },
-    {
-      "name": "_update_performance_stats",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Update performance statistics",
-      "link": "graphics/shadows.html#method-shadowsystem-_update_performance_stats",
-      "is_method": true
-    },
-    {
-      "name": "render",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Stable shadow rendering for OpenGL",
-      "link": "graphics/shadows.html#method-shadowsystem-render",
-      "is_method": true
-    },
-    {
-      "name": "render_to_screen",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Render shadows directly to screen using the provided renderer - FIXED",
-      "link": "graphics/shadows.html#method-shadowsystem-render_to_screen",
+      "description": "Darken areas outside any light&#x27;s range and brighten areas inside lights.<br><br>Args:<br> &nbsp; &nbsp;renderer: The OpenGLRenderer instance.<br> &nbsp; &nbsp;camera: The camera (to convert world to screen).<br> &nbsp; &nbsp;ambient: Base brightness of unlit areas (0.0 = pitch black, 1.0 = fully bright).<br> &nbsp; &nbsp;light_power: Overall brightness multiplier for lights (higher = brighter).<br> &nbsp; &nbsp;saturation: How much the light&#x27;s color affects the scene (0.0 = white light only,<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;1.0 = full color). Values between 0 and 1 mix the light color with white.",
+      "link": "graphics/shadows.html#method-shadowsystem-apply_lighting",
       "is_method": true
     },
     {
       "name": "get_stats",
       "class": "ShadowSystem",
       "module": "graphics",
-      "description": "Get performance and rendering statistics",
+      "description": "Return simple statistics.",
       "link": "graphics/shadows.html#method-shadowsystem-get_stats",
-      "is_method": true
-    },
-    {
-      "name": "cleanup",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Clean up resources",
-      "link": "graphics/shadows.html#method-shadowsystem-cleanup",
       "is_method": true
     },
     {
@@ -10014,6 +10110,14 @@
       "is_method": true
     },
     {
+      "name": "get_source",
+      "class": "ShaderProgram",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-shaderprogram-get_source",
+      "is_method": true
+    },
+    {
       "name": "__init__",
       "class": "ShaderProgram",
       "module": "backend",
@@ -10025,16 +10129,40 @@
       "name": "_get_uniform_location",
       "class": "ShaderProgram",
       "module": "backend",
-      "description": "Get cached uniform location",
+      "description": "Get cached uniform location.",
       "link": "backend/opengl.html#method-shaderprogram-_get_uniform_location",
       "is_method": true
     },
     {
-      "name": "_create_shaders",
+      "name": "_create_program",
       "class": "ShaderProgram",
       "module": "backend",
-      "description": "Compile shaders with error handling",
-      "link": "backend/opengl.html#method-shaderprogram-_create_shaders",
+      "description": "Compile and link shaders.",
+      "link": "backend/opengl.html#method-shaderprogram-_create_program",
+      "is_method": true
+    },
+    {
+      "name": "use",
+      "class": "ShaderProgram",
+      "module": "backend",
+      "description": "Activate the shader program.",
+      "link": "backend/opengl.html#method-shaderprogram-use",
+      "is_method": true
+    },
+    {
+      "name": "unuse",
+      "class": "ShaderProgram",
+      "module": "backend",
+      "description": "Deactivate the shader program.",
+      "link": "backend/opengl.html#method-shaderprogram-unuse",
+      "is_method": true
+    },
+    {
+      "name": "_setup_geometry",
+      "class": "ShaderProgram",
+      "module": "backend",
+      "description": "Set up vertex arrays - to be overridden by subclasses.",
+      "link": "backend/opengl.html#method-shaderprogram-_setup_geometry",
       "is_method": true
     },
     {
@@ -10049,7 +10177,7 @@
       "name": "_setup_geometry",
       "class": "ParticleShader",
       "module": "backend",
-      "description": "Setup instanced particle geometry for maximum performance",
+      "description": "Create a dummy VAO with one vertex (for instancing).",
       "link": "backend/opengl.html#method-particleshader-_setup_geometry",
       "is_method": true
     },
@@ -10065,7 +10193,7 @@
       "name": "_setup_geometry",
       "class": "SimpleShader",
       "module": "backend",
-      "description": "Setup basic quad geometry",
+      "description": "Setup a unit quad (0,0 to 1,1).",
       "link": "backend/opengl.html#method-simpleshader-_setup_geometry",
       "is_method": true
     },
@@ -10081,24 +10209,8 @@
       "name": "_setup_geometry",
       "class": "TextureShader",
       "module": "backend",
-      "description": "Setup textured quad geometry",
+      "description": "Setup textured quad with UVs.",
       "link": "backend/opengl.html#method-textureshader-_setup_geometry",
-      "is_method": true
-    },
-    {
-      "name": "__init__",
-      "class": "FilterShader",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/opengl.html#method-filtershader-__init__",
-      "is_method": true
-    },
-    {
-      "name": "_setup_geometry",
-      "class": "FilterShader",
-      "module": "backend",
-      "description": "Setup fullscreen quad for filter rendering",
-      "link": "backend/opengl.html#method-filtershader-_setup_geometry",
       "is_method": true
     },
     {
@@ -10113,8 +10225,24 @@
       "name": "_setup_geometry",
       "class": "RoundedRectShader",
       "module": "backend",
-      "description": "Setup quad geometry for rectangle",
+      "description": "Setup quad geometry for rectangle.",
       "link": "backend/opengl.html#method-roundedrectshader-_setup_geometry",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "FilterShader",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-filtershader-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_setup_geometry",
+      "class": "FilterShader",
+      "module": "backend",
+      "description": "Setup fullscreen quad for filter rendering.",
+      "link": "backend/opengl.html#method-filtershader-_setup_geometry",
       "is_method": true
     },
     {
@@ -10145,7 +10273,7 @@
       "name": "initialize",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Initialize OpenGL context and shaders",
+      "description": "Initialize OpenGL context and shaders.",
       "link": "backend/opengl.html#method-openglrenderer-initialize",
       "is_method": true
     },
@@ -10153,7 +10281,7 @@
       "name": "_initialize_filter_framebuffer",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Initialize framebuffer for filter rendering",
+      "description": "Create framebuffer for off-screen filter rendering.",
       "link": "backend/opengl.html#method-openglrenderer-_initialize_filter_framebuffer",
       "is_method": true
     },
@@ -10161,7 +10289,7 @@
       "name": "add_filter",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Add a filter to be applied during rendering.<br><br>Args:<br> &nbsp; &nbsp;filter_obj: Filter object with settings",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-add_filter",
       "is_method": true
     },
@@ -10169,7 +10297,7 @@
       "name": "remove_filter",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Remove a filter.<br><br>Args:<br> &nbsp; &nbsp;filter_obj: Filter object to remove",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-remove_filter",
       "is_method": true
     },
@@ -10177,7 +10305,7 @@
       "name": "clear_filters",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Remove all filters",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-clear_filters",
       "is_method": true
     },
@@ -10185,7 +10313,7 @@
       "name": "create_quick_filter",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick helper to create and add a filter in one call.<br><br>Args:<br> &nbsp; &nbsp;filter_type: Type of filter<br> &nbsp; &nbsp;intensity: Filter strength (0.0 to 1.0)<br> &nbsp; &nbsp;x, y: Position (top-left for rect, center for circle)<br> &nbsp; &nbsp;width, height: Size (defaults to screen size)<br> &nbsp; &nbsp;radius: Radius for circular regions<br> &nbsp; &nbsp;feather: Edge softness<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Filter: Created filter object",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-create_quick_filter",
       "is_method": true
     },
@@ -10193,7 +10321,7 @@
       "name": "apply_vignette",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick vignette filter (darkens edges)",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_vignette",
       "is_method": true
     },
@@ -10201,7 +10329,7 @@
       "name": "apply_blur",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick blur filter",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_blur",
       "is_method": true
     },
@@ -10209,7 +10337,7 @@
       "name": "apply_sepia",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick sepia (old photo) filter",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_sepia",
       "is_method": true
     },
@@ -10217,7 +10345,7 @@
       "name": "apply_grayscale",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick black and white filter",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_grayscale",
       "is_method": true
     },
@@ -10225,7 +10353,7 @@
       "name": "apply_invert",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick color inversion filter",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_invert",
       "is_method": true
     },
@@ -10233,7 +10361,7 @@
       "name": "apply_warm_temperature",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick warm temperature filter",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_warm_temperature",
       "is_method": true
     },
@@ -10241,7 +10369,7 @@
       "name": "apply_cold_temperature",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick cold temperature filter",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_cold_temperature",
       "is_method": true
     },
@@ -10249,7 +10377,7 @@
       "name": "apply_night_vision",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick night vision (green) effect",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_night_vision",
       "is_method": true
     },
@@ -10257,7 +10385,7 @@
       "name": "apply_crt_effect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick CRT (old monitor) effect",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_crt_effect",
       "is_method": true
     },
@@ -10265,7 +10393,7 @@
       "name": "apply_pixelate",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick pixelation effect",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_pixelate",
       "is_method": true
     },
@@ -10273,7 +10401,7 @@
       "name": "apply_bloom",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick bloom (glow) effect",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_bloom",
       "is_method": true
     },
@@ -10281,7 +10409,7 @@
       "name": "apply_edge_detect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick edge detection filter",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_edge_detect",
       "is_method": true
     },
@@ -10289,7 +10417,7 @@
       "name": "apply_emboss",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick emboss effect",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_emboss",
       "is_method": true
     },
@@ -10297,7 +10425,7 @@
       "name": "apply_sharpen",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick sharpen filter",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_sharpen",
       "is_method": true
     },
@@ -10305,7 +10433,7 @@
       "name": "apply_posterize",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick posterize effect",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_posterize",
       "is_method": true
     },
@@ -10313,7 +10441,7 @@
       "name": "apply_neon",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick neon glow effect",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_neon",
       "is_method": true
     },
@@ -10321,7 +10449,7 @@
       "name": "apply_radial_blur",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick radial blur (zoom effect)",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_radial_blur",
       "is_method": true
     },
@@ -10329,7 +10457,7 @@
       "name": "apply_fisheye",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick fisheye lens effect",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_fisheye",
       "is_method": true
     },
@@ -10337,7 +10465,7 @@
       "name": "apply_twirl",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Quick twirl distortion effect",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_twirl",
       "is_method": true
     },
@@ -10345,7 +10473,7 @@
       "name": "apply_circular_grayscale",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Apply grayscale filter to a circular region.<br><br>Args:<br> &nbsp; &nbsp;center_x: X position of circle center<br> &nbsp; &nbsp;center_y: Y position of circle center<br> &nbsp; &nbsp;radius: Radius of the circle<br> &nbsp; &nbsp;intensity: Filter strength<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Filter: Created filter",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_circular_grayscale",
       "is_method": true
     },
@@ -10353,7 +10481,7 @@
       "name": "apply_rectangular_blur",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Apply blur filter to a rectangular region.<br><br>Args:<br> &nbsp; &nbsp;x, y: Top-left position<br> &nbsp; &nbsp;width, height: Size of rectangle<br> &nbsp; &nbsp;intensity: Blur strength<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Filter: Created filter",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_rectangular_blur",
       "is_method": true
     },
@@ -10361,7 +10489,7 @@
       "name": "begin_frame",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Begin rendering frame",
+      "description": "Start rendering a new frame.",
       "link": "backend/opengl.html#method-openglrenderer-begin_frame",
       "is_method": true
     },
@@ -10369,7 +10497,7 @@
       "name": "end_frame",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "End rendering frame - apply filters if any",
+      "description": "Finish rendering and apply filters.",
       "link": "backend/opengl.html#method-openglrenderer-end_frame",
       "is_method": true
     },
@@ -10377,7 +10505,7 @@
       "name": "_apply_filters",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Apply all registered filters to the screen",
+      "description": "Apply stacked filters to the screen.",
       "link": "backend/opengl.html#method-openglrenderer-_apply_filters",
       "is_method": true
     },
@@ -10385,7 +10513,7 @@
       "name": "get_surface",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Get the main screen surface for compatibility with UI elements.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The main display surface",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-get_surface",
       "is_method": true
     },
@@ -10393,7 +10521,7 @@
       "name": "set_surface",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Set custom surface for rendering using Framebuffer Objects.<br><br>Args:<br> &nbsp; &nbsp;surface: Pygame surface to use as render target",
+      "description": "Render to a custom surface using framebuffer.",
       "link": "backend/opengl.html#method-openglrenderer-set_surface",
       "is_method": true
     },
@@ -10401,31 +10529,31 @@
       "name": "_surface_to_texture",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Convert pygame surface to OpenGL texture with proper color format.<br><br>Args:<br> &nbsp; &nbsp;surface: Pygame surface to convert<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;int: OpenGL texture ID",
+      "description": "Convert a pygame Surface to an OpenGL texture.",
       "link": "backend/opengl.html#method-openglrenderer-_surface_to_texture",
+      "is_method": true
+    },
+    {
+      "name": "_surface_to_texture_cached",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Cached version of surface-to-texture.",
+      "link": "backend/opengl.html#method-openglrenderer-_surface_to_texture_cached",
       "is_method": true
     },
     {
       "name": "_convert_color",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Convert color tuple to normalized RGBA values<br><br>R(0-255) -&gt; R(0.0-1.0)<br><br>B(0-255) -&gt; B(0.0-1.0)<br><br>G(0-255) -&gt; G(0.0-1.0)<br><br>A(0.0-1.0) -&gt; A(0.0-1.0)",
+      "description": "Convert color tuple to normalized RGBA.",
       "link": "backend/opengl.html#method-openglrenderer-_convert_color",
-      "is_method": true
-    },
-    {
-      "name": "_ensure_particle_capacity",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "Ensure particle buffers are large enough - DYNAMIC RESIZING",
-      "link": "backend/opengl.html#method-openglrenderer-_ensure_particle_capacity",
       "is_method": true
     },
     {
       "name": "enable_scissor",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Enable scissor test for clipping region.<br><br>Args:<br> &nbsp; &nbsp;x (int): X position from left (pygame coordinate system)<br> &nbsp; &nbsp;y (int): Y position from top (pygame coordinate system) &nbsp;<br> &nbsp; &nbsp;width (int): Width of scissor region<br> &nbsp; &nbsp;height (int): Height of scissor region",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-enable_scissor",
       "is_method": true
     },
@@ -10433,7 +10561,7 @@
       "name": "disable_scissor",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Disable scissor test",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-disable_scissor",
       "is_method": true
     },
@@ -10441,7 +10569,7 @@
       "name": "draw_rect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a colored rectangle with optional rounded corners.<br><br>Args:<br> &nbsp; &nbsp;x: X coordinate of top-left corner<br> &nbsp; &nbsp;y: Y coordinate of top-left corner<br> &nbsp; &nbsp;width: Rectangle width<br> &nbsp; &nbsp;height: Rectangle height<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the rectangle<br> &nbsp; &nbsp;anchor_point: Anchor point for the rectangle<br> &nbsp; &nbsp;border_width: Border width for unfilled rectangles<br> &nbsp; &nbsp;surface: Target surface<br> &nbsp; &nbsp;corner_radius: Radius of rounded corners in pixels.<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Can be:<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;- int: Same radius for all corners (CSS: border-radius: 10px)<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;- tuple of 4 ints: (top-left, top-right, bottom-right, bottom-left) <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(CSS: border-radius: 10px 20px 30px 40px)",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_rect",
       "is_method": true
     },
@@ -10449,7 +10577,7 @@
       "name": "_draw_sharp_rect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Original sharp-corner rectangle drawing (existing code)",
+      "description": "Draw a sharp rectangle, with proper outline handling.",
       "link": "backend/opengl.html#method-openglrenderer-_draw_sharp_rect",
       "is_method": true
     },
@@ -10457,7 +10585,7 @@
       "name": "_draw_rounded_rect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw rectangle with individually rounded corners",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_draw_rounded_rect",
       "is_method": true
     },
@@ -10465,8 +10593,16 @@
       "name": "draw_line",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a line between two points with specified width.<br><br>Args:<br> &nbsp; &nbsp;start_x: Start X coordinate<br> &nbsp; &nbsp;start_y: Start Y coordinate<br> &nbsp; &nbsp;end_x: End X coordinate<br> &nbsp; &nbsp;end_y: End Y coordinate<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;width: Line width<br> &nbsp; &nbsp;surface: Target surface",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_line",
+      "is_method": true
+    },
+    {
+      "name": "_draw_thick_line",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-openglrenderer-_draw_thick_line",
       "is_method": true
     },
     {
@@ -10478,26 +10614,10 @@
       "is_method": true
     },
     {
-      "name": "draw_text",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "Draw text using pygame font rendering",
-      "link": "backend/opengl.html#method-openglrenderer-draw_text",
-      "is_method": true
-    },
-    {
-      "name": "_draw_thick_line_optimized",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "Optimized method for drawing thick lines",
-      "link": "backend/opengl.html#method-openglrenderer-_draw_thick_line_optimized",
-      "is_method": true
-    },
-    {
       "name": "draw_circle",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a circle with specified center, radius, color, and anchor point.<br><br>Args:<br> &nbsp; &nbsp;center_x: X coordinate where the anchor point will be placed<br> &nbsp; &nbsp;center_y: Y coordinate where the anchor point will be placed<br> &nbsp; &nbsp;radius: Circle radius<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the circle<br> &nbsp; &nbsp;border_width: Border width for hollow circles<br> &nbsp; &nbsp;surface: Target surface<br> &nbsp; &nbsp;anchor_point: Anchor point within the circle&#x27;s bounding box (0.0-1.0)<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(0, 0) = top-left, (0.5, 0.5) = center, (1, 1) = bottom-right",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_circle",
       "is_method": true
     },
@@ -10505,7 +10625,7 @@
       "name": "_generate_filled_circle_geometry",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Generate vertices and indices for a filled circle - FIXED VERSION",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_generate_filled_circle_geometry",
       "is_method": true
     },
@@ -10513,15 +10633,23 @@
       "name": "_generate_hollow_circle_geometry",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Generate vertices and indices for a hollow circle (outline)",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_generate_hollow_circle_geometry",
+      "is_method": true
+    },
+    {
+      "name": "_upload_geometry",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-openglrenderer-_upload_geometry",
       "is_method": true
     },
     {
       "name": "draw_polygon",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a polygon from a list of points.<br><br>Args:<br> &nbsp; &nbsp;points: List of (x, y) points defining the polygon<br> &nbsp; &nbsp;color: RGB color tuple<br> &nbsp; &nbsp;fill: Whether to fill the polygon<br> &nbsp; &nbsp;border_width: Border width for hollow polygons,<br> &nbsp; &nbsp;surface: Target surface<br> &nbsp; &nbsp;anchor_point: Anchor point",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_polygon",
       "is_method": true
     },
@@ -10529,7 +10657,7 @@
       "name": "_generate_filled_polygon_geometry",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Generate vertices and indices for a filled polygon using triangle fan",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_generate_filled_polygon_geometry",
       "is_method": true
     },
@@ -10537,64 +10665,32 @@
       "name": "_generate_hollow_polygon_geometry",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Generate vertices and indices for a hollow polygon (outline)",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_generate_hollow_polygon_geometry",
       "is_method": true
     },
     {
-      "name": "_upload_geometry",
+      "name": "draw_text",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Upload vertices and indices to GPU, return VAO, VBO, EBO",
-      "link": "backend/opengl.html#method-openglrenderer-_upload_geometry",
-      "is_method": true
-    },
-    {
-      "name": "render_opengl",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "This function is used just for make it detectable in the profiler that is OpenGL.<br><br>! Never Remove it",
-      "link": "backend/opengl.html#method-openglrenderer-render_opengl",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-openglrenderer-draw_text",
       "is_method": true
     },
     {
       "name": "draw_surface",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a pygame surface at specified coordinates.<br>Uses blit internally for consistency.<br><br>Args:<br> &nbsp; &nbsp;surface: Pygame surface to draw<br> &nbsp; &nbsp;x: X coordinate<br> &nbsp; &nbsp;y: Y coordinate",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_surface",
-      "is_method": true
-    },
-    {
-      "name": "render_surface",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "Draw a pygame surface as texture",
-      "link": "backend/opengl.html#method-openglrenderer-render_surface",
-      "is_method": true
-    },
-    {
-      "name": "render_particles",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "HIGHLY OPTIMIZED particle rendering with CORRECTED coordinate conversion",
-      "link": "backend/opengl.html#method-openglrenderer-render_particles",
       "is_method": true
     },
     {
       "name": "blit",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Blit a source surface onto the current render target.<br>Works similarly to pygame.Surface.blit().<br><br>Args:<br> &nbsp; &nbsp;source_surface: Surface to blit from<br> &nbsp; &nbsp;dest_rect: Destination rectangle (x, y, width, height) or (x, y)<br> &nbsp; &nbsp;area: Source area to blit from (None for entire surface)<br> &nbsp; &nbsp;special_flags: Additional blitting flags (currently unused)",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-blit",
-      "is_method": true
-    },
-    {
-      "name": "blit_surface",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "Alternative blit function with position tuple instead of rect.<br><br>Args:<br> &nbsp; &nbsp;source_surface: Surface to blit from<br> &nbsp; &nbsp;dest_pos: Destination position (x, y)<br> &nbsp; &nbsp;area: Source area to blit from",
-      "link": "backend/opengl.html#method-openglrenderer-blit_surface",
       "is_method": true
     },
     {
@@ -10606,11 +10702,43 @@
       "is_method": true
     },
     {
+      "name": "clear",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-openglrenderer-clear",
+      "is_method": true
+    },
+    {
+      "name": "render_particles",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Render particles using instancing.<br>particle_data should contain:<br> &nbsp; &nbsp;- active_count: int<br> &nbsp; &nbsp;- positions: np.ndarray (N,2) world positions<br> &nbsp; &nbsp;- sizes: np.ndarray (N,) sizes in world units (will be zoomed by camera)<br> &nbsp; &nbsp;- colors: np.ndarray (N,3) uint8 RGB<br> &nbsp; &nbsp;- alphas: np.ndarray (N,) uint8 alpha",
+      "link": "backend/opengl.html#method-openglrenderer-render_particles",
+      "is_method": true
+    },
+    {
+      "name": "_ensure_particle_capacity",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Dynamically resize instance buffers if needed.",
+      "link": "backend/opengl.html#method-openglrenderer-_ensure_particle_capacity",
+      "is_method": true
+    },
+    {
       "name": "cleanup",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Clean up OpenGL resources",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-cleanup",
+      "is_method": true
+    },
+    {
+      "name": "set_blend_mode",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Set the OpenGL blend mode.<br>mode can be &#x27;normal&#x27;, &#x27;add&#x27;, &#x27;multiply&#x27;, etc.",
+      "link": "backend/opengl.html#method-openglrenderer-set_blend_mode",
       "is_method": true
     },
     {
@@ -11238,11 +11366,11 @@
       "is_method": true
     },
     {
-      "name": "count_themes_in_engine",
+      "name": "get_some_stats",
       "class": "CodeStatistics",
       "module": "tools",
       "description": "Count the number of themes available in LunaEngine<br>Returns: Dictionary with theme statistics",
-      "link": "tools/code_stats.html#method-codestatistics-count_themes_in_engine",
+      "link": "tools/code_stats.html#method-codestatistics-get_some_stats",
       "is_method": true
     },
     {
@@ -11416,5 +11544,5 @@
       "type": "example"
     }
   ],
-  "last_updated": "2026-02-16T14:06:37.163176"
+  "last_updated": "2026-03-12T17:38:06.776383"
 }

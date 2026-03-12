@@ -269,7 +269,7 @@ class UIElement(ABC):
         self.always_on_top:bool = False
         self.groups:List[str] = []
         self.corner_radius = 0
-        self.border_width:int = 0
+        self.border_width:int = 1
         
         # Generate unique ID using element type name
         self.element_type = self.__class__.__name__.lower()
@@ -278,25 +278,22 @@ class UIElement(ABC):
     def get_mouse_position(self, input_state:InputState) -> Tuple[int, int]:
         return input_state.mouse_pos
     
-    def convert_mouse_pos(self, mouse_pos:Tuple[int,int]) -> Tuple[int,int]:
+    def getCollideRect(self) -> pygame.Rect:
         if self.parent:
-            parent_pos = self.parent.get_actual_position()
-            mouse_pos = (mouse_pos[0] - parent_pos[0], mouse_pos[1] - parent_pos[1])
-        return mouse_pos
+            self.parent_rect = self.parent.getCollideRect()
+            x = self.parent_rect.x + self.x - int(self.width * self.root_point[0])
+            y = self.parent_rect.y + self.y - int(self.height * self.root_point[1])
+        else:
+            x = self.x - int(self.width * self.root_point[0])
+            y = self.y - int(self.height * self.root_point[1])
+        return pygame.Rect(x, y, self.width, self.height)
     
-    def mouse_over(self, input_state:InputState) -> bool:
-        # Needs to handle if has parent too
-        if self.parent is not None:
-            parent_pos = self.parent.get_actual_position()
-        else: parent_pos = (0, 0)
-        
-        mouse_pos:tuple[int, int] = self.get_mouse_position(input_state)
-        # Adjusted to support root_point/anchor_point(I'm dumb as fuck)
-        my_pos = (parent_pos[0] + self.x + int(self.width * self.root_point[0]), parent_pos[1] + self.y + int(self.height * self.root_point[1]))
-        is_mouse_over:bool = (
-            mouse_pos[0] > my_pos[0] and mouse_pos[0] < my_pos[0] + self.width and
-            mouse_pos[1] > my_pos[1] and mouse_pos[1] < my_pos[1] + self.height
-        ) or False
+    def mouse_over(self, input_state:InputState|Tuple) -> bool:
+        if type(input_state) == InputState:
+            mouse_pos = self.get_mouse_position(input_state)
+        elif type(input_state) == tuple:
+            mouse_pos = input_state
+        is_mouse_over:bool = self.getCollideRect().collidepoint(mouse_pos)
         
         return is_mouse_over
 
@@ -825,20 +822,21 @@ class Button(UIElement):
         actual_x, actual_y = self.get_actual_position()
         theme = self._get_colors()
         
-        # First: Draw the border if applicable
+        # draw border if enabled in theme
         if theme.button_border:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
                             theme.button_border, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
         
-        # SECOND: Draw the button background
+        # draw background
         color = self._get_color_for_state()
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color, corner_radius=self.corner_radius)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color, border_width=self.border_width, corner_radius=self.corner_radius)
         
-        # Finally: Draw the text on top
+        # Draw text
         if self.text:
             text_color = self._get_text_color()
-            center_x, center_y =  actual_x + self.width // 2, actual_y + self.height // 2
+            center_x, center_y =  (actual_x + self.width // 2) + self.border_width, (actual_y + self.height // 2) + self.border_width
             renderer.draw_text(self.text, center_x, center_y, text_color, self.font, anchor_point=(0.5, 0.5))
+
                     
         super().render(renderer)
 
@@ -960,7 +958,7 @@ class ImageButton(UIElement):
         
         overlay_color = self._get_overlay_color()
         if overlay_color:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, overlay_color)
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, overlay_color, border_width=self.border_width, corner_radius=self.corner_radius)
                 
         super().render(renderer)
 
@@ -1215,7 +1213,7 @@ class TextBox(UIElement):
         
         # THEN: Draw background
         bg_color = self._get_background_color()
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, corner_radius=self.corner_radius)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # Draw text
         self._render_text_content(renderer, actual_x, actual_y, theme)
@@ -1235,7 +1233,7 @@ class TextBox(UIElement):
         
         # Render children (important for any child elements)
         for child in self.children:
-            child.render_opengl(renderer)
+            child.render(renderer)
     
     def _render_text_content(self, renderer, actual_x: int, actual_y: int, theme):
         """Helper method to render text content - FIXED subsurface error"""
@@ -1476,7 +1474,7 @@ class DialogBox(UIElement):
                              theme.dialog_border, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
 
         # Draw main dialog box (simplified for OpenGL)
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.dialog_background, 
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.dialog_background, border_width=self.border_width,
                           corner_radius=self.corner_radius)
 
         # Draw speaker name
@@ -1640,7 +1638,7 @@ class ProgressBar(UIElement):
         
         # Draw background
         renderer.draw_rect(actual_x, actual_y, self.width, self.height,
-                           self.background_color, fill=True,
+                           self.background_color, fill=True, border_width=self.border_width,
                            corner_radius=self.corner_radius)
         
         # Draw progress according to orientation
@@ -1657,7 +1655,8 @@ class ProgressBar(UIElement):
                     progress_height,
                     self.foreground_color,
                     fill=True,
-                    corner_radius=self.corner_radius
+                    corner_radius=self.corner_radius,
+                    border_width=self.border_width
                 )
         else:  # horizontal (default)
             progress_width = int(percentage * self.width)
@@ -1669,7 +1668,8 @@ class ProgressBar(UIElement):
                     self.height,
                     self.foreground_color,
                     fill=True,
-                    corner_radius=self.corner_radius
+                    corner_radius=self.corner_radius,
+                    border_width=self.border_width
                 )
         
         # Draw centered text (if enabled)
@@ -1685,6 +1685,7 @@ class ProgressBar(UIElement):
             )
                 
         super().render(renderer)
+
 class UIDraggable(UIElement):
     def __init__(self, x: int, y: int, width: int, height: int,
                  root_point: Tuple[float, float] = (0, 0),
@@ -1704,7 +1705,7 @@ class UIDraggable(UIElement):
             
         mouse_pos, mouse_pressed = inputState.mouse_pos, inputState.mouse_buttons_pressed.left
         # Convert real mouse pos to element parents pos
-        mouse_pos = self.convert_mouse_pos(mouse_pos)
+        mouse_pos = self.get_mouse_position(inputState)
         actual_x, actual_y = self.get_actual_position()
         
         mouse_over = self.mouse_over(inputState)
@@ -1718,9 +1719,16 @@ class UIDraggable(UIElement):
             self.state = UIState.HOVERED if mouse_over else UIState.NORMAL
         
         if self.dragging and mouse_pressed:
-            new_x = mouse_pos[0] - self.drag_offset[0] + int(self.width * self.root_point[0])
-            new_y = mouse_pos[1] - self.drag_offset[1] + int(self.height * self.root_point[1])
-            self.x, self.y = self.get_actual_position(new_x, new_y)
+            # Convert mouse pos to real pos
+            # Parent offset
+            if self.parent:
+                parent_rect = self.parent.getCollideRect()
+                # Insert mouse_pos
+                mouse_pos = (mouse_pos[0] - parent_rect.x, mouse_pos[1] - parent_rect.y)
+            mouse_pos = (mouse_pos[0] - self.drag_offset[0], mouse_pos[1] - self.drag_offset[1])
+            # Insert root_point
+            mouse_pos = (mouse_pos[0] * (1 - self.root_point[0]), mouse_pos[1] * (1 - self.root_point[1]))
+            self.x, self.y = self.get_actual_position(*mouse_pos)
     
     def render(self, renderer):
         """Render using OpenGL backend"""
@@ -1741,7 +1749,7 @@ class UIDraggable(UIElement):
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.button_border, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
             
         # Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color, fill=True, corner_radius=self.corner_radius)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, color, fill=True, border_width=self.border_width, corner_radius=self.corner_radius)
         
         
         super().render(renderer)
@@ -1990,7 +1998,7 @@ class Select(UIElement):
         else:
             bg_color = theme.dropdown_hover
             
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, corner_radius=self.corner_radius)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # FINALLY: Draw arrows and text
         self._render_select_content(renderer, actual_x, actual_y, theme)
@@ -1999,50 +2007,37 @@ class Select(UIElement):
         super().render(renderer)
     
     def _render_select_content(self, renderer, actual_x: int, actual_y: int, theme):
-        """Helper method to render select content for both backends"""
         arrow_color = theme.dropdown_text
-        
-        # Calculate arrow positions
+
+        # Arrow positions (relative to actual_x, actual_y)
         left_arrow_x = actual_x + 5
         left_arrow_y = actual_y + (self.height - 10) // 2
-        
+
         right_arrow_x = actual_x + self.width - 20
         right_arrow_y = actual_y + (self.height - 10) // 2
-        
-        # Create colored arrow surfaces
-        if self._left_arrow_surface and self._right_arrow_surface:
-            # Create temporary surfaces with the correct theme color
-            left_arrow_colored = self._left_arrow_surface.copy()
-            left_arrow_colored.fill(arrow_color, special_flags=pygame.BLEND_RGBA_MULT)
-            
-            right_arrow_colored = self._right_arrow_surface.copy()
-            right_arrow_colored.fill(arrow_color, special_flags=pygame.BLEND_RGBA_MULT)
-            
-            # Draw arrows using surface rendering (works for both backends)
-            if hasattr(renderer, 'render_surface'):
-                renderer.render_surface(left_arrow_colored, left_arrow_x, left_arrow_y)
-                renderer.render_surface(right_arrow_colored, right_arrow_x, right_arrow_y)
-            else:
-                # Fallback for OpenGL renderers without render_surface
-                renderer.draw_surface(left_arrow_colored, left_arrow_x, left_arrow_y)
-                renderer.draw_surface(right_arrow_colored, right_arrow_x, right_arrow_y)
+
+        # If the renderer supports polygon drawing (OpenGL), use it directly
+        if hasattr(renderer, 'draw_polygon'):
+            # Left arrow (points left)
+            left_points = [
+                (left_arrow_x + 10, left_arrow_y),           # top right
+                (left_arrow_x,       left_arrow_y + 5),      # tip left
+                (left_arrow_x + 10, left_arrow_y + 10)       # bottom right
+            ]
+            renderer.draw_polygon(left_points, arrow_color)
+
+            # Right arrow (points right)
+            right_points = [
+                (right_arrow_x,          right_arrow_y),      # top left
+                (right_arrow_x + 10,      right_arrow_y + 5), # tip right
+                (right_arrow_x,          right_arrow_y + 10)  # bottom left
+            ]
+            renderer.draw_polygon(right_points, arrow_color)
         else:
-            # Fallback: draw simple triangles if surfaces aren't available
             self._draw_fallback_arrows(renderer, actual_x, actual_y, arrow_color)
         
-        # Draw selected text
-        if self.options:
-            text = self.options[self.selected_index]
-            if len(text) > 15:
-                text = text[:15] + "..."
-            text_surface = self.font.render(text, True, theme.dropdown_text)
-            text_x = actual_x + (self.width - text_surface.get_width()) // 2
-            text_y = actual_y + (self.height - text_surface.get_height()) // 2
-            
-            if hasattr(renderer, 'render_surface'):
-                renderer.render_surface(text_surface, text_x, text_y)
-            else:
-                renderer.draw_surface(text_surface, text_x, text_y)
+        # Draw text
+        renderer.draw_text(str(self.options[self.selected_index]), actual_x + self.width//2, actual_y + self.height//2, theme.dropdown_text, self.font, anchor_point=(0.5, 0.5))
     
     def _draw_fallback_arrows(self, renderer, actual_x: int, actual_y: int, arrow_color):
         """Fallback arrow drawing method"""
@@ -2173,7 +2168,7 @@ class Switch(UIElement):
         
         # Then, draw the track
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, track_color, 
-                        fill=True, border_width=0, corner_radius=self.corner_radius)
+                        fill=True, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # Then draw the thumb
         thumb_size = max(10, int(self.height * 0.7))
@@ -2184,109 +2179,166 @@ class Switch(UIElement):
         thumb_y = actual_y + thumb_margin
         
         renderer.draw_rect(thumb_x, thumb_y, thumb_size, thumb_size, thumb_color, 
-                        fill=True, border_width=0, corner_radius=thumb_size // 2)
+                        fill=True, border_width=self.border_width, corner_radius=thumb_size // 2)
         
         super().render(renderer)
 
 class Slider(UIElement):
-    def __init__(self, x: int, y: int, width: int, height: int, 
+    """
+    Interactive slider for selecting a numeric value.
+    Supports both horizontal and vertical orientations.
+    """
+
+    def __init__(self, x: int, y: int, width: int, height: int,
                  min_val: float = 0, max_val: float = 100, value: float = 50,
+                 orientation: Literal['horizontal', 'vertical'] = 'horizontal',
                  root_point: Tuple[float, float] = (0, 0),
                  theme: ThemeType = None,
-                 element_id: Optional[str] = None):  # NOVO PARÂMETRO
+                 element_id: Optional[str] = None):
+        """
+        Initialize a slider.
+
+        Args:
+            x (int): X coordinate position.
+            y (int): Y coordinate position.
+            width (int): Width of the slider (for horizontal) or thumb width (for vertical).
+            height (int): Height of the slider (for vertical) or thumb height (for horizontal).
+            min_val (float): Minimum selectable value.
+            max_val (float): Maximum selectable value.
+            value (float): Initial value.
+            orientation (str): 'horizontal' or 'vertical'.
+            root_point (Tuple[float, float]): Anchor point.
+            theme (ThemeType): Theme to use.
+            element_id (Optional[str]): Custom element ID.
+        """
         super().__init__(x, y, width, height, root_point, element_id)
         self.min_val = min_val
         self.max_val = max_val
         self.value = value
+        self.orientation = orientation.lower()
         self.dragging = False
         self.on_value_changed = None
-        
+
         self.theme_type = theme or ThemeManager.get_current_theme()
-        
+
+        # Thumb dimensions (can be adjusted)
+        self.thumb_size = 10  # width for horizontal, height for vertical
+
+    def set_on_value_changed(self, callback:Callable[[float], None]):
+        self.on_value_changed = callback
+
     def set_theme(self, theme_type: ThemeType):
         """Set slider theme"""
         self.theme_type = theme_type
-    
+
     def _get_colors(self):
         """Get colors from current theme"""
         return ThemeManager.get_theme(self.theme_type)
-    
+
     def set_value(self, value: float):
+        """Set the current value, clamped to min/max."""
         self.value = max(self.min_val, min(self.max_val, value))
         if self.on_value_changed:
             self.on_value_changed(self.value)
-    
+
     def update(self, dt, inputState):
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
             return
-        
+
         mouse_pos, mouse_pressed = inputState.get_mouse_state()
         actual_x, actual_y = self.get_actual_position()
-            
-        thumb_x = actual_x + int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
-        thumb_rect = (thumb_x - 5, actual_y, 10, self.height)
-        
-        mouse_over_thumb = (thumb_rect[0] <= mouse_pos[0] <= thumb_rect[0] + thumb_rect[2] and 
-                           thumb_rect[1] <= mouse_pos[1] <= thumb_rect[1] + thumb_rect[3])
-        
+
+        # Calculate thumb rectangle based on orientation
+        if self.orientation == 'horizontal':
+            thumb_x = actual_x + int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
+            thumb_rect = (thumb_x - self.thumb_size // 2, actual_y, self.thumb_size, self.height)
+        else:  # vertical
+            thumb_y = actual_y + int((self.value - self.min_val) / (self.max_val - self.min_val) * self.height)
+            thumb_rect = (actual_x, thumb_y - self.thumb_size // 2, self.width, self.thumb_size)
+
+        mouse_over_thumb = (thumb_rect[0] <= mouse_pos[0] <= thumb_rect[0] + thumb_rect[2] and
+                            thumb_rect[1] <= mouse_pos[1] <= thumb_rect[1] + thumb_rect[3])
+
         if mouse_pressed.left and (mouse_over_thumb or self.dragging):
             self.dragging = True
             self.state = UIState.PRESSED
-            # Update value based on mouse position
-            relative_x = max(0, min(self.width, mouse_pos[0] - actual_x))
-            new_value = self.min_val + (relative_x / self.width) * (self.max_val - self.min_val)
-            
+
+            # Update value based on mouse position along the slider axis
+            if self.orientation == 'horizontal':
+                relative_x = max(0, min(self.width, mouse_pos[0] - actual_x))
+                new_value = self.min_val + (relative_x / self.width) * (self.max_val - self.min_val)
+            else:  # vertical
+                relative_y = max(0, min(self.height, mouse_pos[1] - actual_y))
+                new_value = self.min_val + (relative_y / self.height) * (self.max_val - self.min_val)
+
             if new_value != self.value:
                 self.value = new_value
                 if self.on_value_changed:
                     self.on_value_changed(self.value)
         else:
             self.dragging = False
-            if (thumb_rect[0] <= mouse_pos[0] <= thumb_rect[0] + thumb_rect[2] and 
-                thumb_rect[1] <= mouse_pos[1] <= thumb_rect[1] + thumb_rect[3]):
+            if mouse_over_thumb:
                 self.state = UIState.HOVERED
             else:
                 self.state = UIState.NORMAL
-    
+
     def render(self, renderer):
-        """Render using OpenGL backend"""
+        """Render the slider using OpenGL backend."""
         if not self.visible:
             return
-            
+
         theme = self._get_colors()
         actual_x, actual_y = self.get_actual_position()
-        
+
         # Draw track
-        renderer.draw_rect(actual_x, actual_y + self.height//2 - 2, 
-                         self.width, 4, theme.slider_track, 
-                        fill=True, corner_radius=self.corner_radius)
-        
+        if self.orientation == 'horizontal':
+            # Track is a line along the center
+            track_y = actual_y + self.height // 2 - 2
+            renderer.draw_rect(actual_x, track_y, self.width, 4, theme.slider_track,
+                               fill=True, corner_radius=self.corner_radius, border_width=self.border_width)
+        else:  # vertical
+            track_x = actual_x + self.width // 2 - 2
+            renderer.draw_rect(track_x, actual_y, 4, self.height, theme.slider_track,
+                               fill=True, corner_radius=self.corner_radius, border_width=self.border_width)
+
         # Draw thumb
-        thumb_x = actual_x + int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
-        
+        thumb_color = theme.slider_thumb_normal
         if self.state == UIState.PRESSED:
             thumb_color = theme.slider_thumb_pressed
         elif self.state == UIState.HOVERED:
             thumb_color = theme.slider_thumb_hover
-        else:
-            thumb_color = theme.slider_thumb_normal
-            
-        renderer.draw_rect(thumb_x - 5, actual_y, 10, self.height, thumb_color, 
-                        fill=True, corner_radius=self.corner_radius)
-        
-        # Draw value text
+
+        if self.orientation == 'horizontal':
+            thumb_x = actual_x + int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
+            thumb_x -= self.thumb_size // 2
+            renderer.draw_rect(thumb_x, actual_y, self.thumb_size, self.height, thumb_color,
+                               fill=True, corner_radius=self.corner_radius, border_width=self.border_width)
+        else:  # vertical
+            thumb_y = actual_y + int((self.value - self.min_val) / (self.max_val - self.min_val) * self.height)
+            thumb_y -= self.thumb_size // 2
+            renderer.draw_rect(actual_x, thumb_y, self.width, self.thumb_size, thumb_color,
+                               fill=True, corner_radius=self.corner_radius, border_width=self.border_width)
+
+        # Draw value text (positioned appropriately)
         font = pygame.font.Font(None, 12)
         value_text = f"{self.value:.1f}"
         text_surface = font.render(value_text, True, theme.slider_text)
-        
+
+        if self.orientation == 'horizontal':
+            # Place text below the thumb
+            text_x = thumb_x + self.thumb_size // 2 - text_surface.get_width() // 2
+            text_y = actual_y + self.height + 5
+        else:  # vertical
+            # Place text to the right of the thumb
+            text_x = actual_x + self.width + 5
+            text_y = thumb_y + self.thumb_size // 2 - text_surface.get_height() // 2
+
         if hasattr(renderer, 'render_surface'):
-            renderer.render_surface(text_surface, thumb_x - text_surface.get_width()//2, 
-                                actual_y + self.height + 5)
+            renderer.render_surface(text_surface, text_x, text_y)
         else:
-            renderer.draw_surface(text_surface, thumb_x - text_surface.get_width()//2, 
-                                actual_y + self.height + 5)
-                
+            renderer.draw_surface(text_surface, text_x, text_y)
+
         super().render(renderer)
 
 class Dropdown(UIElement):
@@ -2309,6 +2361,7 @@ class Dropdown(UIElement):
         self._option_height = 25
         self.on_selection_changed = None
         self._just_opened = False
+        self.text_anchor_point = (0.5, 0.5)
 
         # Scroll
         self.max_visible_options = max_visible_options
@@ -2395,13 +2448,18 @@ class Dropdown(UIElement):
         return options_to_show[start:end]
 
     def on_scroll(self, event: pygame.event.Event):
-        if not self.expanded or not self.visible or not self.enabled:
+        if not self.visible or not self.enabled or (not self.expanded and not self.mouse_over(pygame.mouse.get_pos())):
             return
-        options_to_use = self.filtered_options if self.filtered_options is not None else list(range(len(self.options)))
-        total = len(options_to_use)
-        if total <= self.max_visible_options:
-            return
-        self.scroll_offset = max(0, min(total - self.max_visible_options, self.scroll_offset - event.y))
+        
+        if self.expanded:
+            options_to_use = self.filtered_options if self.filtered_options is not None else list(range(len(self.options)))
+            total = len(options_to_use)
+            if total <= self.max_visible_options:
+                return
+            self.scroll_offset = max(0, min(total - self.max_visible_options, self.scroll_offset - event.y))
+        else:
+            # if not expanded, scrolling above it will change the current value
+            self.selected_index = max(0, min(len(self.options) - 1, self.selected_index - event.y))
 
     def _get_scrollbar_track_rect(self, actual_x: int, actual_y: int) -> Tuple[int, int, int, int]:
         """Full rectangle of the vertical scrollbar (track + thumb)."""
@@ -2564,20 +2622,14 @@ class Dropdown(UIElement):
         else:
             main_color = theme.dropdown_hover
         renderer.draw_rect(actual_x, actual_y, self.width, self.height,
-                           main_color, corner_radius=self.corner_radius)
+                           main_color, border_width=self.border_width, corner_radius=self.corner_radius)
 
         # Selected text
         if self.options:
             text = self.options[self.selected_index]
             if len(text) > 15:
                 text = text[:15] + "..."
-            text_surface = self.font.render(text, True, theme.dropdown_text)
-            if hasattr(renderer, 'render_surface'):
-                renderer.render_surface(text_surface, actual_x + 5,
-                                        actual_y + (self.height - text_surface.get_height()) // 2)
-            else:
-                renderer.draw_surface(text_surface, actual_x + 5,
-                                      actual_y + (self.height - text_surface.get_height()) // 2)
+            renderer.draw_text(text, actual_x + self.width // 2, actual_y + self.height // 2, theme.dropdown_text, self.font, anchor_point=self.text_anchor_point)
 
         # Dropdown arrow
         arrow_color = theme.dropdown_text
@@ -2657,7 +2709,7 @@ class Dropdown(UIElement):
                 option_color = theme.dropdown_option_hover
 
             renderer.draw_rect(actual_x, option_y, bg_width, self._option_height,
-                               option_color, fill=True, border_width=0, corner_radius=0)
+                               option_color, fill=True, border_width=self.border_width, corner_radius=0)
 
             # Separator line
             if i < len(visible_indices) - 1 and theme.dropdown_border:
@@ -2679,7 +2731,7 @@ class Dropdown(UIElement):
             scrollbar_color = (150, 150, 150) if self.is_scrolling else (100, 100, 100)
             renderer.draw_rect(thumb_rect[0], thumb_rect[1],
                                thumb_rect[2], thumb_rect[3],
-                               scrollbar_color, fill=True, border_width=0,
+                               scrollbar_color, fill=True, border_width=self.border_width,
                                corner_radius=self.corner_radius)
 
     def add_option(self, option: str):
@@ -2728,7 +2780,6 @@ class UiFrame(UIElement):
         self.theme_type = theme or ThemeManager.get_current_theme()
         self.background_color = None  # None means transparent background
         self.border_color = None      # None means no border
-        self.border_width = 1
         self.padding = 5  # Padding inside the frame
         self.corner_radius = 0
         
@@ -2790,6 +2841,7 @@ class UiFrame(UIElement):
         Returns:
             Tuple[int, int, int, int]: (x, y, width, height) of content area.
         """
+        
         # Needs to consideer root_point
         actual_x, actual_y = self.get_actual_position()
         #content_x = actual_x + self.padding
@@ -2832,7 +2884,7 @@ class UiFrame(UIElement):
         
         # Draw background
         bg_color = self.background_color or theme.background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, corner_radius=self.corner_radius)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # Render children
         super().render(renderer)
@@ -3145,18 +3197,18 @@ class NumberSelector(UIElement):
         
         # 1. Draw the border around the main element
         if border_color:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, fill=False)
+            renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color, border_width=self.border_width, fill=False)
         
         # 2. Draw main background rectangle
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, background_color)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, background_color, border_width=self.border_width)
         
         # 3. Draw UP button area
         renderer.draw_rect(actual_x + self._up_rect.x, actual_y + self._up_rect.y, 
-                           self._up_rect.width, self._up_rect.height, up_color)
+                           self._up_rect.width, self._up_rect.height, up_color, border_width=max(1, self.border_width))
         
         # 4. Draw DOWN button area
         renderer.draw_rect(actual_x + self._down_rect.x, actual_y + self._down_rect.y, 
-                           self._down_rect.width, self._down_rect.height, down_color)
+                           self._down_rect.width, self._down_rect.height, down_color, border_width=max(1, self.border_width))
 
         # 5. Draw the value text
         formatted_value = self._format_value()
@@ -3186,7 +3238,7 @@ class NumberSelector(UIElement):
             (center_down[0] - triangle_size, center_down[1] - triangle_size // 2),
             (center_down[0] + triangle_size, center_down[1] - triangle_size // 2)
         ]
-        renderer.draw_polygon(down_triangle_points, text_color)
+        renderer.draw_polygon(down_triangle_points, text_color, border_width=self.border_width)
         
 class Checkbox(UIElement):
     """
@@ -3357,7 +3409,7 @@ class Checkbox(UIElement):
         renderer.draw_rect(box_x, actual_y, self.box_size, self.box_size, border_color, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # 3. Draw the main box background
-        renderer.draw_rect(box_x, actual_y, self.box_size, self.box_size, box_color, corner_radius=self.corner_radius)
+        renderer.draw_rect(box_x, actual_y, self.box_size, self.box_size, box_color, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # 4. Draw the checkmark if checked
         if self.checked:
@@ -3487,20 +3539,8 @@ class ScrollingFrame(UiFrame):
         Returns:
             bool: True if mouse is over the frame's visible area
         """
-        if self.parent is not None:
-            parent_pos = self.parent.get_actual_position()
-        else:
-            parent_pos = (0, 0)
-        
-        mouse_pos = input_state.mouse_pos  # Use original mouse position
-        # my_pos = (parent_pos[0] + self.x, parent_pos[1] + self.y)
-        # my_pos needs to consideer root_point too
-        my_pos = (parent_pos[0] + (self.width*self.root_point[0]) + self.x, parent_pos[1] + (self.height*self.root_point[1]) + self.y)
-        
-        is_mouse_over = (
-            mouse_pos[0] > my_pos[0] and mouse_pos[0] < my_pos[0] + self.width and
-            mouse_pos[1] > my_pos[1] and mouse_pos[1] < my_pos[1] + self.height
-        )
+        mouse_pos = self.get_mouse_position(input_state)
+        is_mouse_over = self.getCollideRect().collidepoint(mouse_pos)
         
         return is_mouse_over
 
@@ -3627,7 +3667,7 @@ class ScrollingFrame(UiFrame):
                              border_color, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # THEN: Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, corner_radius=self.corner_radius)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # Enable clipping for content area
         if hasattr(renderer, 'enable_scissor'):
@@ -3737,7 +3777,7 @@ class ScrollingFrame(UiFrame):
         scrollbar_y = y + self.height - scrollbar_height
         
         # Track
-        renderer.draw_rect(scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height, theme.slider_track)
+        renderer.draw_rect(scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height, theme.slider_track, border_width=self.border_width)
         
         # Thumb
         max_scroll_x = max(1, self.content_width - self.width)
@@ -3767,7 +3807,7 @@ class ScrollingFrame(UiFrame):
         scrollbar_y = y
         
         # Track
-        renderer.draw_rect(scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height, theme.slider_track)
+        renderer.draw_rect(scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height, theme.slider_track, border_width=self.border_width)
         
         # Thumb
         max_scroll_y = max(1, self.content_height - self.height)
@@ -4177,11 +4217,11 @@ class Tabination(UiFrame):
         
         # 2. Draw main background
         bg_color = self.background_color or theme.background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, corner_radius=self.corner_radius)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # 3. Draw tab headers area background
         tab_area_bg = tuple(min(255, c + 30) for c in bg_color) if bg_color else (240, 240, 240)
-        renderer.draw_rect(actual_x, actual_y, self.width, self.tab_height, tab_area_bg, corner_radius=self.corner_radius)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.tab_height, tab_area_bg, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # 4. Draw tab headers
         for i, tab in enumerate(self.tabs):
@@ -4206,7 +4246,7 @@ class Tabination(UiFrame):
                                  tab_rect[2], 1, theme.border or (200, 200, 200), border_width=self.border_width, corner_radius=self.corner_radius)
             
             # Draw tab background
-            renderer.draw_rect(tab_rect[0], tab_rect[1], tab_rect[2], tab_rect[3], bg_color, corner_radius=self.corner_radius)
+            renderer.draw_rect(tab_rect[0], tab_rect[1], tab_rect[2], tab_rect[3], bg_color, border_width=self.border_width, corner_radius=self.corner_radius)
             
             # Draw tab text
             text_surface = self.font.render(tab['name'], True, text_color)
@@ -4448,13 +4488,12 @@ class Clock(UIElement):
         center_y = y + self.diameter // 2
         radius = self.diameter // 2
         
-        # Draw clock face
-        renderer.draw_circle(center_x, center_y, radius, self.face_color)
-        
         # Draw border
         if self.border_color:
             renderer.draw_circle(center_x, center_y, radius, self.border_color, 
-                               fill=False, border_width=2)
+                               fill=False, border_width=self.border_width)
+        # Draw clock face
+        renderer.draw_circle(center_x, center_y, radius, self.face_color, border_width=self.border_width)
         
         # Draw numbers if enabled
         if self.show_numbers:
@@ -4593,13 +4632,13 @@ class Clock(UIElement):
             center_x = x + self.width // 2
             center_y = y + self.height // 2
             
-            # Draw background
-            renderer.draw_rect(x, y, self.width, self.height, self.face_color)
-            
             # Draw border
             if self.border_color:
                 renderer.draw_rect(x, y, self.width, self.height, 
-                                 self.border_color, fill=False, border_width=1)
+                                 self.border_color, fill=False, border_width=self.border_width)
+            
+            # Draw background
+            renderer.draw_rect(x, y, self.width, self.height, self.face_color, border_width=self.border_width)
             
             # Draw time text
             renderer.draw_text(time_str, center_x, center_y, 
@@ -4890,14 +4929,14 @@ class AudioVisualizer(UIElement):
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
         
-        # Draw background
-        bg_color = getattr(theme, 'background', (20, 20, 30))
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
-        
         # Draw border
         border_color = getattr(theme, 'border', (50, 50, 70))
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                         border_color, fill=False, border_width=1)
+                         border_color, fill=False, border_width=self.border_width)
+        
+        # Draw background
+        bg_color = getattr(theme, 'background', (20, 20, 30))
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, border_width=self.border_width)
         
         # Render based on style
         if self.style == 'bars':
@@ -4941,7 +4980,7 @@ class AudioVisualizer(UIElement):
             color = self._get_bar_color(value)
             
             # Draw bar
-            renderer.draw_rect(bar_x, bar_y, bar_width, bar_height, color)
+            renderer.draw_rect(bar_x, bar_y, bar_width, bar_height, color, border_width=0)
             
             # Draw highlight on top
             if bar_height > 2:
@@ -5554,8 +5593,6 @@ class Pagination(UiFrame):
         
         # Draw frame background
         super().render(renderer)
-        
-        # Render children (buttons) are already rendered by super()
 
 class TextArea(UIElement):
     """
@@ -6171,14 +6208,14 @@ class TextArea(UIElement):
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
         
-        # Draw background
-        bg_color = theme.background if self.focused else theme.button_disabled
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color)
-        
         # Draw border
         border_color = theme.button_border if self.focused else theme.border
         renderer.draw_rect(actual_x, actual_y, self.width, self.height,
                          border_color, fill=False, border_width=self.border_width)
+        
+        # Draw background
+        bg_color = theme.background if self.focused else theme.button_disabled
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, border_width=self.border_width)
         
         # Enable scissor for text area
         if hasattr(renderer, 'enable_scissor'):
@@ -6190,19 +6227,12 @@ class TextArea(UIElement):
             for line_num in visible_lines:
                 line_y = actual_y + (line_num * self.line_height) - self.scroll_y
                 number_text = str(line_num + 1)
-                number_surface = self.font.render(number_text, True, theme.text_secondary)
-                
-                # Right-align numbers
-                number_x = actual_x + self.line_number_width - self.line_number_padding - number_surface.get_width()
-                
-                if hasattr(renderer, 'render_surface'):
-                    renderer.render_surface(number_surface, number_x, line_y)
-                else:
-                    renderer.draw_surface(number_surface, number_x, line_y)
+                number_x = actual_x + self.line_number_width - self.line_number_padding - self.font.size(number_text)[0]
+                renderer.draw_text(number_text, number_x, line_y, theme.text_secondary, self.font)
             
             # Draw line number separator
             separator_x = actual_x + self.line_number_width - 1
-            renderer.draw_rect(separator_x, actual_y, 1, self.height, theme.border)
+            renderer.draw_rect(separator_x, actual_y, 1, self.height, theme.border, border_width=self.border_width)
         
         # Draw text lines
         visible_lines = self._get_visible_lines()
@@ -6229,7 +6259,7 @@ class TextArea(UIElement):
             cursor_actual_y = actual_y + cursor_y
             
             renderer.draw_rect(cursor_actual_x, cursor_actual_y,
-                             2, self.line_height, theme.text_primary)
+                             2, self.line_height, theme.text_primary, border_width=self.border_width)
         
         # Disable scissor
         if hasattr(renderer, 'disable_scissor'):
@@ -6565,12 +6595,12 @@ class FileFinder(UIElement):
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
         
-        # Draw background
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.background)
-        
         # Draw border
         renderer.draw_rect(actual_x, actual_y, self.width, self.height,
-                         theme.border, fill=False, border_width=self.border_width)
+                         theme.border, fill=False, border_width=self.border_width, corner_radius=self.corner_radius)
+        
+        # Draw background
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.background, border_width=self.border_width, corner_radius=self.corner_radius)
         
         # Render children (icon, textbox, button)
         super().render(renderer)
@@ -6777,7 +6807,7 @@ class ChartVisualizer(UIElement):
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
 
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.background)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.background, border_width=self.border_width)
 
         title_height = self.title_font.get_height() + 5 if self.title else 0
         legend_height = 20 if self.show_legend else 0
@@ -6829,7 +6859,7 @@ class ChartVisualizer(UIElement):
                 bar_y = top + height - 10 - bar_height
 
                 color = self._get_color(i)
-                renderer.draw_rect(bar_x, bar_y, bar_width, bar_height, color)
+                renderer.draw_rect(bar_x, bar_y, bar_width, bar_height, color, border_width=0)
 
                 if self.show_labels:
                     label = self.labels[i] if i < len(self.labels) else str(i)
@@ -6850,7 +6880,7 @@ class ChartVisualizer(UIElement):
                 bar_y = top + i * (bar_height + self.bar_spacing)
 
                 color = self._get_color(i)
-                renderer.draw_rect(bar_x, bar_y, bar_width, bar_height, color)
+                renderer.draw_rect(bar_x, bar_y, bar_width, bar_height, color, border_width=0)
 
                 if self.show_labels:
                     label = self.labels[i] if i < len(self.labels) else str(i)
@@ -6964,3 +6994,4 @@ class ChartVisualizer(UIElement):
             renderer.draw_rect(start_x + i * item_width, y, 12, 12, color)
             renderer.draw_text(label[:10], start_x + i * item_width + 15, y + 6,
                                theme.text_secondary, self.legend_font, anchor_point=(0, 0.5))
+            

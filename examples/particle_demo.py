@@ -1,21 +1,39 @@
 """
-Particle System Demo - Fixed Version
+Particle System Demo - Using ThreadedParticleSystem (CPU + background thread)
 """
 
-import sys
-import os
+import sys, os, pygame
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-import pygame
 from lunaengine.core import LunaEngine, Scene
-from lunaengine.ui.elements import *
-from lunaengine.graphics.particles import *
-from lunaengine.graphics.camera import Camera, CameraMode
+from lunaengine.ui import *
+from lunaengine.graphics import (
+    ThreadedParticleSystem,
+    ParticleType,
+    ExitPoint,
+    PhysicsType,
+    ParticleConfig,
+    Camera, CameraMode
+)
 
 class ParticleDemoScene(Scene):
     """Interactive particle system demo scene"""
+    demo_state = {
+            'active_particles': 0,
+            'fps': 0,
+            'memory_usage': 0,
+            'emission_rate': 50,
+            'selected_particle': "dust",  # Uses string
+            'selected_exit': "top",
+            'selected_physics': "topdown", 
+            'spread': 45.0,
+            'auto_emit': True,
+            'show_metrics': True,
+    }
     
     def on_exit(self, next_scene = None):
+        # NEW: stop the background thread when leaving the scene
+        self.particle_system.stop_thread()
         return super().on_exit(next_scene)
     
     def on_enter(self, previous_scene: str = None):
@@ -38,51 +56,22 @@ class ParticleDemoScene(Scene):
         self.emitter_positions = [
             (-200, -200), (-200, 200), (0, 50), (200, -200), (200, 200)
         ]
+
+        # NEW: Create the threaded particle system
+        self.particle_system = ThreadedParticleSystem(
+            renderer=self.engine.renderer,
+            max_particles=20000,
+            target_fps=60,
+            auto_start=True
+        )
+
         self.setup_ui()
         
-        # Register some custom particles
-        self.setup_custom_particles()
-        
         self.particle_system.get_physics_names()
-        
-    def setup_custom_particles(self):
-        """Setup custom particle types for testing"""
-        # Magic particles
-        magic_config = ParticleConfig(
-            color_start=(200, 0, 255),
-            color_end=(100, 0, 200),
-            size_start=6.0,
-            size_end=10.0,
-            lifetime=2.0,
-            speed=120.0,
-            gravity=-80.0,
-            spread=90.0,
-            fade_out=True,
-            grow=True
-        )
-        self.particle_system.register_custom_particle("magic", magic_config)
-        
-        # Electric sparks
-        electric_config = ParticleConfig(
-            color_start=(0, 200, 255),
-            color_end=(0, 100, 255),
-            size_start=3.0,
-            size_end=1.0,
-            lifetime=0.8,
-            speed=250.0,
-            gravity=50.0,
-            spread=15.0,
-            fade_out=True
-        )
-        self.particle_system.register_custom_particle("electric", electric_config)
 
     def setup_ui(self):
         """Setup all UI controls and displays"""
         self.camera.mode = CameraMode.FIXED
-        print(self.camera.viewport_width, self.camera.viewport_height)
-        
-        print(self.camera.world_to_screen((0,0)))
-        print(self.camera.screen_to_world((0,0)))
         
         # Title
         title = TextLabel(512, 20, "LunaEngine - Particle System Demo", 32, root_point=(0.5, 0))
@@ -91,6 +80,12 @@ class ParticleDemoScene(Scene):
         # FPS and Performance Display
         self.fps_display = TextLabel(20, 20, "FPS: --", 18, (100, 255, 100))
         self.add_ui_element(self.fps_display)
+        
+        self.emission_display = TextLabel(180, 240, "50 p/s", 14)
+        self.add_ui_element(self.emission_display)
+        
+        self.spread_display = TextLabel(180, 300, "45°", 14)
+        self.add_ui_element(self.spread_display)
         
         self.particle_count_display = TextLabel(20, 45, "Particles: 0", 16, (200, 200, 255))
         self.add_ui_element(self.particle_count_display)
@@ -107,6 +102,7 @@ class ParticleDemoScene(Scene):
         self.particle_dropdown.set_on_selection_changed(
             lambda i, v: self.update_state('selected_particle', v)
         )
+        self.particle_dropdown.set_selected_index(self.particle_system.get_particles_names(True, True).index(str(self.demo_state['selected_particle']).capitalize()))
         self.add_ui_element(self.particle_dropdown)
         
         # Section 2: Emission Controls
@@ -121,22 +117,16 @@ class ParticleDemoScene(Scene):
         self.emission_slider.on_value_changed = lambda v: self.update_state('emission_rate', int(v))
         self.add_ui_element(self.emission_slider)
         
-        self.emission_display = TextLabel(180, 240, "50 p/s", 14)
-        self.add_ui_element(self.emission_display)
-        
         # Spread control
-        spread_label = TextLabel(20, 270, "Spread Angle:", 16)
+        spread_label = TextLabel(20, 280, "Spread Angle:", 16)
         self.add_ui_element(spread_label)
         
-        self.spread_slider = Slider(20, 290, 150, 20, 0, 360, 45)
+        self.spread_slider = Slider(20, 300, 150, 20, 0, 360, 45)
         self.spread_slider.on_value_changed = lambda v: self.update_state('spread', v)
         self.add_ui_element(self.spread_slider)
         
-        self.spread_display = TextLabel(180, 290, "45°", 14)
-        self.add_ui_element(self.spread_display)
-        
         # Section 3: Physics and Exit Points
-        section3_title = TextLabel(20, 330, "Physics & Emission", 20, (255, 255, 0))
+        section3_title = TextLabel(20, 335, "Physics & Emission", 20, (255, 255, 0))
         self.add_ui_element(section3_title)
         
         exit_points = ["top", "bottom", "left", "right", "center", "circular"]
@@ -187,7 +177,7 @@ class ParticleDemoScene(Scene):
         print(f"Updated {key} to {value}")  # DEBUG
         
         # Update UI displays
-        self.emission_display.set_text(f"{self.demo_state['emission_rate']} p/s")
+        self.emission_display.set_text(f"{self.demo_state['emission_rate'] or 0} p/s")
         self.spread_display.set_text(f"{self.demo_state['spread']:.0f}°")
 
     def emit_manual(self):

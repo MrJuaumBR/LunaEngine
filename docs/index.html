@@ -60,9 +60,9 @@
                         <p class="text-white-50 mb-1">Modules</p>
                         <div class="d-flex justify-content-center gap-3 flex-wrap">
                             <small class="text-white-50">32 files</small>
-                            <small class="text-white-50">178 classes</small>
-                            <small class="text-white-50">54 functions</small>
-                            <small class="text-white-50">1173 methods</small>
+                            <small class="text-white-50">181 classes</small>
+                            <small class="text-white-50">57 functions</small>
+                            <small class="text-white-50">1183 methods</small>
                         </div>
                     </div>
                 </div>
@@ -152,83 +152,104 @@
 
 ## Overview
 
-- **Total Files**: 42
-- **Total Lines**: 29470
-- **Code Lines**: 18998
-- **Comment Lines**: 5998
-- **Blank Lines**: 4474
+- **Total Files**: 56
+- **Total Lines**: 29098
+- **Code Lines**: 19150
+- **Comment Lines**: 5657
+- **Blank Lines**: 4291
 
-## Theme Statistics
+## Statistics
 
 - **Total Themes**: 83
+- **Total Elements**: 26
 
 ## Code Density
 
-- **Code Density**: 64.5%
+- **Code Density**: 65.8%
 - Balanced code and comments
 
 ## Project Structure
 
 ```bash
-📁 lunaengine/
-├── 🐍 __init__.py
-├── 📁 backend/
-│   ├── 🐍 __init__.py
-│   ├── 🐍 controller.py
-│   ├── 🐍 exceptions.py
-│   ├── 🐍 network.py
-│   ├── 🐍 openal.py
-│   ├── 🐍 opengl.py
-│   └── 🐍 types.py
-├── 📝 CODE_STATISTICS.md
-├── 📁 core/
-│   ├── 🐍 __init__.py
-│   ├── 🐍 audio.py
-│   ├── 🐍 engine.py
-│   ├── 🐍 renderer.py
-│   ├── 🐍 scene.py
-│   └── 🐍 window.py
-├── 📁 graphics/
-│   ├── 🐍 __init__.py
-│   ├── 🐍 camera.py
-│   ├── 🐍 particles.py
-│   ├── 🐍 shadows.py
-│   └── 🐍 spritesheet.py
-├── 📁 misc/
-│   ├── 🐍 __init__.py
-│   ├── 🐍 bones.py
-│   └── 🐍 icons.py
-├── 📁 tools/
-│   ├── 🐍 __init__.py
-│   ├── 🐍 code_stats.py
-│   └── 🐍 image_conversion_tool.py
-├── 📁 ui/
-│   ├── 🐍 __init__.py
-│   ├── 🐍 elements.py
-│   ├── 🐍 layer_manager.py
-│   ├── 🐍 layout.py
-│   ├── 🐍 notifications.py
-│   ├── 🐍 styles.py
-│   ├── 📋 themes.json
-│   ├── 🐍 themes.py
-│   ├── 🐍 tooltips.py
-│   └── 🐍 tween.py
-└── 📁 utils/
-    ├── 🐍 __init__.py
-    ├── 🐍 image_converter.py
-    ├── 🐍 math_utils.py
-    ├── 🐍 performance.py
-    ├── 🐍 threading.py
-    └── 🐍 timer.py
+[ROT] lunaengine/
+├── [PYT] __init__.py
+├── [DIR] assets/
+├── [DIR] backend/
+│   ├── [PYT] __init__.py
+│   ├── [PYT] controller.py
+│   ├── [PYT] exceptions.py
+│   ├── [PYT] network.py
+│   ├── [PYT] openal.py
+│   ├── [PYT] opengl.py
+│   └── [PYT] types.py
+├── [MDN] CODE_STATISTICS.md
+├── [DIR] core/
+│   ├── [PYT] __init__.py
+│   ├── [PYT] audio.py
+│   ├── [PYT] engine.py
+│   ├── [PYT] renderer.py
+│   ├── [PYT] scene.py
+│   └── [PYT] window.py
+├── [DIR] graphics/
+│   ├── [PYT] __init__.py
+│   ├── [PYT] camera.py
+│   ├── [PYT] particles.py
+│   ├── [DIR] shaders/
+│   │   ├── [SHD] depth.frag
+│   │   ├── [SHD] depth.geom
+│   │   ├── [SHD] depth.vert
+│   │   ├── [SHD] filter.frag
+│   │   ├── [SHD] filter.vert
+│   │   ├── [SHD] particle.comp
+│   │   ├── [SHD] particle.frag
+│   │   ├── [SHD] particle.vert
+│   │   ├── [SHD] rounded_rect.frag
+│   │   ├── [SHD] rounded_rect.vert
+│   │   ├── [SHD] simple.frag
+│   │   ├── [SHD] simple.vert
+│   │   ├── [SHD] texture.frag
+│   │   └── [SHD] texture.vert
+│   ├── [PYT] shadows.py
+│   └── [PYT] spritesheet.py
+├── [DIR] misc/
+│   ├── [PYT] __init__.py
+│   ├── [PYT] bones.py
+│   └── [PYT] icons.py
+├── [DIR] tools/
+│   ├── [PYT] __init__.py
+│   ├── [PYT] code_stats.py
+│   └── [PYT] image_conversion_tool.py
+├── [DIR] ui/
+│   ├── [PYT] __init__.py
+│   ├── [PYT] elements.py
+│   ├── [PYT] layer_manager.py
+│   ├── [PYT] layout.py
+│   ├── [PYT] notifications.py
+│   ├── [PYT] styles.py
+│   ├── [JSN] themes.json
+│   ├── [PYT] themes.py
+│   ├── [PYT] tooltips.py
+│   └── [PYT] tween.py
+└── [DIR] utils/
+    ├── [PYT] __init__.py
+    ├── [PYT] image_converter.py
+    ├── [PYT] math_utils.py
+    ├── [PYT] performance.py
+    ├── [PYT] threading.py
+    └── [PYT] timer.py
 ```
 
 ## Files by Extension
 
 | Extension | Count | Percentage |
 |-----------|-------|------------|
-| `.json` | 1 | 2.4% |
-| `.md` | 1 | 2.4% |
-| `.py` | 40 | 95.2% |
+| `.comp` | 1 | 1.8% |
+| `.frag` | 6 | 10.7% |
+| `.geom` | 1 | 1.8% |
+| `.json` | 1 | 1.8% |
+| `.md` | 1 | 1.8% |
+| `.py` | 40 | 71.4% |
+| `.vert` | 6 | 10.7% |
 
 ## Files by Directory
 
@@ -237,6 +258,7 @@
 | `backend` | 7 |
 | `core` | 6 |
 | `graphics` | 5 |
+| `graphics\shaders` | 14 |
 | `misc` | 3 |
 | `root` | 2 |
 | `tools` | 3 |
@@ -247,47 +269,61 @@
 
 | File | Total Lines | Code | Comments | Blank | Size (KB) |
 |------|------------|------|----------|-------|-----------|
-| `ui\elements.py` | 6966 | 3926 | 1769 | 1271 | 270.9 |
+| `ui\elements.py` | 6997 | 3935 | 1790 | 1272 | 273.3 |
 | `ui\themes.json` | 4816 | 4816 | 0 | 0 | 188.1 |
-| `backend\opengl.py` | 2466 | 1596 | 402 | 468 | 93.2 |
+| `backend\opengl.py` | 1363 | 961 | 154 | 248 | 53.7 |
 | `ui\tween.py` | 1202 | 550 | 423 | 229 | 36.7 |
+| `core\engine.py` | 1112 | 527 | 360 | 225 | 41.9 |
 | `backend\network.py` | 1092 | 770 | 140 | 182 | 40.1 |
-| `core\engine.py` | 989 | 439 | 346 | 204 | 36.4 |
 | `ui\notifications.py` | 932 | 576 | 199 | 157 | 37.9 |
-| `graphics\camera.py` | 814 | 483 | 174 | 157 | 31.8 |
+| `graphics\camera.py` | 881 | 514 | 197 | 170 | 34.2 |
 | `core\audio.py` | 774 | 431 | 200 | 143 | 26.1 |
 | `backend\openal.py` | 766 | 433 | 185 | 148 | 25.5 |
-| `graphics\particles.py` | 693 | 465 | 128 | 100 | 24.4 |
+| `graphics\particles.py` | 742 | 580 | 78 | 84 | 23.9 |
 | `backend\controller.py` | 640 | 493 | 63 | 84 | 23.0 |
 | `graphics\spritesheet.py` | 613 | 279 | 223 | 111 | 21.5 |
 | `misc\icons.py` | 578 | 418 | 63 | 97 | 21.1 |
 | `ui\themes.py` | 567 | 402 | 82 | 83 | 19.9 |
 | `misc\bones.py` | 493 | 313 | 72 | 108 | 20.5 |
 | `utils\timer.py` | 427 | 164 | 179 | 84 | 13.8 |
-| `graphics\shadows.py` | 392 | 247 | 65 | 80 | 15.4 |
+| `tools\code_stats.py` | 400 | 274 | 56 | 70 | 16.1 |
 | `utils\performance.py` | 377 | 238 | 66 | 73 | 13.3 |
-| `tools\code_stats.py` | 369 | 249 | 55 | 65 | 14.8 |
 | `ui\tooltips.py` | 364 | 179 | 118 | 67 | 12.9 |
 | `core\window.py` | 358 | 138 | 158 | 62 | 12.0 |
-| `core\scene.py` | 333 | 124 | 139 | 70 | 11.7 |
-| `core\renderer.py` | 332 | 93 | 184 | 55 | 11.1 |
+| `core\renderer.py` | 339 | 96 | 187 | 56 | 11.3 |
+| `utils\math_utils.py` | 332 | 178 | 104 | 50 | 10.1 |
+| `graphics\shaders\filter.frag` | 323 | 283 | 1 | 39 | 11.0 |
 | `tools\image_conversion_tool.py` | 308 | 195 | 51 | 62 | 12.4 |
-| `utils\math_utils.py` | 268 | 131 | 95 | 42 | 8.4 |
+| `graphics\shadows.py` | 264 | 160 | 59 | 45 | 9.5 |
 | `utils\image_converter.py` | 251 | 177 | 25 | 49 | 9.2 |
 | `ui\layout.py` | 231 | 97 | 91 | 43 | 7.3 |
 | `ui\layer_manager.py` | 225 | 94 | 85 | 46 | 7.5 |
 | `backend\types.py` | 187 | 135 | 19 | 33 | 6.1 |
-| `CODE_STATISTICS.md` | 139 | 117 | 8 | 14 | 4.5 |
+| `core\scene.py` | 181 | 133 | 10 | 38 | 6.8 |
+| `CODE_STATISTICS.md` | 180 | 155 | 9 | 16 | 6.3 |
+| `backend\__init__.py` | 104 | 76 | 22 | 6 | 2.2 |
 | `ui\styles.py` | 91 | 35 | 38 | 18 | 2.7 |
 | `utils\threading.py` | 87 | 43 | 29 | 15 | 2.5 |
-| `graphics\__init__.py` | 73 | 49 | 19 | 5 | 1.7 |
+| `graphics\__init__.py` | 77 | 53 | 19 | 5 | 1.7 |
 | `ui\__init__.py` | 73 | 26 | 30 | 17 | 2.7 |
-| `utils\__init__.py` | 69 | 40 | 22 | 7 | 2.4 |
-| `backend\__init__.py` | 36 | 14 | 16 | 6 | 1.8 |
+| `utils\__init__.py` | 73 | 44 | 22 | 7 | 2.6 |
+| `graphics\shaders\rounded_rect.frag` | 42 | 35 | 1 | 6 | 1.4 |
 | `core\__init__.py` | 28 | 7 | 15 | 6 | 0.8 |
+| `graphics\shaders\particle.vert` | 27 | 21 | 1 | 5 | 0.8 |
 | `backend\exceptions.py` | 21 | 5 | 11 | 5 | 0.6 |
+| `graphics\shaders\depth.geom` | 21 | 17 | 1 | 3 | 0.5 |
+| `graphics\shaders\simple.vert` | 18 | 13 | 1 | 4 | 0.5 |
+| `graphics\shaders\rounded_rect.vert` | 17 | 14 | 1 | 2 | 0.4 |
+| `graphics\shaders\texture.vert` | 17 | 14 | 1 | 2 | 0.5 |
 | `misc\__init__.py` | 16 | 6 | 7 | 3 | 0.9 |
 | `__init__.py` | 11 | 4 | 3 | 4 | 0.3 |
+| `graphics\shaders\filter.vert` | 10 | 7 | 1 | 2 | 0.2 |
+| `graphics\shaders\particle.comp` | 10 | 8 | 1 | 1 | 0.2 |
+| `graphics\shaders\particle.frag` | 10 | 8 | 1 | 1 | 0.2 |
+| `graphics\shaders\depth.vert` | 9 | 6 | 1 | 2 | 0.2 |
+| `graphics\shaders\texture.frag` | 8 | 6 | 1 | 1 | 0.1 |
+| `graphics\shaders\simple.frag` | 7 | 5 | 1 | 1 | 0.1 |
+| `graphics\shaders\depth.frag` | 3 | 2 | 1 | 0 | 0.1 |
 | `tools\__init__.py` | 3 | 1 | 1 | 1 | 0.0 |
 
                         </div>
@@ -300,7 +336,7 @@
     <!-- Modules Grid -->
     <div class="container mt-5">
         <h2 class="mb-4">LunaEngine Modules</h2>
-        <div class="row g-4">
+        <div class="row g-4" style="margin-bottom: 1vw;">
 
     <script>
     
@@ -388,7 +424,7 @@
                                 <i class="bi bi-gear me-1"></i>0 functions
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>180 methods
+                                <i class="bi bi-hammer me-1"></i>183 methods
                             </span>
                         </div>
                     </div>
@@ -424,7 +460,7 @@
                                 <i class="bi bi-gear me-1"></i>8 functions
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>486 methods
+                                <i class="bi bi-hammer me-1"></i>487 methods
                             </span>
                         </div>
                     </div>
@@ -454,13 +490,13 @@
                                 <i class="bi bi-file-text me-1"></i>4 files
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>27 classes
+                                <i class="bi bi-box me-1"></i>30 classes
                             </span>
                             <span class="badge bg-light text-dark">
                                 <i class="bi bi-gear me-1"></i>9 functions
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>132 methods
+                                <i class="bi bi-hammer me-1"></i>134 methods
                             </span>
                         </div>
                     </div>
@@ -493,7 +529,7 @@
                                 <i class="bi bi-box me-1"></i>10 classes
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-gear me-1"></i>22 functions
+                                <i class="bi bi-gear me-1"></i>25 functions
                             </span>
                             <span class="badge bg-light text-dark">
                                 <i class="bi bi-hammer me-1"></i>81 methods
@@ -532,7 +568,7 @@
                                 <i class="bi bi-gear me-1"></i>7 functions
                             </span>
                             <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>224 methods
+                                <i class="bi bi-hammer me-1"></i>228 methods
                             </span>
                         </div>
                     </div>
@@ -631,7 +667,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-02-16 14:06
+                        Documentation generated on 2026-03-12 17:38
                     </p>
                 </div>
             </div>

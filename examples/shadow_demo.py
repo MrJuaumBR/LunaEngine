@@ -1,5 +1,6 @@
 """
 Shadow System Test Demo - LunaEngine
+Updated to work with the new data‑only shadow system.
 """
 
 import sys
@@ -13,7 +14,7 @@ import pygame
 from lunaengine.core import LunaEngine, Scene
 from lunaengine.ui.elements import *
 from lunaengine.graphics.camera import Camera, CameraMode
-from lunaengine.graphics.shadows import ShadowSystem, Light, ShadowCaster
+from lunaengine.graphics.shadows import ShadowSystem, LightType
 
 class ShadowTestScene(Scene):
     """Simple scene to test the shadow system"""
@@ -53,6 +54,9 @@ class ShadowTestScene(Scene):
             'camera_pos': (0, 0),
             'shadow_stats': {}
         }
+        
+        # Flag to toggle shadows (for demo, we just print)
+        self.shadows_enabled = True
 
     def generate_test_objects(self):
         """Generate test objects for shadow casting"""
@@ -75,7 +79,7 @@ class ShadowTestScene(Scene):
             }
             self.test_objects.append(rect_data)
             
-            # Add as shadow caster
+            # Add as shadow caster using helper
             caster = self.shadow_system.add_rectangle_caster(x, y, w, h)
             self.shadow_casters.append(caster)
         
@@ -96,34 +100,45 @@ class ShadowTestScene(Scene):
             }
             self.test_objects.append(circle_data)
             
-            # Add as shadow caster
+            # Add as shadow caster using helper
             caster = self.shadow_system.add_circle_caster(x, y, radius)
             self.shadow_casters.append(caster)
         
-        # Create lights
-        # Main light (sun)
-        self.sun_light = self.shadow_system.add_light(400, -100, 600, (255, 255, 200), 0.8)
-        self.lights.append(self.sun_light)
+        # Create lights using helper methods
+        # Main light (sun) – high range to simulate directional
+        # Main light (directional)
+        self.sun_light = self.shadow_system.add_directional_light(
+            color=(1.0, 1.0, 0.8),
+            intensity=0.8,
+            range=600,
+            shadow_map_size=1024
+        )
         
         # Player light
-        self.player_light = self.shadow_system.add_light(
+        self.player_light = self.shadow_system.add_point_light(
             self.player['position'][0],
             self.player['position'][1],
-            150,
-            (255, 220, 180),
-            0.6
+            color=(1.0, 0.86, 0.7),  # normalized (255,220,180)
+            intensity=0.6,
+            range=150
         )
         self.lights.append(self.player_light)
         
         # Some static lights
         static_lights = [
-            (200, 200, 120, (255, 200, 150), 0.7),
+            (200, 200, 120, (200, 150, 100), 0.7),
             (600, 400, 180, (200, 220, 255), 0.5),
             (100, 450, 100, (200, 255, 200), 0.6)
         ]
         
-        for x, y, radius, color, intensity in static_lights:
-            light = self.shadow_system.add_light(x, y, radius, color, intensity)
+        for x, y, rng, col, intens in static_lights:
+            norm_col = (col[0]/255.0, col[1]/255.0, col[2]/255.0)
+            light = self.shadow_system.add_point_light(
+                x, y,
+                color=norm_col,
+                intensity=intens,
+                range=rng
+            )
             self.lights.append(light)
 
     def setup_ui(self):
@@ -152,6 +167,10 @@ class ShadowTestScene(Scene):
             label = TextLabel(20, 45 + i * 18, instruction, 14, (200, 200, 200))
             self.add_ui_element(label)
         
+        self.darkness_slider = Slider(20, 200, 100, 20, 0.0, 1.0, self.shadow_system.darkness)
+        self.add_ui_element(self.darkness_slider)
+        self.darkness_slider.set_on_value_changed(lambda v: setattr(self.shadow_system, 'darkness', v))
+        
         # Debug info display
         self.debug_label = TextLabel(10, screen_height - 100, "Debug Info", 14, (255, 255, 200))
         self.add_ui_element(self.debug_label)
@@ -164,38 +183,47 @@ class ShadowTestScene(Scene):
             self.lights.clear()
             
             # Recreate player light
-            self.player_light = self.shadow_system.add_light(
+            self.player_light = self.shadow_system.add_point_light(
                 self.player['position'][0],
                 self.player['position'][1],
-                150,
-                (255, 220, 180),
-                0.6
+                color=(1.0, 0.86, 0.7),
+                intensity=0.6,
+                range=150
             )
             self.lights.append(self.player_light)
             print("Lights reset")
             
         elif event.key == pygame.K_c:
             # Clear shadow casters
-            self.shadow_system.clear_shadow_casters()
+            self.shadow_system.clear_casters()
             self.shadow_casters.clear()
             print("Shadow casters cleared")
             
         elif event.key == pygame.K_t:
-            # Toggle shadows
-            self.engine.current_scene.shadows_enabled = not self.engine.current_scene.shadows_enabled
-            print(f"Shadows {'enabled' if self.engine.current_scene.shadows_enabled else 'disabled'}")
+            # Toggle shadows (just a flag for demo)
+            self.shadows_enabled = not self.shadows_enabled
+            self.shadow_system.enabled = self.shadows_enabled
+            print(f"Shadows {'enabled' if self.shadows_enabled else 'disabled'}")
+        elif event.key == pygame.K_1:
+            self.handle_mouse_click(self.engine.input_state.mouse_pos)
 
     def handle_mouse_click(self, pos):
         """Handle mouse clicks to add lights"""
         world_pos = self.camera.screen_to_world(pos)
         
-        # Add a new light at mouse position
-        new_light = self.shadow_system.add_light(
+        # Random normalized color
+        r = random.uniform(0.6, 1.0)
+        g = random.uniform(0.6, 1.0)
+        b = random.uniform(0.6, 1.0)
+        color = (r, g, b)
+        
+        # Add a new point light at mouse position
+        new_light = self.shadow_system.add_point_light(
             world_pos.x,
             world_pos.y,
-            random.randint(80, 200),
-            (random.randint(150, 255), random.randint(150, 255), random.randint(150, 255)),
-            random.uniform(0.4, 0.8)
+            color=color,
+            intensity=random.uniform(0.4, 0.8),
+            range=random.randint(80, 200)
         )
         self.lights.append(new_light)
         print(f"Added light at ({world_pos.x:.1f}, {world_pos.y:.1f})")
@@ -239,13 +267,15 @@ class ShadowTestScene(Scene):
         self.camera.target_position.x = self.player['position'][0]
         self.camera.target_position.y = self.player['position'][1]
         
-        # Update player light
-        self.player_light.position.x = self.player['position'][0]
-        self.player_light.position.y = self.player['position'][1]
+        # Update player light position
+        self.player_light.position = (self.player['position'][0], self.player['position'][1])
         
-        # Animate sun light
-        self.sun_light.position.x = 400 + math.cos(pygame.time.get_ticks() * 0.0005) * 300
-        self.sun_light.position.y = -100 + math.sin(pygame.time.get_ticks() * 0.0005) * 200
+        # Animate sun light – move in a large circle
+        t = pygame.time.get_ticks() * 0.001
+        self.sun_light.position = (
+            400 + math.cos(t * 0.5) * 300,
+            -100 + math.sin(t * 0.5) * 200
+        )
 
     def update(self, dt):
         """Update game logic"""
@@ -264,27 +294,24 @@ class ShadowTestScene(Scene):
         # Get shadow system stats
         self.debug_info['shadow_stats'] = self.shadow_system.get_stats()
         
-        # Handle mouse clicks
-        if self.engine.input_state.mouse_buttons_pressed.left:
-            self.handle_mouse_click(mouse_screen_pos)
-        
         # Update debug display
         self.update_debug_info()
-
+        
     def update_debug_info(self):
         """Update debug information display"""
         stats = self.debug_info['shadow_stats']
         mouse_pos = self.debug_info['mouse_world_pos']
         camera_pos = self.debug_info['camera_pos']
         
-        debug_text = f"Mouse World: ({mouse_pos[0]:.1f}, {mouse_pos[1]:.1f}), Camera: ({camera_pos[0]:.1f}, {camera_pos[1]:.1f}), Zoom: {self.camera.zoom:.2f}, Lights: {stats.get('total_lights', 0)} (visible: {stats.get('visible_lights', 0)}), Casters: {stats.get('total_casters', 0)} (visible: {stats.get('visible_casters', 0)}), Render Time: {stats.get('render_time_ms', 0):.1f}ms, FPS: {stats.get('current_fps', 0):.1f}"
+        debug_text = f"Mouse World: ({mouse_pos[0]:.1f}, {mouse_pos[1]:.1f}), Camera: ({camera_pos[0]:.1f}, {camera_pos[1]:.1f}), Zoom: {self.camera.zoom:.2f}, Lights: {stats.get('lights', 0)} (visible: {stats.get('visible_lights', 0)}), Casters: {stats.get('casters', 0)} (visible: {stats.get('visible_casters', 0)})"
         
         self.debug_label.set_text(debug_text)
 
     def render(self, renderer):
         """Render the scene"""
         # Clear screen
-        renderer.get_surface().fill((30, 30, 50))
+        renderer.clear()
+        renderer.fill_screen((40, 40, 50))  # dark background
         
         # Draw grid for reference
         self.draw_grid(renderer)
@@ -298,16 +325,11 @@ class ShadowTestScene(Scene):
         # Draw lights (for visualization)
         self.draw_lights_debug(renderer)
         
-        # Render shadows
-        if hasattr(self, 'shadows_enabled') and self.shadows_enabled:
-            try:
-                shadow_surface = self.shadow_system.render(self.camera.position, renderer)
-                if shadow_surface and isinstance(shadow_surface, pygame.Surface):
-                    renderer.blit(shadow_surface, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
-            except Exception as e:
-                print(f"Shadow rendering error: {e}")
-                import traceback
-                traceback.print_exc()
+        if hasattr(self.sun_light, 'shadow_map') and self.sun_light.shadow_map:
+            renderer.draw_texture(self.sun_light.shadow_map, 10, 10, 128, 128)
+            # Optionally draw a label using renderer.draw_text (if you have a font)
+            # You'd need a font surface; for simplicity, we can use pygame's font and blit via renderer.blit
+            renderer.draw_text("Sun Shadow Map", 10, 140, (255, 255, 255), FontManager.get_font(None, 20))
 
     def draw_grid(self, renderer):
         """Draw a grid for spatial reference"""
@@ -396,23 +418,29 @@ class ShadowTestScene(Scene):
         """Draw light positions for visualization"""
         for light in self.lights:
             screen_pos = self.camera.world_to_screen(light.position)
-            radius = light.radius * self.camera.zoom
+            radius = light.range * self.camera.zoom
+            
+            # Convert normalized color back to 0-255 for debug drawing
+            r = int(light.color[0] * 255)
+            g = int(light.color[1] * 255)
+            b = int(light.color[2] * 255)
+            debug_color = (r, g, b)
             
             # Draw light center
             renderer.draw_circle(
                 screen_pos.x,
                 screen_pos.y,
                 5,
-                light.color,
+                debug_color,
                 fill=True
             )
             
-            # Draw light radius (outline)
+            # Draw light range (outline)
             renderer.draw_circle(
                 screen_pos.x,
                 screen_pos.y,
                 radius,
-                (*light.color, 128),  # Semi-transparent
+                (*debug_color, 128),  # Semi-transparent
                 fill=False,
                 border_width=2
             )
@@ -432,9 +460,6 @@ def main():
     engine.add_scene("shadow_test", ShadowTestScene)
     engine.set_scene("shadow_test")
     
-    # Enable shadows by default
-    engine.current_scene.shadows_enabled = True
-    
     print("=== Shadow System Test Demo ===")
     print("Controls:")
     print("WASD - Move camera/player")
@@ -444,6 +469,9 @@ def main():
     print("C - Clear shadow casters")
     print("T - Toggle shadows on/off")
     print("\nDebug information shown at bottom of screen")
+    print("Note: Shadows are rendered via OpenGL depth maps, but")
+    print("this demo only shows light positions. To see actual")
+    print("shadows, you need a shader that samples the shadow maps.")
     
     engine.run()
 

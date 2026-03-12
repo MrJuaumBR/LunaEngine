@@ -266,3 +266,67 @@ def get_mid_colors(color1: Tuple[int,int,int,float]|Tuple[int,int,int], color2: 
         a2 = 1.0
         
     return (int((r1 + r2) / 2), int((g1 + g2) / 2), int((b1 + b2) / 2), int((a1 + a2) / 2))
+
+import numpy as np
+import math
+
+def perspective_matrix(fov_deg, aspect, near, far) -> np.ndarray:
+    f = 1.0 / math.tan(math.radians(fov_deg) * 0.5)
+    return np.array([
+        [f / aspect, 0, 0, 0],
+        [0, f, 0, 0],
+        [0, 0, (far + near) / (near - far), (2 * far * near) / (near - far)],
+        [0, 0, -1, 0]
+    ], dtype=np.float32)
+
+def look_at(eye, target, up) -> np.ndarray:
+    eye = np.array(eye, dtype=np.float32)
+    target = np.array(target, dtype=np.float32)
+    up = np.array(up, dtype=np.float32)
+    
+    forward = (eye - target) / np.linalg.norm(eye - target)
+    right = np.cross(up, forward)
+    right /= np.linalg.norm(right)
+    new_up = np.cross(forward, right)
+    
+    # Rotation matrix (inverse of the camera-to-world orientation)
+    rot = np.eye(4, dtype=np.float32)
+    rot[0, :3] = right
+    rot[1, :3] = new_up
+    rot[2, :3] = forward
+    
+    # Translation
+    trans = np.eye(4, dtype=np.float32)
+    trans[:3, 3] = -eye
+    
+    return rot @ trans
+
+def interpolate_color(colors, t):
+    """
+    Interpolate between a list of colors.
+    colors: list of (r,g,b) or (r,g,b,a) tuples, values 0-1.
+    t: float between 0 and 1.
+    Returns an RGBA tuple with values 0-1.
+    """
+    if not colors:
+        return (0,0,0,0)
+    if len(colors) == 1:
+        c = colors[0]
+        return c if len(c) == 4 else (*c, 1.0)
+    # Determine segment
+    n = len(colors) - 1
+    seg = int(t * n)
+    if seg >= n:
+        c = colors[-1]
+        return c if len(c) == 4 else (*c, 1.0)
+    t_seg = (t * n) - seg
+    c1 = colors[seg]
+    c2 = colors[seg+1]
+    if len(c1) == 3:
+        c1 = (*c1, 1.0)
+    if len(c2) == 3:
+        c2 = (*c2, 1.0)
+    return tuple(
+        c1[i] + (c2[i] - c1[i]) * t_seg
+        for i in range(4)
+    )

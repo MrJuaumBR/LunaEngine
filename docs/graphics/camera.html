@@ -570,6 +570,14 @@
                 <code class="fs-6 fw-bold text-color-title">def is_visible(self: Any, world_pos: Union[Tuple[float, float], pygame.Vector2], margin: float = 0.0) -> bool</code>
                 <div class="mt-2 text-muted small">Check if a world point is inside the viewport (plus optional margin).</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-get_transform_matrix">
+                <code class="fs-6 fw-bold text-color-title">def get_transform_matrix(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-get_view_projection_matrix">
+                <code class="fs-6 fw-bold text-color-title">def get_view_projection_matrix(self: Any, width: Optional[int] = None, height: Optional[int] = None, column_major: bool = False) -> np.ndarray</code>
+                <div class="mt-2 text-muted small">Return a 4x4 view-projection matrix that maps world coordinates to clip space<br>(normalized device coordinates, range [-1, 1] on both axes, Y up).<br><br>The matrix is constructed as: clip = S * R * T<br>where:<br> &nbsp; &nbsp;T = translation by -camera position<br> &nbsp; &nbsp;R = rotation by -camera.rotation (around the camera center)<br> &nbsp; &nbsp;S = scale by (2 * zoom / viewport_width, 2 * zoom / viewport_height)<br><br>Args:<br> &nbsp; &nbsp;width: &nbsp;Viewport width in pixels. If None, uses self.viewport_width.<br> &nbsp; &nbsp;height: Viewport height in pixels. If None, uses self.viewport_height.<br> &nbsp; &nbsp;column_major: If True, return the matrix in column‑major order (for OpenGL).<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Otherwise, return row‑major.<br><br>Returns:<br> &nbsp; &nbsp;A 4x4 numpy array of float32.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-_get_target_position">
                 <code class="fs-6 fw-bold text-color-title">def _get_target_position(self: Any) -> pygame.Vector2</code>
                 <div class="mt-2 text-muted small">Extract the world position of the current target (if any).</div>
@@ -680,7 +688,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-02-16 14:06
+                        Documentation generated on 2026-03-12 17:38
                     </p>
                 </div>
             </div>
