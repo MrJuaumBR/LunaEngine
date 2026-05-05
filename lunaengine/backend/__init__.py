@@ -39,6 +39,8 @@ from .types import (
     LayerType,
     WindowEventData,
     WindowEventType,
+    Ratio,
+    Color,
 )
 from .network import (
     NetworkHost,
@@ -74,6 +76,8 @@ __all__ = [
     "LayerType",
     "WindowEventData",
     "WindowEventType",
+    "Ratio",
+    "Color",
     # Controllers
     "Controller",
     "ControllerManager",

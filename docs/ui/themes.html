@@ -29,21 +29,61 @@
         </div>
     </nav>
     
-
     <div class="container mt-5">
         <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Ui</a></li><li class="breadcrumb-item active">themes.py</li></ol></nav>
-
         <div class="header-section mb-5">
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>themes.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">themes.py - UI Themes Manager for LunaEngine<br><br>ENGINE PATH:<br>lunaengine -&gt; ui -&gt; themes.py<br><br>DESCRIPTION:<br>This module manages comprehensive UI themes with predefined color schemes<br>for various applications and visual styles. It includes a wide range of<br>themes from basic functional ones to brand-specific and aesthetic designs.<br><br>MAIN FEATURES:<br>- Tries to load themes from local themes.json file<br>- If not found, tries to download from GitHub<br>- Fallback to default theme if everything fails</span>
+                <span class="text-muted">themes.py - UI Themes Manager for LunaEngine<br><br>ENGINE PATH:<br>lunaengine -&gt; ui -&gt; themes.py<br><br>DESCRIPTION:<br>This module manages comprehensive UI themes with predefined color schemes<br>for various applications and visual styles. It includes a wide range of<br>themes from basic functional ones to brand-specific and aesthetic designs.<br><br>MAIN FEATURES:<br>- Loads themes from individual JSON files in lunaengine/assets/themes/<br>- If directory is empty or missing, falls back to local themes.json<br>- If still not found, tries to download from GitHub<br>- Final fallback to default theme<br>- Supports full theme properties: colors (RGBA), corner radius, border width, blur</span>
             </div>
         </div>
-
         <div class="row">
             <div class="col-lg-12">
                 
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-themestyle">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ThemeStyle</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Complete style definition for a single UI element state.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>color: Tuple[int, int, int] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>alpha: float = 1.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>corner_radius: int = 0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>border_width: int = 0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>blur: int = 0</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-themestyle-to_rgb">
+                <code class="fs-6 fw-bold text-color-title">def to_rgb(self: Any) -> Tuple[int, int, int]</code>
+                <div class="mt-2 text-muted small">Return RGB tuple (alpha ignored).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-themestyle-to_rgba">
+                <code class="fs-6 fw-bold text-color-title">def to_rgba(self: Any) -> Tuple[int, int, int, int]</code>
+                <div class="mt-2 text-muted small">Return RGBA tuple with alpha as 0-255.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-themestyle-from_rgb_list">
+                <code class="fs-6 fw-bold text-color-title">def from_rgb_list(cls: Any, rgb_list: List[int], alpha: float = 1.0, corner_radius: int = 0, border_width: int = 0, blur: int = 0) -> 'ThemeStyle'</code>
+                <div class="mt-2 text-muted small">Create from a list of 3 or 4 integers.</div>
+            </div>
+                </div>
+            </div>
+        </div>
         <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-uitheme">
             <div class="card-header bg-success text-white py-3">
                 <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class UITheme</h3>
@@ -51,176 +91,176 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Complete UI theme configuration for all elements</p>
+                    <p class="lead fs-6">Complete UI theme configuration for all elements.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>button_normal: Tuple[int, int, int] = None</code>
+                    <code>button_normal: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>button_hover: Tuple[int, int, int] = None</code>
+                    <code>button_hover: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>button_pressed: Tuple[int, int, int] = None</code>
+                    <code>button_pressed: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>button_disabled: Tuple[int, int, int] = None</code>
+                    <code>button_disabled: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>button_text: Tuple[int, int, int] = None</code>
+                    <code>button_text: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dropdown_normal: Tuple[int, int, int] = None</code>
+                    <code>dropdown_normal: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dropdown_hover: Tuple[int, int, int] = None</code>
+                    <code>dropdown_hover: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dropdown_expanded: Tuple[int, int, int] = None</code>
+                    <code>dropdown_expanded: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dropdown_text: Tuple[int, int, int] = None</code>
+                    <code>dropdown_text: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dropdown_option_normal: Tuple[int, int, int] = None</code>
+                    <code>dropdown_option_normal: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dropdown_option_hover: Tuple[int, int, int] = None</code>
+                    <code>dropdown_option_hover: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dropdown_option_selected: Tuple[int, int, int] = None</code>
+                    <code>dropdown_option_selected: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>slider_track: Tuple[int, int, int] = None</code>
+                    <code>slider_track: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>slider_thumb_normal: Tuple[int, int, int] = None</code>
+                    <code>slider_thumb_normal: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>slider_thumb_hover: Tuple[int, int, int] = None</code>
+                    <code>slider_thumb_hover: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>slider_thumb_pressed: Tuple[int, int, int] = None</code>
+                    <code>slider_thumb_pressed: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>slider_text: Tuple[int, int, int] = None</code>
+                    <code>slider_text: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>label_text: Tuple[int, int, int] = None</code>
+                    <code>label_text: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>background: Tuple[int, int, int] = None</code>
+                    <code>background: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>background2: Tuple[int, int, int] = None</code>
+                    <code>background2: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>text_primary: Tuple[int, int, int] = None</code>
+                    <code>text_primary: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>text_secondary: Tuple[int, int, int] = None</code>
+                    <code>text_secondary: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>switch_track_on: Tuple[int, int, int] = None</code>
+                    <code>switch_track_on: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>switch_track_off: Tuple[int, int, int] = None</code>
+                    <code>switch_track_off: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>switch_thumb_on: Tuple[int, int, int] = None</code>
+                    <code>switch_thumb_on: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>switch_thumb_off: Tuple[int, int, int] = None</code>
+                    <code>switch_thumb_off: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dialog_background: Tuple[int, int, int] = None</code>
+                    <code>dialog_background: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dialog_border: Tuple[int, int, int] = None</code>
+                    <code>dialog_border: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dialog_text: Tuple[int, int, int] = None</code>
+                    <code>dialog_text: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dialog_name_bg: Tuple[int, int, int] = None</code>
+                    <code>dialog_name_bg: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dialog_name_text: Tuple[int, int, int] = None</code>
+                    <code>dialog_name_text: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dialog_continue_indicator: Tuple[int, int, int] = None</code>
+                    <code>dialog_continue_indicator: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>tooltip_background: Tuple[int, int, int] = None</code>
+                    <code>tooltip_background: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>tooltip_border: Tuple[int, int, int] = None</code>
+                    <code>tooltip_border: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>tooltip_text: Tuple[int, int, int] = None</code>
+                    <code>tooltip_text: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_success_background: Tuple[int, int, int] = None</code>
+                    <code>notification_success_background: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_success_border: Tuple[int, int, int] = None</code>
+                    <code>notification_success_border: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_success_text: Tuple[int, int, int] = None</code>
+                    <code>notification_success_text: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_info_background: Tuple[int, int, int] = None</code>
+                    <code>notification_info_background: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_info_border: Tuple[int, int, int] = None</code>
+                    <code>notification_info_border: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_info_text: Tuple[int, int, int] = None</code>
+                    <code>notification_info_text: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_warning_background: Tuple[int, int, int] = None</code>
+                    <code>notification_warning_background: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_warning_border: Tuple[int, int, int] = None</code>
+                    <code>notification_warning_border: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_warning_text: Tuple[int, int, int] = None</code>
+                    <code>notification_warning_text: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_custom_background: Tuple[int, int, int] = None</code>
+                    <code>notification_custom_background: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_custom_border: Tuple[int, int, int] = None</code>
+                    <code>notification_custom_border: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_custom_text: Tuple[int, int, int] = None</code>
+                    <code>notification_custom_text: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_error_background: Tuple[int, int, int] = None</code>
+                    <code>notification_error_background: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_error_border: Tuple[int, int, int] = None</code>
+                    <code>notification_error_border: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>notification_error_text: Tuple[int, int, int] = None</code>
+                    <code>notification_error_text: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>accent1: Tuple[int, int, int] = None</code>
+                    <code>accent1: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>accent2: Tuple[int, int, int] = None</code>
+                    <code>accent2: ThemeStyle = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>button_border: Optional[Tuple[int, int, int]] = None</code>
+                    <code>button_border: Optional[ThemeStyle] = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>dropdown_border: Optional[Tuple[int, int, int]] = None</code>
+                    <code>dropdown_border: Optional[ThemeStyle] = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>border: Optional[Tuple[int, int, int]] = None</code>
+                    <code>border: Optional[ThemeStyle] = None</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>border2: Optional[Tuple[int, int, int]] = None</code>
+                    <code>border2: Optional[ThemeStyle] = None</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
@@ -235,7 +275,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Enumeration of all available theme types</p>
+                    <p class="lead fs-6">Enumeration of all available theme types.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -503,7 +543,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Manages complete UI themes with local/remote loading</p>
+                    <p class="lead fs-6">Manages complete UI themes with local/remote loading.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -521,104 +561,132 @@
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_get_themes_file_path">
-                <code class="fs-6 fw-bold text-color-title">def _get_themes_file_path(cls: Any) -> str</code>
-                <div class="mt-2 text-muted small">Get the path to themes.json file (cross-platform)</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_get_themes_dir">
+                <code class="fs-6 fw-bold text-color-title">def _get_themes_dir(cls: Any) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_get_legacy_themes_file_path">
+                <code class="fs-6 fw-bold text-color-title">def _get_legacy_themes_file_path(cls: Any) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_download_from_github">
                 <code class="fs-6 fw-bold text-color-title">def _download_from_github(cls: Any) -> Optional[dict]</code>
-                <div class="mt-2 text-muted small">Download themes.json from GitHub</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_save_themes_to_cache">
-                <code class="fs-6 fw-bold text-color-title">def _save_themes_to_cache(cls: Any, themes_data: dict) -> bool</code>
-                <div class="mt-2 text-muted small">Save downloaded themes to local cache</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_save_legacy_cache">
+                <code class="fs-6 fw-bold text-color-title">def _save_legacy_cache(cls: Any, themes_data: dict) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_load_themes_from_json">
-                <code class="fs-6 fw-bold text-color-title">def _load_themes_from_json(cls: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Load themes from JSON file or GitHub</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_parse_theme_style">
+                <code class="fs-6 fw-bold text-color-title">def _parse_theme_style(cls: Any, data: Union[dict, list, tuple]) -> ThemeStyle</code>
+                <div class="mt-2 text-muted small">Convert JSON data (new or legacy format) to ThemeStyle.</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_process_themes_data">
-                <code class="fs-6 fw-bold text-color-title">def _process_themes_data(cls: Any, themes_data: dict) -> Any</code>
-                <div class="mt-2 text-muted small">Process themes data from dictionary</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_load_theme_from_json_file">
+                <code class="fs-6 fw-bold text-color-title">def _load_theme_from_json_file(cls: Any, filepath: str) -> Optional[Tuple[ThemeType, UITheme]]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_load_themes_from_directory">
+                <code class="fs-6 fw-bold text-color-title">def _load_themes_from_directory(cls: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_process_legacy_themes_data">
+                <code class="fs-6 fw-bold text-color-title">def _process_legacy_themes_data(cls: Any, themes_data: dict) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_load_legacy_single_file">
+                <code class="fs-6 fw-bold text-color-title">def _load_legacy_single_file(cls: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_create_fallback_theme">
                 <code class="fs-6 fw-bold text-color-title">def _create_fallback_theme(cls: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Create a simple fallback theme if loading fails</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-ensure_themes_loaded">
                 <code class="fs-6 fw-bold text-color-title">def ensure_themes_loaded(cls: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Ensure themes are loaded from JSON or GitHub</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_by_name">
-                <code class="fs-6 fw-bold text-color-title">def get_theme_by_name(cls: Any, name: str) -> UITheme</code>
-                <div class="mt-2 text-muted small">Get theme by name string</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_type_by_name">
-                <code class="fs-6 fw-bold text-color-title">def get_theme_type_by_name(cls: Any, name: str) -> ThemeType</code>
-                <div class="mt-2 text-muted small">Get theme type by name string</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme">
                 <code class="fs-6 fw-bold text-color-title">def get_theme(cls: Any, theme_type: ThemeType) -> UITheme</code>
-                <div class="mt-2 text-muted small">Get complete theme by type</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-set_theme">
-                <code class="fs-6 fw-bold text-color-title">def set_theme(cls: Any, theme_type: ThemeType, theme: UITheme) -> Any</code>
-                <div class="mt-2 text-muted small">Set or override a theme</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-set_current_theme">
                 <code class="fs-6 fw-bold text-color-title">def set_current_theme(cls: Any, theme_type: ThemeType) -> Any</code>
-                <div class="mt-2 text-muted small">Set the current default theme</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_current_theme">
                 <code class="fs-6 fw-bold text-color-title">def get_current_theme(cls: Any) -> ThemeType</code>
-                <div class="mt-2 text-muted small">Get current default theme</div>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_by_name">
+                <code class="fs-6 fw-bold text-color-title">def get_theme_by_name(cls: Any, name: str) -> UITheme</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_type_by_name">
+                <code class="fs-6 fw-bold text-color-title">def get_theme_type_by_name(cls: Any, name: str) -> ThemeType</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_get_style_property">
+                <code class="fs-6 fw-bold text-color-title">def _get_style_property(cls: Any, color_name: color_name_type, property_name: str, theme_type: Optional[ThemeType] = None) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_color">
+                <code class="fs-6 fw-bold text-color-title">def get_color(cls: Any, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> Tuple[int, int, int]</code>
+                <div class="mt-2 text-muted small">Return RGB tuple (ignores alpha).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_alpha">
+                <code class="fs-6 fw-bold text-color-title">def get_alpha(cls: Any, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> float</code>
+                <div class="mt-2 text-muted small">Return alpha (0.0–1.0).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_corner_radius">
+                <code class="fs-6 fw-bold text-color-title">def get_corner_radius(cls: Any, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_border_width">
+                <code class="fs-6 fw-bold text-color-title">def get_border_width(cls: Any, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_blur">
+                <code class="fs-6 fw-bold text-color-title">def get_blur(cls: Any, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_color_legacy">
+                <code class="fs-6 fw-bold text-color-title">def get_color_legacy(cls: Any, color_name: color_name_type) -> Tuple[int, int, int]</code>
+                <div class="mt-2 text-muted small">Maintain compatibility with old `get_color` (no theme_type param).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_themes">
                 <code class="fs-6 fw-bold text-color-title">def get_themes(cls: Any) -> Dict[ThemeType, UITheme]</code>
-                <div class="mt-2 text-muted small">Get all available themes</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_types">
                 <code class="fs-6 fw-bold text-color-title">def get_theme_types(cls: Any) -> List[ThemeType]</code>
-                <div class="mt-2 text-muted small">Get all available theme types</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_names">
                 <code class="fs-6 fw-bold text-color-title">def get_theme_names(cls: Any) -> List[str]</code>
-                <div class="mt-2 text-muted small">Get all available theme names</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_color">
-                <code class="fs-6 fw-bold text-color-title">def get_color(cls: Any, color_name: color_name_type) -> Tuple[int, int, int]</code>
-                <div class="mt-2 text-muted small">Get a specific color from the current theme</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-reload_themes">
                 <code class="fs-6 fw-bold text-color-title">def reload_themes(cls: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Force reload themes from source</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_loaded_count">
                 <code class="fs-6 fw-bold text-color-title">def get_loaded_count(cls: Any) -> int</code>
-                <div class="mt-2 text-muted small">Get number of loaded themes</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-is_theme_available">
-                <code class="fs-6 fw-bold text-color-title">def is_theme_available(cls: Any, theme_name: str) -> bool</code>
-                <div class="mt-2 text-muted small">Check if a theme is available by name</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
             </div>
         </div>
                 
                 
-                
             </div>
         </div>
-
         <div class="mt-5 mb-5 text-center">
             <a href="index.html" class="btn btn-outline-primary">
                 <i class="bi bi-arrow-left me-2"></i>Back to Ui Module
             </a>
         </div>
     </div>
-
     
-    <!-- Footer -->
     <footer class="footer-section">
         <div class="container">
             <div class="row">
@@ -629,39 +697,32 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-03-12 17:38
+                        Documentation generated on 2026-05-05 15:31
                     </p>
                 </div>
             </div>
         </div>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
-        
         if (searchInput && searchIcon) {
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
-                    
-                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
                         searchPath = '../search.html';
                     }
-                    
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
-            
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -670,9 +731,7 @@
                     return false;
                 }
             });
-            
             searchIcon.addEventListener('click', performSearch);
-            
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {

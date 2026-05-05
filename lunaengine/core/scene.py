@@ -177,5 +177,15 @@ class Scene(ABC):
     def has_element(self, element: UIElement) -> bool:
         return element in self.ui_elements
 
+    def get_debug_stats(self) -> Dict[str, Any]:
+        return {
+            "custom_value": self.some_metric,
+        }
+    def get_ui_count(self) -> int:
+        n = len(self.ui_elements)
+        for element in self.ui_elements:
+            n += element.getIndexedChilds()
+        return n
+
     def clear_ui_elements(self) -> None:
         self.ui_elements.clear()

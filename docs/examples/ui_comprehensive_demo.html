@@ -31,7 +31,6 @@
     
     <div class="container mt-5">
         <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Examples Hub</a></li><li class="breadcrumb-item active">Ui Comprehensive Demo</li></ol></nav>
-        
         <div class="row">
             <div class="col-lg-8">
                 <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Ui Comprehensive Demo</h1>
@@ -99,15 +98,6 @@ class ComprehensiveUIDemo(Scene):
         print(&quot;=== LunaEngine UI Demo ===&quot;)
         print(&quot;Explore all UI elements organized by section!&quot;)
         print(&quot;Use the tabs to navigate between different UI element categories.&quot;)
-        print(&quot;Controls:&quot;)
-        print(&quot;- Click buttons to interact&quot;)
-        print(&quot;- Use dropdowns and selects to choose options&quot;)
-        print(&quot;- Drag the draggable element&quot;)
-        print(&quot;- Type in the text box&quot;)
-        print(&quot;- Change themes with the theme dropdown&quot;)
-        print(&quot;- Hover over elements with tooltips&quot;)
-        print(&quot;- Click to advance dialog boxes&quot;)
-        print(&quot;- Use animation controls to pause/resume animations&quot;)
         
     def on_exit(self, next_scene: str = None):
         print(&quot;Exiting UI Demo scene&quot;)
@@ -175,6 +165,10 @@ class ComprehensiveUIDemo(Scene):
         
         self.fps_display = TextLabel(self.engine.width - 5, 20, &quot;FPS: --&quot;, 16, (100, 255, 100), root_point=(1, 0))
         self.add_ui_element(self.fps_display)
+        self.opengl_cache = TextLabel(self.engine.width - 5, 55, &quot;Cache: --&quot;, 16, (100, 255, 100), root_point=(1, 0))
+        self.add_ui_element(self.opengl_cache)
+        self.engine_memory_usage = TextLabel(self.engine.width - 5, 75, &quot;Memory: --&quot;, 16, (100, 255, 100), root_point=(1, 0))
+        self.add_ui_element(self.engine_memory_usage)
         
         # Initialize animations
         self.setup_animations()
@@ -396,12 +390,13 @@ class ComprehensiveUIDemo(Scene):
         line_label = TextLabel(20, 270, &quot;Line Chart&quot;, 16, (100, 200, 255))
         self.main_tabs.add_to_tab(&#x27;Charts&#x27;, line_label)
         line_chart = ChartVisualizer(20, 295, 200, 150,
-                                    data=[10, 25, 15, 30, 20, 35],
-                                    labels=[&#x27;Mon&#x27;,&#x27;Tue&#x27;,&#x27;Wed&#x27;,&#x27;Thu&#x27;,&#x27;Fri&#x27;,&#x27;Sat&#x27;],
-                                    chart_type=&#x27;line&#x27;,
-                                    title=&#x27;Weekly Trend&#x27;,
-                                    show_labels=True,
-                                    show_legend=False)
+                            data=[10, 25, 15, 30, 20, 35],
+                            labels=[&#x27;Mon&#x27;,&#x27;Tue&#x27;,&#x27;Wed&#x27;,&#x27;Thu&#x27;,&#x27;Fri&#x27;,&#x27;Sat&#x27;],
+                            chart_type=&#x27;line&#x27;,
+                            title=&#x27;Weekly Trend&#x27;,
+                            show_labels=True,
+                            show_legend=False,
+                            use_gradient=True,)     # red
         line_chart.set_simple_tooltip(&quot;Line chart with points&quot;)
         self.main_tabs.add_to_tab(&#x27;Charts&#x27;, line_chart)
         self.charts.append(line_chart)
@@ -419,6 +414,24 @@ class ComprehensiveUIDemo(Scene):
         scatter_chart.set_simple_tooltip(&quot;Scatter plot&quot;)
         self.main_tabs.add_to_tab(&#x27;Charts&#x27;, scatter_chart)
         self.charts.append(scatter_chart)
+        
+        # Radar Chart (RPG Stats)
+        radar_label = TextLabel(450, 75, &quot;Radar Chart (RPG Stats):&quot;, 16, (255, 200, 100))
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, radar_label)
+
+        radar_chart = ChartVisualizer(
+        450, 100, 250, 200,
+        data=[0.8, 0.6, 0.9, 0.4, 0.7, 0.5],
+        labels=[&#x27;Str&#x27;, &#x27;Agi&#x27;, &#x27;Int&#x27;, &#x27;Vit&#x27;, &#x27;Luk&#x27;, &#x27;Dex&#x27;],
+        chart_type=&#x27;radar&#x27;,
+        title=&#x27;Character Stats&#x27;,
+        show_labels=True,
+        radar_max_value=1.0,
+        radar_axis_labels=[&#x27;Strength&#x27;, &#x27;Agility&#x27;, &#x27;Intelligence&#x27;, &#x27;Vitality&#x27;, &#x27;Luck&#x27;, &#x27;Dexterity&#x27;],
+        use_gradient=True,)
+        radar_chart.set_simple_tooltip(&quot;Radar chart showing RPG character attributes&quot;)
+        self.main_tabs.add_to_tab(&#x27;Charts&#x27;, radar_chart)
+        self.charts.append(radar_chart)
 
         # Additional note
         note = TextLabel(20, 470, &quot;You can create custom charts with your own data and colors.&quot;, 14, (150, 200, 255))
@@ -668,20 +681,21 @@ class ComprehensiveUIDemo(Scene):
                 self.button_indicators[name].set_background_color((80, 80, 80))
 
     def randomize_charts(self):
-        &quot;&quot;&quot;Generate new random data for each chart and animate the change.&quot;&quot;&quot;
         import random
         for chart in self.charts:
             n = len(chart.data)
             if chart.chart_type == &#x27;pie&#x27;:
-                # Random values for pie
                 new_data = [random.randint(5, 40) for _ in range(n)]
+            elif chart.chart_type == &#x27;radar&#x27;:
+                # values between 0.2 and 1.0
+                new_data = [random.uniform(0.2, 1.0) for _ in range(n)]
+                chart.gradient_colors = [(random.randint(0,255), random.randint(0,255), random.randint(0,255)) for _ in range(n)]
+            elif chart.chart_type == &#x27;line&#x27;:
+                new_data = [random.randint(5, 50) for _ in range(n)]
+                chart.gradient_colors = [(random.randint(0,255), random.randint(0,255), random.randint(0,255)) for _ in range(n)]
             else:
                 new_data = [random.randint(5, 70) for _ in range(n)]
-
-            # Animate the change over 0.8 seconds
             chart.set_data(new_data, animate=True, duration=0.8)
-
-        print(&quot;Charts randomized with smooth transition!&quot;)
     
     def show_notification(self):
         notification_type = [NotificationType.SUCCESS, NotificationType.INFO, NotificationType.WARNING, NotificationType.ERROR][self.notification_type.selected_index]
@@ -733,13 +747,57 @@ class ComprehensiveUIDemo(Scene):
         self.progress_display = TextLabel(470, 175, &quot;Progress: 0%&quot;, 14)
         self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, self.progress_display)
         
+        # Soundpad-style Progress Bar Example
+        soundpad_label = TextLabel(20, 205, &quot;Soundpad Progress Bar:&quot;, 16, (200, 200, 255))
+        self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, soundpad_label)
+
+        self.soundpad_progress = ProgressBar(180, 200, 250, 20, 0, 100, 0, 
+                                            style=&#x27;soundpad&#x27;, segment_count=8, segment_gap=2)
+        self.soundpad_progress.set_simple_tooltip(&quot;Soundpad style: segmented bar with green→yellow→red gradient&quot;)
+        self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, self.soundpad_progress)
+
+        soundpad_btn = Button(440, 198, 100, 24, &quot;Animate&quot;)
+        soundpad_btn.set_on_click(lambda: self.soundpad_progress.set_value(self.soundpad_progress.value + 10))
+        self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, soundpad_btn)
+
+        self.soundpad_display = TextLabel(550, 203, &quot;0%&quot;, 14)
+        self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, self.soundpad_display)
+        
         # Draggable Element
-        draggable_label = TextLabel(20, 220, &quot;Draggable Element:&quot;, 16, (200, 200, 255))
+        draggable_label = TextLabel(20, 235, &quot;Draggable Element:&quot;, 16, (200, 200, 255))
         self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, draggable_label)
         
-        draggable = UIDraggable(160, 220, 100, 50)
-        draggable.set_simple_tooltip(&quot;Drag me around within the tab!&quot;)
-        self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, draggable)
+        # Expandable Examples
+        expandable_label = TextLabel(20, 320, &quot;Expandable (Accordion):&quot;, 16, (200, 200, 255))
+        self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, expandable_label)
+
+        accordion_frame = UiFrame(20, 335, 400, 250)
+        accordion_frame.set_background_color((40, 40, 50, 180))
+        accordion_frame.set_border((80, 80, 100), 1)
+        accordion_frame.set_corner_radius(8)
+        self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, accordion_frame)
+
+        # First expandable – default expanded
+        exp1 = Expandable(10, 5, 380, 100, title=&quot;Section 1 - Basic Info&quot;, expanded=True, allow_multiple=False)
+        exp1.add_to_content(TextLabel(10, 10, &quot;This is content inside expandable 1.&quot;, 14, (220, 220, 255)))
+        exp1.add_to_content(Button(10, 40, 120, 25, text=&quot;Click me&quot;))
+        accordion_frame.add_child(exp1)
+
+        # Second expandable – collapsed initially
+        exp2 = Expandable(10, 60, 380, 100, title=&quot;Section 2 - Settings&quot;, expanded=False, allow_multiple=False)
+        exp2.add_to_content(Checkbox(10, 10, 180, 25, False, label=&quot;Enable feature&quot;))
+        exp2.add_to_content(Slider(10, 45, 200, 20, 0, 100, 50))
+        accordion_frame.add_child(exp2)
+
+        # Third expandable
+        exp3 = Expandable(10, 115, 380, 100, title=&quot;Section 3 - Extra&quot;, expanded=False, allow_multiple=False)
+        exp3.add_to_content(TextLabel(10, 10, &quot;More content here.&quot;, 14, (200, 200, 200)))
+        exp3.add_to_content(ImageLabel(10, 40, None, 32, 32, root_point=(0,0)))
+        accordion_frame.add_child(exp3)
+
+        # Note about accordion behavior
+        note = TextLabel(400, 320, &quot;Note: Only one expandable can be open at a time (accordion mode).&quot;, 12, (150, 150, 200))
+        self.main_tabs.add_to_tab(&#x27;Interactive&#x27;, note)
     
     def setup_selection_tab(self):
         &quot;&quot;&quot;Sets up selection elements tab.&quot;&quot;&quot;
@@ -814,19 +872,23 @@ class ComprehensiveUIDemo(Scene):
         
         self.select_display = TextLabel(360, 295, &quot;Choice: 1&quot;, 14)
         self.main_tabs.add_to_tab(&#x27;Selection&#x27;, self.select_display)
+        
+        self.color_picker_display = TextLabel(20, 330, &quot;Color Picker:&quot;, 16, (200, 200, 255))
+        self.main_tabs.add_to_tab(&#x27;Selection&#x27;, self.color_picker_display)
+        
+        self.cpicker_rgb = ColorPicker(20, 350, color_system=&#x27;rgb&#x27;)
+        self.main_tabs.add_to_tab(&#x27;Selection&#x27;, self.cpicker_rgb)
+        
+        self.cpicker_hsv = ColorPicker(320, 350, color_system=&#x27;hsv&#x27;)
+        self.main_tabs.add_to_tab(&#x27;Selection&#x27;, self.cpicker_hsv)
+        
+        self.cpicker_hsl = ColorPicker(620, 350, color_system=&#x27;hsl&#x27;)
+        self.main_tabs.add_to_tab(&#x27;Selection&#x27;, self.cpicker_hsl)
     
     def setup_visual_tab(self):
         &quot;&quot;&quot;Sets up visual elements tab.&quot;&quot;&quot;
         # Tab title
         self.main_tabs.add_to_tab(&#x27;Visual&#x27;, TextLabel(10, 10, &quot;Visual Elements&quot;, 24, (255, 255, 0)))
-        
-        # Gradient Example
-        gradient_label = TextLabel(20, 50, &quot;Color Gradient:&quot;, 16, (200, 200, 255))
-        self.main_tabs.add_to_tab(&#x27;Visual&#x27;, gradient_label)
-        
-        gradient = UIGradient(40, 75, 300, 60, [(255, 0, 0), (200, 100, 0), (0, 255, 0), (0, 200, 100), (0, 0, 255)])
-        gradient.set_simple_tooltip(&quot;Beautiful gradient with multiple colors&quot;)
-        self.main_tabs.add_to_tab(&#x27;Visual&#x27;, gradient)
         
         # Text Label Examples
         labels_label = TextLabel(20, 175, &quot;Text Labels:&quot;, 16, (200, 200, 255))
@@ -918,7 +980,7 @@ class ComprehensiveUIDemo(Scene):
         textarea_select_all_btn.set_on_click(lambda: self.text_area.select_all())
         self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, textarea_select_all_btn)
         
-        # NEW: FileFinder Example
+        # FileFinder Example
         filefinder_label = TextLabel(420, 60, &quot;FileFinder:&quot;, 16, (200, 200, 255))
         self.main_tabs.add_to_tab(&#x27;Advanced&#x27;, filefinder_label)
         
@@ -1303,6 +1365,14 @@ class ComprehensiveUIDemo(Scene):
         self.checkbox_display.set_text(f&quot;Feature X: {&#x27;ON&#x27; if self.demo_state[&#x27;checkbox_state&#x27;] else &#x27;OFF&#x27;}&quot;)
         
         self.fps_display.set_text(f&quot;FPS: {self.engine.get_fps_stats()[&#x27;current_fps&#x27;]:.1f}&quot;)
+        cacheUsage = &#x27;&#x27;
+        for i, (key, value) in enumerate(self.engine.renderer.get_cache_usage(&#x27;all&#x27;,True).items()):
+            cacheUsage += f&quot;{key}: {value} {&#x27;| &#x27; if i &lt; len(self.engine.renderer.get_cache_usage(&#x27;all&#x27;,True)) - 1 else &#x27;&#x27;}&quot;
+        self.opengl_cache.set_text(f&quot;OpenGL Cache Usage: {cacheUsage}&quot;)
+        engineMemUsage = &#x27;&#x27;
+        for i, (key, value) in enumerate(self.engine.performance_monitor._getMemUsageClass(self.engine).items()):
+            engineMemUsage += f&quot;{key[:6]}: {value} {&#x27;| &#x27; if i &lt; len(self.engine.performance_monitor._getMemUsageClass(self.engine)) - 1 else &#x27;&#x27;}&quot;
+        self.engine_memory_usage.set_text(f&quot;Engine Memory Usage: {engineMemUsage}&quot;)
         
         # Update text area content if it exists
         if hasattr(self, &#x27;text_area&#x27;):
@@ -1342,7 +1412,10 @@ class ComprehensiveUIDemo(Scene):
 
 def main():
     # Create engine
-    engine = LunaEngine(&quot;LunaEngine - UI Demo&quot;, 1024, 768, use_opengl=True, fullscreen=False)
+    engine = LunaEngine(&quot;LunaEngine - UI Demo&quot;, 1024, 768, debug=True)
+    
+    engine.update_ratio(800, 600)
+    print(engine.ratio)
     
     # Configure the max FPS
     engine.fps = 60
@@ -1384,7 +1457,6 @@ if __name__ == &quot;__main__&quot;:
         </div>
     </div>
     
-    <!-- Footer -->
     <footer class="footer-section">
         <div class="container">
             <div class="row">
@@ -1395,39 +1467,32 @@ if __name__ == &quot;__main__&quot;:
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-03-12 17:38
+                        Documentation generated on 2026-05-05 15:31
                     </p>
                 </div>
             </div>
         </div>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
-        
         if (searchInput && searchIcon) {
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
-                    
-                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
                         searchPath = '../search.html';
                     }
-                    
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
-            
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -1436,9 +1501,7 @@ if __name__ == &quot;__main__&quot;:
                     return false;
                 }
             });
-            
             searchIcon.addEventListener('click', performSearch);
-            
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>base.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Ui</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../index.html">Ui</a></li><li class="breadcrumb-item active">base.py</li></ol></nav>
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>base.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">No documentation</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-_uidgenerator">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class _UIDGenerator</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Internal class for generating unique IDs for UI elements.<br><br>Generates IDs in the format: ui_{element_type}_{counter}<br>Example: ui_button_1, ui_label_2, ui_dropdown_1</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-_uidgenerator-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-_uidgenerator-generate_id">
+                <code class="fs-6 fw-bold text-color-title">def generate_id(self: Any, element_type: str) -> str</code>
+                <div class="mt-2 text-muted small">Generate a unique ID for a UI element.<br><br>Args:<br> &nbsp; &nbsp;element_type (str): Type of the UI element (e.g., &#x27;button&#x27;, &#x27;label&#x27;)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;str: Unique ID in format &quot;ui_{element_type}_{counter}&quot;</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-uistate">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class UIState</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Enumeration of possible UI element states.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>NORMAL: Any = 0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>HOVERED: Any = 1</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>PRESSED: Any = 2</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>DISABLED: Any = 3</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-elementstyle">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ElementStyle</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Class representing style properties for UI elements.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>normal_color: Optional[Tuple[int, int, int]] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>hovered_color: Optional[Tuple[int, int, int]] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>pressed_color: Optional[Tuple[int, int, int]] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>disabled_color: Optional[Tuple[int, int, int]] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>text_color: Optional[Tuple[int, int, int]] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>border_color: Optional[Tuple[int, int, int]] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>alpha: float = 1.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>border_radius: int = 0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>border_width: int = 0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>blur: int = 0</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-elementstyle-loadfromtheme">
+                <code class="fs-6 fw-bold text-color-title">def loadFromTheme(theme_type: ThemeType) -> 'ElementStyle'</code>
+                <div class="mt-2 text-muted small">Load complete element style from the theme system.<br>Uses button_* properties as base, but can be overridden for specific elements.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-fontmanager">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class FontManager</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Manages fonts and ensures Pygame font system is initialized.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_initialized: Any = False</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_default_fonts: Any = {}</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-fontmanager-initialize">
+                <code class="fs-6 fw-bold text-color-title">def initialize(cls: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize the font system.<br><br>This method should be called before using any font-related functionality.<br>It initializes Pygame&#x27;s font module if not already initialized.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-fontmanager-get_font">
+                <code class="fs-6 fw-bold text-color-title">def get_font(cls: Any, font_name: Optional[str] = None, font_size: int = 24) -> Any</code>
+                <div class="mt-2 text-muted small">Get a font object for rendering text.<br><br>Args:<br> &nbsp; &nbsp;font_name (Optional[str]): Path to font file or None for default system font.<br> &nbsp; &nbsp;font_size (int): Size of the font in pixels.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;pygame.font.Font: A font object ready for text rendering.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-uielement">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class UIElement</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Base class for all UI elements providing common functionality.<br><br>Attributes:<br> &nbsp; &nbsp;element_id (str): Unique identifier for this element in format ui_{type}_{counter}<br> &nbsp; &nbsp;x (int): X coordinate position<br> &nbsp; &nbsp;y (int): Y coordinate position<br> &nbsp; &nbsp;width (int): Width of the element in pixels<br> &nbsp; &nbsp;height (int): Height of the element in pixels<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning<br> &nbsp; &nbsp;state (UIState): Current state of the element<br> &nbsp; &nbsp;visible (bool): Whether element is visible<br> &nbsp; &nbsp;enabled (bool): Whether element is enabled<br> &nbsp; &nbsp;children (List[UIElement]): Child elements<br> &nbsp; &nbsp;parent (UIElement): Parent element</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_global_engine: 'LunaEngine' = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Dict[str, Dict[str, Any]] = {'x': {'name': 'x position', 'key': 'x', 'type': int, 'editable': True, 'description': 'X coordinate position of the element'}, 'y': {'name': 'y position', 'key': 'y', 'type': int, 'editable': True, 'description': 'Y coordinate position of the element'}, 'width': {'name': 'width', 'key': 'width', 'type': int, 'editable': True, 'description': 'Width of the element in pixels'}, 'height': {'name': 'height', 'key': 'height', 'type': int, 'editable': True, 'description': 'Height of the element in pixels'}, 'style': {'name': 'style', 'key': 'style', 'type': ElementStyle, 'editable': True, 'description': 'Style properties for the element'}, 'visible': {'name': 'visible', 'key': 'visible', 'type': bool, 'editable': True, 'description': 'Whether the element is visible'}, 'enabled': {'name': 'enabled', 'key': 'enabled', 'type': bool, 'editable': True, 'description': 'Whether the element is enabled for interaction'}, 'root_point': {'name': 'root point', 'key': 'root_point', 'type': Tuple[float, float], 'editable': True, 'description': 'Anchor point for positioning where (0,0) is top-left and (1,1) is bottom-right'}}</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, root_point: Tuple[float, float] = (0, 0), element_id: Optional[str] = None) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize a UI element with position and dimensions.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the element in pixels.<br> &nbsp; &nbsp;height (int): Height of the element in pixels.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning where (0,0) is top-left <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;and (1,1) is bottom-right.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID. If None, generates automatic ID.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-add_to_parent">
+                <code class="fs-6 fw-bold text-color-title">def add_to_parent(self: Any, parent: 'UIElement', extra: Any = None) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-getindexedchilds">
+                <code class="fs-6 fw-bold text-color-title">def getIndexedChilds(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-get_mouse_position">
+                <code class="fs-6 fw-bold text-color-title">def get_mouse_position(self: Any, input_state: InputState) -> Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-getcolliderect">
+                <code class="fs-6 fw-bold text-color-title">def getCollideRect(self: Any) -> pygame.Rect</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-mouse_over">
+                <code class="fs-6 fw-bold text-color-title">def mouse_over(self: Any, input_state: InputState | Tuple) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-set_enabled">
+                <code class="fs-6 fw-bold text-color-title">def set_enabled(self: Any, enabled: bool) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-get_engine">
+                <code class="fs-6 fw-bold text-color-title">def get_engine(self: Any) -> 'LunaEngine'</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-set_corner_radius">
+                <code class="fs-6 fw-bold text-color-title">def set_corner_radius(self: Any, radius: int | Tuple[int, int, int, int]) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-group">
+                <code class="fs-6 fw-bold text-color-title">def group(self: Any) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-add_group">
+                <code class="fs-6 fw-bold text-color-title">def add_group(self: Any, group: str) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-remove_group">
+                <code class="fs-6 fw-bold text-color-title">def remove_group(self: Any, group: str) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-clear_groups">
+                <code class="fs-6 fw-bold text-color-title">def clear_groups(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-has_group">
+                <code class="fs-6 fw-bold text-color-title">def has_group(self: Any, group: str) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-__str__">
+                <code class="fs-6 fw-bold text-color-title">def __str__(self: Any) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-__repr__">
+                <code class="fs-6 fw-bold text-color-title">def __repr__(self: Any) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-get_id">
+                <code class="fs-6 fw-bold text-color-title">def get_id(self: Any) -> str</code>
+                <div class="mt-2 text-muted small">Get the unique ID of this UI element.<br><br>Returns:<br> &nbsp; &nbsp;str: The unique element ID</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-set_id">
+                <code class="fs-6 fw-bold text-color-title">def set_id(self: Any, new_id: str) -> None</code>
+                <div class="mt-2 text-muted small">Set a new unique ID for this UI element.<br><br>Args:<br> &nbsp; &nbsp;new_id (str): The new unique ID to set</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-get_actual_position">
+                <code class="fs-6 fw-bold text-color-title">def get_actual_position(self: Any, x: int | float = None, y: int | float = None) -> Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">Calculate actual screen position based on root_point anchor.<br><br>Args:<br> &nbsp; &nbsp;parent_width (int): Width of parent element if applicable.<br> &nbsp; &nbsp;parent_height (int): Height of parent element if applicable.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Tuple[int, int]: The actual (x, y) screen coordinates.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-add_child">
+                <code class="fs-6 fw-bold text-color-title">def add_child(self: Any, child: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Add a child element to this UI element.<br><br>Args:<br> &nbsp; &nbsp;child: The child UI element to add.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-remove_child">
+                <code class="fs-6 fw-bold text-color-title">def remove_child(self: Any, child: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Remove a child element from this UI element.<br><br>Args:<br> &nbsp; &nbsp;child: The child UI element to remove.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-set_tooltip">
+                <code class="fs-6 fw-bold text-color-title">def set_tooltip(self: Any, tooltip: 'Tooltip') -> Any</code>
+                <div class="mt-2 text-muted small">Set tooltip for this element using a Tooltip instance.<br><br>Args:<br> &nbsp; &nbsp;tooltip (Tooltip): Tooltip instance to associate with this element</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-set_simple_tooltip">
+                <code class="fs-6 fw-bold text-color-title">def set_simple_tooltip(self: Any, text: str, **kwargs: dict) -> Any</code>
+                <div class="mt-2 text-muted small">Quick method to set a simple tooltip with text.<br><br>Args:<br> &nbsp; &nbsp;text (str): Tooltip text<br> &nbsp; &nbsp;**kwargs: Additional arguments for TooltipConfig</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-remove_tooltip">
+                <code class="fs-6 fw-bold text-color-title">def remove_tooltip(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Remove tooltip from this element.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <div class="mt-2 text-muted small">Update element state.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds since last update.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-update_theme">
+                <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: ThemeType) -> Any</code>
+                <div class="mt-2 text-muted small">Update the theme for this element and all its children.<br><br>Args:<br> &nbsp; &nbsp;theme_type (ThemeType): The new theme to apply.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer | OpenGLRenderer) -> Any</code>
+                <div class="mt-2 text-muted small">Render this element using OpenGL backend. &nbsp;<br>Override this in subclasses for OpenGL-specific rendering.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-on_click">
+                <code class="fs-6 fw-bold text-color-title">def on_click(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Called when element is clicked by the user.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-on_hover">
+                <code class="fs-6 fw-bold text-color-title">def on_hover(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Called when mouse hovers over the element.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                
+            </div>
+        </div>
+        <div class="mt-5 mb-5 text-center">
+            <a href="../index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Ui Module
+            </a>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-05-05 15:31
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

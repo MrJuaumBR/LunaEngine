@@ -29,18 +29,15 @@
         </div>
     </nav>
     
-
     <div class="container mt-5">
         <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Graphics</a></li><li class="breadcrumb-item active">spritesheet.py</li></ol></nav>
-
         <div class="header-section mb-5">
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>spritesheet.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">Sprite Sheet System with Alpha Support and Time-Based Animations<br><br>LOCATION: lunaengine/graphics/spritesheet.py<br><br>DESCRIPTION:<br>Advanced sprite sheet management system with alpha channel support and<br>time-based animation system. Provides efficient sprite extraction from<br>texture atlases with flexible positioning and frame-rate independent animations.<br><br>KEY FEATURES:<br>- Full alpha channel support for transparent sprites<br>- Flexible sprite extraction using Rect coordinates<br>- Batch sprite extraction for multiple regions<br>- Time-based animation system (frame-rate independent)<br>- Support for padding, margin, and scaling<br>- Animation sequencing with configurable durations<br>- Automatic frame extraction based on parameters<br><br>LIBRARIES USED:<br>- pygame: Image loading, surface manipulation, and alpha processing<br>- typing: Type hints for better code documentation<br>- time: Animation timing calculations<br><br>! WARN:<br>- Ensure pygame is initialized before using this module<br><br>USAGE:<br>&gt;&gt;&gt; # Basic sprite sheet<br>&gt;&gt;&gt; spritesheet = SpriteSheet(&quot;characters.png&quot;)<br>&gt;&gt;&gt; single_sprite = spritesheet.get_sprite_at_rect(pygame.Rect(0, 0, 64, 64))<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; # Multiple sprites<br>&gt;&gt;&gt; regions = [pygame.Rect(0, 0, 64, 64), pygame.Rect(64, 0, 64, 64)]<br>&gt;&gt;&gt; sprites = spritesheet.get_sprites_at_regions(regions)<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; # Animation - automatically extracts frames<br>&gt;&gt;&gt; walk_animation = Animation(&quot;tiki_texture.png&quot;, (70, 70), (0, 0), frame_count=6,<br>&gt;&gt;&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; scale=(2, 2), duration=1.0)<br>&gt;&gt;&gt; current_frame = walk_animation.get_current_frame()</span>
+                <span class="text-muted">Sprite Sheet System with Alpha Support and Time-Based Animations<br><br>LOCATION: lunaengine/graphics/spritesheet.py<br><br>DESCRIPTION:<br>Advanced sprite sheet management system with alpha channel support and<br>time-based animation system. Provides efficient sprite extraction from<br>texture atlases with flexible positioning and frame-rate independent animations.<br><br>KEY FEATURES:<br>- Full alpha channel support for transparent sprites<br>- Flexible sprite extraction using Rect coordinates<br>- Batch sprite extraction for multiple regions<br>- Time-based animation system (frame-rate independent)<br>- Support for padding, margin, and scaling<br>- Animation sequencing with configurable durations<br>- Automatic frame extraction based on parameters<br>- Image manipulation: scaling, resizing, masking, color replacement, tinting<br><br>LIBRARIES USED:<br>- pygame: Image loading, surface manipulation, and alpha processing<br>- typing: Type hints for better code documentation<br>- time: Animation timing calculations<br>- pathlib: Modern path handling<br><br>! WARN:<br>- Ensure pygame is initialized before using this module<br><br>USAGE:<br>&gt;&gt;&gt; # Basic sprite sheet<br>&gt;&gt;&gt; spritesheet = SpriteSheet(&quot;characters.png&quot;)<br>&gt;&gt;&gt; single_sprite = spritesheet.get_sprite_at_rect(pygame.Rect(0, 0, 64, 64))<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; # Multiple sprites<br>&gt;&gt;&gt; regions = [pygame.Rect(0, 0, 64, 64), pygame.Rect(64, 0, 64, 64)]<br>&gt;&gt;&gt; sprites = spritesheet.get_sprites_at_regions(regions)<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; # Animation - automatically extracts frames<br>&gt;&gt;&gt; walk_animation = Animation(&quot;tiki_texture.png&quot;, (70, 70), (0, 0), frame_count=6,<br>&gt;&gt;&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; scale=(2, 2), duration=1.0)<br>&gt;&gt;&gt; current_frame = walk_animation.get_current_frame()<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; # Color replacement<br>&gt;&gt;&gt; recolored = SpriteSheet.replace_color(sprite, (255,0,0), (0,255,0), tolerance=10)<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; # Tinting<br>&gt;&gt;&gt; tinted = SpriteSheet.tint(sprite, (100,100,255))</span>
             </div>
         </div>
-
         <div class="row">
             <div class="col-lg-12">
                 
@@ -51,23 +48,23 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Main sprite sheet class for managing and extracting sprites from texture atlases.<br><br>This class handles loading sprite sheets with alpha support and provides<br>multiple methods for extracting individual sprites or sprite sequences.<br><br>Attributes:<br> &nbsp; &nbsp;sheet (pygame.Surface): The loaded sprite sheet surface with alpha<br> &nbsp; &nbsp;filename (str): Path to the sprite sheet file<br> &nbsp; &nbsp;width (int): Width of the sprite sheet<br> &nbsp; &nbsp;height (int): Height of the sprite sheet</p>
+                    <p class="lead fs-6">Main sprite sheet class for managing and extracting sprites from texture atlases.<br><br>This class handles loading sprite sheets with alpha support and provides<br>multiple methods for extracting individual sprites or sprite sequences,<br>as well as various image manipulation utilities.<br><br>Attributes:<br> &nbsp; &nbsp;sheet (pygame.Surface): The loaded sprite sheet surface with alpha<br> &nbsp; &nbsp;filepath (Path): Path to the sprite sheet file<br> &nbsp; &nbsp;width (int): Width of the sprite sheet<br> &nbsp; &nbsp;height (int): Height of the sprite sheet</p>
                 </div>
                 
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, filename: str) -> Any</code>
-                <div class="mt-2 text-muted small">Initialize the sprite sheet with alpha support.<br><br>Args:<br> &nbsp; &nbsp;filename (str): Path to the sprite sheet image file</div>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, filename: Union[str, Path]) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize the sprite sheet with alpha support.<br><br>Args:<br> &nbsp; &nbsp;filename (Union[str, Path]): Path to the sprite sheet image file<br><br>Raises:<br> &nbsp; &nbsp;FileNotFoundError: If the file does not exist</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-get_sprite_at_rect">
-                <code class="fs-6 fw-bold text-color-title">def get_sprite_at_rect(self: Any, rect: pygame.Rect) -> pygame.Surface</code>
-                <div class="mt-2 text-muted small">Extract a sprite from a specific rectangular region.<br><br>Args:<br> &nbsp; &nbsp;rect (pygame.Rect): Rectangle defining the sprite region (x, y, width, height)<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface with alpha<br><br>Raises:<br> &nbsp; &nbsp;ValueError: If the rect is outside the sprite sheet bounds</div>
+                <code class="fs-6 fw-bold text-color-title">def get_sprite_at_rect(self: Any, rect: Union[pygame.Rect, Tuple[int, int, int, int]]) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Extract a sprite from a specific rectangular region.<br><br>Args:<br> &nbsp; &nbsp;rect (Union[pygame.Rect, Tuple[int, int, int, int]]): Rectangle defining the sprite region<br> &nbsp; &nbsp; &nbsp; &nbsp;(x, y, width, height)<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface with alpha<br><br>Raises:<br> &nbsp; &nbsp;ValueError: If the rect is outside the sprite sheet bounds</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-get_sprites_at_regions">
-                <code class="fs-6 fw-bold text-color-title">def get_sprites_at_regions(self: Any, regions: List[pygame.Rect]) -> List[pygame.Surface]</code>
-                <div class="mt-2 text-muted small">Extract multiple sprites from a list of rectangular regions.<br><br>Args:<br> &nbsp; &nbsp;regions (List[pygame.Rect]): List of rectangles defining sprite regions<br><br>Returns:<br> &nbsp; &nbsp;List[pygame.Surface]: List of extracted sprite surfaces</div>
+                <code class="fs-6 fw-bold text-color-title">def get_sprites_at_regions(self: Any, regions: List[Union[pygame.Rect, Tuple[int, int, int, int]]]) -> List[pygame.Surface]</code>
+                <div class="mt-2 text-muted small">Extract multiple sprites from a list of rectangular regions.<br><br>Args:<br> &nbsp; &nbsp;regions (List[Union[pygame.Rect, Tuple[int, int, int, int]]]): List of rectangles defining sprite regions<br><br>Returns:<br> &nbsp; &nbsp;List[pygame.Surface]: List of extracted sprite surfaces</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-get_sprite_grid">
                 <code class="fs-6 fw-bold text-color-title">def get_sprite_grid(self: Any, cell_size: Tuple[int, int], grid_pos: Tuple[int, int]) -> pygame.Surface</code>
@@ -76,6 +73,38 @@
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-get_surface_drawn_area">
                 <code class="fs-6 fw-bold text-color-title">def get_surface_drawn_area(self: Any, surface: pygame.Surface, threshold: int = 1) -> pygame.Rect</code>
                 <div class="mt-2 text-muted small">Get the bounding rectangle of the non-transparent (drawn) area of a surface.<br><br>This function analyzes the alpha channel of the surface to find the smallest<br>rectangle that contains all non-transparent pixels, creating a tight hitbox.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Surface to analyze (must have alpha channel)<br> &nbsp; &nbsp;threshold (int): Alpha threshold value (0-255). Pixels with alpha &gt;= threshold<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;are considered drawn. Default is 1 (any non-fully-transparent).<br><br>Returns:<br> &nbsp; &nbsp;pygame.Rect: Tight bounding rectangle around the non-transparent area.<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Returns empty Rect (0,0,0,0) if surface is fully transparent.<br><br>Raises:<br> &nbsp; &nbsp;ValueError: If surface doesn&#x27;t have per-pixel alpha</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-scale_surface">
+                <code class="fs-6 fw-bold text-color-title">def scale_surface(surface: pygame.Surface, scale_x: float, scale_y: float, smooth: bool = True) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Scale a surface by the given factors.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Surface to scale<br> &nbsp; &nbsp;scale_x (float): Horizontal scale factor (&gt;0)<br> &nbsp; &nbsp;scale_y (float): Vertical scale factor (&gt;0)<br> &nbsp; &nbsp;smooth (bool): If True, use smooth scaling (SmoothScale)<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The scaled surface</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-resize_surface">
+                <code class="fs-6 fw-bold text-color-title">def resize_surface(surface: pygame.Surface, new_width: int, new_height: int, smooth: bool = True) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Resize a surface to exact dimensions.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Surface to resize<br> &nbsp; &nbsp;new_width (int): Target width in pixels<br> &nbsp; &nbsp;new_height (int): Target height in pixels<br> &nbsp; &nbsp;smooth (bool): If True, use smooth scaling<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The resized surface</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-create_mask">
+                <code class="fs-6 fw-bold text-color-title">def create_mask(surface: pygame.Surface, color_key: Optional[Tuple[int, int, int]] = None, threshold: int = 0) -> pygame.Mask</code>
+                <div class="mt-2 text-muted small">Create a collision mask from a surface.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Surface to create mask from<br> &nbsp; &nbsp;color_key (Optional[Tuple[int, int, int]]): If provided, treat this RGB color as transparent.<br> &nbsp; &nbsp; &nbsp; &nbsp;Otherwise use alpha channel.<br> &nbsp; &nbsp;threshold (int): Alpha threshold for non-transparent pixels (0-255). Ignored if color_key is used.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Mask: The generated mask</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-replace_color">
+                <code class="fs-6 fw-bold text-color-title">def replace_color(surface: pygame.Surface, old_color: Union[Tuple[int, int, int], Tuple[int, int, int, int]], new_color: Union[Tuple[int, int, int], Tuple[int, int, int, int]], tolerance: int = 0) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Replace a specific color (or color range) in a surface with another color.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Source surface<br> &nbsp; &nbsp;old_color (Union[Tuple[int, int, int], Tuple[int, int, int, int]]): RGB or RGBA color to replace<br> &nbsp; &nbsp;new_color (Union[Tuple[int, int, int], Tuple[int, int, int, int]]): RGB or RGBA replacement color<br> &nbsp; &nbsp;tolerance (int): Color matching tolerance (0-255). Higher values replace similar colors.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: A new surface with colors replaced</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-replace_color_range">
+                <code class="fs-6 fw-bold text-color-title">def replace_color_range(surface: pygame.Surface, color_low: Tuple[int, int, int], color_high: Tuple[int, int, int], new_color: Union[Tuple[int, int, int], Tuple[int, int, int, int]], alpha_tolerance: int = 0) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Replace all colors within a bounding box in RGB space.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Source surface<br> &nbsp; &nbsp;color_low (Tuple[int, int, int]): Minimum RGB values (inclusive)<br> &nbsp; &nbsp;color_high (Tuple[int, int, int]): Maximum RGB values (inclusive)<br> &nbsp; &nbsp;new_color (Union[Tuple[int, int, int], Tuple[int, int, int, int]]): Replacement RGB or RGBA<br> &nbsp; &nbsp;alpha_tolerance (int): Alpha channel tolerance (0-255)<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: A new surface with colors replaced</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-tint">
+                <code class="fs-6 fw-bold text-color-title">def tint(surface: pygame.Surface, tint_color: Tuple[int, int, int], intensity: float = 1.0, blend_mode: str = 'multiply') -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Apply a color tint to a surface.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Source surface<br> &nbsp; &nbsp;tint_color (Tuple[int, int, int]): RGB tint color<br> &nbsp; &nbsp;intensity (float): Tint intensity (0.0 = original, 1.0 = full tint)<br> &nbsp; &nbsp;blend_mode (str): Blend mode - &quot;multiply&quot;, &quot;add&quot;, or &quot;overlay&quot;<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: Tinted surface<br><br>Raises:<br> &nbsp; &nbsp;ValueError: If blend_mode is not supported</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-paint">
+                <code class="fs-6 fw-bold text-color-title">def paint(surface: pygame.Surface, color: Union[Tuple[int, int, int], Tuple[int, int, int, int]], preserve_alpha: bool = True) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Paint the entire surface (or all non-transparent pixels) with a solid color.<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Source surface<br> &nbsp; &nbsp;color (Union[Tuple[int, int, int], Tuple[int, int, int, int]]): RGB or RGBA fill color<br> &nbsp; &nbsp;preserve_alpha (bool): If True, only paint non-transparent pixels (preserve alpha shape).<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; If False, fill entire surface including transparent areas.<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: Painted surface</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-color_to_alpha">
+                <code class="fs-6 fw-bold text-color-title">def color_to_alpha(surface: pygame.Surface, color: Tuple[int, int, int], threshold: int = 0) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Convert a specific RGB color to transparent (alpha = 0).<br><br>Args:<br> &nbsp; &nbsp;surface (pygame.Surface): Source surface<br> &nbsp; &nbsp;color (Tuple[int, int, int]): RGB color to make transparent<br> &nbsp; &nbsp;threshold (int): Color matching tolerance<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: Surface with the specified color made transparent</div>
             </div>
                 </div>
             </div>
@@ -94,8 +123,8 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, spritesheet_file: str, size: Tuple[int, int], start_pos: Tuple[int, int] = (0, 0), frame_count: int = 1, padding: Tuple[int, int] = (0, 0), margin: Tuple[int, int] = (0, 0), scale: Tuple[float, float] = (1.0, 1.0), duration: float = 1.0, loop: bool = True, fade_in_duration: float = 0.0, fade_out_duration: float = 0.0, flip: tuple = (False, False)) -> Any</code>
-                <div class="mt-2 text-muted small">Initialize the animation and automatically extract frames from sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;spritesheet_file (str): Path to the sprite sheet file<br> &nbsp; &nbsp;size (Tuple[int, int]): Size of each sprite (width, height)<br> &nbsp; &nbsp;start_pos (Tuple[int, int]): Starting position in the sprite sheet (x, y)<br> &nbsp; &nbsp;frame_count (int): Number of frames to extract for the animation<br> &nbsp; &nbsp;padding (Tuple[int, int]): Padding between sprites (x, y)<br> &nbsp; &nbsp;margin (Tuple[int, int]): Margin around the sprite sheet (x, y)<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;fade_in_duration (float): Duration of fade-in effect in seconds<br> &nbsp; &nbsp;fade_out_duration (float): Duration of fade-out effect in seconds<br> &nbsp; &nbsp;flip (Tuple[bool, bool]): Flip the animation horizontally and vertically</div>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, spritesheet_file: Union[str, Path, SpriteSheet], size: Tuple[int, int], start_pos: Tuple[int, int] = (0, 0), frame_count: int = 1, padding: Tuple[int, int] = (0, 0), margin: Tuple[int, int] = (0, 0), scale: Tuple[float, float] = (1.0, 1.0), duration: float = 1.0, loop: bool = True, fade_in_duration: float = 0.0, fade_out_duration: float = 0.0, flip: Tuple[bool, bool] = (False, False)) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize the animation and automatically extract frames from sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;spritesheet_file (Union[str, Path, SpriteSheet]): Path to the sprite sheet file or SpriteSheet instance<br> &nbsp; &nbsp;size (Tuple[int, int]): Size of each sprite (width, height)<br> &nbsp; &nbsp;start_pos (Tuple[int, int]): Starting position in the sprite sheet (x, y)<br> &nbsp; &nbsp;frame_count (int): Number of frames to extract for the animation<br> &nbsp; &nbsp;padding (Tuple[int, int]): Padding between sprites (x, y)<br> &nbsp; &nbsp;margin (Tuple[int, int]): Margin around the sprite sheet (x, y)<br> &nbsp; &nbsp;scale (Tuple[float, float]): Scale factors for the animation<br> &nbsp; &nbsp;duration (float): Total animation duration in seconds<br> &nbsp; &nbsp;loop (bool): Whether the animation should loop<br> &nbsp; &nbsp;fade_in_duration (float): Duration of fade-in effect in seconds<br> &nbsp; &nbsp;fade_out_duration (float): Duration of fade-out effect in seconds<br> &nbsp; &nbsp;flip (Tuple[bool, bool]): Flip the animation horizontally and vertically</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-_extract_animation_frames">
                 <code class="fs-6 fw-bold text-color-title">def _extract_animation_frames(self: Any) -> List[pygame.Surface]</code>
@@ -166,19 +195,15 @@
         </div>
                 
                 
-                
             </div>
         </div>
-
         <div class="mt-5 mb-5 text-center">
             <a href="index.html" class="btn btn-outline-primary">
                 <i class="bi bi-arrow-left me-2"></i>Back to Graphics Module
             </a>
         </div>
     </div>
-
     
-    <!-- Footer -->
     <footer class="footer-section">
         <div class="container">
             <div class="row">
@@ -189,39 +214,32 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-03-12 17:38
+                        Documentation generated on 2026-05-05 15:31
                     </p>
                 </div>
             </div>
         </div>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
-        
         if (searchInput && searchIcon) {
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
-                    
-                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
                         searchPath = '../search.html';
                     }
-                    
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
-            
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -230,9 +248,7 @@
                     return false;
                 }
             });
-            
             searchIcon.addEventListener('click', performSearch);
-            
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {

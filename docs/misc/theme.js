@@ -1,96 +1,89 @@
-// LunaEngine Documentation JavaScript
-$(document).ready(function() {
-    console.log('🚀 LunaEngine Theme initialized');
-    
-    // Theme Toggle
-    $('.theme-toggle').click(function() {
-        const currentTheme = $('html').attr('data-theme');
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        
-        $('html').attr('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        
-        // Update theme icon
-        const themeIcon = $('.theme-icon');
-        themeIcon.text(newTheme === 'light' ? '🌙' : '☀️');
-    });
-    
-    // Load saved theme
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    $('html').attr('data-theme', savedTheme);
-    $('.theme-icon').text(savedTheme === 'light' ? '🌙' : '☀️');
-    
-    // Simple search redirect functionality
-    $('#moduleSearch').on('keypress', function(e) {
-        if (e.which === 13) { // Enter key
-            const searchTerm = $(this).val().trim();
-            if (searchTerm) {
-                // Redirect to search page
-                if (window.location.pathname.includes('search.html')) {
-                    // If already on search page, trigger search
-                    if (window.lunaSearch) {
-                        window.lunaSearch.performSearch();
-                    }
-                } else {
-                    // Redirect to search page
-                    window.location.href = `search.html?q=${encodeURIComponent(searchTerm)}`;
-                }
-            }
+// LunaEngine Theme Manager
+document.addEventListener('DOMContentLoaded', function() {
+    const themeToggle = document.querySelector('.theme-toggle');
+    const themeIcon = document.querySelector('.theme-icon');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            console.log("Toggle theme to " + newTheme);
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            if (themeIcon) themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            this.innerHTML = `<span class="theme-icon">${newTheme === 'dark' ? '☀️' : '🌙'}</span>`;
+        });
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        if (themeIcon) {
+            themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            themeToggle.innerHTML = `<span class="theme-icon">${savedTheme === 'dark' ? '☀️' : '🌙'}</span>`;
         }
-    });
-    
-    // Search button click
-    $('#searchButton').on('click', function() {
-        const searchTerm = $('#globalSearch').val().trim();
-        if (searchTerm) {
-            if (window.location.pathname.includes('search.html')) {
-                if (window.lunaSearch) {
-                    window.lunaSearch.performSearch();
-                }
-            } else {
-                window.location.href = `search.html?q=${encodeURIComponent(searchTerm)}`;
-            }
-        }
-    });
-    
-    // Quick search on input (for search page only)
-    if (window.location.pathname.includes('search.html')) {
-        $('#globalSearch').on('input', debounce(function() {
-            const term = $(this).val().trim();
-            if (term.length >= 2 && window.lunaSearch) {
-                window.lunaSearch.performSearch();
-            } else if (term.length === 0 && window.lunaSearch) {
-                window.lunaSearch.showSearchInfo();
-            }
-        }, 300));
     }
-    
-    // Smooth scrolling for anchor links
-    $(document).on('click', 'a[href^="#"]', function(event) {
-        event.preventDefault();
-        const target = $($(this).attr('href'));
-        
-        if (target.length) {
-            $('html, body').animate({
-                scrollTop: target.offset().top - 70
-            }, 500);
-        }
-    });
-    
-    // Copy to clipboard for code blocks
-    initCopyButtons();
-    
-    // Code Statistics Collapse
-    initCodeStats();
-    
-    // Initialize search if on search page
-    if (window.location.pathname.includes('search.html')) {
-        initSearchPage();
+    // 3D Tilt effect for stats card
+    const tiltCard = document.querySelector('.tilt-card');
+    if (tiltCard) {
+        tiltCard.addEventListener('mousemove', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 10;
+            const rotateY = (centerX - x) / 10;
+            this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        tiltCard.addEventListener('mouseleave', function() {
+            this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        });
     }
-    
-    // Initialize simple markdown parser
-    setTimeout(initSimpleMarkdownParser, 100);
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href !== '#') {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+    document.querySelectorAll('pre code').forEach(codeBlock => {
+        const pre = codeBlock.parentElement;
+        const button = document.createElement('button');
+        button.className = 'btn btn-sm btn-outline-secondary copy-button';
+        button.innerHTML = '<i class="bi bi-clipboard"></i>';
+        button.style.position = 'absolute';
+        button.style.top = '10px';
+        button.style.right = '10px';
+        button.style.opacity = '0.7';
+        pre.style.position = 'relative';
+        pre.appendChild(button);
+        button.addEventListener('click', function() {
+            const text = codeBlock.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                button.innerHTML = '<i class="bi bi-check"></i>';
+                button.classList.replace('btn-outline-secondary', 'btn-success');
+                setTimeout(() => {
+                    button.innerHTML = '<i class="bi bi-clipboard"></i>';
+                    button.classList.replace('btn-success', 'btn-outline-secondary');
+                }, 2000);
+            });
+        });
+    });
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchTerm = urlParams.get('q');
+    if (searchTerm) highlightSearchTerm(searchTerm);
 });
+
+function highlightSearchTerm(term) {
+    const elements = document.querySelectorAll('.card-body, .docstring-content, p, li');
+    const regex = new RegExp(`(${term})`, 'gi');
+    elements.forEach(element => {
+        const html = element.innerHTML;
+        const highlighted = html.replace(regex, '<mark class="search-highlight">$1</mark>');
+        element.innerHTML = highlighted;
+    });
+}
+
 // Simple markdown parser without external dependencies
 function initSimpleMarkdownParser() {
     const elements = document.querySelectorAll('.markdown-content, .code-stats-content');

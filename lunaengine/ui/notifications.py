@@ -183,10 +183,10 @@ class Notification(UIElement):
         self.engine = engine
         self.config = config
         self.theme_type = theme or ThemeManager.get_current_theme()
-        self.style = self._get_theme_based_style()
+        self.nstyle = self._get_theme_based_style()
         
         # Calculate final duration
-        self.duration = config.duration or self.style.duration
+        self.duration = config.duration or self.nstyle.duration
         self.start_time = time.time()
         
         # Animation state
@@ -356,22 +356,22 @@ class Notification(UIElement):
         # Background frame with rounded corners
         self.frame = UiFrame(0, 0, self.config.width, self.config.height, 
                            theme=self.theme_type)
-        self.frame.set_background_color(self.style.bg_color)
-        self.frame.set_border(self.style.border_color, 2)
+        self.frame.set_background_color(self.nstyle.bg_color)
+        self.frame.set_border(self.nstyle.border_color, 2)
         self.frame.set_corner_radius(8)
         self.add_child(self.frame)
         
         # Create content area
         content_padding = 10
-        icon_size = 24 if self.style.show_icon else 0
-        text_area_x = content_padding + (icon_size + 10 if self.style.show_icon else 0)
+        icon_size = 24 if self.nstyle.show_icon else 0
+        text_area_x = content_padding + (icon_size + 10 if self.nstyle.show_icon else 0)
         text_area_width = self.config.width - text_area_x - content_padding
         
         # Icon (using the new icon system)
-        if self.style.show_icon and self.style.icon_type:
+        if self.nstyle.show_icon and self.nstyle.icon_type:
             try:
                 # Create icon surface
-                icon_surface = IconFactory.get_icon(self.style.icon_type, icon_size)
+                icon_surface = IconFactory.get_icon(self.nstyle.icon_type, icon_size)
                 
                 # Create a simple UI element to display the icon
                 self.icon_element = UIElement(
@@ -407,7 +407,7 @@ class Notification(UIElement):
                     content_padding, content_padding,
                     fallback_text,
                     font_size=icon_size,
-                    color=self.style.text_color,
+                    color=self.nstyle.text_color,
                     theme=self.theme_type
                 )
                 self.icon_label.height = self.config.height - (content_padding * 2)
@@ -419,7 +419,7 @@ class Notification(UIElement):
             text_area_x, content_padding,
             self.config.text,
             font_size=font_size,
-            color=self.style.text_color,
+            color=self.nstyle.text_color,
             theme=self.theme_type
         )
         self.text_label.width = text_area_width
@@ -439,7 +439,7 @@ class Notification(UIElement):
                 theme=self.theme_type
             )
             self.close_button.set_background_color((255, 255, 255, 0))
-            self.close_button.set_text_color(self.style.text_color)
+            self.close_button.set_text_color(self.nstyle.text_color)
             self.close_button.set_on_click(self.close)
             self.close_button.always_on_top = True
             

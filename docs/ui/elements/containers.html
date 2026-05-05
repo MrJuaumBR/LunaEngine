@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>containers.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Ui</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../index.html">Ui</a></li><li class="breadcrumb-item active">containers.py</li></ol></nav>
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>containers.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">No documentation</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-uiframe">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class UiFrame</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">A container frame that can have an optional draggable header with title and icon.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Any = {**UIElement._properties, 'header_enabled': {'name': 'header enabled', 'key': 'header_enabled', 'type': bool, 'editable': True, 'description': 'Show header bar with title/icon'}, 'header_title': {'name': 'header title', 'key': 'header_title', 'type': str, 'editable': True, 'description': 'Text displayed in header'}, 'header_height': {'name': 'header height', 'key': 'header_height', 'type': int, 'editable': True, 'description': 'Height of header bar in pixels'}, 'draggable': {'name': 'draggable', 'key': 'draggable', 'type': bool, 'editable': True, 'description': 'Allow frame to be dragged by its header'}, 'padding': {'name': 'padding', 'key': 'padding', 'type': int, 'editable': True, 'description': 'Padding inside frame'}, 'background_color': {'name': 'background color', 'key': 'background_color', 'type': tuple, 'editable': True, 'description': 'RGB background color (None = transparent)'}, 'border_color': {'name': 'border color', 'key': 'border_color', 'type': tuple, 'editable': True, 'description': 'RGB border color (None = no border)'}, 'corner_radius': {'name': 'corner radius', 'key': 'corner_radius', 'type': (int, tuple), 'editable': True, 'description': 'Radius for rounded corners'}}</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None, header_enabled: bool = False, header_title: str = '', header_icon: Optional[Union[str, pygame.Surface]] = None, header_height: int = 30, draggable: bool = False, **kwargs: dict) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-header_font">
+                <code class="fs-6 fw-bold text-color-title">def header_font(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-usable_space">
+                <code class="fs-6 fw-bold text-color-title">def usable_space(self: Any) -> Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-get_header_rect">
+                <code class="fs-6 fw-bold text-color-title">def get_header_rect(self: Any) -> pygame.Rect</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-set_background_color">
+                <code class="fs-6 fw-bold text-color-title">def set_background_color(self: Any, color: Optional[Tuple[int, int, int]]) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-set_border_color">
+                <code class="fs-6 fw-bold text-color-title">def set_border_color(self: Any, color: Optional[Tuple[int, int, int]]) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-set_border">
+                <code class="fs-6 fw-bold text-color-title">def set_border(self: Any, color: Optional[Tuple[int, int, int]], width: int = 1) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-set_padding">
+                <code class="fs-6 fw-bold text-color-title">def set_padding(self: Any, padding: int) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-set_corner_radius">
+                <code class="fs-6 fw-bold text-color-title">def set_corner_radius(self: Any, radius: Union[int, Tuple[int, int, int, int]]) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-get_content_rect">
+                <code class="fs-6 fw-bold text-color-title">def get_content_rect(self: Any) -> Tuple[int, int, int, int]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-update_theme">
+                <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: ThemeType) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-arrange_children_vertically">
+                <code class="fs-6 fw-bold text-color-title">def arrange_children_vertically(self: Any, spacing: int = 5, align: str = 'left') -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-arrange_children_horizontally">
+                <code class="fs-6 fw-bold text-color-title">def arrange_children_horizontally(self: Any, spacing: int = 5, align: str = 'top') -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-clear_children">
+                <code class="fs-6 fw-bold text-color-title">def clear_children(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-scrollingframe">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ScrollingFrame</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Any = {**UiFrame._properties, 'content_width': {'name': 'content width', 'key': 'content_width', 'type': int, 'editable': True, 'description': 'Total width of scrollable content'}, 'content_height': {'name': 'content height', 'key': 'content_height', 'type': int, 'editable': True, 'description': 'Total height of scrollable content'}, 'scroll_x': {'name': 'scroll x', 'key': 'scroll_x', 'type': int, 'editable': False, 'description': 'Horizontal scroll offset'}, 'scroll_y': {'name': 'scroll y', 'key': 'scroll_y', 'type': int, 'editable': False, 'description': 'Vertical scroll offset'}, 'scrollbar_size': {'name': 'scrollbar size', 'key': 'scrollbar_size', 'type': int, 'editable': True, 'description': 'Width/height of scrollbars'}}</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, content_width: int, content_height: int, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None, header_enabled: bool = False, header_title: str = '', header_icon: Optional[Union[str, pygame.Surface]] = None, header_height: int = 30, draggable: bool = False, **kwargs: dict) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-clear_content">
+                <code class="fs-6 fw-bold text-color-title">def clear_content(self: Any, reset_scroll: bool = True) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-set_background_color">
+                <code class="fs-6 fw-bold text-color-title">def set_background_color(self: Any, color: Tuple[int, int, int]) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-get_mouse_position">
+                <code class="fs-6 fw-bold text-color-title">def get_mouse_position(self: Any, input_state: Any) -> Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-mouse_over">
+                <code class="fs-6 fw-bold text-color-title">def mouse_over(self: Any, input_state: InputState) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-on_scroll">
+                <code class="fs-6 fw-bold text-color-title">def on_scroll(self: Any, event: pygame.event.Event) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-_get_vertical_scrollbar_rect">
+                <code class="fs-6 fw-bold text-color-title">def _get_vertical_scrollbar_rect(self: Any, fx: int, fy: int) -> pygame.Rect</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-_get_horizontal_scrollbar_rect">
+                <code class="fs-6 fw-bold text-color-title">def _get_horizontal_scrollbar_rect(self: Any, fx: int, fy: int) -> pygame.Rect</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-_draw_horizontal_scrollbar">
+                <code class="fs-6 fw-bold text-color-title">def _draw_horizontal_scrollbar(self: Any, renderer: Any, fx: int, fy: int, theme: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-_draw_vertical_scrollbar">
+                <code class="fs-6 fw-bold text-color-title">def _draw_vertical_scrollbar(self: Any, renderer: Any, fx: int, fy: int, theme: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-tabination">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Tabination</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Any = {**UiFrame._properties, 'orientation': {'name': 'orientation', 'key': 'orientation', 'type': str, 'editable': True, 'description': 'Tab layout: horizontal, vertical1, vertical2'}, 'tab_height': {'name': 'tab height', 'key': 'tab_height', 'type': int, 'editable': True, 'description': 'Height of each tab (vertical) or tab bar (horizontal)'}, 'tab_width': {'name': 'tab width', 'key': 'tab_width', 'type': int, 'editable': True, 'description': 'Width of each tab (horizontal) or tab bar (vertical)'}, 'current_tab': {'name': 'current tab', 'key': 'current_tab', 'type': int, 'editable': False, 'description': 'Index of active tab'}}</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, font_size: int = 20, font_name: Optional[str] = None, orientation: Literal['horizontal', 'vertical1', 'vertical2'] = 'horizontal', root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None, **kwargs: dict) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_calculate_tab_colors">
+                <code class="fs-6 fw-bold text-color-title">def _calculate_tab_colors(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-font">
+                <code class="fs-6 fw-bold text-color-title">def font(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-update_theme">
+                <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-add_tab">
+                <code class="fs-6 fw-bold text-color-title">def add_tab(self: Any, tab_name: str, icon: Optional[Union[str, pygame.Surface]] = None) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-add_to_tab">
+                <code class="fs-6 fw-bold text-color-title">def add_to_tab(self: Any, tab_name: str, ui_element: UIElement) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-switch_tab">
+                <code class="fs-6 fw-bold text-color-title">def switch_tab(self: Any, tab_index: int) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-get_tab_index">
+                <code class="fs-6 fw-bold text-color-title">def get_tab_index(self: Any, tab_name: str) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-remove_tab">
+                <code class="fs-6 fw-bold text-color-title">def remove_tab(self: Any, tab_name: str) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_update_tab_scroll">
+                <code class="fs-6 fw-bold text-color-title">def _update_tab_scroll(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_tab_width">
+                <code class="fs-6 fw-bold text-color-title">def _get_tab_width(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_tab_height_for_name">
+                <code class="fs-6 fw-bold text-color-title">def _get_tab_height_for_name(self: Any, tab_name: str) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_tab_rect">
+                <code class="fs-6 fw-bold text-color-title">def _get_tab_rect(self: Any, idx: int, fx: int, fy: int) -> pygame.Rect</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_draw_arrow">
+                <code class="fs-6 fw-bold text-color-title">def _draw_arrow(self: Any, renderer: Any, x: int, y: int, direction: str, hover: bool) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_visible_size">
+                <code class="fs-6 fw-bold text-color-title">def _get_visible_size(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_tab_area_rect">
+                <code class="fs-6 fw-bold text-color-title">def _get_tab_area_rect(self: Any, fx: int, fy: int) -> pygame.Rect</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-pagination">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Pagination</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, total_pages: int = 1, current_page: int = 1, max_visible_pages: int = 7, show_prev_next: bool = True, show_first_last: bool = True, button_style: Literal['numbers', 'dots', 'compact'] = 'numbers', root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-set_page">
+                <code class="fs-6 fw-bold text-color-title">def set_page(self: Any, page: int) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-set_total_pages">
+                <code class="fs-6 fw-bold text-color-title">def set_total_pages(self: Any, total_pages: int) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-set_current_page">
+                <code class="fs-6 fw-bold text-color-title">def set_current_page(self: Any, page: int) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-next_page">
+                <code class="fs-6 fw-bold text-color-title">def next_page(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-previous_page">
+                <code class="fs-6 fw-bold text-color-title">def previous_page(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-first_page">
+                <code class="fs-6 fw-bold text-color-title">def first_page(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-last_page">
+                <code class="fs-6 fw-bold text-color-title">def last_page(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-set_on_page_change">
+                <code class="fs-6 fw-bold text-color-title">def set_on_page_change(self: Any, callback: Callable[[int, int], None]) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-_trigger_page_change">
+                <code class="fs-6 fw-bold text-color-title">def _trigger_page_change(self: Any, old_page: int) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-_calculate_visible_pages">
+                <code class="fs-6 fw-bold text-color-title">def _calculate_visible_pages(self: Any) -> List[int]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-_create_buttons">
+                <code class="fs-6 fw-bold text-color-title">def _create_buttons(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-_update_button_states">
+                <code class="fs-6 fw-bold text-color-title">def _update_button_states(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-expandable">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Expandable</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Any = {**UiFrame._properties, 'title': {'name': 'title', 'key': 'title', 'type': str, 'editable': True, 'description': 'Header text'}, 'expanded': {'name': 'expanded', 'key': '_expanded', 'type': bool, 'editable': True, 'description': 'Whether the panel is expanded'}, 'header_height': {'name': 'header height', 'key': 'header_height', 'type': int, 'editable': False, 'description': 'Height of header button'}, 'allow_multiple': {'name': 'allow multiple', 'key': 'allow_multiple', 'type': bool, 'editable': True, 'description': 'Allow multiple expanded items in same parent'}, 'accordion_group': {'name': 'accordion group', 'key': 'accordion_group', 'type': str, 'editable': True, 'description': 'Group name for accordion behavior'}}</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, title: str = 'Expand', expanded: bool = False, allow_multiple: bool = False, accordion_group: str = None, root_point: Any = (0, 0), theme: Any = None, element_id: Any = None) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-setupicons">
+                <code class="fs-6 fw-bold text-color-title">def setupIcons(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-_toggle">
+                <code class="fs-6 fw-bold text-color-title">def _toggle(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-expand">
+                <code class="fs-6 fw-bold text-color-title">def expand(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-collapse">
+                <code class="fs-6 fw-bold text-color-title">def collapse(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-is_expanded">
+                <code class="fs-6 fw-bold text-color-title">def is_expanded(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-add_to_content">
+                <code class="fs-6 fw-bold text-color-title">def add_to_content(self: Any, element: UIElement) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: Any, inputState: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                
+            </div>
+        </div>
+        <div class="mt-5 mb-5 text-center">
+            <a href="../index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Ui Module
+            </a>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-05-05 15:31
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

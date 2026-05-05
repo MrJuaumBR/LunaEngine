@@ -29,48 +29,35 @@
         </div>
     </nav>
     
-
-    <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8">
                     <h1 class="display-4 fw-bold text-white mb-3">
-                        <i class="bi bi-moon-stars-fill me-3"></i>
-                        LunaEngine
+                        <i class="bi bi-moon-stars-fill me-3"></i>LunaEngine
                     </h1>
-                    <p class="lead text-white mb-4">
-                        A powerful and intuitive 2D game framework for Python
-                    </p>
+                    <p class="lead text-white mb-4">A powerful and intuitive 2D game framework for Python</p>
                     <div class="d-flex flex-wrap gap-2">
-                        <span class="badge bg-light text-dark fs-6 p-2">
-                            <i class="bi bi-lightning me-1"></i>High Performance
-                        </span>
-                        <span class="badge bg-light text-dark fs-6 p-2">
-                            <i class="bi bi-palette me-1"></i>Modern UI
-                        </span>
-                        <span class="badge bg-light text-dark fs-6 p-2">
-                            <i class="bi bi-code-slash me-1"></i>Pure Python
-                        </span>
+                        <span class="badge bg-light text-dark fs-6 p-2"><i class="bi bi-lightning me-1"></i>High Performance</span>
+                        <span class="badge bg-light text-dark fs-6 p-2"><i class="bi bi-palette me-1"></i>Modern UI</span>
+                        <span class="badge bg-light text-dark fs-6 p-2"><i class="bi bi-code-slash me-1"></i>Pure Python</span>
                     </div>
                 </div>
                 <div class="col-lg-4 text-center">
-                    <div class="stats-card">
+                    <div class="stats-card tilt-card">
                         <h3 class="text-white mb-2">7</h3>
                         <p class="text-white-50 mb-1">Modules</p>
                         <div class="d-flex justify-content-center gap-3 flex-wrap">
-                            <small class="text-white-50">32 files</small>
-                            <small class="text-white-50">181 classes</small>
-                            <small class="text-white-50">57 functions</small>
-                            <small class="text-white-50">1183 methods</small>
+                            <small class="text-white-50">44 files</small>
+                            <small class="text-white-50">186 classes</small>
+                            <small class="text-white-50">63 functions</small>
+                            <small class="text-white-50">1297 methods</small>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- Quick Navigation -->
     <div class="container mt-4">
         <div class="row">
             <div class="col-12">
@@ -80,19 +67,13 @@
                             <div class="col-md-7">
                                 <h6 class="mb-0"><i class="bi bi-rocket me-2"></i>Get started quickly with LunaEngine</h6>
                             </div>
-                            <div class="col-md-5 text-end">
-                                <a href="quick-start.html" class="btn btn-light btn-sm me-2">
-                                    <i class="bi bi-play-circle me-1"></i>Quick Guide
-                                </a>
-                                <a href="contact.html" class="btn btn-outline-light btn-sm me-2">
-                                    <i class="bi bi-people me-1"></i>Community
-                                </a>
-                                <a href="about.html" class="btn btn-outline-light btn-sm me-2">
-                                    <i class="bi bi-info-circle me-1"></i>About
-                                </a>
-                                <a href="examples/" class="btn btn-outline-light btn-sm me-2">
-                                    <i class="bi bi-code-slash me-1"></i>Examples
-                                </a>
+                            <div class="col-md-5.5 text-end">
+                                <a href="quick-start.html" class="btn btn-light btn-sm me-2"><i class="bi bi-play-circle me-1"></i>Quick Guide</a>
+                                <a href="lessons/" class="btn btn-light btn-sm me-2"><i class="bi bi-journal-bookmark me-1"></i>Lessons</a>
+                                <a href="contact.html" class="btn btn-outline-light btn-sm me-2"><i class="bi bi-people me-1"></i>Community</a>
+                                <a href="about.html" class="btn btn-outline-light btn-sm me-2"><i class="bi bi-info-circle me-1"></i>About</a>
+                                <a href="examples/" class="btn btn-outline-light btn-sm me-2"><i class="bi bi-code-slash me-1"></i>Examples</a>
+                                <a href="themes.html" class="btn btn-outline-light btn-sm me-2"><i class="bi bi-palette me-1"></i>Themes</a>
                             </div>
                         </div>
                     </div>
@@ -100,8 +81,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Installer Selector -->
     <div class="container mt-4">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-primary text-white">
@@ -110,13 +89,11 @@
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <div class="btn-group" role="group" aria-label="Installation options">
+                        <div class="btn-group" role="group">
                             <input type="radio" class="btn-check" name="installOption" id="optWindows" value="windows" autocomplete="off" checked>
                             <label class="btn btn-outline-primary" for="optWindows">Windows</label>
-
                             <input type="radio" class="btn-check" name="installOption" id="optLinux" value="linux" autocomplete="off">
                             <label class="btn btn-outline-primary" for="optLinux">Linux</label>
-
                             <input type="radio" class="btn-check" name="installOption" id="optTestPyPi" value="testpypi" autocomplete="off">
                             <label class="btn btn-outline-primary" for="optTestPyPi">TestPyPi</label>
                         </div>
@@ -124,9 +101,7 @@
                     <div class="col-md-6">
                         <div class="input-group">
                             <code class="form-control bg-light" id="installCommand">pip install lunaengine</code>
-                            <button class="btn btn-outline-secondary copy-install-btn" type="button" title="Copy to clipboard">
-                                <i class="bi bi-clipboard"></i>
-                            </button>
+                            <button class="btn btn-outline-secondary copy-install-btn" type="button" title="Copy to clipboard"><i class="bi bi-clipboard"></i></button>
                         </div>
                         <small class="text-muted">Click the copy button to copy the command.</small>
                     </div>
@@ -134,8 +109,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Code Statistics Section -->
     <div class="container mt-5">
         <div class="row">
             <div class="col-12">
@@ -146,17 +119,17 @@
                             <i class="bi bi-chevron-down" id="statsToggleIcon"></i>
                         </button>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="card-body p-2">
                         <div id="codeStatsContent" class="code-stats-content markdown-content preview">
-                            # LunaEngine Code Statistics
+# LunaEngine Code Statistics
 
 ## Overview
 
-- **Total Files**: 56
-- **Total Lines**: 29098
-- **Code Lines**: 19150
-- **Comment Lines**: 5657
-- **Blank Lines**: 4291
+- **Total Files**: 68
+- **Total Lines**: 25048
+- **Code Lines**: 16430
+- **Comment Lines**: 4396
+- **Blank Lines**: 4222
 
 ## Statistics
 
@@ -165,7 +138,7 @@
 
 ## Code Density
 
-- **Code Density**: 65.8%
+- **Code Density**: 65.6%
 - Balanced code and comments
 
 ## Project Structure
@@ -213,20 +186,33 @@
 │   └── [PYT] spritesheet.py
 ├── [DIR] misc/
 │   ├── [PYT] __init__.py
-│   ├── [PYT] bones.py
+│   ├── [PYT] debug.py
 │   └── [PYT] icons.py
 ├── [DIR] tools/
 │   ├── [PYT] __init__.py
+│   ├── [PYT] clear_pycache.py
 │   ├── [PYT] code_stats.py
-│   └── [PYT] image_conversion_tool.py
+│   ├── [PYT] image_conversion_tool.py
+│   └── [PYT] split_themes.py
 ├── [DIR] ui/
 │   ├── [PYT] __init__.py
-│   ├── [PYT] elements.py
+│   ├── [DIR] elements/
+│   │   ├── [PYT] __init__.py
+│   │   ├── [PYT] base.py
+│   │   ├── [PYT] buttons.py
+│   │   ├── [PYT] clock.py
+│   │   ├── [PYT] containers.py
+│   │   ├── [PYT] dialogs.py
+│   │   ├── [PYT] labels.py
+│   │   ├── [PYT] misc.py
+│   │   ├── [PYT] progress.py
+│   │   ├── [PYT] selectors.py
+│   │   ├── [PYT] textinputs.py
+│   │   └── [PYT] visualizers.py
 │   ├── [PYT] layer_manager.py
 │   ├── [PYT] layout.py
 │   ├── [PYT] notifications.py
 │   ├── [PYT] styles.py
-│   ├── [JSN] themes.json
 │   ├── [PYT] themes.py
 │   ├── [PYT] tooltips.py
 │   └── [PYT] tween.py
@@ -243,13 +229,12 @@
 
 | Extension | Count | Percentage |
 |-----------|-------|------------|
-| `.comp` | 1 | 1.8% |
-| `.frag` | 6 | 10.7% |
-| `.geom` | 1 | 1.8% |
-| `.json` | 1 | 1.8% |
-| `.md` | 1 | 1.8% |
-| `.py` | 40 | 71.4% |
-| `.vert` | 6 | 10.7% |
+| `.comp` | 1 | 1.5% |
+| `.frag` | 6 | 8.8% |
+| `.geom` | 1 | 1.5% |
+| `.md` | 1 | 1.5% |
+| `.py` | 53 | 77.9% |
+| `.vert` | 6 | 8.8% |
 
 ## Files by Directory
 
@@ -261,33 +246,39 @@
 | `graphics\shaders` | 14 |
 | `misc` | 3 |
 | `root` | 2 |
-| `tools` | 3 |
-| `ui` | 10 |
+| `tools` | 5 |
+| `ui` | 8 |
+| `ui\elements` | 12 |
 | `utils` | 6 |
 
 ## File Details
 
 | File | Total Lines | Code | Comments | Blank | Size (KB) |
 |------|------------|------|----------|-------|-----------|
-| `ui\elements.py` | 6997 | 3935 | 1790 | 1272 | 273.3 |
-| `ui\themes.json` | 4816 | 4816 | 0 | 0 | 188.1 |
-| `backend\opengl.py` | 1363 | 961 | 154 | 248 | 53.7 |
+| `backend\opengl.py` | 1612 | 1135 | 201 | 276 | 66.7 |
+| `ui\elements\selectors.py` | 1592 | 1304 | 36 | 252 | 68.1 |
 | `ui\tween.py` | 1202 | 550 | 423 | 229 | 36.7 |
-| `core\engine.py` | 1112 | 527 | 360 | 225 | 41.9 |
+| `ui\elements\containers.py` | 1192 | 1020 | 10 | 162 | 54.5 |
+| `core\engine.py` | 1148 | 556 | 363 | 229 | 43.4 |
 | `backend\network.py` | 1092 | 770 | 140 | 182 | 40.1 |
 | `ui\notifications.py` | 932 | 576 | 199 | 157 | 37.9 |
+| `graphics\spritesheet.py` | 930 | 446 | 331 | 153 | 33.4 |
 | `graphics\camera.py` | 881 | 514 | 197 | 170 | 34.2 |
+| `ui\elements\textinputs.py` | 871 | 700 | 12 | 159 | 35.9 |
+| `ui\elements\visualizers.py` | 838 | 670 | 28 | 140 | 36.6 |
+| `misc\debug.py` | 826 | 630 | 62 | 134 | 36.2 |
 | `core\audio.py` | 774 | 431 | 200 | 143 | 26.1 |
 | `backend\openal.py` | 766 | 433 | 185 | 148 | 25.5 |
 | `graphics\particles.py` | 742 | 580 | 78 | 84 | 23.9 |
 | `backend\controller.py` | 640 | 493 | 63 | 84 | 23.0 |
-| `graphics\spritesheet.py` | 613 | 279 | 223 | 111 | 21.5 |
+| `ui\themes.py` | 638 | 496 | 53 | 89 | 23.0 |
 | `misc\icons.py` | 578 | 418 | 63 | 97 | 21.1 |
-| `ui\themes.py` | 567 | 402 | 82 | 83 | 19.9 |
-| `misc\bones.py` | 493 | 313 | 72 | 108 | 20.5 |
+| `ui\elements\base.py` | 439 | 235 | 127 | 77 | 16.9 |
 | `utils\timer.py` | 427 | 164 | 179 | 84 | 13.8 |
+| `utils\performance.py` | 408 | 265 | 68 | 75 | 14.7 |
+| `backend\types.py` | 401 | 291 | 37 | 73 | 14.0 |
 | `tools\code_stats.py` | 400 | 274 | 56 | 70 | 16.1 |
-| `utils\performance.py` | 377 | 238 | 66 | 73 | 13.3 |
+| `ui\elements\clock.py` | 394 | 224 | 102 | 68 | 16.3 |
 | `ui\tooltips.py` | 364 | 179 | 118 | 67 | 12.9 |
 | `core\window.py` | 358 | 138 | 158 | 62 | 12.0 |
 | `core\renderer.py` | 339 | 96 | 187 | 56 | 11.3 |
@@ -295,21 +286,28 @@
 | `graphics\shaders\filter.frag` | 323 | 283 | 1 | 39 | 11.0 |
 | `tools\image_conversion_tool.py` | 308 | 195 | 51 | 62 | 12.4 |
 | `graphics\shadows.py` | 264 | 160 | 59 | 45 | 9.5 |
+| `ui\elements\buttons.py` | 251 | 207 | 4 | 40 | 9.9 |
 | `utils\image_converter.py` | 251 | 177 | 25 | 49 | 9.2 |
 | `ui\layout.py` | 231 | 97 | 91 | 43 | 7.3 |
 | `ui\layer_manager.py` | 225 | 94 | 85 | 46 | 7.5 |
-| `backend\types.py` | 187 | 135 | 19 | 33 | 6.1 |
-| `core\scene.py` | 181 | 133 | 10 | 38 | 6.8 |
-| `CODE_STATISTICS.md` | 180 | 155 | 9 | 16 | 6.3 |
-| `backend\__init__.py` | 104 | 76 | 22 | 6 | 2.2 |
+| `ui\elements\dialogs.py` | 224 | 159 | 24 | 41 | 9.1 |
+| `ui\elements\misc.py` | 221 | 161 | 14 | 46 | 8.3 |
+| `CODE_STATISTICS.md` | 203 | 181 | 8 | 14 | 7.5 |
+| `core\scene.py` | 191 | 142 | 10 | 39 | 7.0 |
+| `ui\elements\progress.py` | 170 | 142 | 3 | 25 | 7.3 |
+| `ui\elements\labels.py` | 150 | 119 | 2 | 29 | 6.0 |
+| `backend\__init__.py` | 108 | 80 | 22 | 6 | 2.2 |
 | `ui\styles.py` | 91 | 35 | 38 | 18 | 2.7 |
 | `utils\threading.py` | 87 | 43 | 29 | 15 | 2.5 |
 | `graphics\__init__.py` | 77 | 53 | 19 | 5 | 1.7 |
 | `ui\__init__.py` | 73 | 26 | 30 | 17 | 2.7 |
 | `utils\__init__.py` | 73 | 44 | 22 | 7 | 2.6 |
+| `tools\split_themes.py` | 61 | 43 | 7 | 11 | 2.1 |
+| `ui\elements\__init__.py` | 48 | 24 | 22 | 2 | 2.1 |
 | `graphics\shaders\rounded_rect.frag` | 42 | 35 | 1 | 6 | 1.4 |
 | `core\__init__.py` | 28 | 7 | 15 | 6 | 0.8 |
 | `graphics\shaders\particle.vert` | 27 | 21 | 1 | 5 | 0.8 |
+| `tools\clear_pycache.py` | 24 | 20 | 0 | 4 | 0.8 |
 | `backend\exceptions.py` | 21 | 5 | 11 | 5 | 0.6 |
 | `graphics\shaders\depth.geom` | 21 | 17 | 1 | 3 | 0.5 |
 | `graphics\shaders\simple.vert` | 18 | 13 | 1 | 4 | 0.5 |
@@ -332,57 +330,38 @@
             </div>
         </div>
     </div>
-
-    <!-- Modules Grid -->
     <div class="container mt-5">
         <h2 class="mb-4">LunaEngine Modules</h2>
         <div class="row g-4" style="margin-bottom: 1vw;">
-
     <script>
-    
-    // Installation command switcher
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function(){
         const installRadios = document.querySelectorAll('input[name="installOption"]');
         const installCommandSpan = document.getElementById('installCommand');
         const copyBtn = document.querySelector('.copy-install-btn');
-
         const toggleBtn = document.getElementById('toggleStatsBtn');
         const contentDiv = document.getElementById('codeStatsContent');
         const icon = document.getElementById('statsToggleIcon');
-
-        if (toggleBtn && contentDiv && icon) {{
-            toggleBtn.addEventListener('click', function() {{
+        if (toggleBtn && contentDiv && icon) {
+            toggleBtn.addEventListener('click', function() {
                 const isPreview = contentDiv.classList.contains('preview');
-                if (isPreview) {{
+                if (isPreview) {
                     contentDiv.classList.remove('preview');
                     icon.classList.replace('bi-chevron-down', 'bi-chevron-up');
-                }} else {{
+                } else {
                     contentDiv.classList.add('preview');
                     icon.classList.replace('bi-chevron-up', 'bi-chevron-down');
-                }}
-            }});
-        }}
-
+                }
+            });
+        }
         function updateCommand() {
             const selected = document.querySelector('input[name="installOption"]:checked').value;
             switch(selected) {
-                case 'windows':
-                    installCommandSpan.textContent = 'pip install lunaengine';
-                    break;
-                case 'linux':
-                    installCommandSpan.textContent = 'pip3 install lunaengine';
-                    break;
-                case 'testpypi':
-                    installCommandSpan.textContent = 'pip install -i https://test.pypi.org/simple/ lunaengine';
-                    break;
+                case 'windows': installCommandSpan.textContent = 'pip install lunaengine'; break;
+                case 'linux': installCommandSpan.textContent = 'pip3 install lunaengine'; break;
+                case 'testpypi': installCommandSpan.textContent = 'pip install -i https://test.pypi.org/simple/ lunaengine'; break;
             }
         }
-
-        installRadios.forEach(radio => {
-            radio.addEventListener('change', updateCommand);
-        });
-
-        // Copy button functionality
+        installRadios.forEach(radio => radio.addEventListener('change', updateCommand));
         copyBtn.addEventListener('click', function() {
             const textToCopy = installCommandSpan.textContent;
             navigator.clipboard.writeText(textToCopy).then(() => {
@@ -414,24 +393,14 @@
                     <div class="card-body">
                         <p class="text-muted">Core framework systems - Engine/LunaEngine, Window, Renderer</p>
                         <div class="module-stats d-flex flex-wrap gap-2">
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-file-text me-1"></i>5 files
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>10 classes
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-gear me-1"></i>0 functions
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>183 methods
-                            </span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>5 files</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>10 classes</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>0 functions</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>186 methods</span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
-                        <a href="core/index.html" class="btn btn-primary w-100">
-                            <i class="bi bi-book me-2"></i>View Documentation
-                        </a>
+                        <a href="core/index.html" class="btn btn-primary w-100"><i class="bi bi-book me-2"></i>View Documentation</a>
                     </div>
                 </div>
             </div>
@@ -450,24 +419,14 @@
                     <div class="card-body">
                         <p class="text-muted">User interface components - Buttons, Layouts, Themes</p>
                         <div class="module-stats d-flex flex-wrap gap-2">
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-file-text me-1"></i>8 files
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>58 classes
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-gear me-1"></i>8 functions
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>487 methods
-                            </span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>18 files</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>60 classes</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>8 functions</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>539 methods</span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
-                        <a href="ui/index.html" class="btn btn-success w-100">
-                            <i class="bi bi-book me-2"></i>View Documentation
-                        </a>
+                        <a href="ui/index.html" class="btn btn-success w-100"><i class="bi bi-book me-2"></i>View Documentation</a>
                     </div>
                 </div>
             </div>
@@ -486,24 +445,14 @@
                     <div class="card-body">
                         <p class="text-muted">Graphics and rendering - Sprites, Lighting, Particles</p>
                         <div class="module-stats d-flex flex-wrap gap-2">
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-file-text me-1"></i>4 files
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>30 classes
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-gear me-1"></i>9 functions
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>134 methods
-                            </span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>4 files</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>30 classes</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>9 functions</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>142 methods</span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
-                        <a href="graphics/index.html" class="btn btn-warning w-100">
-                            <i class="bi bi-book me-2"></i>View Documentation
-                        </a>
+                        <a href="graphics/index.html" class="btn btn-warning w-100"><i class="bi bi-book me-2"></i>View Documentation</a>
                     </div>
                 </div>
             </div>
@@ -522,24 +471,14 @@
                     <div class="card-body">
                         <p class="text-muted">Utility functions - Performance, Math, Threading</p>
                         <div class="module-stats d-flex flex-wrap gap-2">
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-file-text me-1"></i>5 files
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>10 classes
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-gear me-1"></i>25 functions
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>81 methods
-                            </span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>5 files</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>10 classes</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>25 functions</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>83 methods</span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
-                        <a href="utils/index.html" class="btn btn-info w-100">
-                            <i class="bi bi-book me-2"></i>View Documentation
-                        </a>
+                        <a href="utils/index.html" class="btn btn-info w-100"><i class="bi bi-book me-2"></i>View Documentation</a>
                     </div>
                 </div>
             </div>
@@ -558,24 +497,14 @@
                     <div class="card-body">
                         <p class="text-muted">Renderer backends - OpenGL, Pygame</p>
                         <div class="module-stats d-flex flex-wrap gap-2">
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-file-text me-1"></i>6 files
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>39 classes
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-gear me-1"></i>7 functions
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>228 methods
-                            </span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>6 files</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>41 classes</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>7 functions</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>265 methods</span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
-                        <a href="backend/index.html" class="btn btn-secondary w-100">
-                            <i class="bi bi-book me-2"></i>View Documentation
-                        </a>
+                        <a href="backend/index.html" class="btn btn-secondary w-100"><i class="bi bi-book me-2"></i>View Documentation</a>
                     </div>
                 </div>
             </div>
@@ -594,24 +523,14 @@
                     <div class="card-body">
                         <p class="text-muted">Miscellaneous functions - Bones, Icons</p>
                         <div class="module-stats d-flex flex-wrap gap-2">
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-file-text me-1"></i>2 files
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>33 classes
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-gear me-1"></i>2 functions
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>60 methods
-                            </span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>2 files</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>34 classes</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>2 functions</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>72 methods</span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
-                        <a href="misc/index.html" class="btn btn-dark w-100">
-                            <i class="bi bi-book me-2"></i>View Documentation
-                        </a>
+                        <a href="misc/index.html" class="btn btn-dark w-100"><i class="bi bi-book me-2"></i>View Documentation</a>
                     </div>
                 </div>
             </div>
@@ -630,33 +549,21 @@
                     <div class="card-body">
                         <p class="text-muted">Development tools - Documentation, Analysis</p>
                         <div class="module-stats d-flex flex-wrap gap-2">
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-file-text me-1"></i>2 files
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-box me-1"></i>1 classes
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-gear me-1"></i>6 functions
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                <i class="bi bi-hammer me-1"></i>10 methods
-                            </span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>4 files</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>1 classes</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>12 functions</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>10 methods</span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
-                        <a href="tools/index.html" class="btn btn-danger w-100">
-                            <i class="bi bi-book me-2"></i>View Documentation
-                        </a>
+                        <a href="tools/index.html" class="btn btn-danger w-100"><i class="bi bi-book me-2"></i>View Documentation</a>
                     </div>
                 </div>
             </div>
 
         </div>
     </div>
-
     
-    <!-- Footer -->
     <footer class="footer-section">
         <div class="container">
             <div class="row">
@@ -667,39 +574,32 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-03-12 17:38
+                        Documentation generated on 2026-05-05 15:31
                     </p>
                 </div>
             </div>
         </div>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
-        
         if (searchInput && searchIcon) {
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
-                    
-                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
                         searchPath = '../search.html';
                     }
-                    
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
-            
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -708,9 +608,7 @@
                     return false;
                 }
             });
-            
             searchIcon.addEventListener('click', performSearch);
-            
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {

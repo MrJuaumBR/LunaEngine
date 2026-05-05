@@ -12,7 +12,7 @@ from typing import Dict, List, Tuple
 class CodeStatistics:
     def __init__(self, root_dir: str):
         self.root_dir = Path(root_dir)
-        self.exclude_dirs = {'__pycache__', '.git', 'build', 'dist', 'venv', 'env', '.vscode', '.idea'}
+        self.exclude_dirs = {'__pycache__', '.git', 'build', 'dist', 'venv', 'env', '.vscode', '.idea', 'themes'}
         self.exclude_files = {'*.pyc', '*.pyo', '*.pyd', '*.so', '*.dll'}
         self.file_extensions = {'.py', '.txt', '.md', '.toml', '.cfg', '.ini','.json', '.vert', '.frag', '.comp', '.geom'}
         

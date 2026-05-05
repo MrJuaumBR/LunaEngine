@@ -238,12 +238,12 @@ class Tooltip(UIElement):
         # Draw border
         if theme.tooltip_border:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                             theme.tooltip_border, fill=False, border_width=1,
+                             theme.tooltip_border.color, fill=False, border_width=1,
                              corner_radius=self.config.corner_radius)
         
         # Draw background (simplified rectangle for OpenGL)
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                         theme.tooltip_background,
+                         theme.tooltip_background.color,
                          corner_radius=self.config.corner_radius)
         
         # Draw wrapped text
@@ -260,7 +260,7 @@ class Tooltip(UIElement):
         line_height = font.get_height()
         
         for i, line in enumerate(lines):
-            text_surface = font.render(line, True, theme.tooltip_text)
+            text_surface = font.render(line, True, theme.tooltip_text.color)
             text_x = x + (self.width - text_surface.get_width()) // 2
             text_y = y + self.config.padding + i * line_height
             

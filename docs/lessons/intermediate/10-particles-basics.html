@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particles Basics - LunaEngine Lessons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Lessons</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../index.html">Lessons</a></li><li class="breadcrumb-item active">Intermediate</li><li class="breadcrumb-item active">Particles Basics</li></ol></nav>
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 d-none d-md-block">
+                <div class="card shadow-sm sticky-top" style="top: 6rem; max-height: 80vh; overflow-y: auto;">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="bi bi-map me-2"></i>Course Track</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/07-ui-layouts.html" class="list-group-item list-group-item-action">7. Ui Layouts</a><a href="../intermediate/08-tween-animations.html" class="list-group-item list-group-item-action">8. Tween Animations</a><a href="../intermediate/09-camera-movement.html" class="list-group-item list-group-item-action">9. Camera Movement</a><a href="../intermediate/10-particles-basics.html" class="list-group-item list-group-item-action active">10. Particles Basics</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/11-advanced-ui.html" class="list-group-item list-group-item-action">11. Advanced Ui</a><a href="../advanced/12-particle-effects.html" class="list-group-item list-group-item-action">12. Particle Effects</a><a href="../advanced/13-camera-effects.html" class="list-group-item list-group-item-action">13. Camera Effects</a><a href="../advanced/14-ui-transitions.html" class="list-group-item list-group-item-action">14. Ui Transitions</a><a href="../advanced/15-combining-systems.html" class="list-group-item list-group-item-action">15. Combining Systems</a><div class="mb-2"></div></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main content -->
+            <div class="col-md-9">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h3 mb-0">10. Particles Basics</h1>
+                    </div>
+                    <div class="card-body markdown-content">
+                        # Particle Systems
+
+Particles are used for effects like smoke, sparks, fire, and explosions.
+
+## Creating a Particle Emitter
+
+```python
+    from lunaengine.graphics.particles import ParticleEmitter
+
+    emitter = ParticleEmitter(x=300, y=300)
+```
+
+## Example Uses
+
+- explosions
+- magic effects
+- rain
+- smoke
+
+Particles make the game feel more alive.
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between">
+                            <a href='09-camera-movement.html' class='btn btn-outline-primary'><i class='bi bi-arrow-left me-2'></i>Previous: Camera Movement</a>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="../index.html" class="btn btn-secondary"><i class="bi bi-journal-bookmark me-2"></i>All Lessons</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-05-05 15:31
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+    <script src="../../theme.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+        if (typeof initSimpleMarkdownParser === 'function') initSimpleMarkdownParser();
+        else setTimeout(function() {
+            if (window.initSimpleMarkdownParser) window.initSimpleMarkdownParser();
+        }, 100);
+    });</script>
+</body>
+</html>

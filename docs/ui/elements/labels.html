@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>labels.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Ui</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../index.html">Ui</a></li><li class="breadcrumb-item active">labels.py</li></ol></nav>
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>labels.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">No documentation</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-textlabel">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class TextLabel</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">UI element for displaying text labels.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'text': {'name': 'text', 'key': 'text', 'type': str, 'editable': True, 'description': 'The text content of the label.'}, 'color': {'name': 'color', 'key': 'color', 'type': Tuple[int, int, int], 'editable': True, 'description': 'Custom text color (RGB). Overrides theme color.'}, 'font_size': {'name': 'font_size', 'key': 'font_size', 'type': int, 'editable': True, 'description': 'Size of the font in pixels.'}, 'font_name': {'name': 'font_name', 'key': 'font_name', 'type': Optional[str], 'editable': True, 'description': 'Path to font file or None for default font.'}}</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, text: str, font_size: int = 24, color: Optional[Tuple[int, int, int]] = None, font_name: Optional[str] = None, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None, **kwargs: dict) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-get_text">
+                <code class="fs-6 fw-bold text-color-title">def get_text(self: Any) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-update_theme">
+                <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-set_text_color">
+                <code class="fs-6 fw-bold text-color-title">def set_text_color(self: Any, color: Tuple[int, int, int] | Color) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-set_color">
+                <code class="fs-6 fw-bold text-color-title">def set_color(self: Any, color: Tuple[int, int, int] | Color) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-font">
+                <code class="fs-6 fw-bold text-color-title">def font(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-set_text">
+                <code class="fs-6 fw-bold text-color-title">def set_text(self: Any, text: str) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-set_theme">
+                <code class="fs-6 fw-bold text-color-title">def set_theme(self: Any, theme_type: ThemeType) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-_get_text_color">
+                <code class="fs-6 fw-bold text-color-title">def _get_text_color(self: Any) -> Color</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: 'Renderer') -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-imagelabel">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ImageLabel</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: str | pygame.Surface, width: Optional[int] = None, height: Optional[int] = None, root_point: Tuple[float, float] = (0, 0), element_id: Optional[str] = None) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-_load_image">
+                <code class="fs-6 fw-bold text-color-title">def _load_image(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-set_image">
+                <code class="fs-6 fw-bold text-color-title">def set_image(self: Any, image_path: str | pygame.Surface) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-get_image">
+                <code class="fs-6 fw-bold text-color-title">def get_image(self: Any) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-set_size">
+                <code class="fs-6 fw-bold text-color-title">def set_size(self: Any, width: int, height: int) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                
+                
+            </div>
+        </div>
+        <div class="mt-5 mb-5 text-center">
+            <a href="../index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Ui Module
+            </a>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-05-05 15:31
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

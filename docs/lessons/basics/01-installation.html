@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installation - LunaEngine Lessons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Lessons</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../index.html">Lessons</a></li><li class="breadcrumb-item active">Basics</li><li class="breadcrumb-item active">Installation</li></ol></nav>
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 d-none d-md-block">
+                <div class="card shadow-sm sticky-top" style="top: 6rem; max-height: 80vh; overflow-y: auto;">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="bi bi-map me-2"></i>Course Track</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action active">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/07-ui-layouts.html" class="list-group-item list-group-item-action">7. Ui Layouts</a><a href="../intermediate/08-tween-animations.html" class="list-group-item list-group-item-action">8. Tween Animations</a><a href="../intermediate/09-camera-movement.html" class="list-group-item list-group-item-action">9. Camera Movement</a><a href="../intermediate/10-particles-basics.html" class="list-group-item list-group-item-action">10. Particles Basics</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/11-advanced-ui.html" class="list-group-item list-group-item-action">11. Advanced Ui</a><a href="../advanced/12-particle-effects.html" class="list-group-item list-group-item-action">12. Particle Effects</a><a href="../advanced/13-camera-effects.html" class="list-group-item list-group-item-action">13. Camera Effects</a><a href="../advanced/14-ui-transitions.html" class="list-group-item list-group-item-action">14. Ui Transitions</a><a href="../advanced/15-combining-systems.html" class="list-group-item list-group-item-action">15. Combining Systems</a><div class="mb-2"></div></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main content -->
+            <div class="col-md-9">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h3 mb-0">1. Installation</h1>
+                    </div>
+                    <div class="card-body markdown-content">
+                        # Installation
+
+This guide will help you set up LunaEngine on your system.
+
+## System Requirements
+
+- **Python** 3.9 or higher (not tested on older versions)
+- **OpenGL** 3.3+ capable graphics card (required for rendering)
+- **Operating System**: Windows or Linux (macOS and Google devices are not officially supported)
+
+## Supported Operating Systems
+
+The engine officially supports:
+- ✅ **Windows** – Full support
+- ✅ **Linux** – Full support
+- ❌ **macOS** – Not officially supported
+- ❌ **Google devices** – Not officially supported
+
+> **Note**: The engine uses OpenGL 3.3+ and does not plan to add 3D support. It remains a simple 2D framework.
+
+## Installation Methods
+
+### Method 1: Install from PyPI (Recommended)
+
+The easiest way to install LunaEngine is via pip:
+
+```bash
+pip install lunaengine
+```
+
+### Method 2: Install from TestPyPi
+
+If you want to test the latest pre-release version:
+```bash
+pip install -i https://test.pypi.org/simple/ lunaengine
+```
+
+### Method 3: Install from Source
+
+For development or to get the absolute latest version:
+
+```bash
+# Clone the repository
+git clone https://github.com/MrJuaumBR/LunaEngine.git
+cd LunaEngine
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Install the package in development mode
+pip install -e .
+```
+
+### Verifying Installation
+
+To verify that LunaEngine is correctly installed, create a simple test script:
+
+```python
+from lunaengine.core.engine import Engine
+
+# Create engine instance
+engine = Engine()
+
+# Print version information
+print("LunaEngine is ready!")
+print(f"OpenGL Version: {engine.renderer.get_opengl_version()}")
+```
+
+run the script:
+
+```bash
+python test.py
+```
+
+If no errors appear, the installation was successful!
+
+## Common Issues
+
+### OpenGL Version Error
+
+**Error message:** ``OpenGL version 3.3 or higher is required``
+
+**Solution:** Update your graphics drivers. If you're on an older system, ensure your GPU supports OpenGL 3.3+.
+
+### Missing Dependencies
+
+**Error message:** ``ModuleNotFoundError: No module named 'pygame'``
+
+**Solution:** Install the required dependencies manually:
+
+```bash
+pip install pygame>=2.5.0 numpy>=1.21.0 PyOpenGL>=3.1.0 PyOpenGL-accelerate>=3.1.0 PyOpenAL
+```
+
+### Windows DLL Issues
+
+If you encounter DLL-related errors on Windows, try installing Microsoft Visual C++ Redistributables from the official Microsoft website.
+
+### What's next?
+
+Once installation is complete, proceed to the **Introduction** lesson to learn the basics of using LunaEngine
+
+## Additional Resources
+- [GitHub Repository](https://github.com/MrJuaumBR/LunaEngine)
+- [Official Documentation](https://mrjuaumbr.github.io/LunaEngine/)
+- [Discord Community](https://discord.gg/fb84sHDX7R)
+
+
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between">
+                            <span></span>
+                            <a href='02-introduction.html' class='btn btn-outline-primary'>Next: Introduction <i class='bi bi-arrow-right ms-2'></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="../index.html" class="btn btn-secondary"><i class="bi bi-journal-bookmark me-2"></i>All Lessons</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-05-05 15:31
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+    <script src="../../theme.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+        if (typeof initSimpleMarkdownParser === 'function') initSimpleMarkdownParser();
+        else setTimeout(function() {
+            if (window.initSimpleMarkdownParser) window.initSimpleMarkdownParser();
+        }, 100);
+    });</script>
+</body>
+</html>

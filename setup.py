@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="lunaengine",
-    version="0.2.3",
+    version="0.2.4",
     description="A modern 2D game engine with advanced UI and graphics",
     author="MrJuaum",
     url="https://github.com/MrJuaumBR/lunaengine",
@@ -27,7 +27,7 @@ setup(
         "Programming Language :: Python :: 3.11",
     ],
     package_data={
-        'lunaengine': ['themes.json', '*.json', '*.txt', '*.md']
+        'lunaengine': ['assets/*', '*.json', '*.txt', '*.md']
     },
     include_package_data=True,
     entry_points={

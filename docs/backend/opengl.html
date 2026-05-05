@@ -29,10 +29,8 @@
         </div>
     </nav>
     
-
     <div class="container mt-5">
         <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Backend</a></li><li class="breadcrumb-item active">opengl.py</li></ol></nav>
-
         <div class="header-section mb-5">
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>opengl.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
@@ -40,7 +38,6 @@
                 <span class="text-muted">lunaengine/backend/opengl.py<br><br>OpenGL-based hardware-accelerated renderer for LunaEngine<br>- GPU-accelerated particles via instancing (CPU physics)<br>- Full filter system (post-processing)<br>- 2D drawing primitives (lines, circles, polygons, etc.)<br>- Rounded rectangles with per-corner radii<br>- Texture and surface rendering<br><br>This version uses the reliable CPU particle system and only uses OpenGL<br>for rendering - no compute shaders, no GPU physics.<br>v0.2.3</span>
             </div>
         </div>
-
         <div class="row">
             <div class="col-lg-12">
                 
@@ -366,6 +363,14 @@
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, width: int, height: int) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-set_text_cache_timeout">
+                <code class="fs-6 fw-bold text-color-title">def set_text_cache_timeout(self: Any, seconds: float) -> Any</code>
+                <div class="mt-2 text-muted small">Set how long a text texture stays in cache without being used.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-get_cache_usage">
+                <code class="fs-6 fw-bold text-color-title">def get_cache_usage(self: Any, target: Literal['text', 'texture', 'circle', 'polygon', 'total', 'all'] = 'all', humanize: bool = False) -> float | Dict[str, float]</code>
+                <div class="mt-2 text-muted small">Return cache usage as percentage. If target is &#x27;all&#x27;, returns dict of all caches.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-max_particles">
                 <code class="fs-6 fw-bold text-color-title">def max_particles(self: Any) -> int</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -523,16 +528,20 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_rect">
-                <code class="fs-6 fw-bold text-color-title">def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: tuple, fill: bool = True, anchor_point: tuple = (0.0, 0.0), border_width: int = 1, surface: Optional[pygame.Surface] = None, corner_radius: Union[int, Tuple[int, int, int, int]] = 0) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: tuple, fill: bool = True, anchor_point: tuple = (0.0, 0.0), border_width: int = 1, surface: Optional[pygame.Surface] = None, corner_radius: Union[int, Tuple[int, int, int, int]] = 0, border_color: Optional[Union[Color, Tuple[int, int, int, float]]] = None) -> Any</code>
+                <div class="mt-2 text-muted small">Draw a rectangle with optional border and fill.<br><br>Args:<br> &nbsp; &nbsp;color: Fill color (if fill=True)<br> &nbsp; &nbsp;fill: If True, draw filled rectangle; if False, draw only outline<br> &nbsp; &nbsp;border_width: Width of border in pixels (only used if fill=True and border_color given)<br> &nbsp; &nbsp;border_color: Color of border (if None, uses color for border when fill=False)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_draw_outline_rect">
+                <code class="fs-6 fw-bold text-color-title">def _draw_outline_rect(self: Any, x: Any, y: Any, width: Any, height: Any, color: Any, border_width: Any, radii: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Draw only the outline (border) of a rectangle.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_draw_sharp_rect">
-                <code class="fs-6 fw-bold text-color-title">def _draw_sharp_rect(self: Any, x: Any, y: Any, width: Any, height: Any, color: Any, fill: Any, border_width: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Draw a sharp rectangle, with proper outline handling.</div>
+                <code class="fs-6 fw-bold text-color-title">def _draw_sharp_rect(self: Any, x: Any, y: Any, width: Any, height: Any, color: Any, fill: Any = True, border_width: Any = 1) -> Any</code>
+                <div class="mt-2 text-muted small">Draw a sharp rectangle (no rounded corners).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_draw_rounded_rect">
-                <code class="fs-6 fw-bold text-color-title">def _draw_rounded_rect(self: Any, x: Any, y: Any, w: Any, h: Any, color: Any, fill: Any, border_width: Any, radii: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def _draw_rounded_rect(self: Any, x: Any, y: Any, w: Any, h: Any, color: Any, fill: Any = True, border_width: Any = 1, radii: Any = (0, 0, 0, 0)) -> Any</code>
+                <div class="mt-2 text-muted small">Draw a rounded rectangle, optionally as an outline.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_line">
                 <code class="fs-6 fw-bold text-color-title">def draw_line(self: Any, start_x: Any, start_y: Any, end_x: Any, end_y: Any, color: Any, width: Any = 2, surface: Any = None) -> Any</code>
@@ -575,8 +584,12 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_text">
-                <code class="fs-6 fw-bold text-color-title">def draw_text(self: Any, text: str, x: int, y: int, color: tuple, font: Any, surface: Any = None, anchor_point: Any = (0.0, 0.0)) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def draw_text(self: Any, text: str, x: int, y: int, color: Any, font: Any, surface: Any = None, anchor_point: Any = (0.0, 0.0), flip: Any = (False, False), rotate: Any = 0.0, *args: tuple, **kwargs: dict) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_cleanup_text_cache">
+                <code class="fs-6 fw-bold text-color-title">def _cleanup_text_cache(self: Any, now: float) -> Any</code>
+                <div class="mt-2 text-muted small">Remove text cache entries that haven&#x27;t been used for longer than timeout.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_surface">
                 <code class="fs-6 fw-bold text-color-title">def draw_surface(self: Any, surface: pygame.Surface, x: int, y: int) -> Any</code>
@@ -615,19 +628,15 @@
         </div>
                 
                 
-                
             </div>
         </div>
-
         <div class="mt-5 mb-5 text-center">
             <a href="index.html" class="btn btn-outline-primary">
                 <i class="bi bi-arrow-left me-2"></i>Back to Backend Module
             </a>
         </div>
     </div>
-
     
-    <!-- Footer -->
     <footer class="footer-section">
         <div class="container">
             <div class="row">
@@ -638,39 +647,32 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-03-12 17:38
+                        Documentation generated on 2026-05-05 15:31
                     </p>
                 </div>
             </div>
         </div>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
-        
         if (searchInput && searchIcon) {
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
-                    
-                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
                         searchPath = '../search.html';
                     }
-                    
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
-            
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -679,9 +681,7 @@
                     return false;
                 }
             });
-            
             searchIcon.addEventListener('click', performSearch);
-            
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {

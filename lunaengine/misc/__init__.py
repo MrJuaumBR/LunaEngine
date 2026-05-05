@@ -7,10 +7,10 @@ Miscellaneous functions and classes for various tasks.
 
 LOCATION: lunaengine/misc/__init__.py
 """
-from .bones import Bone, Joint, Skeleton, HumanBones, DogBones, CatBones, HorseBones
 from .icons import Icons, Icon, IconCircle, IconCheck, IconCross, IconError, IconFactory, IconGear, IconInfo, IconMinus, IconPlus, IconSquare, IconSuccess, IconTriangleDown, IconTriangleLeft, IconTriangleRight, IconTriangleUp, IconWarn
+from .debug import DebugOverlay, DebugManager, SceneStatsOverlay, FPSOverlay
 
 __all__ = [
-    "Bone", "Joint", "Skeleton", "HumanBones", "DogBones", "CatBones", "HorseBones",
-    "Icons", "Icon",  "IconCircle", "IconCheck", "IconCross", "IconError", "IconFactory", "IconGear", "IconInfo", "IconMinus", "IconPlus", "IconSquare", "IconSuccess", "IconTriangleDown", "IconTriangleLeft", "IconTriangleRight", "IconTriangleUp", "IconWarn"
+    "Icons", "Icon",  "IconCircle", "IconCheck", "IconCross", "IconError", "IconFactory", "IconGear", "IconInfo", "IconMinus", "IconPlus", "IconSquare", "IconSuccess", "IconTriangleDown", "IconTriangleLeft", "IconTriangleRight", "IconTriangleUp", "IconWarn",
+    "DebugOverlay", "DebugManager", "SceneStatsOverlay", "FPSOverlay"
 ]

@@ -57,15 +57,6 @@ class ComprehensiveUIDemo(Scene):
         print("=== LunaEngine UI Demo ===")
         print("Explore all UI elements organized by section!")
         print("Use the tabs to navigate between different UI element categories.")
-        print("Controls:")
-        print("- Click buttons to interact")
-        print("- Use dropdowns and selects to choose options")
-        print("- Drag the draggable element")
-        print("- Type in the text box")
-        print("- Change themes with the theme dropdown")
-        print("- Hover over elements with tooltips")
-        print("- Click to advance dialog boxes")
-        print("- Use animation controls to pause/resume animations")
         
     def on_exit(self, next_scene: str = None):
         print("Exiting UI Demo scene")
@@ -133,6 +124,10 @@ class ComprehensiveUIDemo(Scene):
         
         self.fps_display = TextLabel(self.engine.width - 5, 20, "FPS: --", 16, (100, 255, 100), root_point=(1, 0))
         self.add_ui_element(self.fps_display)
+        self.opengl_cache = TextLabel(self.engine.width - 5, 55, "Cache: --", 16, (100, 255, 100), root_point=(1, 0))
+        self.add_ui_element(self.opengl_cache)
+        self.engine_memory_usage = TextLabel(self.engine.width - 5, 75, "Memory: --", 16, (100, 255, 100), root_point=(1, 0))
+        self.add_ui_element(self.engine_memory_usage)
         
         # Initialize animations
         self.setup_animations()
@@ -354,12 +349,13 @@ class ComprehensiveUIDemo(Scene):
         line_label = TextLabel(20, 270, "Line Chart", 16, (100, 200, 255))
         self.main_tabs.add_to_tab('Charts', line_label)
         line_chart = ChartVisualizer(20, 295, 200, 150,
-                                    data=[10, 25, 15, 30, 20, 35],
-                                    labels=['Mon','Tue','Wed','Thu','Fri','Sat'],
-                                    chart_type='line',
-                                    title='Weekly Trend',
-                                    show_labels=True,
-                                    show_legend=False)
+                            data=[10, 25, 15, 30, 20, 35],
+                            labels=['Mon','Tue','Wed','Thu','Fri','Sat'],
+                            chart_type='line',
+                            title='Weekly Trend',
+                            show_labels=True,
+                            show_legend=False,
+                            use_gradient=True,)     # red
         line_chart.set_simple_tooltip("Line chart with points")
         self.main_tabs.add_to_tab('Charts', line_chart)
         self.charts.append(line_chart)
@@ -377,6 +373,24 @@ class ComprehensiveUIDemo(Scene):
         scatter_chart.set_simple_tooltip("Scatter plot")
         self.main_tabs.add_to_tab('Charts', scatter_chart)
         self.charts.append(scatter_chart)
+        
+        # Radar Chart (RPG Stats)
+        radar_label = TextLabel(450, 75, "Radar Chart (RPG Stats):", 16, (255, 200, 100))
+        self.main_tabs.add_to_tab('Charts', radar_label)
+
+        radar_chart = ChartVisualizer(
+        450, 100, 250, 200,
+        data=[0.8, 0.6, 0.9, 0.4, 0.7, 0.5],
+        labels=['Str', 'Agi', 'Int', 'Vit', 'Luk', 'Dex'],
+        chart_type='radar',
+        title='Character Stats',
+        show_labels=True,
+        radar_max_value=1.0,
+        radar_axis_labels=['Strength', 'Agility', 'Intelligence', 'Vitality', 'Luck', 'Dexterity'],
+        use_gradient=True,)
+        radar_chart.set_simple_tooltip("Radar chart showing RPG character attributes")
+        self.main_tabs.add_to_tab('Charts', radar_chart)
+        self.charts.append(radar_chart)
 
         # Additional note
         note = TextLabel(20, 470, "You can create custom charts with your own data and colors.", 14, (150, 200, 255))
@@ -626,20 +640,21 @@ class ComprehensiveUIDemo(Scene):
                 self.button_indicators[name].set_background_color((80, 80, 80))
 
     def randomize_charts(self):
-        """Generate new random data for each chart and animate the change."""
         import random
         for chart in self.charts:
             n = len(chart.data)
             if chart.chart_type == 'pie':
-                # Random values for pie
                 new_data = [random.randint(5, 40) for _ in range(n)]
+            elif chart.chart_type == 'radar':
+                # values between 0.2 and 1.0
+                new_data = [random.uniform(0.2, 1.0) for _ in range(n)]
+                chart.gradient_colors = [(random.randint(0,255), random.randint(0,255), random.randint(0,255)) for _ in range(n)]
+            elif chart.chart_type == 'line':
+                new_data = [random.randint(5, 50) for _ in range(n)]
+                chart.gradient_colors = [(random.randint(0,255), random.randint(0,255), random.randint(0,255)) for _ in range(n)]
             else:
                 new_data = [random.randint(5, 70) for _ in range(n)]
-
-            # Animate the change over 0.8 seconds
             chart.set_data(new_data, animate=True, duration=0.8)
-
-        print("Charts randomized with smooth transition!")
     
     def show_notification(self):
         notification_type = [NotificationType.SUCCESS, NotificationType.INFO, NotificationType.WARNING, NotificationType.ERROR][self.notification_type.selected_index]
@@ -691,13 +706,57 @@ class ComprehensiveUIDemo(Scene):
         self.progress_display = TextLabel(470, 175, "Progress: 0%", 14)
         self.main_tabs.add_to_tab('Interactive', self.progress_display)
         
+        # Soundpad-style Progress Bar Example
+        soundpad_label = TextLabel(20, 205, "Soundpad Progress Bar:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Interactive', soundpad_label)
+
+        self.soundpad_progress = ProgressBar(180, 200, 250, 20, 0, 100, 0, 
+                                            style='soundpad', segment_count=8, segment_gap=2)
+        self.soundpad_progress.set_simple_tooltip("Soundpad style: segmented bar with green→yellow→red gradient")
+        self.main_tabs.add_to_tab('Interactive', self.soundpad_progress)
+
+        soundpad_btn = Button(440, 198, 100, 24, "Animate")
+        soundpad_btn.set_on_click(lambda: self.soundpad_progress.set_value(self.soundpad_progress.value + 10))
+        self.main_tabs.add_to_tab('Interactive', soundpad_btn)
+
+        self.soundpad_display = TextLabel(550, 203, "0%", 14)
+        self.main_tabs.add_to_tab('Interactive', self.soundpad_display)
+        
         # Draggable Element
-        draggable_label = TextLabel(20, 220, "Draggable Element:", 16, (200, 200, 255))
+        draggable_label = TextLabel(20, 235, "Draggable Element:", 16, (200, 200, 255))
         self.main_tabs.add_to_tab('Interactive', draggable_label)
         
-        draggable = UIDraggable(160, 220, 100, 50)
-        draggable.set_simple_tooltip("Drag me around within the tab!")
-        self.main_tabs.add_to_tab('Interactive', draggable)
+        # Expandable Examples
+        expandable_label = TextLabel(20, 320, "Expandable (Accordion):", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Interactive', expandable_label)
+
+        accordion_frame = UiFrame(20, 335, 400, 250)
+        accordion_frame.set_background_color((40, 40, 50, 180))
+        accordion_frame.set_border((80, 80, 100), 1)
+        accordion_frame.set_corner_radius(8)
+        self.main_tabs.add_to_tab('Interactive', accordion_frame)
+
+        # First expandable – default expanded
+        exp1 = Expandable(10, 5, 380, 100, title="Section 1 - Basic Info", expanded=True, allow_multiple=False)
+        exp1.add_to_content(TextLabel(10, 10, "This is content inside expandable 1.", 14, (220, 220, 255)))
+        exp1.add_to_content(Button(10, 40, 120, 25, text="Click me"))
+        accordion_frame.add_child(exp1)
+
+        # Second expandable – collapsed initially
+        exp2 = Expandable(10, 60, 380, 100, title="Section 2 - Settings", expanded=False, allow_multiple=False)
+        exp2.add_to_content(Checkbox(10, 10, 180, 25, False, label="Enable feature"))
+        exp2.add_to_content(Slider(10, 45, 200, 20, 0, 100, 50))
+        accordion_frame.add_child(exp2)
+
+        # Third expandable
+        exp3 = Expandable(10, 115, 380, 100, title="Section 3 - Extra", expanded=False, allow_multiple=False)
+        exp3.add_to_content(TextLabel(10, 10, "More content here.", 14, (200, 200, 200)))
+        exp3.add_to_content(ImageLabel(10, 40, None, 32, 32, root_point=(0,0)))
+        accordion_frame.add_child(exp3)
+
+        # Note about accordion behavior
+        note = TextLabel(400, 320, "Note: Only one expandable can be open at a time (accordion mode).", 12, (150, 150, 200))
+        self.main_tabs.add_to_tab('Interactive', note)
     
     def setup_selection_tab(self):
         """Sets up selection elements tab."""
@@ -772,19 +831,23 @@ class ComprehensiveUIDemo(Scene):
         
         self.select_display = TextLabel(360, 295, "Choice: 1", 14)
         self.main_tabs.add_to_tab('Selection', self.select_display)
+        
+        self.color_picker_display = TextLabel(20, 330, "Color Picker:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Selection', self.color_picker_display)
+        
+        self.cpicker_rgb = ColorPicker(20, 350, color_system='rgb')
+        self.main_tabs.add_to_tab('Selection', self.cpicker_rgb)
+        
+        self.cpicker_hsv = ColorPicker(320, 350, color_system='hsv')
+        self.main_tabs.add_to_tab('Selection', self.cpicker_hsv)
+        
+        self.cpicker_hsl = ColorPicker(620, 350, color_system='hsl')
+        self.main_tabs.add_to_tab('Selection', self.cpicker_hsl)
     
     def setup_visual_tab(self):
         """Sets up visual elements tab."""
         # Tab title
         self.main_tabs.add_to_tab('Visual', TextLabel(10, 10, "Visual Elements", 24, (255, 255, 0)))
-        
-        # Gradient Example
-        gradient_label = TextLabel(20, 50, "Color Gradient:", 16, (200, 200, 255))
-        self.main_tabs.add_to_tab('Visual', gradient_label)
-        
-        gradient = UIGradient(40, 75, 300, 60, [(255, 0, 0), (200, 100, 0), (0, 255, 0), (0, 200, 100), (0, 0, 255)])
-        gradient.set_simple_tooltip("Beautiful gradient with multiple colors")
-        self.main_tabs.add_to_tab('Visual', gradient)
         
         # Text Label Examples
         labels_label = TextLabel(20, 175, "Text Labels:", 16, (200, 200, 255))
@@ -876,7 +939,7 @@ class ComprehensiveUIDemo(Scene):
         textarea_select_all_btn.set_on_click(lambda: self.text_area.select_all())
         self.main_tabs.add_to_tab('Advanced', textarea_select_all_btn)
         
-        # NEW: FileFinder Example
+        # FileFinder Example
         filefinder_label = TextLabel(420, 60, "FileFinder:", 16, (200, 200, 255))
         self.main_tabs.add_to_tab('Advanced', filefinder_label)
         
@@ -1261,6 +1324,14 @@ class ComprehensiveUIDemo(Scene):
         self.checkbox_display.set_text(f"Feature X: {'ON' if self.demo_state['checkbox_state'] else 'OFF'}")
         
         self.fps_display.set_text(f"FPS: {self.engine.get_fps_stats()['current_fps']:.1f}")
+        cacheUsage = ''
+        for i, (key, value) in enumerate(self.engine.renderer.get_cache_usage('all',True).items()):
+            cacheUsage += f"{key}: {value} {'| ' if i < len(self.engine.renderer.get_cache_usage('all',True)) - 1 else ''}"
+        self.opengl_cache.set_text(f"OpenGL Cache Usage: {cacheUsage}")
+        engineMemUsage = ''
+        for i, (key, value) in enumerate(self.engine.performance_monitor._getMemUsageClass(self.engine).items()):
+            engineMemUsage += f"{key[:6]}: {value} {'| ' if i < len(self.engine.performance_monitor._getMemUsageClass(self.engine)) - 1 else ''}"
+        self.engine_memory_usage.set_text(f"Engine Memory Usage: {engineMemUsage}")
         
         # Update text area content if it exists
         if hasattr(self, 'text_area'):
@@ -1300,7 +1371,10 @@ class ComprehensiveUIDemo(Scene):
 
 def main():
     # Create engine
-    engine = LunaEngine("LunaEngine - UI Demo", 1024, 768, use_opengl=True, fullscreen=False)
+    engine = LunaEngine("LunaEngine - UI Demo", 1024, 768, debug=True)
+    
+    engine.update_ratio(800, 600)
+    print(engine.ratio)
     
     # Configure the max FPS
     engine.fps = 60

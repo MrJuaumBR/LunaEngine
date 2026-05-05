@@ -13,11 +13,12 @@ for rendering - no compute shaders, no GPU physics.
 v0.2.3
 """
 
-import pygame, ctypes, math, os
+import pygame, ctypes, math, os, sys, time
 import numpy as np
 from typing import Tuple, Dict, Any, List, Optional, Union, Literal
 from enum import Enum
 from ..utils import math_utils as math_utils
+from .types import Color
 
 # Check if OpenGL is available
 try:
@@ -423,6 +424,42 @@ class OpenGLRenderer:
         
         # Texture cache
         self._texture_cache = {}
+        
+        # Text cache    
+        self._text_cache = {}
+        self._text_cache_last_used = {}          # key -> last access timestamp
+        self._text_cache_timeout = 10.0          # seconds before eviction
+        self._last_text_cache_cleanup = 0.0      # last cleanup timestamp
+        self._text_cache_cleanup_interval = 5.0  # run cleanup at most every 5 seconds
+        
+    def set_text_cache_timeout(self, seconds: float):
+        """Set how long a text texture stays in cache without being used."""
+        self._text_cache_timeout = max(0.1, seconds)
+    
+    def get_cache_usage(self, target:Literal['text', 'texture', 'circle', 'polygon', 'total','all'] = 'all', humanize:bool = False) -> float|Dict[str, float]:
+        """Return cache usage as percentage. If target is 'all', returns dict of all caches."""
+        if target == 'all':
+            return {
+                'text': math_utils.humanize_size(sys.getsizeof(self._text_cache, {})) if humanize else sys.getsizeof(self._text_cache, {}),
+                'texture': math_utils.humanize_size(sys.getsizeof(self._texture_cache, {})) if humanize else sys.getsizeof(self._texture_cache, {}),
+                'circle': math_utils.humanize_size(sys.getsizeof(self._circle_cache, {})) if humanize else sys.getsizeof(self._circle_cache, {}),
+                'polygon': math_utils.humanize_size(sys.getsizeof(self._polygon_cache, {})) if humanize else sys.getsizeof(self._polygon_cache, {}),
+                'total': self.get_cache_usage('total', humanize)
+            }
+        elif target == 'text':
+            return math_utils.humanize_size(sys.getsizeof(self._text_cache, {})) if humanize else sys.getsizeof(self._text_cache, {})
+        elif target == 'texture':
+            return math_utils.humanize_size(sys.getsizeof(self._texture_cache, {})) if humanize else sys.getsizeof(self._texture_cache, {})
+        elif target == 'circle':
+            return math_utils.humanize_size(sys.getsizeof(self._circle_cache, {})) if humanize else sys.getsizeof(self._circle_cache, {})
+        elif target == 'polygon':
+            return math_utils.humanize_size(sys.getsizeof(self._polygon_cache, {})) if humanize else sys.getsizeof(self._polygon_cache, {})
+        elif target == 'total':
+            total = (sys.getsizeof(self._text_cache, {}) + sys.getsizeof(self._texture_cache, {}) +
+                     sys.getsizeof(self._circle_cache, {}) + sys.getsizeof(self._polygon_cache, {}))
+            return math_utils.humanize_size(total) if humanize else total
+        else:
+            raise ValueError(f"Invalid Cache target: {target}")
     
     @property
     def max_particles(self) -> int:
@@ -798,13 +835,13 @@ class OpenGLRenderer:
     def enable_scissor(self, x: int, y: int, width: int, height: int):
         if not self._initialized:
             return
-        x, y, width, height = int(x), int(y), int(width), int(height)
+        x, y, width, height = int(x), int(y), abs(int(width)), abs(int(height))
         glEnable(GL_SCISSOR_TEST)
         gl_scissor_y = self.height - (y + height)
         gl_scissor_x = max(0, x)
         gl_scissor_y = max(0, gl_scissor_y)
-        gl_scissor_width = min(width, self.width - gl_scissor_x)
-        gl_scissor_height = min(height, self.height - gl_scissor_y)
+        gl_scissor_width = abs(min(width, self.width - gl_scissor_x))
+        gl_scissor_height = abs(min(height, self.height - gl_scissor_y))
         glScissor(gl_scissor_x, gl_scissor_y, gl_scissor_width, gl_scissor_height)
     
     def disable_scissor(self):
@@ -817,19 +854,30 @@ class OpenGLRenderer:
     # ========================================================================
     
     def draw_rect(self, x: int, y: int, width: int, height: int,
-                  color: tuple, fill: bool = True, anchor_point: tuple = (0.0, 0.0),
-                  border_width: int = 1, surface: Optional[pygame.Surface] = None,
-                  corner_radius: Union[int, Tuple[int, int, int, int]] = 0):
+              color: tuple, fill: bool = True, anchor_point: tuple = (0.0, 0.0),
+              border_width: int = 1, surface: Optional[pygame.Surface] = None,
+              corner_radius: Union[int, Tuple[int, int, int, int]] = 0,
+              border_color: Optional[Union[Color, Tuple[int, int, int, float]]] = None):
+        """
+        Draw a rectangle with optional border and fill.
+
+        Args:
+            color: Fill color (if fill=True)
+            fill: If True, draw filled rectangle; if False, draw only outline
+            border_width: Width of border in pixels (only used if fill=True and border_color given)
+            border_color: Color of border (if None, uses color for border when fill=False)
+        """
         if not self._initialized:
             return
-        
+
         x = x - int(anchor_point[0] * width)
         y = y - int(anchor_point[1] * height)
-        
+
         if surface:
             old = self._current_target
             self.set_surface(surface)
-        
+
+        # Normalize corner radii
         if isinstance(corner_radius, (int, float)) and corner_radius > 0:
             radii = (corner_radius, corner_radius, corner_radius, corner_radius)
         elif isinstance(corner_radius, (tuple, list)) and any(r > 0 for r in corner_radius):
@@ -843,45 +891,108 @@ class OpenGLRenderer:
                 radii = (corner_radius[0], corner_radius[1], corner_radius[2], corner_radius[3])
         else:
             radii = (0, 0, 0, 0)
-        
-        if all(r == 0 for r in radii):
-            self._draw_sharp_rect(x, y, width, height, color, fill, border_width)
+
+        # If fill is False, just draw an outline using the provided color
+        if not fill:
+            self._draw_outline_rect(x, y, width, height, color, border_width, radii)
+            if surface:
+                self.set_surface(old)
+            return
+
+        # Fill mode: draw border first if border_color is given and border_width > 0
+        if border_color is not None and border_width > 0:
+            # Draw border rectangle (slightly larger)
+            border_w = border_width * 2
+            border_h = border_width * 2
+            if all(r == 0 for r in radii):
+                self._draw_sharp_rect(x - border_width, y - border_width,
+                                    width + border_w, height + border_h,
+                                    border_color, fill=True, border_width=0)
+            else:
+                # For rounded corners, we need to expand the radii by border_width
+                expanded_radii = tuple(r + border_width for r in radii)
+                self._draw_rounded_rect(x - border_width, y - border_width,
+                                        width + border_w, height + border_h,
+                                        border_color, fill=True,
+                                        border_width=0, radii=expanded_radii)
+            # Then draw the inner filled rectangle
+            inner_x = x + border_width
+            inner_y = y + border_width
+            inner_w = width - border_w
+            inner_h = height - border_h
+            if inner_w > 0 and inner_h > 0:
+                if all(r == 0 for r in radii):
+                    self._draw_sharp_rect(inner_x, inner_y, inner_w, inner_h,
+                                        color, fill=True, border_width=0)
+                else:
+                    # Shrink radii accordingly
+                    inner_radii = tuple(max(0, r - border_width) for r in radii)
+                    self._draw_rounded_rect(inner_x, inner_y, inner_w, inner_h,
+                                            color, fill=True, border_width=0,
+                                            radii=inner_radii)
         else:
-            self._draw_rounded_rect(x, y, width, height, color, fill, border_width, radii)
-        
+            # No border, just draw the filled rectangle
+            if all(r == 0 for r in radii):
+                self._draw_sharp_rect(x, y, width, height, color, fill=True, border_width=0)
+            else:
+                self._draw_rounded_rect(x, y, width, height, color, fill=True,
+                                        border_width=0, radii=radii)
+
         if surface:
             self.set_surface(old)
-    
-    def _draw_sharp_rect(self, x, y, width, height, color, fill, border_width):
-        """Draw a sharp rectangle, with proper outline handling."""
-        
+
+    def _draw_outline_rect(self, x, y, width, height, color, border_width, radii):
+        """Draw only the outline (border) of a rectangle."""
+        if all(r == 0 for r in radii):
+            self._draw_sharp_rect(x, y, width, height, color, fill=False, border_width=border_width)
+        else:
+            self._draw_rounded_rect(x, y, width, height, color, fill=False,
+                                    border_width=border_width, radii=radii)
+
+    def _draw_sharp_rect(self, x, y, width, height, color, fill=True, border_width=1):
+        """Draw a sharp rectangle (no rounded corners)."""
         self.simple_shader.use()
-        glUniform2f(self.simple_shader._get_uniform_location("uScreenSize"), float(self.width), float(self.height))
+        glUniform2f(self.simple_shader._get_uniform_location("uScreenSize"),
+                    float(self.width), float(self.height))
         r, g, b, a = self._convert_color(color)
-        if not fill: # Draw outline
-            glUniform4f(self.simple_shader._get_uniform_location("uTransform"), 
-                    float(x), float(y), float(width + border_width * 2), float(height + border_width * 2))
-            glUniform4f(self.simple_shader._get_uniform_location("uColor"), 
-                    r, g, b, a)
+
+        if not fill:
+            # Outline: draw a hollow rectangle
+            # For outlines, we need to draw the border as a separate shape.
+            # Use the same method as before: draw a slightly larger rect with no fill? Actually simpler:
+            # We can draw the outline as four thin lines (not efficient) or use a shader.
+            # Since we have a simple shader, we'll draw the outline by drawing the rect as a wireframe.
+            # But for simplicity, we'll reuse the existing outline method: draw a filled rect
+            # with border_width as the stroke? Actually the old method for outline wasn't correct.
+            # Let's implement a proper thick outline using the same shader but with a different transform.
+            # We draw the border as a filled rect that is larger by border_width, then subtract the inner.
+            # But that's complex. Instead, we'll draw four rectangles for each side.
+            # This is efficient enough for UI borders.
+            # Top edge
+            self._draw_sharp_rect(x, y, width, border_width, color, fill=True, border_width=0)
+            # Bottom edge
+            self._draw_sharp_rect(x, y + height - border_width, width, border_width, color, fill=True, border_width=0)
+            # Left edge
+            self._draw_sharp_rect(x, y + border_width, border_width, height - 2*border_width, color, fill=True, border_width=0)
+            # Right edge
+            self._draw_sharp_rect(x + width - border_width, y + border_width, border_width, height - 2*border_width, color, fill=True, border_width=0)
+        else:
+            # Filled rect
+            glUniform4f(self.simple_shader._get_uniform_location("uTransform"),
+                        float(x), float(y), float(width), float(height))
+            glUniform4f(self.simple_shader._get_uniform_location("uColor"), r, g, b, a)
             glBindVertexArray(self.simple_shader.vao)
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
             glBindVertexArray(0)
-        else: # Draw filled rect
-            if (border_width is not None) and border_width > 0 and fill:
-                x += border_width
-                y += border_width
-            glUniform4f(self.simple_shader._get_uniform_location("uTransform"), 
-                    float(x), float(y), float(width), float(height))
-            glUniform4f(self.simple_shader._get_uniform_location("uColor"), 
-                    r, g, b, a)
-            glBindVertexArray(self.simple_shader.vao)
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
-            glBindVertexArray(0)
-    
-    def _draw_rounded_rect(self, x, y, w, h, color, fill, border_width, radii):
+
+        self.simple_shader.unuse()
+
+    def _draw_rounded_rect(self, x, y, w, h, color, fill=True, border_width=1, radii=(0,0,0,0)):
+        """Draw a rounded rectangle, optionally as an outline."""
         r, g, b, a = self._convert_color(color)
         self.rounded_rect_shader.use()
-        glUniform2f(self.rounded_rect_shader._get_uniform_location("uScreenSize"), self.width, self.height)
+        glUniform2f(self.rounded_rect_shader._get_uniform_location("uScreenSize"),
+                    self.width, self.height)
         glUniform4f(self.rounded_rect_shader._get_uniform_location("uTransform"), x, y, w, h)
         glUniform4f(self.rounded_rect_shader._get_uniform_location("uColor"), r, g, b, a)
         glUniform4f(self.rounded_rect_shader._get_uniform_location("uCornerRadii"),
@@ -889,8 +1000,8 @@ class OpenGLRenderer:
         glUniform2f(self.rounded_rect_shader._get_uniform_location("uRectSize"), w, h)
         glUniform1f(self.rounded_rect_shader._get_uniform_location("uFeather"), 1.5)
         glUniform1i(self.rounded_rect_shader._get_uniform_location("uFill"), 1 if fill else 0)
-        glUniform1f(self.rounded_rect_shader._get_uniform_location("uBorderWidth"), border_width)
-        
+        glUniform1f(self.rounded_rect_shader._get_uniform_location("uBorderWidth"), border_width if not fill else 0)
+
         glBindVertexArray(self.rounded_rect_shader.vao)
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
         glBindVertexArray(0)
@@ -1159,21 +1270,158 @@ class OpenGLRenderer:
         
         return np.array(vertices, dtype=np.float32), np.array(indices, dtype=np.uint32)
     
-    def draw_text(self, text: str, x: int, y: int, color: tuple, font,
-                  surface=None, anchor_point=(0.0, 0.0)):
+    def draw_text(self, text: str, x: int, y: int, color, font, surface=None,
+              anchor_point=(0.0, 0.0), flip=(False, False), rotate=0.0, *args, **kwargs):
         if not self._initialized:
             return
-        
-        # Render text to a surface using pygame
-        text_surface = font.render(text, True, color)
-        tw, th = text_surface.get_size()
+
+        # ========== CONVERT ANY COLOR TO VALID pygame.Color ==========
+        try:
+            if isinstance(color, pygame.Color):
+                pygame_color = color
+            elif isinstance(color, Color):  # your custom class
+                pygame_color = pygame.Color(color.r, color.g, color.b, int(color.a * 255))
+            elif isinstance(color, (tuple, list)):
+                if len(color) >= 3:
+                    # Ensure integer components
+                    r, g, b = int(color[0]), int(color[1]), int(color[2])
+                    a = int(color[3]) if len(color) > 3 else 255
+                    pygame_color = pygame.Color(r, g, b, a)
+                else:
+                    pygame_color = pygame.Color(255, 255, 255)
+            elif isinstance(color, int):
+                pygame_color = pygame.Color(color, color, color)
+            else:
+                pygame_color = pygame.Color(255, 255, 255)
+        except Exception as e:
+            print(f"Color conversion error: {e}, falling back to white")
+            pygame_color = pygame.Color(255, 255, 255)
+
+        # Normalize for shader
+        r, g, b, a = pygame_color.r, pygame_color.g, pygame_color.b, pygame_color.a
+        rgba = (r/255.0, g/255.0, b/255.0, a/255.0)
+
+        # ========== FONT HANDLING ==========
+        isBold = kwargs.get('bold', False)
+        isItalic = kwargs.get('italic', False)
+        if isinstance(font, tuple):
+            font = pygame.font.SysFont(font[0], font[1], isBold, isItalic)
+
+        # ========== CACHING (use RGB tuple as key) ==========
+        cache_key = (text, font, (r, g, b))
+        now = time.time()
+        if cache_key in self._text_cache:
+            tex, (tw, th) = self._text_cache[cache_key]
+            self._text_cache_last_used[cache_key] = now
+        else:
+            # CRITICAL: use pygame_color, never a raw tuple
+            text_surface = font.render(text, True, pygame_color)
+            tex = self._surface_to_texture(text_surface)
+            tw, th = text_surface.get_size()
+            self._text_cache[cache_key] = (tex, (tw, th))
+            self._text_cache_last_used[cache_key] = now
+
+        # Cleanup old cache entries
+        if now - self._last_text_cache_cleanup >= self._text_cache_cleanup_interval:
+            self._cleanup_text_cache(now)
+
+        # ========== POSITIONING ==========
         x = x - int(anchor_point[0] * tw)
         y = y - int(anchor_point[1] * th)
-        
+
+        old_target = None
         if surface:
-            surface.blit(text_surface, (x, y))
+            old_target = self._current_target
+            self.set_surface(surface)
+
+        # ========== FAST PATH (no flip/rotate) ==========
+        if flip == (False, False) and rotate == 0.0:
+            self.texture_shader.use()
+            glUniform2f(self.texture_shader._get_uniform_location("uScreenSize"), self.width, self.height)
+            glUniform4f(self.texture_shader._get_uniform_location("uTransform"), x, y, tw, th)
+            glActiveTexture(GL_TEXTURE0)
+            glBindTexture(GL_TEXTURE_2D, tex)
+            glUniform1i(self.texture_shader._get_uniform_location("uTexture"), 0)
+            glBindVertexArray(self.texture_shader.vao)
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
+            glBindVertexArray(0)
+            self.texture_shader.unuse()
         else:
-            self.blit(text_surface, (x, y))
+            # ========== SLOW PATH (flip/rotate) – same as your existing code ==========
+            center_x = x + tw / 2.0
+            center_y = y + th / 2.0
+
+            w2 = tw / 2.0
+            h2 = th / 2.0
+            corners = [(-w2, -h2), (w2, -h2), (w2, h2), (-w2, h2)]
+
+            uvs = [
+                (0.0 if not flip[0] else 1.0, 0.0 if not flip[1] else 1.0),
+                (1.0 if not flip[0] else 0.0, 0.0 if not flip[1] else 1.0),
+                (1.0 if not flip[0] else 0.0, 1.0 if not flip[1] else 0.0),
+                (0.0 if not flip[0] else 1.0, 1.0 if not flip[1] else 0.0)
+            ]
+
+            if rotate != 0.0:
+                rad = math.radians(rotate)
+                cos_a, sin_a = math.cos(rad), math.sin(rad)
+                corners = [(cx * cos_a - cy * sin_a, cx * sin_a + cy * cos_a) for (cx, cy) in corners]
+
+            vertices = []
+            for (cx, cy), (u, v) in zip(corners, uvs):
+                vertices.extend([center_x + cx, center_y + cy, u, v])
+
+            vertices_arr = np.array(vertices, dtype=np.float32)
+            indices = np.array([0, 1, 2, 2, 3, 0], dtype=np.uint32)
+
+            vao = glGenVertexArrays(1)
+            vbo = glGenBuffers(1)
+            ebo = glGenBuffers(1)
+
+            glBindVertexArray(vao)
+            glBindBuffer(GL_ARRAY_BUFFER, vbo)
+            glBufferData(GL_ARRAY_BUFFER, vertices_arr.nbytes, vertices_arr, GL_STATIC_DRAW)
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL_STATIC_DRAW)
+
+            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * vertices_arr.itemsize, ctypes.c_void_p(0))
+            glEnableVertexAttribArray(0)
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * vertices_arr.itemsize, ctypes.c_void_p(2 * vertices_arr.itemsize))
+            glEnableVertexAttribArray(1)
+
+            self.texture_shader.use()
+            glUniform2f(self.texture_shader._get_uniform_location("uScreenSize"), self.width, self.height)
+            glUniform4f(self.texture_shader._get_uniform_location("uTransform"), 0.0, 0.0, 1.0, 1.0)
+            glActiveTexture(GL_TEXTURE0)
+            glBindTexture(GL_TEXTURE_2D, tex)
+            glUniform1i(self.texture_shader._get_uniform_location("uTexture"), 0)
+
+            glBindVertexArray(vao)
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
+            glBindVertexArray(0)
+
+            glDeleteVertexArrays(1, [vao])
+            glDeleteBuffers(1, [vbo])
+            glDeleteBuffers(1, [ebo])
+            self.texture_shader.unuse()
+
+        if surface:
+            self.set_surface(old_target)
+   
+    def _cleanup_text_cache(self, now: float):
+        """Remove text cache entries that haven't been used for longer than timeout."""
+        keys_to_delete = []
+        for key, last_used in self._text_cache_last_used.items():
+            if now - last_used > self._text_cache_timeout:
+                keys_to_delete.append(key)
+        
+        for key in keys_to_delete:
+            tex, _ = self._text_cache.pop(key, (None, None))
+            if tex:
+                glDeleteTextures(1, [tex])
+            self._text_cache_last_used.pop(key, None)
+        
+        self._last_text_cache_cleanup = now
     
     def draw_surface(self, surface: pygame.Surface, x: int, y: int):
         self.blit(surface, (x, y))
@@ -1343,6 +1591,7 @@ class OpenGLRenderer:
         self._circle_cache.clear()
         self._polygon_cache.clear()
         self._texture_cache.clear()
+        self._text_cache.clear()
         
         self._initialized = False
         

@@ -7,17 +7,17 @@ This engine have features like OpenGL and OpenAL!
 
 ## 📋 Features
 
-| Feature | Description | Status |
-|---------|-------------|---------|
-| **Advanced UI** | Roblox Studio-like UI components | ✅ Functional |
-| **OpenGL Rendering** | Hardware-accelerated graphics | ✅ Functional |
-| **Performance Tools** | FPS monitoring, hardware detection | ✅ Functional |
-| **Themes** | The engine have pre-built themes | ✅ Functional |
-| **Filters** | We home a huge amount of filters for your game(Blur, Neon, ...) | ✅ Functional |
-| **Lighting System** | Dynamic lights and shadows | 🔄 WIP |
-| **Particle Effects** | Particle system | 🔄 WIP |
-| **Image Embedding** | Convert assets to Python code | ⚠️ Useless |
-| **Modular Architecture** | Easy to extend and customize | :) |
+| Feature | Description | Status  | Note |
+|---------|-------------|---------|------|
+| **Advanced UI** | Roblox Studio-like UI components | ✅ Functional | ... |
+| **OpenGL Rendering** | Hardware-accelerated graphics | ✅ Functional | ... |
+| **Performance Tools** | FPS monitoring, hardware detection | ✅ Functional | ... |
+| **Themes** | The engine have pre-built themes | ✅ Functional | ... |
+| **Filters** | We home a huge amount of filters for your game(Blur, Neon, ...) | ✅ Functional | Could be GPU/CPU Intensive |
+| **Lighting System** | Dynamic lights and shadows | ✅ Functional | Needs more optmization |
+| **Particle Effects** | Particle system | ✅ Functional | You can use it, but needs optmization |
+| **Image Embedding** | Convert assets to Python code | ❌ Discontinued | Useless |
+| **Modular Architecture** | Easy to extend and customize | :) | ... |
 
 # Code Statistics
 [See this file](https://github.com/MrJuaumBR/LunaEngine/blob/main/lunaengine/CODE_STATISTICS.md)
@@ -47,6 +47,11 @@ pip install -r requirements.txt
 # Run a basic example
 python examples/ui_comprehensive_demo.py
 ```
+
+### Lessons
+
+Start learning how to use *LunaEngine* right now:
+- [Lessons](./lessons.md)
 
 ## Requirements
 

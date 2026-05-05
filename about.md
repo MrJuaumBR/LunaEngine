@@ -41,6 +41,20 @@ But through some magic, I’ve added more docstrings to this project than in my 
 
 So, what do you need to know? In Luna, we have six main pillars—the folders: *backend* , *core* , *graphics* , *tools* , *ui* , *misc* and *utils* . Each one basically handles its own functions. Don’t worry about *tools* —it’s mostly for my daily development of Luna. I don’t think you’ll need it.
 
+## Engine Structure
+
+LunaEngine follows a modular architecture to keep responsibilities clear and code maintainable. Here’s what each core folder does:
+
+- **`backend/`** – Low-level bindings and hardware communication (OpenGL, OpenAL, networking, controller input).
+- **`core/`** – The heart of the engine: main loop, window management, scene handling, and rendering pipeline.
+- **`graphics/`** – Visual effects, camera, particles, shadows, sprite sheets, and all GLSL shaders.
+- **`ui/`** – The complete UI system: elements (buttons, text boxes, containers, etc.), theming, animations (tweening), notifications, tooltips, and layout management.
+- **`utils/`** – Helper modules for math, threading, performance monitoring, timers, and image conversion.
+- **`misc/`** – Debugging tools and built‑in icon sets.
+- **`tools/`** – Internal development scripts (code statistics, asset helpers) – not intended for end‑users.
+
+> **Total codebase:** ~149 files, ~16k lines of code, 58+ built‑in themes, and 27 UI elements ready to use.
+
 ## Documentation
 
 I developed a script that automatically generates documentation, which is hosted on GitHub. You can access it here:  
@@ -56,13 +70,26 @@ But… I do have code examples! You can check them out in the *[examples/](https
 
 ## AI
 
-You can’t really use AI with Luna—and I don’t think it’s my fault. AIs usually have a knowledge cutoff (e.g., up to 2023), so when a new project comes out, it takes time for them to learn how it works. Plus, the project needs to be **popular**, which Luna isn’t… yet. >:(
+You **can** use AI with Luna today – but only if your AI model supports **web search** and you give it the right sources.
+
+Most AIs have a knowledge cutoff (e.g., up to 2023), so they won’t know about newer projects. To get accurate, up‑to‑date answers about LunaEngine, you need to:
+
+1. Use an AI model that has a **web search / browsing feature** (or can read provided links).
+2. Explicitly pass these two links to the AI:
+   - [LunaEngine GitHub repository](https://github.com/MrJuaumBR/LunaEngine)
+   - [LunaEngine official documentation](https://mrjuaumbr.github.io/LunaEngine/)
+
+I’ve personally tested this approach on:
+- **DeepSeek** (with web search enabled)
+- **Grok** (xAI, using “expert mode” / web search)
+
+Both were able to understand the engine’s code structure, explain its features, and even help write small examples. So yes – AI can help you now, as long as you let it read the current docs and repo.
 
 ## Production
 
 Want to use Luna to make your own game and earn money from it? Go ahead—I don’t mind. But I’m not sure if it’s the best choice. Maybe it is—I honestly don’t care enough to find out.
 
-## LunaEngine Utilites
+## LunaEngine Utilities
 Maybe Luna is the perfect framework for you work with python(or no...) but i think that i have to list some useful points of Luna here:
 - Luna Currently have **58+** themes pre-mades for you guys use;
 - Ui elements is one of the best parts of this framework, highly based on HTML inputs and Roblox Studio system;

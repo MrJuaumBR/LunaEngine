@@ -29,10 +29,8 @@
         </div>
     </nav>
     
-
     <div class="container mt-5">
         <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Ui</a></li><li class="breadcrumb-item active">tween.py</li></ol></nav>
-
         <div class="header-section mb-5">
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>tween.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
@@ -40,7 +38,6 @@
                 <span class="text-muted">tween.py - Tween Animation System for LunaEngine (Inspired by Roblox Studio)<br><br>ENGINE PATH:<br>lunaengine -&gt; ui -&gt; tween.py<br><br>DESCRIPTION:<br>A comprehensive tween animation system inspired by Roblox Studio, providing<br>smooth property animations with various easing functions, sequencing, <br>and lifecycle management.<br><br>FEATURES:<br>- 25+ easing types (Linear, Quadratic, Cubic, Elastic, Bounce, etc.)<br>- Property animations: position, size, rotation, opacity, colors, custom properties<br>- Lifecycle callbacks: on_start, on_update, on_complete, on_loop<br>- Animation control: play, pause, resume, cancel, stop<br>- Sequencing: parallel and sequential animation groups<br>- Looping: finite loops, infinite loops, yoyo effect<br>- Progress tracking: get current animation progress percentage<br>- Global management: AnimationHandler for engine-wide animation control<br><br>USAGE EXAMPLES:<br># Simple animation<br>tween = Tween.create(button)<br>tween.to(x=100, y=200, duration=1.0, easing=EasingType.QUAD_IN_OUT)<br>tween.play()<br><br># Sequence of animations<br>sequence = Tween.sequence([<br> &nbsp; &nbsp;Tween.create(element).to(x=100, duration=0.5),<br> &nbsp; &nbsp;Tween.create(element).to(y=200, duration=0.5),<br>])<br><br># Animation with callbacks and loops<br>tween = Tween.create(element)<br>tween.to(rotation=360, duration=2.0, easing=EasingType.ELASTIC_OUT)<br>tween.set_loops(3, yoyo=True)<br>tween.set_callbacks(<br> &nbsp; &nbsp;on_start=lambda: print(&quot;Animation started&quot;),<br> &nbsp; &nbsp;on_complete=lambda: print(&quot;Animation completed&quot;)<br>)<br>tween.play()</span>
             </div>
         </div>
-
         <div class="row">
             <div class="col-lg-12">
                 
@@ -486,19 +483,15 @@
         </div>
                 
                 
-                
             </div>
         </div>
-
         <div class="mt-5 mb-5 text-center">
             <a href="index.html" class="btn btn-outline-primary">
                 <i class="bi bi-arrow-left me-2"></i>Back to Ui Module
             </a>
         </div>
     </div>
-
     
-    <!-- Footer -->
     <footer class="footer-section">
         <div class="container">
             <div class="row">
@@ -509,39 +502,32 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-03-12 17:38
+                        Documentation generated on 2026-05-05 15:31
                     </p>
                 </div>
             </div>
         </div>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="theme.js"></script>
     
     <script>
-    // Universal search handler
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('moduleSearch');
         const searchIcon = document.querySelector('.input-group-text');
-        
         if (searchInput && searchIcon) {
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
                     const currentPath = window.location.pathname;
                     let searchPath = 'search.html';
-                    
-                    // Adjust path based on current location
                     if (currentPath.split('/').filter(Boolean).length > 2) {
                         searchPath = '../search.html';
                     }
-                    
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
-            
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault(); 
@@ -550,9 +536,7 @@
                     return false;
                 }
             });
-            
             searchIcon.addEventListener('click', performSearch);
-            
             const form = searchInput.closest('form');
             if (form) {
                 form.addEventListener('submit', (e) => {

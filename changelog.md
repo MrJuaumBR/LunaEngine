@@ -11,9 +11,45 @@
 
 !!! The older versions don't have a clear list of the changes that occurred between them, so I simply ignored them.
 
+## 0.2.4
+<small>Focused on **Fixes**, **Organization** and **QoL** improvments</small>
+- Changes in [Readme](./README.md);
+- Dropdown support for classes as options(Using `__str__`);
+- Added some aliases for functions on `engine.py`;
+- new `Ratio` type on `types.py`;
+- New `Expandable` UiElement based on UiFrame;
+- `Tabination` should now be more careful on tabs header space;
+- New Chart for you(Radar, this RPG-like ones);
+- Fixed dead cache bug in OpenGL(Text with *n* amount of digits getting replaced);
+- Auto-clear text cache;
+- Chart gradients;
+- New "style" for the **ProgressBar**;
+- Now **UiFrame** supports having a header and to be dragged;
+- **UiGradient** and **UiDraggable** don't exist anymore;
+- **Tabination** now have the Orientation parameter, wich can be "horizontal", "vertical1" and "vertical2";
+- **draw_text** now accepts the new ``Color`` type, and also it now haves the parameters: ``flip - Tuple(bool, bool)`` and ``rotate - float``;
+- ``themes.json`` are now split on ``assets/themes/``;
+- Changes on the way that *themes* work;
+- "group" property on `UIElement`;
+- Just added **LiveInspector** for more easy debugging(Includes properties and some overlays also);
+- ``spritesheet`` module:
+  - pathlib.Path support for all file paths (replaces os.path)
+  - scale_surface() – scale surface by factor (smooth/nearest)
+  - resize_surface() – resize to exact dimensions
+  - create_mask() – generate collision/alpha mask
+  - replace_color() – replace single colour (with tolerance)
+  - replace_color_range() – replace colours within RGB bounds
+  - tint() – apply colour tint (multiply/add/overlay modes)
+  - paint() – fill non‑transparent pixels with solid colour
+  - color_to_alpha() – turn a specific RGB colour transparent
+- New add ``add_to_parent`` to UIElement(and anything that is a subclass of it);
+- **ColorPicker** Element;
+- **draw_rect** now supports ``border_color`` parameter;
+- Some new Performance visualizers.
+
 ## 0.2.3 
 <small>Really small update</small>
-- Simplified mouse hovering **UiElements**;
+- Simplified mouse hovering **UiElements**
 - Fixed mouse position wrong detection(again);
 - Mouse Scroll on **ScrollingFrame** now will change it value;
 - OpenGL render system rework;

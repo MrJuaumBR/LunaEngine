@@ -37,7 +37,8 @@ from ..ui.notifications import (NotificationManager, NotificationPosition, Notif
 from ..ui import *
 from .scene import Scene
 from ..utils import PerformanceMonitor, GarbageCollector
-from ..backend import OpenGLRenderer, EVENTS, InputState, MouseButtonPressed, LayerType, LExceptions, ControllerManager, glEnable, glDisable, GL_DEPTH_TEST
+from ..misc.debug import DebugManager, LiveInspector
+from ..backend import OpenGLRenderer, EVENTS, InputState, MouseButtonPressed, LayerType, LExceptions, ControllerManager, glEnable, glDisable, GL_DEPTH_TEST, Ratio
 from .renderer import Renderer
 from .window import Window
 from dataclasses import dataclass
@@ -79,6 +80,7 @@ class LunaEngine:
         self.show_splash = kwargs.get('show_splash', True)
         self.splash_logo = kwargs.get('splash_logo', None)
         self.splash_logo_size = kwargs.get('splash_logo_size', 64)
+        self.Ratio:Ratio = Ratio(width, height)
         
         # Window
         self.window = Window(title=title, width=width, height=height, fullscreen=fullscreen, resizable=False)
@@ -97,7 +99,6 @@ class LunaEngine:
         self.current_scene: Optional[Scene] = None
         self.previous_scene_name: Optional[str] = None
         self._event_handlers:Dict[str, List[Dict[str, Callable[pygame.event.EventType, None], str, Optional[str]]]] = {}
-        self.ratio:pygame.Vector2 = pygame.Vector2(1.0,1.0)
         self.input_state = InputState()
         
         # Performance monitoring
@@ -127,6 +128,23 @@ class LunaEngine:
         self.layer_manager = UILayerManager()
         
         self.controller_manager = ControllerManager(self)
+        
+        # Debug
+        self.debug_enabled = kwargs.get('debug', False)
+        self.debug_manager = DebugManager(self)
+        if self.debug_enabled:
+            self.debug_manager.add_overlay(LiveInspector(self))
+        
+        # Version
+        self.version = __version__
+        
+    def update_ratio(self, base_width: int, base_height: int):
+        self.Ratio = Ratio(self.width / base_width, self.height / base_height)
+    updateRatio = update_ratio
+        
+    @property
+    def ratio(self) -> Ratio:
+        return self.Ratio
         
     def initialize(self):
         """Initialize the engine and create the game window."""
@@ -183,6 +201,7 @@ class LunaEngine:
         if os.path.exists(logo_file):
             return pygame.image.load(logo_file).convert_alpha()
         return None
+    getLogoSurface = get_logo_surface
             
     def _show_splash(self):
         """Display an animated splash screen with logo, title, subtitle and version."""
@@ -288,6 +307,7 @@ class LunaEngine:
         
     def set_title(self, title:str):
         pygame.display.set_caption(title)
+    setTitle = set_title
         
     def set_icon(self, icon:str|pygame.Surface):
         if icon is None:
@@ -295,7 +315,8 @@ class LunaEngine:
         if isinstance(icon, str):
             icon = pygame.image.load(icon).convert()
         pygame.display.set_icon(icon)
-        
+    setIcon = set_icon
+    
     def update_camera_renderer(self):
         for scene in self.scenes.values():
             if hasattr(scene, 'camera'):
@@ -315,6 +336,7 @@ class LunaEngine:
         else: scene_instance = scene_class
         self.scenes[name] = scene_instance
         scene_instance.name = name
+    addScene = add_scene
         
     def set_scene(self, name: str):
         """
@@ -341,6 +363,7 @@ class LunaEngine:
             # Set new scene and call on_enter
             self.current_scene = self.scenes[name]
             self.current_scene.on_enter(self.previous_scene_name)
+    setScene = set_scene
     
     def find_event_handlers(self, event:int, rep_id:str) -> bool:
         return False
@@ -576,10 +599,12 @@ class LunaEngine:
             dict: A dictionary containing FPS statistics
         """
         return self.performance_monitor.get_stats()
+    getFpsStats = get_fps_stats
     
     def get_hardware_info(self) -> dict:
         """Get hardware information"""
         return self.performance_monitor.get_hardware_info()
+    getHardwareInfo = get_hardware_info
     
     def ScaleSize(self, width: float, height: float) -> Tuple[float, float]|Tuple[int, int]:
         """
@@ -619,32 +644,17 @@ class LunaEngine:
         size = (size[0] * x, size[1] * y)
         return size
 
-    def setRatio(self, base_width:int, base_height:int) -> pygame.Vector2:
-        """
-        Set the ratio of the window to the base size
-
-        Args:
-            base_width (int): The base width of the window
-            base_height (int): The base height of the window
-
-        Returns:
-            pygame.Vector2[float, float]: The ratio of the window to the base size
-        """
-        self.ratio = pygame.Vector2(base_width / self.width, base_height / self.height)
-        return self.ratio
-
     def run(self):
-        """Main game loop"""
+        """Main game loop."""
         if self.renderer is None:
             self.initialize()
-        
+
         while self.running:
             self.performance_monitor.start_timer('frame')
-            # Update performance monitoring - start of frame
             self.performance_monitor.update_frame()
-            
+
             dt = self.clock.tick(self.fps) / 1000.0
-            
+
             self.input_state.clear_consumed()
             
             # Profile mouse update
@@ -697,11 +707,13 @@ class LunaEngine:
             # Update UI elements with profiling
             self.performance_monitor.start_timer("ui")
             self._update_ui_elements(dt)
+            self.debug_manager.update(dt, self.input_state)
             self.performance_monitor.end_timer("ui")
             
             # Render with profiling
             self.performance_monitor.start_timer("render")
             self._render()
+            self.debug_manager.render(self.renderer)
             self.performance_monitor.end_timer("render")
             
             self.performance_monitor.end_timer('frame')
@@ -872,9 +884,11 @@ class LunaEngine:
         
     def get_controllers(self) -> List['Controller']:
         return self.controller_manager.get_all_controllers()
+    getControllers = get_controllers
 
     def get_controller(self, index: int) -> Optional['Controller']:
         return self.controller_manager.get_controller(index)
+    getController = get_controller
 
     def is_using_controller(self) -> bool:
         return self.controller_manager.is_using_controller()
@@ -948,6 +962,8 @@ class LunaEngine:
             self.notification_manager.render(self.renderer)
             self.performance_monitor.end_timer("ui_render")
 
+            self.debug_manager.render(self.renderer)
+
             # Finalize frame
             self.renderer.end_frame()
 
@@ -996,23 +1012,43 @@ class LunaEngine:
 
     def _update_ui_elements(self, dt):
         """
-        Update UI elements with individual profiling if enabled
+        Update UI elements with individual profiling and proper click propagation.
+        
+        This method rebuilds the layer ordering, checks for mouse clicks, and
+        ensures that only the topmost visible, enabled UI element receives a click
+        event. All lower elements will skip mouse interaction for that frame.
         """
         if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
             return
-        
+
         # Rebuild layers from current scene UI elements
         self.layer_manager.clear_all()
-        
         for ui_element in self.current_scene.ui_elements:
             self.layer_manager.add_element(ui_element)
-        
+
+        # Get all elements sorted by layer (lowest Z first in the list)
+        all_elements = self.layer_manager.get_elements_in_order()
+        # Reverse to get highest Z first (topmost)
+        all_elements.reverse()
+
+        # Check for a mouse press event in this frame
+        mouse_pressed_this_frame = self.input_state.mouse_just_pressed
+
+        if mouse_pressed_this_frame:
+            # Find the topmost element under the mouse
+            for elem in all_elements:
+                if elem.visible and elem.enabled and elem.mouse_over(self.input_state):
+                    # Consume the mouse event globally – all other elements will skip
+                    self.input_state.consume_global_mouse()
+                    break
+
         # Profile entire UI update
         self.performance_monitor.start_timer("ui_total")
-        
-        
+
+        # Update the layer manager – this will call update() on all elements
+        # (including children) respecting the global consumed flag
         self.layer_manager.update(dt, self.input_state)
-        
+
         self.performance_monitor.end_timer("ui_total")
 
 

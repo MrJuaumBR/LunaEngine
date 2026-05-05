@@ -34,6 +34,7 @@ from typing import Dict, List, Tuple, Optional, Any, Literal
 from collections import deque
 from dataclasses import dataclass
 from enum import Enum
+from . import math_utils
 
 class TimeProfile:
     def __init__(self, category: str = "", max_history: int = 60):
@@ -213,6 +214,10 @@ class PerformanceMonitor:
         """Get update timing statistics"""
         return self.profiler.get_timing_stats('update')
     
+    def get_timing(self, category: str) -> Optional[TimeProfile]:
+        """Get the last recorded timing for a specific category."""
+        return self.profiler.get_timer(category)
+    
     def get_render_timing_stats(self) -> Dict[str, Any]:
         """Get render timing statistics"""
         return self.profiler.get_timing_stats('render')
@@ -226,6 +231,32 @@ class PerformanceMonitor:
             "hardware": self.get_hardware_info(),
             "profiling_enabled": self.is_profiling_enabled()
         }
+
+    def _getMemUsageClass(self, classM, humanize:bool=True) -> Dict[str, Any]:
+        """Workaround to access internal usage data of a class instance"""
+        usage_data = {}
+        total = 0
+        for k, v in classM.__dict__.items():
+            if type(v) in [list, tuple, set]:
+                usage_data[k] = sys.getsizeof(v, 0)
+                total += usage_data[k]
+            elif type(v) in [staticmethod, classmethod]:
+                usage_data[k] = self.workAround(v.__func__)
+                total += usage_data[k]['total']
+            elif type(v) == dict:
+                usage_data[k] = {key: sys.getsizeof(val, 0) for key, val in v.items()}
+                total += sum(usage_data[k].values())
+        usage_data['header'] = sys.getsizeof(classM.__dict__, 0)
+        usage_data['total'] = total + usage_data['header']
+        if humanize:
+            for k, v in usage_data.items():
+                def loop(d):
+                    if isinstance(d, dict):
+                        return {key: loop(val) for key, val in d.items()}
+                    else:
+                        return math_utils.humanize_size(d)
+                usage_data[k] = loop(v)
+        return usage_data
 
     def get_hardware_info(self) -> Dict[str, str]:
         """Get system hardware information with caching"""
