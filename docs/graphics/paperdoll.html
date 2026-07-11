@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>paperdoll.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Graphics</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Graphics</a></li><li class="breadcrumb-item active">paperdoll.py</li></ol></nav>
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>paperdoll.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">Paperdoll System - Modular character rendering with layered sprites.<br><br>Allows combining multiple layers (head, body, feet) from a single spritesheet<br>into a unified character, with independent animations per layer.<br>Supports scaling and resizing at draw time.</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-layer">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Layer</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Represents one visual layer of the paperdoll (e.g., head, body, feet).<br><br>Attributes:<br> &nbsp; &nbsp;id (str): Unique identifier (e.g., &quot;head&quot;).<br> &nbsp; &nbsp;src_y (int): Vertical offset in the spritesheet frame (in pixels).<br> &nbsp; &nbsp;height (int): Height of this layer (typically frame_height / number_of_layers).<br> &nbsp; &nbsp;width (int): Width of this layer (same as frame_width).<br> &nbsp; &nbsp;offset_x, offset_y (int): Extra pixel offset when drawing (for fine tuning).<br> &nbsp; &nbsp;opacity (float): 0.0 to 1.0 (currently not used in rendering, but kept for future).<br> &nbsp; &nbsp;visible (bool): Whether to draw this layer.<br> &nbsp; &nbsp;texture_override (pygame.Surface | None): If set, use this surface instead of the main texture.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-layer-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, layer_id: str, src_y: int, height: int, width: int = 32, offset_x: int = 0, offset_y: int = 0, opacity: float = 1.0, visible: bool = True) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-layer-set_texture">
+                <code class="fs-6 fw-bold text-color-title">def set_texture(self: Any, surface: pygame.Surface) -> None</code>
+                <div class="mt-2 text-muted small">Override the texture for this layer (e.g., equipment).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-layer-reset_texture">
+                <code class="fs-6 fw-bold text-color-title">def reset_texture(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Revert to using the main spritesheet texture.</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-animation">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Animation</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Simple frame‑based animation.<br><br>Attributes:<br> &nbsp; &nbsp;name (str): Animation name (e.g., &quot;walk&quot;).<br> &nbsp; &nbsp;frames (List[int]): List of frame indices (0‑based) to play.<br> &nbsp; &nbsp;duration (int): Duration per frame in milliseconds.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, name: str, frames: List[int], duration: int, loop: Optional[bool] = False) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-get_frame">
+                <code class="fs-6 fw-bold text-color-title">def get_frame(self: Any, progress: int) -> int</code>
+                <div class="mt-2 text-muted small">Return the frame index for the given progress (auto‑loops).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-animation-total_frames">
+                <code class="fs-6 fw-bold text-color-title">def total_frames(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-paperdoll">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Paperdoll</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">A modular character made of stacked layers from a single spritesheet.<br><br>Attributes:<br> &nbsp; &nbsp;texture (pygame.Surface): The main spritesheet surface.<br> &nbsp; &nbsp;frame_w (int): Width of each animation frame.<br> &nbsp; &nbsp;frame_h (int): Height of each animation frame.<br> &nbsp; &nbsp;pivot_x, pivot_y (int): Anchor point (relative to the frame) used for positioning.<br> &nbsp; &nbsp;scale (float): Render scale factor (1.0 = original size).<br> &nbsp; &nbsp;layers (Dict[str, Layer]): All layers, keyed by id.<br> &nbsp; &nbsp;layer_order (List[str]): Order in which layers are drawn (bottom → top).<br> &nbsp; &nbsp;animations (Dict[str, Animation]): All animations, keyed by name.<br> &nbsp; &nbsp;current_anim (str): Currently playing animation name.<br> &nbsp; &nbsp;current_frame (int): Current frame progress index (not the sprite index).<br> &nbsp; &nbsp;timer (float): Accumulated time in seconds.<br> &nbsp; &nbsp;speed (float): Playback speed multiplier (1.0 = normal).</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-paperdoll-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, texture: pygame.Surface, frame_w: int, frame_h: int, pivot_x: int = 0, pivot_y: int = 0) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-paperdoll-add_layer">
+                <code class="fs-6 fw-bold text-color-title">def add_layer(self: Any, layer: Layer) -> None</code>
+                <div class="mt-2 text-muted small">Add a layer (appended to the end of the draw order).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-paperdoll-get_layer">
+                <code class="fs-6 fw-bold text-color-title">def get_layer(self: Any, layer_id: str) -> Optional[Layer]</code>
+                <div class="mt-2 text-muted small">Retrieve a layer by its id.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-paperdoll-set_layer_texture">
+                <code class="fs-6 fw-bold text-color-title">def set_layer_texture(self: Any, layer_id: str, surface: pygame.Surface) -> None</code>
+                <div class="mt-2 text-muted small">Replace the texture of a specific layer (e.g., helmet).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-paperdoll-set_layer_visible">
+                <code class="fs-6 fw-bold text-color-title">def set_layer_visible(self: Any, layer_id: str, visible: bool) -> None</code>
+                <div class="mt-2 text-muted small">Show or hide a layer.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-paperdoll-add_animation">
+                <code class="fs-6 fw-bold text-color-title">def add_animation(self: Any, anim: Animation) -> None</code>
+                <div class="mt-2 text-muted small">Register an animation.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-paperdoll-play">
+                <code class="fs-6 fw-bold text-color-title">def play(self: Any, anim_name: str, reset: bool = True) -> None</code>
+                <div class="mt-2 text-muted small">Start playing an animation.<br><br>Args:<br> &nbsp; &nbsp;anim_name: Name of the animation (must exist).<br> &nbsp; &nbsp;reset: If True, reset frame progress to 0.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-paperdoll-set_scale">
+                <code class="fs-6 fw-bold text-color-title">def set_scale(self: Any, scale: float) -> None</code>
+                <div class="mt-2 text-muted small">Set the render scale factor.<br><br>Args:<br> &nbsp; &nbsp;scale: Multiplier (1.0 = original size). Must be &gt; 0.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-paperdoll-set_size">
+                <code class="fs-6 fw-bold text-color-title">def set_size(self: Any, width: int, height: int, keep_aspect: bool = True) -> None</code>
+                <div class="mt-2 text-muted small">Resize the rendered character to the given dimensions.<br><br>This calculates the scale factor needed to fit the character into the<br>specified box. If keep_aspect is True, the scale is chosen to fit<br>entirely inside the box while preserving the original aspect ratio.<br>Otherwise, the scale is calculated independently for width and height<br>(stretching/squashing).<br><br>Args:<br> &nbsp; &nbsp;width: Desired width in pixels.<br> &nbsp; &nbsp;height: Desired height in pixels.<br> &nbsp; &nbsp;keep_aspect: If True, preserve the original aspect ratio.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-paperdoll-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float) -> None</code>
+                <div class="mt-2 text-muted small">Advance the animation timer and update the current frame.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-paperdoll-draw">
+                <code class="fs-6 fw-bold text-color-title">def draw(self: Any, renderer: Any, x: int, y: int) -> None</code>
+                <div class="mt-2 text-muted small">Draw the paperdoll at the given screen position with current scale.<br><br>Args:<br> &nbsp; &nbsp;renderer: An instance of OpenGLRenderer (or any renderer with blit()).<br> &nbsp; &nbsp;x, y: Screen coordinates (before pivot adjustment).</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
+                
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-load_paperdoll">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def load_paperdoll(config_path: Union[str, Path, AtlasItem]) -> Paperdoll</code>
+                    <p class="mt-2 mb-0 text-muted">Load a paperdoll from a JSON configuration file and its associated spritesheet.<br><br>The JSON must contain:<br> &nbsp; &nbsp;- &quot;texture&quot;: path to the spritesheet image.<br> &nbsp; &nbsp;- &quot;frame_width&quot;, &quot;frame_height&quot;: dimensions of each frame.<br> &nbsp; &nbsp;- &quot;pivot&quot;: {&quot;x&quot;, &quot;y&quot;} (optional, defaults to 0,0).<br> &nbsp; &nbsp;- &quot;layers&quot;: list of {&quot;id&quot;, &quot;src_y&quot;, &quot;height&quot;, &quot;offset_x&quot;, &quot;offset_y&quot;, &quot;opacity&quot;, &quot;visible&quot;}.<br> &nbsp; &nbsp;- &quot;animations&quot;: dict with animation names, each containing &quot;frames&quot; (list of ints) and &quot;duration&quot; (ms).<br> &nbsp; &nbsp;- &quot;default_animation&quot;: (optional) name of the animation to start with.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-load_paperdoll_from_atlas">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def load_paperdoll_from_atlas(config_name: str, atlas: Atlas) -> Paperdoll</code>
+                    <p class="mt-2 mb-0 text-muted">Load a paperdoll from an Atlas entry that contains a JSON configuration.<br><br>The atlas item with the given name must be a JSON file.<br>The JSON must reference the spritesheet texture (the path can be relative to the config).<br>If the texture is also stored in the atlas, you can use the atlas to load it.</p>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Graphics Module
+            </a>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-07-10 21:26
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

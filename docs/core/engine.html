@@ -35,7 +35,7 @@
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>engine.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">LunaEngine Main Engine - Core Game Loop and Management System<br><br>LOCATION: lunaengine/core/engine.py<br><br>DESCRIPTION:<br>The central engine class that orchestrates the entire game lifecycle. Manages<br>scene transitions, rendering pipeline, event handling, performance monitoring,<br>and UI system integration. This is the primary interface for game developers.<br><br>KEY RESPONSIBILITIES:<br>- Game loop execution with fixed timestep<br>- Scene management and lifecycle control<br>- Event distribution to scenes and UI elements<br>- Performance monitoring and optimization<br>- Theme management across the entire application<br>- Resource initialization and cleanup<br><br>LIBRARIES USED:<br>- pygame: Window management, event handling, timing, and surface operations<br>- numpy: Mathematical operations for game calculations<br>- threading: Background task management (if needed)<br>- typing: Type hints for better code documentation<br><br>DEPENDENCIES:<br>- ..backend.pygame_backend: Default rendering backend<br>- ..ui.elements: UI component system<br>- ..utils.performance: Performance monitoring utilities<br>- .scene: Scene management base class</span>
+                <span class="text-muted">LunaEngine Main Engine - Core Game Loop and Management System<br><br>LOCATION: lunaengine/core/engine.py<br><br>DESCRIPTION:<br>The central engine class that orchestrates the entire game lifecycle. Manages<br>scene transitions, rendering pipeline, event handling, performance monitoring,<br>and UI system integration. This is the primary interface for game developers.<br><br>KEY RESPONSIBILITIES:<br>- Game loop execution with fixed timestep<br>- Scene management and lifecycle control<br>- Event distribution to scenes and UI elements<br>- Performance monitoring and optimization<br>- Theme management across the entire application<br>- Resource initialization and cleanup<br>- Atlas-based resource catalog for asset management<br>- Resource bundle loading (optional, with progress bar)<br><br>LIBRARIES USED:<br>- pygame: Window management, event handling, timing, and surface operations<br>- numpy: Mathematical operations for game calculations<br>- threading: Background task management for bundle loading<br>- typing: Type hints for better code documentation<br><br>DEPENDENCIES:<br>- ..backend.pygame_backend: Default rendering backend<br>- ..ui.elements: UI component system<br>- ..utils.performance: Performance monitoring utilities<br>- .scene: Scene management base class<br>- ..misc.atlas: Resource catalog system</span>
             </div>
         </div>
         <div class="row">
@@ -48,7 +48,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether to start in fullscreen mode<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene</p>
+                    <p class="lead fs-6">Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether to start in fullscreen mode<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene<br> &nbsp; &nbsp;atlas (Atlas): Resource catalog for all assets<br> &nbsp; &nbsp;bundle_path (Optional[Path]): Path to resource bundle (.res) if any</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -85,12 +85,16 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, title: str = 'LunaEngine Game', width: int = 800, height: int = 600, fullscreen: bool = False, icon: str | pygame.Surface = None, **kwargs: dict) -> Any</code>
-                <div class="mt-2 text-muted small">Initialize the LunaEngine.<br><br>Args:<br> &nbsp; &nbsp;title (str): The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int): The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int): The height of the game window (default: 600)<br> &nbsp; &nbsp;use_opengl (bool): Use OpenGL for rendering (default: True)<br> &nbsp; &nbsp;fullscreen (bool): Start in fullscreen mode (default: False)</div>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, title: str = 'LunaEngine Game', width: int = 800, height: int = 600, fullscreen: bool = False, icon: Optional[Union[str, pygame.Surface, None]] = None, **kwargs: dict) -> Any</code>
+                <div class="mt-2 text-muted small">Initialize the LunaEngine.<br><br>Args:<br> &nbsp; &nbsp;title (str): The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int): The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int): The height of the game window (default: 600)<br> &nbsp; &nbsp;fullscreen (bool): Start in fullscreen mode (default: False)<br> &nbsp; &nbsp;icon (str|pygame.Surface): Window icon<br> &nbsp; &nbsp;**kwargs: Additional options:<br> &nbsp; &nbsp; &nbsp; &nbsp;- show_splash (bool): Show splash screen (default: True)<br> &nbsp; &nbsp; &nbsp; &nbsp;- splash_logo (pygame.Surface): Custom logo surface<br> &nbsp; &nbsp; &nbsp; &nbsp;- splash_logo_size (int): Logo size for splash (default: 64)<br> &nbsp; &nbsp; &nbsp; &nbsp;- debug (bool): Enable debug mode (default: False)<br> &nbsp; &nbsp; &nbsp; &nbsp;- enable_performance_profiling (bool): Enable profiling (default: True)<br> &nbsp; &nbsp; &nbsp; &nbsp;- atlas_root (str|Path): Root path for the atlas (default: current directory)<br> &nbsp; &nbsp; &nbsp; &nbsp;- bundle_path (str|Path): Path to resource bundle (.res file) (default: auto-detect &quot;game.res&quot;)<br> &nbsp; &nbsp; &nbsp; &nbsp;- bundle_key (str): Obfuscation key for the bundle (if encrypted)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_auto_discover_assets">
+                <code class="fs-6 fw-bold text-color-title">def _auto_discover_assets(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Scan the atlas root for common asset folders and add them automatically.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-update_ratio">
-                <code class="fs-6 fw-bold text-color-title">def update_ratio(self: Any, base_width: int, base_height: int) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def update_ratio(self: Any, base_width: int | float, base_height: int | float) -> Any</code>
+                <div class="mt-2 text-muted small">Update the aspect ratio scaling factor.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-ratio">
                 <code class="fs-6 fw-bold text-color-title">def ratio(self: Any) -> Ratio</code>
@@ -102,23 +106,47 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_logo_surface">
                 <code class="fs-6 fw-bold text-color-title">def get_logo_surface(self: Any) -> Optional[pygame.Surface]</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Return the engine logo surface if available.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_show_splash">
                 <code class="fs-6 fw-bold text-color-title">def _show_splash(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Display an animated splash screen with logo, title, subtitle and version.</div>
+                <div class="mt-2 text-muted small">Display an animated splash screen with logo, title, subtitle, version, and progress bar.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-set_title">
                 <code class="fs-6 fw-bold text-color-title">def set_title(self: Any, title: str) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Set the window title.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-set_icon">
-                <code class="fs-6 fw-bold text-color-title">def set_icon(self: Any, icon: str | pygame.Surface) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def set_icon(self: Any, icon: Optional[Union[str, pygame.Surface, None]]) -> Any</code>
+                <div class="mt-2 text-muted small">Set the window icon.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-update_camera_renderer">
                 <code class="fs-6 fw-bold text-color-title">def update_camera_renderer(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Update all scene cameras with the current renderer.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_focusable_elements">
+                <code class="fs-6 fw-bold text-color-title">def get_focusable_elements(self: Any) -> List[ui.UIElement]</code>
+                <div class="mt-2 text-muted small">Return all focusable UI elements that are globally visible and enabled.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-move_focus">
+                <code class="fs-6 fw-bold text-color-title">def move_focus(self: Any, direction: str) -> bool</code>
+                <div class="mt-2 text-muted small">Move focus to the next/previous element in the focusable list.<br>Direction: &#x27;up&#x27;, &#x27;down&#x27;, &#x27;left&#x27;, &#x27;right&#x27; (uses spatial logic) or &#x27;next&#x27;, &#x27;prev&#x27;.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-update_controller_ui_navigation">
+                <code class="fs-6 fw-bold text-color-title">def update_controller_ui_navigation(self: Any, dt: float) -> Any</code>
+                <div class="mt-2 text-muted small">Handle all controller-based UI navigation: focus, scrolling, tab switching, and activation.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_find_tabination_ancestor">
+                <code class="fs-6 fw-bold text-color-title">def _find_tabination_ancestor(self: Any, element: 'ui.UIElement') -> Optional['ui.Tabination']</code>
+                <div class="mt-2 text-muted small">Traverse parents to find the nearest Tabination container.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_find_scrollable_ancestor">
+                <code class="fs-6 fw-bold text-color-title">def _find_scrollable_ancestor(self: Any, element: 'ui.UIElement') -> Optional['ui.ScrollingFrame']</code>
+                <div class="mt-2 text-muted small">Traverse parents to find the nearest ScrollingFrame.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-activate_focused_element">
+                <code class="fs-6 fw-bold text-color-title">def activate_focused_element(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Activate (click/toggle) the currently focused UI element.<br>Returns True if something was activated.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-add_scene">
                 <code class="fs-6 fw-bold text-color-title">def add_scene(self: Any, name: str, scene_class: Type[Scene], *args: tuple, **kwargs: dict) -> Any</code>
@@ -134,7 +162,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_event">
                 <code class="fs-6 fw-bold text-color-title">def on_event(self: Any, event_type: int, rep_id: Optional[str] = None) -> Any</code>
-                <div class="mt-2 text-muted small">Decorator to register event handlers<br><br>Args:<br> &nbsp; &nbsp;event_type (int): The Pygame event type to listen for<br>Returns:<br> &nbsp; &nbsp;Callable: The decorator function</div>
+                <div class="mt-2 text-muted small">Decorator to register event handlers<br><br>Args:<br> &nbsp; &nbsp;event_type (int): The Pygame event type to listen for<br> &nbsp; &nbsp;rep_id (str, optional): A representative ID for the handler<br>Returns:<br> &nbsp; &nbsp;Callable: The decorator function</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-setup_notifications">
                 <code class="fs-6 fw-bold text-color-title">def setup_notifications(self: Any, max_concurrent: int = 5, margin: int = 20, spacing: int = 10) -> Any</code>
@@ -189,12 +217,20 @@
                 <div class="mt-2 text-muted small">Get list of all available theme names<br><br>Returns:<br> &nbsp; &nbsp;List[str]: List of theme names</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-set_global_theme">
-                <code class="fs-6 fw-bold text-color-title">def set_global_theme(self: Any, theme: str) -> bool</code>
+                <code class="fs-6 fw-bold text-color-title">def set_global_theme(self: Any, theme: str, dark: bool = True) -> bool</code>
                 <div class="mt-2 text-muted small">Set the global theme for the entire engine and update all UI elements<br><br>Args:<br> &nbsp; &nbsp;theme_name (str): Name of the theme to set<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if theme was set successfully, False otherwise</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-set_dark_mode">
+                <code class="fs-6 fw-bold text-color-title">def set_dark_mode(self: Any, dark: bool) -> Any</code>
+                <div class="mt-2 text-muted small">Set the global dark mode for the engine and update all UI elements<br><br>Args:<br> &nbsp; &nbsp;dark (bool): True</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_dark_mode">
+                <code class="fs-6 fw-bold text-color-title">def get_dark_mode(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Get the global dark mode for the engine<br><br>Returns:<br> &nbsp; &nbsp;bool: True if dark mode is enabled, False otherwise</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_update_all_ui_themes">
                 <code class="fs-6 fw-bold text-color-title">def _update_all_ui_themes(self: Any, theme_enum: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Update all UI elements in the current scene to use the new theme<br><br>Args:<br> &nbsp; &nbsp;theme_enum: The theme enum to apply</div>
+                <div class="mt-2 text-muted small">Update all UI elements in the current scene to use the new theme.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_fps_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_fps_stats(self: Any) -> dict</code>
@@ -212,65 +248,77 @@
                 <code class="fs-6 fw-bold text-color-title">def ScalePos(self: Any, x: float, y: float) -> Tuple[float, float] | Tuple[int, int]</code>
                 <div class="mt-2 text-muted small">Scale position is a function that will convert scales position to a pixel position<br><br>e.g.:<br>- 1.0, 1.0 = Bottom Right<br>- 0.0, 0.0 = Top Left<br>- 0.5, 0.5 = Center<br><br>Args:<br> &nbsp; &nbsp;x (float): X position<br> &nbsp; &nbsp;y (float): Y position<br>Returns:<br> &nbsp; &nbsp;Tuple[float, float]|Tuple[int, int]: Pixel position</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_rebuild_ui_layers">
+                <code class="fs-6 fw-bold text-color-title">def _rebuild_ui_layers(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Rebuild the UI layer manager from the current scene&#x27;s UI elements.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_find_scrollable_under_mouse">
+                <code class="fs-6 fw-bold text-color-title">def _find_scrollable_under_mouse(self: Any, elements: Any, mouse_pos: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Recursively search UI elements (and their children) for the topmost<br>visible, enabled element that has an &#x27;on_scroll&#x27; method and contains the mouse.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_dispatch_mouse_wheel">
+                <code class="fs-6 fw-bold text-color-title">def _dispatch_mouse_wheel(self: Any, event: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Dispatch MOUSEWHEEL event to the topmost scrollable UI element under the mouse.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-run">
                 <code class="fs-6 fw-bold text-color-title">def run(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Main game loop.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_resize">
                 <code class="fs-6 fw-bold text-color-title">def on_window_resize(self: Any, func: Callable) -> Any</code>
-                <div class="mt-2 text-muted small">Decorator for window resize event.<br><br>Args:<br> &nbsp; &nbsp;func: The resize event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+                <div class="mt-2 text-muted small">Decorator for window resize event.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_close">
                 <code class="fs-6 fw-bold text-color-title">def on_window_close(self: Any, func: Callable) -> Any</code>
-                <div class="mt-2 text-muted small">Decorator for window close event.<br><br>Args:<br> &nbsp; &nbsp;func: The close event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+                <div class="mt-2 text-muted small">Decorator for window close event.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_focus">
                 <code class="fs-6 fw-bold text-color-title">def on_window_focus(self: Any, func: Callable) -> Any</code>
-                <div class="mt-2 text-muted small">Decorator for window focus gained event.<br><br>Args:<br> &nbsp; &nbsp;func: The focus event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+                <div class="mt-2 text-muted small">Decorator for window focus gained event.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_blur">
                 <code class="fs-6 fw-bold text-color-title">def on_window_blur(self: Any, func: Callable) -> Any</code>
-                <div class="mt-2 text-muted small">Decorator for window blur (focus lost) event.<br><br>Args:<br> &nbsp; &nbsp;func: The blur event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+                <div class="mt-2 text-muted small">Decorator for window blur (focus lost) event.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_move">
                 <code class="fs-6 fw-bold text-color-title">def on_window_move(self: Any, func: Callable) -> Any</code>
-                <div class="mt-2 text-muted small">Decorator for window move event.<br><br>Args:<br> &nbsp; &nbsp;func: The move event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+                <div class="mt-2 text-muted small">Decorator for window move event.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_minimize">
                 <code class="fs-6 fw-bold text-color-title">def on_window_minimize(self: Any, func: Callable) -> Any</code>
-                <div class="mt-2 text-muted small">Decorator for window minimize event.<br><br>Args:<br> &nbsp; &nbsp;func: The minimize event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+                <div class="mt-2 text-muted small">Decorator for window minimize event.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_maximize">
                 <code class="fs-6 fw-bold text-color-title">def on_window_maximize(self: Any, func: Callable) -> Any</code>
-                <div class="mt-2 text-muted small">Decorator for window maximize event.<br><br>Args:<br> &nbsp; &nbsp;func: The maximize event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+                <div class="mt-2 text-muted small">Decorator for window maximize event.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_restore">
                 <code class="fs-6 fw-bold text-color-title">def on_window_restore(self: Any, func: Callable) -> Any</code>
-                <div class="mt-2 text-muted small">Decorator for window restore event.<br><br>Args:<br> &nbsp; &nbsp;func: The restore event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+                <div class="mt-2 text-muted small">Decorator for window restore event.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_enter">
                 <code class="fs-6 fw-bold text-color-title">def on_window_enter(self: Any, func: Callable) -> Any</code>
-                <div class="mt-2 text-muted small">Decorator for mouse entering window event.<br><br>Args:<br> &nbsp; &nbsp;func: The enter event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+                <div class="mt-2 text-muted small">Decorator for mouse entering window event.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_leave">
                 <code class="fs-6 fw-bold text-color-title">def on_window_leave(self: Any, func: Callable) -> Any</code>
-                <div class="mt-2 text-muted small">Decorator for mouse leaving window event.<br><br>Args:<br> &nbsp; &nbsp;func: The leave event handler function<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The decorated function</div>
+                <div class="mt-2 text-muted small">Decorator for mouse leaving window event.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_window_state">
                 <code class="fs-6 fw-bold text-color-title">def get_window_state(self: Any) -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Get current window state.<br><br>Returns:<br> &nbsp; &nbsp;Dict[str, Any]: Window state information</div>
+                <div class="mt-2 text-muted small">Get current window state.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-is_window_focused">
                 <code class="fs-6 fw-bold text-color-title">def is_window_focused(self: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Check if window is focused.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is focused</div>
+                <div class="mt-2 text-muted small">Check if window is focused.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-is_window_minimized">
                 <code class="fs-6 fw-bold text-color-title">def is_window_minimized(self: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Check if window is minimized.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is minimized</div>
+                <div class="mt-2 text-muted small">Check if window is minimized.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-is_window_maximized">
                 <code class="fs-6 fw-bold text-color-title">def is_window_maximized(self: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Check if window is maximized.<br><br>Returns:<br> &nbsp; &nbsp;bool: True if window is maximized</div>
+                <div class="mt-2 text-muted small">Check if window is maximized.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_controllers">
                 <code class="fs-6 fw-bold text-color-title">def get_controllers(self: Any) -> List['Controller']</code>
@@ -294,11 +342,11 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-update_mouse">
                 <code class="fs-6 fw-bold text-color-title">def update_mouse(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Update mouse position and button state with proper click detection</div>
+                <div class="mt-2 text-muted small">Update mouse position and button state with proper click detection.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-visibility_change">
-                <code class="fs-6 fw-bold text-color-title">def visibility_change(self: Any, element: UIElement, visible: bool) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def visibility_change(self: Any, element: ui.UIElement, visible: bool) -> Any</code>
+                <div class="mt-2 text-muted small">Change visibility of an element or list of elements.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-mouse_pos">
                 <code class="fs-6 fw-bold text-color-title">def mouse_pos(self: Any) -> tuple</code>
@@ -312,25 +360,29 @@
                 <code class="fs-6 fw-bold text-color-title">def mouse_wheel(self: Any) -> float</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_render_focus_rect">
+                <code class="fs-6 fw-bold text-color-title">def _render_focus_rect(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Render a yellow outline around the focused UI element.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_render">
                 <code class="fs-6 fw-bold text-color-title">def _render(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Rendering with GPU particles and shadows.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_render_ui_elements">
                 <code class="fs-6 fw-bold text-color-title">def _render_ui_elements(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Render UI elements with individual profiling if enabled</div>
+                <div class="mt-2 text-muted small">Render UI elements with individual profiling if enabled.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_render_particles">
                 <code class="fs-6 fw-bold text-color-title">def _render_particles(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Render particles using OpenGL</div>
+                <div class="mt-2 text-muted small">Render particles using OpenGL.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_update_ui_elements">
                 <code class="fs-6 fw-bold text-color-title">def _update_ui_elements(self: Any, dt: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Update UI elements with individual profiling and proper click propagation.<br><br>This method rebuilds the layer ordering, checks for mouse clicks, and<br>ensures that only the topmost visible, enabled UI element receives a click<br>event. All lower elements will skip mouse interaction for that frame.</div>
+                <div class="mt-2 text-muted small">Update UI elements with individual profiling and proper click propagation.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_process_ui_element_tree">
                 <code class="fs-6 fw-bold text-color-title">def _process_ui_element_tree(self: Any, root_element: Any, dt: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Process a UI element and all its children with proper event consumption<br><br>Args:<br> &nbsp; &nbsp;root_element (UIElement): The root element to process<br> &nbsp; &nbsp;dt (float): Delta time in seconds</div>
+                <div class="mt-2 text-muted small">Process a UI element and all its children with proper event consumption.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-enable_performance_profiling">
                 <code class="fs-6 fw-bold text-color-title">def enable_performance_profiling(self: Any, enabled: bool = True) -> Any</code>
@@ -346,43 +398,67 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_update_timing_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_update_timing_stats(self: Any, category: str = 'all') -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Get update timing statistics for a specific category</div>
+                <div class="mt-2 text-muted small">Get update timing statistics for a specific category.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_render_timing_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_render_timing_stats(self: Any, category: str = 'all') -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Get render timing statistics for a specific category</div>
+                <div class="mt-2 text-muted small">Get render timing statistics for a specific category.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_ui_update_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_ui_update_stats(self: Any) -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Get UI update timing statistics</div>
+                <div class="mt-2 text-muted small">Get UI update timing statistics.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_ui_render_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_ui_render_stats(self: Any) -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Get UI render timing statistics</div>
+                <div class="mt-2 text-muted small">Get UI render timing statistics.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_individual_ui_update_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_individual_ui_update_stats(self: Any) -> Dict[str, float]</code>
-                <div class="mt-2 text-muted small">Get individual UI element update timing statistics</div>
+                <div class="mt-2 text-muted small">Get individual UI element update timing statistics.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_individual_ui_render_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_individual_ui_render_stats(self: Any) -> Dict[str, float]</code>
-                <div class="mt-2 text-muted small">Get individual UI element render timing statistics</div>
+                <div class="mt-2 text-muted small">Get individual UI element render timing statistics.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_scene_update_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_scene_update_stats(self: Any) -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Get scene update timing statistics</div>
+                <div class="mt-2 text-muted small">Get scene update timing statistics.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_scene_render_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_scene_render_stats(self: Any) -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Get scene render timing statistics</div>
+                <div class="mt-2 text-muted small">Get scene render timing statistics.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_total_frame_time">
                 <code class="fs-6 fw-bold text-color-title">def get_total_frame_time(self: Any) -> Dict[str, float]</code>
-                <div class="mt-2 text-muted small">Get total frame time breakdown</div>
+                <div class="mt-2 text-muted small">Get total frame time breakdown.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-add_to_atlas">
+                <code class="fs-6 fw-bold text-color-title">def add_to_atlas(self: Any, name: str, path: Union[str, Path], category: Optional[Union[str, AtlasCategory]] = None, auto_detect: bool = True, validate: bool = True) -> AtlasItem</code>
+                <div class="mt-2 text-muted small">Add a file to the atlas.<br><br>Args:<br> &nbsp; &nbsp;name: Unique name for the resource.<br> &nbsp; &nbsp;path: File path (string or Path).<br> &nbsp; &nbsp;category: Explicit category (string or AtlasCategory). If None, will be auto-detected.<br> &nbsp; &nbsp;auto_detect: If True and category is None, guess from extension.<br> &nbsp; &nbsp;validate: If True, enforce extension rules for the category.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;AtlasItem: The created atlas item.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_atlas_item">
+                <code class="fs-6 fw-bold text-color-title">def get_atlas_item(self: Any, name: str) -> Optional[AtlasItem]</code>
+                <div class="mt-2 text-muted small">Retrieve an atlas item by its name.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_atlas_path">
+                <code class="fs-6 fw-bold text-color-title">def get_atlas_path(self: Any, name: str, category: Optional[Union[str, AtlasCategory]] = None) -> Optional[Path]</code>
+                <div class="mt-2 text-muted small">Get the file path of an atlas item, optionally checking its category.<br><br>Args:<br> &nbsp; &nbsp;name: Resource name.<br> &nbsp; &nbsp;category: If provided, only return the path if the item&#x27;s category matches.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Path or None if not found.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-add_texture_to_atlas">
+                <code class="fs-6 fw-bold text-color-title">def add_texture_to_atlas(self: Any, name: str, path: Union[str, Path]) -> AtlasItem</code>
+                <div class="mt-2 text-muted small">Shortcut to add a texture (image) to the atlas.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-add_font_to_atlas">
+                <code class="fs-6 fw-bold text-color-title">def add_font_to_atlas(self: Any, name: str, path: Union[str, Path]) -> AtlasItem</code>
+                <div class="mt-2 text-muted small">Shortcut to add a font to the atlas.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-add_audio_to_atlas">
+                <code class="fs-6 fw-bold text-color-title">def add_audio_to_atlas(self: Any, name: str, path: Union[str, Path]) -> AtlasItem</code>
+                <div class="mt-2 text-muted small">Shortcut to add an audio file to the atlas.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-shutdown">
                 <code class="fs-6 fw-bold text-color-title">def shutdown(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Cleanup resources</div>
+                <div class="mt-2 text-muted small">Cleanup resources.</div>
             </div>
                 </div>
             </div>
@@ -408,7 +484,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

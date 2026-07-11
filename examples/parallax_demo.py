@@ -1,363 +1,226 @@
-"""
-parallax_demo.py - Parallax System Demonstration
-
-Updated for LunaEngine 0.2.0 Camera System:
-- Uses CameraConstraints for zoom limits
-- Unified world‑to‑screen conversion (camera.position = viewport centre)
-"""
-
 import sys
 import os
+import random
+import pygame
+from pygame.math import Vector2
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-import pygame
 from lunaengine.core import LunaEngine, Scene
-from lunaengine.graphics.camera import Camera, CameraMode
+from lunaengine.ui import *
+from lunaengine.graphics.camera import ParallaxSprite, CameraMode
 
-class ParallaxDemo(Scene):
-    """Demo scene to test the parallax background system"""
-    
+
+class Player:
+    def __init__(self, x: float, y: float):
+        self.rect = pygame.Rect(x, y, 32, 32)
+        self.velocity = Vector2(0, 0)
+        self.on_ground = False
+        self.speed = 300
+        self.jump_power = -500
+        self.gravity = 1000
+
+    def update(self, dt: float, platforms):
+        keys = pygame.key.get_pressed()
+        self.velocity.x = 0
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            self.velocity.x = -self.speed
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            self.velocity.x = self.speed
+
+        self.velocity.y += self.gravity * dt
+        self.rect.x += self.velocity.x * dt
+        for plat in platforms:
+            if self.rect.colliderect(plat):
+                if self.velocity.x > 0:
+                    self.rect.right = plat.left
+                elif self.velocity.x < 0:
+                    self.rect.left = plat.right
+
+        self.rect.y += self.velocity.y * dt
+        self.on_ground = False
+        for plat in platforms:
+            if self.rect.colliderect(plat):
+                if self.velocity.y > 0:
+                    self.rect.bottom = plat.top
+                    self.velocity.y = 0
+                    self.on_ground = True
+                elif self.velocity.y < 0:
+                    self.rect.top = plat.bottom
+                    self.velocity.y = 0
+
+        if self.on_ground and (keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]):
+            self.velocity.y = self.jump_power
+
+        if self.rect.bottom > 800:
+            self.rect.bottom = 800
+            self.velocity.y = 0
+            self.on_ground = True
+
+    def draw(self, renderer, camera):
+        center = camera.world_to_screen(self.rect.center)
+        size = self.rect.width * camera.zoom
+        bw = max(2, int(2 * camera.zoom))
+        renderer.draw_rect(center.x - size/2 - bw, center.y - size/2 - bw,
+                          size + bw*2, size + bw*2, (80,50,20), fill=True)
+        renderer.draw_rect(center.x - size/2, center.y - size/2, size, size, (255,140,0), fill=True)
+        eye_r = size * 0.1
+        eye_off = size * 0.25
+        eye_y = center.y - size * 0.2
+        renderer.draw_circle(center.x - eye_off, eye_y, eye_r, (255,255,255), fill=True)
+        renderer.draw_circle(center.x + eye_off, eye_y, eye_r, (255,255,255), fill=True)
+        renderer.draw_circle(center.x - eye_off, eye_y, eye_r*0.5, (0,0,0), fill=True)
+        renderer.draw_circle(center.x + eye_off, eye_y, eye_r*0.5, (0,0,0), fill=True)
+
+
+class GameScene(Scene):
     def __init__(self, engine: LunaEngine):
         super().__init__(engine)
-        
-        # Game state
-        self.game_state = {
-            'camera_speed': 200,
-            'parallax_enabled': True,
-            'debug_info': True
-        }
-        
-        # World configuration
-        self.world_size = (4000, 720)  # Wide world for horizontal movement
-        
-        # Player position (for camera control)
-        self.player_x = 0
-        
-        # Load background image
-        self.bg_image = self.load_background_image()
-        
-        # Setup camera and parallax
-        self.setup_camera()
-        self.setup_parallax()
-        
-        # Setup UI
-        self.setup_ui()
-        
-        print("Parallax Demo Controls:")
-        print("A/D or Left/Right Arrow - Move camera horizontally")
-        print("W/S or Up/Down Arrow - Move camera vertically") 
-        print("Mouse Wheel - Zoom in/out")
-        print("P - Toggle parallax on/off")
-        print("I - Toggle debug info")
-        print("R - Reset camera position")
+        self._init_game()
 
-    def load_background_image(self):
-        """Load the background image for parallax testing"""
-        try:
-            # Try to load from current directory first
-            image_path = "background.jpg"
-            if os.path.exists(image_path):
-                image = pygame.image.load(image_path)
-                print(f"Loaded background image: {image_path}")
-                return image.convert_alpha()
-            else:
-                # Create a placeholder image if file not found
-                print("Background image not found. Creating placeholder...")
-                return self.create_placeholder_image()
-        except Exception as e:
-            print(f"Error loading background image: {e}")
-            return self.create_placeholder_image()
+    def _init_game(self):
+        self.world_width = 3000
+        self.world_height = 800
 
-    def create_placeholder_image(self):
-        """Create a placeholder image with gradient and grid for testing"""
-        surface = pygame.Surface((1280, 720), pygame.SRCALPHA)
-        
-        # Create gradient background
-        for y in range(720):
-            # Sky gradient (blue to light blue)
-            if y < 360:
-                color = (100, 150, 255 - y // 3)
-                pygame.draw.line(surface, color, (0, y), (1280, y))
-            # Ground gradient (green to dark green)
-            else:
-                color = (50, 200 - (y - 360) // 2, 50)
-                pygame.draw.line(surface, color, (0, y), (1280, y))
-        
-        # Add grid lines for better parallax effect visualization
-        grid_color = (255, 255, 255, 50)
-        for x in range(0, 1280, 100):
-            pygame.draw.line(surface, grid_color, (x, 0), (x, 720), 2)
-        for y in range(0, 720, 100):
-            pygame.draw.line(surface, grid_color, (0, y), (1280, y), 2)
-        
-        # Add some landmarks
-        # Mountains in background
-        pygame.draw.polygon(surface, (150, 150, 200, 200), 
-                           [(200, 360), (400, 200), (600, 360)])
-        pygame.draw.polygon(surface, (120, 120, 180, 200), 
-                           [(600, 360), (800, 150), (1000, 360)])
-        
-        # Trees in midground
-        for x in [150, 450, 750, 1050]:
-            # Trunk
-            pygame.draw.rect(surface, (139, 69, 19, 255), (x, 360, 20, 60))
-            # Leaves
-            pygame.draw.circle(surface, (50, 150, 50, 255), (x + 10, 330), 40)
-        
-        # Foreground elements
-        for x in [100, 300, 500, 700, 900, 1100]:
-            pygame.draw.rect(surface, (100, 100, 100, 255), (x, 420, 10, 100))
-        
-        return surface
+        self.platforms = [
+            pygame.Rect(0, 750, 3000, 50),
+            pygame.Rect(300, 700, 150, 20),
+            pygame.Rect(600, 650, 150, 20),
+            pygame.Rect(900, 550, 150, 20),
+            pygame.Rect(1200, 450, 150, 20),
+            pygame.Rect(1500, 450, 150, 20),
+            pygame.Rect(1800, 400, 150, 20),
+            pygame.Rect(2100, 500, 150, 20),
+            pygame.Rect(2400, 600, 150, 20),
+            pygame.Rect(2700, 700, 150, 20),
+        ]
 
-    def setup_camera(self):
-        """Configure camera for parallax testing (updated for new camera system)"""
-        self.camera.position = pygame.math.Vector2(0, 0)
-        self.camera.target_position = pygame.math.Vector2(0, 0)
-        
-        self.camera.mode = CameraMode.TOPDOWN
-        self.camera.smooth_speed = 0.05
-        self.camera.lead_factor = 0.0
-        
-        # Set zoom limits via CameraConstraints
-        self.camera.constraints.min_zoom = 0.5
-        self.camera.constraints.max_zoom = 2.0
-        self.camera.zoom = 1.0
-        self.camera.target_zoom = 1.0
-        
-        # Set camera bounds to world size
-        world_rect = pygame.Rect(0, 0, self.world_size[0], self.world_size[1])
-        self.camera.set_bounds(world_rect)
+        self.coins = []
+        coin_positions = [
+            (350,685),(650,635),(950,535),(1250,435),(1550,435),
+            (1850,385),(2150,485),(2450,585),(2750,685)
+        ]
+        for x,y in coin_positions:
+            self.coins.append(pygame.Rect(x,y,20,20))
+        self.score = 0
 
-    def setup_parallax(self):
-        """Setup parallax background with multiple layers"""
-        # Clear any existing layers
-        self.camera.clear_parallax_layers()
-        
-        # Create different parallax layers from the same image with different speeds
-        # This simulates depth by having background elements move slower than foreground
-        
-        # Layer 1: Far background (mountains, sky) - moves very slowly
-        far_bg = self.create_parallax_layer(self.bg_image, 0.1)
-        self.camera.add_parallax_layer(far_bg, 0.2, tile_mode=True)
-        
-        # Layer 2: Mid background (distant trees) - moves slowly
-        mid_bg = self.create_parallax_layer(self.bg_image, 0.3)
-        self.camera.add_parallax_layer(mid_bg, 0.4, tile_mode=True)
-        
-        # Layer 3: Near background (close trees) - moves at medium speed
-        near_bg = self.create_parallax_layer(self.bg_image, 0.6)
-        self.camera.add_parallax_layer(near_bg, 0.7, tile_mode=True)
-        
-        # Layer 4: Foreground (grass, rocks) - moves almost with camera
-        foreground = self.create_parallax_layer(self.bg_image, 0.9)
-        self.camera.add_parallax_layer(foreground, 0.9, tile_mode=True)
-        
-        self.camera.enable_parallax(True)
-        
-        print("Parallax layers created:")
-        print("- Far background (speed: 0.2)")
-        print("- Mid background (speed: 0.4)") 
-        print("- Near background (speed: 0.7)")
-        print("- Foreground (speed: 0.9)")
+        self.player = Player(100, 718)
+        self.player.update(0.016, self.platforms)
 
-    def create_parallax_layer(self, base_image, brightness_factor=1.0):
-        """Create a modified version of the base image for parallax layers"""
-        # Create a copy of the image
-        layer = base_image.copy()
-        
-        # Adjust brightness to simulate depth (darker = further away)
-        if brightness_factor != 1.0:
-            # Fill with semi-transparent color to darken/brighten
-            overlay = pygame.Surface(layer.get_size(), pygame.SRCALPHA)
-            brightness_value = int(255 * (1 - brightness_factor))
-            overlay.fill((brightness_value, brightness_value, brightness_value, 100))
-            layer.blit(overlay, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
-        
-        return layer
+        self.camera.set_target(self.player, CameraMode.PLATFORMER)
+        self.camera.deadzone = pygame.Rect(0,0,200,150)
+        self.camera.deadzone.center = (self.engine.width//2, self.engine.height//2)
+        self.camera.constraints.bounds = pygame.Rect(0,0,self.world_width,self.world_height)
+        self.camera.set_zoom(1.0)
+        self.camera.smooth_speed = 0.1
+        self.camera.position = Vector2(self.player.rect.centerx, self.player.rect.centery)
+        self.camera.target_position = self.camera.position.copy()
+        self.camera.update(0)   # force viewport initialisation
 
-    def setup_ui(self):
-        """Setup user interface for the demo"""
-        from lunaengine.ui.elements import TextLabel, Button
-        
-        screen_width, screen_height = self.engine.width, self.engine.height
-        
-        # Debug info display
-        self.debug_label = TextLabel(10, 10, "", 16, (255, 255, 255))
-        self.add_ui_element(self.debug_label)
-        
-        # Toggle parallax button
-        self.parallax_toggle = Button(screen_width - 150, 10, 140, 30, "Parallax: ON")
-        self.parallax_toggle.set_on_click(self.toggle_parallax)
-        self.add_ui_element(self.parallax_toggle)
-        
-        # Debug info toggle
-        self.debug_toggle = Button(screen_width - 150, 50, 140, 30, "Debug Info: ON")
-        self.debug_toggle.set_on_click(self.toggle_debug_info)
-        self.add_ui_element(self.debug_toggle)
-        
-        # Reset camera button
-        self.reset_button = Button(screen_width - 150, 90, 140, 30, "Reset Camera")
-        self.reset_button.set_on_click(self.reset_camera)
-        self.add_ui_element(self.reset_button)
+        self.camera.parallax.clear()
+        self._setup_parallax()
 
-    def toggle_parallax(self):
-        """Toggle parallax effect on/off"""
-        self.game_state['parallax_enabled'] = not self.game_state['parallax_enabled']
-        self.camera.enable_parallax(self.game_state['parallax_enabled'])
-        self.parallax_toggle.set_text(f"Parallax: {'ON' if self.game_state['parallax_enabled'] else 'OFF'}")
+        self.ui_elements.clear()
+        self.score_label = TextLabel(20,20, f"Score: {self.score}", 24, (255,255,0))
+        self.add_ui_element(self.score_label)
+        help_label = TextLabel(20,60, "L/R/A/D  |  Space/Up/W  |  R restart", 16, (200,200,200))
+        self.add_ui_element(help_label)
 
-    def toggle_debug_info(self):
-        """Toggle debug information display"""
-        self.game_state['debug_info'] = not self.game_state['debug_info']
-        self.debug_toggle.set_text(f"Debug Info: {'ON' if self.game_state['debug_info'] else 'OFF'}")
+    def _setup_parallax(self):
+        # Sky (tiled)
+        sky_surf = pygame.Surface((100,100))
+        sky_surf.fill((135,206,235))
+        sky_layer = self.camera.parallax.add_layer(speed=(0.0,0.0), repeat_x=True, repeat_y=True, z_index=0)
+        sky_layer.set_tiled_texture(sky_surf)
 
-    def reset_camera(self):
-        """Reset camera to starting position"""
-        self.player_x = 0
-        self.camera.position = pygame.math.Vector2(0, 0)
-        self.camera.target_position = pygame.math.Vector2(0, 0)
-        self.camera.set_zoom(1.0, smooth=False)
+        # Sun (single, drifts)
+        sun_surf = pygame.Surface((80,80), pygame.SRCALPHA)
+        pygame.draw.circle(sun_surf, (255,220,100), (40,40), 35)
+        pygame.draw.circle(sun_surf, (255,255,180), (40,40), 25)
+        sun_layer = self.camera.parallax.add_layer(speed=(0.05,0.0), z_index=1)
+        sun_sprite = ParallaxSprite(
+            surface=sun_surf,
+            base_pos=Vector2(500, 200),
+            scale=1.0, alpha=1.0, wind_movement=False
+        )
+        sun_layer.add_sprite(sun_sprite)
 
-    def handle_key_press(self, event):
-        """Handle key presses"""
-        if event.key == pygame.K_p:
-            self.toggle_parallax()
-        elif event.key == pygame.K_i:
-            self.toggle_debug_info()
-        elif event.key == pygame.K_r:
-            self.reset_camera()
-
-    def update_player_movement(self, dt):
-        """Update camera movement based on input"""
-        keys = pygame.key.get_pressed()
-        
-        movement_x = 0
-        movement_y = 0
-        
-        # Horizontal movement
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            movement_x = -1
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            movement_x = 1
-            
-        # Vertical movement  
-        if keys[pygame.K_w] or keys[pygame.K_UP]:
-            movement_y = -1
-        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            movement_y = 1
-        
-        # Apply movement
-        self.player_x += movement_x * self.game_state['camera_speed'] * dt
-        movement_y = movement_y * self.game_state['camera_speed'] * dt
-        
-        # Update camera target
-        self.camera.target_position.x = self.player_x
-        self.camera.target_position.y += movement_y
-        
-        # Mouse wheel zoom – now uses constraints for clamping
-        if self.engine.mouse_wheel != 0:
-            zoom_speed = 0.1
-            new_zoom = self.camera.zoom + (self.engine.mouse_wheel * zoom_speed)
-            # Clamp using constraints
-            new_zoom = max(self.camera.constraints.min_zoom,
-                          min(self.camera.constraints.max_zoom, new_zoom))
-            self.camera.set_zoom(new_zoom, smooth=True)
-
-    def update_debug_info(self):
-        """Update debug information display"""
-        if self.game_state['debug_info']:
-            info_text = (
-                f"Camera Position: ({self.camera.position.x:.1f}, {self.camera.position.y:.1f})\n"
-                f"Camera Zoom: {self.camera.zoom:.2f}\n"
-                f"Player X: {self.player_x:.1f}\n"
-                f"Parallax Layers: {self.camera.get_parallax_layer_count()}\n"
-                f"World Size: {self.world_size[0]}x{self.world_size[1]}"
+        # Clouds (6 sprites, no wind)
+        cloud_surf = pygame.Surface((100,50), pygame.SRCALPHA)
+        pygame.draw.ellipse(cloud_surf, (240,240,240,200), (0,10,40,30))
+        pygame.draw.ellipse(cloud_surf, (240,240,240,200), (25,5,45,35))
+        pygame.draw.ellipse(cloud_surf, (240,240,240,200), (55,15,40,30))
+        cloud_layer = self.camera.parallax.add_layer(speed=(0.2,0.0), z_index=2)
+        for x in range(200, self.world_width, 500):
+            y = random.uniform(250, 350)
+            sprite = ParallaxSprite(
+                surface=cloud_surf,
+                base_pos=Vector2(x, y),
+                scale=1.0, alpha=1.0, wind_movement=False
             )
-            self.debug_label.set_text(info_text)
-        else:
-            self.debug_label.set_text("")
+            cloud_layer.add_sprite(sprite)
 
-    def update(self, dt):
-        """Update game logic"""
-        # Update player movement
-        self.update_player_movement(dt)
-        
-        # Update camera
-        self.camera.update(dt)
-        
-        # Update debug info
-        self.update_debug_info()
+        # Trees (15 sprites, static)
+        tree_surf = pygame.Surface((40,70), pygame.SRCALPHA)
+        pygame.draw.rect(tree_surf, (100,60,30), (15,40,10,30))
+        pygame.draw.polygon(tree_surf, (50,130,50), [(20,5),(5,45),(35,45)])
+        pygame.draw.polygon(tree_surf, (70,150,70), [(20,15),(10,45),(30,45)])
+        tree_layer = self.camera.parallax.add_layer(speed=(0.7,0.0), z_index=3)
+        for x in range(100, self.world_width, 180):   # every 180px
+            scale = random.uniform(0.9, 1.1)
+            tree_height = 70 * scale
+            center_y = 750 - (tree_height / 2)
+            sprite = ParallaxSprite(
+                surface=tree_surf,
+                base_pos=Vector2(x, center_y),
+                scale=scale,
+                alpha=1.0,
+                wind_movement=False,
+                oscillate_x=0, oscillate_y=0
+            )
+            tree_layer.add_sprite(sprite)
+
+    def restart(self):
+        self.engine.add_scene("game", GameScene)
+        self.engine.set_scene("game")
+
+    def update(self, dt: float):
+        self.player.update(dt, self.platforms)
+        self.camera.set_target(self.player, CameraMode.PLATFORMER)
+
+        for coin in self.coins[:]:
+            if self.player.rect.colliderect(coin):
+                self.coins.remove(coin)
+                self.score += 10
+                self.score_label.set_text(f"Score: {self.score}")
+
+        if pygame.key.get_pressed()[pygame.K_r]:
+            self.restart()
+
+    def render_world(self, renderer):
+        for plat in self.platforms:
+            tl = self.camera.world_to_screen((plat.left, plat.top))
+            w = plat.width * self.camera.zoom
+            h = plat.height * self.camera.zoom
+            renderer.draw_rect(tl.x, tl.y, w, h, (101,67,33), fill=True)
+            renderer.draw_rect(tl.x, tl.y, w, 3, (80,50,20), fill=True)
+        for coin in self.coins:
+            c = self.camera.world_to_screen(coin.center)
+            r = (coin.width/2) * self.camera.zoom
+            renderer.draw_circle(c.x, c.y, r, (255,215,0), fill=True)
+            renderer.draw_circle(c.x-2, c.y-2, r*0.3, (255,255,150), fill=True)
 
     def render(self, renderer):
-        """Render the scene"""
-        # Clear screen
-        renderer.get_surface().fill((30, 30, 50))
-        
-        # Render parallax background
-        if self.game_state['parallax_enabled']:
-            self.camera.render_parallax(renderer)
-        else:
-            # Fallback: render static background when parallax is disabled
-            bg_x = -self.camera.position.x * 0.5  # Simple parallax effect
-            renderer.blit(self.bg_image, (bg_x % 1280 - 1280, 0))
-            renderer.blit(self.bg_image, (bg_x % 1280, 0))
-        
-        # Render world boundaries for reference
-        self.render_world_boundaries(renderer)
-        
-        # Render player position indicator
-        self.render_player_indicator(renderer)
+        self.camera.parallax.render(renderer)
+        self.render_world(renderer)
+        self.player.draw(renderer, self.camera)
 
-    def render_world_boundaries(self, renderer):
-        """Render world boundaries for visual reference"""
-        screen_width, screen_height = self.engine.width, self.engine.height
-        
-        # Convert world coordinates to screen coordinates (returns pygame.Vector2)
-        left_pos = self.camera.world_to_screen((0, 0))
-        right_pos = self.camera.world_to_screen((self.world_size[0], 0))
-        
-        # Draw boundary lines – cast to int for rendering safety
-        boundary_color = (255, 0, 0, 100)
-        renderer.draw_line(int(left_pos.x), 0, int(left_pos.x), screen_height, boundary_color, 2)
-        renderer.draw_line(int(right_pos.x), 0, int(right_pos.x), screen_height, boundary_color, 2)
-
-    def render_player_indicator(self, renderer):
-        """Render a simple indicator for player position"""
-        player_screen_pos = self.camera.world_to_screen((self.player_x, self.world_size[1] // 2))
-        
-        # Draw player indicator
-        indicator_color = (255, 255, 0)
-        renderer.draw_circle(int(player_screen_pos.x), int(player_screen_pos.y), 10, indicator_color)
-        
-        # Draw direction indicator
-        direction_length = 30
-        renderer.draw_line(
-            int(player_screen_pos.x), int(player_screen_pos.y),
-            int(player_screen_pos.x + direction_length), int(player_screen_pos.y),
-            indicator_color, 3
-        )
 
 def main():
-    """Main function to run the parallax demo"""
-    engine = LunaEngine("Parallax System Demo - Use A/D to move, P to toggle parallax", 1024, 576)
+    engine = LunaEngine("Platformer Demo", 1024, 768, debug=True)
     engine.fps = 60
-    
-    # Register event handlers
-    @engine.on_event(pygame.KEYDOWN)
-    def on_key_press(event):
-        if engine.current_scene and hasattr(engine.current_scene, 'handle_key_press'):
-            engine.current_scene.handle_key_press(event)
-    
-    # Add and start the parallax demo scene
-    engine.add_scene("parallax_demo", ParallaxDemo)
-    engine.set_scene("parallax_demo")
-    
-    print("=== Parallax System Demo ===")
-    print("This demo tests the parallax background system with horizontal movement.")
-    print("The background image will be loaded from 'background.jpg' if available.")
-    print("If no image is found, a placeholder will be generated automatically.")
-    
+    engine.add_scene("game", GameScene)
+    engine.set_scene("game")
     engine.run()
 
 if __name__ == "__main__":

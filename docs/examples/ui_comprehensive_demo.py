@@ -68,7 +68,7 @@ class ComprehensiveUIDemo(Scene):
         self.engine.set_global_theme(ThemeType.DEFAULT)
         
         # --- TITLE ---
-        title = TextLabel(512, 30, "LunaEngine - UI Demo", 36, root_point=(0.5, 0))
+        title = TextLabel(512, 30, "LunaEngine - UI Demo", 36, pivot=(0.5, 0))
         self.add_ui_element(title)
         
         # --- MAIN TAB CONTAINER ---
@@ -122,11 +122,11 @@ class ComprehensiveUIDemo(Scene):
         self.dialog_box.z_index = 100
         self.add_ui_element(self.dialog_box)
         
-        self.fps_display = TextLabel(self.engine.width - 5, 20, "FPS: --", 16, (100, 255, 100), root_point=(1, 0))
+        self.fps_display = TextLabel(self.engine.width - 5, 20, "FPS: --", 16, (100, 255, 100), pivot=(1, 0))
         self.add_ui_element(self.fps_display)
-        self.opengl_cache = TextLabel(self.engine.width - 5, 55, "Cache: --", 16, (100, 255, 100), root_point=(1, 0))
+        self.opengl_cache = TextLabel(self.engine.width - 5, 55, "Cache: --", 16, (100, 255, 100), pivot=(1, 0))
         self.add_ui_element(self.opengl_cache)
-        self.engine_memory_usage = TextLabel(self.engine.width - 5, 75, "Memory: --", 16, (100, 255, 100), root_point=(1, 0))
+        self.engine_memory_usage = TextLabel(self.engine.width - 5, 75, "Memory: --", 16, (100, 255, 100), pivot=(1, 0))
         self.add_ui_element(self.engine_memory_usage)
         
         # Initialize animations
@@ -208,12 +208,12 @@ class ComprehensiveUIDemo(Scene):
             icon_frame.set_corner_radius(5)
             
             # Create ImageLabel element for the icon
-            icon_img = ImageLabel(frame_size//2, frame_size//2 + 10, None, icon_size, icon_size, root_point=(0.5, 0.5))
+            icon_img = ImageLabel(frame_size//2, frame_size//2 + 10, None, icon_size, icon_size, pivot=(0.5, 0.5))
             icon_img.set_image(icon_surface)
             
             # Create label for icon name
             label = TextLabel(frame_size//2, 5, 
-                             icon_name, 12, (200, 200, 200), root_point=(0.5, 0))
+                             icon_name, 12, (200, 200, 200), pivot=(0.5, 0))
             label.set_simple_tooltip(f"Icon: {icon_name}")
             
             # Add to scrolling frame
@@ -355,7 +355,7 @@ class ComprehensiveUIDemo(Scene):
                             title='Weekly Trend',
                             show_labels=True,
                             show_legend=False,
-                            use_gradient=True,)     # red
+                            use_gradient=True,)
         line_chart.set_simple_tooltip("Line chart with points")
         self.main_tabs.add_to_tab('Charts', line_chart)
         self.charts.append(line_chart)
@@ -373,7 +373,7 @@ class ComprehensiveUIDemo(Scene):
         scatter_chart.set_simple_tooltip("Scatter plot")
         self.main_tabs.add_to_tab('Charts', scatter_chart)
         self.charts.append(scatter_chart)
-        
+
         # Radar Chart (RPG Stats)
         radar_label = TextLabel(450, 75, "Radar Chart (RPG Stats):", 16, (255, 200, 100))
         self.main_tabs.add_to_tab('Charts', radar_label)
@@ -392,16 +392,70 @@ class ComprehensiveUIDemo(Scene):
         self.main_tabs.add_to_tab('Charts', radar_chart)
         self.charts.append(radar_chart)
 
+        # ========== Table Example ==========
+        table_label = TextLabel(450, 270, "Table (Spreadsheet-like):", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Charts', table_label)
+
+        # Create the table with columns: id, name, age, money
+        self.table = Table(
+            470, 320, 300, 200,
+            columns=["ID", "Name", "Age", "Money"],
+            rows=[],
+            header_height=22,
+            row_height=22,
+            cell_padding=4,
+            show_headers=True,
+            selection_enabled=True,
+            on_row_select=lambda idx, data: print(f"Selected row {idx}: {data}"),
+            border_color=(100, 100, 120),
+        )
+        self.table.set_simple_tooltip("Click a row to select it; use the button to randomize data")
+        self.main_tabs.add_to_tab('Charts', self.table)
+
+        # Fill with initial random data
+        self.randomize_table()
+
+        # Randomize table button
+        random_table_btn = Button(470, 530, 150, 30, "Randomize Table")
+        random_table_btn.set_on_click(self.randomize_table)
+        random_table_btn.set_simple_tooltip("Generate new random data for the table")
+        self.main_tabs.add_to_tab('Charts', random_table_btn)
+
         # Additional note
         note = TextLabel(20, 470, "You can create custom charts with your own data and colors.", 14, (150, 200, 255))
         self.main_tabs.add_to_tab('Charts', note)
 
-        # Randomize button
+        # Randomize button for charts
         randomize_btn = Button(20, 500, 150, 30, "Randomize Charts")
         randomize_btn.set_on_click(self.randomize_charts)
         randomize_btn.set_simple_tooltip("Click to randomize all chart data with smooth animation")
         self.main_tabs.add_to_tab('Charts', randomize_btn)
-        
+     
+    def randomize_table(self):
+        """Fill the table with random data."""
+        import random
+
+        # List of sample names
+        first_names = ["Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace", "Henry", "Ivy", "Jack",
+                    "Karen", "Leo", "Mia", "Noah", "Olivia", "Peter", "Quinn", "Ruby", "Sam", "Tina",
+                    "Ulysses", "Vera", "Will", "Xena", "Yves", "Zara", "Liam", "Emma", "Lucas", "Mason"]
+        last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez",
+                    "Martinez", "Hernandez", "Lopez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson",
+                    "Martin", "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis"]
+
+        # Generate 6 random rows
+        rows = []
+        for i in range(1, 7):
+            name = f"{random.choice(first_names)} {random.choice(last_names)}"
+            age = random.randint(18, 65)
+            money = random.randint(100, 9999)
+            rows.append([str(i), name, str(age), f"${money:.2f}"])
+
+        # Clear table and add rows
+        self.table.clear()
+        for row in rows:
+            self.table.add_row(row)
+     
     def setup_controller_tab(self):
         """Build the UI elements for the Controller information tab."""
         tab = 'Controller'
@@ -452,7 +506,7 @@ class ComprehensiveUIDemo(Scene):
         left_frame.set_corner_radius(5)
         self.main_tabs.add_to_tab(tab, left_frame)
 
-        self.left_stick_indicator = UiFrame(60, 60, 10, 10, root_point=(0.5, 0.5))  # centered initially
+        self.left_stick_indicator = UiFrame(60, 60, 10, 10, pivot=(0.5, 0.5))  # centered initially
         self.left_stick_indicator.set_background_color((255, 100, 100))
         self.left_stick_indicator.set_corner_radius(5)
         left_frame.add_child(self.left_stick_indicator)
@@ -467,7 +521,7 @@ class ComprehensiveUIDemo(Scene):
         right_frame.set_corner_radius(5)
         self.main_tabs.add_to_tab(tab, right_frame)
 
-        self.right_stick_indicator = UiFrame(60, 60, 10, 10, root_point=(0.5, 0.5))
+        self.right_stick_indicator = UiFrame(60, 60, 10, 10, pivot=(0.5, 0.5))
         self.right_stick_indicator.set_background_color((100, 255, 100))
         self.right_stick_indicator.set_corner_radius(5)
         right_frame.add_child(self.right_stick_indicator)
@@ -484,7 +538,7 @@ class ComprehensiveUIDemo(Scene):
         dpad_frame.set_border((100, 100, 150), 1)
         self.main_tabs.add_to_tab(tab, dpad_frame)
 
-        self.dpad_indicator = UiFrame(50, 50, 10, 10, root_point=(0.5, 0.5))  # center
+        self.dpad_indicator = UiFrame(50, 50, 10, 10, pivot=(0.5, 0.5))  # center
         self.dpad_indicator.set_background_color((200, 200, 0))
         self.dpad_indicator.set_corner_radius(5)
         dpad_frame.add_child(self.dpad_indicator)
@@ -493,10 +547,10 @@ class ComprehensiveUIDemo(Scene):
         triggers_indicators = UiFrame(425, 310, 80, 100)
         triggers_indicators.set_background_color((40, 40, 50))
         
-        self.right_trigger = ProgressBar(75, 50, 30, 90, min_val=-1, max_val=1, value=0, root_point=(1, 0.5), orientation='vertical')
+        self.right_trigger = ProgressBar(75, 50, 30, 90, min_val=-1, max_val=1, value=0, pivot=(1, 0.5), orientation='vertical')
         triggers_indicators.add_child(self.right_trigger)
         
-        self.left_trigger = ProgressBar(5, 50, 30, 90,min_val=-1, max_val=1, value=0, root_point=(0, 0.5), orientation='vertical')
+        self.left_trigger = ProgressBar(5, 50, 30, 90,min_val=-1, max_val=1, value=0, pivot=(0, 0.5), orientation='vertical')
         triggers_indicators.add_child(self.left_trigger)
         self.main_tabs.add_to_tab(tab, triggers_indicators)
 
@@ -521,7 +575,7 @@ class ComprehensiveUIDemo(Scene):
             self.button_indicators[name] = circle
 
             # Label under circle
-            lbl = TextLabel(22.5, 15, name, 18, (200, 200, 200), root_point=(0.5, 0.5))
+            lbl = TextLabel(22.5, 15, name, 18, (200, 200, 200), pivot=(0.5, 0.5))
             circle.add_child(lbl)
 
             x_pos += 55
@@ -684,7 +738,7 @@ class ComprehensiveUIDemo(Scene):
         slider.set_simple_tooltip("Drag to change the value")
         self.main_tabs.add_to_tab('Interactive', slider)
         
-        vertical_slider = Slider(350, 110, 30, 90, 0, 100, 50, orientation='vertical', root_point=(0, 1))
+        vertical_slider = Slider(350, 110, 30, 90, 0, 100, 50, orientation='vertical', pivot=(0, 1))
         vertical_slider.set_simple_tooltip("Drag to change the value")
         self.main_tabs.add_to_tab('Interactive', vertical_slider)
         
@@ -715,7 +769,7 @@ class ComprehensiveUIDemo(Scene):
         self.soundpad_progress.set_simple_tooltip("Soundpad style: segmented bar with green→yellow→red gradient")
         self.main_tabs.add_to_tab('Interactive', self.soundpad_progress)
 
-        soundpad_btn = Button(440, 198, 100, 24, "Animate")
+        soundpad_btn = Button(440, 198, 100, 24, "Add")
         soundpad_btn.set_on_click(lambda: self.soundpad_progress.set_value(self.soundpad_progress.value + 10))
         self.main_tabs.add_to_tab('Interactive', soundpad_btn)
 
@@ -751,7 +805,7 @@ class ComprehensiveUIDemo(Scene):
         # Third expandable
         exp3 = Expandable(10, 115, 380, 100, title="Section 3 - Extra", expanded=False, allow_multiple=False)
         exp3.add_to_content(TextLabel(10, 10, "More content here.", 14, (200, 200, 200)))
-        exp3.add_to_content(ImageLabel(10, 40, None, 32, 32, root_point=(0,0)))
+        exp3.add_to_content(ImageLabel(10, 40, None, 32, 32, pivot=(0,0)))
         accordion_frame.add_child(exp3)
 
         # Note about accordion behavior
@@ -783,6 +837,15 @@ class ComprehensiveUIDemo(Scene):
         theme_dropdown.set_on_selection_changed(lambda i, v: self.engine.set_global_theme(v))
         theme_dropdown.set_simple_tooltip("Change the global theme")
         self.main_tabs.add_to_tab('Selection', theme_dropdown)
+        
+        # Dark/Light Switch
+        dark_light_switch_label = TextLabel(320, 100, "Dark/Light Switch:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Selection', dark_light_switch_label)
+        
+        dark_light_switch = Switch(450, 90, 60, 30, self.get_dark_mode())
+        dark_light_switch.set_on_toggle(lambda s: self.set_dark_mode(s))
+        dark_light_switch.set_simple_tooltip("Toggle dark mode on/off")
+        self.main_tabs.add_to_tab('Selection', dark_light_switch)
         
         # Switch Example
         switch_label = TextLabel(20, 160, "Switch:", 16, (200, 200, 255))
@@ -893,7 +956,39 @@ class ComprehensiveUIDemo(Scene):
         self.main_tabs.add_to_tab('Visual', clock24hranalog)
         self.main_tabs.add_to_tab('Visual', clock24hrdigital)
         self.main_tabs.add_to_tab('Visual', clock24hrboth)
-    
+        
+        # ========== Rich Text Examples ==========
+        richtext_label = TextLabel(500, 175, "Rich Text Examples:", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab('Visual', richtext_label)
+        
+        # Single-line rich text with various tags
+        rt1 = TextLabel(525, 195, "<b>Bold</b>  <i>Italic</i>  <u>Underline</u>  <red>Red</red>  <#00FF00>Green</#00FF00>  <#FF8800>Orange</#FF8800>",
+                        font_size=18, rich_text=True)
+        rt1.set_simple_tooltip("Rich text with bold, italic, underline, named colors, and hex colors")
+        self.main_tabs.add_to_tab('Visual', rt1)
+        
+        # Another with more colors
+        rt2 = TextLabel(525, 215, "<cyan>Cyan</cyan> <magenta>Magenta</magenta> <yellow>Yellow</yellow> <purple>Purple</purple> <pink>Pink</pink>",
+                        font_size=18, rich_text=True)
+        rt2.set_simple_tooltip("More color examples")
+        self.main_tabs.add_to_tab('Visual', rt2)
+        
+        # Multi-line rich text with LongTextLabel
+        long_rt_label = TextLabel(525, 235, "Multi-line Rich Text (LongTextLabel):", 14, (200, 200, 255))
+        self.main_tabs.add_to_tab('Visual', long_rt_label)
+        
+        long_text = (
+            "<b>Title: Rich Text Demo</b>\n"
+            "<i>Italic line</i>\n"
+            "<u>Underline line</u>\n"
+            "<red>Red text</red> and <blue>blue text</blue> with <#FF8800>hex colors</#FF8800>.\n"
+            "This is a long paragraph that demonstrates word wrapping. You can mix <b>bold</b>, <i>italic</i>, <u>underline</u> and colors like <green>green</green>."
+        )
+        long_text_label = LongTextLabel(525, 255, long_text, width=300, height=200,
+                                        font_size=16, rich_text=True, line_spacing=6, wrap_width=280)
+        long_text_label.set_simple_tooltip("A multi-line rich text area with word wrapping, line breaks, and various formatting tags.")
+        self.main_tabs.add_to_tab('Visual', long_text_label)
+
     def setup_advanced_tab(self):
         """Sets up advanced elements tab."""
         # Tab title
@@ -988,19 +1083,23 @@ class ComprehensiveUIDemo(Scene):
         self.main_tabs.add_to_tab('Advanced', scroll_label)
         
         scroll_frame = ScrollingFrame(20, 410, 350, 200, 330, 600)
+        print(f'ScrollingFrame Pos: {scroll_frame.get_actual_position()}')
         scroll_frame.set_simple_tooltip("Scrollable container with multiple items")
         self.main_tabs.add_to_tab('Advanced', scroll_frame)
         
         # Add items to scrolling frame
         for i in range(15):
             item_color = (100 + i * 10, 150, 200) if i % 2 == 0 else (200, 150, 100 + i * 10)
-            if i % 2 == 0: # Even = TextLabel
+            if i == 10:
+                item = Slider(0, 15 + i * 30, 300, 20, 0, 100, 0)
+            elif i % 2 == 0: # Even = TextLabel
                 item = TextLabel(10, 15 + i * 30, f"Scrollable Item {i + 1}", 14, item_color)
             else: # Odd = Button
                 item = Button(10, 15 + i * 30, 80, 20, f"Button {i + 1}")
                 item.set_on_click(print, f"Button {i + 1} clicked!")
                 
             scroll_frame.add_child(item)
+            
         
         # Dialog Button (moved to right side)
         dialog_label = TextLabel(400, 360, "Dialog Box:", 16, (200, 200, 255))

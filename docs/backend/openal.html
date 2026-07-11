@@ -35,7 +35,7 @@
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>openal.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">OpenAL Audio Backend for LunaEngine - Optimized for 2D games<br><br>This module provides OpenAL-based audio with the following features:<br>- Efficient buffer management and pooling<br>- Support for WAV, OGG, MP3 formats (via Pygame)<br>- Smooth volume/pitch transitions<br>- Stereo panning support<br>- Thread-safe operations</span>
+                <span class="text-muted">OpenAL Audio Backend for LunaEngine - Cross-platform (Linux/Windows)<br>Supports device selection, stereo balance, and immediate property changes.<br>Now includes optional stereo→mono conversion for panning support.<br>EFX extension support for reverb and effects.<br>Extended to load audio from bytes (bundle support).</span>
             </div>
         </div>
         <div class="row">
@@ -48,7 +48,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Exception raised for OpenAL related errors.</p>
+                    <p class="lead fs-6">No documentation</p>
                 </div>
                 
                 <div class="methods-section">
@@ -57,31 +57,46 @@
                 </div>
             </div>
         </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-openalaudioevent">
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-openaldevice">
             <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class OpenALAudioEvent</h3>
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class OpenALDevice</h3>
             </div>
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Audio events for OpenAL system.</p>
+                    <p class="lead fs-6">No documentation</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>COMPLETE: Any = 'complete'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>STOP: Any = 'stop'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>PAUSE: Any = 'pause'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>RESUME: Any = 'resume'</code>
+                    <code>_instance: Any = None</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    <p class="text-muted italic">No methods defined.</p>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openaldevice-__new__">
+                <code class="fs-6 fw-bold text-color-title">def __new__(cls: Any, device_name: Optional[str] = None) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openaldevice-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, device_name: Optional[str] = None) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openaldevice-_init">
+                <code class="fs-6 fw-bold text-color-title">def _init(self: Any, device_name: Optional[str] = None) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openaldevice-list_devices">
+                <code class="fs-6 fw-bold text-color-title">def list_devices() -> List[str]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openaldevice-close">
+                <code class="fs-6 fw-bold text-color-title">def close(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openaldevice-is_initialized">
+                <code class="fs-6 fw-bold text-color-title">def is_initialized(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
                 </div>
             </div>
         </div>
@@ -92,7 +107,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">OpenAL audio buffer with memory pooling.<br><br>Manages audio data in OpenAL buffers with caching for frequently used sounds.<br><br>Attributes:<br> &nbsp; &nbsp;buffer_id (int): OpenAL buffer ID<br> &nbsp; &nbsp;duration (float): Buffer duration in seconds<br> &nbsp; &nbsp;size (int): Buffer size in bytes<br> &nbsp; &nbsp;format (int): OpenAL format constant<br> &nbsp; &nbsp;frequency (int): Sample rate in Hz<br> &nbsp; &nbsp;last_used (float): Last access time for LRU cleanup</p>
+                    <p class="lead fs-6">No documentation</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -101,37 +116,49 @@
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-get_or_create">
+                <code class="fs-6 fw-bold text-color-title">def get_or_create(cls: Any, filepath: str, device: OpenALDevice, force_mono: bool = False, force_8bit: bool = False) -> Optional['OpenALBuffer']</code>
+                <div class="mt-2 text-muted small">Load a sound from a file path. Uses a cache.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-from_bytes">
+                <code class="fs-6 fw-bold text-color-title">def from_bytes(cls: Any, data: bytes, name: str, device: OpenALDevice, force_mono: bool = False, force_8bit: bool = False) -> Optional['OpenALBuffer']</code>
+                <div class="mt-2 text-muted small">Create a buffer from raw bytes (useful for bundle loading).<br>&#x27;name&#x27; is used for caching (e.g., the atlas name).</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, buffer_id: int) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-get_or_create">
-                <code class="fs-6 fw-bold text-color-title">def get_or_create(cls: Any, filepath: str) -> Optional['OpenALBuffer']</code>
-                <div class="mt-2 text-muted small">Get buffer from pool or create new one.<br><br>Args:<br> &nbsp; &nbsp;filepath (str): Path to audio file<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Optional[OpenALBuffer]: Buffer object or None if failed</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-_update_buffer_info">
-                <code class="fs-6 fw-bold text-color-title">def _update_buffer_info(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Update buffer information from OpenAL.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-_update_info">
+                <code class="fs-6 fw-bold text-color-title">def _update_info(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-_load_audio_file">
-                <code class="fs-6 fw-bold text-color-title">def _load_audio_file(buffer_id: ALuint, filepath: str) -> bool</code>
-                <div class="mt-2 text-muted small">Load audio file into OpenAL buffer.<br><br>Args:<br> &nbsp; &nbsp;buffer_id: OpenAL buffer ID<br> &nbsp; &nbsp;filepath (str): Path to audio file<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if successful</div>
+                <code class="fs-6 fw-bold text-color-title">def _load_audio_file(buffer_id: ALuint, filepath: str, force_mono: bool, force_8bit: bool) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-_load_wav_file">
-                <code class="fs-6 fw-bold text-color-title">def _load_wav_file(buffer_id: ALuint, filepath: str) -> bool</code>
-                <div class="mt-2 text-muted small">Load WAV file using Python&#x27;s wave module.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-_load_wav">
+                <code class="fs-6 fw-bold text-color-title">def _load_wav(buffer_id: ALuint, filepath: str, force_mono: bool, force_8bit: bool) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-_load_audio_from_bytes">
+                <code class="fs-6 fw-bold text-color-title">def _load_audio_from_bytes(buffer_id: ALuint, data: bytes, force_mono: bool, force_8bit: bool) -> bool</code>
+                <div class="mt-2 text-muted small">Load audio from raw bytes. Attempts to detect format.<br>Currently supports WAV only (using wave.open on BytesIO).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-_load_with_pygame">
-                <code class="fs-6 fw-bold text-color-title">def _load_with_pygame(buffer_id: ALuint, filepath: str) -> bool</code>
-                <div class="mt-2 text-muted small">Load audio file using PyGame mixer.</div>
+                <code class="fs-6 fw-bold text-color-title">def _load_with_pygame(buffer_id: ALuint, filepath: str, force_mono: bool, force_8bit: bool) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-_convert_stereo_to_mono">
+                <code class="fs-6 fw-bold text-color-title">def _convert_stereo_to_mono(data: bytes, sample_width: int) -> bytes</code>
+                <div class="mt-2 text-muted small">Convert 2-channel PCM to mono by averaging samples.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-_convert_16bit_to_8bit">
+                <code class="fs-6 fw-bold text-color-title">def _convert_16bit_to_8bit(data: bytes) -> bytes</code>
+                <div class="mt-2 text-muted small">Convert 16-bit PCM to 8-bit (linear).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-cleanup_unused">
                 <code class="fs-6 fw-bold text-color-title">def cleanup_unused(cls: Any, max_age: float = 300.0) -> Any</code>
-                <div class="mt-2 text-muted small">Clean up buffers not used for a while.</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbuffer-get_duration">
-                <code class="fs-6 fw-bold text-color-title">def get_duration(self: Any) -> float</code>
-                <div class="mt-2 text-muted small">Get buffer duration in seconds.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
             </div>
@@ -143,7 +170,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">OpenAL audio source for 2D games.<br><br>Provides playback control with smooth transitions and stereo panning.<br><br>Attributes:<br> &nbsp; &nbsp;source_id (int): OpenAL source ID<br> &nbsp; &nbsp;buffer (OpenALBuffer): Current audio buffer<br> &nbsp; &nbsp;volume (float): Current volume (0.0-1.0)<br> &nbsp; &nbsp;pitch (float): Current pitch multiplier<br> &nbsp; &nbsp;pan (float): Stereo pan (-1.0 to 1.0)<br> &nbsp; &nbsp;looping (bool): Whether source is looping</p>
+                    <p class="lead fs-6">No documentation</p>
                 </div>
                 
                 <div class="methods-section">
@@ -155,171 +182,105 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-set_buffer">
                 <code class="fs-6 fw-bold text-color-title">def set_buffer(self: Any, buffer: OpenALBuffer) -> Any</code>
-                <div class="mt-2 text-muted small">Set buffer for this source.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-set_volume">
-                <code class="fs-6 fw-bold text-color-title">def set_volume(self: Any, volume: float, duration: float = 0.0) -> Any</code>
-                <div class="mt-2 text-muted small">Set volume with optional smooth transition.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-set_volume_immediate">
+                <code class="fs-6 fw-bold text-color-title">def set_volume_immediate(self: Any, volume: float) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-_fade_volume">
-                <code class="fs-6 fw-bold text-color-title">def _fade_volume(self: Any, start: float, end: float, duration: float) -> Any</code>
-                <div class="mt-2 text-muted small">Fade volume over time (simplified implementation).</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-set_balance_immediate">
+                <code class="fs-6 fw-bold text-color-title">def set_balance_immediate(self: Any, balance: float) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-set_pitch">
-                <code class="fs-6 fw-bold text-color-title">def set_pitch(self: Any, pitch: float, duration: float = 0.0) -> Any</code>
-                <div class="mt-2 text-muted small">Set pitch with optional transition.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-set_pan_immediate">
+                <code class="fs-6 fw-bold text-color-title">def set_pan_immediate(self: Any, pan: float) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-set_pan">
-                <code class="fs-6 fw-bold text-color-title">def set_pan(self: Any, pan: float) -> Any</code>
-                <div class="mt-2 text-muted small">Set stereo panning.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-set_pitch_immediate">
+                <code class="fs-6 fw-bold text-color-title">def set_pitch_immediate(self: Any, pitch: float) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-set_effect">
+                <code class="fs-6 fw-bold text-color-title">def set_effect(self: Any, effect_type: int, params: Optional[Dict[str, float]] = None) -> bool</code>
+                <div class="mt-2 text-muted small">Apply an EFX effect (reverb, echo, etc.) to this source.<br>Returns True if successful.<br>Requires EFX_AVAILABLE.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-remove_effect">
+                <code class="fs-6 fw-bold text-color-title">def remove_effect(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Remove any attached effect.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-play">
                 <code class="fs-6 fw-bold text-color-title">def play(self: Any, loop: bool = False) -> Any</code>
-                <div class="mt-2 text-muted small">Start playback.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-pause">
                 <code class="fs-6 fw-bold text-color-title">def pause(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Pause playback.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-resume">
                 <code class="fs-6 fw-bold text-color-title">def resume(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Resume playback.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-stop">
                 <code class="fs-6 fw-bold text-color-title">def stop(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Stop playback.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-rewind">
                 <code class="fs-6 fw-bold text-color-title">def rewind(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Rewind to beginning.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-is_playing">
                 <code class="fs-6 fw-bold text-color-title">def is_playing(self: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Check if source is playing.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-is_paused">
                 <code class="fs-6 fw-bold text-color-title">def is_paused(self: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Check if source is paused.</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-get_playback_position">
-                <code class="fs-6 fw-bold text-color-title">def get_playback_position(self: Any) -> float</code>
-                <div class="mt-2 text-muted small">Get current playback position in seconds.</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-openalaudiosystem">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class OpenALAudioSystem</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Main OpenAL audio system for 2D games.<br><br>Manages audio sources, buffers, and provides playback functionality.<br><br>Attributes:<br> &nbsp; &nbsp;device: OpenAL device<br> &nbsp; &nbsp;context: OpenAL context<br> &nbsp; &nbsp;sources (List[OpenALSource]): Available audio sources<br> &nbsp; &nbsp;max_sources (int): Maximum number of concurrent sources<br> &nbsp; &nbsp;initialized (bool): Whether system is initialized</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiosystem-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, max_sources: int = 32) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiosystem-initialize">
-                <code class="fs-6 fw-bold text-color-title">def initialize(self: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Initialize OpenAL system.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-get_position">
+                <code class="fs-6 fw-bold text-color-title">def get_position(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiosystem-get_free_source">
-                <code class="fs-6 fw-bold text-color-title">def get_free_source(self: Any) -> Optional[OpenALSource]</code>
-                <div class="mt-2 text-muted small">Get a free audio source.</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiosystem-load_sound">
-                <code class="fs-6 fw-bold text-color-title">def load_sound(self: Any, filepath: str) -> Optional[OpenALBuffer]</code>
-                <div class="mt-2 text-muted small">Load sound file.</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiosystem-play_sound">
-                <code class="fs-6 fw-bold text-color-title">def play_sound(self: Any, filepath: str, volume: float = 1.0, pitch: float = 1.0, pan: float = 0.0, loop: bool = False) -> Optional[OpenALSource]</code>
-                <div class="mt-2 text-muted small">Play a sound effect.</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiosystem-stop_all">
-                <code class="fs-6 fw-bold text-color-title">def stop_all(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Stop all sounds.</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiosystem-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Update audio system (clean up unused buffers).</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiosystem-cleanup">
-                <code class="fs-6 fw-bold text-color-title">def cleanup(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Clean up all audio resources.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalsource-delete">
+                <code class="fs-6 fw-bold text-color-title">def delete(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
             </div>
         </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-openalaudiovisualizer">
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-openalbackend">
             <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class OpenALAudioVisualizer</h3>
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class OpenALBackend</h3>
             </div>
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Audio visualizer that works with OpenAL audio system.<br><br>Provides methods to capture and analyze audio data from OpenAL sources.</p>
+                    <p class="lead fs-6">No documentation</p>
                 </div>
                 
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, audio_system: OpenALAudioSystem) -> Any</code>
-                <div class="mt-2 text-muted small">Initialize audio visualizer.<br><br>Args:<br> &nbsp; &nbsp;audio_system (OpenALAudioSystem): OpenAL audio system to visualize.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbackend-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, max_sources: int = 32, device_name: Optional[str] = None) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-_initialize_buffers">
-                <code class="fs-6 fw-bold text-color-title">def _initialize_buffers(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Initialize data buffers.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbackend-get_free_source">
+                <code class="fs-6 fw-bold text-color-title">def get_free_source(self: Any) -> Optional[OpenALSource]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-capture_audio_data">
-                <code class="fs-6 fw-bold text-color-title">def capture_audio_data(self: Any, source: Optional[OpenALSource] = None) -> List[float]</code>
-                <div class="mt-2 text-muted small">Capture audio data from a source or all playing sources.<br><br>Args:<br> &nbsp; &nbsp;source (Optional[OpenALSource]): Specific source to capture from.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[float]: Normalized audio data.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbackend-cleanup">
+                <code class="fs-6 fw-bold text-color-title">def cleanup(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-perform_fft_analysis">
-                <code class="fs-6 fw-bold text-color-title">def perform_fft_analysis(self: Any, audio_data: List[float]) -> List[float]</code>
-                <div class="mt-2 text-muted small">Perform FFT analysis on audio data.<br><br>Args:<br> &nbsp; &nbsp;audio_data (List[float]): Time-domain audio data.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[float]: Frequency-domain data.</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-get_peak_level">
-                <code class="fs-6 fw-bold text-color-title">def get_peak_level(self: Any) -> float</code>
-                <div class="mt-2 text-muted small">Get current peak audio level.<br><br>Returns:<br> &nbsp; &nbsp;float: Peak level (0-1).</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-get_rms_level">
-                <code class="fs-6 fw-bold text-color-title">def get_rms_level(self: Any) -> float</code>
-                <div class="mt-2 text-muted small">Get RMS (root mean square) audio level.<br><br>Returns:<br> &nbsp; &nbsp;float: RMS level (0-1).</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalaudiovisualizer-_get_simulated_data">
-                <code class="fs-6 fw-bold text-color-title">def _get_simulated_data(self: Any) -> List[float]</code>
-                <div class="mt-2 text-muted small">Generate simulated audio data for demonstration.<br><br>Returns:<br> &nbsp; &nbsp;List[float]: Simulated audio data.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openalbackend-is_initialized">
+                <code class="fs-6 fw-bold text-color-title">def is_initialized(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
             </div>
         </div>
-                <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
                 
-            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-get_audio_system">
-                <div class="card-body">
-                    <code class="fs-5 fw-bold text-color-title">def get_audio_system() -> OpenALAudioSystem</code>
-                    <p class="mt-2 mb-0 text-muted">Get global audio system instance.</p>
-                </div>
-            </div>
-            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-initialize_audio">
-                <div class="card-body">
-                    <code class="fs-5 fw-bold text-color-title">def initialize_audio(max_sources: int = 32) -> bool</code>
-                    <p class="mt-2 mb-0 text-muted">Initialize global audio system.</p>
-                </div>
-            </div>
-            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-cleanup_audio">
-                <div class="card-body">
-                    <code class="fs-5 fw-bold text-color-title">def cleanup_audio() -> Any</code>
-                    <p class="mt-2 mb-0 text-muted">Clean up global audio system.</p>
-                </div>
-            </div>
+                
             </div>
         </div>
         <div class="mt-5 mb-5 text-center">
@@ -339,7 +300,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Themes - LunaEngine Lessons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Lessons</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../index.html">Lessons</a></li><li class="breadcrumb-item active">Intermediate</li><li class="breadcrumb-item active">Custom Themes</li></ol></nav>
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 d-none d-md-block">
+                <div class="card shadow-sm sticky-top" style="top: 6rem; max-height: 80vh; overflow-y: auto;">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="bi bi-map me-2"></i>Course Track</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><a href="../basics/07-atlas-system.html" class="list-group-item list-group-item-action">7. Atlas System</a><a href="../basics/08-game-development-plan.html" class="list-group-item list-group-item-action">8. Game Development Plan</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/09-ui-layouts.html" class="list-group-item list-group-item-action">9. Ui Layouts</a><a href="../intermediate/10-tween-animations.html" class="list-group-item list-group-item-action">10. Tween Animations</a><a href="../intermediate/11-camera-movement.html" class="list-group-item list-group-item-action">11. Camera Movement</a><a href="../intermediate/12-particles-basics.html" class="list-group-item list-group-item-action">12. Particles Basics</a><a href="../intermediate/13-parallax-backgrounds.html" class="list-group-item list-group-item-action">13. Parallax Backgrounds</a><a href="../intermediate/14-audio-system.html" class="list-group-item list-group-item-action">14. Audio System</a><a href="../intermediate/15-custom-themes.html" class="list-group-item list-group-item-action active">15. Custom Themes</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/16-advanced-ui.html" class="list-group-item list-group-item-action">16. Advanced Ui</a><a href="../advanced/17-particle-effects.html" class="list-group-item list-group-item-action">17. Particle Effects</a><a href="../advanced/18-camera-effects.html" class="list-group-item list-group-item-action">18. Camera Effects</a><a href="../advanced/19-opengl-effects.html" class="list-group-item list-group-item-action">19. Opengl Effects</a><a href="../advanced/20-ui-transitions.html" class="list-group-item list-group-item-action">20. Ui Transitions</a><a href="../advanced/21-sprite-animations.html" class="list-group-item list-group-item-action">21. Sprite Animations</a><a href="../advanced/22-combining-systems.html" class="list-group-item list-group-item-action">22. Combining Systems</a><div class="mb-2"></div></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main content -->
+            <div class="col-md-9">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h3 mb-0">15. Custom Themes</h1>
+                    </div>
+                    <div class="card-body markdown-content">
+                        # 15 - Custom Themes
+
+LunaEngine's theme system is designed for extensibility. While the 50+ built-in themes cover most needs, you can create your own theme that perfectly matches your game's visual identity — from a gritty sci-fi look to a cozy pastel adventure.
+
+---
+
+## Understanding the Theme Structure
+
+A `UITheme` is a dataclass where every field is a `ThemeStyle`. A `ThemeStyle` holds:
+- `color`: An `(R, G, B)` tuple (0–255).
+- `alpha`: Opacity from `0.0` (transparent) to `1.0` (opaque).
+- `corner_radius`: How rounded the corners of elements are (pixels).
+- `border_width`: Width of the element border (pixels).
+- `blur`: Blur amount (pixels).
+
+---
+
+## Creating a Custom Theme in Python
+
+The cleanest way to create a theme in Python is to construct a `UITheme` directly using `ThemeStyle`.
+
+```python
+from lunaengine.ui.themes import ThemeManager, ThemeType, UITheme, ThemeStyle
+
+# Helper function to keep things tidy
+def s(rgb, alpha=1.0, radius=0, border=0, blur=0):
+    return ThemeStyle(color=rgb, alpha=alpha, corner_radius=radius,
+                      border_width=border, blur=blur)
+
+# Define the full theme
+MY_CYBER_THEME = UITheme(
+    # Buttons: Glowing teal style
+    button_normal=s((0, 200, 200), radius=4),
+    button_hover=s((0, 230, 230), radius=4),
+    button_pressed=s((0, 160, 160), radius=4),
+    button_disabled=s((80, 80, 80)),
+    button_text=s((10, 10, 10)),
+    button_border=s((0, 255, 255), border=2),
+
+    # Dropdowns
+    dropdown_normal=s((30, 30, 50), radius=4),
+    dropdown_hover=s((40, 40, 65), radius=4),
+    dropdown_expanded=s((20, 20, 40), radius=4),
+    dropdown_text=s((200, 255, 255)),
+    dropdown_option_normal=s((25, 25, 45)),
+    dropdown_option_hover=s((35, 35, 60)),
+    dropdown_option_selected=s((0, 180, 180)),
+    dropdown_border=s((0, 200, 200), border=1),
+
+    # Sliders
+    slider_track=s((30, 30, 50)),
+    slider_thumb_normal=s((0, 200, 200), radius=8),
+    slider_thumb_hover=s((0, 230, 230), radius=8),
+    slider_thumb_pressed=s((0, 160, 160), radius=8),
+    slider_text=s((200, 255, 255)),
+
+    # Labels & Background
+    label_text=s((200, 255, 255)),
+    background=s((10, 10, 25)),
+    background2=s((15, 15, 35)),
+    text_primary=s((200, 255, 255)),
+    text_secondary=s((100, 200, 200)),
+
+    # Switches
+    switch_track_on=s((0, 200, 200)),
+    switch_track_off=s((60, 60, 80)),
+    switch_thumb_on=s((255, 255, 255)),
+    switch_thumb_off=s((180, 180, 200)),
+
+    # Dialogs
+    dialog_background=s((15, 15, 35), radius=8),
+    dialog_border=s((0, 200, 200), border=2),
+    dialog_text=s((200, 255, 255)),
+    dialog_name_bg=s((0, 150, 150)),
+    dialog_name_text=s((255, 255, 255)),
+    dialog_continue_indicator=s((0, 200, 200)),
+
+    # Tooltips
+    tooltip_background=s((10, 10, 25), alpha=0.9, radius=4),
+    tooltip_border=s((0, 200, 200), border=1),
+    tooltip_text=s((200, 255, 255)),
+
+    # Notifications
+    notification_success_background=s((0, 150, 100)),
+    notification_success_border=s((0, 200, 130)),
+    notification_success_text=s((255, 255, 255)),
+    notification_info_background=s((0, 100, 180)),
+    notification_info_border=s((0, 150, 230)),
+    notification_info_text=s((255, 255, 255)),
+    notification_warning_background=s((200, 150, 0)),
+    notification_warning_border=s((255, 200, 0)),
+    notification_warning_text=s((0, 0, 0)),
+    notification_custom_background=s((100, 0, 200)),
+    notification_custom_border=s((150, 0, 255)),
+    notification_custom_text=s((255, 255, 255)),
+    notification_error_background=s((180, 0, 50)),
+    notification_error_border=s((230, 0, 70)),
+    notification_error_text=s((255, 255, 255)),
+
+    # Borders & Accents
+    border=s((0, 200, 200), border=1),
+    border2=s((0, 150, 150), border=1),
+    accent1=s((0, 200, 200)),
+    accent2=s((255, 50, 150)),
+)
+```
+
+---
+
+## Registering and Using the Custom Theme
+
+Once defined, register it with the `ThemeManager` and apply it with the engine:
+
+```python
+from lunaengine.core.engine import LunaEngine
+from lunaengine.core.scene import Scene
+
+# Register under a custom key (use any unused ThemeType, e.g. CYBERPUNK is already built-in,
+# so use one that doesn't exist yet, or add a new Enum entry for production projects)
+# For quick testing, we can register directly in the _themes dict:
+ThemeManager._themes["cyber"] = MY_CYBER_THEME
+
+# Now apply it to the entire engine
+engine = LunaEngine(title="Cyber Game", width=1280, height=720)
+
+class MenuScene(Scene):
+    def on_enter(self, prev):
+        # Apply your theme — all UI elements will adopt it instantly
+        self.engine.set_global_theme("cyber")
+```
+
+> **Note:** For a production game, you should also create a JSON theme file (see below) so the theme can be hot-reloaded without changing Python code.
+
+---
+
+## Creating a Theme as a JSON File
+
+You can also define themes as JSON files and place them in `lunaengine/assets/themes/`. The engine auto-discovers them on startup.
+
+```json
+{
+  "variants": {
+    "dark": {
+      "button_normal":  { "color": [0, 200, 200, 1.0], "cornerRadius": 4 },
+      "button_hover":   { "color": [0, 230, 230, 1.0], "cornerRadius": 4 },
+      "button_pressed": { "color": [0, 160, 160, 1.0], "cornerRadius": 4 },
+      "button_text":    { "color": [10, 10, 10, 1.0] },
+      "background":     { "color": [10, 10, 25, 1.0] },
+      "accent1":        { "color": [0, 200, 200, 1.0] },
+      "accent2":        { "color": [255, 50, 150, 1.0] }
+    },
+    "light": {
+      "button_normal":  { "color": [0, 180, 180, 1.0], "cornerRadius": 4 },
+      "background":     { "color": [230, 240, 250, 1.0] },
+      "accent1":        { "color": [0, 150, 150, 1.0] }
+    }
+  }
+}
+```
+
+Save this as `CYBER.json` in your themes directory. It will be auto-loaded as `ThemeType.CYBER` (if you add `CYBER = "cyber"` to the `ThemeType` enum).
+
+---
+
+## Switching Between Dark and Light Mode
+
+If your custom JSON theme has both `dark` and `light` variants, you can toggle between them at runtime:
+
+```python
+from lunaengine.ui.themes import ThemeManager
+
+# Toggle dark/light globally
+ThemeManager.set_dark_mode(True)   # Use "dark" variant
+ThemeManager.set_dark_mode(False)  # Use "light" variant
+```
+
+This is perfect for a settings screen where the player can choose their preferred display mode!
+
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between">
+                            <a href='14-audio-system.html' class='btn btn-outline-primary'><i class='bi bi-arrow-left me-2'></i>Previous: Audio System</a>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="../index.html" class="btn btn-secondary"><i class="bi bi-journal-bookmark me-2"></i>All Lessons</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-07-10 21:26
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+    <script src="../../theme.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+        if (typeof initSimpleMarkdownParser === 'function') initSimpleMarkdownParser();
+        else setTimeout(function() {
+            if (window.initSimpleMarkdownParser) window.initSimpleMarkdownParser();
+        }, 100);
+    });</script>
+</body>
+</html>

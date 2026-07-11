@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combining Systems - LunaEngine Lessons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Lessons</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../index.html">Lessons</a></li><li class="breadcrumb-item active">Advanced</li><li class="breadcrumb-item active">Combining Systems</li></ol></nav>
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 d-none d-md-block">
+                <div class="card shadow-sm sticky-top" style="top: 6rem; max-height: 80vh; overflow-y: auto;">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="bi bi-map me-2"></i>Course Track</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><a href="../basics/07-atlas-system.html" class="list-group-item list-group-item-action">7. Atlas System</a><a href="../basics/08-game-development-plan.html" class="list-group-item list-group-item-action">8. Game Development Plan</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/09-ui-layouts.html" class="list-group-item list-group-item-action">9. Ui Layouts</a><a href="../intermediate/10-tween-animations.html" class="list-group-item list-group-item-action">10. Tween Animations</a><a href="../intermediate/11-camera-movement.html" class="list-group-item list-group-item-action">11. Camera Movement</a><a href="../intermediate/12-particles-basics.html" class="list-group-item list-group-item-action">12. Particles Basics</a><a href="../intermediate/13-parallax-backgrounds.html" class="list-group-item list-group-item-action">13. Parallax Backgrounds</a><a href="../intermediate/14-audio-system.html" class="list-group-item list-group-item-action">14. Audio System</a><a href="../intermediate/15-custom-themes.html" class="list-group-item list-group-item-action">15. Custom Themes</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/16-advanced-ui.html" class="list-group-item list-group-item-action">16. Advanced Ui</a><a href="../advanced/17-particle-effects.html" class="list-group-item list-group-item-action">17. Particle Effects</a><a href="../advanced/18-camera-effects.html" class="list-group-item list-group-item-action">18. Camera Effects</a><a href="../advanced/19-opengl-effects.html" class="list-group-item list-group-item-action">19. Opengl Effects</a><a href="../advanced/20-ui-transitions.html" class="list-group-item list-group-item-action">20. Ui Transitions</a><a href="../advanced/21-sprite-animations.html" class="list-group-item list-group-item-action">21. Sprite Animations</a><a href="../advanced/22-combining-systems.html" class="list-group-item list-group-item-action active">22. Combining Systems</a><div class="mb-2"></div></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main content -->
+            <div class="col-md-9">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h3 mb-0">22. Combining Systems</h1>
+                    </div>
+                    <div class="card-body markdown-content">
+                        # 22 - Combining Systems
+
+This is where everything comes together. Real games are not a collection of isolated features — they are a coherent experience where the camera, UI, audio, particles, tweens, and scenes all communicate with each other.
+
+---
+
+## The Architecture of a Combined Game
+
+The key insight is that each system should react to **events** rather than being polled in a single monolithic `update()`:
+
+```
+Player.take_damage(amount)
+  ├── camera.add_trauma(0.5)           # Camera shake
+  ├── engine.audio.play("sfx_hit")     # Sound effect
+  ├── self.particles.emit(50)          # Blood particles
+  ├── tween health_bar down            # HUD update
+  └── engine.show_warning("Low HP!")   # Notification (if < 20%)
+```
+
+---
+
+## A Complete Example: Player Taking Damage
+
+This example wires the camera, audio, particles, tweens, and notifications together through one method call.
+
+```python
+from lunaengine.core import Scene, LunaEngine
+from lunaengine.core.engine import LunaEngine
+from lunaengine.ui.elements import ProgressBar
+from lunaengine.ui.tween import Tween, EasingType
+from lunaengine.graphics.camera import CameraShakeType
+from lunaengine.backend import FilterType
+
+class GameScene(Scene):
+    MAX_HEALTH = 100
+    
+    def __init__(self, engine):
+        super().__init__(engine)
+        self.player_health = self.MAX_HEALTH
+        
+        # HUD
+        self.health_bar = ProgressBar(x=20, y=20, width=200, height=18, value=1.0)
+        self.add_ui_element(self.health_bar)
+        
+        # Damage vignette (start invisible)
+        self.damage_filter = engine.renderer.add_vignette(intensity=0.0)
+
+    def player_take_damage(self, amount: int):
+        self.player_health = max(0, self.player_health - amount)
+        ratio = self.player_health / self.MAX_HEALTH
+
+        # 1. Camera shake — intensity scales with damage
+        trauma = amount / self.MAX_HEALTH
+        self.camera.add_trauma(trauma)
+
+        # 2. Sound effect
+        self.engine.audio.play("sfx_hit", volume=0.8)
+
+        # 3. Animate HUD health bar
+        Tween.create(self.health_bar)\
+             .to(value=ratio, duration=0.4, easing=EasingType.CUBIC_OUT)\
+             .play()
+
+        # 4. Flash the screen red
+        self.damage_filter.intensity = 0.8
+
+        # 5. Conditional warning notification
+        if ratio < 0.2:
+            self.engine.show_warning("Critical Health!", duration=2.0)
+        
+        # 6. Death check
+        if self.player_health <= 0:
+            self.player_die()
+
+    def player_die(self):
+        # Dramatic death: grayscale + music fade out + scene switch after delay
+        self.engine.renderer.add_grayscale(intensity=1.0)
+        self.engine.audio.get_channel("music").set_volume(0.0, duration=2.0)
+        
+        # Switch to game over after 2 seconds
+        from lunaengine.ui.tween import Tween
+        class _Delayed:
+            x = 0.0
+        dummy = _Delayed()
+        Tween.create(dummy)\
+             .to(x=1.0, duration=2.0)\
+             .set_callbacks(on_complete=lambda: self.engine.set_scene("game_over"))\
+             .play()
+
+    def update(self, dt):
+        # Fade out the damage vignette
+        if self.damage_filter.intensity > 0:
+            self.damage_filter.intensity = max(0.0, self.damage_filter.intensity - dt * 3.0)
+        
+        # Update audio (required each frame)
+        self.engine.audio.update(dt)
+```
+
+---
+
+## Scene Transition Checklist
+
+When designing scene transitions (e.g. Menu → Game), follow this pattern:
+
+1. **`on_exit` of outgoing scene**: Stop music, clean up timers.
+2. **`on_enter` of incoming scene**: Reset state, start music with fade-in, slide in UI elements.
+
+```python
+class MenuScene(Scene):
+    def on_exit(self, next_scene):
+        # Fade music out before leaving
+        self.engine.audio.get_channel("music").set_volume(0.0, duration=0.5)
+
+class GameScene(Scene):
+    def on_enter(self, previous_scene):
+        # Fade music in when arriving
+        self.engine.audio.play_music("bgm_game", fade_in=1.5)
+        
+        # Slide camera from top
+        self.camera.position.y = -500
+        from lunaengine.graphics.camera import InterpolationType
+        self.camera.interpolation_type = InterpolationType.CUBIC_OUT
+```
+
+---
+
+By thinking of your game as **a network of systems reacting to events**, you'll write code that is modular, easy to extend, and a joy to maintain. LunaEngine's modular design is built exactly for this.
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between">
+                            <a href='21-sprite-animations.html' class='btn btn-outline-primary'><i class='bi bi-arrow-left me-2'></i>Previous: Sprite Animations</a>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="../index.html" class="btn btn-secondary"><i class="bi bi-journal-bookmark me-2"></i>All Lessons</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-07-10 21:26
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+    <script src="../../theme.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+        if (typeof initSimpleMarkdownParser === 'function') initSimpleMarkdownParser();
+        else setTimeout(function() {
+            if (window.initSimpleMarkdownParser) window.initSimpleMarkdownParser();
+        }, 100);
+    });</script>
+</body>
+</html>

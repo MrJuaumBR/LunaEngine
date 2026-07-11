@@ -18,13 +18,13 @@ LIBRARIES USED:
 - abc, enum, dataclasses, typing
 """
 
-import pygame
-import math
+import pygame, math, random
 import numpy as np
 from enum import Enum
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Optional, Tuple, Callable, List, TYPE_CHECKING, Union, Dict, Any
+from ..backend.opengl import OpenGLRenderer
 
 if TYPE_CHECKING:
     from lunaengine.core import Scene
@@ -306,110 +306,334 @@ class TraumaEffect(CameraEffect):
 # Parallax System (optimised, works with unified camera)
 # ----------------------------------------------------------------------
 
-class ParallaxLayer:
-    """A single parallax layer with tile support."""
-    def __init__(self,
-                 surface: pygame.Surface,
-                 speed_factor: float,
-                 tile_mode: bool = True,
-                 offset: Tuple[float, float] = (0, 0)):
-        self.surface = surface
-        self.speed_factor = speed_factor
-        self.tile_mode = tile_mode
-        self.offset = pygame.Vector2(offset)
-        self._texture_size = surface.get_size()
-        self._world_offset = pygame.Vector2(0, 0)   # world position of layer's origin
+@dataclass
+class ParallaxSprite:
+    """
+    A single sprite inside a parallax layer.
+    
+    Attributes:
+        surface: The image to draw.
+        base_pos: World position relative to the layer's origin (in world units).
+        scale: Uniform scale factor (1.0 = original size).
+        color: RGB colour multiplier (1.0,1.0,1.0 = normal).
+        alpha: Opacity (0.0 = transparent, 1.0 = opaque).
+        angle: Rotation in degrees (0 = no rotation).
+        oscillate_x: Sine wave amplitude for X movement (world units).
+        oscillate_y: Sine wave amplitude for Y movement.
+        oscillate_speed: Oscillation frequency (cycles per second).
+        phase_offset: Initial phase offset (radians) – randomise for variety.
+        brightness_pulse: Amplitude of brightness pulsation (0..1).
+        brightness_speed: Pulsation speed (cycles per second).
+    """
+    surface: pygame.Surface
+    base_pos: pygame.Vector2 = field(default_factory=lambda: pygame.Vector2(0,0))
+    _cache: Dict[str, Tuple[float, float, Tuple[int, int, int]]]  = field(default_factory=dict, init=False, repr=False)
+    scale: float = 1.0
+    color: Tuple[float, float, float] = (1.0, 1.0, 1.0)
+    alpha: float = 1.0
+    angle: float = 0.0
+    oscillate_x: float = 0.0
+    oscillate_y: float = 0.0
+    oscillate_speed: float = 1.0
+    phase_offset: float = 0.0
+    brightness_pulse: float = 0.0
+    brightness_speed: float = 1.0
+    wind_movement: bool = True
+    wind_intensity: float = 0.0
 
-    def update(self, camera_position: pygame.Vector2, dt: float):
-        """Update the layer's world offset based on camera position."""
-        # speed_factor = 0 -> layer is fixed in world at self.offset
-        # speed_factor = 1 -> layer moves exactly with the camera (world offset = camera_position)
-        self._world_offset = self.offset - camera_position * (1 - self.speed_factor)
+    def __post_init__(self):
+        self._cache = {}
 
-    def render(self, camera: 'Camera', renderer) -> None:
-        """Render the layer using the provided renderer."""
-        # Convert world offset to screen position
-        screen_pos = camera.world_to_screen(self._world_offset)
-        tex_w, tex_h = self._texture_size
-
-        if self.tile_mode:
-            # Tile to cover the entire viewport
-            view_w, view_h = camera.viewport_width, camera.viewport_height
-
-            # Calculate tile range with a margin of 1 tile
-            start_x = int(screen_pos.x // tex_w) - 1
-            end_x = int((screen_pos.x + view_w) // tex_w) + 2
-            start_y = int(screen_pos.y // tex_h) - 1
-            end_y = int((screen_pos.y + view_h) // tex_h) + 2
-
-            for ty in range(start_y, end_y):
-                for tx in range(start_x, end_x):
-                    x = screen_pos.x + tx * tex_w
-                    y = screen_pos.y + ty * tex_h
-                    # Cull off‑screen tiles (simple check)
-                    if x + tex_w < 0 or x > view_w or y + tex_h < 0 or y > view_h:
-                        continue
-                    self._draw_surface(renderer, self.surface, int(x), int(y))
+    def get_animated_offset(self, time: float) -> pygame.Vector2:
+        if self.wind_movement and self.wind_intensity > 0:
+            dx = self.wind_intensity * math.sin(time * self.oscillate_speed * 2*math.pi + self.phase_offset)
         else:
-            # Single copy
-            self._draw_surface(renderer, self.surface, int(screen_pos.x), int(screen_pos.y))
+            dx = self.oscillate_x * math.sin(time * self.oscillate_speed * 2*math.pi + self.phase_offset)
+        dy = self.oscillate_y * math.sin(time * self.oscillate_speed * 2*math.pi + self.phase_offset)
+        return pygame.Vector2(dx, dy)
 
-    def _draw_surface(self, renderer, surface: pygame.Surface, x: int, y: int):
-        """Renderer‑agnostic surface drawing."""
-        if hasattr(renderer, 'draw_surface'):
-            renderer.draw_surface(surface, x, y)
-        elif hasattr(renderer, 'render_surface'):
-            renderer.render_surface(surface, x, y)
-        elif hasattr(renderer, 'get_surface'):
-            # Fallback: blit directly onto the renderer's target surface
-            target = renderer.get_surface()
-            target.blit(surface, (x, y))
+    def get_current_brightness(self, time: float) -> float:
+        """Return a brightness multiplier (0..1) pulsating over time."""
+        if self.brightness_pulse <= 0:
+            return 1.0
+        # pulse from 0.5 to 1.5, then clamped? Better: from (1 - pulse) to (1 + pulse)
+        t = math.sin(time * self.brightness_speed * 2*math.pi + self.phase_offset)
+        return 1.0 + self.brightness_pulse * t
+    
+    def get_transformed_surface(self, size: Tuple[int, int], angle: float, colour: Tuple[float, float, float, float]) -> pygame.Surface:
+        """
+        Return a cached transformed version of the sprite surface.
+        size: (width, height) in pixels after scaling
+        angle: rotation in degrees
+        colour: (r,g,b,a) multipliers (each 0..1)
+        """
+        key = (size, angle, colour)
+        if key in self._cache:
+            return self._cache[key]
+
+        # Scale
+        surf = pygame.transform.smoothscale(self.surface, size)
+        # Rotate
+        if angle != 0:
+            surf = pygame.transform.rotate(surf, angle)
+        # Colour modulate
+        r,g,b,a = colour
+        if (r,g,b) != (1.0,1.0,1.0):
+            mod_surf = surf.copy()
+            mod_surf.fill((int(r*255), int(g*255), int(b*255)), special_flags=pygame.BLEND_MULT)
+            surf = mod_surf
+        if a != 1.0:
+            surf.set_alpha(int(a*255))
+
+        self._cache[key] = surf
+        return surf
+
+
+class ParallaxLayer:
+    """
+    A scrollable layer that can contain:
+      - A single tiled texture (simple & efficient)
+      - A list of individual ParallaxSprites (flexible)
+    
+    If `tile_texture` is set, the layer ignores the sprite list and renders tiled.
+    Otherwise, it renders the sprite list.
+    """
+    def __init__(self, speed: Tuple[float, float] = (1.0, 1.0),
+                 repeat_x: bool = True, repeat_y: bool = True,
+                 z_index: int = 0):
+        """
+        Args:
+            speed: Scroll multiplier (1.0 = moves with camera, 0.0 = fixed in background)
+            repeat_x, repeat_y: Only used for tiled texture mode.
+            z_index: Render order (lower = behind).
+        """
+        self.speed = pygame.Vector2(speed[0], speed[1])
+        self.repeat_x = repeat_x
+        self.repeat_y = repeat_y
+        self.z_index = z_index
+
+        # Tiled texture mode (simple)
+        self.tile_texture: Optional[pygame.Surface] = None
+        self.tile_offset: pygame.Vector2 = pygame.Vector2(0, 0)
+
+        # Sprite collection mode (advanced)
+        self.sprites: List[ParallaxSprite] = []
+
+        # Internal state
+        self.origin_offset: pygame.Vector2 = pygame.Vector2(0, 0)  # accumulated scroll
+
+    def set_tiled_texture(self, texture: pygame.Surface):
+        """Switch this layer to tiled rendering using a single texture."""
+        self.tile_texture = texture
+        self.sprites.clear()
+
+    def add_sprite(self, sprite: ParallaxSprite):
+        """Add an individual sprite to this layer (automatically disables tiled mode)."""
+        self.tile_texture = None
+        self.sprites.append(sprite)
+
+    def add_sprites(self, sprites: List[ParallaxSprite]):
+        self.tile_texture = None
+        self.sprites.extend(sprites)
+
+    def clear_sprites(self):
+        self.sprites.clear()
+
+    def populate_random(self,
+                        surface: pygame.Surface,
+                        count: int,
+                        area: pygame.Rect,               # world rectangle to fill
+                        scale_range: Tuple[float, float] = (1.0, 1.0),
+                        speed_range: Tuple[float, float] = (0.0, 0.0),  # not used per sprite, kept for API
+                        oscillate_x_range: Tuple[float, float] = (0.0, 0.0),
+                        oscillate_y_range: Tuple[float, float] = (0.0, 0.0),
+                        oscillate_speed_range: Tuple[float, float] = (0.5, 2.0),
+                        brightness_pulse_range: Tuple[float, float] = (0.0, 0.0),
+                        brightness_speed_range: Tuple[float, float] = (0.5, 2.0),
+                        alpha_range: Tuple[float, float] = (1.0, 1.0),
+                        angle_range: Tuple[float, float] = (0.0, 0.0),
+                        seed: Optional[int] = None):
+        """
+        Fill the layer with randomly placed sprites using the same surface.
+        
+        Args:
+            surface: The image to use for all sprites.
+            count: Number of sprites to create.
+            area: World rectangle (x, y, width, height) where sprites will be placed.
+            scale_range: (min, max) uniform scale.
+            oscillate_x_range: (min, max) oscillation amplitude in X (world units).
+            oscillate_y_range: (min, max) oscillation amplitude in Y.
+            oscillate_speed_range: (min, max) oscillation frequency (Hz).
+            brightness_pulse_range: (min, max) brightness pulsation amplitude.
+            brightness_speed_range: (min, max) pulsation speed (Hz).
+            alpha_range: (min, max) opacity.
+            angle_range: (min, max) rotation angle (degrees).
+            seed: Optional random seed for reproducibility.
+        """
+        if seed is not None:
+            random.seed(seed)
+        self.tile_texture = None
+        for _ in range(count):
+            # Random position inside area
+            px = random.uniform(area.left, area.right)
+            py = random.uniform(area.top, area.bottom)
+            scale = random.uniform(*scale_range)
+            oscillate_x = random.uniform(*oscillate_x_range)
+            oscillate_y = random.uniform(*oscillate_y_range)
+            osc_speed = random.uniform(*oscillate_speed_range)
+            brightness_pulse = random.uniform(*brightness_pulse_range)
+            brightness_speed = random.uniform(*brightness_speed_range)
+            alpha = random.uniform(*alpha_range)
+            angle = random.uniform(*angle_range)
+            phase = random.uniform(0, 2*math.pi)
+
+            sprite = ParallaxSprite(
+                surface=surface,
+                base_pos=pygame.Vector2(px, py),
+                scale=scale,
+                alpha=alpha,
+                angle=angle,
+                oscillate_x=oscillate_x,
+                oscillate_y=oscillate_y,
+                oscillate_speed=osc_speed,
+                phase_offset=phase,
+                brightness_pulse=brightness_pulse,
+                brightness_speed=brightness_speed
+            )
+            self.sprites.append(sprite)
 
 
 class ParallaxBackground:
-    """Collection of parallax layers with optional caching."""
+    """
+    Manager for multiple parallax layers.
+    Provides global time for animations and brightness pulsations.
+    """
     def __init__(self, camera: 'Camera'):
         self.camera = camera
         self.layers: List[ParallaxLayer] = []
         self.enabled = True
+        self._time: float = 0.0          # global animation clock (seconds)
+        self._last_cam_pos: pygame.Vector2 = pygame.Vector2(0, 0)
 
-    def add_layer(self,
-                  surface: pygame.Surface,
-                  speed_factor: float,
-                  tile_mode: bool = True,
-                  offset: Tuple[float, float] = (0, 0)) -> ParallaxLayer:
-        """Add a new layer and return it."""
-        layer = ParallaxLayer(surface, speed_factor, tile_mode, offset)
+    def add_layer(self, speed: Tuple[float, float] = (1.0, 1.0),
+                  repeat_x: bool = True, repeat_y: bool = True,
+                  z_index: int = 0) -> ParallaxLayer:
+        """Create and return a new empty layer."""
+        layer = ParallaxLayer(speed, repeat_x, repeat_y, z_index)
         self.layers.append(layer)
+        self.layers.sort(key=lambda l: l.z_index)
         return layer
 
     def remove_layer(self, layer: ParallaxLayer):
-        """Remove a layer if present."""
         if layer in self.layers:
             self.layers.remove(layer)
 
-    def clear_layers(self):
-        """Remove all layers."""
+    def clear(self):
         self.layers.clear()
 
     def update(self, dt: float):
-        """Update all layers."""
+        """
+        Update global animation time and layer scroll offsets.
+        Call this once per frame from Camera.update().
+        """
         if not self.enabled:
             return
+        self._time += dt
+
+        # Update each layer's scroll offset based on camera movement
+        cam_pos = self.camera._position   # world centre
+        delta = cam_pos - self._last_cam_pos
+        self._last_cam_pos = cam_pos
+
         for layer in self.layers:
-            layer.update(self.camera._position, dt)
+            # The origin offset moves opposite to camera, scaled by (1 - speed)
+            move = pygame.Vector2(
+                delta.x * (1.0 - layer.speed.x),
+                delta.y * (1.0 - layer.speed.y)
+            )
+            layer.origin_offset -= move
 
-    def render(self, renderer) -> bool:
-        """Render all layers in order (back to front)."""
-        if not self.enabled or not self.layers:
-            return False
+            # If using tiled texture, keep offset within texture size to avoid drift
+            if layer.tile_texture:
+                tex_w, tex_h = layer.tile_texture.get_size()
+                if tex_w > 0 and layer.repeat_x:
+                    layer.origin_offset.x %= tex_w
+                if tex_h > 0 and layer.repeat_y:
+                    layer.origin_offset.y %= tex_h
 
-        # Sort by speed_factor (slower layers = background first)
-        sorted_layers = sorted(self.layers, key=lambda l: l.speed_factor)
-        for layer in sorted_layers:
-            layer.render(self.camera, renderer)
-        return True
+    def render(self, renderer: OpenGLRenderer, viewport: Optional[pygame.Rect] = None):
+        """
+        Render all layers onto the screen.
+        Each layer either renders a tiled texture or a list of animated sprites.
+        """
+        if not self.enabled:
+            return
+        if viewport is None:
+            viewport = pygame.Rect(0, 0, renderer.width, renderer.height)
 
+        for layer in self.layers:
+            if layer.tile_texture:
+                self._render_tiled(renderer, layer, viewport)
+            else:
+                self._render_sprites(renderer, layer, viewport)
+
+    def _render_tiled(self, renderer: OpenGLRenderer, layer: ParallaxLayer, viewport: pygame.Rect):
+        """Efficient tiled rendering (same as before)."""
+        tex = layer.tile_texture
+        if not tex:
+            return
+        tex_w, tex_h = tex.get_size()
+        if tex_w == 0 or tex_h == 0:
+            return
+
+        offset = layer.origin_offset
+        # First tile origin in screen space
+        start_x = int(offset.x) % tex_w
+        start_y = int(offset.y) % tex_h
+
+        # Draw tiles covering the viewport
+        for y in range(start_y - tex_h, viewport.height + tex_h, tex_h):
+            for x in range(start_x - tex_w, viewport.width + tex_w, tex_w):
+                tile_rect = pygame.Rect(x, y, tex_w, tex_h)
+                if tile_rect.colliderect(viewport):
+                    renderer.blit(tex, (x, y))
+
+    def _render_sprites(self, renderer: OpenGLRenderer, layer: ParallaxLayer, viewport: pygame.Rect):
+        """Render individual sprites with animation and brightness."""
+        camera = self.camera
+        zoom = camera.zoom
+        time = self._time
+
+        for sprite in layer.sprites:
+            # Animated offset (oscillation)
+            anim_offset = sprite.get_animated_offset(time)
+            
+            # Effective world position = base_pos + layer scroll offset + animation offset
+            world_pos = sprite.base_pos + layer.origin_offset + anim_offset
+
+            # Convert to screen coordinates (pixels)
+            screen_pos = camera.world_to_screen(world_pos)
+
+            # Compute scaled size (original size * scale * zoom)
+            orig_w, orig_h = sprite.surface.get_size()
+            final_w = int(orig_w * sprite.scale * zoom)
+            final_h = int(orig_h * sprite.scale * zoom)
+            if final_w <= 0 or final_h <= 0:
+                continue
+            
+            # Compute final color (brightness pulse + fixed tint)
+            pulse = sprite.get_current_brightness(time)
+            r = min(1.0, sprite.color[0] * pulse)
+            g = min(1.0, sprite.color[1] * pulse)
+            b = min(1.0, sprite.color[2] * pulse)
+
+            # Prepare a scaled & rotated surface (caching recommended for production)
+            coloured_surf = sprite.get_transformed_surface(
+                (final_w, final_h),
+                sprite.angle,
+                (r, g, b, sprite.alpha)
+            )
+            renderer.blit(coloured_surf, (screen_pos.x - final_w//2, screen_pos.y - final_h//2))   
 
 # ----------------------------------------------------------------------
 # Camera - Main Class
@@ -721,11 +945,11 @@ class Camera:
     def convert_size_zoom(self, size: Union[Tuple[float, float], List[float], float, pygame.Vector2]):
         """Scale a size from world units to screen pixels, or vice‑versa."""
         if isinstance(size, (tuple, list)):
-            return (size[0] / self.zoom, size[1] / self.zoom)
+            return (size[0] * self.zoom, size[1] * self.zoom)
         elif isinstance(size, (int, float, np.float32)):
-            return size / self.zoom
+            return size * self.zoom
         elif isinstance(size, pygame.Vector2):
-            return size / self.zoom
+            return size * self.zoom
         else:
             raise TypeError(f"size must be tuple, list, int, float, or pygame.Vector2\nIt is: {type(size)}")
 
@@ -866,11 +1090,11 @@ class Camera:
 
     def clear_parallax_layers(self):
         """Remove all parallax layers."""
-        self.parallax.clear_layers()
+        self.parallax.clear()
 
-    def render_parallax(self, renderer) -> bool:
+    def render_parallax(self, renderer) -> None:
         """Render the parallax background."""
-        return self.parallax.render(renderer)
+        self.parallax.render(renderer)
 
     def enable_parallax(self, enabled: bool = True):
         """Enable/disable parallax rendering."""

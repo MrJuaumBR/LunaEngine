@@ -75,7 +75,7 @@ class SpriteSheetTestScene(Scene):
     def load_animations(self):
         """Load the tiki texture animations and store a raw frame for preview."""
         try:
-            texture_path = './examples/tiki_texture.png'
+            texture_path = (os.path.join(os.path.dirname(__file__), 'tiki_texture.png'))
             self.sprite_sheet = SpriteSheet(texture_path)   # using pathlib internally
 
             # Define the rectangle for the first walk frame (size 70x70 at (0,0))
@@ -285,7 +285,7 @@ class SpriteSheetTestScene(Scene):
     # ------------------------------------------------------------
     def setup_ui(self):
         title = TextLabel(512, 30, "Sprite Sheet System - Full Feature Demo", 36,
-                          root_point=(0.5,0), theme=self.CurrentTheme)
+                          pivot=(0.5,0), theme=self.CurrentTheme)
         self.add_ui_element(title)
 
         # Adjusted width to 920 (was 980) to prevent overlap, and height 580 (was 650)
@@ -298,7 +298,7 @@ class SpriteSheetTestScene(Scene):
 
         # Back button
         back_btn = Button(50, 50, 120, 30, "<- Main Menu", 20,
-                          root_point=(0,0), theme=self.CurrentTheme)
+                          pivot=(0,0), theme=self.CurrentTheme)
         back_btn.set_on_click(lambda: self.engine.set_scene("MainMenu"))
         self.add_ui_element(back_btn)
 
@@ -423,11 +423,11 @@ class SpriteSheetTestScene(Scene):
         self.main_tabs.add_to_tab(tab, preview_container)
 
         # Label inside container
-        preview_label = TextLabel(100, 10, "Effect Preview", 16, (220,220,255), root_point=(0.5,0))
+        preview_label = TextLabel(100, 10, "Effect Preview", 16, (220,220,255), pivot=(0.5,0))
         preview_container.add_child(preview_label)
 
         # This ImageLabel will hold the preview image; updated in update()
-        self.preview_image = ImageLabel(100, 110, None, 100, 100, root_point=(0.5,0.5))
+        self.preview_image = ImageLabel(100, 110, None, 100, 100, pivot=(0.5,0.5))
         preview_container.add_child(self.preview_image)
 
         # Explanation text on the left side
@@ -605,14 +605,14 @@ class MainMenuScene(Scene):
     def __init__(self, engine: LunaEngine):
         super().__init__(engine)
         self.CurrentTheme = ThemeType.DEFAULT
-        title = TextLabel(512, 150, "Sprite Sheet Full Demo", 72, root_point=(0.5,0), theme=self.CurrentTheme)
+        title = TextLabel(512, 150, "Sprite Sheet Full Demo", 72, pivot=(0.5,0), theme=self.CurrentTheme)
         self.add_ui_element(title)
-        subtitle = TextLabel(512, 220, "LunaEngine - Animation + Sprite Effects", 32, root_point=(0.5,0), theme=self.CurrentTheme)
+        subtitle = TextLabel(512, 220, "LunaEngine - Animation + Sprite Effects", 32, pivot=(0.5,0), theme=self.CurrentTheme)
         self.add_ui_element(subtitle)
-        start_btn = Button(512, 300, 250, 40, "Start Demo", 28, root_point=(0.5,0), theme=self.CurrentTheme)
+        start_btn = Button(512, 300, 250, 40, "Start Demo", 28, pivot=(0.5,0), theme=self.CurrentTheme)
         start_btn.set_on_click(lambda: engine.set_scene("SpriteSheetTest"))
         self.add_ui_element(start_btn)
-        exit_btn = Button(512, 360, 250, 40, "Exit", 28, root_point=(0.5,0), theme=self.CurrentTheme)
+        exit_btn = Button(512, 360, 250, 40, "Exit", 28, pivot=(0.5,0), theme=self.CurrentTheme)
         exit_btn.set_on_click(lambda: setattr(engine, 'running', False))
         self.add_ui_element(exit_btn)
 

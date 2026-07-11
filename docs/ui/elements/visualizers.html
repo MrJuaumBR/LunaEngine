@@ -48,14 +48,21 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">A versatile data visualization component that can display various chart types:<br>bar charts (vertical/horizontal), pie charts, line charts, scatter plots, and radar charts.<br><br>Gradient support:<br>- For line charts: each segment between two points is drawn with a color interpolated<br> &nbsp;between the colors of those two points.<br>- For radar charts: each edge is drawn with a color interpolated between the colors<br> &nbsp;of its two vertices.<br><br>Gradient parameters (passed as kwargs to __init__):<br> &nbsp; &nbsp;use_gradient (bool): Enable gradient coloring. Default False.<br> &nbsp; &nbsp;gradient_colors (List[Tuple[int,int,int]]): List of colors per data point.<br> &nbsp; &nbsp; &nbsp; &nbsp;If provided, overrides start/end.<br> &nbsp; &nbsp;gradient_start (Tuple[int,int,int]): Start color for interpolation (default red).<br> &nbsp; &nbsp;gradient_end (Tuple[int,int,int]): End color for interpolation (default green).</p>
+                    <p class="lead fs-6">A versatile data visualization component: bar, pie, line, scatter, radar charts.<br>Supports gradients, animations, and legend.</p>
                 </div>
-                
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'chart_type': {'name': 'chart type', 'key': 'chart_type', 'type': str, 'editable': True, 'description': 'Type of chart: bar, pie, line, scatter, radar', 'options': ['bar', 'pie', 'line', 'scatter', 'radar']}, 'title': {'name': 'title', 'key': 'title', 'type': str, 'editable': True, 'description': 'Chart title text.'}, 'show_labels': {'name': 'show labels', 'key': 'show_labels', 'type': bool, 'editable': True, 'description': 'Display data labels.'}, 'show_legend': {'name': 'show legend', 'key': 'show_legend', 'type': bool, 'editable': True, 'description': 'Display color legend.'}, 'use_gradient': {'name': 'use gradient', 'key': 'use_gradient', 'type': bool, 'editable': True, 'description': 'Use color gradient across data points.'}}</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, data: Optional[List[float]] = None, labels: Optional[List[str]] = None, colors: Optional[List[Tuple[int, int, int]]] = None, chart_type: Literal['bar', 'pie', 'line', 'scatter', 'radar'] = 'bar', orientation: Literal['vertical', 'horizontal'] = 'vertical', title: str = '', show_labels: bool = True, show_legend: bool = False, min_value: Optional[float] = None, max_value: Optional[float] = None, radar_max_value: float = 1.0, radar_axis_labels: Optional[List[str]] = None, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None, **kwargs: dict) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, data: Optional[List[float]] = None, labels: Optional[List[str]] = None, colors: Optional[List[Tuple[int, int, int]]] = None, chart_type: Literal['bar', 'pie', 'line', 'scatter', 'radar'] = 'bar', orientation: Literal['vertical', 'horizontal'] = 'vertical', title: str = '', show_labels: bool = True, show_legend: bool = False, min_value: Optional[float] = None, max_value: Optional[float] = None, radar_max_value: float = 1.0, radar_axis_labels: Optional[List[str]] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
+                <div class="mt-2 text-muted small">Initialize a chart visualizer.<br><br>Args:<br> &nbsp; &nbsp;x, y: Position.<br> &nbsp; &nbsp;width, height: Dimensions.<br> &nbsp; &nbsp;data: List of numeric values.<br> &nbsp; &nbsp;labels: Corresponding labels.<br> &nbsp; &nbsp;colors: List of colors per data point (RGB).<br> &nbsp; &nbsp;chart_type: &#x27;bar&#x27;, &#x27;pie&#x27;, &#x27;line&#x27;, &#x27;scatter&#x27;, &#x27;radar&#x27;.<br> &nbsp; &nbsp;orientation: &#x27;vertical&#x27; or &#x27;horizontal&#x27; (for bar charts).<br> &nbsp; &nbsp;title: Chart title.<br> &nbsp; &nbsp;show_labels: Display labels on/inside chart.<br> &nbsp; &nbsp;show_legend: Display color legend.<br> &nbsp; &nbsp;min_value, max_value: Manual value range.<br> &nbsp; &nbsp;radar_max_value: Maximum value for radar chart (default 1.0).<br> &nbsp; &nbsp;radar_axis_labels: Labels for radar axes (defaults to labels).<br> &nbsp; &nbsp;pivot: Anchor point.<br> &nbsp; &nbsp;theme: Theme to apply.<br> &nbsp; &nbsp;element_id: Custom ID.<br> &nbsp; &nbsp;**kwargs: Gradient options: use_gradient (bool), gradient_colors (list of RGB),<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; gradient_start (RGB), gradient_end (RGB).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_get_init_args">
+                <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_default_colors">
@@ -63,27 +70,27 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-title_font">
-                <code class="fs-6 fw-bold text-color-title">def title_font(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def title_font(self: Any) -> pygame.font.Font</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-label_font">
-                <code class="fs-6 fw-bold text-color-title">def label_font(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def label_font(self: Any) -> pygame.font.Font</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-legend_font">
-                <code class="fs-6 fw-bold text-color-title">def legend_font(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def legend_font(self: Any) -> pygame.font.Font</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-set_data">
-                <code class="fs-6 fw-bold text-color-title">def set_data(self: Any, data: List[float], labels: Optional[List[str]] = None, animate: bool = False, duration: float = 0.5) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_data(self: Any, data: List[float], labels: Optional[List[str]] = None, animate: bool = False, duration: float = 0.5) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_recalc">
-                <code class="fs-6 fw-bold text-color-title">def _recalc(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _recalc(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_get_color">
@@ -91,11 +98,11 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_get_point_color">
-                <code class="fs-6 fw-bold text-color-title">def _get_point_color(self: Any, index: int, t: float = None) -> Tuple[int, int, int]</code>
+                <code class="fs-6 fw-bold text-color-title">def _get_point_color(self: Any, index: int, t: Optional[float] = None) -> Tuple[int, int, int]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_render_bar">
@@ -132,22 +139,29 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Real-time audio visualization element that displays audio data in various styles.<br><br>Supports multiple visualization modes and can connect to OpenAL audio sources.<br><br>Attributes:<br> &nbsp; &nbsp;style (str): Visualization style (&#x27;bars&#x27;, &#x27;waveform&#x27;, &#x27;circle&#x27;, &#x27;particles&#x27;, &#x27;spectrum&#x27;)<br> &nbsp; &nbsp;source: OpenAL audio source to visualize<br> &nbsp; &nbsp;color_gradient (List[Tuple[int, int, int]]): Colors for gradient visualization<br> &nbsp; &nbsp;bar_width (int): Width of bars in bar mode<br> &nbsp; &nbsp;bar_spacing (int): Spacing between bars<br> &nbsp; &nbsp;sensitivity (float): Audio sensitivity/amplification<br> &nbsp; &nbsp;smoothing (float): Smoothing factor for transitions</p>
+                    <p class="lead fs-6">Real-time audio visualization element: bars, waveform, circle, particles, spectrum.<br>Connects to an OpenAL audio source.</p>
                 </div>
-                
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'style': {'name': 'style', 'key': 'style', 'type': str, 'editable': True, 'description': 'Visualization style: bars, waveform, circle, particles, spectrum', 'options': ['bars', 'waveform', 'circle', 'particles', 'spectrum']}, 'sensitivity': {'name': 'sensitivity', 'key': 'sensitivity', 'type': float, 'editable': True, 'description': 'Audio sensitivity (0.1-5.0).'}, 'smoothing': {'name': 'smoothing', 'key': 'smoothing', 'type': float, 'editable': True, 'description': 'Smoothing factor (0.0-1.0).'}, 'num_bars': {'name': 'number of bars', 'key': 'num_bars', 'type': int, 'editable': True, 'description': 'Number of bars/segments.'}}</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, style: Literal['bars', 'waveform', 'circle', 'particles', 'spectrum'] = 'bars', source: Any = None, color_gradient: Optional[List[Tuple[int, int, int]]] = None, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, style: Literal['bars', 'waveform', 'circle', 'particles', 'spectrum'] = 'bars', source: Any = None, color_gradient: Optional[List[Tuple[int, int, int]]] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_get_init_args">
+                <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_initialize_audio_data">
-                <code class="fs-6 fw-bold text-color-title">def _initialize_audio_data(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _initialize_audio_data(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_generate_gradient_surface">
-                <code class="fs-6 fw-bold text-color-title">def _generate_gradient_surface(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _generate_gradient_surface(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_interpolate_gradient">
@@ -155,23 +169,23 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-set_style">
-                <code class="fs-6 fw-bold text-color-title">def set_style(self: Any, style: str) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_style(self: Any, style: str) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-set_source">
-                <code class="fs-6 fw-bold text-color-title">def set_source(self: Any, source: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_source(self: Any, source: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-set_color_gradient">
-                <code class="fs-6 fw-bold text-color-title">def set_color_gradient(self: Any, gradient: List[Tuple[int, int, int]]) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_color_gradient(self: Any, gradient: List[Tuple[int, int, int]]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-set_sensitivity">
-                <code class="fs-6 fw-bold text-color-title">def set_sensitivity(self: Any, sensitivity: float) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_sensitivity(self: Any, sensitivity: float) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-set_smoothing">
-                <code class="fs-6 fw-bold text-color-title">def set_smoothing(self: Any, smoothing: float) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_smoothing(self: Any, smoothing: float) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_get_audio_data">
@@ -179,35 +193,35 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_process_audio_data">
-                <code class="fs-6 fw-bold text-color-title">def _process_audio_data(self: Any, raw_data: List[float]) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _process_audio_data(self: Any, raw_data: List[float]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_bars">
-                <code class="fs-6 fw-bold text-color-title">def _render_bars(self: Any, renderer: Renderer, x: int, y: int) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_bars(self: Any, renderer: Renderer, x: int, y: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_waveform">
-                <code class="fs-6 fw-bold text-color-title">def _render_waveform(self: Any, renderer: Renderer, x: int, y: int) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_waveform(self: Any, renderer: Renderer, x: int, y: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_circle">
-                <code class="fs-6 fw-bold text-color-title">def _render_circle(self: Any, renderer: Renderer, x: int, y: int) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_circle(self: Any, renderer: Renderer, x: int, y: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_particles">
-                <code class="fs-6 fw-bold text-color-title">def _render_particles(self: Any, renderer: Renderer, x: int, y: int) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_particles(self: Any, renderer: Renderer, x: int, y: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_spectrum">
-                <code class="fs-6 fw-bold text-color-title">def _render_spectrum(self: Any, renderer: Renderer, x: int, y: int) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_spectrum(self: Any, renderer: Renderer, x: int, y: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_get_bar_color">
@@ -233,6 +247,93 @@
                 </div>
             </div>
         </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-table">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Table</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">A tabular data display element with column headers, row styling, selection.<br>Fixed size and position; rows exceeding the height are clipped.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'header_height': {'name': 'header height', 'key': 'header_height', 'type': int, 'editable': True, 'description': 'Height of the header row in pixels.'}, 'row_height': {'name': 'row height', 'key': 'row_height', 'type': int, 'editable': True, 'description': 'Height of each data row in pixels.'}, 'cell_padding': {'name': 'cell padding', 'key': 'cell_padding', 'type': int, 'editable': True, 'description': 'Padding inside each cell in pixels.'}, 'show_headers': {'name': 'show headers', 'key': 'show_headers', 'type': bool, 'editable': True, 'description': 'Whether to display the header row.'}, 'selection_enabled': {'name': 'selection enabled', 'key': 'selection_enabled', 'type': bool, 'editable': True, 'description': 'Allow row selection via click.'}}</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, columns: Optional[List[str]] = None, rows: Optional[List[List[str]]] = None, header_height: int = 25, row_height: int = 25, cell_padding: int = 5, show_headers: bool = True, selection_enabled: bool = False, on_row_select: Optional[Callable[[int, List[str]], None]] = None, odd_row_color: Optional[Tuple[int, int, int]] = None, even_row_color: Optional[Tuple[int, int, int]] = None, header_color: Optional[Tuple[int, int, int]] = None, header_text_color: Optional[Tuple[int, int, int]] = None, border_color: Optional[Tuple[int, int, int]] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">Initialize a fixed-size table.<br><br>Args:<br> &nbsp; &nbsp;x, y: Position.<br> &nbsp; &nbsp;width, height: Dimensions (height is fixed; content clipped if taller).<br> &nbsp; &nbsp;columns: List of column names.<br> &nbsp; &nbsp;rows: 2D list of row data (each row is a list of strings).<br> &nbsp; &nbsp;header_height: Height of the header row.<br> &nbsp; &nbsp;row_height: Height of each data row.<br> &nbsp; &nbsp;cell_padding: Padding inside each cell.<br> &nbsp; &nbsp;show_headers: If True, display column headers.<br> &nbsp; &nbsp;selection_enabled: If True, allow row selection via mouse click.<br> &nbsp; &nbsp;on_row_select: Callback when a row is selected (row_index, row_data).<br> &nbsp; &nbsp;odd_row_color, even_row_color, header_color, header_text_color, border_color: Custom colours.<br> &nbsp; &nbsp;pivot, theme, element_id: Standard UIElement arguments.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_get_init_args">
+                <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-font">
+                <code class="fs-6 fw-bold text-color-title">def font(self: Any) -> pygame.font.Font</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_recalc">
+                <code class="fs-6 fw-bold text-color-title">def _recalc(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Compute column widths (equal distribution).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-add_column">
+                <code class="fs-6 fw-bold text-color-title">def add_column(self: Any, name: str) -> None</code>
+                <div class="mt-2 text-muted small">Add a new column at the end.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-insert_column">
+                <code class="fs-6 fw-bold text-color-title">def insert_column(self: Any, index: int, name: str) -> None</code>
+                <div class="mt-2 text-muted small">Insert a column at the given index.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-remove_column">
+                <code class="fs-6 fw-bold text-color-title">def remove_column(self: Any, index: int) -> None</code>
+                <div class="mt-2 text-muted small">Remove a column by index.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-add_row">
+                <code class="fs-6 fw-bold text-color-title">def add_row(self: Any, data: List[str]) -> None</code>
+                <div class="mt-2 text-muted small">Add a new row at the end.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-insert_row">
+                <code class="fs-6 fw-bold text-color-title">def insert_row(self: Any, index: int, data: List[str]) -> None</code>
+                <div class="mt-2 text-muted small">Insert a row at the given index.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-remove_row">
+                <code class="fs-6 fw-bold text-color-title">def remove_row(self: Any, index: int) -> None</code>
+                <div class="mt-2 text-muted small">Remove a row by index.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-set_cell">
+                <code class="fs-6 fw-bold text-color-title">def set_cell(self: Any, row: int, col: int, value: str) -> None</code>
+                <div class="mt-2 text-muted small">Set the value of a specific cell.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-get_cell">
+                <code class="fs-6 fw-bold text-color-title">def get_cell(self: Any, row: int, col: int) -> str</code>
+                <div class="mt-2 text-muted small">Get the value of a specific cell.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-clear">
+                <code class="fs-6 fw-bold text-color-title">def clear(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Clear all rows.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-select_row">
+                <code class="fs-6 fw-bold text-color-title">def select_row(self: Any, row_index: int) -> None</code>
+                <div class="mt-2 text-muted small">Select a row programmatically.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: Any) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-on_click">
+                <code class="fs-6 fw-bold text-color-title">def on_click(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Handle mouse click for row selection.</div>
+            </div>
+                </div>
+            </div>
+        </div>
                 
                 
             </div>
@@ -254,7 +355,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

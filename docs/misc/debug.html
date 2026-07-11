@@ -55,7 +55,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-debugoverlay-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, engine: 'LunaEngine', x: int = 10, y: int = 10, width: int = 200, height: int = 100, title: str = '', background_color: Tuple[int, int, int, int] = (0, 0, 0, 180), header_color: Tuple[int, int, int, int] = (60, 60, 70, 220), text_color: Tuple[int, int, int] = (255, 255, 255)) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, engine: 'LunaEngine', x: int = 10, y: int = 10, width: int = 200, height: int = 100, title: str = '', text_color: Tuple[int, int, int] = (255, 255, 255)) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-debugoverlay-refresh">
@@ -143,6 +143,102 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scenestatsoverlay-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, input_state: InputState) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-soundoverlay">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class SoundOverlay</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-soundoverlay-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, engine: 'LunaEngine', x: int = 420, y: int = 10) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-soundoverlay-refresh">
+                <code class="fs-6 fw-bold text-color-title">def refresh(self: Any, dt: float) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-soundoverlay-render_content">
+                <code class="fs-6 fw-bold text-color-title">def render_content(self: Any, renderer: OpenGLRenderer) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-soundoverlay-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, input_state: InputState) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-clockoverlay">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ClockOverlay</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clockoverlay-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, engine: 'LunaEngine', x: int = 10, y: int = 110) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clockoverlay-refresh">
+                <code class="fs-6 fw-bold text-color-title">def refresh(self: Any, dt: float) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clockoverlay-render_content">
+                <code class="fs-6 fw-bold text-color-title">def render_content(self: Any, renderer: OpenGLRenderer) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clockoverlay-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, input_state: InputState) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-versionoverlay">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class VersionOverlay</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-versionoverlay-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, engine: 'LunaEngine', x: int = 180, y: int = 110) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-versionoverlay-refresh">
+                <code class="fs-6 fw-bold text-color-title">def refresh(self: Any, dt: float) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-versionoverlay-render_content">
+                <code class="fs-6 fw-bold text-color-title">def render_content(self: Any, renderer: OpenGLRenderer) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-versionoverlay-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, input_state: InputState) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
@@ -251,13 +347,69 @@
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, engine: 'LunaEngine', x: int = 100, y: int = 100) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_update_scene_registration">
+                <code class="fs-6 fw-bold text-color-title">def _update_scene_registration(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Add or remove this inspector from the current scene&#x27;s ui_elements.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-set_visible">
+                <code class="fs-6 fw-bold text-color-title">def set_visible(self: Any, visible: bool) -> Any</code>
+                <div class="mt-2 text-muted small">Override visibility to handle scene registration.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-close">
+                <code class="fs-6 fw-bold text-color-title">def close(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Called by header close button.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-toggle_fixed">
+                <code class="fs-6 fw-bold text-color-title">def toggle_fixed(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Called by header lock button.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-on_scene_changed">
+                <code class="fs-6 fw-bold text-color-title">def on_scene_changed(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Called by debug manager when the active scene changes.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_setup_content">
                 <code class="fs-6 fw-bold text-color-title">def _setup_content(self: Any, engine: 'LunaEngine') -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_setup_audio_tab">
+                <code class="fs-6 fw-bold text-color-title">def _setup_audio_tab(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Create the audio control tab with master volume, effects, and source list.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_update_audio_sources">
+                <code class="fs-6 fw-bold text-color-title">def _update_audio_sources(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Refresh the list of audio sources in the scrollable frame.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_on_master_volume_changed">
+                <code class="fs-6 fw-bold text-color-title">def _on_master_volume_changed(self: Any, value: float) -> Any</code>
+                <div class="mt-2 text-muted small">Update master volume.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_on_source_volume_changed">
+                <code class="fs-6 fw-bold text-color-title">def _on_source_volume_changed(self: Any, source: Any, value: float) -> Any</code>
+                <div class="mt-2 text-muted small">Update source volume.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_on_source_pan_changed">
+                <code class="fs-6 fw-bold text-color-title">def _on_source_pan_changed(self: Any, source: Any, value: float) -> Any</code>
+                <div class="mt-2 text-muted small">Update source pan.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_apply_effect">
+                <code class="fs-6 fw-bold text-color-title">def _apply_effect(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Apply the selected effect with the current intensity to all channels.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_force_kill">
+                <code class="fs-6 fw-bold text-color-title">def _force_kill(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Force kill the engine (quit the game).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_reinit_game">
+                <code class="fs-6 fw-bold text-color-title">def _reinit_game(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Re-initialize the current scene (reloads all UI elements).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_clear_all_caches">
+                <code class="fs-6 fw-bold text-color-title">def _clear_all_caches(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_setup_performance_tab">
                 <code class="fs-6 fw-bold text-color-title">def _setup_performance_tab(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Create the performance monitoring tab without scrolling.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_add_label">
                 <code class="fs-6 fw-bold text-color-title">def _add_label(self: Any, text: Any, x: Any, y: Any, tab_name: Any, font_size: Any = None) -> Any</code>
@@ -269,19 +421,23 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_update_performance_tab">
                 <code class="fs-6 fw-bold text-color-title">def _update_performance_tab(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Refresh all performance metrics and hardware info.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_get_cpu_model">
                 <code class="fs-6 fw-bold text-color-title">def _get_cpu_model(self: Any) -> str</code>
-                <div class="mt-2 text-muted small">Extract a friendly CPU model name from platform.processor() or other sources.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_get_gpu_info">
                 <code class="fs-6 fw-bold text-color-title">def _get_gpu_info(self: Any) -> str</code>
-                <div class="mt-2 text-muted small">Extract clean GPU model name from OpenGL renderer string.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_build_root_hierarchy">
                 <code class="fs-6 fw-bold text-color-title">def _build_root_hierarchy(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Reset stack and show top‑level UI elements from current scene.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-recharge">
+                <code class="fs-6 fw-bold text-color-title">def recharge(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_build_hierarchy_view">
                 <code class="fs-6 fw-bold text-color-title">def _build_hierarchy_view(self: Any, elements: List[UIElement]) -> Any</code>
@@ -289,7 +445,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_navigate_back">
                 <code class="fs-6 fw-bold text-color-title">def _navigate_back(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Navigate back one level in hierarchy (with cooldown).</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_on_element_click_with_cooldown">
                 <code class="fs-6 fw-bold text-color-title">def _on_element_click_with_cooldown(self: Any, element: UIElement) -> Any</code>
@@ -319,14 +475,6 @@
                 <code class="fs-6 fw-bold text-color-title">def set_debug_manager(self: Any, dm: 'DebugManager') -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-close">
-                <code class="fs-6 fw-bold text-color-title">def close(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-toggle_fixed">
-                <code class="fs-6 fw-bold text-color-title">def toggle_fixed(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, input_state: InputState) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -351,8 +499,12 @@
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, engine: 'LunaEngine') -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-debugmanager-on_scene_changed">
+                <code class="fs-6 fw-bold text-color-title">def on_scene_changed(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-debugmanager-add_overlay">
-                <code class="fs-6 fw-bold text-color-title">def add_overlay(self: Any, overlay: DebugOverlay) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def add_overlay(self: Any, overlay: DebugOverlay | Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-debugmanager-remove_overlay">
@@ -395,7 +547,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

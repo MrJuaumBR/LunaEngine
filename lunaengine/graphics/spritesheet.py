@@ -17,12 +17,14 @@ KEY FEATURES:
 - Animation sequencing with configurable durations
 - Automatic frame extraction based on parameters
 - Image manipulation: scaling, resizing, masking, color replacement, tinting
+- Atlas integration: create spritesheets from registered atlas items (with bundle support)
 
 LIBRARIES USED:
 - pygame: Image loading, surface manipulation, and alpha processing
 - typing: Type hints for better code documentation
 - time: Animation timing calculations
 - pathlib: Modern path handling
+- io: For loading images from bytes (bundle support)
 
 ! WARN:
 - Ensure pygame is initialized before using this module
@@ -46,12 +48,20 @@ USAGE:
 >>>
 >>> # Tinting
 >>> tinted = SpriteSheet.tint(sprite, (100,100,255))
+>>>
+>>> # Using the Atlas (with bundle support)
+>>> engine = LunaEngine()
+>>> engine.add_texture_to_atlas("player", "sprites/player.png")
+>>> sheet = SpriteSheet.from_atlas("player", engine.atlas)  # works with both file and bundle
 """
 
 import pygame
 import time
+import io
 from pathlib import Path
 from typing import List, Tuple, Optional, Union, Callable
+
+from ..storage import Atlas, AtlasCategory, AtlasItem
 
 
 class SpriteSheet:
@@ -64,28 +74,68 @@ class SpriteSheet:
 
     Attributes:
         sheet (pygame.Surface): The loaded sprite sheet surface with alpha
-        filepath (Path): Path to the sprite sheet file
+        filepath (Path): Path to the sprite sheet file (None if loaded from bytes)
         width (int): Width of the sprite sheet
         height (int): Height of the sprite sheet
     """
 
-    def __init__(self, filename: Union[str, Path]):
+    def __init__(self, filename: Optional[Union[str, Path, AtlasItem]] = None, data: Optional[bytes] = None):
         """
-        Initialize the sprite sheet with alpha support.
+        Initialize the sprite sheet. Either provide a filename (file path) or raw bytes.
 
         Args:
-            filename (Union[str, Path]): Path to the sprite sheet image file
-
-        Raises:
-            FileNotFoundError: If the file does not exist
+            filename: Path to the sprite sheet file (optional if data is provided).
+            data: Raw bytes of the image (used when loading from a bundle).
         """
-        self.filepath = Path(filename).resolve()
-        if not self.filepath.exists():
-            raise FileNotFoundError(f"Sprite sheet file not found: {self.filepath}")
+        if data is not None:
+            self.sheet = pygame.image.load(io.BytesIO(data)).convert_alpha()
+            self.filepath = None
+        elif filename is not None:
+            if isinstance(filename, AtlasItem):
+                self.filepath = filename.path
+            else:
+                self.filepath = Path(filename).resolve()
+                if not self.filepath.exists():
+                    raise FileNotFoundError(f"Sprite sheet file not found: {self.filepath}")
+            self.sheet = pygame.image.load(str(self.filepath)).convert_alpha()
+        else:
+            raise ValueError("Either filename or data must be provided")
 
-        self.sheet = pygame.image.load(str(self.filepath)).convert_alpha()
         self.width = self.sheet.get_width()
         self.height = self.sheet.get_height()
+
+    @classmethod
+    def from_atlas(cls, name: str, atlas: Atlas) -> 'SpriteSheet':
+        """
+        Create a SpriteSheet from an atlas item. If atlas is in bundle mode,
+        uses bytes from bundle; otherwise falls back to file path.
+
+        Args:
+            name (str): The name of the item in the atlas.
+            atlas (Atlas): The Atlas instance (from engine.atlas).
+
+        Returns:
+            SpriteSheet: A new SpriteSheet instance.
+
+        Raises:
+            ValueError: If item not found or not a texture.
+
+        Usage:
+            sheet = SpriteSheet.from_atlas("player_texture", engine.atlas)
+        """
+        item = atlas.get_item(name)
+        if item is None:
+            raise ValueError(f"Atlas item '{name}' not found")
+        if item.category != AtlasCategory.TEXTURE:
+            raise ValueError(f"Atlas item '{name}' is not a texture (category: {item.category})")
+
+        # Try to load from bundle bytes first
+        data = atlas.get_bytes(name)
+        if data is not None:
+            return cls(data=data)
+        else:
+            # Fallback to file path
+            return cls(filename=item.path)
 
     def get_sprite_at_rect(self, rect: Union[pygame.Rect, Tuple[int, int, int, int]]) -> pygame.Surface:
         """
@@ -101,11 +151,9 @@ class SpriteSheet:
         Raises:
             ValueError: If the rect is outside the sprite sheet bounds
         """
-        # Accepts tuples on rect
         if isinstance(rect, tuple) and len(rect) == 4:
             rect = pygame.Rect(*rect)
 
-        # Validate rect bounds
         if (
             rect.x < 0
             or rect.y < 0
@@ -116,7 +164,6 @@ class SpriteSheet:
                 f"Rect {rect} is outside sprite sheet bounds {self.width}x{self.height}"
             )
 
-        # Extract the sprite using subsurface (no memory copy)
         return self.sheet.subsurface(rect)
 
     def get_sprites_at_regions(
@@ -191,19 +238,14 @@ class SpriteSheet:
         if width == 0 or height == 0:
             return pygame.Rect(0, 0, 0, 0)
 
-        # Lock surface for pixel access
         surface.lock()
         try:
-            # Initialize bounds to extreme values
             left, top = width, height
             right, bottom = -1, -1
 
-            # Iterate through all pixels to find non-transparent bounds
             for y in range(height):
                 for x in range(width):
-                    # Get alpha value at current pixel
-                    alpha = surface.get_at((x, y))[3]  # Index 3 is alpha channel
-                    # Check if pixel is non-transparent (above threshold)
+                    alpha = surface.get_at((x, y))[3]
                     if alpha >= threshold:
                         if x < left:
                             left = x
@@ -214,13 +256,11 @@ class SpriteSheet:
                         if y > bottom:
                             bottom = y
 
-            # Check if any non-transparent pixels were found
             if left <= right and top <= bottom:
                 return pygame.Rect(left, top, right - left + 1, bottom - top + 1)
             else:
-                return pygame.Rect(0, 0, 0, 0)  # Fully transparent surface
+                return pygame.Rect(0, 0, 0, 0)
         finally:
-            # Always unlock the surface
             surface.unlock()
 
     # --------------------------------------------------------------------------
@@ -300,12 +340,10 @@ class SpriteSheet:
             pygame.Mask: The generated mask
         """
         if color_key is not None:
-            # Create a copy and set colorkey
             temp_surface = surface.copy()
             temp_surface.set_colorkey(color_key)
             return pygame.mask.from_surface(temp_surface)
         else:
-            # Use alpha channel
             return pygame.mask.from_surface(surface, threshold)
 
     @staticmethod
@@ -327,26 +365,21 @@ class SpriteSheet:
         Returns:
             pygame.Surface: A new surface with colors replaced
         """
-        # Normalize colors to RGBA
         old_rgba = old_color if len(old_color) == 4 else (*old_color, 255)
         new_rgba = new_color if len(new_color) == 4 else (*new_color, 255)
 
-        # Create a copy of the surface
         result = surface.copy()
         width, height = result.get_size()
 
-        # Lock surfaces for pixel access
         result.lock()
         try:
             for y in range(height):
                 for x in range(width):
                     pixel = result.get_at((x, y))
-                    # Check if pixel matches old_color within tolerance
                     if tolerance == 0:
                         if pixel[:3] == old_rgba[:3] and pixel[3] == old_rgba[3]:
                             result.set_at((x, y), new_rgba)
                     else:
-                        # Calculate color distance
                         dr = abs(pixel[0] - old_rgba[0])
                         dg = abs(pixel[1] - old_rgba[1])
                         db = abs(pixel[2] - old_rgba[2])
@@ -423,7 +456,6 @@ class SpriteSheet:
         result = surface.copy()
         tint_surface = pygame.Surface(result.get_size(), pygame.SRCALPHA)
 
-        # Apply intensity to tint color
         r, g, b = tint_color
         r = int(r * intensity)
         g = int(g * intensity)
@@ -436,12 +468,10 @@ class SpriteSheet:
             tint_surface.fill((r, g, b, 0))
             result.blit(tint_surface, (0, 0), special_flags=pygame.BLEND_RGB_ADD)
         elif blend_mode == "overlay":
-            # Simple overlay: blend with white/black based on original brightness
             for y in range(result.get_height()):
                 for x in range(result.get_width()):
                     pixel = result.get_at((x, y))
                     if pixel[3] > 0:
-                        # Brightness factor (0-1)
                         brightness = (pixel[0] + pixel[1] + pixel[2]) / (3 * 255)
                         overlay_r = int(pixel[0] * (1 - intensity) + r * intensity * brightness)
                         overlay_g = int(pixel[1] * (1 - intensity) + g * intensity * brightness)
@@ -474,7 +504,6 @@ class SpriteSheet:
         result = surface.copy()
 
         if preserve_alpha:
-            # Only paint pixels that are not fully transparent
             width, height = result.get_size()
             result.lock()
             try:
@@ -641,7 +670,6 @@ class Animation:
         current_y = start_y + margin_y
 
         for i in range(self.frame_count):
-            # Create rect for current frame
             rect = pygame.Rect(current_x, current_y, sprite_width, sprite_height)
             try:
                 frame = self.spritesheet.get_sprite_at_rect(rect)
@@ -654,9 +682,7 @@ class Animation:
                 print(f"Warning: Could not extract frame {i} at {rect}: {e}")
                 break
 
-            # Move to next frame position (horizontal layout)
             current_x += sprite_width + pad_x
-            # Check if we need to move to next row (if frame goes beyond sheet width)
             if current_x + sprite_width > self.spritesheet.width:
                 current_x = margin_x
                 current_y += sprite_height + pad_y
@@ -701,12 +727,7 @@ class Animation:
         self.playing = False
 
     def get_frame_count(self) -> int:
-        """
-        Get the number of frames in the animation.
-
-        Returns:
-            int: Number of frames
-        """
+        """Get the number of frames in the animation."""
         return len(self.frames)
 
     def get_progress(self) -> float:
@@ -730,19 +751,13 @@ class Animation:
         Returns:
             pygame.Surface: Surface with fade effect applied
         """
-        if self.fade_alpha == 255:  # No fade needed
+        if self.fade_alpha == 255:
             return surface
 
-        # Create a copy to avoid modifying original frames
         faded_surface = surface.copy()
-
-        # Create a temporary surface for alpha operations
         temp_surface = pygame.Surface(faded_surface.get_size(), pygame.SRCALPHA)
         temp_surface.fill((255, 255, 255, self.fade_alpha))
-
-        # Apply alpha using blend operation
         faded_surface.blit(temp_surface, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
-
         return faded_surface
 
     def update_fade(self):
@@ -758,11 +773,8 @@ class Animation:
 
             elapsed = current_time - self.fade_start_time
             self.fade_progress = min(elapsed / self.fade_in_duration, 1.0)
-
-            # Calculate alpha from progress (0 to 255)
             self.fade_alpha = int(self.fade_progress * 255)
 
-            # Check if fade-in is complete
             if self.fade_progress >= 1.0:
                 self.fade_alpha = 255
                 self.fade_mode = None
@@ -775,11 +787,8 @@ class Animation:
 
             elapsed = current_time - self.fade_start_time
             self.fade_progress = min(elapsed / self.fade_out_duration, 1.0)
-
-            # Calculate alpha from progress (255 to 0)
             self.fade_alpha = int((1.0 - self.fade_progress) * 255)
 
-            # Check if fade-out is complete
             if self.fade_progress >= 1.0:
                 self.fade_alpha = 0
                 self.fade_mode = None
@@ -793,7 +802,6 @@ class Animation:
         This method uses time-based animation rather than frame-based,
         making it frame-rate independent.
         """
-        # Update fade effects first
         if self.fade_mode:
             self.update_fade()
 
@@ -804,10 +812,7 @@ class Animation:
         delta_time = current_time - self.last_update_time
         self.last_update_time = current_time
 
-        # Accumulate time and advance frames
         self.accumulated_time += delta_time
-
-        # Calculate how many frames to advance
         frames_to_advance = int(self.accumulated_time / self.frame_duration)
 
         if frames_to_advance > 0:
@@ -822,7 +827,6 @@ class Animation:
                     self.current_frame_index + frames_to_advance, len(self.frames) - 1
                 )
 
-                # Start fade-out if we reached the end and fade-out is configured
                 if (
                     self.current_frame_index >= len(self.frames) - 1
                     and self.fade_out_duration > 0
@@ -830,7 +834,6 @@ class Animation:
                 ):
                     self.start_fade_out()
 
-                # Stop animation if we reached the end and not looping
                 if (
                     self.current_frame_index >= len(self.frames) - 1
                     and not self.loop
@@ -846,14 +849,12 @@ class Animation:
             pygame.Surface: The current frame surface with fade alpha
         """
         if not self.frames:
-            # Return a blank surface if no frames
             blank = pygame.Surface((1, 1), pygame.SRCALPHA)
             blank.fill((0, 0, 0, 0))
             return blank
 
         frame = self.frames[self.current_frame_index]
 
-        # Apply fade effect if needed
         if self.fade_mode or self.fade_alpha != 255:
             return self._apply_fade_effect(frame)
 
@@ -900,7 +901,7 @@ class Animation:
             alpha (int): Alpha value from 0 (transparent) to 255 (opaque)
         """
         self.fade_alpha = max(0, min(255, alpha))
-        self.fade_mode = None  # Disable automatic fade when manually setting
+        self.fade_mode = None
 
     def is_fade_complete(self) -> bool:
         """
@@ -918,7 +919,6 @@ class Animation:
         self.last_update_time = time.time()
         self.playing = True
 
-        # Reset fade effects based on initialization
         if self.fade_in_duration > 0:
             self.fade_mode = "in"
             self.fade_alpha = 0

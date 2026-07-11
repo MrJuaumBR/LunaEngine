@@ -18,7 +18,7 @@ from lunaengine.core import LunaEngine, Scene
 from lunaengine.ui.elements import *
 from lunaengine.graphics.camera import Camera, CameraMode
 from lunaengine.graphics.particles import ParticleSystem, ParticleConfig, ExitPoint, PhysicsType
-from lunaengine.graphics.shadows import ShadowSystem, Light, ShadowCaster
+from lunaengine.graphics.shadows import ShadowSystem, Light, ShadowCaster, LightType
 from lunaengine.utils import distance
 import pygame
 
@@ -65,7 +65,6 @@ class TopDownFarmingGame(Scene):
         self.shadow_quality = "medium"  # low, medium, high
         
         # Generate world (BEFORE setting up camera)
-        self.setup_parallax()
         self.generate_world()
         
         # Configure camera (AFTER generating world)
@@ -99,46 +98,48 @@ class TopDownFarmingGame(Scene):
     def add_essential_shadow_casters(self):
         """Add only the most important shadow casters for performance"""
         # Clear existing shadow casters first
-        self.shadow_system.clear_shadow_casters()
+        self.shadow_system.clear_casters()
         
         # Add trees as shadow casters (most visible)
         for tree in self.trees[:15]:  # Limit to 15 trees for performance
             tree_caster = self.create_tree_shadow_caster(tree)
-            self.shadow_system.shadow_casters.append(tree_caster)
+            self.shadow_system.add_caster(tree_caster)
             
         # Add rocks as shadow casters
         for rock in self.rocks[:15]:  # Limit to 15 rocks for performance
             rock_caster = self.create_rock_shadow_caster(rock)
-            self.shadow_system.shadow_casters.append(rock_caster)
+            self.shadow_system.add_caster(rock_caster)
         
         # Add buildings as shadow casters
         if self.market_stall:
             market_caster = self.create_building_shadow_caster(self.market_stall)
-            self.shadow_system.shadow_casters.append(market_caster)
+            self.shadow_system.add_caster(market_caster)
         
         if self.seed_shop:
             shop_caster = self.create_building_shadow_caster(self.seed_shop)
-            self.shadow_system.shadow_casters.append(shop_caster)
+            self.shadow_system.add_caster(shop_caster)
 
     def setup_lights(self):
         """Setup optimized lighting system"""
         # Main directional light (sun/moon)
-        self.sun_light = self.shadow_system.add_light(
-            self.world_size[0] // 2,
-            -300,
-            1200,
+        self.sun_light = Light(
+            LightType.DIRECTIONAL,
+            (self.world_size[0] // 2, -300),
             (255, 255, 200),
-            intensity=0.8
+            intensity=0.8,
         )
+        self.shadow_system.add_light(self.sun_light)
         
         # Player light (simple, small radius for performance)
-        self.player_light = self.shadow_system.add_light(
-            self.player['position'][0],
-            self.player['position'][1],
-            150,  # Smaller radius for performance
+        
+        self.player_light = Light(
+            LightType.POINT,
+            (self.player['position'][0], self.player['position'][1]),
             (255, 220, 180),
             intensity=0.6
         )
+        self.shadow_system.add_light(self.player_light)
+        
         
         # Add some static lights for better illumination
         static_lights = [
@@ -149,7 +150,13 @@ class TopDownFarmingGame(Scene):
         ]
         
         for x, y, radius, color, intensity in static_lights:
-            self.shadow_system.add_light(x, y, radius, color, intensity)
+            # self.shadow_system.add_light(x, y, radius, color, intensity)
+            self.shadow_system.add_light(Light(
+                LightType.POINT,
+                (x, y),
+                color,
+                intensity
+            ))
 
     def create_tree_shadow_caster(self, tree):
         """Create simplified shadow caster for a tree"""
@@ -318,22 +325,6 @@ class TopDownFarmingGame(Scene):
             'position': [self.world_size[0] - 450, shop_y],
             'size': 80
         }
-
-    def setup_parallax(self):
-        """Setup optimized parallax background"""
-        self.camera.clear_parallax_layers()
-        
-        # Only use one parallax layer for performance
-        sky_surface = self.create_sky_surface()
-        self.camera.add_parallax_layer(sky_surface, 0.1, tile_mode=True)
-        self.camera.enable_parallax(True)
-
-    def create_sky_surface(self):
-        """Create simple sky background"""
-        surface = pygame.Surface((800, 600))
-        # Simple solid color sky (better performance than gradient)
-        surface.fill((70, 70, 120))
-        return surface
 
     def setup_ui(self):
         """Setup user interface"""
@@ -641,8 +632,6 @@ class TopDownFarmingGame(Scene):
 
     def render_world(self, renderer):
         """Render the game world with proper coordinate conversion"""
-        # Render parallax background
-        self.camera.render_parallax(renderer)
         
         # Render base terrain
         screen_pos = self.apply_camera_offset((0, 0))
@@ -708,7 +697,7 @@ class TopDownFarmingGame(Scene):
             size = self.market_stall['size'] * self.camera.zoom
             market_color = (200, 160, 60)
             renderer.draw_rect(screen_x - size//2, screen_y - size//2, size, size, market_color)
-            renderer.draw_text("Market", screen_x - size//2, screen_y - size//2, (255, 255, 255), pygame.font.SysFont("Arial", 20))
+            renderer.draw_text("Market", screen_x - size//2, screen_y - size//2, (255, 255, 255), FontManager.get_font(None, 20))
         
         # Render seed shop
         if self.seed_shop:
@@ -716,23 +705,8 @@ class TopDownFarmingGame(Scene):
             size = self.seed_shop['size'] * self.camera.zoom
             shop_color = (120, 180, 100)
             renderer.draw_rect(screen_x - size//2, screen_y - size//2, size, size, shop_color)
-            renderer.draw_text("Seed Shop", screen_x - size//2, screen_y - size//2, (255, 255, 255), pygame.font.SysFont("Arial", 20))
+            renderer.draw_text("Seed Shop", screen_x - size//2, screen_y - size//2, (255, 255, 255), FontManager.get_font(None, 20))
         
-        # Render shadows only if enabled
-        if self.shadows_enabled:
-            try:
-                # Use camera base position (without shake) for shadow calculation
-                shadow_surface = self.shadow_system.render(self.camera.base_position, renderer)
-                if shadow_surface and isinstance(shadow_surface, pygame.Surface):
-                    # Apply shadows with proper blending
-                    renderer.blit(shadow_surface, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
-            except Exception as e:
-                # If shadows cause issues, disable them
-                print(f"Shadow rendering error: {e}")
-                import traceback
-                traceback.print_exc()
-                self.shadows_enabled = False
-                self.shadow_toggle.set_text("Shadows: OFF")
 
 def main():
     """Main function"""

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paperdoll Demo - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Examples Hub</a></li><li class="breadcrumb-item active">Paperdoll Demo</li></ol></nav>
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Paperdoll Demo</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>paperdoll_demo.py</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">&quot;&quot;&quot;
+Paperdoll Demo - 5 frames idle, Face + 3 body colors (16x64 spritesheet)
+&quot;&quot;&quot;
+
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
+
+import pygame
+from lunaengine.core import Scene, LunaEngine
+from lunaengine.ui import *
+from lunaengine.graphics.paperdoll import load_paperdoll
+
+
+class PaperdollDemoScene(Scene):
+    def __init__(self, engine: LunaEngine):
+        super().__init__(engine)
+        self.engine = engine
+
+        # Load the paperdoll from the atlas
+        self.hero = load_paperdoll(self.engine.atlas.get_item(&#x27;paperdoll_config&#x27;))
+        self.hero_x = self.engine.width // 2 + 100
+        self.hero_y = self.engine.height // 2 + 32
+
+        # Set initial scale (2x for visibility)
+        self.hero.set_scale(2.0)
+
+        # Make sure all layers are visible (face is always visible)
+        self.hero.set_layer_visible(&quot;face&quot;, True)
+        self.active_body = 1
+        self.update_body_visibility()
+
+        # Ensure animation is playing
+        self.hero.play(&quot;idle&quot;)
+        self.hero.speed = 1.0
+
+        # UI
+        self.setup_ui()
+
+        # Keyboard shortcuts
+        @engine.on_event(pygame.KEYDOWN)
+        def on_key(event):
+            self.handle_key(event.key)
+
+    def setup_ui(self):
+        self.engine.set_global_theme(ThemeType.DEFAULT)
+
+        title = TextLabel(10, 10, &quot;Paperdoll Demo (16x64, scaled 2x)&quot;, 28, (255, 255, 0))
+        self.add_ui_element(title)
+
+        # Use LongTextLabel for multi-line text with \n
+        info_text = (
+            &quot;1, 2, 3: change body color\n&quot;
+            &quot;P: pause/resume animation\n&quot;
+            &quot;Up/Down: increase/decrease scale&quot;
+        )
+        info_label = LongTextLabel(
+            10, 50, info_text,
+            width=400, height=60,
+            font_size=18,
+            line_spacing=4
+        )
+        self.add_ui_element(info_label)
+
+        self.body_label = TextLabel(10, 120, &quot;Body: Body1&quot;, 20, (100, 200, 255))
+        self.add_ui_element(self.body_label)
+
+        self.scale_label = TextLabel(10, 150, &quot;Scale: 2.0x&quot;, 20, (100, 255, 100))
+        self.add_ui_element(self.scale_label)
+
+        self.frame_label = TextLabel(10, 180, &quot;Frame: 0/5&quot;, 16, (200, 200, 200))
+        self.add_ui_element(self.frame_label)
+
+        # Buttons to change body
+        btn_y = 210
+        for i in range(1, 4):
+            btn = Button(10 + (i-1)*100, btn_y, 80, 30, f&quot;Body{i}&quot;)
+            btn.set_on_click(lambda idx=i: self.set_body(idx))
+            self.add_ui_element(btn)
+
+        # Pause button
+        self.pause_btn = Button(10, btn_y + 50, 120, 30, &quot;Pause&quot;)
+        self.pause_btn.set_on_click(self.toggle_pause)
+        self.add_ui_element(self.pause_btn)
+
+        # Scale buttons
+        scale_btn_small = Button(10, btn_y + 100, 80, 30, &quot;Scale 0.5x&quot;)
+        scale_btn_small.set_on_click(lambda: self.change_scale(0.5))
+        self.add_ui_element(scale_btn_small)
+
+        scale_btn_normal = Button(100, btn_y + 100, 80, 30, &quot;Scale 1x&quot;)
+        scale_btn_normal.set_on_click(lambda: self.change_scale(1.0))
+        self.add_ui_element(scale_btn_normal)
+
+        scale_btn_large = Button(190, btn_y + 100, 80, 30, &quot;Scale 3x&quot;)
+        scale_btn_large.set_on_click(lambda: self.change_scale(3.0))
+        self.add_ui_element(scale_btn_large)
+
+    def handle_key(self, key):
+        if key == pygame.K_1:
+            self.set_body(1)
+        elif key == pygame.K_2:
+            self.set_body(2)
+        elif key == pygame.K_3:
+            self.set_body(3)
+        elif key == pygame.K_p:
+            self.toggle_pause()
+        elif key == pygame.K_UP:
+            self.change_scale(self.hero.scale + 0.25)
+        elif key == pygame.K_DOWN:
+            self.change_scale(max(0.25, self.hero.scale - 0.25))
+
+    def set_body(self, body_id: int):
+        self.active_body = body_id
+        self.update_body_visibility()
+        self.body_label.set_text(f&quot;Body: Body{body_id}&quot;)
+
+    def update_body_visibility(self):
+        # Face always visible
+        self.hero.set_layer_visible(&quot;face&quot;, True)
+
+        # Only the active body is visible
+        for i in range(1, 4):
+            layer_id = f&quot;body{i}&quot;
+            self.hero.set_layer_visible(layer_id, i == self.active_body)
+
+    def change_scale(self, new_scale: float):
+        self.hero.set_scale(new_scale)
+        self.scale_label.set_text(f&quot;Scale: {new_scale:.2f}x&quot;)
+
+    def toggle_pause(self):
+        if self.hero.current_anim in self.hero.animations:
+            if self.hero.speed &gt; 0:
+                self.hero.speed = 0.0
+                self.pause_btn.set_text(&quot;Resume&quot;)
+            else:
+                self.hero.speed = 1.0
+                self.pause_btn.set_text(&quot;Pause&quot;)
+
+    def update(self, dt):
+        # Update animation
+        self.hero.update(dt)
+
+        # Update frame counter
+        if self.hero.current_anim:
+            anim = self.hero.animations[self.hero.current_anim]
+            total = anim.total_frames
+            current = self.hero.current_frame
+            self.frame_label.set_text(f&quot;Frame: {current}/{total}&quot;)
+
+    def render(self, renderer):
+        renderer.fill_screen((40, 40, 60))
+
+        # Draw the character
+        self.hero.draw(renderer, self.hero_x, self.hero_y)
+
+        # Draw UI elements
+        for el in self.ui_elements:
+            el.render(renderer)
+
+
+def main():
+    engine = LunaEngine(&quot;Paperdoll Demo&quot;, 600, 400, debug=True)
+    engine.fps = 60
+
+    # Register assets in atlas
+    root_path = os.path.dirname(os.path.abspath(__file__))
+    engine.atlas.add_folder(&#x27;root&#x27;, root_path)
+    config_path = engine.get_atlas_item(&#x27;root&#x27;).path / &#x27;paperdoll_config.json&#x27;
+    engine.atlas.add_datastore(&#x27;paperdoll_config&#x27;, config_path)
+
+    engine.add_scene(&quot;paperdoll_demo&quot;, PaperdollDemoScene)
+    engine.set_scene(&quot;paperdoll_demo&quot;)
+
+    engine.run()
+
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About This Example</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Paperdoll Demo - 5 frames idle, Face + 3 body colors (16x64 spritesheet)</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="paperdoll_demo.py" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples Hub
+                            </a>
+                            <a href="../quick-start.html" class="btn btn-outline-success">
+                                <i class="bi bi-play-circle me-2"></i>Quick Start Guide
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-07-10 21:26
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

@@ -39,7 +39,7 @@
                         <h5 class="mb-0"><i class="bi bi-map me-2"></i>Course Track</h5>
                     </div>
                     <div class="card-body p-0">
-                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action active">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/07-ui-layouts.html" class="list-group-item list-group-item-action">7. Ui Layouts</a><a href="../intermediate/08-tween-animations.html" class="list-group-item list-group-item-action">8. Tween Animations</a><a href="../intermediate/09-camera-movement.html" class="list-group-item list-group-item-action">9. Camera Movement</a><a href="../intermediate/10-particles-basics.html" class="list-group-item list-group-item-action">10. Particles Basics</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/11-advanced-ui.html" class="list-group-item list-group-item-action">11. Advanced Ui</a><a href="../advanced/12-particle-effects.html" class="list-group-item list-group-item-action">12. Particle Effects</a><a href="../advanced/13-camera-effects.html" class="list-group-item list-group-item-action">13. Camera Effects</a><a href="../advanced/14-ui-transitions.html" class="list-group-item list-group-item-action">14. Ui Transitions</a><a href="../advanced/15-combining-systems.html" class="list-group-item list-group-item-action">15. Combining Systems</a><div class="mb-2"></div></div>
+                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action active">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><a href="../basics/07-atlas-system.html" class="list-group-item list-group-item-action">7. Atlas System</a><a href="../basics/08-game-development-plan.html" class="list-group-item list-group-item-action">8. Game Development Plan</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/09-ui-layouts.html" class="list-group-item list-group-item-action">9. Ui Layouts</a><a href="../intermediate/10-tween-animations.html" class="list-group-item list-group-item-action">10. Tween Animations</a><a href="../intermediate/11-camera-movement.html" class="list-group-item list-group-item-action">11. Camera Movement</a><a href="../intermediate/12-particles-basics.html" class="list-group-item list-group-item-action">12. Particles Basics</a><a href="../intermediate/13-parallax-backgrounds.html" class="list-group-item list-group-item-action">13. Parallax Backgrounds</a><a href="../intermediate/14-audio-system.html" class="list-group-item list-group-item-action">14. Audio System</a><a href="../intermediate/15-custom-themes.html" class="list-group-item list-group-item-action">15. Custom Themes</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/16-advanced-ui.html" class="list-group-item list-group-item-action">16. Advanced Ui</a><a href="../advanced/17-particle-effects.html" class="list-group-item list-group-item-action">17. Particle Effects</a><a href="../advanced/18-camera-effects.html" class="list-group-item list-group-item-action">18. Camera Effects</a><a href="../advanced/19-opengl-effects.html" class="list-group-item list-group-item-action">19. Opengl Effects</a><a href="../advanced/20-ui-transitions.html" class="list-group-item list-group-item-action">20. Ui Transitions</a><a href="../advanced/21-sprite-animations.html" class="list-group-item list-group-item-action">21. Sprite Animations</a><a href="../advanced/22-combining-systems.html" class="list-group-item list-group-item-action">22. Combining Systems</a><div class="mb-2"></div></div>
                     </div>
                 </div>
             </div>
@@ -50,42 +50,81 @@
                         <h1 class="h3 mb-0">4. Ui Elements Basics</h1>
                     </div>
                     <div class="card-body markdown-content">
-                        # UI Elements Basics
+                        # 04 - UI Elements Basics
 
-LunaEngine includes a built-in UI system with reusable components such as buttons, labels, and containers.
+LunaEngine includes a powerful, Roblox Studio‑like built-in UI system with reusable components such as buttons, labels, and containers.
 
-## Creating a Button
+## Creating UI Elements
 
-```python
-    from lunaengine.ui.elements import Button
-
-    button = Button(
-        x=100,
-        y=100,
-        width=200,
-        height=50,
-        text="Click Me"
-    )
-```
-## Adding Events
+To create UI elements, you instantiate them with a size, position, and any properties specific to the element.
 
 ```python
-    button.on_click = lambda: print("Button clicked!")
+from lunaengine.ui.elements import Button, TextLabel
+from lunaengine.core import Scene
+
+class MenuScene(Scene):
+    def __init__(self, engine):
+        super().__init__(engine)
+        
+        # 1. Create a Label
+        self.title_label = TextLabel(
+            text="Welcome to LunaEngine!",
+            position=(400, 100),
+            size=(400, 50),
+            font_size=32
+        )
+        
+        # 2. Create a Button
+        self.play_button = Button(
+            text="Play Game",
+            position=(400, 300),
+            size=(200, 60)
+        )
 ```
-## Adding to Scene
+
+## Event Handling (Callbacks)
+
+UI Elements in LunaEngine use direct assignment of functions for their events. You can assign any callable (a function, a lambda, or a class method).
 
 ```python
-    self.add_ui_element(button)
+        # Using a simple lambda
+        self.play_button.on_click = lambda: print("Button clicked!")
+        
+        # Or using a method
+        self.play_button.on_click = self.start_game
+        
+    def start_game(self):
+        print("Starting game...")
+        self.engine.set_scene("game")
 ```
-## Common UI Elements
 
-- Button
-- TextLabel
-- TextBox
-- ImageLabel
-- Dropdown
+## Adding to the Scene
 
-These elements help create menus, HUDs, and interfaces without manually handling rendering.
+A UI Element will not render or receive input until it is added to the scene's UI tree. 
+**Important:** You should typically add UI elements in your scene's `__init__` method, NOT in `on_enter`, because `on_enter` is called every time the scene is switched to, which would create duplicate elements.
+
+```python
+    def __init__(self, engine):
+        # ... (element creation from above) ...
+        
+        # Add elements to the scene so they render and receive events
+        self.add_ui_element(self.title_label)
+        self.add_ui_element(self.play_button)
+```
+
+## Common Built-In Elements
+
+Here are some of the most common UI elements you'll use:
+
+- **Button**: A standard clickable button.
+- **TextLabel**: Displays static or dynamic text.
+- **TextBox**: Allows the user to type and input text.
+- **ImageLabel**: Displays an image or texture.
+- **Dropdown**: A dropdown selection menu.
+- **ProgressBar**: A visual bar showing completion percentage.
+- **Slider**: A draggable handle along a track to select a value.
+
+You can import all of these from `lunaengine.ui.elements`. By learning to combine these elements, you can build complex menus, HUDs, and inventories without having to manually manage rendering and input.
                     </div>
                     <div class="card-footer bg-transparent">
                         <div class="d-flex justify-content-between">
@@ -111,7 +150,7 @@ These elements help create menus, HUDs, and interfaces without manually handling
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

@@ -74,7 +74,7 @@ class ParticleDemoScene(Scene):
         self.camera.mode = CameraMode.FIXED
         
         # Title
-        title = TextLabel(512, 20, "LunaEngine - Particle System Demo", 32, root_point=(0.5, 0))
+        title = TextLabel(512, 20, "LunaEngine - Particle System Demo", 32, pivot=(0.5, 0))
         self.add_ui_element(title)
         
         # FPS and Performance Display

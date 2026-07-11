@@ -192,12 +192,12 @@ class FilterDemoScene(Scene):
         # Title
         title = TextLabel(self.engine.width // 2, 20, 
                          "LunaEngine - Filter System Demo", 
-                         36, root_point=(0.5, 0))
+                         36, pivot=(0.5, 0))
         self.add_ui_element(title)
         
         subtitle = TextLabel(self.engine.width // 2, 60,
                            "19 Filters • Real-time Controls • Performance Monitoring",
-                           18, (200, 200, 255), root_point=(0.5, 0))
+                           18, (200, 200, 255), pivot=(0.5, 0))
         self.add_ui_element(subtitle)
         
         # Create main container with tabs
@@ -224,19 +224,19 @@ class FilterDemoScene(Scene):
         # Active filters display (always visible)
         self.active_filters_label = TextLabel(self.engine.width - 10, 90,
                                             "Active: 0", 16, (100, 255, 100),
-                                            root_point=(1, 0))
+                                            pivot=(1, 0))
         self.add_ui_element(self.active_filters_label)
         
         # Performance display
         self.performance_label = TextLabel(self.engine.width - 10, self.engine.height - 10,
                                          "FPS: --", 16, (255, 200, 100),
-                                         root_point=(1, 1))
+                                         pivot=(1, 1))
         self.add_ui_element(self.performance_label)
         
         # Quick controls hint
         controls_hint = TextLabel(10, self.engine.height - 10,
                                  "SPACE: Apply/Remove | C: Clear | ESC: Menu",
-                                 14, (150, 150, 200), root_point=(0, 1))
+                                 14, (150, 150, 200), pivot=(0, 1))
         self.add_ui_element(controls_hint)
     
     def setup_filters_tab(self):
@@ -1369,23 +1369,23 @@ class MainMenuScene(Scene):
         # Title
         title = TextLabel(self.engine.width // 2, 100, 
                          "LunaEngine Filter System", 
-                         48, root_point=(0.5, 0))
+                         48, pivot=(0.5, 0))
         self.add_ui_element(title)
         
         subtitle = TextLabel(self.engine.width // 2, 160,
                            "19 Post-Processing Filters • OpenGL Powered",
-                           24, (200, 200, 255), root_point=(0.5, 0))
+                           24, (200, 200, 255), pivot=(0.5, 0))
         self.add_ui_element(subtitle)
         
         # Demo button
         demo_btn = Button(self.engine.width // 2, 250, 300, 50, 
-                         "Start Filter Demo", 32, root_point=(0.5, 0))
+                         "Start Filter Demo", 32, pivot=(0.5, 0))
         demo_btn.set_on_click(lambda: engine.set_scene("FilterDemo"))
         self.add_ui_element(demo_btn)
         
         # Quick filter test buttons
         quick_label = TextLabel(self.engine.width // 2, 320,
-                               "Quick Tests:", 28, (255, 255, 0), root_point=(0.5, 0))
+                               "Quick Tests:", 28, (255, 255, 0), pivot=(0.5, 0))
         self.add_ui_element(quick_label)
         
         # Row 1
@@ -1415,14 +1415,14 @@ class MainMenuScene(Scene):
         self.add_ui_element(bloom_btn)
         
         # Exit button
-        exit_btn = Button(self.engine.width // 2, 500, 200, 40, "Exit", 28, root_point=(0.5, 0))
+        exit_btn = Button(self.engine.width // 2, 500, 200, 40, "Exit", 28, pivot=(0.5, 0))
         exit_btn.set_on_click(lambda: setattr(engine, 'running', False))
         self.add_ui_element(exit_btn)
         
         # Info text
         info_text = TextLabel(self.engine.width // 2, 560,
                              "Press SPACE in demo to toggle filters • ESC to return here",
-                             16, (150, 200, 255), root_point=(0.5, 0))
+                             16, (150, 200, 255), pivot=(0.5, 0))
         self.add_ui_element(info_text)
     
     def quick_test(self, filter_type: FilterType):

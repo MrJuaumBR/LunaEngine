@@ -7,8 +7,6 @@ DESCRIPTION:
 Initialization file for the graphics module. Exports all public classes,
 enums, and utilities for rendering, camera, particles, shadows, and sprites.
 
-UPDATED: Replaced GPU particle system with CPU-based threaded particle system.
-         Added ParticleSystem, ThreadedParticleSystem, PhysicsType, ExitPoint.
 """
 
 from .spritesheet import SpriteSheet, Animation
@@ -44,6 +42,7 @@ from .camera import (
     ParallaxBackground,
 )
 from .shadows import ShadowSystem, ShadowCaster, Light, LightType
+from .paperdoll import Layer, Paperdoll, Animation
 
 __all__ = [
     # Sprite
@@ -73,5 +72,7 @@ __all__ = [
     "ParallaxLayer",
     "ParallaxBackground",
     # Shadows
-    "ShadowSystem", "ShadowCaster", 'Light', "LightType"
+    "ShadowSystem", "ShadowCaster", 'Light', "LightType",
+    # Paperdoll
+    "Layer", "Paperdoll", "Animation"
 ]

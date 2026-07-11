@@ -50,48 +50,55 @@
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
                     <p class="lead fs-6">RPG-style dialog box with multiple display styles and text animations.<br>Supports typewriter effect, fade-in, and character-by-character display.</p>
                 </div>
-                
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'style': {'name': 'style', 'key': 'style', 'type': str, 'editable': True, 'description': 'Visual style: "default", "rpg", "pokemon", "modern".', 'options': ['default', 'rpg', 'pokemon', 'modern']}, 'text': {'name': 'text', 'key': 'text', 'type': str, 'editable': True, 'description': 'The dialog text content.'}, 'speaker_name': {'name': 'speaker name', 'key': 'speaker_name', 'type': str, 'editable': True, 'description': 'Name of the speaker displayed above the box.'}, 'animation_type': {'name': 'animation type', 'key': 'animation_type', 'type': str, 'editable': True, 'description': 'Type of text animation: "typewriter".'}, 'animation_speed': {'name': 'animation speed', 'key': 'animation_speed', 'type': int, 'editable': True, 'description': 'Characters per second for typewriter effect.'}}</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dialogbox-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, style: Literal['default', 'rpg', 'pokemon', 'modern'] = 'default', theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
-                <div class="mt-2 text-muted small">Initialize a dialog box.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position<br> &nbsp; &nbsp;y (int): Y coordinate position<br> &nbsp; &nbsp;width (int): Width of dialog box<br> &nbsp; &nbsp;height (int): Height of dialog box<br> &nbsp; &nbsp;style (str): Visual style (&quot;default&quot;, &quot;rpg&quot;, &quot;pokemon&quot;, &quot;modern&quot;)<br> &nbsp; &nbsp;theme (ThemeType): Theme to use for styling<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID</div>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, style: Literal['default', 'rpg', 'pokemon', 'modern'] = 'default', theme: Optional[ThemeType] = None, element_id: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">Initialize a dialog box.<br><br>Args:<br> &nbsp; &nbsp;x: X coordinate (before anchor).<br> &nbsp; &nbsp;y: Y coordinate (before anchor).<br> &nbsp; &nbsp;width: Width of dialog box.<br> &nbsp; &nbsp;height: Height of dialog box.<br> &nbsp; &nbsp;style: Visual style (&quot;default&quot;, &quot;rpg&quot;, &quot;pokemon&quot;, &quot;modern&quot;).<br> &nbsp; &nbsp;theme: Theme to apply.<br> &nbsp; &nbsp;element_id: Custom element ID.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dialogbox-_get_init_args">
+                <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dialogbox-set_text">
-                <code class="fs-6 fw-bold text-color-title">def set_text(self: Any, text: str, speaker_name: str = '', instant: bool = False) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def set_text(self: Any, text: str, speaker_name: str = '', instant: bool = False) -> None</code>
+                <div class="mt-2 text-muted small">Set the dialog text and start animation.<br><br>Args:<br> &nbsp; &nbsp;text: The full text to display.<br> &nbsp; &nbsp;speaker_name: Name of the speaker (shown above box).<br> &nbsp; &nbsp;instant: If True, show all text immediately without animation.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dialogbox-set_animation">
-                <code class="fs-6 fw-bold text-color-title">def set_animation(self: Any, animation_type: str, speed: int = 30) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def set_animation(self: Any, animation_type: str, speed: int = 30) -> None</code>
+                <div class="mt-2 text-muted small">Configure text animation.<br><br>Args:<br> &nbsp; &nbsp;animation_type: Currently only &quot;typewriter&quot; is supported.<br> &nbsp; &nbsp;speed: Characters per second.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dialogbox-skip_animation">
-                <code class="fs-6 fw-bold text-color-title">def skip_animation(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def skip_animation(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Immediately finish the text animation and mark as complete.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dialogbox-advance">
-                <code class="fs-6 fw-bold text-color-title">def advance(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def advance(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Advance the dialog (skip animation or move to next dialog).<br>Returns True if the dialog is still active, False if it should be closed.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dialogbox-set_on_complete">
-                <code class="fs-6 fw-bold text-color-title">def set_on_complete(self: Any, callback: Callable) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def set_on_complete(self: Any, callback: Callable[[], None]) -> None</code>
+                <div class="mt-2 text-muted small">Register a callback called when text animation finishes.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dialogbox-set_on_advance">
-                <code class="fs-6 fw-bold text-color-title">def set_on_advance(self: Any, callback: Callable) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def set_on_advance(self: Any, callback: Callable[[], None]) -> None</code>
+                <div class="mt-2 text-muted small">Register a callback called when the user advances to the next dialog (after completion).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dialogbox-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dialogbox-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-dialogbox-_render_wrapped_text">
-                <code class="fs-6 fw-bold text-color-title">def _render_wrapped_text(self: Any, renderer: Any, x: int, y: int, width: int, height: int, theme: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_wrapped_text(self: Any, renderer: Renderer, x: int, y: int, width: int, height: int, theme: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
@@ -118,7 +125,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

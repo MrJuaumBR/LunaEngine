@@ -39,7 +39,7 @@
                         <h5 class="mb-0"><i class="bi bi-map me-2"></i>Course Track</h5>
                     </div>
                     <div class="card-body p-0">
-                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action active">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/07-ui-layouts.html" class="list-group-item list-group-item-action">7. Ui Layouts</a><a href="../intermediate/08-tween-animations.html" class="list-group-item list-group-item-action">8. Tween Animations</a><a href="../intermediate/09-camera-movement.html" class="list-group-item list-group-item-action">9. Camera Movement</a><a href="../intermediate/10-particles-basics.html" class="list-group-item list-group-item-action">10. Particles Basics</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/11-advanced-ui.html" class="list-group-item list-group-item-action">11. Advanced Ui</a><a href="../advanced/12-particle-effects.html" class="list-group-item list-group-item-action">12. Particle Effects</a><a href="../advanced/13-camera-effects.html" class="list-group-item list-group-item-action">13. Camera Effects</a><a href="../advanced/14-ui-transitions.html" class="list-group-item list-group-item-action">14. Ui Transitions</a><a href="../advanced/15-combining-systems.html" class="list-group-item list-group-item-action">15. Combining Systems</a><div class="mb-2"></div></div>
+                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action active">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><a href="../basics/07-atlas-system.html" class="list-group-item list-group-item-action">7. Atlas System</a><a href="../basics/08-game-development-plan.html" class="list-group-item list-group-item-action">8. Game Development Plan</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/09-ui-layouts.html" class="list-group-item list-group-item-action">9. Ui Layouts</a><a href="../intermediate/10-tween-animations.html" class="list-group-item list-group-item-action">10. Tween Animations</a><a href="../intermediate/11-camera-movement.html" class="list-group-item list-group-item-action">11. Camera Movement</a><a href="../intermediate/12-particles-basics.html" class="list-group-item list-group-item-action">12. Particles Basics</a><a href="../intermediate/13-parallax-backgrounds.html" class="list-group-item list-group-item-action">13. Parallax Backgrounds</a><a href="../intermediate/14-audio-system.html" class="list-group-item list-group-item-action">14. Audio System</a><a href="../intermediate/15-custom-themes.html" class="list-group-item list-group-item-action">15. Custom Themes</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/16-advanced-ui.html" class="list-group-item list-group-item-action">16. Advanced Ui</a><a href="../advanced/17-particle-effects.html" class="list-group-item list-group-item-action">17. Particle Effects</a><a href="../advanced/18-camera-effects.html" class="list-group-item list-group-item-action">18. Camera Effects</a><a href="../advanced/19-opengl-effects.html" class="list-group-item list-group-item-action">19. Opengl Effects</a><a href="../advanced/20-ui-transitions.html" class="list-group-item list-group-item-action">20. Ui Transitions</a><a href="../advanced/21-sprite-animations.html" class="list-group-item list-group-item-action">21. Sprite Animations</a><a href="../advanced/22-combining-systems.html" class="list-group-item list-group-item-action">22. Combining Systems</a><div class="mb-2"></div></div>
                     </div>
                 </div>
             </div>
@@ -50,31 +50,67 @@
                         <h1 class="h3 mb-0">5. Camera Basics</h1>
                     </div>
                     <div class="card-body markdown-content">
-                        # Camera Basics
+                        # 05 - Camera Basics
 
-The Camera system controls what part of the world is visible on the screen.
+The Camera system controls what part of the world is visible on the screen. In LunaEngine v0.2.5, every `Scene` automatically comes with a built-in `Camera` instance (`self.camera`), so you don't even need to create one manually!
 
-## Creating a Camera
+## The Unified Coordinate System
+
+The camera's `position` represents the **center of the viewport** in world coordinates.
 
 ```python
-    from lunaengine.graphics.camera import Camera
+from lunaengine.core import Scene
+import pygame
 
-    camera = Camera()
+class LevelScene(Scene):
+    def on_enter(self, previous_scene):
+        # Move the camera center to (500, 500)
+        self.camera.position = pygame.Vector2(500, 500)
 ```
+
 ## Moving the Camera
 
-```python
-    camera.x += 10
-    camera.y += 5
-```
-## Following an Object
+You can adjust the camera's position by modifying the `Vector2` directly:
 
 ```python
-    camera.x = player.x
-    camera.y = player.y
+    def update(self, dt):
+        # Pan the camera to the right by 100 units per second
+        self.camera.position.x += 100 * dt
 ```
 
-This is useful for side-scrollers, RPGs, and large maps.
+## Zoom and Rotation
+
+The camera also supports zooming and rotation natively.
+
+```python
+        # Zoom in (values > 1.0 zoom in, < 1.0 zoom out)
+        self.camera.set_zoom(1.5, smooth=True) 
+        
+        # Rotate the camera by 45 degrees
+        self.camera.rotation = 45.0
+```
+
+## Following a Target
+
+Instead of manually updating the camera position every frame, the Camera system has built-in Follow Strategies! You can assign a target object (like a Player class) and the camera will track it.
+
+To be a valid target, the object just needs to have an `x` and `y` attribute or a `rect`.
+
+```python
+class Player:
+    def __init__(self):
+        self.x = 100
+        self.y = 100
+
+class LevelScene(Scene):
+    def on_enter(self, previous_scene):
+        self.player = Player()
+        
+        # Tell the camera to follow the player
+        self.camera.set_target(self.player)
+```
+
+*(We will cover more advanced follow strategies, like Platformer deadzones or RPG look-ahead, in the Intermediate lessons!)*
                     </div>
                     <div class="card-footer bg-transparent">
                         <div class="d-flex justify-content-between">
@@ -100,7 +136,7 @@ This is useful for side-scrollers, RPGs, and large maps.
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

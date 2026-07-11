@@ -51,17 +51,22 @@ def extract_theme_colors(file_path):
 
 # ========== THEMES PREVIEW SUPPORT ==========
 def load_all_themes() -> Dict[str, Dict[str, Any]]:
-    """Load all available themes from lunaengine assets or legacy file."""
     themes = {}
-    
-    # Try to import ThemeManager if available
     try:
         sys.path.insert(0, os.getcwd())
-        from lunaengine.ui.themes import ThemeManager, ThemeType
+        from lunaengine.ui.themes import ThemeManager, ThemeType, CombinedTheme, UITheme
         ThemeManager.ensure_themes_loaded()
-        for theme_type, ui_theme in ThemeManager.get_themes().items():
+        for theme_type, theme_obj in ThemeManager.get_themes().items():
             theme_name = theme_type.value if isinstance(theme_type, ThemeType) else str(theme_type)
-            themes[theme_name] = ui_theme_to_dict(ui_theme)
+            if isinstance(theme_obj, CombinedTheme):
+                themes[theme_name] = {
+                    "dark": ui_theme_to_dict(theme_obj.dark),
+                    "light": ui_theme_to_dict(theme_obj.light)
+                }
+            else:
+                # fallback: treat as both
+                theme_dict = ui_theme_to_dict(theme_obj)
+                themes[theme_name] = {"dark": theme_dict, "light": theme_dict}
         print(f"Loaded {len(themes)} themes via ThemeManager")
         return themes
     except ImportError:
@@ -75,7 +80,19 @@ def load_all_themes() -> Dict[str, Dict[str, Any]]:
                 with open(json_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                 theme_name = json_file.stem.lower()
-                themes[theme_name] = data
+                # Check for combined format (variants)
+                if "variants" in data and isinstance(data["variants"], dict):
+                    # Prefer dark variant, else light
+                    if "dark" in data["variants"]:
+                        theme_data = data["variants"]["dark"]
+                    elif "light" in data["variants"]:
+                        theme_data = data["variants"]["light"]
+                    else:
+                        theme_data = {}
+                else:
+                    # Legacy single-theme file
+                    theme_data = data
+                themes[theme_name] = theme_data
             except Exception as e:
                 print(f"Error loading theme {json_file}: {e}")
     
@@ -118,36 +135,42 @@ def ui_theme_to_dict(ui_theme) -> Dict:
     return result
 
 def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
-    """Generate a standalone HTML page showcasing all themes."""
-    print(f"Generating themes preview page with {len(themes)} themes...")
-    
+    """
+    Generate a standalone HTML page showcasing all available themes,
+    with support for dark/light variants and live preview switching.
+    themes structure: { theme_name: {"dark": theme_dict, "light": theme_dict} }
+    """
     if not themes:
         print("No themes found, skipping themes preview page.")
         return
-    
-    # Sort themes by name
-    themes_items = sorted(themes.items())
-    
+
+    # Helper to safely extract color from a theme variant dict
+    def get_color(variant_data, key, default=(100,100,100)):
+        style = variant_data.get(key, {})
+        color = style.get("color", default)
+        if len(color) >= 3:
+            return f"rgb({color[0]}, {color[1]}, {color[2]})"
+        return f"rgb({default[0]}, {default[1]}, {default[2]})"
+
     # Build theme cards HTML
     themes_html = ""
-    for theme_name, theme_data in themes_items:
-        # Helper to extract color
-        def get_color(key):
-            style = theme_data.get(key, {})
-            color = style.get("color", [100, 100, 100])
-            if len(color) >= 3:
-                return f"rgb({color[0]}, {color[1]}, {color[2]})"
-            return "#888"
-        
-        bg_color = get_color("background")
-        primary_text = get_color("text_primary")
-        secondary_text = get_color("text_secondary")
-        button_bg = get_color("button_normal")
-        button_text = get_color("button_text")
-        accent_color = get_color("accent1")
-        border_color = get_color("border") if "border" in theme_data else "#ccc"
-        
-        # Calculate contrasting text for button
+    for theme_name, variants in sorted(themes.items()):
+        dark = variants.get("dark", {})
+        light = variants.get("light", {})
+        # Use dark variant for default preview
+        default_variant = "dark"
+        default_data = dark if dark else light
+
+        bg_color = get_color(default_data, "background")
+        primary_text = get_color(default_data, "text_primary")
+        secondary_text = get_color(default_data, "text_secondary")
+        button_bg = get_color(default_data, "button_normal")
+        button_text_color = get_color(default_data, "button_text")
+        accent_color = get_color(default_data, "accent1")
+        border_color = get_color(default_data, "border")
+
+        # Determine contrasting text for button (for readability)
+        # Simple luminance check (if using rgb values we can extract numbers)
         def contrast_color(rgb_str):
             match = re.search(r'rgb\((\d+),\s*(\d+),\s*(\d+)\)', rgb_str)
             if match:
@@ -155,20 +178,25 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
                 luminance = (0.299 * r + 0.587 * g + 0.114 * b)
                 return "#000" if luminance > 186 else "#fff"
             return "#fff"
-        
-        button_text_color = contrast_color(button_bg)
-        
+
+        button_text = contrast_color(button_bg)
+
+        # Card with variant toggles
         themes_html += f"""
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card theme-preview-card h-100 shadow-sm" style="border-top: 4px solid {accent_color};">
-                <div class="card-header bg-light">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">{theme_name.replace('_', ' ').title()}</h5>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button class="btn btn-outline-secondary variant-toggle" data-theme-name="{theme_name}" data-variant="dark">Dark</button>
+                        <button class="btn btn-outline-secondary variant-toggle" data-theme-name="{theme_name}" data-variant="light">Light</button>
+                    </div>
                 </div>
-                <div class="card-body" style="background-color: {bg_color};">
+                <div class="card-body theme-preview-body" data-theme-name="{theme_name}" data-variant="{default_variant}" style="background-color: {bg_color};">
                     <div class="preview-ui">
                         <span class="preview-label" style="color: {primary_text};">Sample Text</span>
                         <span class="preview-label-secondary" style="color: {secondary_text};">Secondary text</span>
-                        <div class="preview-button" style="background-color: {button_bg}; color: {button_text_color}; padding: 0.25rem 0.75rem; border-radius: 4px; display: inline-block; margin: 0.5rem 0;">Button</div>
+                        <div class="preview-button" style="background-color: {button_bg}; color: {button_text}; padding: 0.25rem 0.75rem; border-radius: 4px; display: inline-block; margin: 0.5rem 0;">Button</div>
                         <div class="preview-swatch d-flex gap-2 mt-2">
                             <div style="background-color: {accent_color}; width: 30px; height: 30px; border-radius: 4px;"></div>
                             <div style="background-color: {button_bg}; width: 30px; height: 30px; border-radius: 4px;"></div>
@@ -177,14 +205,14 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
                     </div>
                 </div>
                 <div class="card-footer bg-transparent">
-                    <button class="btn btn-sm btn-outline-primary apply-theme-preview" data-theme-name="{theme_name}">Preview Colors</button>
-                    <small class="text-muted d-block mt-2">Click to apply temporary preview</small>
+                    <button class="btn btn-sm btn-outline-primary apply-theme-preview" data-theme-name="{theme_name}" data-variant="dark">Preview Dark</button>
+                    <button class="btn btn-sm btn-outline-primary apply-theme-preview" data-theme-name="{theme_name}" data-variant="light">Preview Light</button>
                 </div>
             </div>
         </div>
         """
-    
-    # Create full HTML page
+
+    # HTML page with modal and interactive JavaScript
     html_content = f"""<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -228,7 +256,7 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
     <div class="container mt-5">
         {get_breadcrumbs([("Home", "index.html"), ("Themes Gallery", None)])}
         <h1 class="display-5 fw-bold mb-3"><i class="bi bi-palette me-3"></i>Themes Gallery</h1>
-        <p class="lead">Explore all available UI themes. Click "Preview Colors" to temporarily apply a theme to this page.</p>
+        <p class="lead">Explore all available UI themes with dark/light variants. Click "Preview Dark/Light" to see a live demo.</p>
         <hr>
         <div class="row" id="themesGrid">
             {themes_html}
@@ -239,13 +267,13 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
             </a>
         </div>
     </div>
-    
+
     <!-- Modal for detailed preview -->
     <div class="modal fade theme-preview-modal" id="themePreviewModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Theme Preview: <span id="modalThemeName"></span></h5>
+                    <h5 class="modal-title">Theme Preview: <span id="modalThemeName"></span> (<span id="modalVariantLabel">Dark</span>)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="modalPreviewBody">
@@ -257,100 +285,145 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
             </div>
         </div>
     </div>
-    
+
     {get_footer_html()}
     <script>
     document.addEventListener('DOMContentLoaded', function() {{
-        const themeButtons = document.querySelectorAll('.apply-theme-preview');
+        // Theme data injected from Python
+        const themeData = {json.dumps(themes, default=str)};
         const modal = new bootstrap.Modal(document.getElementById('themePreviewModal'));
         const modalBody = document.getElementById('modalPreviewBody');
         const modalTitle = document.getElementById('modalThemeName');
-        
-        themeButtons.forEach(btn => {{
+        const modalVariant = document.getElementById('modalVariantLabel');
+
+        // ---- Variant toggle on cards ----
+        document.querySelectorAll('.variant-toggle').forEach(btn => {{
             btn.addEventListener('click', function(e) {{
                 e.preventDefault();
                 const themeName = this.getAttribute('data-theme-name');
+                const variant = this.getAttribute('data-variant');
+                const cardBody = this.closest('.card').querySelector('.theme-preview-body');
+                cardBody.setAttribute('data-variant', variant);
+                // Update preview colors
+                const variantData = themeData[themeName]?.[variant];
+                if (variantData) {{
+                    const bg = variantData.background?.color || [100,100,100];
+                    const primary = variantData.text_primary?.color || [255,255,255];
+                    const secondary = variantData.text_secondary?.color || [200,200,200];
+                    const btnBg = variantData.button_normal?.color || [0,120,215];
+                    const btnText = variantData.button_text?.color || [255,255,255];
+                    const accent = variantData.accent1?.color || [100,100,100];
+                    const border = variantData.border?.color || [200,200,200];
+                    const rgb = (c) => `rgb(${{c[0]}}, ${{c[1]}}, ${{c[2]}})`;
+                    cardBody.style.backgroundColor = rgb(bg);
+                    cardBody.querySelector('.preview-label').style.color = rgb(primary);
+                    cardBody.querySelector('.preview-label-secondary').style.color = rgb(secondary);
+                    const btnEl = cardBody.querySelector('.preview-button');
+                    btnEl.style.backgroundColor = rgb(btnBg);
+                    // Compute contrasting text color
+                    const lum = (0.299*btnBg[0] + 0.587*btnBg[1] + 0.114*btnBg[2]);
+                    btnEl.style.color = lum > 186 ? '#000' : '#fff';
+                    const swatches = cardBody.querySelectorAll('.preview-swatch div');
+                    if (swatches.length >= 3) {{
+                        swatches[0].style.backgroundColor = rgb(accent);
+                        swatches[1].style.backgroundColor = rgb(btnBg);
+                        swatches[2].style.backgroundColor = rgb(border);
+                    }}
+                    // Update button data attributes for modal
+                    const applyBtns = this.closest('.card').querySelectorAll('.apply-theme-preview');
+                    applyBtns.forEach(b => b.setAttribute('data-variant', variant));
+                }}
+            }});
+        }});
+
+        // ---- Apply preview (open modal) ----
+        document.querySelectorAll('.apply-theme-preview').forEach(btn => {{
+            btn.addEventListener('click', function(e) {{
+                e.preventDefault();
+                const themeName = this.getAttribute('data-theme-name');
+                const variant = this.getAttribute('data-variant');
+                const variantData = themeData[themeName]?.[variant];
+                if (!variantData) return;
+
                 modalTitle.textContent = themeName.replace(/_/g, ' ').replace(/\\b\\w/g, l => l.toUpperCase());
-                
-                const themeData = {json.dumps(themes, default=str)};
-                const theme = themeData[themeName];
-                if (theme) {{
-                    let cssVars = '';
-                    const colorMap = {{
-                        'button_normal': '--btn-bg',
-                        'button_hover': '--btn-hover',
-                        'button_text': '--btn-text',
-                        'background': '--bg',
-                        'text_primary': '--text-primary',
-                        'text_secondary': '--text-secondary',
-                        'accent1': '--accent',
-                        'border': '--border-color'
-                    }};
-                    for (const [key, varName] of Object.entries(colorMap)) {{
-                        const style = theme[key];
-                        if (style && style.color) {{
-                            const rgb = style.color;
-                            if (rgb.length >= 3) {{
-                                cssVars += `${{varName}}: rgb(${{rgb[0]}}, ${{rgb[1]}}, ${{rgb[2]}});`;
-                            }}
+                modalVariant.textContent = variant.charAt(0).toUpperCase() + variant.slice(1);
+
+                // Build CSS variables
+                let cssVars = '';
+                const colorMap = {{
+                    'button_normal': '--btn-bg',
+                    'button_hover': '--btn-hover',
+                    'button_text': '--btn-text',
+                    'background': '--bg',
+                    'text_primary': '--text-primary',
+                    'text_secondary': '--text-secondary',
+                    'accent1': '--accent',
+                    'border': '--border-color'
+                }};
+                for (const [key, varName] of Object.entries(colorMap)) {{
+                    const style = variantData[key];
+                    if (style && style.color) {{
+                        const rgb = style.color;
+                        if (rgb.length >= 3) {{
+                            cssVars += `${{varName}}: rgb(${{rgb[0]}}, ${{rgb[1]}}, ${{rgb[2]}});`;
                         }}
                     }}
-                    modalBody.innerHTML = `
-                        <style>
-                            .live-preview {{
-                                background-color: var(--bg, #f8f9fa);
-                                padding: 2rem;
-                                border-radius: 12px;
-                                transition: all 0.2s;
-                            }}
-                            .live-preview .sample-button {{
-                                background-color: var(--btn-bg, #007bff);
-                                color: var(--btn-text, white);
-                                border: none;
-                                padding: 0.5rem 1rem;
-                                border-radius: 4px;
-                                cursor: pointer;
-                            }}
-                            .live-preview .sample-button:hover {{
-                                background-color: var(--btn-hover, #0056b3);
-                            }}
-                            .live-preview p {{
-                                color: var(--text-primary, #212529);
-                            }}
-                            .live-preview small {{
-                                color: var(--text-secondary, #6c757d);
-                            }}
-                            .live-preview .accent-box {{
-                                background-color: var(--accent, #6f42c1);
-                                width: 50px;
-                                height: 50px;
-                                border-radius: 8px;
-                                margin-top: 1rem;
-                            }}
-                            .live-preview .border-demo {{
-                                border: 1px solid var(--border-color, #dee2e6);
-                                padding: 0.5rem;
-                                margin-top: 0.5rem;
-                                border-radius: 4px;
-                            }}
-                        </style>
-                        <div class="live-preview" style="${{cssVars}}">
-                            <p>This is a live preview using the theme's colors.</p>
-                            <small>Secondary text example</small>
-                            <div><button class="sample-button mt-2">Sample Button</button></div>
-                            <div class="accent-box"></div>
-                            <div class="border-demo">Bordered element</div>
-                        </div>
-                    `;
-                    modal.show();
                 }}
+                modalBody.innerHTML = `
+                    <style>
+                        .live-preview {{
+                            background-color: var(--bg, #f8f9fa);
+                            padding: 2rem;
+                            border-radius: 12px;
+                            transition: all 0.2s;
+                        }}
+                        .live-preview .sample-button {{
+                            background-color: var(--btn-bg, #007bff);
+                            color: var(--btn-text, white);
+                            border: none;
+                            padding: 0.5rem 1rem;
+                            border-radius: 4px;
+                            cursor: pointer;
+                        }}
+                        .live-preview .sample-button:hover {{
+                            background-color: var(--btn-hover, #0056b3);
+                        }}
+                        .live-preview p {{
+                            color: var(--text-primary, #212529);
+                        }}
+                        .live-preview small {{
+                            color: var(--text-secondary, #6c757d);
+                        }}
+                        .live-preview .accent-box {{
+                            background-color: var(--accent, #6f42c1);
+                            width: 50px;
+                            height: 50px;
+                            border-radius: 8px;
+                            margin-top: 1rem;
+                        }}
+                        .live-preview .border-demo {{
+                            border: 1px solid var(--border-color, #dee2e6);
+                            padding: 0.5rem;
+                            margin-top: 0.5rem;
+                            border-radius: 4px;
+                        }}
+                    </style>
+                    <div class="live-preview" style="${{cssVars}}">
+                        <p>This is a live preview using the theme's colors.</p>
+                        <small>Secondary text example</small>
+                        <div><button class="sample-button mt-2">Sample Button</button></div>
+                        <div class="accent-box"></div>
+                        <div class="border-demo">Bordered element</div>
+                    </div>
+                `;
+                modal.show();
             }});
         }});
     }});
     </script>
 </body>
 </html>"""
-    
+
     with open("docs/themes.html", "w", encoding="utf-8") as f:
         f.write(html_content)
     print("[OK] Themes preview page generated: docs/themes.html")
@@ -2156,7 +2229,8 @@ def get_module_description(module_name):
         "utils": "Utility functions - Performance, Math, Threading",
         "backend": "Renderer backends - OpenGL, Pygame",
         "misc": "Miscellaneous functions - Bones, Icons",
-        "tools": "Development tools - Documentation, Analysis"
+        "tools": "Development tools - Documentation, Analysis",
+        "storage": "Data storage and serialization - Atlas, Savedata, Encryption"
     }
     return descriptions.get(module_name, f"{module_name} module")
 
@@ -2173,7 +2247,7 @@ def analyze_project():
     if not os.path.exists(lunaengine_path):
         print("[ERROR] lunaengine folder not found")
         return project
-    expected_modules = ["core", "ui", "graphics", "utils", "backend", "misc", "tools"]
+    expected_modules = ["core", "ui", "graphics", "utils", "backend", "misc", "tools", "storage"]
     for module in expected_modules:
         module_path = os.path.join(lunaengine_path, module)
         if os.path.exists(module_path):
@@ -2405,7 +2479,7 @@ def generate_main_page(project):
         <h2 class="mb-4">LunaEngine Modules</h2>
         <div class="row g-4" style="margin-bottom: 1vw;">
     <script>
-    document.addEventListener('DOMContentLoaded', function()"""+"""{
+    document.addEventListener('DOMContentLoaded', function()"""+"""{{
         const installRadios = document.querySelectorAll('input[name="installOption"]');
         const installCommandSpan = document.getElementById('installCommand');
         const copyBtn = document.querySelector('.copy-install-btn');
@@ -2447,7 +2521,7 @@ def generate_main_page(project):
                 }, 2000);
             });
         });
-    });
+    }});
     </script>
     """
     module_styles = {
@@ -2457,7 +2531,8 @@ def generate_main_page(project):
         "utils": {"icon": "bi-tools", "color": "info", "name": "Utilities"},
         "backend": {"icon": "bi-hdd-stack", "color": "secondary", "name": "Renderer Backends"},
         "misc": {"icon": "bi-backpack", "color": "dark", "name": "Miscellaneous"},
-        "tools": {"icon": "bi-wrench", "color": "danger", "name": "Development Tools"}
+        "tools": {"icon": "bi-wrench", "color": "danger", "name": "Development Tools"},
+        "storage": {"icon": "bi-database", "color": "info", "name": "Storage"}
     }
     for module_name, module_info in project['modules'].items():
         style = module_styles.get(module_name, {"icon": "bi-box", "color": "primary", "name": module_name.title()})

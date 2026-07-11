@@ -2,20 +2,25 @@
 
 ## Overview
 
-- **Total Files**: 68
-- **Total Lines**: 25048
-- **Code Lines**: 16430
-- **Comment Lines**: 4396
-- **Blank Lines**: 4222
+- **Total Files**: 72
+- **Total Lines**: 31258
+- **Code Lines**: 21239
+- **Comment Lines**: 5368
+- **Blank Lines**: 4651
 
-## Statistics
+## Theme Statistics
 
-- **Total Themes**: 83
-- **Total Elements**: 26
+- **Total Themes (base names)**: 62
+- **Themes with both dark and light variants**: 62
+- **Total variants (dark + light)**: 124
+
+## UI Elements
+
+- **Total UI Elements**: 29
 
 ## Code Density
 
-- **Code Density**: 65.6%
+- **Code Density**: 67.9%
 - Balanced code and comments
 
 ## Project Structure
@@ -43,6 +48,7 @@
 ├── [DIR] graphics/
 │   ├── [PYT] __init__.py
 │   ├── [PYT] camera.py
+│   ├── [PYT] paperdoll.py
 │   ├── [PYT] particles.py
 │   ├── [DIR] shaders/
 │   │   ├── [SHD] depth.frag
@@ -65,12 +71,16 @@
 │   ├── [PYT] __init__.py
 │   ├── [PYT] debug.py
 │   └── [PYT] icons.py
+├── [DIR] storage/
+│   ├── [PYT] __init__.py
+│   ├── [PYT] atlas.py
+│   ├── [PYT] encrypter.py
+│   └── [PYT] savedata.py
 ├── [DIR] tools/
 │   ├── [PYT] __init__.py
 │   ├── [PYT] clear_pycache.py
 │   ├── [PYT] code_stats.py
-│   ├── [PYT] image_conversion_tool.py
-│   └── [PYT] split_themes.py
+│   └── [PYT] image_conversion_tool.py
 ├── [DIR] ui/
 │   ├── [PYT] __init__.py
 │   ├── [DIR] elements/
@@ -106,12 +116,12 @@
 
 | Extension | Count | Percentage |
 |-----------|-------|------------|
-| `.comp` | 1 | 1.5% |
-| `.frag` | 6 | 8.8% |
-| `.geom` | 1 | 1.5% |
-| `.md` | 1 | 1.5% |
-| `.py` | 53 | 77.9% |
-| `.vert` | 6 | 8.8% |
+| `.comp` | 1 | 1.4% |
+| `.frag` | 6 | 8.3% |
+| `.geom` | 1 | 1.4% |
+| `.md` | 1 | 1.4% |
+| `.py` | 57 | 79.2% |
+| `.vert` | 6 | 8.3% |
 
 ## Files by Directory
 
@@ -119,11 +129,12 @@
 |-----------|------------|
 | `backend` | 7 |
 | `core` | 6 |
-| `graphics` | 5 |
+| `graphics` | 6 |
 | `graphics\shaders` | 14 |
 | `misc` | 3 |
 | `root` | 2 |
-| `tools` | 5 |
+| `storage` | 4 |
+| `tools` | 4 |
 | `ui` | 8 |
 | `ui\elements` | 12 |
 | `utils` | 6 |
@@ -132,65 +143,69 @@
 
 | File | Total Lines | Code | Comments | Blank | Size (KB) |
 |------|------------|------|----------|-------|-----------|
-| `backend\opengl.py` | 1612 | 1135 | 201 | 276 | 66.7 |
-| `ui\elements\selectors.py` | 1592 | 1304 | 36 | 252 | 68.1 |
+| `backend\opengl.py` | 2088 | 1258 | 478 | 352 | 84.7 |
+| `ui\elements\containers.py` | 1998 | 1689 | 64 | 245 | 85.1 |
+| `ui\elements\selectors.py` | 1769 | 1458 | 60 | 251 | 73.5 |
+| `core\engine.py` | 1472 | 887 | 329 | 256 | 59.9 |
+| `misc\debug.py` | 1428 | 1115 | 97 | 216 | 64.8 |
+| `ui\elements\visualizers.py` | 1249 | 974 | 122 | 153 | 55.7 |
 | `ui\tween.py` | 1202 | 550 | 423 | 229 | 36.7 |
-| `ui\elements\containers.py` | 1192 | 1020 | 10 | 162 | 54.5 |
-| `core\engine.py` | 1148 | 556 | 363 | 229 | 43.4 |
+| `graphics\camera.py` | 1105 | 643 | 266 | 196 | 43.4 |
 | `backend\network.py` | 1092 | 770 | 140 | 182 | 40.1 |
+| `ui\elements\textinputs.py` | 1034 | 865 | 67 | 102 | 44.5 |
 | `ui\notifications.py` | 932 | 576 | 199 | 157 | 37.9 |
-| `graphics\spritesheet.py` | 930 | 446 | 331 | 153 | 33.4 |
-| `graphics\camera.py` | 881 | 514 | 197 | 170 | 34.2 |
-| `ui\elements\textinputs.py` | 871 | 700 | 12 | 159 | 35.9 |
-| `ui\elements\visualizers.py` | 838 | 670 | 28 | 140 | 36.6 |
-| `misc\debug.py` | 826 | 630 | 62 | 134 | 36.2 |
-| `core\audio.py` | 774 | 431 | 200 | 143 | 26.1 |
-| `backend\openal.py` | 766 | 433 | 185 | 148 | 25.5 |
+| `graphics\spritesheet.py` | 930 | 469 | 309 | 152 | 33.3 |
+| `storage\savedata.py` | 880 | 583 | 204 | 93 | 35.1 |
+| `ui\elements\labels.py` | 879 | 668 | 96 | 115 | 33.4 |
+| `core\renderer.py` | 817 | 410 | 303 | 104 | 24.4 |
 | `graphics\particles.py` | 742 | 580 | 78 | 84 | 23.9 |
-| `backend\controller.py` | 640 | 493 | 63 | 84 | 23.0 |
-| `ui\themes.py` | 638 | 496 | 53 | 89 | 23.0 |
+| `ui\elements\base.py` | 682 | 359 | 212 | 111 | 26.8 |
+| `ui\themes.py` | 664 | 509 | 63 | 92 | 24.2 |
+| `backend\controller.py` | 652 | 503 | 63 | 86 | 23.5 |
+| `core\audio.py` | 611 | 471 | 69 | 71 | 23.0 |
+| `backend\openal.py` | 589 | 481 | 55 | 53 | 22.1 |
 | `misc\icons.py` | 578 | 418 | 63 | 97 | 21.1 |
-| `ui\elements\base.py` | 439 | 235 | 127 | 77 | 16.9 |
 | `utils\timer.py` | 427 | 164 | 179 | 84 | 13.8 |
+| `tools\code_stats.py` | 423 | 296 | 56 | 71 | 17.3 |
+| `graphics\paperdoll.py` | 422 | 213 | 141 | 68 | 16.6 |
 | `utils\performance.py` | 408 | 265 | 68 | 75 | 14.7 |
-| `backend\types.py` | 401 | 291 | 37 | 73 | 14.0 |
-| `tools\code_stats.py` | 400 | 274 | 56 | 70 | 16.1 |
-| `ui\elements\clock.py` | 394 | 224 | 102 | 68 | 16.3 |
+| `backend\types.py` | 407 | 296 | 37 | 74 | 14.3 |
+| `ui\elements\clock.py` | 379 | 257 | 68 | 54 | 16.3 |
 | `ui\tooltips.py` | 364 | 179 | 118 | 67 | 12.9 |
 | `core\window.py` | 358 | 138 | 158 | 62 | 12.0 |
-| `core\renderer.py` | 339 | 96 | 187 | 56 | 11.3 |
 | `utils\math_utils.py` | 332 | 178 | 104 | 50 | 10.1 |
+| `ui\elements\buttons.py` | 330 | 271 | 11 | 48 | 12.3 |
 | `graphics\shaders\filter.frag` | 323 | 283 | 1 | 39 | 11.0 |
 | `tools\image_conversion_tool.py` | 308 | 195 | 51 | 62 | 12.4 |
+| `ui\elements\dialogs.py` | 293 | 202 | 47 | 44 | 11.8 |
+| `ui\elements\misc.py` | 269 | 201 | 25 | 43 | 10.2 |
 | `graphics\shadows.py` | 264 | 160 | 59 | 45 | 9.5 |
-| `ui\elements\buttons.py` | 251 | 207 | 4 | 40 | 9.9 |
+| `ui\elements\progress.py` | 263 | 196 | 39 | 28 | 11.5 |
+| `storage\atlas.py` | 251 | 198 | 24 | 29 | 10.5 |
 | `utils\image_converter.py` | 251 | 177 | 25 | 49 | 9.2 |
 | `ui\layout.py` | 231 | 97 | 91 | 43 | 7.3 |
-| `ui\layer_manager.py` | 225 | 94 | 85 | 46 | 7.5 |
-| `ui\elements\dialogs.py` | 224 | 159 | 24 | 41 | 9.1 |
-| `ui\elements\misc.py` | 221 | 161 | 14 | 46 | 8.3 |
-| `CODE_STATISTICS.md` | 203 | 181 | 8 | 14 | 7.5 |
-| `core\scene.py` | 191 | 142 | 10 | 39 | 7.0 |
-| `ui\elements\progress.py` | 170 | 142 | 3 | 25 | 7.3 |
-| `ui\elements\labels.py` | 150 | 119 | 2 | 29 | 6.0 |
-| `backend\__init__.py` | 108 | 80 | 22 | 6 | 2.2 |
+| `CODE_STATISTICS.md` | 217 | 192 | 9 | 16 | 8.0 |
+| `core\scene.py` | 209 | 146 | 20 | 43 | 7.7 |
+| `ui\layer_manager.py` | 165 | 110 | 31 | 24 | 6.3 |
+| `backend\__init__.py` | 133 | 98 | 28 | 7 | 2.8 |
 | `ui\styles.py` | 91 | 35 | 38 | 18 | 2.7 |
 | `utils\threading.py` | 87 | 43 | 29 | 15 | 2.5 |
-| `graphics\__init__.py` | 77 | 53 | 19 | 5 | 1.7 |
+| `graphics\__init__.py` | 78 | 55 | 18 | 5 | 1.7 |
 | `ui\__init__.py` | 73 | 26 | 30 | 17 | 2.7 |
 | `utils\__init__.py` | 73 | 44 | 22 | 7 | 2.6 |
-| `tools\split_themes.py` | 61 | 43 | 7 | 11 | 2.1 |
+| `core\__init__.py` | 52 | 26 | 20 | 6 | 1.2 |
 | `ui\elements\__init__.py` | 48 | 24 | 22 | 2 | 2.1 |
+| `storage\encrypter.py` | 45 | 35 | 0 | 10 | 1.3 |
 | `graphics\shaders\rounded_rect.frag` | 42 | 35 | 1 | 6 | 1.4 |
-| `core\__init__.py` | 28 | 7 | 15 | 6 | 0.8 |
 | `graphics\shaders\particle.vert` | 27 | 21 | 1 | 5 | 0.8 |
 | `tools\clear_pycache.py` | 24 | 20 | 0 | 4 | 0.8 |
 | `backend\exceptions.py` | 21 | 5 | 11 | 5 | 0.6 |
 | `graphics\shaders\depth.geom` | 21 | 17 | 1 | 3 | 0.5 |
 | `graphics\shaders\simple.vert` | 18 | 13 | 1 | 4 | 0.5 |
+| `misc\__init__.py` | 18 | 8 | 7 | 3 | 0.9 |
 | `graphics\shaders\rounded_rect.vert` | 17 | 14 | 1 | 2 | 0.4 |
 | `graphics\shaders\texture.vert` | 17 | 14 | 1 | 2 | 0.5 |
-| `misc\__init__.py` | 16 | 6 | 7 | 3 | 0.9 |
+| `storage\__init__.py` | 15 | 9 | 4 | 2 | 0.5 |
 | `__init__.py` | 11 | 4 | 3 | 4 | 0.3 |
 | `graphics\shaders\filter.vert` | 10 | 7 | 1 | 2 | 0.2 |
 | `graphics\shaders\particle.comp` | 10 | 8 | 1 | 1 | 0.2 |

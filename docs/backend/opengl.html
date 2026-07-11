@@ -48,7 +48,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
+                    <p class="lead fs-6">Enumeration of all available post-processing filter types.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -124,7 +124,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
+                    <p class="lead fs-6">Defines the shape/region where a filter is applied.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -149,7 +149,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Simple filter class with all parameters</p>
+                    <p class="lead fs-6">Represents a post-processing filter with configurable region and intensity.<br><br>Attributes:<br> &nbsp; &nbsp;filter_type (FilterType): The type of effect to apply.<br> &nbsp; &nbsp;intensity (float): Strength of the effect (0.0 to 1.0).<br> &nbsp; &nbsp;region_type (FilterRegionType): Shape of the affected area.<br> &nbsp; &nbsp;region_pos (Tuple[float, float]): Position (top‑left for rect, center for circle).<br> &nbsp; &nbsp;region_size (Tuple[float, float]): Width and height of rectangular region.<br> &nbsp; &nbsp;radius (float): Radius for circular regions.<br> &nbsp; &nbsp;feather (float): Edge softness in pixels.<br> &nbsp; &nbsp;blend_mode (str): How the filter blends with the background (e.g., &quot;normal&quot;).<br> &nbsp; &nbsp;enabled (bool): Whether this filter is active.<br> &nbsp; &nbsp;time (float): Accumulated time for animated filters.</p>
                 </div>
                 
                 <div class="methods-section">
@@ -157,15 +157,15 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filter-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, filter_type: FilterType = FilterType.NONE, intensity: float = 1.0, region_type: FilterRegionType = FilterRegionType.FULLSCREEN, region_pos: Tuple[float, float] = (0, 0), region_size: Tuple[float, float] = (100, 100), radius: float = 50.0, feather: float = 10.0, blend_mode: str = 'normal') -> Any</code>
-                <div class="mt-2 text-muted small">Initialize a filter with all parameters.<br><br>Args:<br> &nbsp; &nbsp;filter_type: Type of filter effect<br> &nbsp; &nbsp;intensity: Filter strength (0.0 to 1.0)<br> &nbsp; &nbsp;region_type: Shape of filter region<br> &nbsp; &nbsp;region_pos: Position of region (top-left for rect, center for circle)<br> &nbsp; &nbsp;region_size: Size of region (width, height)<br> &nbsp; &nbsp;radius: Radius for circular regions<br> &nbsp; &nbsp;feather: Edge softness in pixels<br> &nbsp; &nbsp;blend_mode: How filter blends with background</div>
+                <div class="mt-2 text-muted small">Initialize a filter with all parameters.<br><br>Args:<br> &nbsp; &nbsp;filter_type: Type of filter effect.<br> &nbsp; &nbsp;intensity: Filter strength (0.0 to 1.0).<br> &nbsp; &nbsp;region_type: Shape of filter region.<br> &nbsp; &nbsp;region_pos: Position of region (top-left for rect, center for circle).<br> &nbsp; &nbsp;region_size: Size of region (width, height).<br> &nbsp; &nbsp;radius: Radius for circular regions.<br> &nbsp; &nbsp;feather: Edge softness in pixels.<br> &nbsp; &nbsp;blend_mode: How filter blends with background.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filter-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float) -> Any</code>
-                <div class="mt-2 text-muted small">Update filter for animation</div>
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float) -> None</code>
+                <div class="mt-2 text-muted small">Update filter for animation (e.g., time‑based effects).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filter-copy">
-                <code class="fs-6 fw-bold text-color-title">def copy(self: Any) -> 'Filter'</code>
-                <div class="mt-2 text-muted small">Create a copy of this filter</div>
+                <code class="fs-6 fw-bold text-color-title">def copy(self: Any) -> Filter</code>
+                <div class="mt-2 text-muted small">Create a deep copy of this filter.</div>
             </div>
                 </div>
             </div>
@@ -177,7 +177,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Base class for all shader programs with uniform caching.</p>
+                    <p class="lead fs-6">Base class for all shader programs with automatic uniform location caching.<br><br>Attributes:<br> &nbsp; &nbsp;vertex_source (str | None): Path or source code for vertex shader.<br> &nbsp; &nbsp;fragment_source (str | None): Path or source code for fragment shader.<br> &nbsp; &nbsp;geometry_source (str | None): Path or source code for geometry shader.<br> &nbsp; &nbsp;program (int | None): OpenGL shader program handle.<br> &nbsp; &nbsp;vao (int | None): Vertex Array Object handle.<br> &nbsp; &nbsp;vbo (int | None): Vertex Buffer Object handle.<br> &nbsp; &nbsp;ebo (int | None): Element Buffer Object handle.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -193,32 +193,32 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shaderprogram-get_source">
-                <code class="fs-6 fw-bold text-color-title">def get_source(self: Any, source: str | None, type: Literal['vertex', 'fragment', 'geometry']) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def get_source(self: Any, source: str | None, type: str) -> None</code>
+                <div class="mt-2 text-muted small">Load shader source from a file if the provided string is a file name.<br><br>Args:<br> &nbsp; &nbsp;source: File name or raw source code.<br> &nbsp; &nbsp;type: Type of shader (&#x27;vertex&#x27;, &#x27;fragment&#x27;, &#x27;geometry&#x27;).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shaderprogram-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, vertex_source: str, fragment_source: str, geometry_source: Optional[str] = None) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Initialize the shader program by loading sources and compiling.<br><br>Args:<br> &nbsp; &nbsp;vertex_source: File name or raw source for vertex shader.<br> &nbsp; &nbsp;fragment_source: File name or raw source for fragment shader.<br> &nbsp; &nbsp;geometry_source: Optional file name or raw source for geometry shader.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shaderprogram-_get_uniform_location">
                 <code class="fs-6 fw-bold text-color-title">def _get_uniform_location(self: Any, name: str) -> int</code>
-                <div class="mt-2 text-muted small">Get cached uniform location.</div>
+                <div class="mt-2 text-muted small">Get cached uniform location (avoids repeated glGetUniformLocation calls).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shaderprogram-_create_program">
-                <code class="fs-6 fw-bold text-color-title">def _create_program(self: Any, vertex_source: str, fragment_source: str, geometry_source: Optional[str] = None) -> Any</code>
-                <div class="mt-2 text-muted small">Compile and link shaders.</div>
+                <code class="fs-6 fw-bold text-color-title">def _create_program(self: Any, vertex_source: str, fragment_source: str, geometry_source: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">Compile vertex/fragment (and optional geometry) shaders and link the program.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shaderprogram-use">
-                <code class="fs-6 fw-bold text-color-title">def use(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Activate the shader program.</div>
+                <code class="fs-6 fw-bold text-color-title">def use(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Activate this shader program for rendering.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shaderprogram-unuse">
-                <code class="fs-6 fw-bold text-color-title">def unuse(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Deactivate the shader program.</div>
+                <code class="fs-6 fw-bold text-color-title">def unuse(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Deactivate the currently active shader program.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shaderprogram-_setup_geometry">
-                <code class="fs-6 fw-bold text-color-title">def _setup_geometry(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Set up vertex arrays - to be overridden by subclasses.</div>
+                <code class="fs-6 fw-bold text-color-title">def _setup_geometry(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Set up vertex arrays, VBOs, etc. Overridden by subclasses.</div>
             </div>
                 </div>
             </div>
@@ -230,7 +230,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Instanced particle shader.</p>
+                    <p class="lead fs-6">Instanced particle rendering shader. Each particle is a point with size and colour.</p>
                 </div>
                 
                 <div class="methods-section">
@@ -238,11 +238,11 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particleshader-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Initialise the particle shader from external vertex/fragment files.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-particleshader-_setup_geometry">
-                <code class="fs-6 fw-bold text-color-title">def _setup_geometry(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Create a dummy VAO with one vertex (for instancing).</div>
+                <code class="fs-6 fw-bold text-color-title">def _setup_geometry(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Set up a dummy VAO with a single vertex (used for instancing).<br>Also creates VBOs for instance data (position, size, alpha) and instance colours.</div>
             </div>
                 </div>
             </div>
@@ -254,7 +254,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Simple shader for solid color rectangles and shapes.</p>
+                    <p class="lead fs-6">Simple shader for drawing solid colour rectangles and shapes.</p>
                 </div>
                 
                 <div class="methods-section">
@@ -262,11 +262,11 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-simpleshader-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Initialise the simple shader from external files.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-simpleshader-_setup_geometry">
-                <code class="fs-6 fw-bold text-color-title">def _setup_geometry(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Setup a unit quad (0,0 to 1,1).</div>
+                <code class="fs-6 fw-bold text-color-title">def _setup_geometry(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Set up a unit quad (0,0) to (1,1) with index buffer.</div>
             </div>
                 </div>
             </div>
@@ -278,7 +278,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Shader for textured rendering.</p>
+                    <p class="lead fs-6">Shader for rendering textured quads (surfaces, images).</p>
                 </div>
                 
                 <div class="methods-section">
@@ -286,11 +286,11 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textureshader-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Initialise the texture shader from external files.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textureshader-_setup_geometry">
-                <code class="fs-6 fw-bold text-color-title">def _setup_geometry(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Setup textured quad with UVs.</div>
+                <code class="fs-6 fw-bold text-color-title">def _setup_geometry(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Set up a quad with position and UV coordinates.</div>
             </div>
                 </div>
             </div>
@@ -302,7 +302,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Shader for drawing rectangles with per-corner rounded corners.</p>
+                    <p class="lead fs-6">Shader that draws rectangles with per‑corner rounded corners using signed distance fields.</p>
                 </div>
                 
                 <div class="methods-section">
@@ -310,11 +310,11 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-roundedrectshader-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Initialise the rounded rectangle shader from external files.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-roundedrectshader-_setup_geometry">
-                <code class="fs-6 fw-bold text-color-title">def _setup_geometry(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Setup quad geometry for rectangle.</div>
+                <code class="fs-6 fw-bold text-color-title">def _setup_geometry(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Set up a simple quad geometry (the shader handles rounding).</div>
             </div>
                 </div>
             </div>
@@ -326,7 +326,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Shader for applying post-processing filters.</p>
+                    <p class="lead fs-6">Full‑screen quad shader for applying post‑processing filters and effects.</p>
                 </div>
                 
                 <div class="methods-section">
@@ -334,11 +334,11 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filtershader-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Initialise the filter shader from external files.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filtershader-_setup_geometry">
-                <code class="fs-6 fw-bold text-color-title">def _setup_geometry(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Setup fullscreen quad for filter rendering.</div>
+                <code class="fs-6 fw-bold text-color-title">def _setup_geometry(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Set up a full‑screen quad (clip space coordinates).</div>
             </div>
                 </div>
             </div>
@@ -350,7 +350,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
+                    <p class="lead fs-6">Main hardware‑accelerated renderer for LunaEngine.<br><br>Manages OpenGL context, shaders, framebuffers, geometry caches,<br>filters, particles, and all drawing operations.<br><br>Attributes:<br> &nbsp; &nbsp;width (int): Current viewport width.<br> &nbsp; &nbsp;height (int): Current viewport height.<br> &nbsp; &nbsp;camera_position (pygame.math.Vector2): World camera position.<br> &nbsp; &nbsp;filters (List[Filter]): Active post‑processing filters.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -361,267 +361,287 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, width: int, height: int) -> Any</code>
+                <div class="mt-2 text-muted small">Initialise the OpenGL renderer with given screen dimensions.<br><br>Args:<br> &nbsp; &nbsp;width: Initial viewport width.<br> &nbsp; &nbsp;height: Initial viewport height.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-get_opengl_version">
+                <code class="fs-6 fw-bold text-color-title">def get_opengl_version(self: Any) -> str</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-set_text_cache_timeout">
-                <code class="fs-6 fw-bold text-color-title">def set_text_cache_timeout(self: Any, seconds: float) -> Any</code>
-                <div class="mt-2 text-muted small">Set how long a text texture stays in cache without being used.</div>
+                <code class="fs-6 fw-bold text-color-title">def set_text_cache_timeout(self: Any, seconds: float) -> None</code>
+                <div class="mt-2 text-muted small">Set how long a text texture stays in cache without being used.<br><br>Args:<br> &nbsp; &nbsp;seconds: Timeout in seconds (&gt;= 0.1).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-get_cache_usage">
-                <code class="fs-6 fw-bold text-color-title">def get_cache_usage(self: Any, target: Literal['text', 'texture', 'circle', 'polygon', 'total', 'all'] = 'all', humanize: bool = False) -> float | Dict[str, float]</code>
-                <div class="mt-2 text-muted small">Return cache usage as percentage. If target is &#x27;all&#x27;, returns dict of all caches.</div>
+                <code class="fs-6 fw-bold text-color-title">def get_cache_usage(self: Any, target: str = 'all', humanize: bool = False) -> float | Dict[str, float]</code>
+                <div class="mt-2 text-muted small">Return cache usage as size in bytes or as a dictionary of sizes.<br><br>Args:<br> &nbsp; &nbsp;target: One of &#x27;text&#x27;, &#x27;texture&#x27;, &#x27;circle&#x27;, &#x27;polygon&#x27;, &#x27;total&#x27;, or &#x27;all&#x27;.<br> &nbsp; &nbsp;humanize: If True, return human‑readable strings (e.g., &quot;1.2 KB&quot;).<br><br>Returns:<br> &nbsp; &nbsp;Size in bytes (or humanised string) or a dictionary of all caches.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-max_particles">
                 <code class="fs-6 fw-bold text-color-title">def max_particles(self: Any) -> int</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Maximum number of particles that can be rendered simultaneously.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-max_particles">
-                <code class="fs-6 fw-bold text-color-title">def max_particles(self: Any, value: int) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def max_particles(self: Any, value: int) -> None</code>
+                <div class="mt-2 text-muted small">Change the maximum particle count and trigger resize callbacks.<br><br>Args:<br> &nbsp; &nbsp;value: New maximum number of particles.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-initialize">
                 <code class="fs-6 fw-bold text-color-title">def initialize(self: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Initialize OpenGL context and shaders.</div>
+                <div class="mt-2 text-muted small">Set up OpenGL context, compile shaders, create framebuffers.<br><br>Returns:<br> &nbsp; &nbsp;True if initialisation succeeded, False otherwise.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_initialize_filter_framebuffer">
                 <code class="fs-6 fw-bold text-color-title">def _initialize_filter_framebuffer(self: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Create framebuffer for off-screen filter rendering.</div>
+                <div class="mt-2 text-muted small">Create the off‑screen framebuffer used for applying filters.<br><br>Returns:<br> &nbsp; &nbsp;True if successful, False otherwise.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-add_filter">
-                <code class="fs-6 fw-bold text-color-title">def add_filter(self: Any, filter_obj: Filter) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def add_filter(self: Any, filter_obj: Filter) -> None</code>
+                <div class="mt-2 text-muted small">Add a filter to the active filter stack.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-remove_filter">
-                <code class="fs-6 fw-bold text-color-title">def remove_filter(self: Any, filter_obj: Filter) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def remove_filter(self: Any, filter_obj: Filter) -> None</code>
+                <div class="mt-2 text-muted small">Remove a specific filter from the stack.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-clear_filters">
-                <code class="fs-6 fw-bold text-color-title">def clear_filters(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def clear_filters(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Remove all active filters.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-create_quick_filter">
                 <code class="fs-6 fw-bold text-color-title">def create_quick_filter(self: Any, filter_type: FilterType, intensity: float = 1.0, x: float = 0, y: float = 0, width: float = None, height: float = None, radius: float = 50.0, feather: float = 10.0) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Create and add a filter with common sensible defaults.<br><br>Args:<br> &nbsp; &nbsp;filter_type: Type of filter effect.<br> &nbsp; &nbsp;intensity: Strength (0.0 to 1.0).<br> &nbsp; &nbsp;x, y: Position of the region.<br> &nbsp; &nbsp;width, height: Dimensions of rectangular region (if None, uses screen size).<br> &nbsp; &nbsp;radius: Circle radius (if circular region).<br> &nbsp; &nbsp;feather: Edge softness.<br><br>Returns:<br> &nbsp; &nbsp;The created Filter object (already added to the stack).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_vignette">
-                <code class="fs-6 fw-bold text-color-title">def apply_vignette(self: Any, intensity: Any = 0.7, feather: Any = 100.0) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_vignette(self: Any, intensity: float = 0.7, feather: float = 100.0) -> Filter</code>
+                <div class="mt-2 text-muted small">Add a vignette (darkened edges) effect.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_blur">
-                <code class="fs-6 fw-bold text-color-title">def apply_blur(self: Any, intensity: Any = 0.5, x: Any = 0, y: Any = 0, width: Any = None, height: Any = None) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_blur(self: Any, intensity: float = 0.5, x: float = 0, y: float = 0, width: float = None, height: float = None) -> Filter</code>
+                <div class="mt-2 text-muted small">Add a gaussian‑like blur effect, optionally within a rectangle.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_sepia">
-                <code class="fs-6 fw-bold text-color-title">def apply_sepia(self: Any, intensity: Any = 1.0) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_sepia(self: Any, intensity: float = 1.0) -> Filter</code>
+                <div class="mt-2 text-muted small">Add a sepia tone (warm brownish) effect.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_grayscale">
-                <code class="fs-6 fw-bold text-color-title">def apply_grayscale(self: Any, intensity: Any = 1.0) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_grayscale(self: Any, intensity: float = 1.0) -> Filter</code>
+                <div class="mt-2 text-muted small">Convert colours to grayscale.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_invert">
-                <code class="fs-6 fw-bold text-color-title">def apply_invert(self: Any, intensity: Any = 1.0) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_invert(self: Any, intensity: float = 1.0) -> Filter</code>
+                <div class="mt-2 text-muted small">Invert colours (negative).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_warm_temperature">
-                <code class="fs-6 fw-bold text-color-title">def apply_warm_temperature(self: Any, intensity: Any = 0.5) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_warm_temperature(self: Any, intensity: float = 0.5) -> Filter</code>
+                <div class="mt-2 text-muted small">Increase warm colours (orange/red).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_cold_temperature">
-                <code class="fs-6 fw-bold text-color-title">def apply_cold_temperature(self: Any, intensity: Any = 0.5) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_cold_temperature(self: Any, intensity: float = 0.5) -> Filter</code>
+                <div class="mt-2 text-muted small">Increase cold colours (blue).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_night_vision">
-                <code class="fs-6 fw-bold text-color-title">def apply_night_vision(self: Any, intensity: Any = 0.9) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_night_vision(self: Any, intensity: float = 0.9) -> Filter</code>
+                <div class="mt-2 text-muted small">Simulate night vision (green tint + noise).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_crt_effect">
-                <code class="fs-6 fw-bold text-color-title">def apply_crt_effect(self: Any, intensity: Any = 0.8) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_crt_effect(self: Any, intensity: float = 0.8) -> Filter</code>
+                <div class="mt-2 text-muted small">Add CRT monitor scanlines and curvature.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_pixelate">
-                <code class="fs-6 fw-bold text-color-title">def apply_pixelate(self: Any, intensity: Any = 0.7) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_pixelate(self: Any, intensity: float = 0.7) -> Filter</code>
+                <div class="mt-2 text-muted small">Pixelate the image (lower resolution).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_bloom">
-                <code class="fs-6 fw-bold text-color-title">def apply_bloom(self: Any, intensity: Any = 0.5) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_bloom(self: Any, intensity: float = 0.5) -> Filter</code>
+                <div class="mt-2 text-muted small">Add a bloom (glow) effect around bright areas.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_edge_detect">
-                <code class="fs-6 fw-bold text-color-title">def apply_edge_detect(self: Any, intensity: Any = 0.8) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_edge_detect(self: Any, intensity: float = 0.8) -> Filter</code>
+                <div class="mt-2 text-muted small">Detect and highlight edges.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_emboss">
-                <code class="fs-6 fw-bold text-color-title">def apply_emboss(self: Any, intensity: Any = 0.7) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_emboss(self: Any, intensity: float = 0.7) -> Filter</code>
+                <div class="mt-2 text-muted small">Apply an emboss (raised edges) effect.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_sharpen">
-                <code class="fs-6 fw-bold text-color-title">def apply_sharpen(self: Any, intensity: Any = 0.5) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_sharpen(self: Any, intensity: float = 0.5) -> Filter</code>
+                <div class="mt-2 text-muted small">Sharpen the image.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_posterize">
-                <code class="fs-6 fw-bold text-color-title">def apply_posterize(self: Any, intensity: Any = 0.6) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_posterize(self: Any, intensity: float = 0.6) -> Filter</code>
+                <div class="mt-2 text-muted small">Reduce the number of colour bands.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_neon">
-                <code class="fs-6 fw-bold text-color-title">def apply_neon(self: Any, intensity: Any = 0.7) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_neon(self: Any, intensity: float = 0.7) -> Filter</code>
+                <div class="mt-2 text-muted small">Add a neon glow effect.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_radial_blur">
-                <code class="fs-6 fw-bold text-color-title">def apply_radial_blur(self: Any, intensity: Any = 0.5) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_radial_blur(self: Any, intensity: float = 0.5) -> Filter</code>
+                <div class="mt-2 text-muted small">Blur outward from the centre.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_fisheye">
-                <code class="fs-6 fw-bold text-color-title">def apply_fisheye(self: Any, intensity: Any = 0.4) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_fisheye(self: Any, intensity: float = 0.4) -> Filter</code>
+                <div class="mt-2 text-muted small">Apply a fisheye lens distortion.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_twirl">
-                <code class="fs-6 fw-bold text-color-title">def apply_twirl(self: Any, intensity: Any = 0.3) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_twirl(self: Any, intensity: float = 0.3) -> Filter</code>
+                <div class="mt-2 text-muted small">Twirl (swirl) the image around its centre.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_circular_grayscale">
-                <code class="fs-6 fw-bold text-color-title">def apply_circular_grayscale(self: Any, center_x: Any, center_y: Any, radius: Any = 100.0, intensity: Any = 1.0) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_circular_grayscale(self: Any, center_x: float, center_y: float, radius: float = 100.0, intensity: float = 1.0) -> Filter</code>
+                <div class="mt-2 text-muted small">Apply grayscale inside a circular region.<br><br>Args:<br> &nbsp; &nbsp;center_x, center_y: Centre of the circle.<br> &nbsp; &nbsp;radius: Radius of the circle.<br> &nbsp; &nbsp;intensity: Effect strength.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-apply_rectangular_blur">
-                <code class="fs-6 fw-bold text-color-title">def apply_rectangular_blur(self: Any, x: Any, y: Any, width: Any, height: Any, intensity: Any = 0.5) -> Filter</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def apply_rectangular_blur(self: Any, x: float, y: float, width: float, height: float, intensity: float = 0.5) -> Filter</code>
+                <div class="mt-2 text-muted small">Apply blur only inside a rectangular region.<br><br>Args:<br> &nbsp; &nbsp;x, y: Top‑left corner of the rectangle.<br> &nbsp; &nbsp;width, height: Size of the rectangle.<br> &nbsp; &nbsp;intensity: Blur strength.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-begin_frame">
-                <code class="fs-6 fw-bold text-color-title">def begin_frame(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Start rendering a new frame.</div>
+                <code class="fs-6 fw-bold text-color-title">def begin_frame(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Start rendering a new frame.<br><br>Binds the filter framebuffer if filters are active and clears the buffer.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-end_frame">
-                <code class="fs-6 fw-bold text-color-title">def end_frame(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Finish rendering and apply filters.</div>
+                <code class="fs-6 fw-bold text-color-title">def end_frame(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Finish rendering the frame and apply any active filters.<br><br>If filters are present, they are applied before swapping buffers.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_apply_filters">
-                <code class="fs-6 fw-bold text-color-title">def _apply_filters(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Apply stacked filters to the screen.</div>
+                <code class="fs-6 fw-bold text-color-title">def _apply_filters(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Stack and apply all active filters to the screen (or to the filter framebuffer).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-get_surface">
                 <code class="fs-6 fw-bold text-color-title">def get_surface(self: Any) -> pygame.Surface</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Return the main display surface (created by pygame).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-set_surface">
-                <code class="fs-6 fw-bold text-color-title">def set_surface(self: Any, surface: Optional[pygame.Surface]) -> Any</code>
-                <div class="mt-2 text-muted small">Render to a custom surface using framebuffer.</div>
+                <code class="fs-6 fw-bold text-color-title">def set_surface(self: Any, surface: Optional[pygame.Surface]) -> None</code>
+                <div class="mt-2 text-muted small">Redirect rendering to a custom pygame surface (using a framebuffer).<br><br>Args:<br> &nbsp; &nbsp;surface: Target surface, or None to reset to the main display.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_surface_to_texture">
                 <code class="fs-6 fw-bold text-color-title">def _surface_to_texture(self: Any, surface: pygame.Surface) -> int</code>
-                <div class="mt-2 text-muted small">Convert a pygame Surface to an OpenGL texture.</div>
+                <div class="mt-2 text-muted small">Convert a pygame Surface into an OpenGL texture (without caching).<br><br>Args:<br> &nbsp; &nbsp;surface: Source surface (should have alpha channel for best results).<br><br>Returns:<br> &nbsp; &nbsp;OpenGL texture ID.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_surface_to_texture_cached">
                 <code class="fs-6 fw-bold text-color-title">def _surface_to_texture_cached(self: Any, surface: pygame.Surface) -> int</code>
-                <div class="mt-2 text-muted small">Cached version of surface-to-texture.</div>
+                <div class="mt-2 text-muted small">Convert a surface to a texture, using a cache keyed by surface id.<br><br>Args:<br> &nbsp; &nbsp;surface: Source surface.<br><br>Returns:<br> &nbsp; &nbsp;OpenGL texture ID (cached).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_convert_color">
-                <code class="fs-6 fw-bold text-color-title">def _convert_color(self: Any, color: Tuple[int, int, int, float]) -> Tuple[float, float, float, float]</code>
-                <div class="mt-2 text-muted small">Convert color tuple to normalized RGBA.</div>
+                <code class="fs-6 fw-bold text-color-title">def _convert_color(self: Any, color: Union[Tuple[int, int, int, float], Tuple[int, int, int], Tuple[float, float, float, float], Color, ThemeStyle]) -> Tuple[float, float, float, float]</code>
+                <div class="mt-2 text-muted small">Normalise a colour to (r, g, b, a) floats in [0, 1].<br><br>Args:<br> &nbsp; &nbsp;color: Colour as (r, g, b) or (r, g, b, a) with values 0‑255 or 0‑1 (alpha 0‑255 also allowed).<br><br>Returns:<br> &nbsp; &nbsp;Normalised (r, g, b, a) where each component is in [0, 1].</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-enable_scissor">
-                <code class="fs-6 fw-bold text-color-title">def enable_scissor(self: Any, x: int, y: int, width: int, height: int) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def enable_scissor(self: Any, x: int | float, y: int | float, width: int | float, height: int | float) -> None</code>
+                <div class="mt-2 text-muted small">Push a scissor rectangle, intersecting with any existing one.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-disable_scissor">
-                <code class="fs-6 fw-bold text-color-title">def disable_scissor(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def disable_scissor(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Pop the top scissor rectangle and restore the previous one.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_rect">
-                <code class="fs-6 fw-bold text-color-title">def draw_rect(self: Any, x: int, y: int, width: int, height: int, color: tuple, fill: bool = True, anchor_point: tuple = (0.0, 0.0), border_width: int = 1, surface: Optional[pygame.Surface] = None, corner_radius: Union[int, Tuple[int, int, int, int]] = 0, border_color: Optional[Union[Color, Tuple[int, int, int, float]]] = None) -> Any</code>
-                <div class="mt-2 text-muted small">Draw a rectangle with optional border and fill.<br><br>Args:<br> &nbsp; &nbsp;color: Fill color (if fill=True)<br> &nbsp; &nbsp;fill: If True, draw filled rectangle; if False, draw only outline<br> &nbsp; &nbsp;border_width: Width of border in pixels (only used if fill=True and border_color given)<br> &nbsp; &nbsp;border_color: Color of border (if None, uses color for border when fill=False)</div>
+                <code class="fs-6 fw-bold text-color-title">def draw_rect(self: Any, x: int | float, y: int | float, width: int | float, height: int | float, color: Union[Tuple[int, int, int, float], Tuple[int, int, int], Color, Tuple[float, float, float, float], ThemeStyle], fill: bool = True, pivot: tuple = (0.0, 0.0), border_width: int = 1, surface: Optional[pygame.Surface] = None, corner_radius: Union[int, float, Tuple[int, int, int, int], Tuple[float, float, float, float]] = 0, border_color: Optional[Union[Tuple[int, int, int, float], Tuple[int, int, int], Color, Tuple[float, float, float, float], ThemeStyle]] = None) -> None</code>
+                <div class="mt-2 text-muted small">Draw a rectangle with optional fill, border, and rounded corners.<br><br>Args:<br> &nbsp; &nbsp;x, y: Position (before anchor adjustment).<br> &nbsp; &nbsp;width, height: Rectangle dimensions.<br> &nbsp; &nbsp;color: Fill colour (if fill=True).<br> &nbsp; &nbsp;fill: If True, filled rectangle; otherwise outline only.<br> &nbsp; &nbsp;pivot: Anchor as (fx, fy) where (0,0) is top‑left, (1,1) bottom‑right.<br> &nbsp; &nbsp;border_width: Thickness of the border in pixels (used when border_color provided or fill=False).<br> &nbsp; &nbsp;surface: Optional target surface (defaults to current render target).<br> &nbsp; &nbsp;corner_radius: Radius for all corners (int) or per‑corner (top‑left, top‑right, bottom‑right, bottom‑left).<br> &nbsp; &nbsp;border_color: Colour of the border (if None and fill=False, uses `color` for outline).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_isosceles_triangle">
+                <code class="fs-6 fw-bold text-color-title">def draw_isosceles_triangle(self: Any, x: int | float, y: int | float, width: int | float, height: int | float, color: Union[Tuple[int, int, int, float], Tuple[int, int, int], Color, Tuple[float, float, float, float], ThemeStyle], fill: bool = True, border_width: int = 1, border_color: Optional[Union[Tuple[int, int, int, float], Tuple[int, int, int], Color, Tuple[float, float, float, float], ThemeStyle]] = None) -> None</code>
+                <div class="mt-2 text-muted small">Draw an isosceles triangle with a horizontal base at the bottom.<br><br>The triangle is defined by a bounding box:<br> &nbsp; &nbsp;top vertex at (x + width/2, y)<br> &nbsp; &nbsp;bottom-left at (x, y + height)<br> &nbsp; &nbsp;bottom-right at (x + width, y + height)<br><br>Args:<br> &nbsp; &nbsp;x, y: Top‑left corner of the bounding box.<br> &nbsp; &nbsp;width, height: Bounding box dimensions.<br> &nbsp; &nbsp;color: Fill colour (if fill=True) or outline colour (if no border_color).<br> &nbsp; &nbsp;fill: If True, fills the triangle; otherwise draws only the outline.<br> &nbsp; &nbsp;border_width: Thickness of the outline (used when fill=False or border_color given).<br> &nbsp; &nbsp;border_color: Colour for the outline; if provided, an outline is drawn<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;on top of the fill (if fill=True) or as the only outline<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(if fill=False). If None and fill=False, `color` is used.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_equilateral_triangle">
+                <code class="fs-6 fw-bold text-color-title">def draw_equilateral_triangle(self: Any, x: int | float, y: int | float, width: int | float, color: Union[Tuple[int, int, int, float], Tuple[int, int, int], Color, Tuple[float, float, float, float], ThemeStyle], fill: bool = True, border_width: int = 1, border_color: Optional[Union[Tuple[int, int, int, float], Tuple[int, int, int], Color, Tuple[float, float, float, float], ThemeStyle]] = None) -> None</code>
+                <div class="mt-2 text-muted small">Draw an equilateral triangle with a horizontal base at the bottom.<br><br>The triangle is defined by the side length `width`. The bounding box<br>has width = side length and height = side * sqrt(3)/2, with top-left at (x, y).<br><br>Args:<br> &nbsp; &nbsp;x, y: Top‑left corner of the bounding box.<br> &nbsp; &nbsp;width: Side length of the equilateral triangle.<br> &nbsp; &nbsp;color: Fill colour (if fill=True) or outline colour (if no border_color).<br> &nbsp; &nbsp;fill: If True, fills the triangle; otherwise draws only the outline.<br> &nbsp; &nbsp;border_width: Thickness of the outline (used when fill=False or border_color given).<br> &nbsp; &nbsp;border_color: Colour for the outline; if provided, an outline is drawn<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;on top of the fill (if fill=True) or as the only outline<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(if fill=False). If None and fill=False, `color` is used.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_draw_outline_rect">
-                <code class="fs-6 fw-bold text-color-title">def _draw_outline_rect(self: Any, x: Any, y: Any, width: Any, height: Any, color: Any, border_width: Any, radii: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Draw only the outline (border) of a rectangle.</div>
+                <code class="fs-6 fw-bold text-color-title">def _draw_outline_rect(self: Any, x: int, y: int, width: int, height: int, color: tuple, border_width: int, radii: Tuple[int, int, int, int]) -> None</code>
+                <div class="mt-2 text-muted small">Internal: draw only the outline of a rectangle.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_draw_sharp_rect">
-                <code class="fs-6 fw-bold text-color-title">def _draw_sharp_rect(self: Any, x: Any, y: Any, width: Any, height: Any, color: Any, fill: Any = True, border_width: Any = 1) -> Any</code>
-                <div class="mt-2 text-muted small">Draw a sharp rectangle (no rounded corners).</div>
+                <code class="fs-6 fw-bold text-color-title">def _draw_sharp_rect(self: Any, x: int, y: int, width: int, height: int, color: tuple, fill: bool = True, border_width: int = 1) -> None</code>
+                <div class="mt-2 text-muted small">Internal: draw a rectangle without rounded corners (sharp).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_draw_rounded_rect">
-                <code class="fs-6 fw-bold text-color-title">def _draw_rounded_rect(self: Any, x: Any, y: Any, w: Any, h: Any, color: Any, fill: Any = True, border_width: Any = 1, radii: Any = (0, 0, 0, 0)) -> Any</code>
-                <div class="mt-2 text-muted small">Draw a rounded rectangle, optionally as an outline.</div>
+                <code class="fs-6 fw-bold text-color-title">def _draw_rounded_rect(self: Any, x: int, y: int, w: int, h: int, color: tuple, fill: bool = True, border_width: int = 1, radii: Tuple[int, int, int, int] = (0, 0, 0, 0)) -> None</code>
+                <div class="mt-2 text-muted small">Internal: draw a rounded rectangle (filled or outline) using the rounded rect shader.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_line">
-                <code class="fs-6 fw-bold text-color-title">def draw_line(self: Any, start_x: Any, start_y: Any, end_x: Any, end_y: Any, color: Any, width: Any = 2, surface: Any = None) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def draw_line(self: Any, start_x: int | float, start_y: int | float, end_x: int | float, end_y: int | float, color: tuple, width: int = 2, surface: Optional[pygame.Surface] = None) -> None</code>
+                <div class="mt-2 text-muted small">Draw a thick line between two points.<br><br>Args:<br> &nbsp; &nbsp;start_x, start_y: Start point.<br> &nbsp; &nbsp;end_x, end_y: End point.<br> &nbsp; &nbsp;color: RGB or RGBA colour.<br> &nbsp; &nbsp;width: Line thickness in pixels.<br> &nbsp; &nbsp;surface: Optional target surface.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_draw_thick_line">
-                <code class="fs-6 fw-bold text-color-title">def _draw_thick_line(self: Any, x1: Any, y1: Any, x2: Any, y2: Any, color: Any, width: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def _draw_thick_line(self: Any, x1: float, y1: float, x2: float, y2: float, color: tuple, width: float) -> None</code>
+                <div class="mt-2 text-muted small">Internal: draw a line by creating a quad perpendicular to the direction.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_lines">
-                <code class="fs-6 fw-bold text-color-title">def draw_lines(self: Any, points: List[Tuple[Tuple[int, int], Tuple[int, int]]], color: tuple, width: int = 2, surface: Any = None) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def draw_lines(self: Any, points: List[Tuple[Tuple[int, int], Tuple[int, int]]], color: tuple, width: int = 2, surface: Optional[pygame.Surface] = None) -> None</code>
+                <div class="mt-2 text-muted small">Draw multiple line segments.<br><br>Args:<br> &nbsp; &nbsp;points: List of ((x1,y1), (x2,y2)) pairs.<br> &nbsp; &nbsp;color: Line colour.<br> &nbsp; &nbsp;width: Line thickness.<br> &nbsp; &nbsp;surface: Optional target surface.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_circle">
-                <code class="fs-6 fw-bold text-color-title">def draw_circle(self: Any, center_x: Any, center_y: Any, radius: Any, color: Any, fill: Any = True, border_width: Any = 1, surface: Any = None, anchor_point: Any = (0.5, 0.5)) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def draw_circle(self: Any, center_x: int | float, center_y: int | float, radius: int | float, color: tuple, fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None, pivot: Tuple[float, float] = (0.5, 0.5)) -> None</code>
+                <div class="mt-2 text-muted small">Draw a circle (filled or outline) with caching.<br><br>Args:<br> &nbsp; &nbsp;center_x, center_y: Centre position (before anchor).<br> &nbsp; &nbsp;radius: Circle radius.<br> &nbsp; &nbsp;color: Fill or outline colour.<br> &nbsp; &nbsp;fill: If True, filled circle; otherwise outline.<br> &nbsp; &nbsp;border_width: Thickness of outline (used when fill=False).<br> &nbsp; &nbsp;surface: Optional target surface.<br> &nbsp; &nbsp;pivot: Anchor point for positioning (default centre).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_generate_filled_circle_geometry">
-                <code class="fs-6 fw-bold text-color-title">def _generate_filled_circle_geometry(self: Any, segments: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def _generate_filled_circle_geometry(self: Any, segments: int) -> Tuple[np.ndarray, np.ndarray]</code>
+                <div class="mt-2 text-muted small">Generate vertex and index arrays for a filled circle (unit coordinates).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_generate_hollow_circle_geometry">
-                <code class="fs-6 fw-bold text-color-title">def _generate_hollow_circle_geometry(self: Any, segments: int, border_width: float | int, radius: float | int) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def _generate_hollow_circle_geometry(self: Any, segments: int, border_width: float, radius: float) -> Tuple[np.ndarray, np.ndarray]</code>
+                <div class="mt-2 text-muted small">Generate geometry for a hollow circle (outline) as a single triangle strip.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_upload_geometry">
-                <code class="fs-6 fw-bold text-color-title">def _upload_geometry(self: Any, vertices: Any, indices: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def _upload_geometry(self: Any, vertices: np.ndarray, indices: np.ndarray) -> Tuple[int, int, int]</code>
+                <div class="mt-2 text-muted small">Create VAO, VBO, EBO and upload vertex/index data. Returns (vao, vbo, ebo).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_polygon">
-                <code class="fs-6 fw-bold text-color-title">def draw_polygon(self: Any, points: Any, color: Any, fill: Any = True, border_width: Any = 1, surface: Any = None, anchor_point: Any = (0.0, 0.0)) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def draw_polygon(self: Any, points: List[Tuple[float, float]], color: tuple, fill: bool = True, border_width: int = 1, surface: Optional[pygame.Surface] = None, pivot: Tuple[float, float] = (0.0, 0.0)) -> None</code>
+                <div class="mt-2 text-muted small">Draw a convex polygon (filled or outline).<br><br>Args:<br> &nbsp; &nbsp;points: List of (x, y) vertices.<br> &nbsp; &nbsp;color: Fill or outline colour.<br> &nbsp; &nbsp;fill: If True, filled polygon; otherwise outline.<br> &nbsp; &nbsp;border_width: Outline thickness (only used when fill=False).<br> &nbsp; &nbsp;surface: Optional target surface.<br> &nbsp; &nbsp;pivot: Offset applied to all points.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_generate_filled_polygon_geometry">
-                <code class="fs-6 fw-bold text-color-title">def _generate_filled_polygon_geometry(self: Any, points: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def _generate_filled_polygon_geometry(self: Any, points: List[Tuple[float, float]]) -> Tuple[np.ndarray, np.ndarray]</code>
+                <div class="mt-2 text-muted small">Generate triangulation for a filled polygon (assumes convex).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_generate_hollow_polygon_geometry">
-                <code class="fs-6 fw-bold text-color-title">def _generate_hollow_polygon_geometry(self: Any, points: Any, border_width: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def _generate_hollow_polygon_geometry(self: Any, points: List[Tuple[float, float]], border_width: float) -> Tuple[np.ndarray, np.ndarray]</code>
+                <div class="mt-2 text-muted small">Generate geometry for a hollow polygon outline.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_text">
-                <code class="fs-6 fw-bold text-color-title">def draw_text(self: Any, text: str, x: int, y: int, color: Any, font: Any, surface: Any = None, anchor_point: Any = (0.0, 0.0), flip: Any = (False, False), rotate: Any = 0.0, *args: tuple, **kwargs: dict) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def draw_text(self: Any, text: str, x: int, y: int, color: Any, font: pygame.font.Font, surface: Optional[pygame.Surface] = None, pivot: Tuple[float, float] = (0.0, 0.0), flip: Tuple[bool, bool] = (False, False), rotate: float = 0.0, *args: tuple, **kwargs: dict) -> None</code>
+                <div class="mt-2 text-muted small">Draw text using a pygame font, with optional flip, rotation, and caching.<br><br>Args:<br> &nbsp; &nbsp;text: The string to render.<br> &nbsp; &nbsp;x, y: Position (before anchor).<br> &nbsp; &nbsp;color: Any colour format accepted (pygame.Color, tuple, etc.).<br> &nbsp; &nbsp;font: Pygame font object.<br> &nbsp; &nbsp;surface: Optional target surface.<br> &nbsp; &nbsp;pivot: Anchor (fx, fy) relative to text size.<br> &nbsp; &nbsp;flip: (flip_horizontal, flip_vertical).<br> &nbsp; &nbsp;rotate: Rotation angle in degrees (clockwise).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_rich_text">
+                <code class="fs-6 fw-bold text-color-title">def draw_rich_text(self: Any, text: str, x: int, y: int, default_color: Any, font: pygame.font.Font, surface: Optional[pygame.Surface] = None, pivot: Tuple[float, float] = (0.0, 0.0), **kwargs: dict) -> None</code>
+                <div class="mt-2 text-muted small">Draw rich text using the rich text parser.<br><br>Args:<br> &nbsp; &nbsp;text: Rich text string with markup<br> &nbsp; &nbsp;x, y: Position<br> &nbsp; &nbsp;default_color: Default text color (can be Color, ThemeStyle, or tuple)<br> &nbsp; &nbsp;font: Base font<br> &nbsp; &nbsp;surface: Optional target surface<br> &nbsp; &nbsp;pivot: Anchor point<br> &nbsp; &nbsp;**kwargs: Additional arguments for draw_text</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_rich_text_line">
+                <code class="fs-6 fw-bold text-color-title">def draw_rich_text_line(self: Any, line: List['RichTextSegment'], x: int, y: int, default_color: Any, font: pygame.font.Font, surface: Optional[pygame.Surface] = None) -> None</code>
+                <div class="mt-2 text-muted small">Draw a pre-parsed rich text line.<br><br>Args:<br> &nbsp; &nbsp;line: List of RichTextSegment objects<br> &nbsp; &nbsp;x, y: Position<br> &nbsp; &nbsp;default_color: Default text color (can be Color, ThemeStyle, or tuple)<br> &nbsp; &nbsp;font: Base font<br> &nbsp; &nbsp;surface: Optional target surface</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_cleanup_text_cache">
-                <code class="fs-6 fw-bold text-color-title">def _cleanup_text_cache(self: Any, now: float) -> Any</code>
-                <div class="mt-2 text-muted small">Remove text cache entries that haven&#x27;t been used for longer than timeout.</div>
+                <code class="fs-6 fw-bold text-color-title">def _cleanup_text_cache(self: Any, now: float) -> None</code>
+                <div class="mt-2 text-muted small">Remove text textures that have not been used for longer than the timeout.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-draw_surface">
-                <code class="fs-6 fw-bold text-color-title">def draw_surface(self: Any, surface: pygame.Surface, x: int, y: int) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def draw_surface(self: Any, surface: pygame.Surface, x: int, y: int, pivot: Tuple[float, float] = (0.0, 0.0), use_cache: bool = True) -> None</code>
+                <div class="mt-2 text-muted small">Alias for blit with optional cache control.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-blit">
-                <code class="fs-6 fw-bold text-color-title">def blit(self: Any, source: pygame.Surface, dest: Union[Tuple[int, int], pygame.Rect], area: Optional[pygame.Rect] = None, special_flags: int = 0) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def blit(self: Any, source: pygame.Surface, dest: Union[Tuple[int, int], pygame.Rect], area: Optional[pygame.Rect] = None, special_flags: int = 0, pivot: Tuple[float, float] = (0.0, 0.0), use_cache: bool = False) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-fill_screen">
-                <code class="fs-6 fw-bold text-color-title">def fill_screen(self: Any, color: Tuple[int, int, int, float]) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def fill_screen(self: Any, color: Tuple[int, int, int, float] | Tuple[int, int, int]) -> None</code>
+                <div class="mt-2 text-muted small">Fill the entire screen (or current framebuffer) with a solid colour.<br><br>Args:<br> &nbsp; &nbsp;color: RGBA tuple with components 0‑255 (RGB) and alpha 0‑1, or RGB tuple with components 0‑255.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-clear">
-                <code class="fs-6 fw-bold text-color-title">def clear(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def clear(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Clear the colour and depth buffers.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-render_particles">
-                <code class="fs-6 fw-bold text-color-title">def render_particles(self: Any, particle_data: Dict[str, Any], camera: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Render particles using instancing.<br>particle_data should contain:<br> &nbsp; &nbsp;- active_count: int<br> &nbsp; &nbsp;- positions: np.ndarray (N,2) world positions<br> &nbsp; &nbsp;- sizes: np.ndarray (N,) sizes in world units (will be zoomed by camera)<br> &nbsp; &nbsp;- colors: np.ndarray (N,3) uint8 RGB<br> &nbsp; &nbsp;- alphas: np.ndarray (N,) uint8 alpha</div>
+                <code class="fs-6 fw-bold text-color-title">def render_particles(self: Any, particle_data: Dict[str, Any], camera: Any) -> None</code>
+                <div class="mt-2 text-muted small">Render particle system using instancing.<br><br>Args:<br> &nbsp; &nbsp;particle_data: Dictionary with keys:<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;active_count&#x27;: number of active particles<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;positions&#x27;: numpy array (N,2) world positions<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;sizes&#x27;: numpy array (N,) sizes (world units)<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;colors&#x27;: numpy array (N,3) uint8 RGB<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;alphas&#x27;: numpy array (N,) uint8 alpha<br> &nbsp; &nbsp;camera: Camera object that provides world_to_screen and convert_size_zoom.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-_ensure_particle_capacity">
-                <code class="fs-6 fw-bold text-color-title">def _ensure_particle_capacity(self: Any, required: int) -> Any</code>
-                <div class="mt-2 text-muted small">Dynamically resize instance buffers if needed.</div>
+                <code class="fs-6 fw-bold text-color-title">def _ensure_particle_capacity(self: Any, required: int) -> None</code>
+                <div class="mt-2 text-muted small">Resize instance buffers if needed to accommodate `required` particles.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-cleanup">
-                <code class="fs-6 fw-bold text-color-title">def cleanup(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def cleanup(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Release all OpenGL resources (shaders, textures, buffers, framebuffers).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-openglrenderer-set_blend_mode">
-                <code class="fs-6 fw-bold text-color-title">def set_blend_mode(self: Any, mode: Literal['normal', 'add', 'multiply', 'screen']) -> Any</code>
-                <div class="mt-2 text-muted small">Set the OpenGL blend mode.<br>mode can be &#x27;normal&#x27;, &#x27;add&#x27;, &#x27;multiply&#x27;, etc.</div>
+                <code class="fs-6 fw-bold text-color-title">def set_blend_mode(self: Any, mode: str) -> None</code>
+                <div class="mt-2 text-muted small">Set the OpenGL blending mode.<br><br>Args:<br> &nbsp; &nbsp;mode: One of &#x27;normal&#x27;, &#x27;add&#x27;, &#x27;multiply&#x27;, &#x27;screen&#x27;.</div>
             </div>
                 </div>
             </div>
@@ -647,7 +667,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

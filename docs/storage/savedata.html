@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>savedata.py - LunaEngine Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Storage</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Storage</a></li><li class="breadcrumb-item active">savedata.py</li></ol></nav>
+        <div class="header-section mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>savedata.py</h1>
+            <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <span class="text-muted">lunaengine/storage/savedata.py<br><br>A powerful, table‑based save‑data system for LunaEngine.<br>- Multiple tables with typed columns<br>- Insert, update, delete, select with filtering<br>- Primary key indexing for fast lookups<br>- Auto‑increment for integer primary keys<br>- Upsert (insert or update)<br>- Bulk update by primary key via `updates()` dict<br>- Advanced query support: ordering, searching (contains, startswith, endswith, exact, case‑sensitive)<br>- Custom binary file format with compression (zlib) and optional encryption<br>- Export/Import to JSON for machine migration<br>- Integrates with MachineEncryption for HWID‑based XOR encryption<br><br>Usage:<br> &nbsp; &nbsp;data = Savedata(&quot;game.sav&quot;)<br> &nbsp; &nbsp;users = data.create_table(&quot;users&quot;, [&quot;id&quot;, &quot;name&quot;, &quot;score&quot;],<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;primary_key=&quot;id&quot;, auto_increment=True)<br> &nbsp; &nbsp;users.insert(name=&quot;Alice&quot;, score=100) &nbsp; &nbsp; &nbsp; # id auto‑assigned<br> &nbsp; &nbsp;users.insert(id=5, name=&quot;Bob&quot;, score=200) &nbsp; # manual ID<br> &nbsp; &nbsp;data.save()<br><br> &nbsp; &nbsp;# Update by primary key<br> &nbsp; &nbsp;users.update_by_primary_key(1, score=150)<br><br> &nbsp; &nbsp;# Upsert<br> &nbsp; &nbsp;users.upsert(id=2, name=&quot;Charlie&quot;, score=300)<br><br> &nbsp; &nbsp;# Bulk update by primary keys<br> &nbsp; &nbsp;users.updates({<br> &nbsp; &nbsp; &nbsp; &nbsp;1: {&quot;name&quot;: &quot;Alicia&quot;, &quot;score&quot;: 110},<br> &nbsp; &nbsp; &nbsp; &nbsp;5: {&quot;score&quot;: 250}<br> &nbsp; &nbsp;})<br><br> &nbsp; &nbsp;# Advanced select with query builder<br> &nbsp; &nbsp;results = users.query() \<br> &nbsp; &nbsp; &nbsp; &nbsp;.where(lambda r: r[&quot;score&quot;] &gt; 50) \<br> &nbsp; &nbsp; &nbsp; &nbsp;.order_by(&quot;score&quot;, desc=True) \<br> &nbsp; &nbsp; &nbsp; &nbsp;.search(&quot;al&quot;, columns=[&quot;name&quot;], mode=&quot;contains&quot;) \<br> &nbsp; &nbsp; &nbsp; &nbsp;.execute()<br><br> &nbsp; &nbsp;# Export to JSON for migration<br> &nbsp; &nbsp;data.export_to_json(&quot;backup.json&quot;)<br> &nbsp; &nbsp;# On another machine:<br> &nbsp; &nbsp;data.import_from_json(&quot;backup.json&quot;)</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-savedataerror">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class SavedataError</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Base exception for Savedata errors.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-table">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Table</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">A table in the savedata: stores rows as dictionaries with column names as keys.<br>Supports primary key indexing for O(1) lookups and optional auto‑increment.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, name: str, columns: List[str], primary_key: Optional[str] = None, auto_increment: bool = False) -> Any</code>
+                <div class="mt-2 text-muted small">Args:<br> &nbsp; &nbsp;name: Table name.<br> &nbsp; &nbsp;columns: Ordered list of column names.<br> &nbsp; &nbsp;primary_key: Column name to use as primary key (must be in columns).<br> &nbsp; &nbsp;auto_increment: If True and primary_key is an integer column, automatically<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;assign the next ID on insert when the key is omitted.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-insert">
+                <code class="fs-6 fw-bold text-color-title">def insert(self: Any, **kwargs: dict) -> int</code>
+                <div class="mt-2 text-muted small">Insert a row. Keyword arguments must match the table&#x27;s columns.<br>If auto_increment is enabled and the primary key is not provided,<br>the next ID is assigned automatically.<br>Returns the row index.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, where: Callable[[Dict], bool], **kwargs: dict) -> int</code>
+                <div class="mt-2 text-muted small">Update rows that match the where predicate with the given kwargs.<br>Returns the number of updated rows.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-update_where">
+                <code class="fs-6 fw-bold text-color-title">def update_where(self: Any, where: Callable[[Dict], bool], updates: Dict[str, Any]) -> int</code>
+                <div class="mt-2 text-muted small">Update rows that match the where predicate with the given updates dict.<br>Returns the number of updated rows.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-update_by_primary_key">
+                <code class="fs-6 fw-bold text-color-title">def update_by_primary_key(self: Any, key: Any, **kwargs: dict) -> int</code>
+                <div class="mt-2 text-muted small">Update the row with the given primary key using the provided kwargs.<br>Returns 1 if updated, 0 if not found.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-updates">
+                <code class="fs-6 fw-bold text-color-title">def updates(self: Any, updates_dict: Dict[Any, Union[Any, Dict[str, Any]]]) -> int</code>
+                <div class="mt-2 text-muted small">Update multiple rows by primary key.<br><br>Args:<br> &nbsp; &nbsp;updates_dict: A dictionary where keys are primary key values,<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;and values are either:<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;- a dict mapping column names to new values<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;- a scalar value (shorthand):<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;- If the table has exactly one non‑primary‑key column,<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;that column is updated with this value.<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;- Otherwise, if a column named &#x27;value&#x27; exists,<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;that column is updated.<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;- Else, raises ValueError.<br><br>Returns:<br> &nbsp; &nbsp;The number of rows that were updated (i.e., keys that existed).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-upsert">
+                <code class="fs-6 fw-bold text-color-title">def upsert(self: Any, **kwargs: dict) -> int</code>
+                <div class="mt-2 text-muted small">Insert a new row, or update the existing one if the primary key already exists.<br>Returns the row index (for insert) or 1 (for update).<br>Raises ValueError if primary key is missing when auto_increment is off.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-delete">
+                <code class="fs-6 fw-bold text-color-title">def delete(self: Any, where: Callable[[Dict], bool]) -> int</code>
+                <div class="mt-2 text-muted small">Delete rows matching the predicate.<br>Returns the number of deleted rows.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-delete_by_primary_key">
+                <code class="fs-6 fw-bold text-color-title">def delete_by_primary_key(self: Any, key: Any) -> int</code>
+                <div class="mt-2 text-muted small">Delete the row with the given primary key.<br>Returns 1 if deleted, 0 if not found.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-select">
+                <code class="fs-6 fw-bold text-color-title">def select(self: Any, where: Optional[Callable[[Dict], bool]] = None, columns: Optional[List[str]] = None, order_by: Optional[Union[str, List[str]]] = None, order_desc: Union[bool, List[bool]] = False, search: Optional[str] = None, search_columns: Optional[List[str]] = None, search_mode: str = 'contains', case_sensitive: bool = False) -> List[Dict]</code>
+                <div class="mt-2 text-muted small">Select rows with optional filtering, ordering, and searching.<br><br>Args:<br> &nbsp; &nbsp;where: Predicate function that takes a row dict and returns True to include.<br> &nbsp; &nbsp;columns: List of column names to return. If None, returns all columns.<br> &nbsp; &nbsp;order_by: Column name(s) to sort by. Can be a string or list of strings.<br> &nbsp; &nbsp;order_desc: If True, sort descending. If a list, must match length of order_by.<br> &nbsp; &nbsp;search: Search term to filter rows.<br> &nbsp; &nbsp;search_columns: Columns to search in. If None, searches all columns.<br> &nbsp; &nbsp;search_mode: &#x27;contains&#x27;, &#x27;startswith&#x27;, &#x27;endswith&#x27;, or &#x27;exact&#x27;.<br> &nbsp; &nbsp;case_sensitive: If False, performs case‑insensitive search.<br><br>Returns:<br> &nbsp; &nbsp;List of row dictionaries (or partial dicts if columns specified).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-find_one">
+                <code class="fs-6 fw-bold text-color-title">def find_one(self: Any, where: Optional[Callable[[Dict], bool]] = None) -> Optional[Dict]</code>
+                <div class="mt-2 text-muted small">Return the first row that matches the predicate, or None if not found.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-exists">
+                <code class="fs-6 fw-bold text-color-title">def exists(self: Any, where: Callable[[Dict], bool]) -> bool</code>
+                <div class="mt-2 text-muted small">Return True if any row matches the predicate.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-count">
+                <code class="fs-6 fw-bold text-color-title">def count(self: Any, where: Optional[Callable[[Dict], bool]] = None) -> int</code>
+                <div class="mt-2 text-muted small">Return the number of rows (optionally filtered by predicate).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-get_next_id">
+                <code class="fs-6 fw-bold text-color-title">def get_next_id(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">Return the next auto‑increment ID (only valid if auto_increment is True<br>and the primary key is an integer column).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_apply_search">
+                <code class="fs-6 fw-bold text-color-title">def _apply_search(self: Any, rows: List[Dict], term: str, search_columns: Optional[List[str]], mode: str, case_sensitive: bool) -> List[Dict]</code>
+                <div class="mt-2 text-muted small">Filter rows based on search term.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_sort_rows">
+                <code class="fs-6 fw-bold text-color-title">def _sort_rows(self: Any, rows: List[Dict], order_by: Union[str, List[str]], order_desc: Union[bool, List[bool]]) -> List[Dict]</code>
+                <div class="mt-2 text-muted small">Sort rows by one or more columns with specified directions.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-get_by_primary_key">
+                <code class="fs-6 fw-bold text-color-title">def get_by_primary_key(self: Any, key: Any) -> Optional[Dict]</code>
+                <div class="mt-2 text-muted small">Retrieve a row by its primary key value, or None if not found.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-clear">
+                <code class="fs-6 fw-bold text-color-title">def clear(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Remove all rows.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-query">
+                <code class="fs-6 fw-bold text-color-title">def query(self: Any) -> 'Query'</code>
+                <div class="mt-2 text-muted small">Return a new Query builder for this table.<br>Example:<br> &nbsp; &nbsp;rows = table.query() \<br> &nbsp; &nbsp; &nbsp; &nbsp;.where(lambda r: r[&quot;score&quot;] &gt; 100) \<br> &nbsp; &nbsp; &nbsp; &nbsp;.order_by(&quot;score&quot;, desc=True) \<br> &nbsp; &nbsp; &nbsp; &nbsp;.search(&quot;al&quot;, columns=[&quot;name&quot;], mode=&quot;contains&quot;) \<br> &nbsp; &nbsp; &nbsp; &nbsp;.execute()</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_find_primary_key_for_idx">
+                <code class="fs-6 fw-bold text-color-title">def _find_primary_key_for_idx(self: Any, idx: int) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_rebuild_index">
+                <code class="fs-6 fw-bold text-color-title">def _rebuild_index(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_update_next_id">
+                <code class="fs-6 fw-bold text-color-title">def _update_next_id(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Recalculate the next auto‑increment ID from existing rows.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-__len__">
+                <code class="fs-6 fw-bold text-color-title">def __len__(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-__repr__">
+                <code class="fs-6 fw-bold text-color-title">def __repr__(self: Any) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-query">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Query</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Fluent query builder for Table.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-query-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, table: Table) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-query-where">
+                <code class="fs-6 fw-bold text-color-title">def where(self: Any, predicate: Callable[[Dict], bool]) -> 'Query'</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-query-order_by">
+                <code class="fs-6 fw-bold text-color-title">def order_by(self: Any, *columns: tuple) -> 'Query'</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-query-search">
+                <code class="fs-6 fw-bold text-color-title">def search(self: Any, term: str, columns: Optional[List[str]] = None, mode: str = 'contains', case_sensitive: bool = False) -> 'Query'</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-query-execute">
+                <code class="fs-6 fw-bold text-color-title">def execute(self: Any, columns: Optional[List[str]] = None) -> List[Dict]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-savedata">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Savedata</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Main savedata manager. Holds multiple tables and provides load/save functionality.<br>Supports compression (zlib) and optional encryption via MachineEncryption.<br>File format:<br> &nbsp; &nbsp;- Magic bytes: &quot;LUNASD&quot; (7 bytes)<br> &nbsp; &nbsp;- Version: uint16<br> &nbsp; &nbsp;- Flags: uint8 (bit 0: compressed, bit 1: encrypted)<br> &nbsp; &nbsp;- Table count: uint32<br> &nbsp; &nbsp;- For each table:<br> &nbsp; &nbsp; &nbsp; &nbsp;- Name length (uint16) + name string (UTF-8)<br> &nbsp; &nbsp; &nbsp; &nbsp;- Column count (uint16)<br> &nbsp; &nbsp; &nbsp; &nbsp;- For each column: name length (uint16) + name string<br> &nbsp; &nbsp; &nbsp; &nbsp;- Primary key index (int16, -1 if none)<br> &nbsp; &nbsp; &nbsp; &nbsp;- Auto‑increment flag (uint8)<br> &nbsp; &nbsp; &nbsp; &nbsp;- Row count (uint32)<br> &nbsp; &nbsp; &nbsp; &nbsp;- For each row:<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;- For each column:<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;- Type tag (uint8): 0=None, 1=int, 2=float, 3=str, 4=bool, 5=bytes<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;- Data (variable)</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>MAGIC: Any = b'LUNASD'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>VERSION: Any = 2</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, filepath: Optional[Union[str, Path]] = None, encryption_key: Optional[str] = None) -> Any</code>
+                <div class="mt-2 text-muted small">Args:<br> &nbsp; &nbsp;filepath: Path to the savedata file. If provided and exists, loads automatically.<br> &nbsp; &nbsp;encryption_key: Key for XOR encryption (if None, uses default MachineEncryption HWID).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-create_table">
+                <code class="fs-6 fw-bold text-color-title">def create_table(self: Any, name: str, columns: List[str], primary_key: Optional[str] = None, auto_increment: bool = False) -> Table</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-drop_table">
+                <code class="fs-6 fw-bold text-color-title">def drop_table(self: Any, name: str) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-table">
+                <code class="fs-6 fw-bold text-color-title">def table(self: Any, name: str) -> Optional[Table]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-clear">
+                <code class="fs-6 fw-bold text-color-title">def clear(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-save">
+                <code class="fs-6 fw-bold text-color-title">def save(self: Any, filepath: Optional[Union[str, Path]] = None, encryption_key: Optional[str] = None, compress: bool = True) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-load">
+                <code class="fs-6 fw-bold text-color-title">def load(self: Any, filepath: Optional[Union[str, Path]] = None, encryption_key: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-_serialize">
+                <code class="fs-6 fw-bold text-color-title">def _serialize(self: Any) -> bytes</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-_deserialize">
+                <code class="fs-6 fw-bold text-color-title">def _deserialize(self: Any, data: bytes) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-_append_value">
+                <code class="fs-6 fw-bold text-color-title">def _append_value(self: Any, parts: List[bytes], value: Any) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-_read_value">
+                <code class="fs-6 fw-bold text-color-title">def _read_value(self: Any, data: bytes, pos: int) -> Tuple[Any, int]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-_xor_encrypt">
+                <code class="fs-6 fw-bold text-color-title">def _xor_encrypt(self: Any, data: bytes, key: str) -> bytes</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-export_to_dict">
+                <code class="fs-6 fw-bold text-color-title">def export_to_dict(self: Any) -> Dict[str, List[Dict]]</code>
+                <div class="mt-2 text-muted small">Export all tables to a dictionary: {table_name: [row_dict, ...]}.<br>Useful for serialization to JSON or migration.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-import_from_dict">
+                <code class="fs-6 fw-bold text-color-title">def import_from_dict(self: Any, data: Dict[str, List[Dict]]) -> None</code>
+                <div class="mt-2 text-muted small">Clear all tables and import data from a dictionary.<br>Expects the same structure as export_to_dict.<br>Columns and primary keys are recreated from the first row.<br>Auto‑increment is disabled on imported tables (you can re‑enable manually).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-export_to_json">
+                <code class="fs-6 fw-bold text-color-title">def export_to_json(self: Any, filepath: Union[str, Path], indent: int = 2) -> None</code>
+                <div class="mt-2 text-muted small">Export all tables to a JSON file (unencrypted, no compression).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-import_from_json">
+                <code class="fs-6 fw-bold text-color-title">def import_from_json(self: Any, filepath: Union[str, Path]) -> None</code>
+                <div class="mt-2 text-muted small">Import tables from a JSON file (clears existing data).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-migrate_to_plain">
+                <code class="fs-6 fw-bold text-color-title">def migrate_to_plain(self: Any, output_path: Union[str, Path]) -> None</code>
+                <div class="mt-2 text-muted small">Save the current data without encryption and without compression.<br>Useful for creating a portable backup.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-migrate_from_plain">
+                <code class="fs-6 fw-bold text-color-title">def migrate_from_plain(self: Any, input_path: Union[str, Path], new_key: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">Load a plain (unencrypted) file and re-save it with the current encryption key.<br>If new_key is provided, use that key for subsequent saves.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-__repr__">
+                <code class="fs-6 fw-bold text-color-title">def __repr__(self: Any) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+                <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
+                
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-load_savedata">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def load_savedata(filepath: Union[str, Path], encryption_key: Optional[str] = None) -> Savedata</code>
+                    <p class="mt-2 mb-0 text-muted">No documentation</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-save_savedata">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def save_savedata(data: Savedata, filepath: Union[str, Path], encryption_key: Optional[str] = None, compress: bool = True) -> None</code>
+                    <p class="mt-2 mb-0 text-muted">No documentation</p>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="mt-5 mb-5 text-center">
+            <a href="index.html" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Storage Module
+            </a>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-07-10 21:26
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

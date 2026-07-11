@@ -11,7 +11,7 @@ from ..ui import UIElement, UiFrame, ScrollingFrame, Tabination, AnimationHandle
 from ..graphics import Camera
 from ..graphics.particles import ThreadedParticleSystem, ParticleSystem
 from ..graphics.shadows import ShadowSystem
-from ..core.audio import AudioSystem
+from ..core.audio import AudioManager
 from ..backend.opengl import OpenGLRenderer
 from ..core.renderer import Renderer
 from ..backend.types import ElementsList, ElementsListEvents
@@ -54,8 +54,8 @@ class Scene(ABC):
         # Animation System
         self.animation_handler = AnimationHandler(engine)
 
-        # Audio System
-        self.audio_system: AudioSystem = AudioSystem(num_channels=16)
+        # Audio manager
+        self.audio_manager: AudioManager = engine.audio
 
         # Window Events
         self.engine.window.on_resize(self.update_window_size)
@@ -63,7 +63,24 @@ class Scene(ABC):
     def update_window_size(self):
         self.WIDTH, self.HEIGHT = self.engine.window.width, self.engine.window.height
 
+    def set_global_theme(self, theme: str, dark: bool = True) -> bool:
+        """
+        Set the global theme for the entire engine and update all UI elements
+        """
+        return self.engine.set_global_theme(theme, dark)
+    
+    def set_dark_mode(self, dark: bool) -> None:
+        """
+        Set the global dark mode for the entire engine and update all UI elements
+        """
+        self.engine.set_dark_mode(dark)
+        
+    def get_dark_mode(self) -> bool:
+        return self.engine.get_dark_mode()
+
     def _add_event_to_handler(self, element: UIElement):
+        # Only register keyboard events for text input elements.
+        # Mouse wheel events are now handled centrally by the engine.
         if element.element_type in ['textbox', 'textarea']:
             @self.engine.on_event(pygame.KEYDOWN, element.element_id)
             def on_key_down(event):
@@ -74,10 +91,6 @@ class Scene(ABC):
             def on_key_up(event):
                 if element.focused and element.enabled:
                     element.on_key_up(event)
-        elif element.element_type in ['scrollingframe', 'dropdown']:
-            @self.engine.on_event(pygame.MOUSEWHEEL, element.element_id)
-            def on_scroll(event):
-                element.on_scroll(event)
 
     def _update_on_change_child(self, element: UIElement):
         self._add_event_to_handler(element)
@@ -87,8 +100,8 @@ class Scene(ABC):
                 self.engine.find_event_handlers(pygame.KEYDOWN, child.element_id)
             elif hasattr(child, 'on_key_up'):
                 self.engine.find_event_handlers(pygame.KEYUP, child.element_id)
-            elif hasattr(child, 'on_scroll'):
-                self.engine.find_event_handlers(pygame.MOUSEWHEEL, child.element_id)
+            # Note: on_scroll is now handled by engine._dispatch_mouse_wheel,
+            # not via event registration.
             child.scene = self
             self._update_on_change_child(child)
 
@@ -97,6 +110,10 @@ class Scene(ABC):
             self._update_on_change_child(element)
             element.scene = self
             element.children.set_on_change(self._ui_element_list, element)
+        elif event_type == 'remove':
+            pass
+        if self.engine.debug_enabled and element.type != 'liveinspector' and not (element.has_group('live-inspector-ignore')):
+            self.engine.debug_manager.live_inspector.recharge()
 
     def on_enter(self, previous_scene: Optional[str] = None) -> None:
         self._initialized = True
@@ -169,6 +186,7 @@ class Scene(ABC):
             self.remove_ui_element(ui)
 
     def get_all_ui_elements(self) -> List[UIElement]:
+        
         return self.ui_elements.copy()
 
     def has_element_by_id(self, element_id: str) -> bool:

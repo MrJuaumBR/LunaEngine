@@ -5,15 +5,15 @@ lunaengine/ui/
 ├── elements/                   
 │   ├── __init__.py             (exports all classes)
 │   ├── base.py                 (UIState, FontManager, UIElement)
-│   ├── labels.py               (TextLabel, ImageLabel)
+│   ├── labels.py               (TextLabel, LongTextLabel, ImageLabel)
 │   ├── buttons.py              (Button, ImageButton)
 │   ├── textinputs.py           (TextBox, TextArea)
 │   ├── dialogs.py              (DialogBox)
 │   ├── progress.py             (ProgressBar)
-│   ├── selectors.py            (Select, Switch, Slider, Dropdown, NumberSelector, Checkbox, Pagination)
-│   ├── containers.py           (UiFrame, ScrollingFrame, Tabination, Expandable)
+│   ├── selectors.py            (Select, Switch, Slider, Dropdown, NumberSelector, Checkbox)
+│   ├── containers.py           (UiFrame, ScrollingFrame, Tabination, Expandable, ColorPicker, Pagination)
 │   ├── clock.py                (Clock)
-│   ├── visualizers.py          (AudioVisualizer, ChartVisualizer)
+│   ├── visualizers.py          (AudioVisualizer, ChartVisualizer, Table)
 │   └── misc.py                 (FileFinder)
 ├── layout.py
 ├── themes.py
@@ -22,20 +22,20 @@ lunaengine/ui/
 """
 
 from .base import UIState, FontManager, UIElement, ElementStyle, ElementsList
-from .labels import TextLabel, ImageLabel
+from .labels import TextLabel, LongTextLabel, ImageLabel
 from .buttons import Button, ImageButton
 from .textinputs import TextBox, TextArea
 from .dialogs import DialogBox
 from .progress import ProgressBar
-from .selectors import Select, Switch, Slider, Dropdown, NumberSelector, Checkbox, ColorPicker
-from .containers import UiFrame, ScrollingFrame, Tabination, Expandable, Pagination
+from .selectors import Select, Switch, Slider, Dropdown, NumberSelector, Checkbox
+from .containers import UiFrame, ScrollingFrame, Tabination, Expandable, Pagination, ColorPicker
 from .clock import Clock
-from .visualizers import AudioVisualizer, ChartVisualizer
+from .visualizers import AudioVisualizer, ChartVisualizer, Table
 from .misc import FileFinder
 
 __all__ = [
     "UIState", "FontManager", "UIElement", "ElementStyle", "ElementsList",
-    "TextLabel", "ImageLabel",
+    "TextLabel", "LongTextLabel", "ImageLabel",
     "Button", "ImageButton",
     "TextBox", "TextArea",
     "DialogBox",
@@ -43,6 +43,6 @@ __all__ = [
     "Select", "Switch", "Slider", "Dropdown", "NumberSelector", "Checkbox", "ColorPicker",
     "UiFrame", "ScrollingFrame", "Tabination", "Expandable", "Pagination",
     "Clock",
-    "AudioVisualizer", "ChartVisualizer",
+    "AudioVisualizer", "ChartVisualizer", "Table",
     "FileFinder",
 ]

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio System - LunaEngine Lessons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Lessons</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../index.html">Lessons</a></li><li class="breadcrumb-item active">Intermediate</li><li class="breadcrumb-item active">Audio System</li></ol></nav>
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 d-none d-md-block">
+                <div class="card shadow-sm sticky-top" style="top: 6rem; max-height: 80vh; overflow-y: auto;">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="bi bi-map me-2"></i>Course Track</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><a href="../basics/07-atlas-system.html" class="list-group-item list-group-item-action">7. Atlas System</a><a href="../basics/08-game-development-plan.html" class="list-group-item list-group-item-action">8. Game Development Plan</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/09-ui-layouts.html" class="list-group-item list-group-item-action">9. Ui Layouts</a><a href="../intermediate/10-tween-animations.html" class="list-group-item list-group-item-action">10. Tween Animations</a><a href="../intermediate/11-camera-movement.html" class="list-group-item list-group-item-action">11. Camera Movement</a><a href="../intermediate/12-particles-basics.html" class="list-group-item list-group-item-action">12. Particles Basics</a><a href="../intermediate/13-parallax-backgrounds.html" class="list-group-item list-group-item-action">13. Parallax Backgrounds</a><a href="../intermediate/14-audio-system.html" class="list-group-item list-group-item-action active">14. Audio System</a><a href="../intermediate/15-custom-themes.html" class="list-group-item list-group-item-action">15. Custom Themes</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/16-advanced-ui.html" class="list-group-item list-group-item-action">16. Advanced Ui</a><a href="../advanced/17-particle-effects.html" class="list-group-item list-group-item-action">17. Particle Effects</a><a href="../advanced/18-camera-effects.html" class="list-group-item list-group-item-action">18. Camera Effects</a><a href="../advanced/19-opengl-effects.html" class="list-group-item list-group-item-action">19. Opengl Effects</a><a href="../advanced/20-ui-transitions.html" class="list-group-item list-group-item-action">20. Ui Transitions</a><a href="../advanced/21-sprite-animations.html" class="list-group-item list-group-item-action">21. Sprite Animations</a><a href="../advanced/22-combining-systems.html" class="list-group-item list-group-item-action">22. Combining Systems</a><div class="mb-2"></div></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main content -->
+            <div class="col-md-9">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h3 mb-0">14. Audio System</h1>
+                    </div>
+                    <div class="card-body markdown-content">
+                        # 14 - Audio System
+
+LunaEngine v0.2.5 features a powerful, OpenAL-based audio system (`lunaengine.core.audio`) with named channels, volume curves, audio effects, and a global event system.
+
+## Core Concepts
+
+The `AudioManager` is already created for you and is accessible via `engine.audio`. It provides:
+- **Named Channels**: Isolated playback contexts (e.g., `"music"`, `"sfx"`, `"ambience"`)
+- **Audio Curves**: Keyframe-based animation of volume, pitch, and pan
+- **EFX Effects**: Reverb, echo, chorus, and more (if your hardware supports it)
+
+Two channels are always created by default: `"default"` and `"music"` (which loops).
+
+---
+
+## 1. Loading Sounds
+
+Before playing anything, you must load sounds into the manager. For a clean workflow, do this in your `BootScene` using the Atlas:
+
+```python
+from lunaengine.core import Scene
+
+class BootScene(Scene):
+    def on_enter(self, prev):
+        # Load audio files directly
+        self.engine.audio.load_sound("bgm",       "assets/bgm.ogg",       category="music")
+        self.engine.audio.load_sound("sfx_jump",  "assets/sfx_jump.wav",  category="sfx")
+        self.engine.audio.load_sound("sfx_hit",   "assets/sfx_hit.wav",   category="sfx")
+        self.engine.audio.load_sound("ambience",  "assets/forest.ogg",    category="ambience")
+        
+        self.engine.set_scene("menu")
+```
+
+---
+
+## 2. Playing Music & Sound Effects
+
+```python
+class GameScene(Scene):
+    def on_enter(self, prev):
+        # Play looping background music with a 2-second fade-in
+        self.engine.audio.play_music("bgm", volume=0.7, fade_in=2.0)
+    
+    def player_jumped(self):
+        # Play a one-shot sound effect on the default channel
+        self.engine.audio.play("sfx_jump", volume=1.0, pitch=1.0)
+    
+    def player_hit(self):
+        # Play with a slight pitch variation for variety
+        import random
+        pitch = random.uniform(0.9, 1.1)
+        self.engine.audio.play("sfx_hit", volume=0.8, pitch=pitch)
+```
+
+---
+
+## 3. Named Channels for Mixing
+
+Named channels let you manage independent audio streams with their own volume and effects.
+
+```python
+    def on_enter(self, prev):
+        # Create a dedicated ambience channel
+        self.engine.audio.create_channel("ambience", volume=0.4)
+        
+        # Play ambient sound looping on the new channel
+        self.engine.audio.play("ambience", channel="ambience", loop=True)
+```
+
+### Volume Control
+
+```python
+    def update(self, dt):
+        # Adjust master volume on-the-fly
+        if self.player_is_in_cave:
+            # Gradually lower the music to 30% over 1 second
+            self.engine.audio.get_channel("music").set_volume(0.3, duration=1.0)
+        else:
+            self.engine.audio.get_channel("music").set_volume(0.8, duration=1.0)
+```
+
+---
+
+## 4. Audio Effects (EFX)
+
+If your system has OpenAL EFX support, you can apply real-time effects:
+
+```python
+    def player_entered_cave(self):
+        # Add reverb to all channels (cave atmosphere)
+        self.engine.audio.set_global_reverb(0.8)
+    
+    def player_left_cave(self):
+        # Remove reverb
+        self.engine.audio.set_global_reverb(0.0)
+```
+
+Available effects: `reverb`, `echo`, `chorus`, `flanger`, `distortion`, and `pitch_shift`.
+
+---
+
+## 5. Audio Curves
+
+For cinematic moments, you can animate audio properties with keyframe curves:
+
+```python
+from lunaengine.core.audio import AudioCurve
+
+# A curve that drops volume from 1.0 to 0.0 over 3 seconds (like fading out at game over)
+fade_out = AudioCurve(
+    property_name='volume',
+    keyframes=[(0.0, 1.0), (3.0, 0.0)],  # (time_seconds, value)
+    interpolation='smoothstep'
+)
+
+music_channel = self.engine.audio.get_channel("music")
+music_channel.apply_curve(fade_out)
+```
+
+---
+
+## 6. Audio Events
+
+React to audio events with callbacks:
+
+```python
+from lunaengine.core.audio import AudioEvent
+
+def on_music_complete(channel, **kwargs):
+    print("Music track finished! Starting next track...")
+    channel.manager.play_music("bgm_level2")
+
+music_ch = self.engine.audio.get_channel("music")
+music_ch.on_event(AudioEvent.PLAYBACK_COMPLETED, on_music_complete)
+```
+
+---
+
+## 7. Cleanup
+
+Always call `cleanup()` when your game exits (the engine does this for you on `shutdown()`):
+
+```python
+engine.audio.cleanup()  # Stops all sounds and frees resources
+```
+
+The audio system is fully independent from the rendering pipeline — you can drive it entirely from `update()` callbacks and event handlers.
+
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between">
+                            <a href='13-parallax-backgrounds.html' class='btn btn-outline-primary'><i class='bi bi-arrow-left me-2'></i>Previous: Parallax Backgrounds</a>
+                            <a href='15-custom-themes.html' class='btn btn-outline-primary'>Next: Custom Themes <i class='bi bi-arrow-right ms-2'></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="../index.html" class="btn btn-secondary"><i class="bi bi-journal-bookmark me-2"></i>All Lessons</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-07-10 21:26
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+    <script src="../../theme.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+        if (typeof initSimpleMarkdownParser === 'function') initSimpleMarkdownParser();
+        else setTimeout(function() {
+            if (window.initSimpleMarkdownParser) window.initSimpleMarkdownParser();
+        }, 100);
+    });</script>
+</body>
+</html>

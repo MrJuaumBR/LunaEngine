@@ -18,7 +18,7 @@ LunaEngine is a 2D game framework built with Python, Pygame, OpenGL, and OpenAL.
 
 ```python
 from lunaengine.core import LunaEngine
-engine = Engine()
+engine = LunaEngine()
 engine.run()
 ```
 

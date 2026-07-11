@@ -354,6 +354,83 @@
                 </div>
             </div>
         </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-parallaxsprite">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ParallaxSprite</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">A single sprite inside a parallax layer.<br><br>Attributes:<br> &nbsp; &nbsp;surface: The image to draw.<br> &nbsp; &nbsp;base_pos: World position relative to the layer&#x27;s origin (in world units).<br> &nbsp; &nbsp;scale: Uniform scale factor (1.0 = original size).<br> &nbsp; &nbsp;color: RGB colour multiplier (1.0,1.0,1.0 = normal).<br> &nbsp; &nbsp;alpha: Opacity (0.0 = transparent, 1.0 = opaque).<br> &nbsp; &nbsp;angle: Rotation in degrees (0 = no rotation).<br> &nbsp; &nbsp;oscillate_x: Sine wave amplitude for X movement (world units).<br> &nbsp; &nbsp;oscillate_y: Sine wave amplitude for Y movement.<br> &nbsp; &nbsp;oscillate_speed: Oscillation frequency (cycles per second).<br> &nbsp; &nbsp;phase_offset: Initial phase offset (radians) – randomise for variety.<br> &nbsp; &nbsp;brightness_pulse: Amplitude of brightness pulsation (0..1).<br> &nbsp; &nbsp;brightness_speed: Pulsation speed (cycles per second).</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>surface: pygame.Surface = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>base_pos: pygame.Vector2 = field(default_factory=lambda: pygame.Vector2(0, 0))</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_cache: Dict[str, Tuple[float, float, Tuple[int, int, int]]] = field(default_factory=dict, init=False, repr=False)</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>scale: float = 1.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>color: Tuple[float, float, float] = (1.0, 1.0, 1.0)</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>alpha: float = 1.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>angle: float = 0.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>oscillate_x: float = 0.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>oscillate_y: float = 0.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>oscillate_speed: float = 1.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>phase_offset: float = 0.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>brightness_pulse: float = 0.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>brightness_speed: float = 1.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>wind_movement: bool = True</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>wind_intensity: float = 0.0</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxsprite-__post_init__">
+                <code class="fs-6 fw-bold text-color-title">def __post_init__(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxsprite-get_animated_offset">
+                <code class="fs-6 fw-bold text-color-title">def get_animated_offset(self: Any, time: float) -> pygame.Vector2</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxsprite-get_current_brightness">
+                <code class="fs-6 fw-bold text-color-title">def get_current_brightness(self: Any, time: float) -> float</code>
+                <div class="mt-2 text-muted small">Return a brightness multiplier (0..1) pulsating over time.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxsprite-get_transformed_surface">
+                <code class="fs-6 fw-bold text-color-title">def get_transformed_surface(self: Any, size: Tuple[int, int], angle: float, colour: Tuple[float, float, float, float]) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Return a cached transformed version of the sprite surface.<br>size: (width, height) in pixels after scaling<br>angle: rotation in degrees<br>colour: (r,g,b,a) multipliers (each 0..1)</div>
+            </div>
+                </div>
+            </div>
+        </div>
         <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-parallaxlayer">
             <div class="card-header bg-success text-white py-3">
                 <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ParallaxLayer</h3>
@@ -361,27 +438,35 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">A single parallax layer with tile support.</p>
+                    <p class="lead fs-6">A scrollable layer that can contain:<br> &nbsp;- A single tiled texture (simple &amp; efficient)<br> &nbsp;- A list of individual ParallaxSprites (flexible)<br><br>If `tile_texture` is set, the layer ignores the sprite list and renders tiled.<br>Otherwise, it renders the sprite list.</p>
                 </div>
                 
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxlayer-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, surface: pygame.Surface, speed_factor: float, tile_mode: bool = True, offset: Tuple[float, float] = (0, 0)) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, speed: Tuple[float, float] = (1.0, 1.0), repeat_x: bool = True, repeat_y: bool = True, z_index: int = 0) -> Any</code>
+                <div class="mt-2 text-muted small">Args:<br> &nbsp; &nbsp;speed: Scroll multiplier (1.0 = moves with camera, 0.0 = fixed in background)<br> &nbsp; &nbsp;repeat_x, repeat_y: Only used for tiled texture mode.<br> &nbsp; &nbsp;z_index: Render order (lower = behind).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxlayer-set_tiled_texture">
+                <code class="fs-6 fw-bold text-color-title">def set_tiled_texture(self: Any, texture: pygame.Surface) -> Any</code>
+                <div class="mt-2 text-muted small">Switch this layer to tiled rendering using a single texture.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxlayer-add_sprite">
+                <code class="fs-6 fw-bold text-color-title">def add_sprite(self: Any, sprite: ParallaxSprite) -> Any</code>
+                <div class="mt-2 text-muted small">Add an individual sprite to this layer (automatically disables tiled mode).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxlayer-add_sprites">
+                <code class="fs-6 fw-bold text-color-title">def add_sprites(self: Any, sprites: List[ParallaxSprite]) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxlayer-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self: Any, camera_position: pygame.Vector2, dt: float) -> Any</code>
-                <div class="mt-2 text-muted small">Update the layer&#x27;s world offset based on camera position.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxlayer-clear_sprites">
+                <code class="fs-6 fw-bold text-color-title">def clear_sprites(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxlayer-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, camera: 'Camera', renderer: Any) -> None</code>
-                <div class="mt-2 text-muted small">Render the layer using the provided renderer.</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxlayer-_draw_surface">
-                <code class="fs-6 fw-bold text-color-title">def _draw_surface(self: Any, renderer: Any, surface: pygame.Surface, x: int, y: int) -> Any</code>
-                <div class="mt-2 text-muted small">Renderer‑agnostic surface drawing.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxlayer-populate_random">
+                <code class="fs-6 fw-bold text-color-title">def populate_random(self: Any, surface: pygame.Surface, count: int, area: pygame.Rect, scale_range: Tuple[float, float] = (1.0, 1.0), speed_range: Tuple[float, float] = (0.0, 0.0), oscillate_x_range: Tuple[float, float] = (0.0, 0.0), oscillate_y_range: Tuple[float, float] = (0.0, 0.0), oscillate_speed_range: Tuple[float, float] = (0.5, 2.0), brightness_pulse_range: Tuple[float, float] = (0.0, 0.0), brightness_speed_range: Tuple[float, float] = (0.5, 2.0), alpha_range: Tuple[float, float] = (1.0, 1.0), angle_range: Tuple[float, float] = (0.0, 0.0), seed: Optional[int] = None) -> Any</code>
+                <div class="mt-2 text-muted small">Fill the layer with randomly placed sprites using the same surface.<br><br>Args:<br> &nbsp; &nbsp;surface: The image to use for all sprites.<br> &nbsp; &nbsp;count: Number of sprites to create.<br> &nbsp; &nbsp;area: World rectangle (x, y, width, height) where sprites will be placed.<br> &nbsp; &nbsp;scale_range: (min, max) uniform scale.<br> &nbsp; &nbsp;oscillate_x_range: (min, max) oscillation amplitude in X (world units).<br> &nbsp; &nbsp;oscillate_y_range: (min, max) oscillation amplitude in Y.<br> &nbsp; &nbsp;oscillate_speed_range: (min, max) oscillation frequency (Hz).<br> &nbsp; &nbsp;brightness_pulse_range: (min, max) brightness pulsation amplitude.<br> &nbsp; &nbsp;brightness_speed_range: (min, max) pulsation speed (Hz).<br> &nbsp; &nbsp;alpha_range: (min, max) opacity.<br> &nbsp; &nbsp;angle_range: (min, max) rotation angle (degrees).<br> &nbsp; &nbsp;seed: Optional random seed for reproducibility.</div>
             </div>
                 </div>
             </div>
@@ -393,7 +478,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Collection of parallax layers with optional caching.</p>
+                    <p class="lead fs-6">Manager for multiple parallax layers.<br>Provides global time for animations and brightness pulsations.</p>
                 </div>
                 
                 <div class="methods-section">
@@ -404,24 +489,32 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-add_layer">
-                <code class="fs-6 fw-bold text-color-title">def add_layer(self: Any, surface: pygame.Surface, speed_factor: float, tile_mode: bool = True, offset: Tuple[float, float] = (0, 0)) -> ParallaxLayer</code>
-                <div class="mt-2 text-muted small">Add a new layer and return it.</div>
+                <code class="fs-6 fw-bold text-color-title">def add_layer(self: Any, speed: Tuple[float, float] = (1.0, 1.0), repeat_x: bool = True, repeat_y: bool = True, z_index: int = 0) -> ParallaxLayer</code>
+                <div class="mt-2 text-muted small">Create and return a new empty layer.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-remove_layer">
                 <code class="fs-6 fw-bold text-color-title">def remove_layer(self: Any, layer: ParallaxLayer) -> Any</code>
-                <div class="mt-2 text-muted small">Remove a layer if present.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-clear_layers">
-                <code class="fs-6 fw-bold text-color-title">def clear_layers(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Remove all layers.</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-clear">
+                <code class="fs-6 fw-bold text-color-title">def clear(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float) -> Any</code>
-                <div class="mt-2 text-muted small">Update all layers.</div>
+                <div class="mt-2 text-muted small">Update global animation time and layer scroll offsets.<br>Call this once per frame from Camera.update().</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Render all layers in order (back to front).</div>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer, viewport: Optional[pygame.Rect] = None) -> Any</code>
+                <div class="mt-2 text-muted small">Render all layers onto the screen.<br>Each layer either renders a tiled texture or a list of animated sprites.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-_render_tiled">
+                <code class="fs-6 fw-bold text-color-title">def _render_tiled(self: Any, renderer: OpenGLRenderer, layer: ParallaxLayer, viewport: pygame.Rect) -> Any</code>
+                <div class="mt-2 text-muted small">Efficient tiled rendering (same as before).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-parallaxbackground-_render_sprites">
+                <code class="fs-6 fw-bold text-color-title">def _render_sprites(self: Any, renderer: OpenGLRenderer, layer: ParallaxLayer, viewport: pygame.Rect) -> Any</code>
+                <div class="mt-2 text-muted small">Render individual sprites with animation and brightness.</div>
             </div>
                 </div>
             </div>
@@ -592,7 +685,7 @@
                 <div class="mt-2 text-muted small">Remove all parallax layers.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-render_parallax">
-                <code class="fs-6 fw-bold text-color-title">def render_parallax(self: Any, renderer: Any) -> bool</code>
+                <code class="fs-6 fw-bold text-color-title">def render_parallax(self: Any, renderer: Any) -> None</code>
                 <div class="mt-2 text-muted small">Render the parallax background.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-camera-enable_parallax">
@@ -681,7 +774,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

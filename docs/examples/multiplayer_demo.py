@@ -37,25 +37,25 @@ class MainScene(Scene):
         screen_width, screen_height = self.engine.width, self.engine.height
         
         # Title
-        self.add_ui_element(TextLabel(512, 30, "LunaEngine - Multiplayer Demo", 36, (255, 255, 255), root_point=(0.5, 0)))
+        self.add_ui_element(TextLabel(512, 30, "LunaEngine - Multiplayer Demo", 36, (255, 255, 255), pivot=(0.5, 0)))
         
         # Connection Frame
-        self.frame = UiFrame(40, 150, 600, 400, root_point=(0, 0))
+        self.frame = UiFrame(40, 150, 600, 400, pivot=(0, 0))
         self.frame.set_background_color((60, 60, 80))
         self.add_ui_element(self.frame)
         
         # Network Settings
-        self.frame.add_child(TextLabel(50, 30, "Network Settings", 28, (255, 255, 200), root_point=(0, 0)))
+        self.frame.add_child(TextLabel(50, 30, "Network Settings", 28, (255, 255, 200), pivot=(0, 0)))
         
         # Host/IP Input
-        self.frame.add_child(TextLabel(50, 80, "Host / IP:", 20, (200, 230, 255), root_point=(0, 0)))
-        self.host_input = TextBox(150, 75, 200, 35, '127.0.0.1', 18, root_point=(0, 0))
+        self.frame.add_child(TextLabel(50, 80, "Host / IP:", 20, (200, 230, 255), pivot=(0, 0)))
+        self.host_input = TextBox(150, 75, 200, 35, '127.0.0.1', 18, pivot=(0, 0))
         self.host_input.set_text("127.0.0.1")
         self.frame.add_child(self.host_input)
         
         # Port Input
-        self.frame.add_child(TextLabel(50, 130, "Port:", 20, (200, 230, 255), root_point=(0, 0)))
-        self.port_input = NumberSelector(150, 125, 120, 35, 1024, 65535, 4723, 4, 4, root_point=(0, 0))
+        self.frame.add_child(TextLabel(50, 130, "Port:", 20, (200, 230, 255), pivot=(0, 0)))
+        self.port_input = NumberSelector(150, 125, 120, 35, 1024, 65535, 4723, 4, 4, pivot=(0, 0))
         self.frame.add_child(self.port_input)
         
         # Is Host Checkbox
@@ -63,31 +63,31 @@ class MainScene(Scene):
         self.frame.add_child(self.is_host_check)
         
         # Connection Status
-        self.status_label = TextLabel(300, 225, "Status: Not connected", 20, (255, 100, 100), root_point=(0, 0))
+        self.status_label = TextLabel(300, 225, "Status: Not connected", 20, (255, 100, 100), pivot=(0, 0))
         self.frame.add_child(self.status_label)
         
         # Action Buttons Frame
-        button_frame = UiFrame(screen_width-40, 150, 240, 355, root_point=(1, 0))
+        button_frame = UiFrame(screen_width-40, 150, 240, 355, pivot=(1, 0))
         button_frame.set_background_color((80, 80, 100))
         self.add_ui_element(button_frame)
         
         # Start Host Button
-        self.start_host_btn = Button(120, 20, 200, 30, "Start Host", 24, root_point=(0.5, 0))
+        self.start_host_btn = Button(120, 20, 200, 30, "Start Host", 24, pivot=(0.5, 0))
         self.start_host_btn.set_on_click(self.start_host)
         button_frame.add_child(self.start_host_btn)
         
         # Connect Button
-        self.connect_btn = Button(120, 65, 200, 30, "Connect", 24, root_point=(0.5, 0))
+        self.connect_btn = Button(120, 65, 200, 30, "Connect", 24, pivot=(0.5, 0))
         self.connect_btn.set_on_click(self.connect_as_client)
         button_frame.add_child(self.connect_btn)
         
-        self.play_btn = Button(120, 110, 200, 40, "Play", 32, root_point=(0.5, 0))
+        self.play_btn = Button(120, 110, 200, 40, "Play", 32, pivot=(0.5, 0))
         self.play_btn.set_on_click(self.go_to_game)
         self.play_btn.set_enabled(False)
         button_frame.add_child(self.play_btn)
         
         # Exit Button
-        self.exit_btn = Button(120, 160, 200, 35, "Exit", 24, root_point=(0.5, 0))
+        self.exit_btn = Button(120, 160, 200, 35, "Exit", 24, pivot=(0.5, 0))
         self.exit_btn.set_on_click(lambda: setattr(self.engine, 'running', False))
         button_frame.add_child(self.exit_btn)
         
@@ -104,7 +104,7 @@ class MainScene(Scene):
         
         for i, text in enumerate(instructions):
             color = (255, 255, 200) if i == 0 else (180, 230, 255)
-            self.add_ui_element(TextLabel(20, 600 + i * 25, text, 16, color, root_point=(0, 0)))
+            self.add_ui_element(TextLabel(20, 600 + i * 25, text, 16, color, pivot=(0, 0)))
     
     def start_host(self):
         """Start as host (server + client)"""
@@ -347,13 +347,13 @@ class InGameScene(Scene):
     
     def setup_ui(self):
         # Game UI (hidden by default)
-        self.ui_frame = UiFrame(512, 300, 400, 375,root_point=(0.5, 0))
+        self.ui_frame = UiFrame(512, 300, 400, 375,pivot=(0.5, 0))
         self.ui_frame.set_background_color((60, 60, 80, 200))
         self.ui_frame.add_group('game_ui')
         self.add_ui_element(self.ui_frame)
         
         # UI Title
-        self.ui_frame.add_child(TextLabel(200, 20, "Multiplayer Game", 28, (255, 255, 200), root_point=(0.5, 0)))
+        self.ui_frame.add_child(TextLabel(200, 20, "Multiplayer Game", 28, (255, 255, 200), pivot=(0.5, 0)))
         
         # Player List
         self.player_list_label = TextLabel(20, 60, "Players:", 22, (200, 230, 255))
@@ -364,7 +364,7 @@ class InGameScene(Scene):
         self.ui_frame.add_child(self.chat_display_label)
         
         # Chat Scrolling Frame - FIXED: Proper ScrollingFrame setup
-        self.chat_scrolling = ScrollingFrame(200, 150, 340, 100, 340, 200, root_point=(0.5, 0))
+        self.chat_scrolling = ScrollingFrame(200, 150, 340, 100, 340, 200, pivot=(0.5, 0))
         self.chat_scrolling.set_background_color((40, 40, 50, 200))
         self.ui_frame.add_child(self.chat_scrolling)
         
@@ -378,7 +378,7 @@ class InGameScene(Scene):
         self.ui_frame.add_child(self.send_chat_btn)
         
         # Disconnect Button
-        self.disconnect_btn = Button(200, 320, 120, 40, "Disconnect", 20, root_point=(0.5, 0))
+        self.disconnect_btn = Button(200, 320, 120, 40, "Disconnect", 20, pivot=(0.5, 0))
         self.disconnect_btn.set_on_click(self.disconnect)
         self.ui_frame.add_child(self.disconnect_btn)
         
@@ -731,7 +731,7 @@ class InGameScene(Scene):
             )
             
             # Draw player name
-            renderer.draw_text(str(player.name), player.x, player.y - 30,(255, 255, 255) if player_id != self.local_player.id else (255, 255, 0), FontManager.get_font(None, 16), anchor_point=(0.5, 0.5))
+            renderer.draw_text(str(player.name), player.x, player.y - 30,(255, 255, 255) if player_id != self.local_player.id else (255, 255, 0), FontManager.get_font(None, 16), pivot=(0.5, 0.5))
             
             # Draw local player indicator
             if player_id == self.local_player.id:

@@ -208,10 +208,10 @@ class WindowEventsDemo(Scene):
         """Set up all UI elements for the demo."""
         
         # Title
-        title = TextLabel(400, 20, "Window Events Demo", 32, root_point=(0.5, 0))
+        title = TextLabel(400, 20, "Window Events Demo", 32, pivot=(0.5, 0))
         self.add_ui_element(title)
         
-        subtitle = TextLabel(400, 50, "Test Window Event Decorators", 18, (200, 200, 255), root_point=(0.5, 0))
+        subtitle = TextLabel(400, 50, "Test Window Event Decorators", 18, (200, 200, 255), pivot=(0.5, 0))
         self.add_ui_element(subtitle)
         
         # Event Log Section
@@ -588,7 +588,8 @@ def main():
         title="LunaEngine - Window Events Demo",
         width=1024,
         height=768,
-        fullscreen=False
+        fullscreen=False,
+        debug=True
     )
     
     # Make window resizable for testing

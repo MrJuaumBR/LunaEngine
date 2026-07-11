@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name="lunaengine",
-    version="0.2.4",
-    description="A modern 2D game engine with advanced UI and graphics",
+    version="0.2.5",
+    description="A modern 2D game framework with advanced UI and graphics",
     author="MrJuaum",
     url="https://github.com/MrJuaumBR/lunaengine",
     packages=find_packages(),

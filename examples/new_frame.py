@@ -24,13 +24,19 @@ class Main(Scene):
         self.tabs2.add_tab('Tab B')
         self.add_ui_element(self.tabs2)
         
-        self.tabs3 = Tabination(self.header_frame.width//2, self.header_frame.header_height+3, 280, self.header_frame.height-self.header_frame.header_height, 24, root_point=(0.5, 0))
+        self.tabs3 = Tabination(self.header_frame.width//2, self.header_frame.header_height+3, 280, self.header_frame.height-self.header_frame.header_height, 24, pivot=(0.5, 0))
         self.tabs3.add_tab('Tab X')
         self.tabs3.add_tab('Tab Y')
         self.header_frame.add_child(self.tabs3)
         
+        self.scroll_frame = ScrollingFrame(50, 250, 300, 180, 300, 300)
+        self.add_ui_element(self.scroll_frame)
+        
+        self.dropdown= Dropdown(50, 460, 200, 30, [f'Option {i}' for i in range(35)])
+        self.add_ui_element(self.dropdown)
+        
 if __name__ == '__main__':
-    engine = LunaEngine()
+    engine = LunaEngine(width=1600, height=900,debug=True)
     
     engine.add_scene('main', Main)
     engine.set_scene('main')

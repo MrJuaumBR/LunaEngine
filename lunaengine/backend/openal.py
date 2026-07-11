@@ -1,24 +1,19 @@
 """
-OpenAL Audio Backend for LunaEngine - Optimized for 2D games
-
-This module provides OpenAL-based audio with the following features:
-- Efficient buffer management and pooling
-- Support for WAV, OGG, MP3 formats (via Pygame)
-- Smooth volume/pitch transitions
-- Stereo panning support
-- Thread-safe operations
+OpenAL Audio Backend for LunaEngine - Cross-platform (Linux/Windows)
+Supports device selection, stereo balance, and immediate property changes.
+Now includes optional stereo→mono conversion for panning support.
+EFX extension support for reverb and effects.
+Extended to load audio from bytes (bundle support).
 """
 
 import ctypes
-import threading
-import time
-import math
-import wave
-import struct
-from typing import Dict, List, Optional, Tuple, Union, Callable, Any
-from enum import Enum
-import weakref
 import os
+import time
+import wave
+import io
+import threading
+import math
+from typing import Dict, List, Optional, Tuple, Any, Callable
 
 # Try to import OpenAL
 try:
@@ -27,740 +22,568 @@ try:
 except ImportError:
     OPENAL_AVAILABLE = False
     print("Warning: PyOpenAL not installed. Using pygame fallback.")
-    # Create dummy classes for fallback
     class DummyOpenAL:
         def __getattr__(self, name):
             return lambda *args, **kwargs: None
-    
     al = DummyOpenAL()
     alc = DummyOpenAL()
     ALuint = int
     ALint = int
     ALfloat = float
 
-# Try to import pygame for audio loading
 try:
     import pygame
     PYGAME_AVAILABLE = True
 except ImportError:
     PYGAME_AVAILABLE = False
-    print("Warning: PyGame not installed. Audio loading will be limited.")
+    print("Warning: PyGame not installed. Audio loading limited.")
+
+# Check for EFX extension (reverb, etc.)
+EFX_AVAILABLE = False
+try:
+    # Attempt to access EFX constants and functions
+    if OPENAL_AVAILABLE:
+        # Try to get EFX function pointers
+        # We'll assume that if alGenEffects exists, EFX is available
+        if hasattr(al, 'alGenEffects'):
+            EFX_AVAILABLE = True
+        else:
+            # On some platforms, EFX functions are available via alcGetProcAddress
+            # We'll try to load them dynamically
+            # For simplicity, we'll just check if we can call alGenEffects
+            pass
+except:
+    EFX_AVAILABLE = False
+
+# Define EFX constants if not available in openal module
+if not hasattr(al, 'AL_EFFECT_REVERB'):
+    # These are standard EFX constants
+    al.AL_EFFECT_REVERB = 0x0001
+    al.AL_EFFECT_ECHO = 0x0002
+    al.AL_EFFECT_DISTORTION = 0x0003
+    al.AL_EFFECT_CHORUS = 0x0004
+    al.AL_EFFECT_FLANGER = 0x0005
+    al.AL_EFFECT_FREQUENCY_SHIFTER = 0x0006
+    al.AL_EFFECT_VOCAL_MORPHER = 0x0007
+    al.AL_EFFECT_PITCH_SHIFTER = 0x0008
+    al.AL_EFFECT_RING_MODULATOR = 0x0009
+    al.AL_EFFECT_AUTOWAH = 0x000A
+    al.AL_EFFECT_COMPRESSOR = 0x000B
+    al.AL_EFFECT_EQUALIZER = 0x000C
+
+# Reverb parameters
+if not hasattr(al, 'AL_REVERB_DENSITY'):
+    al.AL_REVERB_DENSITY = 0x0001
+    al.AL_REVERB_DIFFUSION = 0x0002
+    al.AL_REVERB_GAIN = 0x0003
+    al.AL_REVERB_GAINHF = 0x0004
+    al.AL_REVERB_DECAY_TIME = 0x0005
+    al.AL_REVERB_DECAY_HFRATIO = 0x0006
+    al.AL_REVERB_REFLECTIONS_GAIN = 0x0007
+    al.AL_REVERB_REFLECTIONS_DELAY = 0x0008
+    al.AL_REVERB_LATE_REVERB_GAIN = 0x0009
+    al.AL_REVERB_LATE_REVERB_DELAY = 0x000A
+    al.AL_REVERB_AIR_ABSORPTION_GAINHF = 0x000B
+    al.AL_REVERB_ROOM_ROLLOFF_FACTOR = 0x000C
+    al.AL_REVERB_DECAY_HFLIMIT = 0x000D
+
+# Effect slot constants
+if not hasattr(al, 'AL_EFFECTSLOT_EFFECT'):
+    al.AL_EFFECTSLOT_EFFECT = 0x0001
+    al.AL_EFFECTSLOT_GAIN = 0x0002
+    al.AL_EFFECTSLOT_AUXILIARY_SEND = 0x0003
+
 
 class OpenALError(Exception):
-    """Exception raised for OpenAL related errors."""
     pass
 
-class OpenALAudioEvent(Enum):
-    """Audio events for OpenAL system."""
-    COMPLETE = "complete"
-    STOP = "stop"
-    PAUSE = "pause"
-    RESUME = "resume"
 
-class OpenALBuffer:
-    """
-    OpenAL audio buffer with memory pooling.
-    
-    Manages audio data in OpenAL buffers with caching for frequently used sounds.
-    
-    Attributes:
-        buffer_id (int): OpenAL buffer ID
-        duration (float): Buffer duration in seconds
-        size (int): Buffer size in bytes
-        format (int): OpenAL format constant
-        frequency (int): Sample rate in Hz
-        last_used (float): Last access time for LRU cleanup
-    """
-    
-    _buffer_pool: Dict[str, 'OpenALBuffer'] = {}
-    
-    def __init__(self, buffer_id: int):
-        self.buffer_id = buffer_id
-        self.duration = 0.0
-        self.size = 0
-        self.format = 0
-        self.frequency = 0
-        self.last_used = time.time()
-    
-    @classmethod
-    def get_or_create(cls, filepath: str) -> Optional['OpenALBuffer']:
-        """
-        Get buffer from pool or create new one.
-        
-        Args:
-            filepath (str): Path to audio file
-            
-        Returns:
-            Optional[OpenALBuffer]: Buffer object or None if failed
-        """
-        if not OPENAL_AVAILABLE:
-            return None
-        
-        filepath = os.path.abspath(filepath)
-        
-        # Check pool
-        if filepath in cls._buffer_pool:
-            buffer = cls._buffer_pool[filepath]
-            buffer.last_used = time.time()
-            return buffer
-        
-        # Create new buffer
-        try:
-            buffer_id = ALuint(0)
-            al.alGenBuffers(1, ctypes.byref(buffer_id))
-            
-            # Load audio data
-            if cls._load_audio_file(buffer_id, filepath):
-                buffer = OpenALBuffer(buffer_id.value)
-                buffer._update_buffer_info()
-                cls._buffer_pool[filepath] = buffer
-                return buffer
-            else:
-                al.alDeleteBuffers(1, ctypes.byref(buffer_id))
-                
-        except Exception as e:
-            print(f"Failed to create buffer for {filepath}: {e}")
-        
-        return None
-    
-    def _update_buffer_info(self):
-        """Update buffer information from OpenAL."""
-        if not OPENAL_AVAILABLE:
+class OpenALDevice:
+    _instance = None
+
+    def __new__(cls, device_name: Optional[str] = None):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
+    def __init__(self, device_name: Optional[str] = None):
+        if self._initialized:
             return
-        
-        try:
-            buffer_id = ALuint(self.buffer_id)
-            
-            # Get buffer size
-            size = ALint(0)
-            al.alGetBufferi(buffer_id, al.AL_SIZE, ctypes.byref(size))
-            self.size = size.value
-            
-            # Get buffer bits
-            bits = ALint(0)
-            al.alGetBufferi(buffer_id, al.AL_BITS, ctypes.byref(bits))
-            
-            # Get buffer channels
-            channels = ALint(0)
-            al.alGetBufferi(buffer_id, al.AL_CHANNELS, ctypes.byref(channels))
-            channel_count = channels.value
-            
-            # Set format
-            if channel_count == 1:
-                if bits.value == 8:
-                    self.format = al.AL_FORMAT_MONO8
-                else:
-                    self.format = al.AL_FORMAT_MONO16
-            else:
-                if bits.value == 8:
-                    self.format = al.AL_FORMAT_STEREO8
-                else:
-                    self.format = al.AL_FORMAT_STEREO16
-            
-            # Get frequency
-            freq = ALint(0)
-            al.alGetBufferi(buffer_id, al.AL_FREQUENCY, ctypes.byref(freq))
-            self.frequency = freq.value
-            
-            # Calculate duration
-            if self.frequency > 0:
-                bytes_per_sample = 1 if bits.value == 8 else 2
-                total_samples = self.size // (bytes_per_sample * max(1, channel_count))
-                self.duration = total_samples / self.frequency
-            
-        except Exception as e:
-            print(f"Failed to update buffer info: {e}")
-    
-    @staticmethod
-    def _load_audio_file(buffer_id: ALuint, filepath: str) -> bool:
-        """
-        Load audio file into OpenAL buffer.
-        
-        Args:
-            buffer_id: OpenAL buffer ID
-            filepath (str): Path to audio file
-            
-        Returns:
-            bool: True if successful
-        """
-        if not os.path.exists(filepath):
-            print(f"Audio file not found: {filepath}")
-            return False
-        
-        ext = os.path.splitext(filepath)[1].lower()
-        
-        if ext == '.wav':
-            return OpenALBuffer._load_wav_file(buffer_id, filepath)
-        elif PYGAME_AVAILABLE:
-            return OpenALBuffer._load_with_pygame(buffer_id, filepath)
-        else:
-            print(f"Unsupported audio format: {ext}")
-            return False
-    
-    @staticmethod
-    def _load_wav_file(buffer_id: ALuint, filepath: str) -> bool:
-        """Load WAV file using Python's wave module."""
-        try:
-            with wave.open(filepath, 'rb') as wav_file:
-                n_channels = wav_file.getnchannels()
-                sample_width = wav_file.getsampwidth()
-                framerate = wav_file.getframerate()
-                n_frames = wav_file.getnframes()
-                
-                frames = wav_file.readframes(n_frames)
-                
-                # Determine OpenAL format
-                if n_channels == 1:
-                    if sample_width == 1:
-                        format = al.AL_FORMAT_MONO8
-                    elif sample_width == 2:
-                        format = al.AL_FORMAT_MONO16
-                    else:
-                        print(f"Unsupported sample width: {sample_width}")
-                        return False
-                elif n_channels == 2:
-                    if sample_width == 1:
-                        format = al.AL_FORMAT_STEREO8
-                    elif sample_width == 2:
-                        format = al.AL_FORMAT_STEREO16
-                    else:
-                        print(f"Unsupported sample width: {sample_width}")
-                        return False
-                else:
-                    print(f"Unsupported channel count: {n_channels}")
-                    return False
-                
-                # Upload to OpenAL
-                al.alBufferData(buffer_id, format, frames, len(frames), framerate)
-                return True
-                
-        except Exception as e:
-            print(f"Failed to load WAV file {filepath}: {e}")
-            return False
-    
-    @staticmethod
-    def _load_with_pygame(buffer_id: ALuint, filepath: str) -> bool:
-        """Load audio file using PyGame mixer."""
-        if not PYGAME_AVAILABLE:
-            return False
-        
-        try:
-            # Load sound with pygame
-            sound = pygame.mixer.Sound(filepath)
-            
-            # Get raw audio data
-            raw_data = sound.get_raw()
-            
-            # PyGame typically uses 16-bit stereo at 44100Hz
-            channels = 2
-            bits = 16
-            freq = 44100
-            
-            # Try to get actual parameters
-            try:
-                # Get length in seconds
-                length = sound.get_length()
-                # Calculate approximate frequency
-                if length > 0:
-                    samples = len(raw_data) // (channels * (bits // 8))
-                    freq = int(samples / length)
-            except:
-                pass
-            
-            # Determine format
-            if channels == 1:
-                format = al.AL_FORMAT_MONO16 if bits == 16 else al.AL_FORMAT_MONO8
-            else:
-                format = al.AL_FORMAT_STEREO16 if bits == 16 else al.AL_FORMAT_STEREO8
-            
-            # Upload to OpenAL
-            al.alBufferData(buffer_id, format, raw_data, len(raw_data), freq)
-            return True
-            
-        except Exception as e:
-            print(f"Failed to load audio with pygame {filepath}: {e}")
-            return False
-    
-    @classmethod
-    def cleanup_unused(cls, max_age: float = 300.0):
-        """Clean up buffers not used for a while."""
-        current_time = time.time()
-        to_remove = []
-        
-        for filepath, buffer in cls._buffer_pool.items():
-            if current_time - buffer.last_used > max_age:
-                to_remove.append(filepath)
-        
-        for filepath in to_remove:
-            buffer = cls._buffer_pool.pop(filepath)
-            if OPENAL_AVAILABLE:
-                buffer_id = ALuint(buffer.buffer_id)
-                al.alDeleteBuffers(1, ctypes.byref(buffer_id))
-    
-    def get_duration(self) -> float:
-        """Get buffer duration in seconds."""
-        return self.duration
-
-class OpenALSource:
-    """
-    OpenAL audio source for 2D games.
-    
-    Provides playback control with smooth transitions and stereo panning.
-    
-    Attributes:
-        source_id (int): OpenAL source ID
-        buffer (OpenALBuffer): Current audio buffer
-        volume (float): Current volume (0.0-1.0)
-        pitch (float): Current pitch multiplier
-        pan (float): Stereo pan (-1.0 to 1.0)
-        looping (bool): Whether source is looping
-    """
-    
-    def __init__(self, source_id: int):
-        self.source_id = source_id
-        self.buffer: Optional[OpenALBuffer] = None
-        
-        # Audio properties
-        self.volume = 1.0
-        self.pitch = 1.0
-        self.pan = 0.0
-        self.looping = False
-        
-        # Configure for 2D audio
-        if OPENAL_AVAILABLE:
-            al.alSourcei(source_id, al.AL_SOURCE_RELATIVE, al.AL_TRUE)
-            al.alSource3f(source_id, al.AL_POSITION, 0.0, 0.0, 0.0)
-            al.alSourcef(source_id, al.AL_ROLLOFF_FACTOR, 0.0)  # No distance attenuation
-    
-    def set_buffer(self, buffer: OpenALBuffer):
-        """Set buffer for this source."""
-        self.buffer = buffer
-        if OPENAL_AVAILABLE:
-            buffer_id = ALuint(buffer.buffer_id)
-            al.alSourcei(self.source_id, al.AL_BUFFER, buffer_id.value)
-    
-    def set_volume(self, volume: float, duration: float = 0.0):
-        """Set volume with optional smooth transition."""
-        volume = max(0.0, min(1.0, volume))
-        self.volume = volume
-        
-        if OPENAL_AVAILABLE:
-            if duration <= 0:
-                al.alSourcef(self.source_id, al.AL_GAIN, volume)
-            else:
-                # Simple linear fade (OpenAL doesn't have built-in fades)
-                current_gain = ALfloat(0.0)
-                al.alGetSourcef(self.source_id, al.AL_GAIN, ctypes.byref(current_gain))
-                self._fade_volume(current_gain.value, volume, duration)
-    
-    def _fade_volume(self, start: float, end: float, duration: float):
-        """Fade volume over time (simplified implementation)."""
-        # Note: For proper smooth fades, you'd want to use threading
-        # This is a simplified version
-        if not OPENAL_AVAILABLE:
-            return
-        
-        steps = max(1, int(duration * 60))
-        step_time = duration / steps
-        
-        for i in range(steps + 1):
-            progress = i / steps
-            current = start + (end - start) * progress
-            al.alSourcef(self.source_id, al.AL_GAIN, current)
-            time.sleep(step_time)
-    
-    def set_pitch(self, pitch: float, duration: float = 0.0):
-        """Set pitch with optional transition."""
-        pitch = max(0.1, min(4.0, pitch))
-        self.pitch = pitch
-        
-        if OPENAL_AVAILABLE:
-            al.alSourcef(self.source_id, al.AL_PITCH, pitch)
-    
-    def set_pan(self, pan: float):
-        """Set stereo panning."""
-        self.pan = max(-1.0, min(1.0, pan))
-        
-        if OPENAL_AVAILABLE:
-            # Simple panning using position
-            al.alSource3f(self.source_id, al.AL_POSITION, pan, 0.0, -1.0)
-    
-    def play(self, loop: bool = False):
-        """Start playback."""
-        if OPENAL_AVAILABLE:
-            self.looping = loop
-            al.alSourcei(self.source_id, al.AL_LOOPING, al.AL_TRUE if loop else al.AL_FALSE)
-            al.alSourcePlay(self.source_id)
-    
-    def pause(self):
-        """Pause playback."""
-        if OPENAL_AVAILABLE:
-            al.alSourcePause(self.source_id)
-    
-    def resume(self):
-        """Resume playback."""
-        if OPENAL_AVAILABLE:
-            al.alSourcePlay(self.source_id)
-    
-    def stop(self):
-        """Stop playback."""
-        if OPENAL_AVAILABLE:
-            al.alSourceStop(self.source_id)
-    
-    def rewind(self):
-        """Rewind to beginning."""
-        if OPENAL_AVAILABLE:
-            al.alSourceRewind(self.source_id)
-    
-    def is_playing(self) -> bool:
-        """Check if source is playing."""
-        if not OPENAL_AVAILABLE:
-            return False
-        
-        state = ALint(0)
-        al.alGetSourcei(self.source_id, al.AL_SOURCE_STATE, ctypes.byref(state))
-        return state.value == al.AL_PLAYING
-    
-    def is_paused(self) -> bool:
-        """Check if source is paused."""
-        if not OPENAL_AVAILABLE:
-            return False
-        
-        state = ALint(0)
-        al.alGetSourcei(self.source_id, al.AL_SOURCE_STATE, ctypes.byref(state))
-        return state.value == al.AL_PAUSED
-    
-    def get_playback_position(self) -> float:
-        """Get current playback position in seconds."""
-        if not OPENAL_AVAILABLE or not self.is_playing():
-            return 0.0
-        
-        offset = ALfloat(0.0)
-        al.alGetSourcef(self.source_id, al.AL_SEC_OFFSET, ctypes.byref(offset))
-        return offset.value
-
-class OpenALAudioSystem:
-    """
-    Main OpenAL audio system for 2D games.
-    
-    Manages audio sources, buffers, and provides playback functionality.
-    
-    Attributes:
-        device: OpenAL device
-        context: OpenAL context
-        sources (List[OpenALSource]): Available audio sources
-        max_sources (int): Maximum number of concurrent sources
-        initialized (bool): Whether system is initialized
-    """
-    
-    def __init__(self, max_sources: int = 32):
+        self.device_name = device_name
         self.device = None
         self.context = None
-        self.sources: List[OpenALSource] = []
-        self.max_sources = max_sources
-        self.initialized = False
-        
-        if OPENAL_AVAILABLE:
-            self.initialize()
-    
-    def initialize(self) -> bool:
-        """Initialize OpenAL system."""
-        if self.initialized or not OPENAL_AVAILABLE:
-            return self.initialized
-        
+        self._initialized = False
+        self._init(device_name)
+
+    def _init(self, device_name: Optional[str] = None):
+        if not OPENAL_AVAILABLE:
+            return
         try:
-            # Open default device
-            self.device = alc.alcOpenDevice(None)
+            if device_name:
+                self.device = alc.alcOpenDevice(device_name.encode())
+            else:
+                self.device = alc.alcOpenDevice(None)
             if not self.device:
-                print("Failed to open OpenAL device")
-                return False
-            
-            # Create context
+                raise OpenALError("Failed to open OpenAL device")
             self.context = alc.alcCreateContext(self.device, None)
             if not self.context:
                 alc.alcCloseDevice(self.device)
-                print("Failed to create OpenAL context")
-                return False
-            
-            # Make context current
+                raise OpenALError("Failed to create OpenAL context")
             alc.alcMakeContextCurrent(self.context)
-            
-            # Create sources
-            for i in range(self.max_sources):
-                source_id = ALuint(0)
-                al.alGenSources(1, ctypes.byref(source_id))
-                source = OpenALSource(source_id.value)
-                self.sources.append(source)
-            
-            # Set listener for 2D audio
-            al.alListener3f(al.AL_POSITION, 0.0, 0.0, 0.0)
-            al.alListener3f(al.AL_VELOCITY, 0.0, 0.0, 0.0)
-            
-            self.initialized = True
-            print(f"OpenAL Audio System initialized with {self.max_sources} sources")
-            return True
-            
+            self._initialized = True
+            print(f"OpenAL device initialized: {device_name or 'default'}")
         except Exception as e:
-            print(f"OpenAL initialization failed: {e}")
-            self.cleanup()
-            return False
-    
-    def get_free_source(self) -> Optional[OpenALSource]:
-        """Get a free audio source."""
-        if not self.initialized:
-            return None
-        
-        for source in self.sources:
-            if not source.is_playing() and not source.is_paused():
-                return source
-        
-        return None
-    
-    def load_sound(self, filepath: str) -> Optional[OpenALBuffer]:
-        """Load sound file."""
-        return OpenALBuffer.get_or_create(filepath)
-    
-    def play_sound(self, filepath: str, volume: float = 1.0, 
-                   pitch: float = 1.0, pan: float = 0.0, 
-                   loop: bool = False) -> Optional[OpenALSource]:
-        """Play a sound effect."""
-        # Load buffer
-        buffer = self.load_sound(filepath)
-        if not buffer:
-            return None
-        
-        # Get source
-        source = self.get_free_source()
-        if not source:
-            print("No free audio sources available")
-            return None
-        
-        # Configure and play
-        source.set_buffer(buffer)
-        source.set_volume(volume)
-        source.set_pitch(pitch)
-        source.set_pan(pan)
-        source.play(loop)
-        
-        return source
-    
-    def stop_all(self):
-        """Stop all sounds."""
-        for source in self.sources:
-            source.stop()
-    
-    def update(self):
-        """Update audio system (clean up unused buffers)."""
-        OpenALBuffer.cleanup_unused()
-    
-    def cleanup(self):
-        """Clean up all audio resources."""
-        self.stop_all()
-        
-        # Clean up sources
-        if OPENAL_AVAILABLE:
-            for source in self.sources:
-                source_id = ALuint(source.source_id)
-                al.alDeleteSources(1, ctypes.byref(source_id))
-        
-        # Clean up OpenAL context
-        if OPENAL_AVAILABLE:
+            print(f"OpenAL init error: {e}")
+            self._initialized = False
+
+    @staticmethod
+    def list_devices() -> List[str]:
+        if not OPENAL_AVAILABLE:
+            return []
+        try:
+            default = alc.alcGetString(None, alc.ALC_DEFAULT_DEVICE_SPECIFIER)
+            devices = alc.alcGetString(None, alc.ALC_DEVICE_SPECIFIER)
+            if devices:
+                dev_list = [d for d in devices.split('\0') if d]
+                if default and default not in dev_list:
+                    dev_list.insert(0, default)
+                return dev_list
+            else:
+                return [default] if default else []
+        except:
+            return ["default"]
+
+    def close(self):
+        if self._initialized:
             if self.context:
                 alc.alcMakeContextCurrent(None)
                 alc.alcDestroyContext(self.context)
                 self.context = None
-            
             if self.device:
                 alc.alcCloseDevice(self.device)
                 self.device = None
-        
-        self.initialized = False
-        print("OpenAL system cleaned up")
+            self._initialized = False
+
+    def is_initialized(self) -> bool:
+        return self._initialized
 
 
-class OpenALAudioVisualizer:
-    """
-    Audio visualizer that works with OpenAL audio system.
-    
-    Provides methods to capture and analyze audio data from OpenAL sources.
-    """
-    
-    def __init__(self, audio_system: OpenALAudioSystem):
+class OpenALBuffer:
+    _buffer_pool: Dict[str, 'OpenALBuffer'] = {}
+
+    @classmethod
+    def get_or_create(cls, filepath: str, device: OpenALDevice, force_mono: bool = False, force_8bit: bool = False) -> Optional['OpenALBuffer']:
         """
-        Initialize audio visualizer.
-        
-        Args:
-            audio_system (OpenALAudioSystem): OpenAL audio system to visualize.
+        Load a sound from a file path. Uses a cache.
         """
-        self.audio_system = audio_system
-        self.visualization_data = []
-        self.num_samples = 1024
-        self.sample_rate = 44100
-        
-        # FFT setup
-        self.fft_size = 512
-        self.freq_bins = []
-        
-        # Initialize data buffers
-        self._initialize_buffers()
-    
-    def _initialize_buffers(self):
-        """Initialize data buffers."""
-        self.visualization_data = [0.0] * self.num_samples
-        self.freq_bins = [0.0] * (self.fft_size // 2)
-    
-    def capture_audio_data(self, source: Optional[OpenALSource] = None) -> List[float]:
+        if not OPENAL_AVAILABLE or not device.is_initialized():
+            return None
+        filepath = os.path.abspath(filepath)
+        if filepath in cls._buffer_pool:
+            buf = cls._buffer_pool[filepath]
+            buf.last_used = time.time()
+            return buf
+        try:
+            buffer_id = ALuint(0)
+            al.alGenBuffers(1, ctypes.byref(buffer_id))
+            if not cls._load_audio_file(buffer_id, filepath, force_mono, force_8bit):
+                al.alDeleteBuffers(1, ctypes.byref(buffer_id))
+                return None
+            buffer_obj = OpenALBuffer(buffer_id.value)
+            buffer_obj._update_info()
+            cls._buffer_pool[filepath] = buffer_obj
+            return buffer_obj
+        except Exception as e:
+            print(f"Buffer creation failed: {e}")
+            return None
+
+    @classmethod
+    def from_bytes(cls, data: bytes, name: str, device: OpenALDevice,
+                   force_mono: bool = False, force_8bit: bool = False) -> Optional['OpenALBuffer']:
         """
-        Capture audio data from a source or all playing sources.
-        
-        Args:
-            source (Optional[OpenALSource]): Specific source to capture from.
-            
-        Returns:
-            List[float]: Normalized audio data.
+        Create a buffer from raw bytes (useful for bundle loading).
+        'name' is used for caching (e.g., the atlas name).
         """
+        if not OPENAL_AVAILABLE or not device.is_initialized():
+            return None
+        # Use a special cache key to avoid collisions with file paths
+        cache_key = f"bytes:{name}"
+        if cache_key in cls._buffer_pool:
+            buf = cls._buffer_pool[cache_key]
+            buf.last_used = time.time()
+            return buf
+        try:
+            buffer_id = ALuint(0)
+            al.alGenBuffers(1, ctypes.byref(buffer_id))
+            if not cls._load_audio_from_bytes(buffer_id, data, force_mono, force_8bit):
+                al.alDeleteBuffers(1, ctypes.byref(buffer_id))
+                return None
+            buffer_obj = OpenALBuffer(buffer_id.value)
+            buffer_obj._update_info()
+            cls._buffer_pool[cache_key] = buffer_obj
+            return buffer_obj
+        except Exception as e:
+            print(f"Buffer creation from bytes failed: {e}")
+            return None
+
+    def __init__(self, buffer_id: int):
+        self.buffer_id = buffer_id
+        self.duration = 0.0
+        self.frequency = 0
+        self.channels = 0
+        self.bits = 0
+        self.size = 0
+        self.last_used = time.time()
+
+    def _update_info(self):
         if not OPENAL_AVAILABLE:
-            return [0.0] * self.num_samples
-        
-        # In a real implementation, you would:
-        # 1. Query OpenAL for audio data from buffers
-        # 2. Process the raw PCM data
-        # 3. Return normalized visualization data
-        
-        # For now, return simulated data
-        return self._get_simulated_data()
-    
-    def perform_fft_analysis(self, audio_data: List[float]) -> List[float]:
-        """
-        Perform FFT analysis on audio data.
-        
-        Args:
-            audio_data (List[float]): Time-domain audio data.
-            
-        Returns:
-            List[float]: Frequency-domain data.
-        """
-        # Simple FFT simulation - in real implementation use numpy.fft
-        import random
-        result = []
-        
-        for i in range(self.fft_size // 2):
-            # Simulate frequency response
-            freq = i / (self.fft_size // 2)
-            amplitude = 0.0
-            
-            # Generate some frequency peaks
-            for peak_freq in [0.1, 0.3, 0.5, 0.7, 0.9]:
-                distance = abs(freq - peak_freq)
-                if distance < 0.1:
-                    peak_height = math.exp(-distance * 20)
-                    amplitude += peak_height * (0.5 + 0.5 * math.sin(time.time() * 2))
-            
-            # Add some noise
-            amplitude += random.uniform(0, 0.1)
-            
-            # Apply frequency roll-off (simulate natural audio)
-            amplitude *= (1.0 - freq * 0.8)
-            
-            result.append(min(1.0, amplitude))
-        
-        return result
-    
-    def get_peak_level(self) -> float:
-        """
-        Get current peak audio level.
-        
-        Returns:
-            float: Peak level (0-1).
-        """
-        if not self.visualization_data:
-            return 0.0
-        return max(self.visualization_data)
-    
-    def get_rms_level(self) -> float:
-        """
-        Get RMS (root mean square) audio level.
-        
-        Returns:
-            float: RMS level (0-1).
-        """
-        if not self.visualization_data:
-            return 0.0
-        
-        sum_squares = sum(x * x for x in self.visualization_data)
-        rms = math.sqrt(sum_squares / len(self.visualization_data))
-        return min(1.0, rms)
-    
-    def _get_simulated_data(self) -> List[float]:
-        """
-        Generate simulated audio data for demonstration.
-        
-        Returns:
-            List[float]: Simulated audio data.
-        """
-        current_time = time.time()
-        data = []
-        
-        # Check if any sources are playing
-        has_playing_source = False
-        if self.audio_system and self.audio_system.initialized:
-            for source in self.audio_system.sources:
-                if source.is_playing():
-                    has_playing_source = True
-                    break
-        
-        if has_playing_source:
-            # Simulate music/audio with multiple frequencies
-            for i in range(self.num_samples):
-                t = current_time + i / self.sample_rate
-                
-                # Bass frequency (low)
-                bass = math.sin(t * 2 * math.pi * 60) * 0.3
-                
-                # Mid frequencies
-                mid1 = math.sin(t * 2 * math.pi * 440) * 0.2
-                mid2 = math.sin(t * 2 * math.pi * 880) * 0.15
-                
-                # High frequencies
-                high = math.sin(t * 2 * math.pi * 1760) * 0.1
-                
-                # Combine with some randomness
-                value = bass + mid1 + mid2 + high
-                value += random.uniform(-0.05, 0.05)
-                
-                # Normalize
-                value = max(-1.0, min(1.0, value))
-                data.append(abs(value))
+            return
+        try:
+            buf = ALuint(self.buffer_id)
+            self.size = ALint(0)
+            al.alGetBufferi(buf, al.AL_SIZE, ctypes.byref(self.size))
+            self.bits = ALint(0)
+            al.alGetBufferi(buf, al.AL_BITS, ctypes.byref(self.bits))
+            self.channels = ALint(0)
+            al.alGetBufferi(buf, al.AL_CHANNELS, ctypes.byref(self.channels))
+            self.frequency = ALint(0)
+            al.alGetBufferi(buf, al.AL_FREQUENCY, ctypes.byref(self.frequency))
+            if self.frequency.value > 0:
+                bytes_per_sample = self.bits.value // 8
+                total_samples = self.size.value // (bytes_per_sample * max(1, self.channels.value))
+                self.duration = total_samples / self.frequency.value
+        except Exception:
+            pass
+
+    @staticmethod
+    def _load_audio_file(buffer_id: ALuint, filepath: str, force_mono: bool, force_8bit: bool) -> bool:
+        ext = os.path.splitext(filepath)[1].lower()
+        if ext == '.wav':
+            return OpenALBuffer._load_wav(buffer_id, filepath, force_mono, force_8bit)
+        elif PYGAME_AVAILABLE:
+            return OpenALBuffer._load_with_pygame(buffer_id, filepath, force_mono, force_8bit)
         else:
-            # Idle/silent mode
-            for i in range(self.num_samples):
-                # Gentle pulsing
-                t = current_time + i / self.sample_rate
-                value = math.sin(t * 2 * math.pi * 2) * 0.1 + 0.1
-                data.append(value)
-        
-        return data
+            print(f"Unsupported format: {ext}")
+            return False
 
-# Global instance management
-_openal_system: Optional[OpenALAudioSystem] = None
+    @staticmethod
+    def _load_wav(buffer_id: ALuint, filepath: str, force_mono: bool, force_8bit: bool) -> bool:
+        try:
+            with wave.open(filepath, 'rb') as wf:
+                nch = wf.getnchannels()
+                sw = wf.getsampwidth()
+                fr = wf.getframerate()
+                data = wf.readframes(wf.getnframes())
+                # Convert to mono if requested and stereo
+                if force_mono and nch == 2:
+                    data = OpenALBuffer._convert_stereo_to_mono(data, sw)
+                    nch = 1
+                # Convert to 8-bit if requested
+                if force_8bit and sw == 2:
+                    data = OpenALBuffer._convert_16bit_to_8bit(data)
+                    sw = 1
+                if nch == 1:
+                    fmt = al.AL_FORMAT_MONO16 if sw == 2 else al.AL_FORMAT_MONO8
+                elif nch == 2:
+                    fmt = al.AL_FORMAT_STEREO16 if sw == 2 else al.AL_FORMAT_STEREO8
+                else:
+                    return False
+                al.alBufferData(buffer_id, fmt, data, len(data), fr)
+                return True
+        except Exception as e:
+            print(f"WAV load error: {e}")
+            return False
 
-def get_audio_system() -> OpenALAudioSystem:
-    """Get global audio system instance."""
-    global _openal_system
-    if _openal_system is None:
-        _openal_system = OpenALAudioSystem()
-    return _openal_system
+    @staticmethod
+    def _load_audio_from_bytes(buffer_id: ALuint, data: bytes, force_mono: bool, force_8bit: bool) -> bool:
+        """
+        Load audio from raw bytes. Attempts to detect format.
+        Currently supports WAV only (using wave.open on BytesIO).
+        """
+        try:
+            with wave.open(io.BytesIO(data), 'rb') as wf:
+                nch = wf.getnchannels()
+                sw = wf.getsampwidth()
+                fr = wf.getframerate()
+                audio_data = wf.readframes(wf.getnframes())
+                if force_mono and nch == 2:
+                    audio_data = OpenALBuffer._convert_stereo_to_mono(audio_data, sw)
+                    nch = 1
+                if force_8bit and sw == 2:
+                    audio_data = OpenALBuffer._convert_16bit_to_8bit(audio_data)
+                    sw = 1
+                if nch == 1:
+                    fmt = al.AL_FORMAT_MONO16 if sw == 2 else al.AL_FORMAT_MONO8
+                elif nch == 2:
+                    fmt = al.AL_FORMAT_STEREO16 if sw == 2 else al.AL_FORMAT_STEREO8
+                else:
+                    return False
+                al.alBufferData(buffer_id, fmt, audio_data, len(audio_data), fr)
+                return True
+        except Exception as e:
+            print(f"Bytes audio load error: {e}")
+            # Fallback to pygame if available (for other formats like OGG, MP3)
+            if PYGAME_AVAILABLE:
+                try:
+                    # We can't load from bytes directly with pygame.mixer.Sound? Actually we can: Sound(buffer=...)
+                    # but we need to convert to a file-like? Let's use a temporary file.
+                    import tempfile
+                    with tempfile.NamedTemporaryFile(suffix='.tmp', delete=False) as tmp:
+                        tmp.write(data)
+                        tmp_path = tmp.name
+                    try:
+                        return OpenALBuffer._load_with_pygame(buffer_id, tmp_path, force_mono, force_8bit)
+                    finally:
+                        os.unlink(tmp_path)
+                except Exception as e2:
+                    print(f"Pygame fallback for bytes failed: {e2}")
+            return False
 
-def initialize_audio(max_sources: int = 32) -> bool:
-    """Initialize global audio system."""
-    global _openal_system
-    if _openal_system is None:
-        _openal_system = OpenALAudioSystem(max_sources)
-    return _openal_system.initialized
+    @staticmethod
+    def _load_with_pygame(buffer_id: ALuint, filepath: str, force_mono: bool, force_8bit: bool) -> bool:
+        try:
+            if not pygame.mixer.get_init():
+                pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+            sound = pygame.mixer.Sound(filepath)
+            raw = sound.get_raw()
+            freq = 44100
+            if sound.get_length() > 0:
+                # Guess frequency
+                samples = len(raw) // (2 * 2)  # assume stereo 16-bit
+                freq = int(samples / sound.get_length())
+            # We don't know channels here; we assume stereo.
+            nch = 2
+            sw = 2
+            if force_mono:
+                raw = OpenALBuffer._convert_stereo_to_mono(raw, 2)
+                nch = 1
+            if force_8bit and sw == 2:
+                raw = OpenALBuffer._convert_16bit_to_8bit(raw)
+                sw = 1
+            if nch == 1:
+                fmt = al.AL_FORMAT_MONO16 if sw == 2 else al.AL_FORMAT_MONO8
+            else:
+                fmt = al.AL_FORMAT_STEREO16 if sw == 2 else al.AL_FORMAT_STEREO8
+            al.alBufferData(buffer_id, fmt, raw, len(raw), freq)
+            return True
+        except Exception as e:
+            print(f"Pygame load error: {e}")
+            return False
 
-def cleanup_audio():
-    """Clean up global audio system."""
-    global _openal_system
-    if _openal_system:
-        _openal_system.cleanup()
-        _openal_system = None
+    @staticmethod
+    def _convert_stereo_to_mono(data: bytes, sample_width: int) -> bytes:
+        """Convert 2-channel PCM to mono by averaging samples."""
+        if sample_width == 2:
+            import array
+            samples = array.array('h', data)
+            frames = len(samples) // 2
+            mono = array.array('h')
+            for i in range(frames):
+                left = samples[i*2]
+                right = samples[i*2 + 1]
+                mono.append((left + right) // 2)
+            return mono.tobytes()
+        else:
+            # 8-bit
+            import array
+            samples = array.array('b', data)
+            frames = len(samples) // 2
+            mono = array.array('b')
+            for i in range(frames):
+                left = samples[i*2]
+                right = samples[i*2 + 1]
+                mono.append((left + right) // 2)
+            return mono.tobytes()
+
+    @staticmethod
+    def _convert_16bit_to_8bit(data: bytes) -> bytes:
+        """Convert 16-bit PCM to 8-bit (linear)."""
+        import array
+        samples = array.array('h', data)
+        # Convert to signed 8-bit: divide by 256 and offset to unsigned? We'll use signed 8-bit.
+        eight = array.array('b')
+        for s in samples:
+            # clamp
+            val = s // 256
+            if val > 127:
+                val = 127
+            elif val < -128:
+                val = -128
+            eight.append(val)
+        return eight.tobytes()
+
+    @classmethod
+    def cleanup_unused(cls, max_age: float = 300.0):
+        now = time.time()
+        to_remove = [p for p, b in cls._buffer_pool.items() if now - b.last_used > max_age]
+        for p in to_remove:
+            buf = cls._buffer_pool.pop(p)
+            if OPENAL_AVAILABLE:
+                al.alDeleteBuffers(1, ctypes.byref(ALuint(buf.buffer_id)))
+
+
+class OpenALSource:
+    def __init__(self, source_id: int):
+        self.source_id = source_id
+        self.buffer = None
+        self.volume = 1.0
+        self.pitch = 1.0
+        self.pan = 0.0
+        self.balance = 0.0
+        self.loop = False
+        # Effect slot for reverb/echo (if EFX available)
+        self.effect_slot = None
+        if OPENAL_AVAILABLE:
+            al.alSourcei(source_id, al.AL_SOURCE_RELATIVE, al.AL_TRUE)
+            al.alSource3f(source_id, al.AL_POSITION, 0.0, 0.0, 0.0)
+            al.alSourcef(source_id, al.AL_ROLLOFF_FACTOR, 0.0)
+
+    def set_buffer(self, buffer: OpenALBuffer):
+        self.buffer = buffer
+        if OPENAL_AVAILABLE and buffer:
+            al.alSourcei(self.source_id, al.AL_BUFFER, buffer.buffer_id)
+
+    def set_volume_immediate(self, volume: float):
+        self.volume = max(0.0, min(1.0, volume))
+        if OPENAL_AVAILABLE:
+            al.alSourcef(self.source_id, al.AL_GAIN, self.volume)
+
+    def set_balance_immediate(self, balance: float):
+        self.balance = max(-1.0, min(1.0, balance))
+        if OPENAL_AVAILABLE:
+            al.alSource3f(self.source_id, al.AL_POSITION, self.balance, 0.0, 0.0)
+
+    def set_pan_immediate(self, pan: float):
+        self.pan = max(-1.0, min(1.0, pan))
+        self.set_balance_immediate(self.pan)
+
+    def set_pitch_immediate(self, pitch: float):
+        self.pitch = max(0.1, min(4.0, pitch))
+        if OPENAL_AVAILABLE:
+            al.alSourcef(self.source_id, al.AL_PITCH, self.pitch)
+
+    def set_effect(self, effect_type: int, params: Optional[Dict[str, float]] = None) -> bool:
+        """
+        Apply an EFX effect (reverb, echo, etc.) to this source.
+        Returns True if successful.
+        Requires EFX_AVAILABLE.
+        """
+        if not EFX_AVAILABLE or not OPENAL_AVAILABLE:
+            return False
+        try:
+            # Create effect
+            effect = ALuint(0)
+            al.alGenEffects(1, ctypes.byref(effect))
+            if effect.value == 0:
+                return False
+            # Set effect type
+            al.alEffecti(effect, al.AL_EFFECT_TYPE, effect_type)
+            # Apply parameters (if any)
+            if params:
+                for key, val in params.items():
+                    al.alEffectf(effect, key, val)
+            # Create effect slot
+            slot = ALuint(0)
+            al.alGenAuxiliaryEffectSlots(1, ctypes.byref(slot))
+            if slot.value == 0:
+                al.alDeleteEffects(1, ctypes.byref(effect))
+                return False
+            al.alAuxiliaryEffectSloti(slot, al.AL_EFFECTSLOT_EFFECT, effect)
+            # Attach to source
+            al.alSource3i(self.source_id, al.AL_AUXILIARY_SEND_FILTER, slot, 0, 0)
+            self.effect_slot = slot
+            return True
+        except Exception:
+            return False
+
+    def remove_effect(self):
+        """Remove any attached effect."""
+        if self.effect_slot and OPENAL_AVAILABLE:
+            try:
+                al.alSource3i(self.source_id, al.AL_AUXILIARY_SEND_FILTER, 0, 0, 0)
+                al.alDeleteAuxiliaryEffectSlots(1, ctypes.byref(ALuint(self.effect_slot)))
+            except:
+                pass
+            self.effect_slot = None
+
+    def play(self, loop: bool = False):
+        self.loop = loop
+        if OPENAL_AVAILABLE:
+            al.alSourcei(self.source_id, al.AL_LOOPING, al.AL_TRUE if loop else al.AL_FALSE)
+            al.alSourcePlay(self.source_id)
+
+    def pause(self):
+        if OPENAL_AVAILABLE:
+            al.alSourcePause(self.source_id)
+
+    def resume(self):
+        if OPENAL_AVAILABLE:
+            al.alSourcePlay(self.source_id)
+
+    def stop(self):
+        if OPENAL_AVAILABLE:
+            al.alSourceStop(self.source_id)
+            self.remove_effect()
+
+    def rewind(self):
+        if OPENAL_AVAILABLE:
+            al.alSourceRewind(self.source_id)
+
+    def is_playing(self) -> bool:
+        if not OPENAL_AVAILABLE:
+            return False
+        state = ALint(0)
+        al.alGetSourcei(self.source_id, al.AL_SOURCE_STATE, ctypes.byref(state))
+        return state.value == al.AL_PLAYING
+
+    def is_paused(self) -> bool:
+        if not OPENAL_AVAILABLE:
+            return False
+        state = ALint(0)
+        al.alGetSourcei(self.source_id, al.AL_SOURCE_STATE, ctypes.byref(state))
+        return state.value == al.AL_PAUSED
+
+    def get_position(self) -> float:
+        if not OPENAL_AVAILABLE:
+            return 0.0
+        offset = ALfloat(0.0)
+        al.alGetSourcef(self.source_id, al.AL_SEC_OFFSET, ctypes.byref(offset))
+        return offset.value
+
+    def delete(self):
+        self.remove_effect()
+        if OPENAL_AVAILABLE:
+            al.alDeleteSources(1, ctypes.byref(ALuint(self.source_id)))
+
+
+class OpenALBackend:
+    def __init__(self, max_sources: int = 32, device_name: Optional[str] = None):
+        self.device = OpenALDevice(device_name)
+        self.sources: List[OpenALSource] = []
+        self.max_sources = max_sources
+        if self.device.is_initialized():
+            if OPENAL_AVAILABLE:
+                al.alListener3f(al.AL_POSITION, 0.0, 0.0, 0.0)
+                al.alListener3f(al.AL_VELOCITY, 0.0, 0.0, 0.0)
+                orientation = (ALfloat * 6)(0.0, 0.0, -1.0, 0.0, 1.0, 0.0)
+                al.alListenerfv(al.AL_ORIENTATION, orientation)
+            for _ in range(max_sources):
+                sid = ALuint(0)
+                al.alGenSources(1, ctypes.byref(sid))
+                self.sources.append(OpenALSource(sid.value))
+
+    def get_free_source(self) -> Optional[OpenALSource]:
+        for src in self.sources:
+            if not src.is_playing() and not src.is_paused():
+                return src
+        return None
+
+    def cleanup(self):
+        for src in self.sources:
+            src.stop()
+            src.delete()
+        self.device.close()
+
+    def is_initialized(self) -> bool:
+        return self.device.is_initialized()

@@ -1,47 +1,81 @@
+# visualizers.py
 import pygame
 import time
 import math
 import numpy as np
-from typing import Optional, List, Tuple, Literal
-from .base import *
+from typing import Optional, List, Tuple, Literal, Dict, Any, Callable
+from .base import UIElement, FontManager, ThemeManager, ThemeType
+from ...core.renderer import Renderer
+
 
 class ChartVisualizer(UIElement):
     """
-    A versatile data visualization component that can display various chart types:
-    bar charts (vertical/horizontal), pie charts, line charts, scatter plots, and radar charts.
-    
-    Gradient support:
-    - For line charts: each segment between two points is drawn with a color interpolated
-      between the colors of those two points.
-    - For radar charts: each edge is drawn with a color interpolated between the colors
-      of its two vertices.
-    
-    Gradient parameters (passed as kwargs to __init__):
-        use_gradient (bool): Enable gradient coloring. Default False.
-        gradient_colors (List[Tuple[int,int,int]]): List of colors per data point.
-            If provided, overrides start/end.
-        gradient_start (Tuple[int,int,int]): Start color for interpolation (default red).
-        gradient_end (Tuple[int,int,int]): End color for interpolation (default green).
+    A versatile data visualization component: bar, pie, line, scatter, radar charts.
+    Supports gradients, animations, and legend.
     """
 
-    def __init__(self, x: int, y: int, width: int, height: int,
-                 data: Optional[List[float]] = None,
-                 labels: Optional[List[str]] = None,
-                 colors: Optional[List[Tuple[int, int, int]]] = None,
-                 chart_type: Literal['bar', 'pie', 'line', 'scatter', 'radar'] = 'bar',
-                 orientation: Literal['vertical', 'horizontal'] = 'vertical',
-                 title: str = "",
-                 show_labels: bool = True,
-                 show_legend: bool = False,
-                 min_value: Optional[float] = None,
-                 max_value: Optional[float] = None,
-                 radar_max_value: float = 1.0,
-                 radar_axis_labels: Optional[List[str]] = None,
-                 root_point: Tuple[float, float] = (0, 0),
-                 theme: ThemeType = None,
-                 element_id: Optional[str] = None,
-                 **kwargs):
-        super().__init__(x, y, width, height, root_point, element_id)
+    _properties: Dict[str, Dict[str, Any]] = {
+        **UIElement._properties,
+        'chart_type': {'name': 'chart type', 'key': 'chart_type', 'type': str, 'editable': True,
+                       'description': 'Type of chart: bar, pie, line, scatter, radar',
+                       'options': ['bar', 'pie', 'line', 'scatter', 'radar']},
+        'title': {'name': 'title', 'key': 'title', 'type': str, 'editable': True,
+                  'description': 'Chart title text.'},
+        'show_labels': {'name': 'show labels', 'key': 'show_labels', 'type': bool, 'editable': True,
+                        'description': 'Display data labels.'},
+        'show_legend': {'name': 'show legend', 'key': 'show_legend', 'type': bool, 'editable': True,
+                        'description': 'Display color legend.'},
+        'use_gradient': {'name': 'use gradient', 'key': 'use_gradient', 'type': bool, 'editable': True,
+                         'description': 'Use color gradient across data points.'},
+    }
+
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        data: Optional[List[float]] = None,
+        labels: Optional[List[str]] = None,
+        colors: Optional[List[Tuple[int, int, int]]] = None,
+        chart_type: Literal['bar', 'pie', 'line', 'scatter', 'radar'] = 'bar',
+        orientation: Literal['vertical', 'horizontal'] = 'vertical',
+        title: str = "",
+        show_labels: bool = True,
+        show_legend: bool = False,
+        min_value: Optional[float] = None,
+        max_value: Optional[float] = None,
+        radar_max_value: float = 1.0,
+        radar_axis_labels: Optional[List[str]] = None,
+        pivot: Tuple[float, float] = (0, 0),
+        theme: Optional[ThemeType] = None,
+        element_id: Optional[str] = None,
+        **kwargs
+    ) -> None:
+        """
+        Initialize a chart visualizer.
+
+        Args:
+            x, y: Position.
+            width, height: Dimensions.
+            data: List of numeric values.
+            labels: Corresponding labels.
+            colors: List of colors per data point (RGB).
+            chart_type: 'bar', 'pie', 'line', 'scatter', 'radar'.
+            orientation: 'vertical' or 'horizontal' (for bar charts).
+            title: Chart title.
+            show_labels: Display labels on/inside chart.
+            show_legend: Display color legend.
+            min_value, max_value: Manual value range.
+            radar_max_value: Maximum value for radar chart (default 1.0).
+            radar_axis_labels: Labels for radar axes (defaults to labels).
+            pivot: Anchor point.
+            theme: Theme to apply.
+            element_id: Custom ID.
+            **kwargs: Gradient options: use_gradient (bool), gradient_colors (list of RGB),
+                     gradient_start (RGB), gradient_end (RGB).
+        """
+        super().__init__(x, y, width, height, pivot, element_id)
 
         self.data = data if data is not None else []
         self.labels = labels if labels is not None else [f"Item {i+1}" for i in range(len(self.data))]
@@ -89,6 +123,33 @@ class ChartVisualizer(UIElement):
         self._anim_active = False
         self._current_display_data = list(self.data) if self.data else []
 
+    def _get_init_args(self) -> Dict[str, Any]:
+        return {
+            'x': self.x,
+            'y': self.y,
+            'width': self.width,
+            'height': self.height,
+            'data': self.data,
+            'labels': self.labels,
+            'colors': self.colors,
+            'chart_type': self.chart_type,
+            'orientation': self.orientation,
+            'title': self.title,
+            'show_labels': self.show_labels,
+            'show_legend': self.show_legend,
+            'min_value': self.min_value,
+            'max_value': self.max_value,
+            'radar_max_value': self.radar_max_value,
+            'radar_axis_labels': self.radar_axis_labels,
+            'pivot': self.pivot,
+            'theme': self.theme_type,
+            'element_id': self.element_id,
+            'use_gradient': self.use_gradient,
+            'gradient_colors': self.gradient_colors,
+            'gradient_start': self.gradient_start,
+            'gradient_end': self.gradient_end,
+        }
+
     def _default_colors(self) -> List[Tuple[int, int, int]]:
         return [
             (255, 99, 132), (54, 162, 235), (255, 206, 86),
@@ -97,28 +158,28 @@ class ChartVisualizer(UIElement):
         ]
 
     @property
-    def title_font(self):
+    def title_font(self) -> pygame.font.Font:
         if self._title_font is None:
             FontManager.initialize()
             self._title_font = FontManager.get_font(None, 20)
         return self._title_font
 
     @property
-    def label_font(self):
+    def label_font(self) -> pygame.font.Font:
         if self._label_font is None:
             FontManager.initialize()
             self._label_font = FontManager.get_font(None, 12)
         return self._label_font
 
     @property
-    def legend_font(self):
+    def legend_font(self) -> pygame.font.Font:
         if self._legend_font is None:
             FontManager.initialize()
             self._legend_font = FontManager.get_font(None, 10)
         return self._legend_font
 
     def set_data(self, data: List[float], labels: Optional[List[str]] = None,
-                 animate: bool = False, duration: float = 0.5):
+                 animate: bool = False, duration: float = 0.5) -> None:
         if not animate:
             self.data = data
             if labels is not None:
@@ -134,7 +195,7 @@ class ChartVisualizer(UIElement):
             self._anim_start_data = list(self._current_display_data)
             self._anim_start_labels = list(self.labels) if labels else None
 
-    def update(self, dt: float, inputState: InputState):
+    def update(self, dt: float, inputState) -> None:
         super().update(dt, inputState)
         if self._anim_active:
             self._anim_elapsed += dt
@@ -152,7 +213,7 @@ class ChartVisualizer(UIElement):
                 self._anim_active = False
             self._needs_recalc = True
 
-    def _recalc(self):
+    def _recalc(self) -> None:
         data_to_use = self._current_display_data if self._anim_active else self.data
         if not data_to_use:
             self._normalized_data = []
@@ -180,13 +241,11 @@ class ChartVisualizer(UIElement):
             return self.colors[index]
         return self.colors[index % len(self.colors)]
 
-    def _get_point_color(self, index: int, t: float = None) -> Tuple[int, int, int]:
+    def _get_point_color(self, index: int, t: Optional[float] = None) -> Tuple[int, int, int]:
         if not self.use_gradient:
             return self._get_color(index)
-
         if self.gradient_colors is not None and index < len(self.gradient_colors):
             return self.gradient_colors[index]
-
         n = len(self.data)
         if n <= 1:
             return self.gradient_start
@@ -196,7 +255,7 @@ class ChartVisualizer(UIElement):
         b = int(self.gradient_start[2] + (self.gradient_end[2] - self.gradient_start[2]) * t)
         return (r, g, b)
 
-    def render(self, renderer: Renderer):
+    def render(self, renderer: Renderer) -> None:
         if not self.visible or not self.data:
             return
 
@@ -223,7 +282,7 @@ class ChartVisualizer(UIElement):
             title_x = actual_x + self.width // 2
             title_y = actual_y + self.padding
             renderer.draw_text(self.title, title_x, title_y, theme.text_primary.color,
-                               self.title_font, anchor_point=(0.5, 0))
+                               self.title_font, pivot=(0.5, 0))
 
         if self.chart_type == 'bar':
             self._render_bar(renderer, chart_left, chart_top, chart_width, chart_height, theme)
@@ -241,11 +300,13 @@ class ChartVisualizer(UIElement):
 
         super().render(renderer)
 
+    # ------------------------------------------------------------------
+    # Bar Chart
+    # ------------------------------------------------------------------
     def _render_bar(self, renderer, left, top, width, height, theme):
         n = len(self.data)
         if n == 0:
             return
-
         data_to_use = self._current_display_data if self._anim_active else self.data
 
         if self.orientation == 'vertical':
@@ -267,9 +328,8 @@ class ChartVisualizer(UIElement):
                     label_x = bar_x + bar_width // 2
                     label_y = top + height - 5
                     renderer.draw_text(label, label_x, label_y, theme.text_secondary.color,
-                                       self.label_font, anchor_point=(0.5, 1))
-
-        else:
+                                       self.label_font, pivot=(0.5, 1))
+        else:  # horizontal
             bar_height = (height - (n - 1) * self.bar_spacing) / n
             max_val = max(data_to_use) if self.max_value is None else self.max_value
             min_val = min(data_to_use) if self.min_value is None else self.min_value
@@ -288,8 +348,11 @@ class ChartVisualizer(UIElement):
                     label_x = left + 35
                     label_y = bar_y + bar_height // 2
                     renderer.draw_text(label, label_x, label_y, theme.text_secondary.color,
-                                       self.label_font, anchor_point=(1, 0.5))
+                                       self.label_font, pivot=(1, 0.5))
 
+    # ------------------------------------------------------------------
+    # Pie Chart
+    # ------------------------------------------------------------------
     def _render_pie(self, renderer, left, top, width, height, theme):
         center_x = left + width // 2
         center_y = top + height // 2
@@ -317,10 +380,13 @@ class ChartVisualizer(UIElement):
                 label_y = center_y + (radius + 15) * math.sin(mid_angle)
                 label = self.labels[i] if i < len(self.labels) else str(i)
                 renderer.draw_text(label, label_x, label_y, theme.text_primary.color,
-                                   self.label_font, anchor_point=(0.5, 0.5))
+                                   self.label_font, pivot=(0.5, 0.5))
 
             start_angle = end_angle
 
+    # ------------------------------------------------------------------
+    # Line Chart
+    # ------------------------------------------------------------------
     def _render_line(self, renderer, left, top, width, height, theme):
         if len(self.data) < 2:
             return
@@ -367,8 +433,11 @@ class ChartVisualizer(UIElement):
                     label_y = y + 15
                     anchor = (0.5, 0)
                 renderer.draw_text(label, x, label_y, theme.text_secondary.color,
-                                self.label_font, anchor_point=anchor)
+                                   self.label_font, pivot=anchor)
 
+    # ------------------------------------------------------------------
+    # Scatter Plot
+    # ------------------------------------------------------------------
     def _render_scatter(self, renderer, left, top, width, height, theme):
         if len(self.data) < 1:
             return
@@ -393,8 +462,11 @@ class ChartVisualizer(UIElement):
                     label_y = y + 15
                     anchor = (0.5, 0)
                 renderer.draw_text(label, x, label_y, theme.text_secondary.color,
-                                   self.label_font, anchor_point=anchor)
+                                   self.label_font, pivot=anchor)
 
+    # ------------------------------------------------------------------
+    # Radar Chart
+    # ------------------------------------------------------------------
     def _render_radar(self, renderer, left, top, width, height, theme):
         if not self.data:
             return
@@ -433,7 +505,8 @@ class ChartVisualizer(UIElement):
                 label = self.radar_axis_labels[i] if i < len(self.radar_axis_labels) else str(i)
                 x = center_x + label_radius * math.cos(angle)
                 y = center_y + label_radius * math.sin(angle)
-                renderer.draw_text(label, x, y, theme.text_secondary.color, self.label_font, anchor_point=(0.5, 0.5))
+                renderer.draw_text(label, x, y, theme.text_secondary.color, self.label_font,
+                                   pivot=(0.5, 0.5))
 
         data_to_use = self._current_display_data if self._anim_active else self.data
         data_points = []
@@ -474,6 +547,9 @@ class ChartVisualizer(UIElement):
                 color = self._get_point_color(i, i/num_axes) if self.use_gradient else self._get_color(i)
                 renderer.draw_circle(x, y, 4, color)
 
+    # ------------------------------------------------------------------
+    # Legend
+    # ------------------------------------------------------------------
     def _render_legend(self, renderer, x, y, theme):
         item_width = 80
         start_x = x + self.padding
@@ -481,43 +557,55 @@ class ChartVisualizer(UIElement):
             color = self._get_point_color(i) if self.use_gradient else self._get_color(i)
             renderer.draw_rect(start_x + i * item_width, y, 12, 12, color)
             renderer.draw_text(label[:10], start_x + i * item_width + 15, y + 6,
-                               theme.text_secondary.color, self.legend_font, anchor_point=(0, 0.5))        
+                               theme.text_secondary.color, self.legend_font, pivot=(0, 0.5))
 
 
+# ----------------------------------------------------------------------
+# AudioVisualizer
+# ----------------------------------------------------------------------
 class AudioVisualizer(UIElement):
     """
-    Real-time audio visualization element that displays audio data in various styles.
-    
-    Supports multiple visualization modes and can connect to OpenAL audio sources.
-    
-    Attributes:
-        style (str): Visualization style ('bars', 'waveform', 'circle', 'particles', 'spectrum')
-        source: OpenAL audio source to visualize
-        color_gradient (List[Tuple[int, int, int]]): Colors for gradient visualization
-        bar_width (int): Width of bars in bar mode
-        bar_spacing (int): Spacing between bars
-        sensitivity (float): Audio sensitivity/amplification
-        smoothing (float): Smoothing factor for transitions
+    Real-time audio visualization element: bars, waveform, circle, particles, spectrum.
+    Connects to an OpenAL audio source.
     """
-    
-    def __init__(self, x: int, y: int, width: int, height: int,
-                 style: Literal['bars', 'waveform', 'circle', 'particles', 'spectrum'] = 'bars',
-                 source = None,
-                 color_gradient: Optional[List[Tuple[int, int, int]]] = None,
-                 root_point: Tuple[float, float] = (0, 0),
-                 theme: ThemeType = None,
-                 element_id: Optional[str] = None):
-        super().__init__(x, y, width, height, root_point, element_id)
-        
+
+    _properties: Dict[str, Dict[str, Any]] = {
+        **UIElement._properties,
+        'style': {'name': 'style', 'key': 'style', 'type': str, 'editable': True,
+                  'description': 'Visualization style: bars, waveform, circle, particles, spectrum',
+                  'options': ['bars', 'waveform', 'circle', 'particles', 'spectrum']},
+        'sensitivity': {'name': 'sensitivity', 'key': 'sensitivity', 'type': float, 'editable': True,
+                        'description': 'Audio sensitivity (0.1-5.0).'},
+        'smoothing': {'name': 'smoothing', 'key': 'smoothing', 'type': float, 'editable': True,
+                      'description': 'Smoothing factor (0.0-1.0).'},
+        'num_bars': {'name': 'number of bars', 'key': 'num_bars', 'type': int, 'editable': True,
+                     'description': 'Number of bars/segments.'},
+    }
+
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        style: Literal['bars', 'waveform', 'circle', 'particles', 'spectrum'] = 'bars',
+        source=None,
+        color_gradient: Optional[List[Tuple[int, int, int]]] = None,
+        pivot: Tuple[float, float] = (0, 0),
+        theme: Optional[ThemeType] = None,
+        element_id: Optional[str] = None
+    ) -> None:
+        super().__init__(x, y, width, height, pivot, element_id)
+
         self.style = style
         self.source = source
         self.theme_type = theme or ThemeManager.get_current_theme()
-        
+
         self.audio_data = []
         self.fft_data = []
         self.peak_history = []
         self.smoothed_data = []
-        
+
         self.num_bars = 64
         self.bar_width = max(2, width // self.num_bars)
         self.bar_spacing = 1
@@ -528,12 +616,11 @@ class AudioVisualizer(UIElement):
         self.smoothing = 0.7
         self.decay_rate = 0.95
         self.max_history = 30
-        
+
         if color_gradient:
             self.color_gradient = color_gradient
         else:
             theme_obj = ThemeManager.get_theme(self.theme_type)
-            # Get button_normal color (RGB tuple)
             if hasattr(theme_obj, 'button_normal') and theme_obj.button_normal:
                 base_color = theme_obj.button_normal.color
             else:
@@ -543,64 +630,74 @@ class AudioVisualizer(UIElement):
                 base_color,
                 tuple(min(255, c + 100) for c in base_color)
             ]
-        
-        self._last_update = 0
+
+        self._last_update = 0.0
         self._update_interval = 0.016
-        
+
         self._initialize_audio_data()
         self._gradient_surface = None
         self._generate_gradient_surface()
-    
-    def _initialize_audio_data(self):
+
+    def _get_init_args(self) -> Dict[str, Any]:
+        return {
+            'x': self.x,
+            'y': self.y,
+            'width': self.width,
+            'height': self.height,
+            'style': self.style,
+            'source': self.source,
+            'color_gradient': self.color_gradient,
+            'pivot': self.pivot,
+            'theme': self.theme_type,
+            'element_id': self.element_id,
+        }
+
+    def _initialize_audio_data(self) -> None:
         self.audio_data = [0.0] * self.num_bars
         self.fft_data = [0.0] * self.num_bars
         self.peak_history = []
         self.smoothed_data = [0.0] * self.num_bars
-    
-    def _generate_gradient_surface(self):
+
+    def _generate_gradient_surface(self) -> None:
         height = 100
         self._gradient_surface = pygame.Surface((1, height), pygame.SRCALPHA)
         for y in range(height):
             ratio = y / height
             color = self._interpolate_gradient(ratio)
             self._gradient_surface.set_at((0, y), color)
-    
+
     def _interpolate_gradient(self, ratio: float) -> Tuple[int, int, int]:
         if len(self.color_gradient) == 1:
             return self.color_gradient[0]
-        
         exact_pos = ratio * (len(self.color_gradient) - 1)
         segment = int(exact_pos)
         segment_ratio = exact_pos - segment
-        
         if segment >= len(self.color_gradient) - 1:
             return self.color_gradient[-1]
-        
         color1 = np.array(self.color_gradient[segment], dtype=np.float32)
         color2 = np.array(self.color_gradient[segment + 1], dtype=np.float32)
         interpolated = color1 + (color2 - color1) * segment_ratio
         return tuple(np.clip(interpolated, 0, 255).astype(int))
-    
-    def set_style(self, style: str):
+
+    def set_style(self, style: str) -> None:
         self.style = style
         self._initialize_audio_data()
-    
-    def set_source(self, source):
+
+    def set_source(self, source) -> None:
         self.source = source
-    
-    def set_color_gradient(self, gradient: List[Tuple[int, int, int]]):
+
+    def set_color_gradient(self, gradient: List[Tuple[int, int, int]]) -> None:
         self.color_gradient = gradient
         self._generate_gradient_surface()
-    
-    def set_sensitivity(self, sensitivity: float):
+
+    def set_sensitivity(self, sensitivity: float) -> None:
         self.sensitivity = max(0.1, min(5.0, sensitivity))
-    
-    def set_smoothing(self, smoothing: float):
+
+    def set_smoothing(self, smoothing: float) -> None:
         self.smoothing = max(0.0, min(1.0, smoothing))
-    
+
     def _get_audio_data(self) -> List[float]:
         current_time = pygame.time.get_ticks() / 1000.0
-        
         if self.source and hasattr(self.source, 'is_playing') and self.source.is_playing():
             data = []
             for i in range(self.num_bars):
@@ -610,50 +707,43 @@ class AudioVisualizer(UIElement):
                 value += np.random.uniform(-0.05, 0.05)
                 data.append(max(0.0, min(1.0, value * self.sensitivity)))
         else:
-            data = []
-            for i in range(self.num_bars):
-                idle_freq = 0.5
-                idle_value = (math.sin(current_time * idle_freq + i * 0.1) * 0.2 + 0.3)
-                data.append(idle_value)
-        
+            data = [(math.sin(current_time * 0.5 + i * 0.1) * 0.2 + 0.3) for i in range(self.num_bars)]
         return data
-    
-    def _process_audio_data(self, raw_data: List[float]):
+
+    def _process_audio_data(self, raw_data: List[float]) -> None:
         for i in range(len(raw_data)):
-            smoothed = self.smoothed_data[i] * self.smoothing + raw_data[i] * (1 - self.smoothing)
-            self.smoothed_data[i] = smoothed
-        
+            self.smoothed_data[i] = self.smoothed_data[i] * self.smoothing + raw_data[i] * (1 - self.smoothing)
         self.peak_history.append(raw_data[:])
         if len(self.peak_history) > self.max_history:
             self.peak_history.pop(0)
-        
         if len(self.peak_history) > 1:
             for i in range(self.num_bars):
                 decayed_value = self.peak_history[-2][i] * self.decay_rate
                 self.peak_history[-1][i] = max(self.peak_history[-1][i], decayed_value)
-    
-    def update(self, dt: float, inputState: InputState):
+
+    def update(self, dt: float, inputState) -> None:
         super().update(dt, inputState)
         current_time = time.time()
         if current_time - self._last_update >= self._update_interval:
             audio_data = self._get_audio_data()
             self._process_audio_data(audio_data)
             self._last_update = current_time
-    
-    def render(self, renderer: Renderer):
+
+    def render(self, renderer: Renderer) -> None:
         if not self.visible:
             return
-        
+
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
-        
+
         border_color = theme.border.color if theme.border else (50, 50, 70)
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                         border_color, fill=False, border_width=self.border_width)
-        
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height,
+                           border_color, fill=False, border_width=self.border_width)
+
         bg_color = theme.background.color if theme.background else (20, 20, 30)
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color, border_width=self.border_width)
-        
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color,
+                           border_width=self.border_width)
+
         if self.style == 'bars':
             self._render_bars(renderer, actual_x, actual_y)
         elif self.style == 'waveform':
@@ -664,96 +754,89 @@ class AudioVisualizer(UIElement):
             self._render_particles(renderer, actual_x, actual_y)
         elif self.style == 'spectrum':
             self._render_spectrum(renderer, actual_x, actual_y)
-        
+
         super().render(renderer)
-    
-    def _render_bars(self, renderer: Renderer, x: int, y: int):
+
+    # ------------------------------------------------------------------
+    # Bars Visualizer
+    # ------------------------------------------------------------------
+    def _render_bars(self, renderer: Renderer, x: int, y: int) -> None:
         if not self.smoothed_data:
             return
-        
         total_bars = min(self.num_bars, len(self.smoothed_data))
         available_width = self.width - (total_bars - 1) * self.bar_spacing
         bar_width = available_width // total_bars
-        
         for i in range(total_bars):
             value = self.smoothed_data[i]
             bar_height = int(value * self.height)
-            
             bar_x = x + i * (bar_width + self.bar_spacing)
             bar_y = y + self.height - bar_height
-            
             color = self._get_bar_color(value)
             renderer.draw_rect(bar_x, bar_y, bar_width, bar_height, color, border_width=0)
-            
             if bar_height > 2:
                 highlight_color = tuple(min(255, c + 30) for c in color)
                 renderer.draw_rect(bar_x, bar_y, bar_width, 2, highlight_color)
-    
-    def _render_waveform(self, renderer: Renderer, x: int, y: int):
+
+    # ------------------------------------------------------------------
+    # Waveform Visualizer
+    # ------------------------------------------------------------------
+    def _render_waveform(self, renderer: Renderer, x: int, y: int) -> None:
         if not self.smoothed_data:
             return
-        
         center_y = y + self.height // 2
         points = []
-        
         for i, value in enumerate(self.smoothed_data):
             point_x = x + (i / len(self.smoothed_data)) * self.width
             point_y = center_y - (value - 0.5) * self.height
             points.append((point_x, point_y))
-        
         if len(points) > 1:
             for i in range(len(points) - 1):
                 color = self._get_waveform_color(i / len(points))
-                renderer.draw_line(points[i][0], points[i][1], 
-                                 points[i + 1][0], points[i + 1][1], 
-                                 color, 2)
-        
+                renderer.draw_line(points[i][0], points[i][1],
+                                   points[i+1][0], points[i+1][1], color, 2)
         center_color = tuple(c // 2 for c in self.color_gradient[1])
         renderer.draw_line(x, center_y, x + self.width, center_y, center_color, 1)
-    
-    def _render_circle(self, renderer: Renderer, x: int, y: int):
+
+    # ------------------------------------------------------------------
+    # Circle Visualizer
+    # ------------------------------------------------------------------
+    def _render_circle(self, renderer: Renderer, x: int, y: int) -> None:
         if not self.smoothed_data:
             return
-        
         center_x = x + self.width // 2
         center_y = y + self.height // 2
         radius = min(self.circle_radius, min(self.width, self.height) // 2 - 10)
-        
         base_color = tuple(c // 4 for c in self.color_gradient[1])
         renderer.draw_circle(center_x, center_y, radius, base_color, fill=False, border_width=1)
-        
         points = []
         num_points = len(self.smoothed_data)
-        
         for i, value in enumerate(self.smoothed_data):
             angle = (i / num_points) * 2 * math.pi
             response_radius = radius + value * radius * 0.5
             point_x = center_x + response_radius * math.cos(angle)
             point_y = center_y + response_radius * math.sin(angle)
             points.append((point_x, point_y))
-        
         if len(points) > 2:
             for i in range(len(points)):
                 color = self._get_circle_color(i / len(points))
                 start_point = points[i]
                 end_point = points[(i + 1) % len(points)]
-                renderer.draw_line(start_point[0], start_point[1],
-                                 end_point[0], end_point[1],
-                                 color, self.circle_thickness)
-        
+                renderer.draw_line(start_point[0], start_point[1], end_point[0], end_point[1],
+                                   color, self.circle_thickness)
         dot_radius = 3
         center_value = sum(self.smoothed_data) / len(self.smoothed_data)
         dot_color = self._get_circle_color(center_value)
         renderer.draw_circle(center_x, center_y, dot_radius, dot_color)
-    
-    def _render_particles(self, renderer: Renderer, x: int, y: int):
+
+    # ------------------------------------------------------------------
+    # Particles Visualizer
+    # ------------------------------------------------------------------
+    def _render_particles(self, renderer: Renderer, x: int, y: int) -> None:
         if not self.smoothed_data:
             return
-        
         center_x = x + self.width // 2
         center_y = y + self.height // 2
         max_radius = min(self.width, self.height) // 2 - 10
-        
         for i in range(self.num_particles):
             data_index = int((i / self.num_particles) * len(self.smoothed_data))
             value = self.smoothed_data[data_index]
@@ -764,75 +847,403 @@ class AudioVisualizer(UIElement):
             particle_size = max(1, int(value * 5))
             particle_color = self._get_particle_color(value, i)
             renderer.draw_circle(particle_x, particle_y, particle_size, particle_color)
-            
             if i > 0:
                 prev_index = int(((i - 1) / self.num_particles) * len(self.smoothed_data))
                 prev_value = self.smoothed_data[prev_index]
                 prev_radius = prev_value * max_radius
-                prev_x = center_x + prev_radius * math.cos((i - 1) / self.num_particles * 2 * math.pi)
-                prev_y = center_y + prev_radius * math.sin((i - 1) / self.num_particles * 2 * math.pi)
+                prev_x = center_x + prev_radius * math.cos((i-1) / self.num_particles * 2 * math.pi)
+                prev_y = center_y + prev_radius * math.sin((i-1) / self.num_particles * 2 * math.pi)
                 trail_color = tuple(min(255, c + 50) for c in particle_color)
                 renderer.draw_line(prev_x, prev_y, particle_x, particle_y, trail_color, 1)
-    
-    def _render_spectrum(self, renderer: Renderer, x: int, y: int):
+
+    # ------------------------------------------------------------------
+    # Spectrum Visualizer
+    # ------------------------------------------------------------------
+    def _render_spectrum(self, renderer: Renderer, x: int, y: int) -> None:
         if not self.smoothed_data:
             return
-        
         spectrum_data = sorted(self.smoothed_data)
         points = [(x, y + self.height)]
-        
         for i, value in enumerate(spectrum_data):
             point_x = x + (i / len(spectrum_data)) * self.width
             point_y = y + self.height - (value * self.height)
             points.append((point_x, point_y))
-        
         points.append((x + self.width, y + self.height))
-        
         if len(points) > 2:
             fill_color = tuple(min(255, c + 30) for c in self.color_gradient[1])
             renderer.draw_polygon(points, fill_color)
-        
         line_points = points[1:-1]
         if len(line_points) > 1:
             for i in range(len(line_points) - 1):
                 color = self._get_spectrum_color(i / len(line_points))
                 renderer.draw_line(line_points[i][0], line_points[i][1],
-                                 line_points[i + 1][0], line_points[i + 1][1],
-                                 color, 2)
-    
+                                   line_points[i+1][0], line_points[i+1][1], color, 2)
+
+    # ------------------------------------------------------------------
+    # Color Helpers
+    # ------------------------------------------------------------------
     def _get_bar_color(self, value: float) -> Tuple[int, int, int]:
         if self._gradient_surface:
             y_pos = int((1.0 - value) * (self._gradient_surface.get_height() - 1))
             color = self._gradient_surface.get_at((0, y_pos))
             return color[:3]
-        else:
-            return self._interpolate_gradient(1.0 - value)
-    
+        return self._interpolate_gradient(1.0 - value)
+
     def _get_waveform_color(self, position: float) -> Tuple[int, int, int]:
-        base_color = self.color_gradient[1]
+        base = self.color_gradient[1]
         variation = math.sin(position * math.pi * 2) * 30
-        return tuple(max(0, min(255, c + int(variation))) for c in base_color)
-    
+        return tuple(max(0, min(255, c + int(variation))) for c in base)
+
     def _get_circle_color(self, position: float) -> Tuple[int, int, int]:
         gradient_pos = (position + time.time() * 0.1) % 1.0
         return self._interpolate_gradient(gradient_pos)
-    
+
     def _get_particle_color(self, value: float, index: int) -> Tuple[int, int, int]:
-        base_color = self.color_gradient[index % len(self.color_gradient)]
+        base = self.color_gradient[index % len(self.color_gradient)]
         pulse = (math.sin(time.time() * 2 + index * 0.1) * 0.3 + 0.7)
-        return tuple(int(c * pulse * value) for c in base_color)
-    
+        return tuple(int(c * pulse * value) for c in base)
+
     def _get_spectrum_color(self, frequency: float) -> Tuple[int, int, int]:
         if frequency < 0.33:
-            r = 0
-            g = int(frequency * 3 * 255)
-            b = 255 - int(frequency * 3 * 255)
+            return (0, int(frequency * 3 * 255), 255 - int(frequency * 3 * 255))
         elif frequency < 0.66:
-            r = int((frequency - 0.33) * 3 * 255)
-            g = 255
-            b = 0
+            return (int((frequency - 0.33) * 3 * 255), 255, 0)
         else:
-            r = 255
-            g = 255 - int((frequency - 0.66) * 3 * 255)
-            b = 0
-        return (r, g, b)
+            return (255, 255 - int((frequency - 0.66) * 3 * 255))
+
+
+# ============================================================================
+# Table - Fixed-size, non-scrollable table
+# ============================================================================
+
+class Table(UIElement):
+    """
+    A tabular data display element with column headers, row styling, selection.
+    Fixed size and position; rows exceeding the height are clipped.
+    """
+
+    _properties: Dict[str, Dict[str, Any]] = {
+        **UIElement._properties,
+        'header_height': {'name': 'header height', 'key': 'header_height', 'type': int, 'editable': True,
+                          'description': 'Height of the header row in pixels.'},
+        'row_height': {'name': 'row height', 'key': 'row_height', 'type': int, 'editable': True,
+                       'description': 'Height of each data row in pixels.'},
+        'cell_padding': {'name': 'cell padding', 'key': 'cell_padding', 'type': int, 'editable': True,
+                         'description': 'Padding inside each cell in pixels.'},
+        'show_headers': {'name': 'show headers', 'key': 'show_headers', 'type': bool, 'editable': True,
+                         'description': 'Whether to display the header row.'},
+        'selection_enabled': {'name': 'selection enabled', 'key': 'selection_enabled', 'type': bool, 'editable': True,
+                              'description': 'Allow row selection via click.'},
+    }
+
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        columns: Optional[List[str]] = None,
+        rows: Optional[List[List[str]]] = None,
+        header_height: int = 25,
+        row_height: int = 25,
+        cell_padding: int = 5,
+        show_headers: bool = True,
+        selection_enabled: bool = False,
+        on_row_select: Optional[Callable[[int, List[str]], None]] = None,
+        odd_row_color: Optional[Tuple[int, int, int]] = None,
+        even_row_color: Optional[Tuple[int, int, int]] = None,
+        header_color: Optional[Tuple[int, int, int]] = None,
+        header_text_color: Optional[Tuple[int, int, int]] = None,
+        border_color: Optional[Tuple[int, int, int]] = None,
+        pivot: Tuple[float, float] = (0, 0),
+        theme: Optional[ThemeType] = None,
+        element_id: Optional[str] = None,
+    ) -> None:
+        """
+        Initialize a fixed-size table.
+
+        Args:
+            x, y: Position.
+            width, height: Dimensions (height is fixed; content clipped if taller).
+            columns: List of column names.
+            rows: 2D list of row data (each row is a list of strings).
+            header_height: Height of the header row.
+            row_height: Height of each data row.
+            cell_padding: Padding inside each cell.
+            show_headers: If True, display column headers.
+            selection_enabled: If True, allow row selection via mouse click.
+            on_row_select: Callback when a row is selected (row_index, row_data).
+            odd_row_color, even_row_color, header_color, header_text_color, border_color: Custom colours.
+            pivot, theme, element_id: Standard UIElement arguments.
+        """
+        super().__init__(x, y, width, height, pivot, element_id)
+
+        self.columns = columns or []
+        self.rows = rows or []
+        self.header_height = header_height
+        self.row_height = row_height
+        self.cell_padding = cell_padding
+        self.show_headers = show_headers
+        self.selection_enabled = selection_enabled
+        self.on_row_select = on_row_select
+
+        self.theme_type = theme or ThemeManager.get_current_theme()
+        theme_obj = ThemeManager.get_theme(self.theme_type)
+
+        # Colors with theme fallback
+        self.odd_row_color = odd_row_color or theme_obj.background2.color if hasattr(theme_obj, 'background2') else (40, 40, 50)
+        self.even_row_color = even_row_color or theme_obj.background.color if hasattr(theme_obj, 'background') else (30, 30, 40)
+        self.header_color = header_color or theme_obj.button_normal.color if hasattr(theme_obj, 'button_normal') else (60, 60, 80)
+        self.header_text_color = header_text_color or theme_obj.button_text.color if hasattr(theme_obj, 'button_text') else (255, 255, 255)
+        self.border_color = border_color or theme_obj.border.color if hasattr(theme_obj, 'border') else (80, 80, 100)
+
+        self.selected_row = -1
+
+        self._font = None
+        self._needs_recalc = True
+        self._column_widths = []
+
+        self._recalc()
+
+    def _get_init_args(self) -> Dict[str, Any]:
+        return {
+            'x': self.x,
+            'y': self.y,
+            'width': self.width,
+            'height': self.height,
+            'columns': self.columns,
+            'rows': self.rows,
+            'header_height': self.header_height,
+            'row_height': self.row_height,
+            'cell_padding': self.cell_padding,
+            'show_headers': self.show_headers,
+            'selection_enabled': self.selection_enabled,
+            'on_row_select': self.on_row_select,
+            'odd_row_color': self.odd_row_color,
+            'even_row_color': self.even_row_color,
+            'header_color': self.header_color,
+            'header_text_color': self.header_text_color,
+            'border_color': self.border_color,
+            'pivot': self.pivot,
+            'theme': self.theme_type,
+            'element_id': self.element_id,
+        }
+
+    @property
+    def font(self) -> pygame.font.Font:
+        if self._font is None:
+            FontManager.initialize()
+            self._font = FontManager.get_font(None, 14)
+        return self._font
+
+    def _recalc(self) -> None:
+        """Compute column widths (equal distribution)."""
+        if not self.columns:
+            self._column_widths = []
+            return
+
+        total_available = self.width - 2 * self.cell_padding
+        col_count = len(self.columns)
+        if col_count > 0:
+            base_width = max(40, total_available / col_count)
+            self._column_widths = [base_width] * col_count
+            # Adjust last column to fill exactly
+            total_width = sum(self._column_widths)
+            if total_width < total_available:
+                self._column_widths[-1] += (total_available - total_width)
+
+        self._needs_recalc = False
+
+    def add_column(self, name: str) -> None:
+        """Add a new column at the end."""
+        self.columns.append(name)
+        self._needs_recalc = True
+
+    def insert_column(self, index: int, name: str) -> None:
+        """Insert a column at the given index."""
+        self.columns.insert(index, name)
+        for row in self.rows:
+            row.insert(index, "")
+        self._needs_recalc = True
+
+    def remove_column(self, index: int) -> None:
+        """Remove a column by index."""
+        if 0 <= index < len(self.columns):
+            self.columns.pop(index)
+            for row in self.rows:
+                if index < len(row):
+                    row.pop(index)
+            self._needs_recalc = True
+
+    def add_row(self, data: List[str]) -> None:
+        """Add a new row at the end."""
+        if len(data) < len(self.columns):
+            data = data + [""] * (len(self.columns) - len(data))
+        elif len(data) > len(self.columns):
+            data = data[:len(self.columns)]
+        self.rows.append(data)
+        self._needs_recalc = True
+
+    def insert_row(self, index: int, data: List[str]) -> None:
+        """Insert a row at the given index."""
+        if len(data) < len(self.columns):
+            data = data + [""] * (len(self.columns) - len(data))
+        elif len(data) > len(self.columns):
+            data = data[:len(self.columns)]
+        self.rows.insert(index, data)
+        self._needs_recalc = True
+
+    def remove_row(self, index: int) -> None:
+        """Remove a row by index."""
+        if 0 <= index < len(self.rows):
+            self.rows.pop(index)
+            if self.selected_row == index:
+                self.selected_row = -1
+            elif self.selected_row > index:
+                self.selected_row -= 1
+            self._needs_recalc = True
+
+    def set_cell(self, row: int, col: int, value: str) -> None:
+        """Set the value of a specific cell."""
+        if 0 <= row < len(self.rows) and 0 <= col < len(self.columns):
+            self.rows[row][col] = value
+
+    def get_cell(self, row: int, col: int) -> str:
+        """Get the value of a specific cell."""
+        if 0 <= row < len(self.rows) and 0 <= col < len(self.rows[row]):
+            return self.rows[row][col]
+        return ""
+
+    def clear(self) -> None:
+        """Clear all rows."""
+        self.rows.clear()
+        self.selected_row = -1
+        self._needs_recalc = True
+
+    def select_row(self, row_index: int) -> None:
+        """Select a row programmatically."""
+        if self.selection_enabled and 0 <= row_index < len(self.rows):
+            self.selected_row = row_index
+            if self.on_row_select:
+                self.on_row_select(row_index, self.rows[row_index])
+
+    def update(self, dt: float, inputState) -> None:
+        super().update(dt, inputState)
+        if self._needs_recalc:
+            self._recalc()
+
+    def render(self, renderer: Renderer) -> None:
+        if not self.visible:
+            return
+
+        if self._needs_recalc:
+            self._recalc()
+
+        actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
+
+        # Clip to area (scissor) – rows exceeding height will be clipped
+        if hasattr(renderer, 'enable_scissor'):
+            renderer.enable_scissor(actual_x, actual_y, self.width, self.height)
+
+        # Background
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height,
+                           theme.background.color if theme.background else (30, 30, 40),
+                           fill=True, border_width=1, border_color=self.border_color)
+
+        # Header
+        header_y = actual_y
+        if self.show_headers:
+            renderer.draw_rect(actual_x, header_y, self.width, self.header_height,
+                               self.header_color, fill=True)
+            # Header text
+            x_offset = actual_x + self.cell_padding
+            for i, col_name in enumerate(self.columns):
+                if i < len(self._column_widths):
+                    col_width = self._column_widths[i]
+                    renderer.draw_text(col_name, x_offset, header_y + self.header_height // 2,
+                                       self.header_text_color, self.font, pivot=(0, 0.5))
+                    x_offset += col_width
+
+        # Data rows
+        data_start_y = actual_y + (self.header_height if self.show_headers else 0)
+        # Render all rows – clipping will hide those outside the scissor area
+        for row_index, row_data in enumerate(self.rows):
+            row_y_pos = data_start_y + row_index * self.row_height
+            # Row background color (alternating)
+            if row_index == self.selected_row:
+                bg_color = theme.button_hover.color if hasattr(theme, 'button_hover') else (80, 80, 120)
+            else:
+                bg_color = self.even_row_color if row_index % 2 == 0 else self.odd_row_color
+            renderer.draw_rect(actual_x, row_y_pos, self.width, self.row_height,
+                               bg_color, fill=True)
+
+            # Cell contents
+            x_offset = actual_x + self.cell_padding
+            for col_idx, col_name in enumerate(self.columns):
+                if col_idx < len(self._column_widths):
+                    col_width = self._column_widths[col_idx]
+                    cell_text = row_data[col_idx] if col_idx < len(row_data) else ""
+                    # Truncate text if too long
+                    max_text_width = col_width - self.cell_padding * 2
+                    if max_text_width > 10:
+                        text_surf = self.font.render(cell_text, True, (255, 255, 255))
+                        if text_surf.get_width() > max_text_width:
+                            # Truncate with "..."
+                            while text_surf.get_width() > max_text_width - 10 and len(cell_text) > 1:
+                                cell_text = cell_text[:-1]
+                                text_surf = self.font.render(cell_text + "...", True, (255, 255, 255))
+                            cell_text += "..."
+                    renderer.draw_text(cell_text, x_offset, row_y_pos + self.row_height // 2,
+                                       theme.text_primary.color if theme.text_primary else (255, 255, 255),
+                                       self.font, pivot=(0, 0.5))
+                    x_offset += col_width
+
+        # Draw grid lines (vertical and horizontal)
+        # Vertical lines
+        x_offset = actual_x
+        for col_width in self._column_widths:
+            x_offset += col_width
+            if x_offset < actual_x + self.width:
+                renderer.draw_line(x_offset, actual_y, x_offset, actual_y + self.height,
+                                   self.border_color, 1)
+
+        # Horizontal lines (between rows and after header)
+        if self.show_headers:
+            renderer.draw_line(actual_x, actual_y + self.header_height,
+                               actual_x + self.width, actual_y + self.header_height,
+                               self.border_color, 1)
+
+        for i in range(len(self.rows) + 1):
+            line_y = actual_y + (self.header_height if self.show_headers else 0) + i * self.row_height
+            if line_y <= actual_y + self.height:
+                renderer.draw_line(actual_x, line_y, actual_x + self.width, line_y,
+                                   self.border_color, 1)
+
+        # Disable scissor
+        if hasattr(renderer, 'disable_scissor'):
+            renderer.disable_scissor()
+
+        super().render(renderer)
+
+    def on_click(self):
+        """Handle mouse click for row selection."""
+        if not self.selection_enabled or not self.enabled:
+            return
+
+        engine = self.get_engine()
+        if engine is None:
+            return
+        mouse_pos = engine.mouse_pos
+        actual_x, actual_y = self.get_actual_position()
+        rel_x = mouse_pos[0] - actual_x
+        rel_y = mouse_pos[1] - actual_y
+
+        if rel_x < 0 or rel_x > self.width or rel_y < 0 or rel_y > self.height:
+            return
+
+        # Determine which row was clicked
+        data_start_y = (self.header_height if self.show_headers else 0)
+        row_index = int((rel_y - data_start_y) / self.row_height)
+        if 0 <= row_index < len(self.rows):
+            self.select_row(row_index)

@@ -41,6 +41,30 @@
         <div class="row">
             <div class="col-lg-12">
                 
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-richtextsegment">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class RichTextSegment</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Represents a segment of rich text with its formatting.<br><br>Attributes:<br> &nbsp; &nbsp;text (str): The text content.<br> &nbsp; &nbsp;color (Optional[Union[Tuple[int, int, int], Color, ThemeStyle]]): <br> &nbsp; &nbsp; &nbsp; &nbsp;Text color (RGB tuple, Color object, or ThemeStyle). <br> &nbsp; &nbsp; &nbsp; &nbsp;If None, uses default color.<br> &nbsp; &nbsp;bold (bool): Whether text is bold.<br> &nbsp; &nbsp;italic (bool): Whether text is italic.<br> &nbsp; &nbsp;underline (bool): Whether text is underlined.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-richtextsegment-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, text: str, color: Optional[Union[Tuple[int, int, int], Color, ThemeStyle]] = None, bold: bool = False, italic: bool = False, underline: bool = False) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-richtextsegment-__repr__">
+                <code class="fs-6 fw-bold text-color-title">def __repr__(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
         <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-textlabel">
             <div class="card-header bg-success text-white py-3">
                 <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class TextLabel</h3>
@@ -48,17 +72,25 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">UI element for displaying text labels.</p>
+                    <p class="lead fs-6">A text label with optional rich text support.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'text': {'name': 'text', 'key': 'text', 'type': str, 'editable': True, 'description': 'The text content of the label.'}, 'color': {'name': 'color', 'key': 'color', 'type': Tuple[int, int, int], 'editable': True, 'description': 'Custom text color (RGB). Overrides theme color.'}, 'font_size': {'name': 'font_size', 'key': 'font_size', 'type': int, 'editable': True, 'description': 'Size of the font in pixels.'}, 'font_name': {'name': 'font_name', 'key': 'font_name', 'type': Optional[str], 'editable': True, 'description': 'Path to font file or None for default font.'}}</code>
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'text': {'name': 'text', 'key': 'text', 'type': str, 'editable': True, 'description': 'The text content of the label.'}, 'color': {'name': 'color', 'key': 'custom_color', 'type': Tuple[int, int, int], 'editable': True, 'description': 'Custom text color (RGB). Overrides theme color.'}, 'font_size': {'name': 'font size', 'key': 'font_size', 'type': int, 'editable': True, 'description': 'Size of the font in pixels.'}, 'font_name': {'name': 'font name', 'key': 'font_name', 'type': Optional[str], 'editable': True, 'description': 'Path to font file or None for default font.'}, 'rich_text': {'name': 'rich text', 'key': 'rich_text', 'type': bool, 'editable': True, 'description': 'Use rich text formatting.'}, 'use_theme_color': {'name': 'use theme color', 'key': 'use_theme_color', 'type': bool, 'editable': True, 'description': 'Use theme color instead of custom color.'}}</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, text: str, font_size: int = 24, color: Optional[Tuple[int, int, int]] = None, font_name: Optional[str] = None, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None, **kwargs: dict) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: Union[int, float], y: Union[int, float], text: str, font_size: int = 24, color: Optional[Union[Tuple[int, int, int], Color, ThemeStyle]] = None, font_name: Optional[str] = None, rich_text: bool = False, use_theme_color: bool = True, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-can_focus">
+                <code class="fs-6 fw-bold text-color-title">def can_focus(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-_get_init_args">
+                <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-get_text">
@@ -66,35 +98,98 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-update_theme">
-                <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: ThemeType) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-set_text_color">
-                <code class="fs-6 fw-bold text-color-title">def set_text_color(self: Any, color: Tuple[int, int, int] | Color) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_text_color(self: Any, color: Union[Tuple[int, int, int], Color, ThemeStyle]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-set_color">
-                <code class="fs-6 fw-bold text-color-title">def set_color(self: Any, color: Tuple[int, int, int] | Color) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_color(self: Any, color: Union[Tuple[int, int, int], Color]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-font">
-                <code class="fs-6 fw-bold text-color-title">def font(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def font(self: Any) -> pygame.font.Font</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-set_text">
-                <code class="fs-6 fw-bold text-color-title">def set_text(self: Any, text: str) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_text(self: Any, text: str) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-set_theme">
-                <code class="fs-6 fw-bold text-color-title">def set_theme(self: Any, theme_type: ThemeType) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_theme(self: Any, theme_type: ThemeType) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-_get_text_color">
-                <code class="fs-6 fw-bold text-color-title">def _get_text_color(self: Any) -> Color</code>
+                <code class="fs-6 fw-bold text-color-title">def _get_text_color(self: Any) -> Union[Color, ThemeStyle, Tuple[int, int, int]]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: 'Renderer') -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-longtextlabel">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class LongTextLabel</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">A multi-line text label with optional rich text support and word wrapping.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'text': {'name': 'text', 'key': 'text', 'type': str, 'editable': True, 'description': 'The text content of the label.'}, 'color': {'name': 'color', 'key': 'custom_color', 'type': Tuple[int, int, int], 'editable': True, 'description': 'Custom text color (RGB). Overrides theme color.'}, 'font_size': {'name': 'font size', 'key': 'font_size', 'type': int, 'editable': True, 'description': 'Size of the font in pixels.'}, 'font_name': {'name': 'font name', 'key': 'font_name', 'type': Optional[str], 'editable': True, 'description': 'Path to font file or None for default font.'}, 'rich_text': {'name': 'rich text', 'key': 'rich_text', 'type': bool, 'editable': True, 'description': 'Use rich text formatting.'}, 'line_spacing': {'name': 'line spacing', 'key': 'line_spacing', 'type': int, 'editable': True, 'description': 'Additional spacing between lines in pixels.'}, 'wrap_width': {'name': 'wrap width', 'key': 'wrap_width', 'type': int, 'editable': True, 'description': 'Maximum width before wrapping (0 = no wrap).'}}</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: Union[int, float], y: Union[int, float], text: str, width: Optional[int] = None, height: Optional[int] = None, font_size: int = 24, color: Optional[Union[Tuple[int, int, int], Color, ThemeStyle]] = None, font_name: Optional[str] = None, rich_text: bool = False, line_spacing: int = 4, wrap_width: int = 0, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-_calculate_text_size">
+                <code class="fs-6 fw-bold text-color-title">def _calculate_text_size(self: Any, text: str, max_width: int) -> Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-_wrap_plain_text">
+                <code class="fs-6 fw-bold text-color-title">def _wrap_plain_text(self: Any, text: str, max_width: int) -> List[str]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-_wrap_rich_text">
+                <code class="fs-6 fw-bold text-color-title">def _wrap_rich_text(self: Any, text: str, max_width: int) -> List[List[RichTextSegment]]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-_measure_rich_text_line">
+                <code class="fs-6 fw-bold text-color-title">def _measure_rich_text_line(self: Any, line: List[RichTextSegment]) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-set_text_color">
+                <code class="fs-6 fw-bold text-color-title">def set_text_color(self: Any, color: Union[Tuple[int, int, int], Color, ThemeStyle]) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-set_text">
+                <code class="fs-6 fw-bold text-color-title">def set_text(self: Any, text: str) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-get_text">
+                <code class="fs-6 fw-bold text-color-title">def get_text(self: Any) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-font">
+                <code class="fs-6 fw-bold text-color-title">def font(self: Any) -> pygame.font.Font</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-_get_text_color">
+                <code class="fs-6 fw-bold text-color-title">def _get_text_color(self: Any) -> Union[Color, ThemeStyle, Tuple[int, int, int]]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
@@ -107,22 +202,33 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
+                    <p class="lead fs-6">A simple label that displays an image (non‑interactive).</p>
                 </div>
-                
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'image_path': {'name': 'image path', 'key': 'image_path', 'type': Union[str, pygame.Surface], 'editable': False, 'description': 'Path to image file or Surface object.'}}</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: str | pygame.Surface, width: Optional[int] = None, height: Optional[int] = None, root_point: Tuple[float, float] = (0, 0), element_id: Optional[str] = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: Union[str, pygame.Surface], width: Optional[int] = None, height: Optional[int] = None, pivot: Tuple[float, float] = (0, 0), element_id: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-can_focus">
+                <code class="fs-6 fw-bold text-color-title">def can_focus(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-_get_init_args">
+                <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-_load_image">
-                <code class="fs-6 fw-bold text-color-title">def _load_image(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _load_image(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-set_image">
-                <code class="fs-6 fw-bold text-color-title">def set_image(self: Any, image_path: str | pygame.Surface) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_image(self: Any, image_path: Union[str, pygame.Surface]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-get_image">
@@ -130,18 +236,48 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-set_size">
-                <code class="fs-6 fw-bold text-color-title">def set_size(self: Any, width: int, height: int) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_size(self: Any, width: int, height: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
             </div>
         </div>
+                <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
                 
-                
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-parse_rich_text">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def parse_rich_text(text: str) -> List[RichTextSegment]</code>
+                    <p class="mt-2 mb-0 text-muted"> &nbsp; Parse rich text markup into a list of segments.<br> &nbsp; <br> &nbsp; Supported tags:<br> &nbsp; &nbsp; &nbsp; &lt;b&gt;bold&lt;/b&gt; - Bold text<br> &nbsp; &nbsp; &nbsp; &lt;i&gt;italic&lt;/i&gt; - Italic text<br> &nbsp; &nbsp; &nbsp; &lt;u&gt;underline&lt;/u&gt; - Underlined text<br> &nbsp; &nbsp; &nbsp; &lt;red&gt;text&lt;/red&gt; - Colored text (predefined colors)<br> &nbsp; &nbsp; &nbsp; &lt;#FF0000&gt;text&lt;/#FF0000&gt; - Hex color text<br> &nbsp; &nbsp; &nbsp; &lt;br&gt; or <br>- Line break (handled by renderer)<br> &nbsp; <br> &nbsp; Args:<br> &nbsp; &nbsp; &nbsp; text: The rich text string to parse<br> &nbsp; &nbsp; &nbsp; <br> &nbsp; Returns:<br> &nbsp; &nbsp; &nbsp; List of RichTextSegment objects<br> &nbsp; </p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-_extract_rgb_from_color">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def _extract_rgb_from_color(color: Union[Tuple[int, int, int], Color, ThemeStyle, None]) -> Tuple[int, int, int]</code>
+                    <p class="mt-2 mb-0 text-muted">Extract RGB tuple from a color object (Tuple, Color, ThemeStyle, or None).<br>If None, returns (255, 255, 255) as fallback.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-_get_segment_font">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def _get_segment_font(seg: RichTextSegment, base_font: pygame.font.Font) -> pygame.font.Font</code>
+                    <p class="mt-2 mb-0 text-muted">Return a font for the segment with bold/italic applied if needed.<br>Uses FontManager to get the styled font.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-render_rich_text">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def render_rich_text(text: str, renderer: Any, x: int, y: int, default_color: Union[Color, Tuple[int, int, int], ThemeStyle], font: pygame.font.Font, pivot: Tuple[float, float] = (0.0, 0.0), **kwargs: dict) -> None</code>
+                    <p class="mt-2 mb-0 text-muted">Render rich text using the provided renderer.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-render_rich_text_line">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def render_rich_text_line(line: List[RichTextSegment], renderer: Any, x: int, y: int, default_color: Union[Color, Tuple[int, int, int], ThemeStyle], font: pygame.font.Font) -> None</code>
+                    <p class="mt-2 mb-0 text-muted">Render a pre-parsed rich text line (for LongTextLabel).</p>
+                </div>
+            </div>
             </div>
         </div>
         <div class="mt-5 mb-5 text-center">
@@ -161,7 +297,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

@@ -192,6 +192,14 @@
                 <code class="fs-6 fw-bold text-color-title">def clear_consumed(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Clear consumed events for new frame</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-inputstate-get_keys">
+                <code class="fs-6 fw-bold text-color-title">def get_keys(self: Any) -> pygame.key.ScancodeWrapper</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-inputstate-keypressed">
+                <code class="fs-6 fw-bold text-color-title">def keyPressed(self: Any, key: int) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-inputstate-get_mouse_state">
                 <code class="fs-6 fw-bold text-color-title">def get_mouse_state(self: Any) -> Tuple[Tuple[int, int], MouseButtonPressed]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -233,7 +241,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-elementslist-remove">
-                <code class="fs-6 fw-bold text-color-title">def remove(self: Any, item: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def remove(self: Any, item: 'UiElement') -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-elementslist-pop">
@@ -388,7 +396,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-ratio-__new__">
-                <code class="fs-6 fw-bold text-color-title">def __new__(cls: Any, x: Union[Number, Tuple[Number, Number]], y: Number = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __new__(cls: Any, x: Union[Number, Tuple[Number, Number]] | int | float, y: Number | int | float = None) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-ratio-width">
@@ -467,6 +475,9 @@
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>a: float = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>to_tuple: Any = to_rgb_tuple</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
@@ -571,7 +582,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

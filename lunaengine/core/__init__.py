@@ -10,6 +10,10 @@ Classes:
     - Scene: Base class for all game scenes  
     - Renderer: Abstract base class for renderers
     - Window: Window management class
+    - AudioManager: Audio management system with master volume and effects
+    - AudioChannel: Named audio channel with volume, pitch, pan, effects
+    - AudioCurve: Keyframe animation for audio properties
+    - SoundData: Loaded sound metadata
 
 Imports:
     - pygame: For game window and input handling
@@ -21,8 +25,28 @@ from .engine import LunaEngine
 from .scene import Scene
 from .renderer import Renderer
 from .window import Window
-from .audio import AudioSystem, AudioEvent, AudioState, AudioChannel
+from .audio import (
+    AudioManager,
+    AudioChannel,
+    AudioCurve,
+    SoundData,
+    AudioState,
+    AudioEvent,
+)
 
+# Convenience alias
 engine = LunaEngine
 
-__all__ = ["LunaEngine", "engine", "Scene", "Renderer", "Window", "AudioSystem", "AudioEvent", "AudioState", "AudioChannel"]
+__all__ = [
+    "LunaEngine",
+    "engine",
+    "Scene",
+    "Renderer",
+    "Window",
+    "AudioManager",
+    "AudioChannel",
+    "AudioCurve",
+    "SoundData",
+    "AudioState",
+    "AudioEvent",
+]

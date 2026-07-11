@@ -1,0 +1,48 @@
+{
+    "texture":"paperdoll-ex.png",
+    "frame_width": 16,
+    "frame_height": 64,
+    "pivot": {"x":8, "y": 8},
+    "layers": [
+    {
+      "id": "body3",
+      "src_y": 16,
+      "height": 16,
+      "width": 16,
+      "offset_x": 0,
+      "offset_y": 1
+    },
+    {
+      "id": "body2",
+      "src_y": 32,
+      "height": 16,
+      "width": 16,
+      "offset_x": 0,
+      "offset_y": 1
+    },
+    {
+      "id": "body1",
+      "src_y": 48,
+      "height": 16,
+      "width": 16,
+      "offset_x": 0,
+      "offset_y": 1
+    },
+    {
+      "id": "face",
+      "src_y": 0,
+      "height": 4,
+      "width": 16,
+      "offset_x": 0,
+      "offset_y": 1
+    }
+  ],
+  "animations": {
+    "idle": {
+      "frames": [0, 1, 2, 3, 4],
+      "duration": 120,
+      "loop": true
+    }
+  },
+  "default_animation": "idle"
+}

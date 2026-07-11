@@ -11,6 +11,8 @@ from .icons import Icons, Icon, IconCircle, IconCheck, IconCross, IconError, Ico
 from .debug import DebugOverlay, DebugManager, SceneStatsOverlay, FPSOverlay
 
 __all__ = [
-    "Icons", "Icon",  "IconCircle", "IconCheck", "IconCross", "IconError", "IconFactory", "IconGear", "IconInfo", "IconMinus", "IconPlus", "IconSquare", "IconSuccess", "IconTriangleDown", "IconTriangleLeft", "IconTriangleRight", "IconTriangleUp", "IconWarn",
-    "DebugOverlay", "DebugManager", "SceneStatsOverlay", "FPSOverlay"
+    "Icons", "Icon", "IconCircle", "IconCheck", "IconCross", "IconError", "IconFactory",
+    "IconGear", "IconInfo", "IconMinus", "IconPlus", "IconSquare", "IconSuccess",
+    "IconTriangleDown", "IconTriangleLeft", "IconTriangleRight", "IconTriangleUp", "IconWarn",
+    "DebugOverlay", "DebugManager", "SceneStatsOverlay", "FPSOverlay",
 ]

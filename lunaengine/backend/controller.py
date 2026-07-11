@@ -88,6 +88,18 @@ class ControllerState:
     accelerometer: Tuple[float, float, float] = (0.0, 0.0, 0.0)
     last_button_time: Dict[JButton, float] = field(default_factory=dict)
 
+class FocusOrder(Enum):
+    SO_X_Y = auto() # selection order -> x -> y
+    SO_Y_X = auto() # selection order -> y -> x
+
+def sort_elements_for_focus(elements: List['UIElement'], order: FocusOrder) -> List['UIElement']:
+    if order == FocusOrder.SO_X_Y:
+        return sorted(elements, key=lambda e: (e.selection_order, e.x, -e.y))
+    elif order == FocusOrder.SO_Y_X:
+        return sorted(elements, key=lambda e: (e.selection_order, -e.y, e.x))
+    else:
+        return elements
+
 # ----------------------------------------------------------------------
 # Individual Controller
 # ----------------------------------------------------------------------

@@ -65,13 +65,19 @@ class Main(Scene):
         self.tabs2.add_tab(&#x27;Tab B&#x27;)
         self.add_ui_element(self.tabs2)
         
-        self.tabs3 = Tabination(self.header_frame.width//2, self.header_frame.header_height+3, 280, self.header_frame.height-self.header_frame.header_height, 24, root_point=(0.5, 0))
+        self.tabs3 = Tabination(self.header_frame.width//2, self.header_frame.header_height+3, 280, self.header_frame.height-self.header_frame.header_height, 24, pivot=(0.5, 0))
         self.tabs3.add_tab(&#x27;Tab X&#x27;)
         self.tabs3.add_tab(&#x27;Tab Y&#x27;)
         self.header_frame.add_child(self.tabs3)
         
+        self.scroll_frame = ScrollingFrame(50, 250, 300, 180, 300, 300)
+        self.add_ui_element(self.scroll_frame)
+        
+        self.dropdown= Dropdown(50, 460, 200, 30, [f&#x27;Option {i}&#x27; for i in range(35)])
+        self.add_ui_element(self.dropdown)
+        
 if __name__ == &#x27;__main__&#x27;:
-    engine = LunaEngine()
+    engine = LunaEngine(width=1600, height=900,debug=True)
     
     engine.add_scene(&#x27;main&#x27;, Main)
     engine.set_scene(&#x27;main&#x27;)
@@ -115,7 +121,7 @@ if __name__ == &#x27;__main__&#x27;:
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

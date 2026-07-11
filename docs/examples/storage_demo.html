@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storage Demo - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="index.html">Examples Hub</a></li><li class="breadcrumb-item active">Storage Demo</li></ol></nav>
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Storage Demo</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>storage_demo.py</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">&quot;&quot;&quot;
+Storage Demo – Multi-Character Save/Load with Query System
+Shows:
+- Multiple characters (id, name, char_class, level, hp, max_hp, exp, inventory)
+- Game settings (volume, resolution, fullscreen)
+- Export/import to JSON for machine migration
+- Query filters and search
+&quot;&quot;&quot;
+
+import sys
+import os
+import random
+import json
+from pathlib import Path
+
+sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
+
+from lunaengine.core import Scene, LunaEngine
+from lunaengine.ui import *
+from lunaengine.ui.tween import Tween, EasingType
+from lunaengine.storage import Savedata, Table, Query, load_savedata, save_savedata
+
+# ------------------------------------------------------------
+# Demo Scene
+# ------------------------------------------------------------
+
+class StorageDemoScene(Scene):
+    def __init__(self, engine: LunaEngine):
+        super().__init__(engine)
+        self.engine = engine
+
+        # Storage
+        self.savedata = Savedata()
+        self.characters_table = None
+        self.settings_table = None
+        self.load_or_create_data()
+
+        # UI state
+        self.selected_char_id = None
+        self.current_view = &quot;list&quot;  # list, edit, new
+        self.edit_data = {}  # temporary for new/edit
+
+        # Flag to prevent recursive slider updates
+        self._updating_settings = False
+
+        # Build UI
+        self.setup_ui()
+        self.refresh_character_list()
+        self.update_settings_display()
+
+    # ------------------------------------------------------------
+    # Data Management
+    # ------------------------------------------------------------
+    def load_or_create_data(self):
+        &quot;&quot;&quot;Try to load from file, or create default data.&quot;&quot;&quot;
+        filepath = Path(&quot;game_data.sav&quot;)
+        if filepath.exists():
+            try:
+                self.savedata = load_savedata(filepath, encryption_key=&quot;my_secret_key&quot;)
+                print(&quot;Loaded savedata from game_data.sav&quot;)
+            except Exception as e:
+                print(f&quot;Error loading: {e}, creating fresh data&quot;)
+                self.create_default_data()
+        else:
+            self.create_default_data()
+
+        self.characters_table = self.savedata.table(&quot;characters&quot;)
+        self.settings_table = self.savedata.table(&quot;settings&quot;)
+
+    def create_default_data(self):
+        &quot;&quot;&quot;Create tables with default characters and settings.&quot;&quot;&quot;
+        self.savedata = Savedata()
+
+        # Characters table – column name is &#x27;char_class&#x27;
+        chars = self.savedata.create_table(&quot;characters&quot;, 
+                                           columns=[&quot;id&quot;, &quot;name&quot;, &quot;char_class&quot;, &quot;level&quot;, &quot;hp&quot;, &quot;max_hp&quot;, &quot;exp&quot;, &quot;inventory&quot;],
+                                           primary_key=&quot;id&quot;)
+        sample_inventory = [&quot;Sword&quot;, &quot;Shield&quot;, &quot;Potion&quot;]
+        chars.insert(id=1, name=&quot;Aragorn&quot;, char_class=&quot;Warrior&quot;, level=5, hp=45, max_hp=50, exp=120, inventory=sample_inventory)
+        chars.insert(id=2, name=&quot;Legolas&quot;, char_class=&quot;Archer&quot;, level=4, hp=30, max_hp=35, exp=95, inventory=[&quot;Bow&quot;, &quot;Arrows&quot;])
+        chars.insert(id=3, name=&quot;Gandalf&quot;, char_class=&quot;Wizard&quot;, level=6, hp=40, max_hp=40, exp=210, inventory=[&quot;Staff&quot;, &quot;Spellbook&quot;])
+        chars.insert(id=4, name=&quot;Frodo&quot;, char_class=&quot;Rogue&quot;, level=3, hp=25, max_hp=28, exp=70, inventory=[&quot;Ring&quot;, &quot;Dagger&quot;])
+
+        # Settings table
+        settings = self.savedata.create_table(&quot;settings&quot;, columns=[&quot;key&quot;, &quot;value&quot;], primary_key=&quot;key&quot;)
+        settings.insert(key=&quot;master_volume&quot;, value=0.8)
+        settings.insert(key=&quot;music_volume&quot;, value=0.6)
+        settings.insert(key=&quot;sfx_volume&quot;, value=0.9)
+        settings.insert(key=&quot;fullscreen&quot;, value=False)
+        settings.insert(key=&quot;resolution&quot;, value=&quot;1920x1080&quot;)
+
+        self.save_data()
+
+    def save_data(self):
+        &quot;&quot;&quot;Save to encrypted file.&quot;&quot;&quot;
+        self.savedata.save(&quot;game_data.sav&quot;, encryption_key=&quot;my_secret_key&quot;, compress=True)
+        print(&quot;Data saved.&quot;)
+
+    def refresh_tables(self):
+        &quot;&quot;&quot;Re-fetch table references after load/create.&quot;&quot;&quot;
+        self.characters_table = self.savedata.table(&quot;characters&quot;)
+        self.settings_table = self.savedata.table(&quot;settings&quot;)
+
+    # ------------------------------------------------------------
+    # UI Setup
+    # ------------------------------------------------------------
+    def setup_ui(self):
+        self.engine.set_global_theme(ThemeType.GRUVBOX)
+
+        # Title
+        title = TextLabel(512, 30, &quot;Storage Demo – Character Manager&quot;, 36, pivot=(0.5, 0))
+        self.add_ui_element(title)
+
+        # Main tabs
+        self.main_tabs = Tabination(25, 80, 980, 650, 20)
+        self.main_tabs.add_tab(&quot;Characters&quot;)
+        self.main_tabs.add_tab(&quot;Settings&quot;)
+        self.main_tabs.add_tab(&quot;Migration&quot;)
+
+        self.setup_characters_tab()
+        self.setup_settings_tab()
+        self.setup_migration_tab()
+
+        self.add_ui_element(self.main_tabs)
+
+        # FPS
+        self.fps_label = TextLabel(self.engine.width - 10, 10, &quot;FPS: --&quot;, 14, (100, 255, 100), pivot=(1, 0))
+        self.add_ui_element(self.fps_label)
+
+    # ---------- Characters Tab ----------
+    def setup_characters_tab(self):
+        tab = &quot;Characters&quot;
+        y = 10
+
+        # Buttons: New, Delete, Refresh, Save
+        new_btn = Button(10, y, 100, 30, &quot;New Character&quot;)
+        new_btn.set_on_click(lambda: self.start_new_character())
+        self.main_tabs.add_to_tab(tab, new_btn)
+
+        delete_btn = Button(120, y, 100, 30, &quot;Delete Selected&quot;)
+        delete_btn.set_on_click(lambda: self.delete_selected_character())
+        self.main_tabs.add_to_tab(tab, delete_btn)
+
+        refresh_btn = Button(230, y, 100, 30, &quot;Refresh&quot;)
+        refresh_btn.set_on_click(lambda: self.refresh_character_list())
+        self.main_tabs.add_to_tab(tab, refresh_btn)
+
+        save_btn = Button(340, y, 100, 30, &quot;Save&quot;)
+        save_btn.set_on_click(lambda: self.save_data())
+        self.main_tabs.add_to_tab(tab, save_btn)
+
+        # Search bar
+        self.main_tabs.add_to_tab(tab, TextLabel(460, y+5, &quot;Search:&quot;, 16))
+        self.search_input = TextBox(520, y, 150, 30, &quot;&quot;)
+        self.search_input.on_text_changed = lambda t: self.refresh_character_list(search_term=t)
+        self.main_tabs.add_to_tab(tab, self.search_input)
+
+        # Scrolling frame for character list
+        self.char_list_frame = ScrollingFrame(10, y+50, 600, 500, 580, 800)
+        self.main_tabs.add_to_tab(tab, self.char_list_frame)
+
+        # Details panel
+        detail_frame = UiFrame(630, y+50, 330, 500)
+        detail_frame.set_background_color((40, 40, 60, 200))
+        detail_frame.set_border((80, 80, 120), 2)
+        detail_frame.set_corner_radius(8)
+        self.main_tabs.add_to_tab(tab, detail_frame)
+
+        self.detail_title = TextLabel(10, 10, &quot;Character Details&quot;, 18, (255, 255, 0))
+        detail_frame.add_child(self.detail_title)
+
+        self.detail_labels = {}
+        fields = [&quot;name&quot;, &quot;char_class&quot;, &quot;level&quot;, &quot;hp&quot;, &quot;max_hp&quot;, &quot;exp&quot;, &quot;inventory&quot;]
+        display_names = [&quot;Name&quot;, &quot;Class&quot;, &quot;Level&quot;, &quot;HP&quot;, &quot;Max HP&quot;, &quot;EXP&quot;, &quot;Inventory&quot;]
+        for i, (field, display) in enumerate(zip(fields, display_names)):
+            lbl = TextLabel(10, 40 + i*25, f&quot;{display}: --&quot;, 14, (200, 200, 200))
+            detail_frame.add_child(lbl)
+            self.detail_labels[field] = lbl
+
+        self.detail_save_btn = Button(10, 240, 100, 30, &quot;Save Changes&quot;)
+        self.detail_save_btn.set_on_click(lambda: self.save_character_changes())
+        detail_frame.add_child(self.detail_save_btn)
+
+        self.detail_edit_btn = Button(120, 240, 100, 30, &quot;Edit&quot;)
+        self.detail_edit_btn.set_on_click(lambda: self.start_edit_character())
+        detail_frame.add_child(self.detail_edit_btn)
+
+        self.detail_edit_fields_frame = UiFrame(10, 280, 300, 200)
+        detail_frame.add_child(self.detail_edit_fields_frame)
+        self.detail_edit_fields_frame.visible = False
+
+        self.edit_widgets = {}
+
+    def refresh_character_list(self, search_term=None):
+        &quot;&quot;&quot;Populate the character list from the table, with optional search.&quot;&quot;&quot;
+        # Clear previous list
+        for child in self.char_list_frame.children.copy():
+            self.char_list_frame.remove_child(child)
+
+        if self.characters_table is None:
+            return
+
+        # Build query
+        query = self.characters_table.query()
+        if search_term and search_term.strip():
+            query.search(search_term.strip(), columns=[&quot;name&quot;, &quot;char_class&quot;], mode=&quot;contains&quot;, case_sensitive=False)
+
+        # Execute and order by level descending
+        rows = query.order_by(&quot;level&quot;, desc=True).execute()
+
+        y = 10
+        for row in rows:
+            char_id = row[&quot;id&quot;]
+            name = row[&quot;name&quot;]
+            cls = row.get(&quot;char_class&quot;, &quot;Unknown&quot;)
+            level = row.get(&quot;level&quot;, 1)
+            hp = row.get(&quot;hp&quot;, 0)
+            max_hp = row.get(&quot;max_hp&quot;, 1)
+
+            # Row frame
+            row_frame = UiFrame(10, y, 560, 40)
+            row_frame.set_background_color((50, 50, 70, 200) if y % 80 == 10 else (40, 40, 60, 200))
+            row_frame.set_border((100, 100, 150), 1)
+            row_frame.set_corner_radius(5)
+
+            # Name + class + level
+            name_lbl = TextLabel(10, 5, f&quot;{name} ({cls})&quot;, 16, (255, 255, 255))
+            row_frame.add_child(name_lbl)
+
+            level_lbl = TextLabel(200, 5, f&quot;Lv.{level}&quot;, 16, (200, 200, 255))
+            row_frame.add_child(level_lbl)
+
+            # HP bar
+            hp_bar = ProgressBar(300, 10, 150, 20, 0, max_hp, hp, style=&#x27;soundpad&#x27;)
+            row_frame.add_child(hp_bar)
+
+            hp_text = TextLabel(460, 10, f&quot;{hp}/{max_hp}&quot;, 12, (200, 200, 200))
+            row_frame.add_child(hp_text)
+
+            # Select button
+            select_btn = Button(520, 5, 30, 30, &quot;▶&quot;)
+            select_btn.set_on_click(lambda cid=char_id: self.select_character(cid))
+            row_frame.add_child(select_btn)
+
+            self.char_list_frame.add_child(row_frame)
+            y += 45
+
+        self.char_list_frame.total_height = max(200, y + 20)
+
+    def select_character(self, char_id):
+        &quot;&quot;&quot;Show character details.&quot;&quot;&quot;
+        self.selected_char_id = char_id
+        row = self.characters_table.get_by_primary_key(char_id)
+        if not row:
+            return
+
+        # Update detail labels
+        for field, lbl in self.detail_labels.items():
+            val = row.get(field, &quot;--&quot;)
+            if field == &quot;inventory&quot; and isinstance(val, list):
+                val = &quot;, &quot;.join(val)
+            # Update only the value part
+            current_text = lbl.text
+            if &#x27;:&#x27; in current_text:
+                prefix = current_text.split(&#x27;:&#x27;)[0] + &#x27;:&#x27;
+                lbl.set_text(f&quot;{prefix} {val}&quot;)
+            else:
+                lbl.set_text(f&quot;{field}: {val}&quot;)
+
+        self.detail_edit_btn.enabled = True
+
+    def start_new_character(self):
+        &quot;&quot;&quot;Switch to new character form.&quot;&quot;&quot;
+        self.current_view = &quot;new&quot;
+        self.edit_data = {
+            &quot;name&quot;: &quot;&quot;,
+            &quot;char_class&quot;: &quot;Warrior&quot;,
+            &quot;level&quot;: 1,
+            &quot;hp&quot;: 30,
+            &quot;max_hp&quot;: 30,
+            &quot;exp&quot;: 0,
+            &quot;inventory&quot;: []
+        }
+        self.show_edit_form(&quot;Create New Character&quot;, save_callback=self.create_new_character)
+
+    def start_edit_character(self):
+        &quot;&quot;&quot;Switch to edit mode for selected character.&quot;&quot;&quot;
+        if self.selected_char_id is None:
+            return
+        row = self.characters_table.get_by_primary_key(self.selected_char_id)
+        if not row:
+            return
+        self.current_view = &quot;edit&quot;
+        self.edit_data = row.copy()
+        self.show_edit_form(&quot;Edit Character&quot;, save_callback=self.save_character_changes)
+
+    def show_edit_form(self, title, save_callback):
+        &quot;&quot;&quot;Create/edit form overlay.&quot;&quot;&quot;
+        self.detail_edit_fields_frame.visible = True
+        # Clear previous widgets
+        for w in self.edit_widgets.values():
+            self.detail_edit_fields_frame.remove_child(w)
+        self.edit_widgets.clear()
+
+        y = 10
+        for field, value in self.edit_data.items():
+            if field == &quot;id&quot;:
+                continue
+            display_name = field.replace(&#x27;_&#x27;, &#x27; &#x27;).title()
+            lbl = TextLabel(10, y, f&quot;{display_name}:&quot;, 14)
+            self.detail_edit_fields_frame.add_child(lbl)
+
+            if field == &quot;inventory&quot;:
+                inp = TextBox(120, y-5, 150, 25, &quot;, &quot;.join(value) if isinstance(value, list) else str(value))
+                inp.on_text_changed = lambda t, f=field: self.update_edit_field(f, t)
+            elif isinstance(value, (int, float)):
+                inp = NumberSelector(120, y-5, 80, 25, 0, 999, int(value))
+                inp.on_value_changed = lambda v, f=field: self.update_edit_field(f, v)
+            else:
+                inp = TextBox(120, y-5, 150, 25, str(value))
+                inp.on_text_changed = lambda t, f=field: self.update_edit_field(f, t)
+
+            self.detail_edit_fields_frame.add_child(inp)
+            self.edit_widgets[field] = inp
+            y += 30
+
+        # Save button
+        save_btn = Button(10, y+10, 100, 30, &quot;Save&quot;)
+        save_btn.set_on_click(save_callback)
+        self.detail_edit_fields_frame.add_child(save_btn)
+
+        cancel_btn = Button(120, y+10, 100, 30, &quot;Cancel&quot;)
+        cancel_btn.set_on_click(lambda: self.cancel_edit())
+        self.detail_edit_fields_frame.add_child(cancel_btn)
+
+        self.detail_edit_fields_frame.height = y + 50
+
+    def update_edit_field(self, field, value):
+        self.edit_data[field] = value
+
+    def create_new_character(self):
+        &quot;&quot;&quot;Insert new character from edit_data.&quot;&quot;&quot;
+        if not self.edit_data.get(&quot;name&quot;):
+            self.engine.show_notification(&quot;Name is required!&quot;, NotificationType.WARNING)
+            return
+        max_id = 0
+        for row in self.characters_table.rows:
+            if row.get(&quot;id&quot;, 0) &gt; max_id:
+                max_id = row[&quot;id&quot;]
+        new_id = max_id + 1
+        self.edit_data[&quot;id&quot;] = new_id
+        inv = self.edit_data.get(&quot;inventory&quot;, &quot;&quot;)
+        if isinstance(inv, str):
+            inv = [item.strip() for item in inv.split(&quot;,&quot;) if item.strip()]
+        self.edit_data[&quot;inventory&quot;] = inv
+
+        self.characters_table.insert(**self.edit_data)
+        self.save_data()
+        self.cancel_edit()
+        self.refresh_character_list()
+        self.engine.show_notification(f&quot;Character &#x27;{self.edit_data[&#x27;name&#x27;]}&#x27; created!&quot;, NotificationType.SUCCESS)
+
+    def save_character_changes(self):
+        &quot;&quot;&quot;Update selected character with edit_data.&quot;&quot;&quot;
+        if self.selected_char_id is None:
+            return
+        inv = self.edit_data.get(&quot;inventory&quot;, &quot;&quot;)
+        if isinstance(inv, str):
+            inv = [item.strip() for item in inv.split(&quot;,&quot;) if item.strip()]
+        self.edit_data[&quot;inventory&quot;] = inv
+
+        row = self.characters_table.get_by_primary_key(self.selected_char_id)
+        if row:
+            for key, val in self.edit_data.items():
+                if key != &quot;id&quot;:
+                    row[key] = val
+            self.save_data()
+            self.cancel_edit()
+            self.refresh_character_list()
+            self.select_character(self.selected_char_id)
+            self.engine.show_notification(&quot;Character updated!&quot;, NotificationType.SUCCESS)
+
+    def cancel_edit(self):
+        self.detail_edit_fields_frame.visible = False
+        self.current_view = &quot;list&quot;
+
+    def delete_selected_character(self):
+        if self.selected_char_id is None:
+            return
+        row = self.characters_table.get_by_primary_key(self.selected_char_id)
+        if row:
+            name = row.get(&quot;name&quot;, &quot;Unknown&quot;)
+            self.characters_table.delete(lambda r: r[&quot;id&quot;] == self.selected_char_id)
+            self.save_data()
+            self.selected_char_id = None
+            self.detail_title.set_text(&quot;Character Details&quot;)
+            for lbl in self.detail_labels.values():
+                current_text = lbl.text
+                if &#x27;:&#x27; in current_text:
+                    prefix = current_text.split(&#x27;:&#x27;)[0] + &#x27;:&#x27;
+                    lbl.set_text(f&quot;{prefix} --&quot;)
+                else:
+                    lbl.set_text(f&quot;{lbl.text.split(&#x27;:&#x27;)[0]}: --&quot;)
+            self.refresh_character_list()
+            self.engine.show_notification(f&quot;Deleted &#x27;{name}&#x27;&quot;, NotificationType.INFO)
+
+    # ---------- Settings Tab ----------
+    def setup_settings_tab(self):
+        tab = &quot;Settings&quot;
+        y = 10
+
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y, &quot;Game Settings&quot;, 24, (255, 255, 0)))
+
+        # Master volume
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y+50, &quot;Master Volume:&quot;, 16))
+        self.master_vol_slider = Slider(160, y+45, 200, 20, 0, 1, 0.8)
+        # Use a wrapper to prevent recursive loop
+        self.master_vol_slider.on_value_changed = lambda v: self._on_setting_changed(&quot;master_volume&quot;, v)
+        self.main_tabs.add_to_tab(tab, self.master_vol_slider)
+        self.master_vol_label = TextLabel(370, y+50, &quot;0.80&quot;, 14)
+        self.main_tabs.add_to_tab(tab, self.master_vol_label)
+
+        # Music volume
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y+80, &quot;Music Volume:&quot;, 16))
+        self.music_vol_slider = Slider(160, y+75, 200, 20, 0, 1, 0.6)
+        self.music_vol_slider.on_value_changed = lambda v: self._on_setting_changed(&quot;music_volume&quot;, v)
+        self.main_tabs.add_to_tab(tab, self.music_vol_slider)
+        self.music_vol_label = TextLabel(370, y+80, &quot;0.60&quot;, 14)
+        self.main_tabs.add_to_tab(tab, self.music_vol_label)
+
+        # SFX volume
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y+110, &quot;SFX Volume:&quot;, 16))
+        self.sfx_vol_slider = Slider(160, y+105, 200, 20, 0, 1, 0.9)
+        self.sfx_vol_slider.on_value_changed = lambda v: self._on_setting_changed(&quot;sfx_volume&quot;, v)
+        self.main_tabs.add_to_tab(tab, self.sfx_vol_slider)
+        self.sfx_vol_label = TextLabel(370, y+110, &quot;0.90&quot;, 14)
+        self.main_tabs.add_to_tab(tab, self.sfx_vol_label)
+
+        # Fullscreen switch
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y+140, &quot;Fullscreen:&quot;, 16))
+        self.fullscreen_switch = Switch(160, y+135, 60, 30, False)
+        self.fullscreen_switch.set_on_toggle(lambda s: self._on_setting_changed(&quot;fullscreen&quot;, s))
+        self.main_tabs.add_to_tab(tab, self.fullscreen_switch)
+
+        # Resolution dropdown
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y+180, &quot;Resolution:&quot;, 16))
+        self.res_dropdown = Dropdown(160, y+175, 150, 30, [&quot;1920x1080&quot;, &quot;1280x720&quot;, &quot;1024x768&quot;])
+        self.res_dropdown.set_on_selection_changed(lambda i, v: self._on_setting_changed(&quot;resolution&quot;, v))
+        self.main_tabs.add_to_tab(tab, self.res_dropdown)
+
+        # Save settings button
+        save_sett_btn = Button(10, y+230, 150, 30, &quot;Save Settings&quot;)
+        save_sett_btn.set_on_click(lambda: self.save_data())
+        self.main_tabs.add_to_tab(tab, save_sett_btn)
+
+        # Load defaults button
+        load_def_btn = Button(170, y+230, 150, 30, &quot;Load Defaults&quot;)
+        load_def_btn.set_on_click(lambda: self.reset_settings())
+        self.main_tabs.add_to_tab(tab, load_def_btn)
+
+    def _on_setting_changed(self, key, value):
+        &quot;&quot;&quot;Handle setting change without recursion.&quot;&quot;&quot;
+        if self._updating_settings:
+            return
+        self.update_setting(key, value)
+
+    def update_setting(self, key, value):
+        &quot;&quot;&quot;Update a setting in the settings table.&quot;&quot;&quot;
+        if self.settings_table is None:
+            return
+        row = self.settings_table.get_by_primary_key(key)
+        if row:
+            row[&quot;value&quot;] = value
+        else:
+            self.settings_table.insert(key=key, value=value)
+        self.save_data()
+        self.update_settings_display()
+
+    def update_settings_display(self):
+        &quot;&quot;&quot;Refresh UI sliders and labels from current settings.&quot;&quot;&quot;
+        if self.settings_table is None:
+            return
+        self._updating_settings = True
+        for row in self.settings_table.rows:
+            key = row[&quot;key&quot;]
+            val = row[&quot;value&quot;]
+            if key == &quot;master_volume&quot;:
+                self.master_vol_slider.set_value(val)
+                self.master_vol_label.set_text(f&quot;{val:.2f}&quot;)
+            elif key == &quot;music_volume&quot;:
+                self.music_vol_slider.set_value(val)
+                self.music_vol_label.set_text(f&quot;{val:.2f}&quot;)
+            elif key == &quot;sfx_volume&quot;:
+                self.sfx_vol_slider.set_value(val)
+                self.sfx_vol_label.set_text(f&quot;{val:.2f}&quot;)
+            elif key == &quot;fullscreen&quot;:
+                self.fullscreen_switch.set_value(val)
+            elif key == &quot;resolution&quot;:
+                try:
+                    idx = [&quot;1920x1080&quot;, &quot;1280x720&quot;, &quot;1024x768&quot;].index(val)
+                    self.res_dropdown.set_selected_index(idx)
+                except ValueError:
+                    pass
+        self._updating_settings = False
+
+    def reset_settings(self):
+        &quot;&quot;&quot;Reset settings to defaults and save.&quot;&quot;&quot;
+        defaults = {
+            &quot;master_volume&quot;: 0.8,
+            &quot;music_volume&quot;: 0.6,
+            &quot;sfx_volume&quot;: 0.9,
+            &quot;fullscreen&quot;: False,
+            &quot;resolution&quot;: &quot;1920x1080&quot;
+        }
+        for key, val in defaults.items():
+            row = self.settings_table.get_by_primary_key(key)
+            if row:
+                row[&quot;value&quot;] = val
+            else:
+                self.settings_table.insert(key=key, value=val)
+        self.save_data()
+        self.update_settings_display()
+        self.engine.show_notification(&quot;Settings reset to defaults&quot;, NotificationType.INFO)
+
+    # ---------- Migration Tab ----------
+    def setup_migration_tab(self):
+        tab = &quot;Migration&quot;
+        y = 10
+
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y, &quot;Machine Migration (Export/Import)&quot;, 24, (255, 255, 0)))
+        y += 50
+
+        info = (&quot;Export your data to a plain JSON file (no encryption). &quot;
+                &quot;You can transfer this file to another machine and import it.&quot;)
+        info_lbl = LongTextLabel(10, y, info, width=500, height=60, font_size=14)
+        self.main_tabs.add_to_tab(tab, info_lbl)
+        y += 80
+
+        # Export button
+        export_btn = Button(10, y, 150, 30, &quot;Export to JSON&quot;)
+        export_btn.set_on_click(lambda: self.export_data())
+        self.main_tabs.add_to_tab(tab, export_btn)
+
+        # Import button
+        import_btn = Button(170, y, 150, 30, &quot;Import from JSON&quot;)
+        import_btn.set_on_click(lambda: self.import_data())
+        self.main_tabs.add_to_tab(tab, import_btn)
+
+        y += 50
+        self.migration_status = TextLabel(10, y, &quot;Ready&quot;, 14, (200, 200, 200))
+        self.main_tabs.add_to_tab(tab, self.migration_status)
+
+        # Additional info about encryption
+        y += 40
+        info2 = (&quot;Note: The game saves encrypted with a key. &quot;
+                 &quot;Exporting creates a plain file; import will load it and re-encrypt with current key.&quot;)
+        info2_lbl = LongTextLabel(10, y, info2, width=500, height=60, font_size=12, color=(150, 150, 200))
+        self.main_tabs.add_to_tab(tab, info2_lbl)
+
+    def export_data(self):
+        &quot;&quot;&quot;Export all data to a JSON file.&quot;&quot;&quot;
+        try:
+            self.savedata.export_to_json(&quot;export_data.json&quot;)
+            self.migration_status.set_text(&quot;Exported to export_data.json&quot;)
+            self.engine.show_notification(&quot;Data exported successfully!&quot;, NotificationType.SUCCESS)
+        except Exception as e:
+            self.migration_status.set_text(f&quot;Export failed: {e}&quot;)
+            self.engine.show_notification(f&quot;Export error: {e}&quot;, NotificationType.ERROR)
+
+    def import_data(self):
+        &quot;&quot;&quot;Import from JSON file and re-save with encryption.&quot;&quot;&quot;
+        try:
+            self.savedata.import_from_json(&quot;export_data.json&quot;)
+            # Re-save with encryption
+            self.savedata.save(&quot;game_data.sav&quot;, encryption_key=&quot;my_secret_key&quot;, compress=True)
+            self.refresh_tables()
+            self.refresh_character_list()
+            self.update_settings_display()
+            self.migration_status.set_text(&quot;Imported from export_data.json and re-encrypted&quot;)
+            self.engine.show_notification(&quot;Data imported successfully!&quot;, NotificationType.SUCCESS)
+        except FileNotFoundError:
+            self.migration_status.set_text(&quot;export_data.json not found!&quot;)
+            self.engine.show_notification(&quot;File not found: export_data.json&quot;, NotificationType.ERROR)
+        except Exception as e:
+            self.migration_status.set_text(f&quot;Import failed: {e}&quot;)
+            self.engine.show_notification(f&quot;Import error: {e}&quot;, NotificationType.ERROR)
+
+    # ------------------------------------------------------------
+    # Update &amp; Render
+    # ------------------------------------------------------------
+    def update(self, dt):
+        fps = self.engine.get_fps_stats()[&#x27;current_fps&#x27;]
+        self.fps_label.set_text(f&quot;FPS: {fps:.1f}&quot;)
+
+    def render(self, renderer):
+        renderer.fill_screen(ThemeManager.get_color(&#x27;background&#x27;))
+        renderer.draw_rect(0, 0, self.engine.width, 80, ThemeManager.get_color(&#x27;background2&#x27;))
+
+# ------------------------------------------------------------
+# Main
+# ------------------------------------------------------------
+def main():
+    engine = LunaEngine(&quot;Storage Demo&quot;, 1024, 768, debug=True, show_splash=False)
+    engine.fps = 60
+    engine.add_scene(&quot;StorageDemo&quot;, StorageDemoScene)
+    engine.set_scene(&quot;StorageDemo&quot;)
+    engine.run()
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About This Example</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Storage Demo – Multi-Character Save/Load with Query System</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="storage_demo.py" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples Hub
+                            </a>
+                            <a href="../quick-start.html" class="btn btn-outline-success">
+                                <i class="bi bi-play-circle me-2"></i>Quick Start Guide
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-07-10 21:26
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

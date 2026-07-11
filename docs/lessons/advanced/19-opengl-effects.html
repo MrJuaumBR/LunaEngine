@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opengl Effects - LunaEngine Lessons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Lessons</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../index.html">Lessons</a></li><li class="breadcrumb-item active">Advanced</li><li class="breadcrumb-item active">Opengl Effects</li></ol></nav>
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 d-none d-md-block">
+                <div class="card shadow-sm sticky-top" style="top: 6rem; max-height: 80vh; overflow-y: auto;">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="bi bi-map me-2"></i>Course Track</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><a href="../basics/07-atlas-system.html" class="list-group-item list-group-item-action">7. Atlas System</a><a href="../basics/08-game-development-plan.html" class="list-group-item list-group-item-action">8. Game Development Plan</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/09-ui-layouts.html" class="list-group-item list-group-item-action">9. Ui Layouts</a><a href="../intermediate/10-tween-animations.html" class="list-group-item list-group-item-action">10. Tween Animations</a><a href="../intermediate/11-camera-movement.html" class="list-group-item list-group-item-action">11. Camera Movement</a><a href="../intermediate/12-particles-basics.html" class="list-group-item list-group-item-action">12. Particles Basics</a><a href="../intermediate/13-parallax-backgrounds.html" class="list-group-item list-group-item-action">13. Parallax Backgrounds</a><a href="../intermediate/14-audio-system.html" class="list-group-item list-group-item-action">14. Audio System</a><a href="../intermediate/15-custom-themes.html" class="list-group-item list-group-item-action">15. Custom Themes</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/16-advanced-ui.html" class="list-group-item list-group-item-action">16. Advanced Ui</a><a href="../advanced/17-particle-effects.html" class="list-group-item list-group-item-action">17. Particle Effects</a><a href="../advanced/18-camera-effects.html" class="list-group-item list-group-item-action">18. Camera Effects</a><a href="../advanced/19-opengl-effects.html" class="list-group-item list-group-item-action active">19. Opengl Effects</a><a href="../advanced/20-ui-transitions.html" class="list-group-item list-group-item-action">20. Ui Transitions</a><a href="../advanced/21-sprite-animations.html" class="list-group-item list-group-item-action">21. Sprite Animations</a><a href="../advanced/22-combining-systems.html" class="list-group-item list-group-item-action">22. Combining Systems</a><div class="mb-2"></div></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main content -->
+            <div class="col-md-9">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h3 mb-0">19. Opengl Effects</h1>
+                    </div>
+                    <div class="card-body markdown-content">
+                        # 19 - OpenGL Post-Processing Effects
+
+LunaEngine's OpenGL renderer supports 19 real-time, GPU-accelerated post-processing effects through its `Filter` system (`lunaengine.backend.opengl`). These filters run as GLSL fragment shaders applied to the entire rendered frame (or a specific region of it), giving your game a cinematic, polished feel with minimal CPU cost.
+
+---
+
+## How Filters Work
+
+After all your game content is rendered, the renderer passes the final frame through a filter shader before displaying it. You configure filters using the `Filter` class and apply them via `engine.renderer`.
+
+```python
+from lunaengine.backend import FilterType, Filter, FilterRegionType
+
+# Apply a vignette filter at full intensity to the whole screen
+vignette = engine.renderer.add_vignette(intensity=0.8)
+```
+
+All filter methods return a `Filter` object that you can store, update (e.g. change intensity), or remove later.
+
+---
+
+## All 19 Available Effects
+
+### 🎨 Color & Tone Effects
+
+#### 1. VIGNETTE
+Darkens the corners of the screen toward a circular center, focusing the player's gaze inward. Essential for horror and cinematic scenes.
+```python
+# intensity: how dark the corners get (0.0 = none, 1.0 = full black corners)
+engine.renderer.add_vignette(intensity=0.7)
+```
+
+#### 2. SEPIA
+Applies a warm, brownish-orange tone shift, making the scene look like an old photograph. Great for flashback sequences.
+```python
+# intensity: 0.0 = original color, 1.0 = fully sepia
+engine.renderer.add_sepia(intensity=0.9)
+```
+
+#### 3. GRAYSCALE
+Removes all color from the screen. Perfect for "game paused", death sequences, or a black-and-white art style.
+```python
+engine.renderer.add_grayscale(intensity=1.0)
+```
+
+#### 4. INVERT
+Inverts all RGB channels (like a photographic negative). Useful for psychedelic effects or special abilities.
+```python
+engine.renderer.add_invert(intensity=1.0)
+```
+
+#### 5. TEMPERATURE_WARM
+Tints the screen with warm tones (orange/red), simulating a sunset or fire-lit environment.
+```python
+engine.renderer.add_temperature_warm(intensity=0.6)
+```
+
+#### 6. TEMPERATURE_COLD
+Tints the screen with cold tones (blue), simulating a frozen tundra or deep-sea environment.
+```python
+engine.renderer.add_temperature_cold(intensity=0.7)
+```
+
+#### 7. POSTERIZE
+Reduces the number of distinct color levels, creating a cartoon-like, flat-color aesthetic.
+```python
+# Higher intensity = fewer color levels = more stylized
+engine.renderer.add_posterize(intensity=0.8)
+```
+
+---
+
+### ✨ Glow & Edge Effects
+
+#### 8. BLOOM
+Brightens pixels that are already very bright, creating a soft, glowing halo around light sources. Makes neon signs, magic spells, and explosions look spectacular.
+```python
+engine.renderer.add_bloom(intensity=0.6)
+```
+
+#### 9. NEON
+Detects edges in the scene and colorizes them with the original hue at full saturation, making everything look like it's outlined with glowing neon lights.
+```python
+engine.renderer.add_neon(intensity=0.8)
+```
+
+#### 10. EDGE_DETECT
+Uses a Sobel kernel to draw only the edges of objects, turning your game into a sketch or wireframe view.
+```python
+engine.renderer.add_edge_detect(intensity=1.0)
+```
+
+#### 11. EMBOSS
+Creates a raised, chiseled stone or metallic look by computing luminance differences between neighboring pixels.
+```python
+engine.renderer.add_emboss(intensity=0.9)
+```
+
+#### 12. SHARPEN
+Increases local contrast to make textures appear crisper. Useful when the game world feels soft or blurry.
+```python
+engine.renderer.add_sharpen(intensity=0.5)
+```
+
+---
+
+### 🌊 Blur & Distortion Effects
+
+#### 13. BLUR
+Applies a 5x5 Gaussian blur, softening the entire scene. Ideal for depth-of-field effects or "drunk" visual states.
+```python
+# You can restrict blur to a specific region:
+engine.renderer.add_blur(intensity=1.0, x=0, y=0, width=engine.width, height=engine.height)
+```
+
+#### 14. RADIAL_BLUR
+Blurs outward from the screen center, simulating high-speed motion or a rushing camera zoom effect.
+```python
+engine.renderer.add_radial_blur(intensity=0.7)
+```
+
+#### 15. FISHEYE
+Distorts the UV coordinates in a barrel shape, creating the wide-angle "fisheye lens" look. Fun for comedic moments or tiny-world perspectives.
+```python
+engine.renderer.add_fisheye(intensity=0.5)
+```
+
+#### 16. TWIRL
+Rotates pixels around the screen center by an angle proportional to their distance from the center, creating a swirling vortex effect.
+```python
+engine.renderer.add_twirl(intensity=0.5)
+```
+
+---
+
+### 🖥️ Retro & Stylized Effects
+
+#### 17. NIGHT_VISION
+Converts the frame to a green monochrome with animated scanlines and film grain noise, perfectly simulating a military-style night-vision goggle display.
+```python
+engine.renderer.add_night_vision(intensity=1.0)
+```
+
+#### 18. CRT
+Simulates an old CRT (cathode-ray tube) television, complete with horizontal scanlines, a chromatic aberration (RGB color fringing), and a vignette. Excellent for retro or lo-fi games.
+```python
+engine.renderer.add_crt(intensity=0.9)
+```
+
+#### 19. PIXELATE
+Downsamples the screen to large blocks of color and upsamples back, creating a 8-bit/16-bit pixelated aesthetic. Great for retro games or a "loading" transition effect.
+```python
+engine.renderer.add_pixelate(intensity=0.8)
+```
+
+---
+
+## Regional Filters
+
+Instead of applying an effect to the full screen, you can apply it to a specific **rectangle** or **circle** region. This is great for localized blur effects (like blurring only the background behind a UI panel).
+
+```python
+from lunaengine.backend import Filter, FilterType, FilterRegionType
+
+# Blur only a 200x200 area centered at (300, 250)
+blurred_area = Filter(
+    filter_type=FilterType.BLUR,
+    intensity=1.0,
+    region_type=FilterRegionType.RECTANGLE,
+    region_pos=(200, 150),
+    region_size=(200, 200),
+    feather=20.0  # Soften the edges of the affected region
+)
+engine.renderer.add_filter(blurred_area)
+```
+
+---
+
+## Dynamic Filters (Changing Intensity at Runtime)
+
+Filters are objects. Store the reference and mutate their `intensity` every frame for animated effects:
+
+```python
+class GameScene(Scene):
+    def on_enter(self, prev):
+        self.damage_vignette = engine.renderer.add_vignette(intensity=0.0)
+
+    def player_took_damage(self):
+        # Flash a red-hot vignette, then fade it out
+        self.damage_vignette.intensity = 1.0
+
+    def update(self, dt):
+        # Gradually fade the vignette back to 0
+        if self.damage_vignette.intensity > 0:
+            self.damage_vignette.intensity = max(0.0, self.damage_vignette.intensity - dt * 2.0)
+```
+
+This technique creates a satisfying "flash red on damage" effect without any heavy CPU code.
+
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between">
+                            <a href='18-camera-effects.html' class='btn btn-outline-primary'><i class='bi bi-arrow-left me-2'></i>Previous: Camera Effects</a>
+                            <a href='20-ui-transitions.html' class='btn btn-outline-primary'>Next: Ui Transitions <i class='bi bi-arrow-right ms-2'></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="../index.html" class="btn btn-secondary"><i class="bi bi-journal-bookmark me-2"></i>All Lessons</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-07-10 21:26
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    const currentPath = window.location.pathname;
+                    let searchPath = 'search.html';
+                    if (currentPath.split('/').filter(Boolean).length > 2) {
+                        searchPath = '../search.html';
+                    }
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+    <script src="../../theme.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+        if (typeof initSimpleMarkdownParser === 'function') initSimpleMarkdownParser();
+        else setTimeout(function() {
+            if (window.initSimpleMarkdownParser) window.initSimpleMarkdownParser();
+        }, 100);
+    });</script>
+</body>
+</html>

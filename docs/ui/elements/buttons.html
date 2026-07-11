@@ -48,26 +48,40 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
+                    <p class="lead fs-6">A clickable button with text and theming support.</p>
                 </div>
-                
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>category: str = 'button'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'text': {'name': 'text', 'key': 'text', 'type': str, 'editable': True, 'description': 'Text displayed on the button.'}, 'font_size': {'name': 'font size', 'key': 'font_size', 'type': int, 'editable': True, 'description': 'Size of the text in pixels.'}, 'font_name': {'name': 'font name', 'key': 'font_name', 'type': Optional[str], 'editable': True, 'description': 'Path to a custom font file.'}, 'background_color': {'name': 'background color', 'key': 'background_color', 'type': Tuple[int, int, int], 'editable': True, 'description': 'Custom RGB background color (overrides theme).'}, 'text_color': {'name': 'text color', 'key': 'text_color', 'type': Tuple[int, int, int], 'editable': True, 'description': 'Custom RGB text color (overrides theme).'}}</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, text: str = '', font_size: int = 20, font_name: Optional[str] = None, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, text: str = '', font_size: int = 20, font_name: Optional[str] = None, pivot: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-can_focus">
+                <code class="fs-6 fw-bold text-color-title">def can_focus(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Buttons are focusable for controller navigation.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-_get_init_args">
+                <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-set_background_color">
-                <code class="fs-6 fw-bold text-color-title">def set_background_color(self: Any, color: Optional[Tuple[int, int, int]]) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_background_color(self: Any, color: Optional[Tuple[int, int, int]]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-set_text_color">
-                <code class="fs-6 fw-bold text-color-title">def set_text_color(self: Any, color: Optional[Tuple[int, int, int]]) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_text_color(self: Any, color: Optional[Tuple[int, int, int]]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-set_text">
-                <code class="fs-6 fw-bold text-color-title">def set_text(self: Any, text: str) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_text(self: Any, text: str) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-get_text">
@@ -75,19 +89,19 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-update_theme">
-                <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: ThemeType) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-font">
-                <code class="fs-6 fw-bold text-color-title">def font(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def font(self: Any) -> pygame.font.Font</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-set_on_click">
-                <code class="fs-6 fw-bold text-color-title">def set_on_click(self: Any, callback: Callable, *args: tuple, **kwargs: dict) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_on_click(self: Any, callback: Callable, *args: tuple, **kwargs: dict) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-set_theme">
-                <code class="fs-6 fw-bold text-color-title">def set_theme(self: Any, theme_type: ThemeType) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_theme(self: Any, theme_type: ThemeType) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-_get_colors">
@@ -95,7 +109,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-_get_color_for_state">
@@ -107,7 +121,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: 'Renderer') -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
@@ -120,34 +134,48 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
+                    <p class="lead fs-6">A clickable button that displays an image instead of text.</p>
                 </div>
-                
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>category: str = 'button'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'image_path': {'name': 'image path', 'key': 'image_path', 'type': Union[str, pygame.Surface], 'editable': False, 'description': 'Path to image file or Surface object.'}}</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: str | pygame.Surface, width: Optional[int] = None, height: Optional[int] = None, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: Union[str, pygame.Surface], width: Optional[int] = None, height: Optional[int] = None, pivot: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-can_focus">
+                <code class="fs-6 fw-bold text-color-title">def can_focus(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Image buttons are focusable.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-_get_init_args">
+                <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-_load_image">
-                <code class="fs-6 fw-bold text-color-title">def _load_image(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _load_image(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-set_on_click">
-                <code class="fs-6 fw-bold text-color-title">def set_on_click(self: Any, callback: Callable, *args: tuple, **kwargs: dict) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_on_click(self: Any, callback: Callable, *args: tuple, **kwargs: dict) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-get_image">
-                <code class="fs-6 fw-bold text-color-title">def get_image(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def get_image(self: Any) -> pygame.Surface</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-set_image">
-                <code class="fs-6 fw-bold text-color-title">def set_image(self: Any, image_path: str | pygame.Surface) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_image(self: Any, image_path: Union[str, pygame.Surface]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-_get_overlay_color">
@@ -155,7 +183,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
@@ -182,7 +210,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

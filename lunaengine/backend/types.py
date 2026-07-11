@@ -92,7 +92,6 @@ class InputState:
                                 (not self.mouse_buttons_pressed.middle and self._prev_mouse_buttons.middle) or \
                                 (not self.mouse_buttons_pressed.right and self._prev_mouse_buttons.right)
 
-        
         if mouse_wheel != 0:
             self.mouse_wheel += mouse_wheel
             
@@ -111,6 +110,12 @@ class InputState:
         """Clear consumed events for new frame"""
         self._global_mouse_consumed = False
         self.consumed_events.clear()
+        
+    def get_keys(self) -> pygame.key.ScancodeWrapper:
+        return pygame.key.get_pressed()
+    
+    def keyPressed(self, key: int) -> bool:
+        return self.get_keys()[key]
         
     def get_mouse_state(self) -> Tuple[Tuple[int, int], MouseButtonPressed]:
         return self.mouse_pos, self.mouse_buttons_pressed
@@ -145,7 +150,7 @@ class ElementsList(list['UiElement']):
         if self.on_change:
             self.on_change('extend', iterable)
     
-    def remove(self, item):
+    def remove(self, item:'UiElement'):
         super().remove(item)
         if self.on_change:
             self.on_change('remove', item)
@@ -206,7 +211,7 @@ class WindowEventData:
 class Ratio(tuple):
     """Represents a width/height ratio (x, y). Supports arithmetic and scaling."""
 
-    def __new__(cls, x: Union[Number, Tuple[Number, Number]], y: Number = None):
+    def __new__(cls, x: Union[Number, Tuple[Number, Number]]|int|float, y: Number|int|float = None):
         if y is None:
             # assume x is a tuple or pair
             x, y = x
@@ -355,6 +360,7 @@ class Color:
     def to_rgb_tuple(self) -> Tuple[int, int, int]:
         """Return (r, g, b) as integers 0‑255, ignoring alpha."""
         return (self.r, self.g, self.b)
+    to_tuple = to_rgb_tuple
 
     def to_rgba_tuple(self) -> Tuple[int, int, int, int]:
         """Return (r, g, b, a) with alpha as 0‑255."""

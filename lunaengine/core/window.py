@@ -51,7 +51,7 @@ class Window:
         _event_handlers (Dict): Registered event handlers
     """
     
-    def __init__(self, title: str = "LunaEngine", width: int = 800, height: int = 600, 
+    def __init__(self, title: str = "LunaEngine", width: int|float = 800, height: int|float = 600, 
                  fullscreen: bool = False, resizable: bool = True):
         """
         Initialize window settings.

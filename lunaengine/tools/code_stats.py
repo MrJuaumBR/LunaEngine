@@ -18,11 +18,13 @@ class CodeStatistics:
         
     def get_some_stats(self) -> Dict:
         """
-        Count the number of themes available in LunaEngine
-        Returns: Dictionary with theme statistics
+        Count the number of themes and UI elements available in LunaEngine
+        Returns: Dictionary with theme and element statistics
         """
         stats = {
             'total_themes': 0,
+            'themes_with_both_variants': 0,
+            'total_variants': 0,
             'total_elements': 0,
             'themes_error': None,
             'elements_error': None
@@ -31,12 +33,23 @@ class CodeStatistics:
         try:
             sys.path.append(str(self.root_dir))
             
-            # Import the ThemeManager
-            from lunaengine.ui.themes import ThemeManager
+            # Import the ThemeManager and CombinedTheme
+            from lunaengine.ui.themes import ThemeManager, CombinedTheme
             
-            # Get all themes and count them
+            # Get all themes
             themes = ThemeManager.get_themes()
             stats['total_themes'] = len(themes)
+            
+            both = 0
+            variants = 0
+            for theme in themes.values():
+                if isinstance(theme, CombinedTheme):
+                    both += 1
+                    variants += 2   # dark + light
+                else:
+                    variants += 1   # single variant (usually dark)
+            stats['themes_with_both_variants'] = both
+            stats['total_variants'] = variants
                     
         except ImportError as e:
             stats['themes_error'] = f"Could not import ThemeManager: {e}"
@@ -207,8 +220,13 @@ class CodeStatistics:
             'comment_lines': 0,
             'blank_lines': 0,
             'files': [],
-            'themes': {'total_themes':_stats['total_themes'], 'error': _stats['themes_error']},
-            'elements': {'total_elements':_stats['total_elements'], 'error': _stats['elements_error']},
+            'themes': {
+                'total_themes': _stats['total_themes'],
+                'themes_with_both_variants': _stats['themes_with_both_variants'],
+                'total_variants': _stats['total_variants'],
+                'error': _stats['themes_error']
+            },
+            'elements': {'total_elements': _stats['total_elements'], 'error': _stats['elements_error']},
             'project_structure': self.get_project_structure()  # Now returns list of lines
         }
         
@@ -268,7 +286,9 @@ class CodeStatistics:
         if stats['themes']['error']:
             print(f"   ❌ Error: {stats['themes']['error']}")
         else:
-            print(f"   Total Themes:    {stats['themes']['total_themes']:>6}")
+            print(f"   Total Themes (base):  {stats['themes']['total_themes']:>6}")
+            print(f"   Themes with both variants: {stats['themes']['themes_with_both_variants']:>6}")
+            print(f"   Total variants (dark+light): {stats['themes']['total_variants']:>6}")
         
         # Files by extension
         print(f"\n📁 FILES BY EXTENSION:")
@@ -351,16 +371,19 @@ def save_detailed_report(stats: Dict, report_file: Path, analyzer: CodeStatistic
         f.write(f"- **Blank Lines**: {stats['blank_lines']}\n")
         
         # Add theme statistics to report
-        f.write("\n## Statistics\n\n")
+        f.write("\n## Theme Statistics\n\n")
         if stats['themes']['error']:
-            f.write(f"- Themes **Error**: {stats['themes']['error']}\n")
+            f.write(f"- **Error**: {stats['themes']['error']}\n")
         else:
-            f.write(f"- **Total Themes**: {stats['themes']['total_themes']}\n")
+            f.write(f"- **Total Themes (base names)**: {stats['themes']['total_themes']}\n")
+            f.write(f"- **Themes with both dark and light variants**: {stats['themes']['themes_with_both_variants']}\n")
+            f.write(f"- **Total variants (dark + light)**: {stats['themes']['total_variants']}\n")
         
+        f.write("\n## UI Elements\n\n")
         if stats['elements']['error']:
-            f.write(f"- Elements **Error**: {stats['elements']['error']}\n")
+            f.write(f"- **Error**: {stats['elements']['error']}\n")
         else:
-            f.write(f"- **Total Elements**: {stats['elements']['total_elements']}\n")
+            f.write(f"- **Total UI Elements**: {stats['elements']['total_elements']}\n")
         
         f.write("\n## Code Density\n\n")
         code_density = (stats['code_lines'] / max(1, stats['total_lines'])) * 100

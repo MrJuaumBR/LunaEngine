@@ -11,10 +11,12 @@ themes from basic functional ones to brand-specific and aesthetic designs.
 
 MAIN FEATURES:
 - Loads themes from individual JSON files in lunaengine/assets/themes/
+- Supports combined theme files with 'dark' and 'light' variants
+- Fallback to legacy single-file format
+- Global dark/light mode toggle via set_dark_mode()
 - If directory is empty or missing, falls back to local themes.json
 - If still not found, tries to download from GitHub
 - Final fallback to default theme
-- Supports full theme properties: colors (RGBA), corner radius, border width, blur
 """
 
 from enum import Enum
@@ -25,7 +27,7 @@ import json
 import urllib.request
 import urllib.error
 
-# color_name is for typing in the get_color function
+# color_name_type for typing in the get_color function
 color_name_type = Literal[
     'button_normal', 'button_hover', 'button_pressed', 'button_disabled',
     'button_text', 'button_border',
@@ -144,15 +146,21 @@ class UITheme:
     accent1: ThemeStyle
     accent2: ThemeStyle
 
-    # Optional fields with defaults (must come after all required fields)
     button_border: Optional[ThemeStyle] = None
     dropdown_border: Optional[ThemeStyle] = None
     border: Optional[ThemeStyle] = None
     border2: Optional[ThemeStyle] = None
 
 
+@dataclass
+class CombinedTheme:
+    """Container for a theme that has both dark and light variants."""
+    dark: UITheme
+    light: UITheme
+
+
 class ThemeType(Enum):
-    """Enumeration of all available theme types."""
+    """Enumeration of all available theme types (base names only)."""
     DEFAULT = "default"
     
     # Basic themes
@@ -164,19 +172,16 @@ class ThemeType(Enum):
     INFO = "info"
     
     # Fantasy themes
-    FANTASY_DARK = "fantasy_dark"
-    FANTASY_LIGHT = "fantasy_light"
+    FANTASY = "fantasy"
     
     # Cherry themes
-    CHERRY_DARK = "cherry_dark"
-    CHERRY_LIGHT = "cherry_light"
+    CHERRY = "cherry"
     
     # Eclipse theme
     ECLIPSE = "eclipse"
     
     # Midnight themes
-    MIDNIGHT_DARK = "midnight_dark"
-    MIDNIGHT_LIGHT = "midnight_light"
+    MIDNIGHT = "midnight"
     
     # Neon theme
     NEON = "neon"
@@ -201,25 +206,16 @@ class ThemeType(Enum):
     DISCORD = "discord"
     GMAIL = "gmail"
     YOUTUBE = "youtube"
-    STEAM_DARK = "steam_dark"
-    STEAM_LIGHT = "steam_light"
-    WHATSAPP_DARK = "whatsapp_dark"
-    WHATSAPP_LIGHT = "whatsapp_light"
-    CRUNCHYROLL_DARK = "crunchyroll_dark"
-    CRUNCHYROLL_LIGHT = "crunchyroll_light"
-    TWITCH_DARK = "twitch_dark"
-    TWITCH_LIGHT = "twitch_light"
-    TELEGRAM_DARK = "telegram_dark"
-    TELEGRAM_LIGHT = "telegram_light"
-    XBOX_DARK = "xbox_dark"
-    XBOX_LIGHT = "xbox_light"
-    PLAYSTATION_DARK = "playstation_dark"
-    PLAYSTATION_LIGHT = "playstation_light"
-    MINECRAFT_DARK = "minecraft_dark"
-    MINECRAFT_LIGHT = "minecraft_light"
+    STEAM = "steam"
+    WHATSAPP = "whatsapp"
+    CRUNCHYROLL = "crunchyroll"
+    TWITCH = "twitch"
+    TELEGRAM = "telegram"
+    XBOX = "xbox"
+    PLAYSTATION = "playstation"
+    MINECRAFT = "minecraft"
     
-    CYBERPUNK_DARK = "cyberpunk_dark"
-    CYBERPUNK_LIGHT = "cyberpunk_light"
+    CYBERPUNK = "cyberpunk"
     
     QUEEN = "queen"
     KING = "king"
@@ -227,8 +223,7 @@ class ThemeType(Enum):
     # Special themes
     MATRIX = "matrix"
     BUILDER = "builder"
-    GALAXY_DARK = "galaxy_dark"
-    GALAXY_LIGHT = "galaxy_light"
+    GALAXY = "galaxy"
     
     # Nature themes
     FOREST = "forest"
@@ -240,31 +235,23 @@ class ThemeType(Enum):
     
     # Popular color scheme themes
     DEEP_SPACE = "deep_space"
-    NORD_DARK = "nord_dark"
-    NORD_LIGHT = "nord_light"
+    NORD = "nord"
     DRACULA = "dracula"
-    SOLARIZED_DARK = "solarized_dark"
-    SOLARIZED_LIGHT = "solarized_light"
+    SOLARIZED = "solarized"
     MONOKAI = "monokai"
-    GRUVBOX_DARK = "gruvbox_dark"
-    GRUVBOX_LIGHT = "gruvbox_light"
+    GRUVBOX = "gruvbox"
     
     # Neutral Themes
     BLACK = "black"
     
     # OS Themes
-    WINDOWS_DARK = "windows_dark"
-    WINDOWS_LIGHT = "windows_light"
-    LINUX_DARK = "linux_dark"
-    LINUX_LIGHT = "linux_light"
-    IOS_DARK = "ios_dark"
-    IOS_LIGHT = "ios_light"
-    ANDROID_DARK = "android_dark"
-    ANDROID_LIGHT = "android_light"
+    WINDOWS = "windows"
+    LINUX = "linux"
+    IOS = "ios"
+    ANDROID = "android"
     
     # Ninja themes
-    NINJA_DARK = "ninja_dark"
-    NINJA_LIGHT = "ninja_light"
+    NINJA = "ninja"
     
     # Country themes
     BRAZIL = "brazil"
@@ -280,9 +267,10 @@ class ThemeType(Enum):
 class ThemeManager:
     """Manages complete UI themes with local/remote loading."""
     
-    _themes: Dict[ThemeType, UITheme] = {}
+    _themes: Dict[ThemeType, Union[UITheme, CombinedTheme]] = {}
     _current_theme: ThemeType = ThemeType.DEFAULT
     _themes_loaded: bool = False
+    _dark_mode: bool = True   # True = dark, False = light
     
     GITHUB_THEMES_URL = "https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/lunaengine/ui/themes.json"
     
@@ -332,10 +320,10 @@ class ThemeManager:
         """Convert JSON data (new or legacy format) to ThemeStyle."""
         if isinstance(data, dict):
             # New format: { "color": [R,G,B,A], "cornerRadius": X, "borderWidth": Y, "blur": Z }
-            color_data = data.get('color', [0, 0, 0])
+            color_data = data.get('color', [0, 0, 0, 0.0])
             if isinstance(color_data, (list, tuple)) and len(color_data) >= 3:
                 r, g, b = color_data[0], color_data[1], color_data[2]
-                alpha = color_data[3] / 255.0 if len(color_data) > 3 else 1.0
+                alpha = color_data[3] if len(color_data) >= 4 else 1.0
             else:
                 r = g = b = 0
                 alpha = 1.0
@@ -354,13 +342,25 @@ class ThemeManager:
             return ThemeStyle(color=(0, 0, 0), alpha=1.0)
     
     @classmethod
-    def _load_theme_from_json_file(cls, filepath: str) -> Optional[Tuple[ThemeType, UITheme]]:
+    def _build_ui_theme_from_dict(cls, data: dict) -> UITheme:
+        """Build a UITheme from a dictionary of style entries."""
+        theme_params = {}
+        for field_name in UITheme.__dataclass_fields__.keys():
+            if field_name in data:
+                theme_params[field_name] = cls._parse_theme_style(data[field_name])
+            else:
+                theme_params[field_name] = None
+        return UITheme(**theme_params)
+    
+    @classmethod
+    def _load_theme_from_json_file(cls, filepath: str) -> Optional[Tuple[ThemeType, Union[UITheme, CombinedTheme]]]:
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             
             basename = os.path.basename(filepath)
             theme_name_str = os.path.splitext(basename)[0].upper()
+            # Try to get ThemeType from the name (base name)
             theme_type = None
             for tt in ThemeType:
                 if tt.name == theme_name_str:
@@ -370,15 +370,30 @@ class ThemeManager:
                 print(f"! Unknown theme type from file: {theme_name_str}")
                 return None
             
-            theme_params = {}
-            for field_name in UITheme.__dataclass_fields__.keys():
-                if field_name in data:
-                    theme_params[field_name] = cls._parse_theme_style(data[field_name])
-                else:
-                    theme_params[field_name] = None
-            
-            theme = UITheme(**theme_params)
-            return (theme_type, theme)
+            # Check if it's a combined file (has "variants" key)
+            if "variants" in data and isinstance(data["variants"], dict):
+                variants = data["variants"]
+                dark_theme = None
+                light_theme = None
+                if "dark" in variants:
+                    dark_data = variants["dark"]
+                    dark_theme = cls._build_ui_theme_from_dict(dark_data)
+                if "light" in variants:
+                    light_data = variants["light"]
+                    light_theme = cls._build_ui_theme_from_dict(light_data)
+                if dark_theme is None and light_theme is None:
+                    raise ValueError("No valid variants found")
+                # If only one variant, we treat it as both dark and light (use the same)
+                if dark_theme is None:
+                    dark_theme = light_theme
+                if light_theme is None:
+                    light_theme = dark_theme
+                combined = CombinedTheme(dark=dark_theme, light=light_theme)
+                return (theme_type, combined)
+            else:
+                # Legacy single file: contains only one theme (no variants)
+                theme = cls._build_ui_theme_from_dict(data)
+                return (theme_type, theme)
         except Exception as e:
             print(f"/ Error loading theme from {filepath}: {e}")
             return None
@@ -417,11 +432,8 @@ class ThemeManager:
                 if theme_type is None:
                     continue
                 
-                processed_theme = {}
-                for key, value in theme_dict.items():
-                    processed_theme[key] = cls._parse_theme_style(value)
-                
-                theme = UITheme(**processed_theme)
+                # Legacy format: one theme per entry (no variants)
+                theme = cls._build_ui_theme_from_dict(theme_dict)
                 cls._themes[theme_type] = theme
                 loaded_count += 1
             except Exception as e:
@@ -534,9 +546,15 @@ class ThemeManager:
         cls._load_legacy_single_file()
     
     @classmethod
-    def get_theme(cls, theme_type: ThemeType) -> UITheme:
+    def get_theme(cls, theme_type: Optional[ThemeType] = None) -> UITheme:
         cls.ensure_themes_loaded()
-        return cls._themes.get(theme_type, cls._themes[ThemeType.DEFAULT])
+        if theme_type is None:
+            theme_type = cls._current_theme
+        theme = cls._themes.get(theme_type, cls._themes[ThemeType.DEFAULT])
+        if isinstance(theme, CombinedTheme):
+            # Return the appropriate variant based on dark_mode
+            return theme.dark if cls._dark_mode else theme.light
+        return theme  # it's a UITheme
     
     @classmethod
     def set_current_theme(cls, theme_type: ThemeType):
@@ -547,10 +565,20 @@ class ThemeManager:
         return cls._current_theme
     
     @classmethod
+    def set_dark_mode(cls, dark: bool):
+        """Set global dark mode. True = dark, False = light."""
+        cls._dark_mode = dark
+        print(f"Dark mode set to {dark}")
+    
+    @classmethod
+    def get_dark_mode(cls) -> bool:
+        return cls._dark_mode
+    
+    @classmethod
     def get_theme_by_name(cls, name: str) -> UITheme:
         cls.ensure_themes_loaded()
         theme_type = cls.get_theme_type_by_name(name)
-        return cls._themes.get(theme_type, cls._themes[ThemeType.DEFAULT])
+        return cls.get_theme(theme_type)
     
     @classmethod
     def get_theme_type_by_name(cls, name: str) -> ThemeType:
@@ -562,52 +590,50 @@ class ThemeManager:
     
     # --- Property accessors (return raw values) ---
     @classmethod
-    def _get_style_property(cls, color_name: color_name_type, property_name: str,
+    def _get_style_property(cls, color_name: color_name_type | str, property_name: str,
                             theme_type: Optional[ThemeType] = None):
         cls.ensure_themes_loaded()
-        if theme_type is None:
-            theme_type = cls._current_theme
-        theme = cls.get_theme(theme_type)
+        theme = cls.get_theme(theme_type)  # returns UITheme (variant already selected)
         style = getattr(theme, color_name, None)
         if style is None:
             return None
         return getattr(style, property_name)
     
     @classmethod
-    def get_color(cls, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> Tuple[int, int, int]:
+    def get_color(cls, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> Tuple[int, int, int]:
         """Return RGB tuple (ignores alpha)."""
         color = cls._get_style_property(color_name, 'color', theme_type)
         return color if color is not None else (0, 0, 0)
     
     @classmethod
-    def get_alpha(cls, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> float:
+    def get_alpha(cls, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> float:
         """Return alpha (0.0–1.0)."""
         alpha = cls._get_style_property(color_name, 'alpha', theme_type)
         return alpha if alpha is not None else 1.0
     
     @classmethod
-    def get_corner_radius(cls, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> int:
+    def get_corner_radius(cls, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> int:
         radius = cls._get_style_property(color_name, 'corner_radius', theme_type)
         return radius if radius is not None else 0
     
     @classmethod
-    def get_border_width(cls, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> int:
+    def get_border_width(cls, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> int:
         width = cls._get_style_property(color_name, 'border_width', theme_type)
         return width if width is not None else 0
     
     @classmethod
-    def get_blur(cls, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> int:
+    def get_blur(cls, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> int:
         blur = cls._get_style_property(color_name, 'blur', theme_type)
         return blur if blur is not None else 0
     
     # --- Backward compatibility for old get_color signature ---
     @classmethod
-    def get_color_legacy(cls, color_name: color_name_type) -> Tuple[int, int, int]:
+    def get_color_legacy(cls, color_name: color_name_type | str) -> Tuple[int, int, int]:
         """Maintain compatibility with old `get_color` (no theme_type param)."""
         return cls.get_color(color_name)
     
     @classmethod
-    def get_themes(cls) -> Dict[ThemeType, UITheme]:
+    def get_themes(cls) -> Dict[ThemeType, Union[UITheme, CombinedTheme]]:
         cls.ensure_themes_loaded()
         return cls._themes
     

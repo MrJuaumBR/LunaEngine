@@ -39,7 +39,7 @@
                         <h5 class="mb-0"><i class="bi bi-map me-2"></i>Course Track</h5>
                     </div>
                     <div class="card-body p-0">
-                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action active">6. Themes And Styling</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/07-ui-layouts.html" class="list-group-item list-group-item-action">7. Ui Layouts</a><a href="../intermediate/08-tween-animations.html" class="list-group-item list-group-item-action">8. Tween Animations</a><a href="../intermediate/09-camera-movement.html" class="list-group-item list-group-item-action">9. Camera Movement</a><a href="../intermediate/10-particles-basics.html" class="list-group-item list-group-item-action">10. Particles Basics</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/11-advanced-ui.html" class="list-group-item list-group-item-action">11. Advanced Ui</a><a href="../advanced/12-particle-effects.html" class="list-group-item list-group-item-action">12. Particle Effects</a><a href="../advanced/13-camera-effects.html" class="list-group-item list-group-item-action">13. Camera Effects</a><a href="../advanced/14-ui-transitions.html" class="list-group-item list-group-item-action">14. Ui Transitions</a><a href="../advanced/15-combining-systems.html" class="list-group-item list-group-item-action">15. Combining Systems</a><div class="mb-2"></div></div>
+                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action active">6. Themes And Styling</a><a href="../basics/07-atlas-system.html" class="list-group-item list-group-item-action">7. Atlas System</a><a href="../basics/08-game-development-plan.html" class="list-group-item list-group-item-action">8. Game Development Plan</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/09-ui-layouts.html" class="list-group-item list-group-item-action">9. Ui Layouts</a><a href="../intermediate/10-tween-animations.html" class="list-group-item list-group-item-action">10. Tween Animations</a><a href="../intermediate/11-camera-movement.html" class="list-group-item list-group-item-action">11. Camera Movement</a><a href="../intermediate/12-particles-basics.html" class="list-group-item list-group-item-action">12. Particles Basics</a><a href="../intermediate/13-parallax-backgrounds.html" class="list-group-item list-group-item-action">13. Parallax Backgrounds</a><a href="../intermediate/14-audio-system.html" class="list-group-item list-group-item-action">14. Audio System</a><a href="../intermediate/15-custom-themes.html" class="list-group-item list-group-item-action">15. Custom Themes</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/16-advanced-ui.html" class="list-group-item list-group-item-action">16. Advanced Ui</a><a href="../advanced/17-particle-effects.html" class="list-group-item list-group-item-action">17. Particle Effects</a><a href="../advanced/18-camera-effects.html" class="list-group-item list-group-item-action">18. Camera Effects</a><a href="../advanced/19-opengl-effects.html" class="list-group-item list-group-item-action">19. Opengl Effects</a><a href="../advanced/20-ui-transitions.html" class="list-group-item list-group-item-action">20. Ui Transitions</a><a href="../advanced/21-sprite-animations.html" class="list-group-item list-group-item-action">21. Sprite Animations</a><a href="../advanced/22-combining-systems.html" class="list-group-item list-group-item-action">22. Combining Systems</a><div class="mb-2"></div></div>
                     </div>
                 </div>
             </div>
@@ -50,29 +50,59 @@
                         <h1 class="h3 mb-0">6. Themes And Styling</h1>
                     </div>
                     <div class="card-body markdown-content">
-                        # Themes and Styling
+                        # 06 - Themes and Styling
 
-LunaEngine provides pre-built themes for UI customization.
+LunaEngine provides a powerful, pre-built theming system for UI customization. A Theme in LunaEngine contains styling rules for different UI elements (like colors, borders, shadows, and text settings) allowing you to change the look of your entire game with one line of code.
 
-## Setting a Theme
+## Setting a Global Theme
+
+The easiest way to style your UI is to apply a global theme to the engine. This will automatically update all UI elements currently on screen, and any new ones you create.
 
 ```python
-    engine.set_global_theme("neon")
+from lunaengine.core.engine import LunaEngine
+
+engine = LunaEngine()
+
+# LunaEngine comes with many built-in themes (e.g. "neon", "dark", "light", "retro")
+engine.set_global_theme("neon")
 ```
+
 ## Why Themes Matter
 
 Themes let you:
+- **Keep UI consistent:** All buttons, panels, and labels will share the same design language.
+- **Quickly restyle menus:** Switching between "light" and "dark" modes is trivial.
+- **Improve readability:** Themes define appropriate contrast and spacing automatically.
 
-- keep UI consistent
-- quickly restyle menus
-- improve readability
+## Checking Available Themes
 
-Use themes to give your game a unique visual identity.
+If you want to see a list of all themes (including any custom themes you've created), you can fetch them from the engine:
+
+```python
+# Returns a list of strings like ["dark", "light", "neon", ...]
+available_themes = engine.get_theme_names()
+print("Available Themes:", available_themes)
+```
+
+## Individual Element Styling
+
+While a global theme styles everything, you can always override specific style properties on individual UI elements. For example, if you want a specific "Quit" button to be red regardless of the theme:
+
+```python
+from lunaengine.ui.elements import Button
+
+quit_btn = Button(x=100, y=100, width=150, height=40, text="Quit")
+
+# You can overwrite the background color directly
+quit_btn.background_color = (255, 50, 50)
+```
+
+For most cases, it is recommended to rely on the global theme and create a custom theme if you need extensive changes.
                     </div>
                     <div class="card-footer bg-transparent">
                         <div class="d-flex justify-content-between">
                             <a href='05-camera-basics.html' class='btn btn-outline-primary'><i class='bi bi-arrow-left me-2'></i>Previous: Camera Basics</a>
-                            <span></span>
+                            <a href='07-atlas-system.html' class='btn btn-outline-primary'>Next: Atlas System <i class='bi bi-arrow-right ms-2'></i></a>
                         </div>
                     </div>
                 </div>
@@ -93,7 +123,7 @@ Use themes to give your game a unique visual identity.
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

@@ -39,7 +39,7 @@
                         <h5 class="mb-0"><i class="bi bi-map me-2"></i>Course Track</h5>
                     </div>
                     <div class="card-body p-0">
-                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action active">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/07-ui-layouts.html" class="list-group-item list-group-item-action">7. Ui Layouts</a><a href="../intermediate/08-tween-animations.html" class="list-group-item list-group-item-action">8. Tween Animations</a><a href="../intermediate/09-camera-movement.html" class="list-group-item list-group-item-action">9. Camera Movement</a><a href="../intermediate/10-particles-basics.html" class="list-group-item list-group-item-action">10. Particles Basics</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/11-advanced-ui.html" class="list-group-item list-group-item-action">11. Advanced Ui</a><a href="../advanced/12-particle-effects.html" class="list-group-item list-group-item-action">12. Particle Effects</a><a href="../advanced/13-camera-effects.html" class="list-group-item list-group-item-action">13. Camera Effects</a><a href="../advanced/14-ui-transitions.html" class="list-group-item list-group-item-action">14. Ui Transitions</a><a href="../advanced/15-combining-systems.html" class="list-group-item list-group-item-action">15. Combining Systems</a><div class="mb-2"></div></div>
+                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action active">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><a href="../basics/07-atlas-system.html" class="list-group-item list-group-item-action">7. Atlas System</a><a href="../basics/08-game-development-plan.html" class="list-group-item list-group-item-action">8. Game Development Plan</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/09-ui-layouts.html" class="list-group-item list-group-item-action">9. Ui Layouts</a><a href="../intermediate/10-tween-animations.html" class="list-group-item list-group-item-action">10. Tween Animations</a><a href="../intermediate/11-camera-movement.html" class="list-group-item list-group-item-action">11. Camera Movement</a><a href="../intermediate/12-particles-basics.html" class="list-group-item list-group-item-action">12. Particles Basics</a><a href="../intermediate/13-parallax-backgrounds.html" class="list-group-item list-group-item-action">13. Parallax Backgrounds</a><a href="../intermediate/14-audio-system.html" class="list-group-item list-group-item-action">14. Audio System</a><a href="../intermediate/15-custom-themes.html" class="list-group-item list-group-item-action">15. Custom Themes</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/16-advanced-ui.html" class="list-group-item list-group-item-action">16. Advanced Ui</a><a href="../advanced/17-particle-effects.html" class="list-group-item list-group-item-action">17. Particle Effects</a><a href="../advanced/18-camera-effects.html" class="list-group-item list-group-item-action">18. Camera Effects</a><a href="../advanced/19-opengl-effects.html" class="list-group-item list-group-item-action">19. Opengl Effects</a><a href="../advanced/20-ui-transitions.html" class="list-group-item list-group-item-action">20. Ui Transitions</a><a href="../advanced/21-sprite-animations.html" class="list-group-item list-group-item-action">21. Sprite Animations</a><a href="../advanced/22-combining-systems.html" class="list-group-item list-group-item-action">22. Combining Systems</a><div class="mb-2"></div></div>
                     </div>
                 </div>
             </div>
@@ -50,77 +50,101 @@
                         <h1 class="h3 mb-0">3. Scene Handling</h1>
                     </div>
                     <div class="card-body markdown-content">
-                        # Creating and Handling Scenes
+                        # 03 - Creating and Handling Scenes
+
+In LunaEngine, a `Scene` represents a distinct state or screen of your game. For example, you might have a `MenuScene`, a `Level1Scene`, and a `GameOverScene`. The Engine handles switching between these scenes and ensures that only the active scene is updated and rendered.
 
 ## Creating a Scene
+
+To create a scene, you inherit from the base `Scene` class. The most important methods to override are `__init__`, `on_enter`, `update`, and `on_exit`.
 
 ```python
 from lunaengine.core import Scene
 
 class MyScene(Scene):
-    def on_enter(self):
-        print("Scene entered")
+    def __init__(self, engine):
+        # Always call super().__init__ passing the engine!
+        super().__init__(engine)
+        
+        # This is where you should instantiate UI elements and initial data.
+        self.score = 0
+
+    def on_enter(self, previous_scene_name):
+        # Triggered every time the engine switches to this scene.
+        # Useful for resetting timers, music, or game state.
+        print(f"Entering MyScene from {previous_scene_name}!")
     
     def update(self, dt):
-        print(f"Delta time: {dt}")
+        # Called every frame. 'dt' is delta time (seconds since last frame).
+        # Put your game logic here!
+        self.score += dt * 10
     
-    def on_exit(self):
-        print("Scene exited")
+    def on_exit(self, next_scene_name):
+        # Triggered when leaving this scene.
+        print(f"Leaving MyScene to go to {next_scene_name}!")
 ```
 
-### Adding UI Elements
+## Adding UI Elements
+
+As noted in the `__init__` example, UI elements should be created and added to the scene in `__init__`, not in `on_enter`. If you add them in `on_enter`, you'll create duplicate buttons every time the player enters the scene!
 
 ```python
+from lunaengine.ui.elements import Button
+
 class MenuScene(Scene):
-    def __init__(self, engine: LunaEngine):
+    def __init__(self, engine):
         super().__init__(engine)
-        self.play_button = Button(text="Play", position=(400,350), size=(200,50))
+        
+        self.play_button = Button(text="Play", position=(400, 350), size=(200, 50))
         self.play_button.on_click = self.start_game
+        
+        # You MUST add the element to the scene for it to render and work
         self.add_ui_element(self.play_button)
 
-    def on_enter(self):
-        """As on_enter is triggered every time the user changes to it, creating UiElements here isn't a smart thing"""
-    
     def start_game(self):
+        # Tell the engine to switch to the "game" scene
         self.engine.set_scene("game")
 ```
-### Switching Scenes
+
+## Registering and Switching Scenes
+
+Before the engine can switch to a scene, it needs to be added via `add_scene`. You pass a string name and the scene class itself (the engine will handle instantiation).
 
 ```python
-engine = LunaEngine()
-engine.add_scene("menu", MenuScene)
-engine.add_scene("game", GameScene)
-engine.set_scene("menu")
-engine.run()
-```
-### Complete Example
-
-```python
-from lunaengine.core.engine import Engine
+from lunaengine.core.engine import LunaEngine
 from lunaengine.core.scene import Scene
 from lunaengine.ui.elements import Button, TextLabel
 
 class MenuScene(Scene):
-    def __init__(self, engine: LunaEngine):
+    def __init__(self, engine):
         super().__init__(engine)
-        self.title = TextLabel(x=400, y=200, text="My Game", font_size=32, color=(255, 255, 255))
-        self.start_btn = Button(x=400, y=350, width=200,  height=50, text="Start")
+        self.title = TextLabel(x=400, y=200, text="My Game", font_size=32)
+        self.start_btn = Button(x=400, y=350, width=200, height=50, text="Start")
+        
+        # Lambda function to switch scenes
         self.start_btn.on_click = lambda: self.engine.set_scene("game")
+        
         self.add_ui_element(self.title)
         self.add_ui_element(self.start_btn)
-        
 
 class GameScene(Scene):
-    def __init__(self, engine: LunaEngine):
+    def __init__(self, engine):
         super().__init__(engine)
         self.back_btn = Button(x=400, y=550, width=150, height=40, text="Menu")
         self.back_btn.on_click = lambda: self.engine.set_scene("menu")
         self.add_ui_element(self.back_btn)
 
+# 1. Create the Engine
 engine = LunaEngine()
+
+# 2. Add Scenes (String name, Class reference)
 engine.add_scene("menu", MenuScene)
 engine.add_scene("game", GameScene)
+
+# 3. Set the starting scene
 engine.set_scene("menu")
+
+# 4. Start the game loop
 engine.run()
 ```
                     </div>
@@ -148,7 +172,7 @@ engine.run()
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

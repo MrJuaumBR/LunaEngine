@@ -48,86 +48,93 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">A clock UI element that can display both analog and digital time.<br><br>Supports both 12-hour and 24-hour formats, real-time or custom time,<br>and various customization options.<br><br>Attributes:<br> &nbsp; &nbsp;diameter (int): Diameter of the analog clock face.<br> &nbsp; &nbsp;use_real_time (bool): Whether to use the system&#x27;s real time.<br> &nbsp; &nbsp;show_numbers (bool): Whether to show numbers on the analog clock.<br> &nbsp; &nbsp;time_style (str): &#x27;12hr&#x27; or &#x27;24hr&#x27; format.<br> &nbsp; &nbsp;mode (str): &#x27;analog&#x27;, &#x27;digital&#x27;, or &#x27;both&#x27;.<br> &nbsp; &nbsp;custom_time (datetime): Custom time to display (if not using real time).</p>
+                    <p class="lead fs-6">A clock UI element that can display both analog and digital time.<br><br>Supports both 12-hour and 24-hour formats, real-time or custom time,<br>and various customization options.</p>
                 </div>
-                
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'diameter': {'name': 'diameter', 'key': 'diameter', 'type': int, 'editable': True, 'description': 'Diameter of the analog clock face in pixels.'}, 'use_real_time': {'name': 'use real time', 'key': 'use_real_time', 'type': bool, 'editable': True, 'description': 'If True, uses system time. If False, use custom time set via set_time().'}, 'show_numbers': {'name': 'show numbers', 'key': 'show_numbers', 'type': bool, 'editable': True, 'description': 'Whether to show hour numbers on the analog clock face.'}, 'time_style': {'name': 'time style', 'key': 'time_style', 'type': str, 'editable': True, 'description': 'Format: "12hr" or "24hr".', 'options': ['12hr', '24hr']}, 'mode': {'name': 'mode', 'key': 'mode', 'type': str, 'editable': True, 'description': 'Display mode: "analog", "digital", or "both".', 'options': ['analog', 'digital', 'both']}, 'font_size': {'name': 'font size', 'key': 'font_size', 'type': int, 'editable': True, 'description': 'Font size for digital display and numbers.'}}</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, diameter: int = 100, font_name: Optional[str] = None, font_size: int = 16, use_real_time: bool = True, show_numbers: bool = True, time_style: Literal['12hr', '24hr'] = '24hr', mode: Literal['analog', 'digital', 'both'] = 'analog', root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
-                <div class="mt-2 text-muted small">Initialize a Clock element.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;diameter (int): Diameter of the analog clock face.<br> &nbsp; &nbsp;font_name (Optional[str]): Font for digital display and numbers.<br> &nbsp; &nbsp;font_size (int): Font size for digital display.<br> &nbsp; &nbsp;use_real_time (bool): Whether to use system time.<br> &nbsp; &nbsp;show_numbers (bool): Whether to show numbers on analog clock.<br> &nbsp; &nbsp;time_style (str): &#x27;12hr&#x27; or &#x27;24hr&#x27; format.<br> &nbsp; &nbsp;mode (str): &#x27;analog&#x27;, &#x27;digital&#x27;, or &#x27;both&#x27;.<br> &nbsp; &nbsp;root_point (Tuple[float, float]): Anchor point for positioning.<br> &nbsp; &nbsp;theme (ThemeType): Theme for styling.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID.</div>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, diameter: int = 100, font_name: Optional[str] = None, font_size: int = 16, use_real_time: bool = True, show_numbers: bool = True, time_style: Literal['12hr', '24hr'] = '24hr', mode: Literal['analog', 'digital', 'both'] = 'analog', pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">Initialize a Clock element.<br><br>Args:<br> &nbsp; &nbsp;x: X coordinate (before anchor).<br> &nbsp; &nbsp;y: Y coordinate (before anchor).<br> &nbsp; &nbsp;diameter: Diameter of the analog clock face.<br> &nbsp; &nbsp;font_name: Path to a custom font file.<br> &nbsp; &nbsp;font_size: Font size for digital display.<br> &nbsp; &nbsp;use_real_time: Whether to use system time.<br> &nbsp; &nbsp;show_numbers: Whether to show numbers on analog clock.<br> &nbsp; &nbsp;time_style: &#x27;12hr&#x27; or &#x27;24hr&#x27; format.<br> &nbsp; &nbsp;mode: &#x27;analog&#x27;, &#x27;digital&#x27;, or &#x27;both&#x27;.<br> &nbsp; &nbsp;pivot: Anchor point.<br> &nbsp; &nbsp;theme: Theme to apply.<br> &nbsp; &nbsp;element_id: Optional custom ID.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-_get_init_args">
+                <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Return constructor arguments for restarting.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-font">
-                <code class="fs-6 fw-bold text-color-title">def font(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Get the main font object.</div>
+                <code class="fs-6 fw-bold text-color-title">def font(self: Any) -> pygame.font.Font</code>
+                <div class="mt-2 text-muted small">Get the main font object (digital display).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-small_font">
-                <code class="fs-6 fw-bold text-color-title">def small_font(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def small_font(self: Any) -> pygame.font.Font</code>
                 <div class="mt-2 text-muted small">Get the smaller font for analog clock numbers.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-update_theme">
-                <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: ThemeType) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: ThemeType) -> None</code>
                 <div class="mt-2 text-muted small">Update theme colors for the clock.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-set_face_color">
-                <code class="fs-6 fw-bold text-color-title">def set_face_color(self: Any, color: Tuple[int, int, int]) -> Any</code>
-                <div class="mt-2 text-muted small">Set the clock face color.</div>
+                <code class="fs-6 fw-bold text-color-title">def set_face_color(self: Any, color: Tuple[int, int, int]) -> None</code>
+                <div class="mt-2 text-muted small">Set the clock face color (RGB).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-set_border_color">
-                <code class="fs-6 fw-bold text-color-title">def set_border_color(self: Any, color: Tuple[int, int, int]) -> Any</code>
-                <div class="mt-2 text-muted small">Set the clock border color.</div>
+                <code class="fs-6 fw-bold text-color-title">def set_border_color(self: Any, color: Tuple[int, int, int]) -> None</code>
+                <div class="mt-2 text-muted small">Set the clock border color (RGB).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-set_hand_colors">
-                <code class="fs-6 fw-bold text-color-title">def set_hand_colors(self: Any, hour: Tuple[int, int, int], minute: Tuple[int, int, int], second: Tuple[int, int, int]) -> Any</code>
-                <div class="mt-2 text-muted small">Set the colors for clock hands.</div>
+                <code class="fs-6 fw-bold text-color-title">def set_hand_colors(self: Any, hour: Tuple[int, int, int], minute: Tuple[int, int, int], second: Tuple[int, int, int]) -> None</code>
+                <div class="mt-2 text-muted small">Set the colors for clock hands (hour, minute, second) as RGB tuples.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-set_number_color">
-                <code class="fs-6 fw-bold text-color-title">def set_number_color(self: Any, color: Tuple[int, int, int]) -> Any</code>
-                <div class="mt-2 text-muted small">Set the color for analog clock numbers.</div>
+                <code class="fs-6 fw-bold text-color-title">def set_number_color(self: Any, color: Tuple[int, int, int]) -> None</code>
+                <div class="mt-2 text-muted small">Set the color for analog clock numbers (RGB).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-set_digital_text_color">
-                <code class="fs-6 fw-bold text-color-title">def set_digital_text_color(self: Any, color: Tuple[int, int, int]) -> Any</code>
-                <div class="mt-2 text-muted small">Set the color for digital display text.</div>
+                <code class="fs-6 fw-bold text-color-title">def set_digital_text_color(self: Any, color: Tuple[int, int, int]) -> None</code>
+                <div class="mt-2 text-muted small">Set the color for digital display text (RGB).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-set_time">
-                <code class="fs-6 fw-bold text-color-title">def set_time(self: Any, time_struct: time.struct_time) -> Any</code>
-                <div class="mt-2 text-muted small">Set a custom time for the clock.<br><br>Args:<br> &nbsp; &nbsp;time_struct (time.struct_time): Time structure from time.localtime()</div>
+                <code class="fs-6 fw-bold text-color-title">def set_time(self: Any, time_struct: time.struct_time) -> None</code>
+                <div class="mt-2 text-muted small">Set a custom time for the clock.<br><br>Args:<br> &nbsp; &nbsp;time_struct: Time structure from time.localtime().</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-set_time_from_string">
-                <code class="fs-6 fw-bold text-color-title">def set_time_from_string(self: Any, time_str: str, format_str: str = '%H:%M:%S') -> Any</code>
-                <div class="mt-2 text-muted small">Set time from a string.<br><br>Args:<br> &nbsp; &nbsp;time_str (str): Time string.<br> &nbsp; &nbsp;format_str (str): Format string for parsing.</div>
+                <code class="fs-6 fw-bold text-color-title">def set_time_from_string(self: Any, time_str: str, format_str: str = '%H:%M:%S') -> None</code>
+                <div class="mt-2 text-muted small">Set time from a string.<br><br>Args:<br> &nbsp; &nbsp;time_str: Time string (e.g., &quot;14:30:00&quot;).<br> &nbsp; &nbsp;format_str: Format string for parsing (default &quot;%H:%M:%S&quot;).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-get_time_string">
                 <code class="fs-6 fw-bold text-color-title">def get_time_string(self: Any) -> str</code>
-                <div class="mt-2 text-muted small">Get the current time as a formatted string.</div>
+                <div class="mt-2 text-muted small">Get the current time as a formatted string according to time_style.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> None</code>
                 <div class="mt-2 text-muted small">Update the clock time.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
                 <div class="mt-2 text-muted small">Render the clock.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-_render_analog_clock">
-                <code class="fs-6 fw-bold text-color-title">def _render_analog_clock(self: Any, renderer: Renderer, x: int, y: int) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_analog_clock(self: Any, renderer: Renderer, x: int, y: int) -> None</code>
                 <div class="mt-2 text-muted small">Render the analog clock face and hands.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-_draw_clock_numbers">
-                <code class="fs-6 fw-bold text-color-title">def _draw_clock_numbers(self: Any, renderer: Renderer, center_x: int, center_y: int, radius: int) -> Any</code>
-                <div class="mt-2 text-muted small">Draw numbers around the clock face.</div>
+                <code class="fs-6 fw-bold text-color-title">def _draw_clock_numbers(self: Any, renderer: Renderer, center_x: int, center_y: int, radius: int) -> None</code>
+                <div class="mt-2 text-muted small">Draw numbers 1-12 around the clock face.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-_draw_tick_marks">
-                <code class="fs-6 fw-bold text-color-title">def _draw_tick_marks(self: Any, renderer: Renderer, center_x: int, center_y: int, radius: int) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _draw_tick_marks(self: Any, renderer: Renderer, center_x: int, center_y: int, radius: int) -> None</code>
                 <div class="mt-2 text-muted small">Draw tick marks for minutes/seconds.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-_draw_hand">
-                <code class="fs-6 fw-bold text-color-title">def _draw_hand(self: Any, renderer: Renderer, center_x: int, center_y: int, angle: float, length: float, width: int, color: Tuple[int, int, int]) -> Any</code>
-                <div class="mt-2 text-muted small">Draw a clock hand.</div>
+                <code class="fs-6 fw-bold text-color-title">def _draw_hand(self: Any, renderer: Renderer, center_x: int, center_y: int, angle: float, length: float, width: int, color: Tuple[int, int, int]) -> None</code>
+                <div class="mt-2 text-muted small">Draw a single clock hand.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-clock-_render_digital_clock">
-                <code class="fs-6 fw-bold text-color-title">def _render_digital_clock(self: Any, renderer: Renderer, x: int, y: int) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_digital_clock(self: Any, renderer: Renderer, x: int, y: int) -> None</code>
                 <div class="mt-2 text-muted small">Render the digital clock display.</div>
             </div>
                 </div>
@@ -154,7 +161,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

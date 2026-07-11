@@ -48,14 +48,21 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">File selection element with text field and browse button.<br><br>Displays selected file path and allows browsing filesystem via dialog.<br>Supports file filtering and custom icons.<br><br>Attributes:<br> &nbsp; &nbsp;file_path (str): Currently selected file path.<br> &nbsp; &nbsp;file_filter (List[str]): List of file extensions to filter.<br> &nbsp; &nbsp;dialog_title (str): Title for file dialog.<br> &nbsp; &nbsp;button_text (str): Text for browse button.<br> &nbsp; &nbsp;show_icon (bool): Whether to show file icon.</p>
+                    <p class="lead fs-6">File selection element with text field and browse button.<br>Displays selected file path and allows browsing filesystem via dialog.<br>Supports file filtering and custom icons.</p>
                 </div>
-                
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'file_path': {'name': 'file path', 'key': 'file_path', 'type': str, 'editable': True, 'description': 'Currently selected file path.'}, 'file_filter': {'name': 'file filter', 'key': 'file_filter', 'type': List[str], 'editable': False, 'description': 'List of extensions to filter (e.g., [".png", ".jpg"]).'}, 'dialog_title': {'name': 'dialog title', 'key': 'dialog_title', 'type': str, 'editable': True, 'description': 'Title of the file dialog window.'}, 'button_text': {'name': 'button text', 'key': 'button_text', 'type': str, 'editable': True, 'description': 'Text on the browse button.'}, 'show_icon': {'name': 'show icon', 'key': 'show_icon', 'type': bool, 'editable': True, 'description': 'Whether to display a file icon.'}}</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, file_path: str = '', file_filter: Optional[List[str]] = None, dialog_title: str = 'Select File', button_text: str = 'Browse...', show_icon: bool = True, icon_path: Optional[str] = None, root_point: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, file_path: str = '', file_filter: Optional[List[str]] = None, dialog_title: str = 'Select File', button_text: str = 'Browse...', show_icon: bool = True, icon_path: Optional[str] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">Initialize a file finder widget.<br><br>Args:<br> &nbsp; &nbsp;x, y: Position (before anchor).<br> &nbsp; &nbsp;width, height: Dimensions.<br> &nbsp; &nbsp;file_path: Initial file path.<br> &nbsp; &nbsp;file_filter: List of allowed extensions (e.g., [&quot;.txt&quot;, &quot;.png&quot;]).<br> &nbsp; &nbsp;dialog_title: Title of the file dialog.<br> &nbsp; &nbsp;button_text: Text on the browse button.<br> &nbsp; &nbsp;show_icon: Display a file icon.<br> &nbsp; &nbsp;icon_path: Path to a custom icon image.<br> &nbsp; &nbsp;pivot: Anchor point.<br> &nbsp; &nbsp;theme: Theme to apply.<br> &nbsp; &nbsp;element_id: Custom ID.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-_get_init_args">
+                <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-_check_tkinter">
@@ -63,7 +70,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-_create_child_elements">
-                <code class="fs-6 fw-bold text-color-title">def _create_child_elements(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _create_child_elements(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-_get_default_icon">
@@ -71,23 +78,23 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-set_file_path">
-                <code class="fs-6 fw-bold text-color-title">def set_file_path(self: Any, path: str) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def set_file_path(self: Any, path: str) -> None</code>
+                <div class="mt-2 text-muted small">Set the current file path and update the text box.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-_update_icon">
-                <code class="fs-6 fw-bold text-color-title">def _update_icon(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _update_icon(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-_open_file_dialog">
-                <code class="fs-6 fw-bold text-color-title">def _open_file_dialog(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _open_file_dialog(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-_open_tkinter_dialog">
-                <code class="fs-6 fw-bold text-color-title">def _open_tkinter_dialog(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _open_tkinter_dialog(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-_open_simple_dialog">
-                <code class="fs-6 fw-bold text-color-title">def _open_simple_dialog(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _open_simple_dialog(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-_get_initial_directory">
@@ -95,19 +102,19 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-set_on_file_selected">
-                <code class="fs-6 fw-bold text-color-title">def set_on_file_selected(self: Any, callback: Callable[[str], None]) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def set_on_file_selected(self: Any, callback: Callable[[str], None]) -> None</code>
+                <div class="mt-2 text-muted small">Register a callback for when a file is selected.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-get_file_path">
                 <code class="fs-6 fw-bold text-color-title">def get_file_path(self: Any) -> str</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Return the current file path.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-update">
-                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-filefinder-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
@@ -134,7 +141,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

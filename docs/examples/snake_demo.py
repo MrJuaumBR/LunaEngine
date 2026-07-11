@@ -22,49 +22,49 @@ class MainMenuScene(Scene):
         super().__init__(engine)
         
         # Title
-        Ui_TitleLabel = TextLabel(512, 80, "Snake Game Demo", 72, root_point=(0.5, 0.5), theme=self.CurrentTheme)
+        Ui_TitleLabel = TextLabel(512, 80, "Snake Game Demo", 72, pivot=(0.5, 0.5), theme=self.CurrentTheme)
         self.ui_elements.append(Ui_TitleLabel)
         
         # Play button
-        Ui_PlayButton = Button(512, 200, 200, 42, "[ Play ]", 40, root_point=(0.5, 0.5), theme=self.CurrentTheme)
+        Ui_PlayButton = Button(512, 200, 200, 42, "[ Play ]", 40, pivot=(0.5, 0.5), theme=self.CurrentTheme)
         Ui_PlayButton.set_on_click(lambda: engine.set_scene("InGame"))
         self.ui_elements.append(Ui_PlayButton)
         
         # Exit button
-        Ui_ExitButton = Button(512, 260, 200, 42, "[ Exit ]", 40, root_point=(0.5, 0.5), theme=self.CurrentTheme)
+        Ui_ExitButton = Button(512, 260, 200, 42, "[ Exit ]", 40, pivot=(0.5, 0.5), theme=self.CurrentTheme)
         Ui_ExitButton.set_on_click(lambda: setattr(engine, 'running', False))
         self.ui_elements.append(Ui_ExitButton)
         
         # Theme dropdown
-        Ui_ThemeDropdown = Dropdown(512, 330, 200, 30, engine.get_theme_names(), root_point=(0.5, 0.5), theme=self.CurrentTheme)
+        Ui_ThemeDropdown = Dropdown(512, 330, 200, 30, engine.get_theme_names(), pivot=(0.5, 0.5), theme=self.CurrentTheme)
         Ui_ThemeDropdown.set_on_selection_changed(lambda i, n: self.Ui_update_theme(n, engine))
         self.ui_elements.append(Ui_ThemeDropdown)
         
         # Snake Color Customization Section
-        Ui_ColorLabel = TextLabel(512, 400, "Snake Color Customization", 28, root_point=(0.5, 0.5), theme=self.CurrentTheme)
+        Ui_ColorLabel = TextLabel(512, 400, "Snake Color Customization", 28, pivot=(0.5, 0.5), theme=self.CurrentTheme)
         self.ui_elements.append(Ui_ColorLabel)
         
         # Red Slider
-        Ui_RedLabel = TextLabel(400, 450, "Red:", 20, root_point=(0, 0.5), theme=self.CurrentTheme)
+        Ui_RedLabel = TextLabel(400, 450, "Red:", 20, pivot=(0, 0.5), theme=self.CurrentTheme)
         self.ui_elements.append(Ui_RedLabel)
         
-        self.Ui_RedSlider = Slider(450, 450, 150, 20, 0, 255, self.SnakeColor[0], root_point=(0, 0.5), theme=self.CurrentTheme)
+        self.Ui_RedSlider = Slider(450, 450, 150, 20, 0, 255, self.SnakeColor[0], pivot=(0, 0.5), theme=self.CurrentTheme)
         self.Ui_RedSlider.on_value_changed = lambda v: self.update_snake_color(0, int(v))
         self.ui_elements.append(self.Ui_RedSlider)
         
         # Green Slider
-        Ui_GreenLabel = TextLabel(400, 490, "Green:", 20, root_point=(0, 0.5), theme=self.CurrentTheme)
+        Ui_GreenLabel = TextLabel(400, 490, "Green:", 20, pivot=(0, 0.5), theme=self.CurrentTheme)
         self.ui_elements.append(Ui_GreenLabel)
         
-        self.Ui_GreenSlider = Slider(450, 490, 150, 20, 0, 255, self.SnakeColor[1], root_point=(0, 0.5), theme=self.CurrentTheme)
+        self.Ui_GreenSlider = Slider(450, 490, 150, 20, 0, 255, self.SnakeColor[1], pivot=(0, 0.5), theme=self.CurrentTheme)
         self.Ui_GreenSlider.on_value_changed = lambda v: self.update_snake_color(1, int(v))
         self.ui_elements.append(self.Ui_GreenSlider)
         
         # Blue Slider
-        Ui_BlueLabel = TextLabel(400, 530, "Blue:", 20, root_point=(0, 0.5), theme=self.CurrentTheme)
+        Ui_BlueLabel = TextLabel(400, 530, "Blue:", 20, pivot=(0, 0.5), theme=self.CurrentTheme)
         self.ui_elements.append(Ui_BlueLabel)
         
-        self.Ui_BlueSlider = Slider(450, 530, 150, 20, 0, 255, self.SnakeColor[2], root_point=(0, 0.5), theme=self.CurrentTheme)
+        self.Ui_BlueSlider = Slider(450, 530, 150, 20, 0, 255, self.SnakeColor[2], pivot=(0, 0.5), theme=self.CurrentTheme)
         self.Ui_BlueSlider.on_value_changed = lambda v: self.update_snake_color(2, int(v))
         self.ui_elements.append(self.Ui_BlueSlider)
         
@@ -111,8 +111,8 @@ class InGameScene(Scene):
         self.reset_game()
         
         # UI elements
-        self.Ui_ScoreLabel = TextLabel(10, 10, f"Score: {self.score}", 24, root_point=(0, 0))
-        self.Ui_InfoLabel = TextLabel(10, 40, "WASD/Arrows to move | ESC to menu", 18, root_point=(0, 0))
+        self.Ui_ScoreLabel = TextLabel(10, 10, f"Score: {self.score}", 24, pivot=(0, 0))
+        self.Ui_InfoLabel = TextLabel(10, 40, "WASD/Arrows to move | ESC to menu", 18, pivot=(0, 0))
         self.ui_elements.append(self.Ui_ScoreLabel)
         self.ui_elements.append(self.Ui_InfoLabel)
         

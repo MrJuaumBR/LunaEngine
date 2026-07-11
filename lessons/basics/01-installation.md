@@ -56,10 +56,10 @@ pip install -e .
 To verify that LunaEngine is correctly installed, create a simple test script:
 
 ```python
-from lunaengine.core.engine import Engine
+from lunaengine.core.engine import LunaEngine
 
 # Create engine instance
-engine = Engine()
+engine = LunaEngine()
 
 # Print version information
 print("LunaEngine is ready!")

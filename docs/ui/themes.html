@@ -35,7 +35,7 @@
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>themes.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">themes.py - UI Themes Manager for LunaEngine<br><br>ENGINE PATH:<br>lunaengine -&gt; ui -&gt; themes.py<br><br>DESCRIPTION:<br>This module manages comprehensive UI themes with predefined color schemes<br>for various applications and visual styles. It includes a wide range of<br>themes from basic functional ones to brand-specific and aesthetic designs.<br><br>MAIN FEATURES:<br>- Loads themes from individual JSON files in lunaengine/assets/themes/<br>- If directory is empty or missing, falls back to local themes.json<br>- If still not found, tries to download from GitHub<br>- Final fallback to default theme<br>- Supports full theme properties: colors (RGBA), corner radius, border width, blur</span>
+                <span class="text-muted">themes.py - UI Themes Manager for LunaEngine<br><br>ENGINE PATH:<br>lunaengine -&gt; ui -&gt; themes.py<br><br>DESCRIPTION:<br>This module manages comprehensive UI themes with predefined color schemes<br>for various applications and visual styles. It includes a wide range of<br>themes from basic functional ones to brand-specific and aesthetic designs.<br><br>MAIN FEATURES:<br>- Loads themes from individual JSON files in lunaengine/assets/themes/<br>- Supports combined theme files with &#x27;dark&#x27; and &#x27;light&#x27; variants<br>- Fallback to legacy single-file format<br>- Global dark/light mode toggle via set_dark_mode()<br>- If directory is empty or missing, falls back to local themes.json<br>- If still not found, tries to download from GitHub<br>- Final fallback to default theme</span>
             </div>
         </div>
         <div class="row">
@@ -268,6 +268,28 @@
                 </div>
             </div>
         </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-combinedtheme">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class CombinedTheme</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Container for a theme that has both dark and light variants.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>dark: UITheme = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>light: UITheme = None</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
         <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-themetype">
             <div class="card-header bg-success text-white py-3">
                 <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ThemeType</h3>
@@ -275,7 +297,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Enumeration of all available theme types.</p>
+                    <p class="lead fs-6">Enumeration of all available theme types (base names only).</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -300,25 +322,16 @@
                     <code>INFO: Any = 'info'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>FANTASY_DARK: Any = 'fantasy_dark'</code>
+                    <code>FANTASY: Any = 'fantasy'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>FANTASY_LIGHT: Any = 'fantasy_light'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>CHERRY_DARK: Any = 'cherry_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>CHERRY_LIGHT: Any = 'cherry_light'</code>
+                    <code>CHERRY: Any = 'cherry'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>ECLIPSE: Any = 'eclipse'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>MIDNIGHT_DARK: Any = 'midnight_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>MIDNIGHT_LIGHT: Any = 'midnight_light'</code>
+                    <code>MIDNIGHT: Any = 'midnight'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>NEON: Any = 'neon'</code>
@@ -363,58 +376,31 @@
                     <code>YOUTUBE: Any = 'youtube'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>STEAM_DARK: Any = 'steam_dark'</code>
+                    <code>STEAM: Any = 'steam'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>STEAM_LIGHT: Any = 'steam_light'</code>
+                    <code>WHATSAPP: Any = 'whatsapp'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>WHATSAPP_DARK: Any = 'whatsapp_dark'</code>
+                    <code>CRUNCHYROLL: Any = 'crunchyroll'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>WHATSAPP_LIGHT: Any = 'whatsapp_light'</code>
+                    <code>TWITCH: Any = 'twitch'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>CRUNCHYROLL_DARK: Any = 'crunchyroll_dark'</code>
+                    <code>TELEGRAM: Any = 'telegram'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>CRUNCHYROLL_LIGHT: Any = 'crunchyroll_light'</code>
+                    <code>XBOX: Any = 'xbox'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>TWITCH_DARK: Any = 'twitch_dark'</code>
+                    <code>PLAYSTATION: Any = 'playstation'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>TWITCH_LIGHT: Any = 'twitch_light'</code>
+                    <code>MINECRAFT: Any = 'minecraft'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>TELEGRAM_DARK: Any = 'telegram_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>TELEGRAM_LIGHT: Any = 'telegram_light'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>XBOX_DARK: Any = 'xbox_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>XBOX_LIGHT: Any = 'xbox_light'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>PLAYSTATION_DARK: Any = 'playstation_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>PLAYSTATION_LIGHT: Any = 'playstation_light'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>MINECRAFT_DARK: Any = 'minecraft_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>MINECRAFT_LIGHT: Any = 'minecraft_light'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>CYBERPUNK_DARK: Any = 'cyberpunk_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>CYBERPUNK_LIGHT: Any = 'cyberpunk_light'</code>
+                    <code>CYBERPUNK: Any = 'cyberpunk'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>QUEEN: Any = 'queen'</code>
@@ -429,10 +415,7 @@
                     <code>BUILDER: Any = 'builder'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>GALAXY_DARK: Any = 'galaxy_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>GALAXY_LIGHT: Any = 'galaxy_light'</code>
+                    <code>GALAXY: Any = 'galaxy'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>FOREST: Any = 'forest'</code>
@@ -456,61 +439,37 @@
                     <code>DEEP_SPACE: Any = 'deep_space'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>NORD_DARK: Any = 'nord_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>NORD_LIGHT: Any = 'nord_light'</code>
+                    <code>NORD: Any = 'nord'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>DRACULA: Any = 'dracula'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>SOLARIZED_DARK: Any = 'solarized_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>SOLARIZED_LIGHT: Any = 'solarized_light'</code>
+                    <code>SOLARIZED: Any = 'solarized'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>MONOKAI: Any = 'monokai'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>GRUVBOX_DARK: Any = 'gruvbox_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>GRUVBOX_LIGHT: Any = 'gruvbox_light'</code>
+                    <code>GRUVBOX: Any = 'gruvbox'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>BLACK: Any = 'black'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>WINDOWS_DARK: Any = 'windows_dark'</code>
+                    <code>WINDOWS: Any = 'windows'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>WINDOWS_LIGHT: Any = 'windows_light'</code>
+                    <code>LINUX: Any = 'linux'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>LINUX_DARK: Any = 'linux_dark'</code>
+                    <code>IOS: Any = 'ios'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>LINUX_LIGHT: Any = 'linux_light'</code>
+                    <code>ANDROID: Any = 'android'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>IOS_DARK: Any = 'ios_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>IOS_LIGHT: Any = 'ios_light'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>ANDROID_DARK: Any = 'android_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>ANDROID_LIGHT: Any = 'android_light'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>NINJA_DARK: Any = 'ninja_dark'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>NINJA_LIGHT: Any = 'ninja_light'</code>
+                    <code>NINJA: Any = 'ninja'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>BRAZIL: Any = 'brazil'</code>
@@ -547,13 +506,16 @@
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>_themes: Dict[ThemeType, UITheme] = {}</code>
+                    <code>_themes: Dict[ThemeType, Union[UITheme, CombinedTheme]] = {}</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>_current_theme: ThemeType = ThemeType.DEFAULT</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>_themes_loaded: bool = False</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_dark_mode: bool = True</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>GITHUB_THEMES_URL: Any = 'https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/lunaengine/ui/themes.json'</code>
@@ -581,8 +543,12 @@
                 <code class="fs-6 fw-bold text-color-title">def _parse_theme_style(cls: Any, data: Union[dict, list, tuple]) -> ThemeStyle</code>
                 <div class="mt-2 text-muted small">Convert JSON data (new or legacy format) to ThemeStyle.</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_build_ui_theme_from_dict">
+                <code class="fs-6 fw-bold text-color-title">def _build_ui_theme_from_dict(cls: Any, data: dict) -> UITheme</code>
+                <div class="mt-2 text-muted small">Build a UITheme from a dictionary of style entries.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_load_theme_from_json_file">
-                <code class="fs-6 fw-bold text-color-title">def _load_theme_from_json_file(cls: Any, filepath: str) -> Optional[Tuple[ThemeType, UITheme]]</code>
+                <code class="fs-6 fw-bold text-color-title">def _load_theme_from_json_file(cls: Any, filepath: str) -> Optional[Tuple[ThemeType, Union[UITheme, CombinedTheme]]]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_load_themes_from_directory">
@@ -606,7 +572,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme">
-                <code class="fs-6 fw-bold text-color-title">def get_theme(cls: Any, theme_type: ThemeType) -> UITheme</code>
+                <code class="fs-6 fw-bold text-color-title">def get_theme(cls: Any, theme_type: Optional[ThemeType] = None) -> UITheme</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-set_current_theme">
@@ -615,6 +581,14 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_current_theme">
                 <code class="fs-6 fw-bold text-color-title">def get_current_theme(cls: Any) -> ThemeType</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-set_dark_mode">
+                <code class="fs-6 fw-bold text-color-title">def set_dark_mode(cls: Any, dark: bool) -> Any</code>
+                <div class="mt-2 text-muted small">Set global dark mode. True = dark, False = light.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_dark_mode">
+                <code class="fs-6 fw-bold text-color-title">def get_dark_mode(cls: Any) -> bool</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_by_name">
@@ -626,35 +600,35 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_get_style_property">
-                <code class="fs-6 fw-bold text-color-title">def _get_style_property(cls: Any, color_name: color_name_type, property_name: str, theme_type: Optional[ThemeType] = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _get_style_property(cls: Any, color_name: color_name_type | str, property_name: str, theme_type: Optional[ThemeType] = None) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_color">
-                <code class="fs-6 fw-bold text-color-title">def get_color(cls: Any, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> Tuple[int, int, int]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_color(cls: Any, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> Tuple[int, int, int]</code>
                 <div class="mt-2 text-muted small">Return RGB tuple (ignores alpha).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_alpha">
-                <code class="fs-6 fw-bold text-color-title">def get_alpha(cls: Any, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> float</code>
+                <code class="fs-6 fw-bold text-color-title">def get_alpha(cls: Any, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> float</code>
                 <div class="mt-2 text-muted small">Return alpha (0.0–1.0).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_corner_radius">
-                <code class="fs-6 fw-bold text-color-title">def get_corner_radius(cls: Any, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> int</code>
+                <code class="fs-6 fw-bold text-color-title">def get_corner_radius(cls: Any, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> int</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_border_width">
-                <code class="fs-6 fw-bold text-color-title">def get_border_width(cls: Any, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> int</code>
+                <code class="fs-6 fw-bold text-color-title">def get_border_width(cls: Any, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> int</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_blur">
-                <code class="fs-6 fw-bold text-color-title">def get_blur(cls: Any, color_name: color_name_type, theme_type: Optional[ThemeType] = None) -> int</code>
+                <code class="fs-6 fw-bold text-color-title">def get_blur(cls: Any, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> int</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_color_legacy">
-                <code class="fs-6 fw-bold text-color-title">def get_color_legacy(cls: Any, color_name: color_name_type) -> Tuple[int, int, int]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_color_legacy(cls: Any, color_name: color_name_type | str) -> Tuple[int, int, int]</code>
                 <div class="mt-2 text-muted small">Maintain compatibility with old `get_color` (no theme_type param).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_themes">
-                <code class="fs-6 fw-bold text-color-title">def get_themes(cls: Any) -> Dict[ThemeType, UITheme]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_themes(cls: Any) -> Dict[ThemeType, Union[UITheme, CombinedTheme]]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_types">
@@ -697,7 +671,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

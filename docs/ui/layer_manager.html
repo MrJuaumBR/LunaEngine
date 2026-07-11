@@ -35,7 +35,7 @@
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>layer_manager.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">layer_manager.py - UI Layer Management System for LunaEngine<br><br>ENGINE PATH:<br>lunaengine -&gt; ui -&gt; layer_manager.py<br><br>DESCRIPTION:<br>This module provides a layer management system for UI elements, ensuring<br>proper rendering order especially for interactive elements like dropdowns,<br>tooltips, and modal dialogs that need to appear above other content.<br><br>MAIN CLASSES:<br>1. UILayerManager: Manages UI elements across different render layers<br>2. LayerType (Enum): Defines different render layers for UI elements</span>
+                <span class="text-muted">layer_manager.py - UI Layer Management System for LunaEngine<br><br>ENGINE PATH:<br>lunaengine -&gt; ui -&gt; layer_manager.py<br><br>DESCRIPTION:<br>This module provides a layer management system for UI elements, ensuring<br>proper rendering order especially for interactive elements like dropdowns,<br>tooltips, and modal dialogs that need to appear above other content.</span>
             </div>
         </div>
         <div class="row">
@@ -48,7 +48,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Manages UI elements across different render layers to ensure proper<br>visual hierarchy and interaction.<br><br>Attributes:<br> &nbsp; &nbsp;layers (Dict[LayerType, List[UIElement]]): Elements organized by layer<br> &nbsp; &nbsp;layer_order (List[LayerType]): Order in which layers should be rendered</p>
+                    <p class="lead fs-6">Manages UI elements across different render layers to ensure proper<br>visual hierarchy and interaction.</p>
                 </div>
                 
                 <div class="methods-section">
@@ -60,19 +60,19 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uilayermanager-get_all_elements">
                 <code class="fs-6 fw-bold text-color-title">def get_all_elements(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Get all UI elements across all layers.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: A list of all UI elements</div>
+                <div class="mt-2 text-muted small">Get all UI elements across all layers.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uilayermanager-add_element">
                 <code class="fs-6 fw-bold text-color-title">def add_element(self: Any, element: UIElement, layer: LayerType = None) -> Any</code>
-                <div class="mt-2 text-muted small">Add a UI element to the appropriate layer.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to add<br> &nbsp; &nbsp;layer (LayerType, optional): Specific layer to add to. If None,<br> &nbsp; &nbsp; &nbsp; &nbsp;determines layer based on element properties.</div>
+                <div class="mt-2 text-muted small">Add a UI element to the appropriate layer.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uilayermanager-remove_element">
                 <code class="fs-6 fw-bold text-color-title">def remove_element(self: Any, element: UIElement) -> Any</code>
-                <div class="mt-2 text-muted small">Remove a UI element from all layers.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to remove</div>
+                <div class="mt-2 text-muted small">Remove a UI element from all layers.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uilayermanager-clear_layer">
                 <code class="fs-6 fw-bold text-color-title">def clear_layer(self: Any, layer: LayerType) -> Any</code>
-                <div class="mt-2 text-muted small">Clear all elements from a specific layer.<br><br>Args:<br> &nbsp; &nbsp;layer (LayerType): The layer to clear</div>
+                <div class="mt-2 text-muted small">Clear all elements from a specific layer.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uilayermanager-clear_all">
                 <code class="fs-6 fw-bold text-color-title">def clear_all(self: Any) -> Any</code>
@@ -80,23 +80,23 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uilayermanager-_determine_layer">
                 <code class="fs-6 fw-bold text-color-title">def _determine_layer(self: Any, element: UIElement) -> LayerType</code>
-                <div class="mt-2 text-muted small">Determine the appropriate render layer for a UI element.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The element to classify<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;LayerType: The appropriate render layer</div>
+                <div class="mt-2 text-muted small">Determine the appropriate render layer for a UI element.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uilayermanager-determine_list_layers">
                 <code class="fs-6 fw-bold text-color-title">def determine_list_layers(self: Any, element_list: List[UIElement]) -> Dict[LayerType, List[UIElement]]</code>
-                <div class="mt-2 text-muted small">Determine the appropriate render layers for a list of UI elements.<br><br>Args:<br> &nbsp; &nbsp;element_list (List[UIElement]): The list of elements to classify<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;Dict[LayerType, List[UIElement]]: A dictionary mapping layers to elements</div>
+                <div class="mt-2 text-muted small">Classify a list of elements by layer.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uilayermanager-get_elements_in_order_from">
                 <code class="fs-6 fw-bold text-color-title">def get_elements_in_order_from(self: Any, elements: List[UIElement]) -> List[UIElement]</code>
-                <div class="mt-2 text-muted small">Get elements in the correct render order from a dictionary of layers.<br><br>Args:<br> &nbsp; &nbsp;layers (Dict[LayerType, List[UIElement]]): A dictionary mapping layers to elements<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[UIElement]: Elements sorted by render layer and z-index</div>
+                <div class="mt-2 text-muted small">Get elements in correct render order from a list, using layer classification.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uilayermanager-get_elements_in_order">
                 <code class="fs-6 fw-bold text-color-title">def get_elements_in_order(self: Any) -> List[UIElement]</code>
-                <div class="mt-2 text-muted small">Get all elements in the correct render order.<br><br>Returns:<br> &nbsp; &nbsp;List[UIElement]: Elements sorted by render layer and z-index</div>
+                <div class="mt-2 text-muted small">Get all stored elements in the correct render order.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uilayermanager-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, input_state: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Update all elements in the layer manager.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds<br> &nbsp; &nbsp;input_state: Current input state</div>
+                <div class="mt-2 text-muted small">Update all elements in reverse order (top to bottom) for proper event handling.</div>
             </div>
                 </div>
             </div>
@@ -122,7 +122,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-05-05 15:31
+                        Documentation generated on 2026-07-10 21:26
                     </p>
                 </div>
             </div>

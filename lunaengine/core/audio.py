@@ -1,774 +1,611 @@
 """
-Audio System for LunaEngine - OpenAL backend with Pygame fallback
-
-This module provides a unified audio interface with the following features:
-- OpenAL backend with Pygame fallback for compatibility
-- Sound loading and management by name
-- Automatic channel allocation or explicit channel selection
-- Smooth volume/pitch transitions
-- Stereo panning support
-- Resource pooling and management
-
-Author: [Your Name]
-Version: 1.0.0
+Audio Manager for LunaEngine - Named channels, curves, device selection, event system
 """
 
-import pygame
-import threading
-import time
 import os
+import time
+import threading
 import math
-import weakref
-from typing import Dict, List, Optional, Callable, Union, Tuple, Any
-from enum import Enum
-import json
+from typing import Dict, List, Optional, Union, Tuple, Any, Callable
+from enum import Enum, auto
 
-# Try to import OpenAL
+# Import OpenAL backend
+from ..backend.openal import (
+    OpenALBackend,
+    OpenALSource,
+    OpenALBuffer,
+    OpenALDevice,
+    OPENAL_AVAILABLE,
+    EFX_AVAILABLE,
+    al,
+)
+
+# Pygame fallback
 try:
-    from ..backend.openal import (
-        OpenALAudioSystem, OpenALSource, OpenALAudioEvent,
-        initialize_audio, cleanup_audio, get_audio_system,
-        OPENAL_AVAILABLE
-    )
-    USE_OPENAL = OPENAL_AVAILABLE
-except (ImportError, ModuleNotFoundError):
-    USE_OPENAL = False
-    print("OpenAL audio disabled, using pygame.mixer")
+    import pygame
+    PYGAME_AVAILABLE = True
+except ImportError:
+    PYGAME_AVAILABLE = False
+    print("Warning: PyGame not available, audio loading may be limited.")
 
-class AudioError(Exception):
-    """Exception raised for audio-related errors."""
-    pass
+
+class AudioEvent(Enum):
+    """
+    Audio events emitted by the audio system or channels.
+    """
+    PLAYBACK_STARTED = auto()
+    PLAYBACK_STOPPED = auto()
+    PLAYBACK_PAUSED = auto()
+    PLAYBACK_RESUMED = auto()
+    PLAYBACK_COMPLETED = auto()   # non-looping sound finished
+    FADE_COMPLETE = auto()
+    LOOP = auto()
+    CURVE_FINISHED = auto()
+    ERROR = auto()
+
 
 class AudioState(Enum):
-    """Audio playback states."""
     STOPPED = "stopped"
     PLAYING = "playing"
     PAUSED = "paused"
-    FADING_IN = "fading_in"
-    FADING_OUT = "fading_out"
 
-class AudioEvent(Enum):
-    """Audio events."""
-    PLAYBACK_STARTED = "playback_started"
-    PLAYBACK_STOPPED = "playback_stopped"
-    PLAYBACK_PAUSED = "playback_paused"
-    PLAYBACK_RESUMED = "playback_resumed"
-    PLAYBACK_COMPLETED = "playback_completed"
-    FADE_COMPLETE = "fade_complete"
-    LOOP = "loop"
 
-class SoundInfo:
-    """
-    Information about a loaded sound.
-    
-    Attributes:
-        name (str): Name of the sound
-        filepath (str): Path to the audio file
-        duration (float): Duration in seconds
-        channels (int): Number of audio channels
-        sample_rate (int): Sample rate in Hz
-        loaded_time (float): When the sound was loaded
-    """
-    
-    def __init__(self, name: str, filepath: str, duration: float = 0.0, 
-                 channels: int = 2, sample_rate: int = 44100):
+class SoundData:
+    """Metadata and buffer reference for a loaded sound."""
+    def __init__(self, name: str, filepath: str, category: str = "sfx"):
         self.name = name
         self.filepath = filepath
-        self.duration = duration
-        self.channels = channels
-        self.sample_rate = sample_rate
+        self.category = category
+        self.duration = 0.0
+        self.ref_count = 0
         self.loaded_time = time.time()
-        self.ref_count = 0  # How many channels are using this sound
-    
-    def __repr__(self) -> str:
-        return f"SoundInfo(name='{self.name}', duration={self.duration:.2f}s, refs={self.ref_count})"
+        self._buffer = None   # OpenALBuffer, lazy-loaded
+
+    def get_buffer(self, backend: OpenALBackend) -> Optional[OpenALBuffer]:
+        """Get or create the OpenAL buffer for this sound."""
+        if self._buffer is None:
+            self._buffer = OpenALBuffer.get_or_create(self.filepath, backend.device)
+            if self._buffer:
+                self.duration = self._buffer.duration
+        return self._buffer
+
+
+class AudioCurve:
+    """
+    Keyframe-based animation for a single audio property (volume, pitch, pan, balance).
+    """
+    def __init__(self, property_name: str, keyframes: List[Tuple[float, float]],
+                 interpolation: str = 'linear', loop: bool = False):
+        """
+        Args:
+            property_name: 'volume', 'pitch', 'pan', or 'balance'
+            keyframes: list of (time, value) pairs, time in seconds.
+            interpolation: 'linear' or 'smoothstep'
+            loop: if True, restart animation when finished.
+        """
+        self.property = property_name
+        self.keyframes = sorted(keyframes, key=lambda x: x[0])
+        self.interpolation = interpolation
+        self.loop = loop
+        self.duration = self.keyframes[-1][0] if self.keyframes else 0.0
+        self.elapsed = 0.0
+        self.active = False
+        self._finished_callback = None
+        self._channel = None  # set by channel when applied
+
+    def evaluate(self, t: float) -> float:
+        """Return interpolated value at time t (0..duration)."""
+        if not self.keyframes:
+            return 0.0
+        if t <= self.keyframes[0][0]:
+            return self.keyframes[0][1]
+        if t >= self.keyframes[-1][0]:
+            return self.keyframes[-1][1]
+        for i in range(len(self.keyframes) - 1):
+            t0, v0 = self.keyframes[i]
+            t1, v1 = self.keyframes[i + 1]
+            if t0 <= t <= t1:
+                frac = (t - t0) / (t1 - t0)
+                if self.interpolation == 'linear':
+                    return v0 + (v1 - v0) * frac
+                elif self.interpolation == 'smoothstep':
+                    frac = frac * frac * (3 - 2 * frac)
+                    return v0 + (v1 - v0) * frac
+                # add more easing here if desired
+        return self.keyframes[-1][1]
+
+    def update(self, dt: float) -> bool:
+        """Advance animation; returns True if finished (and not looping)."""
+        if not self.active:
+            return True
+        self.elapsed += dt
+        if self.elapsed >= self.duration:
+            if self.loop:
+                self.elapsed = self.elapsed % self.duration
+            else:
+                self.active = False
+                if self._finished_callback:
+                    self._finished_callback()
+                return True
+        return False
+
+    def on_finished(self, callback: Callable):
+        self._finished_callback = callback
+
 
 class AudioChannel:
     """
-    Audio channel for playback control.
-    
-    Each channel can play one sound at a time with individual volume,
-    pitch, and pan controls.
-    
-    Args:
-        channel_id (int): Unique identifier for this channel
-        audio_system: Reference to the parent audio system
+    Named audio channel with individual volume, pitch, pan, balance, and curves.
+    Now supports effects: reverb, echo (via effect slot if EFX available).
     """
-    
-    def __init__(self, channel_id: int, audio_system: 'AudioSystem'):
-        self.channel_id = channel_id
-        self.audio_system = audio_system
-        self.use_openal = audio_system.use_openal
-        
-        # Playback properties
-        self.volume = 1.0
-        self.pitch = 1.0
-        self.pan = 0.0
-        self.loop = False
+    def __init__(self, name: str, manager: 'AudioManager',
+                 volume: float = 1.0, pitch: float = 1.0, pan: float = 0.0,
+                 balance: float = 0.0, loop: bool = False):
+        self.name = name
+        self.manager = manager
+        self.volume = volume
+        self.pitch = pitch
+        self.pan = pan
+        self.balance = balance
+        self.loop = loop
         self.state = AudioState.STOPPED
-        
-        # Sound reference
         self.current_sound: Optional[str] = None
-        self.current_sound_info: Optional[SoundInfo] = None
-        
-        # Time tracking
-        self.start_time = 0.0
-        self.paused_time = 0.0
-        
-        # Transition control
-        self._fade_thread: Optional[threading.Thread] = None
-        self._stop_fade_event = threading.Event()
-        
-        # Backend-specific objects
-        if self.use_openal:
-            # Get source from OpenAL system
-            self._openal_source: Optional[OpenALSource] = None
-            system = get_audio_system()
-            self._openal_source = system.get_free_source()
+        self.source: Optional[OpenALSource] = None
+        self._curves: List[AudioCurve] = []
+        self._lock = threading.RLock()
+        self._event_handlers: Dict[AudioEvent, List[Callable]] = {e: [] for e in AudioEvent}
+        # Effects
+        self.reverb_amount = 0.0
+        self.echo_amount = 0.0
+        self.chorus_amount = 0.0
+        self.flanger_amount = 0.0
+        self.distortion_amount = 0.0
+        self.pitch_shift = 0.0  # semitones? We'll use a multiplier later
+        self._effect_applied = False
+
+    def _get_source(self) -> Optional[OpenALSource]:
+        """Get a free OpenAL source, reusing the current one if still playing."""
+        if self.source is None or not self.source.is_playing():
+            self.source = self.manager.backend.get_free_source()
+        return self.source
+
+    def _emit_event(self, event: AudioEvent, **kwargs):
+        for cb in self._event_handlers.get(event, []):
+            try:
+                cb(self, **kwargs)
+            except Exception as e:
+                print(f"Error in event handler for {event}: {e}")
+
+    def on_event(self, event: AudioEvent, callback: Callable):
+        """Register a callback for a specific event."""
+        self._event_handlers[event].append(callback)
+
+    def _apply_effects(self):
+        """Apply all active effects to the source if EFX available."""
+        if not EFX_AVAILABLE or not self.source:
+            return
+
+        # Determine which effect to apply (priority: reverb > echo > chorus > flanger > distortion > pitch shift)
+        # We can only apply one effect slot per source, so we choose the most significant.
+        # For simplicity, we'll apply reverb if any reverb, else echo, etc.
+        effect_type = None
+        params = {}
+
+        if self.reverb_amount > 0.01:
+            effect_type = al.AL_EFFECT_REVERB
+            params = {
+                al.AL_REVERB_GAIN: 0.1 + self.reverb_amount * 0.9,
+                al.AL_REVERB_DECAY_TIME: 0.5 + self.reverb_amount * 2.0,
+                al.AL_REVERB_DENSITY: 0.3 + self.reverb_amount * 0.6,
+            }
+        elif self.echo_amount > 0.01:
+            effect_type = al.AL_EFFECT_ECHO
+            params = {
+                # Echo parameters (approximate)
+                # We need to map echo_amount to some meaningful params
+                # These constants may not be defined; we'll use a generic approach
+            }
+        elif self.chorus_amount > 0.01:
+            effect_type = al.AL_EFFECT_CHORUS
+            params = {
+                # Chorus params
+            }
+        elif self.flanger_amount > 0.01:
+            effect_type = al.AL_EFFECT_FLANGER
+            params = {
+                # Flanger params
+            }
+        elif self.distortion_amount > 0.01:
+            effect_type = al.AL_EFFECT_DISTORTION
+            params = {
+                # Distortion params
+            }
+
+        if effect_type is not None:
+            self.source.set_effect(effect_type, params)
+            self._effect_applied = True
         else:
-            # Pygame mixer channel
-            self._pygame_channel: Optional[pygame.mixer.Channel] = pygame.mixer.Channel(channel_id)
-            self._pygame_sound: Optional[pygame.mixer.Sound] = None
-    
-    def play(self, sound_name: str, loop: bool = False) -> bool:
+            if self._effect_applied:
+                self.source.remove_effect()
+                self._effect_applied = False
+
+    # ---- Effect setters ----
+    def set_reverb(self, amount: float):
+        self.reverb_amount = max(0.0, min(1.0, amount))
+        self._apply_effects()
+
+    def set_echo(self, amount: float):
+        self.echo_amount = max(0.0, min(1.0, amount))
+        self._apply_effects()
+
+    def set_chorus(self, amount: float):
+        self.chorus_amount = max(0.0, min(1.0, amount))
+        self._apply_effects()
+
+    def set_flanger(self, amount: float):
+        self.flanger_amount = max(0.0, min(1.0, amount))
+        self._apply_effects()
+
+    def set_distortion(self, amount: float):
+        self.distortion_amount = max(0.0, min(1.0, amount))
+        self._apply_effects()
+
+    def set_pitch_shift(self, semitones: float):
+        """Shift pitch by semitones (positive = higher pitch)."""
+        # Convert semitones to pitch multiplier: 2^(semitones/12)
+        self.pitch_shift = semitones
+        if self.source:
+            multiplier = 2.0 ** (semitones / 12.0)
+            self.source.set_pitch_immediate(max(0.1, min(4.0, multiplier)))
+
+    def play(self, sound_name: str, loop: bool = False, fade_in: float = 0.0,
+             curve: Optional[AudioCurve] = None) -> bool:
         """
         Play a sound on this channel.
-        
-        Args:
-            sound_name (str): Name of the sound to play
-            loop (bool): Whether to loop the sound
-            
-        Returns:
-            bool: True if playback started successfully
+        Returns True if playback started successfully.
         """
-        # Stop any current playback
-        self.stop()
-        
-        # Get sound info
-        sound_info = self.audio_system.get_sound_info(sound_name)
-        if not sound_info:
-            print(f"Sound '{sound_name}' not found")
-            return False
-        
-        self.current_sound = sound_name
-        self.current_sound_info = sound_info
-        self.loop = loop
-        self.state = AudioState.PLAYING
-        self.start_time = time.time()
-        self.paused_time = 0.0
-        
-        # Increment reference count
-        sound_info.ref_count += 1
-        
-        if self.use_openal and self._openal_source:
-            # OpenAL playback
-            try:
-                # Set buffer on source
-                buffer = self.audio_system.openal_system.load_sound(sound_info.filepath)
-                if buffer:
-                    self._openal_source.set_buffer(buffer)
-                    self._openal_source.set_volume(self.volume)
-                    self._openal_source.set_pitch(self.pitch)
-                    self._openal_source.set_pan(self.pan)
-                    self._openal_source.play(loop)
-                    return True
-            except Exception as e:
-                print(f"OpenAL play error: {e}")
+        with self._lock:
+            self.stop()
+            sound = self.manager.sounds.get(sound_name)
+            if not sound:
+                print(f"Sound '{sound_name}' not loaded")
                 return False
-        elif not self.use_openal:
-            # Pygame mixer playback
-            try:
-                sound = self.audio_system.get_sound_pygame(sound_name)
-                if sound:
-                    self._pygame_sound = sound
-                    loops = -1 if loop else 0
-                    self._pygame_channel.play(sound, loops=loops)
-                    self._update_pygame_volume()
-                    return True
-            except Exception as e:
-                print(f"Pygame play error: {e}")
+            source = self._get_source()
+            if not source:
+                print("No free audio source")
                 return False
-        
-        return False
-    
-    def set_volume(self, volume: float, duration: float = 0.0):
-        """
-        Set channel volume with optional fade.
-        
-        Args:
-            volume (float): Target volume (0.0 to 1.0)
-            duration (float): Fade duration in seconds
-        """
-        volume = max(0.0, min(1.0, volume))
-        
-        if duration <= 0:
-            # Immediate change
-            self.volume = volume
-            if self.use_openal and self._openal_source:
-                self._openal_source.set_volume(volume)
-            elif self._pygame_channel:
-                self._update_pygame_volume()
-        else:
-            # Start fade thread
-            self._start_volume_transition(volume, duration)
-    
-    def _start_volume_transition(self, target_volume: float, duration: float):
-        """Start smooth volume transition."""
-        # Stop any existing fade
-        self._stop_fade_event.set()
-        if self._fade_thread and self._fade_thread.is_alive():
-            self._fade_thread.join(timeout=0.1)
-        self._stop_fade_event.clear()
-        
-        start_volume = self.volume
-        
-        self._fade_thread = threading.Thread(
-            target=self._transition_volume,
-            args=(start_volume, target_volume, duration),
-            daemon=True
-        )
-        self._fade_thread.start()
-    
-    def _transition_volume(self, start: float, end: float, duration: float):
-        """Smoothly transition volume."""
-        steps = max(1, int(duration * 60))
-        step_time = duration / steps
-        
-        for i in range(steps + 1):
-            if self._stop_fade_event.is_set():
-                break
-            
-            # Calculate eased progress
-            progress = i / steps
-            # Smooth step function
-            if progress < 0.5:
-                eased = 2 * progress * progress
-            else:
-                eased = 1 - math.pow(-2 * progress + 2, 2) / 2
-            
-            current_volume = start + (end - start) * eased
-            self.volume = current_volume
-            
-            # Apply to backend
-            if self.use_openal and self._openal_source:
-                self._openal_source.set_volume(current_volume)
-            elif self._pygame_channel:
-                self._update_pygame_volume()
-            
-            time.sleep(step_time)
-        
-        if not self._stop_fade_event.is_set():
-            self.volume = end
-            if self.use_openal and self._openal_source:
-                self._openal_source.set_volume(end)
-            elif self._pygame_channel:
-                self._update_pygame_volume()
-    
-    def set_pitch(self, pitch: float, duration: float = 0.0):
-        """
-        Set playback pitch.
-        
-        Args:
-            pitch (float): Pitch multiplier (0.1 to 4.0)
-            duration (float): Transition duration in seconds (OpenAL only)
-        """
-        pitch = max(0.1, min(4.0, pitch))
-        self.pitch = pitch
-        
-        if self.use_openal and self._openal_source:
-            self._openal_source.set_pitch(pitch, duration)
-        # Pygame doesn't support pitch directly
-    
-    def set_pan(self, pan: float):
-        """
-        Set stereo panning.
-        
-        Args:
-            pan (float): -1.0 (left) to 1.0 (right)
-        """
-        self.pan = max(-1.0, min(1.0, pan))
-        
-        if self.use_openal and self._openal_source:
-            self._openal_source.set_pan(pan)
-        elif self._pygame_channel:
-            self._update_pygame_volume()
-    
-    def _update_pygame_volume(self):
-        """Update pygame channel volume with panning."""
-        if hasattr(self, '_pygame_channel') and self._pygame_channel:
-            # Simple stereo panning
-            left_vol = self.volume * (1.0 if self.pan >= 0 else 1.0 + self.pan)
-            right_vol = self.volume * (1.0 if self.pan <= 0 else 1.0 - self.pan)
-            self._pygame_channel.set_volume(left_vol, right_vol)
-    
-    def pause(self):
-        """Pause playback."""
-        if self.state != AudioState.PLAYING:
-            return
-        
-        if self.use_openal and self._openal_source:
-            self._openal_source.pause()
-        elif self._pygame_channel:
-            self._pygame_channel.pause()
-        
-        self.state = AudioState.PAUSED
-        self.paused_time = time.time() - self.start_time
-    
-    def resume(self):
-        """Resume playback."""
-        if self.state != AudioState.PAUSED:
-            return
-        
-        if self.use_openal and self._openal_source:
-            self._openal_source.resume()
-        elif hasattr(self, '_pygame_channel') and self._pygame_channel:
-            self._pygame_channel.unpause()
-        
-        self.state = AudioState.PLAYING
-        self.start_time = time.time() - self.paused_time
-    
-    def stop(self):
-        """Stop playback."""
-        self._stop_fade_event.set()
-        
-        if self.use_openal and self._openal_source:
-            self._openal_source.stop()
-            self._openal_source.rewind()
-        elif hasattr(self, '_pygame_channel') and self._pygame_channel:
-            self._pygame_channel.stop()
-        
-        # Decrement reference count
-        if self.current_sound_info:
-            self.current_sound_info.ref_count = max(0, self.current_sound_info.ref_count - 1)
-        
-        self.state = AudioState.STOPPED
-        self.current_sound = None
-        self.current_sound_info = None
-    
-    def is_playing(self) -> bool:
-        """Check if channel is playing."""
-        if self.use_openal and self._openal_source:
-            return self._openal_source.is_playing()
-        elif self._pygame_channel:
-            return self._pygame_channel.get_busy() and self.state == AudioState.PLAYING
-        return False
-    
-    def is_paused(self) -> bool:
-        """Check if channel is paused."""
-        return self.state == AudioState.PAUSED
-    
-    def get_playback_position(self) -> float:
-        """Get current playback position in seconds."""
-        if not self.is_playing() and not self.is_paused():
-            return 0.0
-        
-        if self.use_openal and self._openal_source:
-            return self._openal_source.get_playback_position()
-        
-        # Pygame doesn't support position query
-        if self.state == AudioState.PAUSED:
-            return self.paused_time
-        elif self.state == AudioState.PLAYING:
-            return time.time() - self.start_time
-        
-        return 0.0
-    
-    def cleanup(self):
-        """Clean up channel resources."""
-        self.stop()
-        if self._fade_thread and self._fade_thread.is_alive():
-            self._fade_thread.join(timeout=0.1)
+            buf = sound.get_buffer(self.manager.backend)
+            if not buf:
+                return False
 
-class AudioSystem:
-    """
-    Main audio system with sound management and channel allocation.
-    
-    Features:
-    - Load sounds by name and store for reuse
-    - Automatic channel allocation or explicit channel selection
-    - Resource management and cleanup
-    - OpenAL backend with Pygame fallback
-    
-    Args:
-        num_channels (int): Maximum number of concurrent audio channels
-        use_openal (bool): Whether to use OpenAL backend
-    """
-    
-    def __init__(self, num_channels: int = 16, use_openal: bool = None):
-        # Determine backend
-        if use_openal is None:
-            self.use_openal = USE_OPENAL
-        else:
-            self.use_openal = use_openal and USE_OPENAL
-        
-        # Sound management
-        self._sounds: Dict[str, SoundInfo] = {}  # name -> SoundInfo
-        self._pygame_sounds: Dict[str, pygame.mixer.Sound] = {}  # name -> pygame Sound
-        
-        # Channel management
-        self.channels: List[AudioChannel] = []
-        self.num_channels = num_channels
-        
-        # Initialize backend
-        if self.use_openal:
-            self._init_openal()
-        else:
-            self._init_pygame()
-        
-        # System properties
-        self.master_volume = 1.0
-        self.music_volume = 0.8
-        self.sfx_volume = 0.9
-        
-        print(f"Audio System initialized: {'OpenAL' if self.use_openal else 'Pygame'} "
-              f"with {num_channels} channels")
-    
-    def _init_openal(self):
-        """Initialize OpenAL backend."""
-        try:
-            if not initialize_audio(self.num_channels):
-                raise AudioError("Failed to initialize OpenAL")
-            
-            self.openal_system = get_audio_system()
-            
-            # Create channels
-            for i in range(self.num_channels):
-                self.channels.append(AudioChannel(i, self))
-            
-        except Exception as e:
-            print(f"OpenAL initialization failed: {e}")
-            self.use_openal = False
-            self._init_pygame()
-    
-    def _init_pygame(self):
-        """Initialize Pygame mixer backend."""
-        try:
-            if not pygame.mixer.get_init():
-                pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
-            
-            # Set number of channels
-            current_channels = pygame.mixer.get_num_channels()
-            if current_channels < self.num_channels:
-                pygame.mixer.set_num_channels(self.num_channels)
-            
-            # Create channels
-            for i in range(self.num_channels):
-                self.channels.append(AudioChannel(i, self))
-            
-        except Exception as e:
-            print(f"Pygame mixer initialization failed: {e}")
-            raise AudioError(f"Audio system initialization failed: {e}")
-    
-    def load_sound(self, name: str, filepath: str) -> bool:
-        """
-        Load a sound file and store it by name.
-        
-        Args:
-            name (str): Name to assign to the sound
-            filepath (str): Path to the audio file
-            
-        Returns:
-            bool: True if sound was loaded successfully
-        
-        Raises:
-            FileNotFoundError: If the sound file doesn't exist
-            AudioError: If sound loading fails
-        """
-        if not os.path.exists(filepath):
-            raise FileNotFoundError(f"Sound file not found: {filepath}")
-        
-        # Check if already loaded
-        if name in self._sounds:
-            print(f"Sound '{name}' already loaded")
-            return True
-        
-        try:
-            # Get sound duration (approximate)
-            duration = self._estimate_duration(filepath)
-            
-            # Store sound info
-            sound_info = SoundInfo(name, filepath, duration)
-            self._sounds[name] = sound_info
-            
-            # Load into Pygame if using Pygame backend
-            if not self.use_openal:
-                try:
-                    sound = pygame.mixer.Sound(filepath)
-                    self._pygame_sounds[name] = sound
-                except Exception as e:
-                    print(f"Warning: Could not preload '{name}' with Pygame: {e}")
-            
-            print(f"Loaded sound '{name}' from '{filepath}' (duration: {duration:.2f}s)")
-            return True
-            
-        except Exception as e:
-            raise AudioError(f"Failed to load sound '{name}': {e}")
-    
-    def _estimate_duration(self, filepath: str) -> float:
-        """Estimate audio file duration."""
-        try:
-            # Try pygame first
-            sound = pygame.mixer.Sound(filepath)
-            return sound.get_length()
-        except:
-            pass
-        
-        # Fallback: estimate from file size
-        try:
-            size = os.path.getsize(filepath)
-            # Rough estimate: 1MB ≈ 6 seconds of stereo 44.1kHz audio
-            return size / (1024 * 1024) * 6
-        except:
-            return 1.0  # Default
-    
-    def get_sound_info(self, name: str) -> Optional[SoundInfo]:
-        """Get information about a loaded sound."""
-        return self._sounds.get(name)
-    
-    def get_sound_pygame(self, name: str) -> Optional[pygame.mixer.Sound]:
-        """Get Pygame Sound object for a loaded sound."""
-        if name in self._pygame_sounds:
-            return self._pygame_sounds[name]
-        
-        # Try to load on demand
-        sound_info = self.get_sound_info(name)
-        if sound_info and os.path.exists(sound_info.filepath):
-            try:
-                sound = pygame.mixer.Sound(sound_info.filepath)
-                self._pygame_sounds[name] = sound
-                return sound
-            except Exception as e:
-                print(f"Failed to load sound '{name}' with Pygame: {e}")
-        
-        return None
-    
-    def play(self, sound_name: str, channel: Optional[int] = None, 
-             volume: float = None, pitch: float = 1.0, pan: float = 0.0, 
-             loop: bool = False) -> Optional[AudioChannel]:
-        """
-        Play a sound by name.
-        
-        Args:
-            sound_name (str): Name of the sound to play
-            channel (int, optional): Specific channel to use. If None, 
-                                    uses first available channel
-            volume (float, optional): Volume (0.0-1.0). Uses SFX volume if None
-            pitch (float): Pitch multiplier
-            pan (float): Stereo pan (-1.0 to 1.0)
-            loop (bool): Whether to loop the sound
-            
-        Returns:
-            Optional[AudioChannel]: Channel playing the sound, or None if failed
-        """
-        # Check if sound exists
-        if sound_name not in self._sounds:
-            print(f"Sound '{sound_name}' not found. Load it first with load_sound()")
-            return None
-        
-        # Find channel
-        if channel is not None:
-            # Use specific channel
-            if channel < 0 or channel >= len(self.channels):
-                print(f"Invalid channel: {channel}")
-                return None
-            target_channel = self.channels[channel]
-            
-            # Stop if channel is busy
-            if target_channel.is_playing() or target_channel.is_paused():
-                target_channel.stop()
-        else:
-            # Find first available channel
-            target_channel = None
-            for ch in self.channels:
-                if not ch.is_playing() and not ch.is_paused():
-                    target_channel = ch
-                    break
-            
-            if not target_channel:
-                print("No available audio channels")
-                return None
-        
-        # Set default volume
-        if volume is None:
-            volume = self.sfx_volume
-        
-        # Play sound
-        if target_channel.play(sound_name, loop):
-            target_channel.set_volume(volume)
-            target_channel.set_pitch(pitch)
-            target_channel.set_pan(pan)
-            return target_channel
-        
-        return None
-    
-    def play_music(self, sound_name: str, volume: float = None, 
-                   pitch: float = 1.0, loop: bool = True, 
-                   fade_in: float = 0.0) -> Optional[AudioChannel]:
-        """
-        Play background music (uses channel 0).
-        
-        Args:
-            sound_name (str): Name of the music sound
-            volume (float, optional): Volume. Uses music volume if None
-            pitch (float): Pitch multiplier
-            loop (bool): Whether to loop
-            fade_in (float): Fade-in duration in seconds
-            
-        Returns:
-            Optional[AudioChannel]: Music channel, or None if failed
-        """
-        if volume is None:
-            volume = self.music_volume
-        
-        # Use channel 0 for music
-        music_channel = self.channels[0] if self.channels else None
-        if not music_channel:
-            print("No channels available for music")
-            return None
-        
-        # Stop current music
-        if music_channel.is_playing() or music_channel.is_paused():
-            music_channel.stop()
-        
-        # Play music
-        if music_channel.play(sound_name, loop):
-            if fade_in > 0:
-                # Start silent and fade in
-                music_channel.volume = 0.0
-                music_channel._update_pygame_volume()
-                music_channel.set_volume(volume, fade_in)
+            source.set_buffer(buf)
+            # Apply master volume
+            master_vol = self.manager.master_volume
+            initial_vol = 0.0 if fade_in > 0 else self.volume * master_vol
+            source.set_volume_immediate(initial_vol)
+            # Apply pitch shift if any
+            if self.pitch_shift != 0.0:
+                multiplier = 2.0 ** (self.pitch_shift / 12.0)
+                source.set_pitch_immediate(max(0.1, min(4.0, multiplier * self.pitch)))
             else:
-                music_channel.set_volume(volume)
-            
-            music_channel.set_pitch(pitch)
-            music_channel.set_pan(0.0)  # Center pan for music
-            
-            return music_channel
-        
-        return None
-    
-    def stop_all(self):
-        """Stop all audio playback."""
-        for channel in self.channels:
-            channel.stop()
-        
-        if self.use_openal and hasattr(self, 'openal_system'):
-            self.openal_system.stop_all()
-    
-    def pause_all(self):
-        """Pause all audio playback."""
-        for channel in self.channels:
-            if channel.is_playing():
-                channel.pause()
-    
-    def resume_all(self):
-        """Resume all paused audio."""
-        for channel in self.channels:
-            if channel.is_paused():
-                channel.resume()
-    
+                source.set_pitch_immediate(self.pitch)
+            source.set_balance_immediate(self.balance)
+            source.set_pan_immediate(self.pan)
+            source.play(loop)
+            self.source = source
+            self.current_sound = sound_name
+            self.state = AudioState.PLAYING
+            sound.ref_count += 1
+
+            self._emit_event(AudioEvent.PLAYBACK_STARTED, sound=sound_name)
+
+            if fade_in > 0:
+                # Create a curve from 0 to self.volume * master_vol
+                target_vol = self.volume * master_vol
+                curve_vol = AudioCurve('volume', [(0.0, 0.0), (fade_in, target_vol)], 'smoothstep')
+                self.apply_curve(curve_vol)
+
+            if curve:
+                self.apply_curve(curve)
+
+            # Apply effects
+            self._apply_effects()
+
+            return True
+
+    def stop(self):
+        with self._lock:
+            if self.source:
+                self.source.stop()
+                self.source = None
+            if self.state != AudioState.STOPPED:
+                self._emit_event(AudioEvent.PLAYBACK_STOPPED, sound=self.current_sound)
+            self.state = AudioState.STOPPED
+            if self.current_sound:
+                sound = self.manager.sounds.get(self.current_sound)
+                if sound:
+                    sound.ref_count = max(0, sound.ref_count - 1)
+                self.current_sound = None
+            self._curves.clear()
+            self._effect_applied = False
+
+    def pause(self):
+        if self.source and self.state == AudioState.PLAYING:
+            self.source.pause()
+            self.state = AudioState.PAUSED
+            self._emit_event(AudioEvent.PLAYBACK_PAUSED)
+
+    def resume(self):
+        if self.source and self.state == AudioState.PAUSED:
+            self.source.resume()
+            self.state = AudioState.PLAYING
+            self._emit_event(AudioEvent.PLAYBACK_RESUMED)
+
+    def set_volume(self, volume: float, duration: float = 0.0, curve_type: str = 'linear'):
+        """Set target volume, optionally with a smooth transition."""
+        self.volume = max(0.0, min(1.0, volume))
+        master_vol = self.manager.master_volume
+        target = self.volume * master_vol
+        if duration > 0:
+            current = self.source.volume if self.source else target
+            curve = AudioCurve('volume', [(0.0, current), (duration, target)], curve_type)
+            self.apply_curve(curve)
+        else:
+            if self.source:
+                self.source.set_volume_immediate(target)
+
+    def set_pitch(self, pitch: float, duration: float = 0.0, curve_type: str = 'linear'):
+        self.pitch = max(0.1, min(4.0, pitch))
+        if duration > 0:
+            current = self.source.pitch if self.source else self.pitch
+            curve = AudioCurve('pitch', [(0.0, current), (duration, self.pitch)], curve_type)
+            self.apply_curve(curve)
+        else:
+            if self.source:
+                self.source.set_pitch_immediate(self.pitch)
+
+    def set_balance(self, balance: float, duration: float = 0.0, curve_type: str = 'linear'):
+        self.balance = max(-1.0, min(1.0, balance))
+        if duration > 0:
+            current = self.source.balance if self.source else self.balance
+            curve = AudioCurve('balance', [(0.0, current), (duration, self.balance)], curve_type)
+            self.apply_curve(curve)
+        else:
+            if self.source:
+                self.source.set_balance_immediate(self.balance)
+
+    def set_pan(self, pan: float, duration: float = 0.0, curve_type: str = 'linear'):
+        self.pan = max(-1.0, min(1.0, pan))
+        if duration > 0:
+            current = self.source.pan if self.source else self.pan
+            curve = AudioCurve('pan', [(0.0, current), (duration, self.pan)], curve_type)
+            self.apply_curve(curve)
+        else:
+            if self.source:
+                self.source.set_pan_immediate(self.pan)
+
+    def apply_curve(self, curve: AudioCurve):
+        """Apply a curve to this channel."""
+        curve.active = True
+        curve.elapsed = 0.0
+        curve._channel = self
+        with self._lock:
+            self._curves.append(curve)
+
+    def update(self, dt: float):
+        """Update active curves and emit completion events."""
+        with self._lock:
+            for curve in self._curves[:]:
+                if curve.update(dt):
+                    self._curves.remove(curve)
+                    self._emit_event(AudioEvent.CURVE_FINISHED, curve=curve)
+                else:
+                    # Apply current value to source
+                    val = curve.evaluate(curve.elapsed)
+                    if curve.property == 'volume':
+                        if self.source:
+                            self.source.set_volume_immediate(val)
+                    elif curve.property == 'pitch':
+                        if self.source:
+                            self.source.set_pitch_immediate(val)
+                    elif curve.property == 'balance':
+                        if self.source:
+                            self.source.set_balance_immediate(val)
+                    elif curve.property == 'pan':
+                        if self.source:
+                            self.source.set_pan_immediate(val)
+
+            # Check if sound finished (non-looping)
+            if self.state == AudioState.PLAYING and self.source and not self.source.is_playing():
+                # Sound stopped naturally
+                self.state = AudioState.STOPPED
+                self._emit_event(AudioEvent.PLAYBACK_COMPLETED, sound=self.current_sound)
+                # Decrement ref count
+                if self.current_sound:
+                    sound = self.manager.sounds.get(self.current_sound)
+                    if sound:
+                        sound.ref_count = max(0, sound.ref_count - 1)
+                    self.current_sound = None
+                self.source = None
+
+    def is_playing(self) -> bool:
+        return self.source is not None and self.source.is_playing()
+
+    def is_paused(self) -> bool:
+        return self.source is not None and self.source.is_paused()
+
+    def get_position(self) -> float:
+        return self.source.get_position() if self.source else 0.0
+
+
+class AudioManager:
+    """
+    Main audio manager with named channels, curves, device selection, and event system.
+    Now includes master volume control and global effect toggles.
+    """
+    def __init__(self, max_sources: int = 32, device_name: Optional[str] = None):
+        self.backend = OpenALBackend(max_sources, device_name)
+        self.sounds: Dict[str, SoundData] = {}
+        self.channels: Dict[str, AudioChannel] = {}
+        self.default_channel = 'default'
+        self.master_volume = 1.0  # master volume multiplier
+        # Create default channel and music channel
+        self.create_channel('default')
+        self.create_channel('music', volume=0.8, loop=True)
+        self._event_handlers: Dict[AudioEvent, List[Callable]] = {e: [] for e in AudioEvent}
+
+    def _emit_event(self, event: AudioEvent, **kwargs):
+        for cb in self._event_handlers.get(event, []):
+            try:
+                cb(self, **kwargs)
+            except Exception as e:
+                print(f"Error in global event handler {event}: {e}")
+
+    def on_event(self, event: AudioEvent, callback: Callable):
+        """Register a global audio event handler."""
+        self._event_handlers[event].append(callback)
+
     def set_master_volume(self, volume: float):
-        """Set master volume for all audio."""
+        """Set master volume (0.0 - 1.0)."""
         self.master_volume = max(0.0, min(1.0, volume))
-        
-        # This would need to be applied to all channels
-        # Implementation depends on backend capabilities
-    
-    def set_music_volume(self, volume: float):
-        """Set music volume."""
-        self.music_volume = max(0.0, min(1.0, volume))
-        
-        # Update music channel if playing
-        if self.channels:
-            music_channel = self.channels[0]
-            if music_channel.is_playing() or music_channel.is_paused():
-                music_channel.set_volume(volume)
-    
-    def set_sfx_volume(self, volume: float):
-        """Set sound effects volume."""
-        self.sfx_volume = max(0.0, min(1.0, volume))
-    
-    def get_channel_info(self) -> List[Dict]:
-        """Get information about all channels."""
-        info = []
-        for i, channel in enumerate(self.channels):
-            info.append({
-                'id': i,
-                'state': channel.state.value,
-                'sound': channel.current_sound,
-                'volume': channel.volume,
-                'pitch': channel.pitch,
-                'pan': channel.pan,
-                'playing': channel.is_playing(),
-                'paused': channel.is_paused(),
-                'position': channel.get_playback_position()
-            })
-        return info
-    
-    def unload_sound(self, name: str, force: bool = False) -> bool:
-        """
-        Unload a sound from memory.
-        
-        Args:
-            name (str): Name of the sound to unload
-            force (bool): Force unload even if sound is in use
-            
-        Returns:
-            bool: True if sound was unloaded
-        """
-        if name not in self._sounds:
+        # Update all channels' source volumes
+        for ch in self.channels.values():
+            if ch.source and ch.state == AudioState.PLAYING:
+                # Adjust to new master volume
+                target = ch.volume * self.master_volume
+                ch.source.set_volume_immediate(target)
+
+    # ---- Global effect setters ----
+    def set_global_reverb(self, amount: float):
+        for ch in self.channels.values():
+            ch.set_reverb(amount)
+
+    def set_global_echo(self, amount: float):
+        for ch in self.channels.values():
+            ch.set_echo(amount)
+
+    def set_global_chorus(self, amount: float):
+        for ch in self.channels.values():
+            ch.set_chorus(amount)
+
+    def set_global_flanger(self, amount: float):
+        for ch in self.channels.values():
+            ch.set_flanger(amount)
+
+    def set_global_distortion(self, amount: float):
+        for ch in self.channels.values():
+            ch.set_distortion(amount)
+
+    def set_global_pitch_shift(self, semitones: float):
+        for ch in self.channels.values():
+            ch.set_pitch_shift(semitones)
+
+    # ---- Device and sound management ----
+    def list_devices(self) -> List[str]:
+        return OpenALDevice.list_devices()
+
+    def set_device(self, device_name: str) -> bool:
+        if not device_name:
             return False
-        
-        sound_info = self._sounds[name]
-        
-        # Check if sound is in use
-        if sound_info.ref_count > 0 and not force:
-            print(f"Cannot unload '{name}': {sound_info.ref_count} channels are using it")
-            return False
-        
-        # Remove from dictionaries
-        self._sounds.pop(name, None)
-        self._pygame_sounds.pop(name, None)
-        
-        print(f"Unloaded sound '{name}'")
-        return True
-    
-    def unload_unused_sounds(self, max_age: float = 300.0):
-        """
-        Unload sounds that haven't been used for a while.
-        
-        Args:
-            max_age (float): Maximum age in seconds
-        """
-        current_time = time.time()
-        to_unload = []
-        
-        for name, sound_info in self._sounds.items():
-            if sound_info.ref_count == 0 and (current_time - sound_info.loaded_time) > max_age:
-                to_unload.append(name)
-        
-        for name in to_unload:
-            self.unload_sound(name, force=True)
-    
-    def update(self):
-        """Update audio system (call periodically)."""
-        if self.use_openal and hasattr(self, 'openal_system'):
-            self.openal_system.update()
-    
-    def cleanup(self):
-        """Clean up all audio resources."""
         self.stop_all()
-        
-        # Clean up channels
-        for channel in self.channels:
-            channel.cleanup()
-        
-        # Clean up backend
-        if self.use_openal and hasattr(self, 'openal_system'):
-            cleanup_audio()
-        
-        # Clear sound dictionaries
-        self._sounds.clear()
-        self._pygame_sounds.clear()
-        
-        print("Audio system cleaned up")
+        self.backend.cleanup()
+        new_backend = OpenALBackend(self.backend.max_sources, device_name)
+        if new_backend.is_initialized():
+            self.backend = new_backend
+            for ch in self.channels.values():
+                ch.source = None
+                ch.state = AudioState.STOPPED
+            return True
+        else:
+            self.backend = OpenALBackend(self.backend.max_sources)
+            return False
+
+    def create_channel(self, name: str, **kwargs) -> AudioChannel:
+        if name in self.channels:
+            raise ValueError(f"Channel '{name}' already exists")
+        channel = AudioChannel(name, self, **kwargs)
+        self.channels[name] = channel
+        return channel
+
+    def get_channel(self, name: str) -> Optional[AudioChannel]:
+        return self.channels.get(name)
+
+    def load_sound(self, name: str, filepath: str, category: str = "sfx",
+                   force_mono: bool = False, force_8bit: bool = False) -> bool:
+        if name in self.sounds:
+            return True
+        if not os.path.exists(filepath):
+            raise FileNotFoundError(f"Audio file not found: {filepath}")
+        sound = SoundData(name, filepath, category)
+        if self.backend.is_initialized():
+            buf = OpenALBuffer.get_or_create(filepath, self.backend.device,
+                                             force_mono=force_mono, force_8bit=force_8bit)
+            if buf:
+                sound.duration = buf.duration
+            else:
+                print(f"Warning: Could not load '{filepath}'")
+                return False
+        self.sounds[name] = sound
+        return True
+
+    def play(self, sound_name: str, channel: Optional[Union[str, int]] = None,
+             volume: float = 1.0, pitch: float = 1.0, pan: float = 0.0,
+             balance: float = 0.0, loop: bool = False,
+             fade_in: float = 0.0, curve: Optional[AudioCurve] = None,
+             reverb: float = 0.0, echo: float = 0.0,
+             chorus: float = 0.0, flanger: float = 0.0,
+             distortion: float = 0.0, pitch_shift: float = 0.0) -> Optional[AudioChannel]:
+        if sound_name not in self.sounds:
+            print(f"Sound '{sound_name}' not loaded")
+            return None
+        if channel is None:
+            ch_name = self.default_channel
+        elif isinstance(channel, str):
+            ch_name = channel
+        else:
+            ch_name = self.default_channel
+        ch = self.channels.get(ch_name)
+        if not ch:
+            ch = self.create_channel(ch_name)
+        ch.volume = volume
+        ch.pitch = pitch
+        ch.pan = pan
+        ch.balance = balance
+        ch.loop = loop
+        ch.set_reverb(reverb)
+        ch.set_echo(echo)
+        ch.set_chorus(chorus)
+        ch.set_flanger(flanger)
+        ch.set_distortion(distortion)
+        ch.set_pitch_shift(pitch_shift)
+        if ch.play(sound_name, loop, fade_in, curve):
+            self._emit_event(AudioEvent.PLAYBACK_STARTED, channel=ch, sound=sound_name)
+            return ch
+        return None
+
+    def play_music(self, sound_name: str, volume: float = 0.8, pitch: float = 1.0,
+                   loop: bool = True, fade_in: float = 0.0,
+                   curve: Optional[AudioCurve] = None,
+                   reverb: float = 0.0, echo: float = 0.0,
+                   chorus: float = 0.0, flanger: float = 0.0,
+                   distortion: float = 0.0, pitch_shift: float = 0.0) -> Optional[AudioChannel]:
+        return self.play(sound_name, channel='music', volume=volume, pitch=pitch,
+                         loop=loop, fade_in=fade_in, curve=curve,
+                         reverb=reverb, echo=echo,
+                         chorus=chorus, flanger=flanger,
+                         distortion=distortion, pitch_shift=pitch_shift)
+
+    def stop_all(self):
+        for ch in self.channels.values():
+            ch.stop()
+
+    def update(self, dt: float):
+        for ch in self.channels.values():
+            ch.update(dt)
+        OpenALBuffer.cleanup_unused()
+
+    def cleanup(self):
+        self.stop_all()
+        self.backend.cleanup()
+        self.sounds.clear()
+        self.channels.clear()

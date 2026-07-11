@@ -9,20 +9,17 @@ import time
 import inspect
 import re
 import platform
-from typing import Callable, List, Dict, Any, Optional, Tuple, Union, TYPE_CHECKING, Type
+import sys
+import datetime
+from typing import Callable, List, Dict, Any, Literal, Optional, Tuple, Union, TYPE_CHECKING, Type
 from dataclasses import dataclass, field
 from enum import Enum
 
 import pygame
 
-from ..ui.elements.base import UIElement, FontManager, UIState
-from ..ui.elements.containers import UiFrame, ScrollingFrame, Tabination
-from ..ui.elements.selectors import Dropdown, Checkbox, Slider
-from ..ui.elements.buttons import Button
-from ..ui.elements.labels import TextLabel
-from ..ui.elements.textinputs import TextBox
 from ..backend.opengl import OpenGLRenderer
 from ..backend.types import InputState, Color
+from .. import __version__
 
 if TYPE_CHECKING:
     from ..core.engine import LunaEngine
@@ -31,6 +28,14 @@ if TYPE_CHECKING:
 # ----------------------------------------------------------------------
 # Base draggable overlay
 # ----------------------------------------------------------------------
+
+from ..ui.elements.base import UIElement, FontManager, UIState, ElementStyle
+from ..ui.elements.containers import UiFrame, ScrollingFrame, Tabination, ColorPicker
+from ..ui.elements.selectors import Dropdown, Checkbox, Slider, NumberSelector
+from ..ui.elements.buttons import Button
+from ..ui.elements.labels import TextLabel
+from ..ui.elements.textinputs import TextBox
+from ..ui.themes import ThemeManager, ThemeStyle
 
 class DebugOverlay:
     """Base class for a draggable, fixable, closable debug panel."""
@@ -43,26 +48,27 @@ class DebugOverlay:
         width: int = 200,
         height: int = 100,
         title: str = "",
-        background_color: Tuple[int, int, int, int] = (0, 0, 0, 180),
-        header_color: Tuple[int, int, int, int] = (60, 60, 70, 220),
         text_color: Tuple[int, int, int] = (255, 255, 255),
     ) -> None:
         self.engine = engine
+        self.theme = ThemeManager.get_theme()
+        self.scale:float = self.engine.height / 600 or 1.0
         self.x = x
         self.y = y
-        self.width = width
-        self.height = height
+        self.width = int(width * self.scale)
+        self.height = int(height * self.scale)
         self.title = title
-        self.background_color = background_color
-        self.header_color = header_color
-        self.text_color = text_color
+        self.background_color = (*self.theme.background.color, 0.5)
+        self.header_color = (*self.theme.accent1.color, 0.75)
+        self.text_color = self.theme.text_primary.color
+        self.corner_radius = self.theme.background.corner_radius
         self.visible = True
 
-        self.font = FontManager.get_font(None, 15)
-        self.header_font = FontManager.get_font(None, 17)
-        self.header_height = 28
-        self.button_size = 18
-        self.button_margin = 6
+        self.font = FontManager.get_font(None, int(15 * self.scale))
+        self.header_font = FontManager.get_font(None, int(17 * self.scale))
+        self.header_height = int(28 * self.scale)
+        self.button_size = int(18 * self.scale)
+        self.button_margin = int(6 * self.scale)
 
         self._fixed = False
 
@@ -87,13 +93,13 @@ class DebugOverlay:
     def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
-        renderer.draw_rect(self.x, self.y, self.width, self.height, self.background_color)
-        renderer.draw_rect(self.x, self.y, self.width, self.header_height, self.header_color)
-        renderer.draw_text(self.title, self.x + 8, self.y + 6, self.text_color, self.header_font)
+        renderer.draw_rect(self.x, self.y, self.width, self.height, self.background_color, corner_radius=self.corner_radius)
+        renderer.draw_rect(self.x, self.y, self.width, self.header_height, self.header_color, corner_radius=self.corner_radius)
+        renderer.draw_text(self.title, int(self.x + 8 * self.scale), int(self.y + 6*self.scale), self.text_color, self.header_font)
 
         lock_char = 'L' if self._fixed else 'U'
-        renderer.draw_text(lock_char, self.lock_btn_rect.x + 4, self.lock_btn_rect.y, self.text_color, self.font)
-        renderer.draw_text('X', self.close_btn_rect.x + 4, self.close_btn_rect.y, (255, 100, 100), self.font)
+        renderer.draw_text(lock_char, int(self.lock_btn_rect.x + 4 * self.scale), self.lock_btn_rect.y, self.text_color, self.font)
+        renderer.draw_text('X', int(self.close_btn_rect.x + 4 * self.scale), self.close_btn_rect.y, (255, 100, 100), self.font)
 
         self.render_content(renderer)
 
@@ -116,10 +122,10 @@ class FPSOverlay(DebugOverlay):
         self.frame_time = stats.get('frame_time_ms', 0)
 
     def render_content(self, renderer: OpenGLRenderer) -> None:
-        y = self.y + self.header_height + 5
-        renderer.draw_text(f"{self.current_fps:.1f} fps", self.x + 10, y, self.text_color, self.font)
-        renderer.draw_text(f"Avg: {self.avg_fps:.1f} fps", self.x + 10, y + 24, self.text_color, self.font)
-        renderer.draw_text(f"Frame: {self.frame_time:.2f} ms", self.x + 10, y + 48, self.text_color, self.font)
+        y = self.y + self.header_height + 5 * self.scale
+        renderer.draw_text(f"{self.current_fps:.1f} fps", self.x + (10 * self.scale), y, self.text_color, self.font)
+        renderer.draw_text(f"Avg: {self.avg_fps:.1f} fps", self.x + (10 * self.scale), y + 18*self.scale, self.text_color, self.font)
+        renderer.draw_text(f"Frame: {self.frame_time:.2f} ms", self.x + (10 * self.scale), y + 36*self.scale, self.text_color, self.font)
 
     def update(self, dt: float, input_state: InputState) -> None:
         if not self.visible:
@@ -129,7 +135,7 @@ class FPSOverlay(DebugOverlay):
         left_held = input_state.mouse_buttons_pressed.left
         left_just = input_state.mouse_just_pressed and left_held
 
-        header_rect = pygame.Rect(self.x, self.y, self.width, self.header_height)
+        header_rect = pygame.Rect(self.x, self.y, int(self.width * self.scale), int(self.header_height * self.scale))
         self.close_btn_rect.topleft = (
             self.x + self.width - self.button_size - self.button_margin,
             self.y + (self.header_height - self.button_size) // 2,
@@ -164,7 +170,6 @@ class FPSOverlay(DebugOverlay):
                     self._dragging = False
 
         self.refresh(dt)
-
 
 class SceneStatsOverlay(DebugOverlay):
     def __init__(self, engine: 'LunaEngine', x: int = 200, y: int = 10) -> None:
@@ -240,7 +245,216 @@ class SceneStatsOverlay(DebugOverlay):
 
 
 # ----------------------------------------------------------------------
-# Live Inspector – now a UiFrame (draggable, with header)
+# Sound Overlay
+# ----------------------------------------------------------------------
+
+class SoundOverlay(DebugOverlay):
+    def __init__(self, engine: 'LunaEngine', x: int = 420, y: int = 10) -> None:
+        super().__init__(engine, x, y, width=200, height=90, title="Sound")
+        self.master_volume = 1.0
+        self.source_count = 0
+        self.playing_count = 0
+
+    def refresh(self, dt: float) -> None:
+        audio = self.engine.audio
+        if audio and hasattr(audio, 'backend') and audio.backend:
+            self.master_volume = audio.master_volume if hasattr(audio, 'master_volume') else 1.0
+            self.source_count = len(audio.backend.sources) if hasattr(audio.backend, 'sources') else 0
+            self.playing_count = sum(1 for s in audio.backend.sources if s.is_playing()) if hasattr(audio.backend, 'sources') else 0
+        else:
+            self.master_volume = 1.0
+            self.source_count = 0
+            self.playing_count = 0
+
+    def render_content(self, renderer: OpenGLRenderer) -> None:
+        y = self.y + self.header_height + 5
+        renderer.draw_text(f"Master: {self.master_volume:.2f}", self.x + 10, y, self.text_color, self.font)
+        renderer.draw_text(f"Sources: {self.source_count}", self.x + 10, y + 24, self.text_color, self.font)
+        renderer.draw_text(f"Playing: {self.playing_count}", self.x + 10, y + 48, self.text_color, self.font)
+
+    def update(self, dt: float, input_state: InputState) -> None:
+        if not self.visible:
+            return
+
+        mouse_pos = input_state.mouse_pos
+        left_held = input_state.mouse_buttons_pressed.left
+        left_just = input_state.mouse_just_pressed and left_held
+
+        header_rect = pygame.Rect(self.x, self.y, self.width, self.header_height)
+        self.close_btn_rect.topleft = (
+            self.x + self.width - self.button_size - self.button_margin,
+            self.y + (self.header_height - self.button_size) // 2,
+        )
+        self.lock_btn_rect.topleft = (
+            self.close_btn_rect.left - self.button_size - self.button_margin,
+            self.y + (self.header_height - self.button_size) // 2,
+        )
+
+        if left_just and self.close_btn_rect.collidepoint(mouse_pos):
+            self.close()
+            return
+        if left_just and self.lock_btn_rect.collidepoint(mouse_pos):
+            self.toggle_fixed()
+            return
+
+        if not self._fixed:
+            if left_just and not hasattr(self, '_dragging'):
+                if header_rect.collidepoint(mouse_pos) and not self.lock_btn_rect.collidepoint(mouse_pos) and not self.close_btn_rect.collidepoint(mouse_pos):
+                    self._dragging = True
+                    self._drag_offset_x = self.x - mouse_pos[0]
+                    self._drag_offset_y = self.y - mouse_pos[1]
+            if getattr(self, '_dragging', False):
+                if left_held:
+                    new_x = mouse_pos[0] + self._drag_offset_x
+                    new_y = mouse_pos[1] + self._drag_offset_y
+                    screen_w, screen_h = self.engine.window.width, self.engine.window.height
+                    new_x = max(0, min(new_x, screen_w - self.width))
+                    new_y = max(0, min(new_y, screen_h - self.height))
+                    self.x, self.y = new_x, new_y
+                else:
+                    self._dragging = False
+
+        self.refresh(dt)
+
+
+# ----------------------------------------------------------------------
+# Clock Overlay
+# ----------------------------------------------------------------------
+
+class ClockOverlay(DebugOverlay):
+    def __init__(self, engine: 'LunaEngine', x: int = 10, y: int = 110) -> None:
+        super().__init__(engine, x, y, width=160, height=70, title="Clock")
+        self.time_str = ""
+        self.date_str = ""
+
+    def refresh(self, dt: float) -> None:
+        now = datetime.datetime.now()
+        self.time_str = now.strftime("%H:%M:%S")
+        self.date_str = now.strftime("%Y-%m-%d")
+
+    def render_content(self, renderer: OpenGLRenderer) -> None:
+        y = self.y + self.header_height + 5
+        renderer.draw_text(self.time_str, self.x + 10, y, self.text_color, self.font)
+        renderer.draw_text(self.date_str, self.x + 10, y + 24, self.text_color, self.font)
+
+    def update(self, dt: float, input_state: InputState) -> None:
+        if not self.visible:
+            return
+
+        mouse_pos = input_state.mouse_pos
+        left_held = input_state.mouse_buttons_pressed.left
+        left_just = input_state.mouse_just_pressed and left_held
+
+        header_rect = pygame.Rect(self.x, self.y, self.width, self.header_height)
+        self.close_btn_rect.topleft = (
+            self.x + self.width - self.button_size - self.button_margin,
+            self.y + (self.header_height - self.button_size) // 2,
+        )
+        self.lock_btn_rect.topleft = (
+            self.close_btn_rect.left - self.button_size - self.button_margin,
+            self.y + (self.header_height - self.button_size) // 2,
+        )
+
+        if left_just and self.close_btn_rect.collidepoint(mouse_pos):
+            self.close()
+            return
+        if left_just and self.lock_btn_rect.collidepoint(mouse_pos):
+            self.toggle_fixed()
+            return
+
+        if not self._fixed:
+            if left_just and not hasattr(self, '_dragging'):
+                if header_rect.collidepoint(mouse_pos) and not self.lock_btn_rect.collidepoint(mouse_pos) and not self.close_btn_rect.collidepoint(mouse_pos):
+                    self._dragging = True
+                    self._drag_offset_x = self.x - mouse_pos[0]
+                    self._drag_offset_y = self.y - mouse_pos[1]
+            if getattr(self, '_dragging', False):
+                if left_held:
+                    new_x = mouse_pos[0] + self._drag_offset_x
+                    new_y = mouse_pos[1] + self._drag_offset_y
+                    screen_w, screen_h = self.engine.window.width, self.engine.window.height
+                    new_x = max(0, min(new_x, screen_w - self.width))
+                    new_y = max(0, min(new_y, screen_h - self.height))
+                    self.x, self.y = new_x, new_y
+                else:
+                    self._dragging = False
+
+        self.refresh(dt)
+
+
+# ----------------------------------------------------------------------
+# Version Overlay
+# ----------------------------------------------------------------------
+
+class VersionOverlay(DebugOverlay):
+    def __init__(self, engine: 'LunaEngine', x: int = 180, y: int = 110) -> None:
+        super().__init__(engine, x, y, width=200, height=120, title="Version")
+        self.luna_version = __version__
+        self.python_version = sys.version.split()[0]
+        self.pygame_version = pygame.version.ver
+        self.opengl_version = ""
+
+    def refresh(self, dt: float) -> None:
+        try:
+            from OpenGL.GL import glGetString, GL_VERSION
+            self.opengl_version = glGetString(GL_VERSION).decode().split()[0]
+        except:
+            self.opengl_version = "N/A"
+
+    def render_content(self, renderer: OpenGLRenderer) -> None:
+        y = self.y + self.header_height + 5
+        renderer.draw_text(f"Luna: {self.luna_version}", self.x + 10, y, self.text_color, self.font)
+        renderer.draw_text(f"Python: {self.python_version}", self.x + 10, y + 24, self.text_color, self.font)
+        renderer.draw_text(f"Pygame: {self.pygame_version}", self.x + 10, y + 48, self.text_color, self.font)
+        renderer.draw_text(f"OpenGL: {self.opengl_version}", self.x + 10, y + 72, self.text_color, self.font)
+
+    def update(self, dt: float, input_state: InputState) -> None:
+        if not self.visible:
+            return
+
+        mouse_pos = input_state.mouse_pos
+        left_held = input_state.mouse_buttons_pressed.left
+        left_just = input_state.mouse_just_pressed and left_held
+
+        header_rect = pygame.Rect(self.x, self.y, self.width, self.header_height)
+        self.close_btn_rect.topleft = (
+            self.x + self.width - self.button_size - self.button_margin,
+            self.y + (self.header_height - self.button_size) // 2,
+        )
+        self.lock_btn_rect.topleft = (
+            self.close_btn_rect.left - self.button_size - self.button_margin,
+            self.y + (self.header_height - self.button_size) // 2,
+        )
+
+        if left_just and self.close_btn_rect.collidepoint(mouse_pos):
+            self.close()
+            return
+        if left_just and self.lock_btn_rect.collidepoint(mouse_pos):
+            self.toggle_fixed()
+            return
+
+        if not self._fixed:
+            if left_just and not hasattr(self, '_dragging'):
+                if header_rect.collidepoint(mouse_pos) and not self.lock_btn_rect.collidepoint(mouse_pos) and not self.close_btn_rect.collidepoint(mouse_pos):
+                    self._dragging = True
+                    self._drag_offset_x = self.x - mouse_pos[0]
+                    self._drag_offset_y = self.y - mouse_pos[1]
+            if getattr(self, '_dragging', False):
+                if left_held:
+                    new_x = mouse_pos[0] + self._drag_offset_x
+                    new_y = mouse_pos[1] + self._drag_offset_y
+                    screen_w, screen_h = self.engine.window.width, self.engine.window.height
+                    new_x = max(0, min(new_x, screen_w - self.width))
+                    new_y = max(0, min(new_y, screen_h - self.height))
+                    self.x, self.y = new_x, new_y
+                else:
+                    self._dragging = False
+
+        self.refresh(dt)
+
+
+# ----------------------------------------------------------------------
+# Live Inspector – now a UiFrame (draggable, with header) AND auto-registers with scene
 # ----------------------------------------------------------------------
 
 class LogLevel(Enum):
@@ -305,8 +519,53 @@ class LiveInspector(UiFrame):
         self.debug_manager = None
         self.pinned = False
         self.visible = False  # Start hidden
+        self._scene_name = None
         self._setup_content(engine)
+        # Initially not in scene; will be added when set_visible(True)
+        self._registered = False
 
+    # ------------------------------------------------------------------
+    # Scene registration (so the inspector receives events)
+    # ------------------------------------------------------------------
+    def _update_scene_registration(self):
+        """Add or remove this inspector from the current scene's ui_elements."""
+        scene = self.engine.current_scene
+        if not scene:
+            return
+        if self.visible:
+            if self not in scene.ui_elements:
+                scene.add_ui_element(self)
+                self._registered = True
+        else:
+            if self in scene.ui_elements:
+                scene.remove_ui_element(self)
+                self._registered = False
+
+    def set_visible(self, visible: bool):
+        """Override visibility to handle scene registration."""
+        if self.visible == visible:
+            return
+        self.visible = visible
+        self._update_scene_registration()
+
+    def close(self):
+        """Called by header close button."""
+        self.set_visible(False)
+
+    def toggle_fixed(self):
+        """Called by header lock button."""
+        self.pinned = not self.pinned
+        self.draggable = not self.pinned  # lock disables dragging
+
+    def on_scene_changed(self):
+        """Called by debug manager when the active scene changes."""
+        self._update_scene_registration()
+        # Refresh hierarchy for the new scene
+        self._build_root_hierarchy()
+
+    # ------------------------------------------------------------------
+    # UI setup
+    # ------------------------------------------------------------------
     def _setup_content(self, engine: 'LunaEngine'):
         usable = self.usable_space
         scale = (self.engine.height / 600)
@@ -316,15 +575,16 @@ class LiveInspector(UiFrame):
             self.width // 2, self.height - 6,
             usable[0] - 2, usable[1] - 2,
             int(max(18 * scale, 18)),
-            root_point=(0.5, 1)
+            pivot=(0.5, 1)
         )
         self.add_child(self.tabs)
 
         self.tabs.add_tab("Elements")
         self.tabs.add_tab("Console")
         self.tabs.add_tab("Performance")
-        self.tabs.add_tab("Settings")
+        self.tabs.add_tab("Audio")
         self.tabs.add_tab("Overlays")
+        self.tabs.add_tab("Settings")
 
         self.tabs.add_to_tab("Elements", TextLabel(5, 5, "Scene Elements", int(18*scale), color=self.style.text_color))
         self.tabs.add_to_tab("Console", TextLabel(5, 5, "Console", int(18*scale), color=self.style.text_color))
@@ -360,7 +620,9 @@ class LiveInspector(UiFrame):
             hierarchy_height,
             self.tabs.width // 2 - 7,
             (2 * self.scale) * self.height,
-            scrollbar_size=5
+            scrollbar_size=3,
+            auto_arrange_y=True,
+            arrange_spacing=10
         )
         self.properties_frame.add_child(TextLabel(5, 5, "Properties", int(18*scale), color=self.style.text_color))
         self.tabs.add_to_tab("Elements", self.properties_frame)
@@ -372,44 +634,299 @@ class LiveInspector(UiFrame):
         self.clear_console_btn.set_on_click(lambda: self.console_scrolling.clear_content())
         self.tabs.add_to_tab("Console", self.clear_console_btn)
 
-        # ---------- Performance Tab (no scrolling frame) ----------
+        # ---------- Performance Tab ----------
         self._setup_performance_tab()
 
         # ---------- Settings tab ----------
-        self.themes_dropdown = Dropdown(5, 35, 150, 23, list(self.engine.get_all_themes().keys()), int(16*scale))
+        self.themes_dropdown = Dropdown(5*scale, 35*scale, 150*scale, 23*scale, list(self.engine.get_all_themes().keys()), int(16*scale))
         self.themes_dropdown.set_on_selection_changed(lambda index, name: self.engine.set_global_theme(name))
         self.tabs.add_to_tab("Settings", self.themes_dropdown)
-        self.force_kill_btn = Button(160, 35, 120, 23, "Force Kill", int(16*scale))
-        self.force_kill_btn.set_on_click(lambda: print("ToDo"))
+
+        # Dark mode toggle
+        self.dark_mode_toggle = Checkbox(
+            int(160 * scale), int(35 * scale),
+            int(20 * scale), int(20 * scale),
+            ThemeManager.get_dark_mode(),
+            label="Dark",
+        )
+        self.dark_mode_toggle.set_on_toggle(lambda val: ThemeManager.set_dark_mode(val))
+        self.tabs.add_to_tab("Settings", self.dark_mode_toggle)
+
+        # Set dropdown to current theme
+        current_theme_name = ThemeManager.get_current_theme().value
+        theme_names = list(self.engine.get_all_themes().keys())
+        if current_theme_name in theme_names:
+            self.themes_dropdown.selected_index = theme_names.index(current_theme_name)
+        else:
+            self.themes_dropdown.selected_index = 0
+
+        # Force Kill button - now kills the engine
+        self.force_kill_btn = Button(5*scale, 60*scale, 120*scale, 23*scale, "Force Kill", int(16*scale))
+        self.force_kill_btn.set_on_click(self._force_kill)
         self.tabs.add_to_tab("Settings", self.force_kill_btn)
 
+        # Re-init game button - reloads current scene
+        self.reinit_btn = Button(5*scale, 85*scale, 120*scale, 23*scale, "Re-init Game", int(16*scale))
+        self.reinit_btn.set_on_click(self._reinit_game)
+        self.tabs.add_to_tab("Settings", self.reinit_btn)
+
+        # Clear all caches button
+        self.clear_cache_btn = Button(5*scale, 110*scale, 120*scale, 23*scale, "Clear Cache", int(16*scale))
+        self.clear_cache_btn.set_on_click(self._clear_all_caches)
+        self.tabs.add_to_tab("Settings", self.clear_cache_btn)
+
         # ---------- Overlays tab ----------
-        self.overlays_dropdown = Dropdown(5, 35, 110, 23, self.getOverlays(), int(16*scale))
-        self.add_overlay_btn = Button(120, 35, 80, 23, "Add Overlay", int(16*scale))
+        self.overlays_dropdown = Dropdown(5*scale, 35*scale, 110*scale, 23*scale, self.getOverlays(), int(16*scale))
+        self.add_overlay_btn = Button(120*scale, 35*scale, 80*scale, 23*scale, "Add Overlay", int(16*scale))
         self.add_overlay_btn.set_on_click(self._add_overlay)
         self.tabs.add_to_tab("Overlays", self.overlays_dropdown)
         self.tabs.add_to_tab("Overlays", self.add_overlay_btn)
-        self.overlays_scrolling = ScrollingFrame(5, 70, self.tabs.width - 10, 200, self.tabs.width - 10, 400)
+        self.overlays_scrolling = ScrollingFrame(5*scale, 70*scale, self.tabs.width - 10, 200, self.tabs.width - 10, 400)
         self.tabs.add_to_tab("Overlays", self.overlays_scrolling)
+
+        # ---------- Audio Tab ----------
+        self._setup_audio_tab()
 
         self._build_root_hierarchy()
 
-    def _setup_performance_tab(self):
-        """Create the performance monitoring tab without scrolling."""
+    # ------------------------------------------------------------------
+    # Audio Tab Setup
+    # ------------------------------------------------------------------
+    def _setup_audio_tab(self):
+        """Create the audio control tab with master volume, effects, and source list."""
         scale = self.scale
         tab_width = self.tabs.width
 
         # Title
+        title = TextLabel(5, 5, "Audio Controls", int(20*scale), color=self.style.text_color)
+        self.tabs.add_to_tab("Audio", title)
+
+        # Master Volume
+        self._add_label("Master Vol:", 10, 28*scale, "Audio")
+        self.master_volume_slider = Slider(
+            90*scale, 28*scale,
+            150, 16,
+            0.0, 1.0, 1.0,
+            pivot=(0, 0)
+        )
+        self.master_volume_slider.set_on_value_changed(self._on_master_volume_changed)
+        self.tabs.add_to_tab("Audio", self.master_volume_slider)
+        self.master_volume_label = self._add_value_label("1.00", 250*scale, 28*scale, "Audio")
+
+        # Effects Section
+        self._add_label("Effects:", 10, 44*scale, "Audio", font_size=int(16*scale))
+
+        # Effect type dropdown (smaller)
+        effect_types = ["Reverb", "Echo", "Chorus", "Flanger", "Distortion", "Pitch Shift"]
+        self.effect_dropdown = Dropdown(
+            10*scale, 60*scale,
+            100, 20,
+            effect_types,
+            int(16*scale),
+            pivot=(0,0)
+        )
+        self.tabs.add_to_tab("Audio", self.effect_dropdown)
+
+        # Effect intensity slider
+        self._add_label("Intensity:", 120*scale, 60*scale, "Audio")
+        self.effect_slider = Slider(
+            180*scale, 70*scale,
+            90, 16,
+            0.0, 1.0, 0.5,
+            pivot=(0, 0)
+        )
+        self.tabs.add_to_tab("Audio", self.effect_slider)
+        self.effect_label = self._add_value_label("0.50", 280*scale, 60*scale, "Audio")
+
+        # Apply effect button (smaller)
+        apply_effect_btn = Button(310*scale, 65*scale, 70, 24, "Apply", int(14*scale))
+        apply_effect_btn.set_on_click(self._apply_effect)
+        self.tabs.add_to_tab("Audio", apply_effect_btn)
+
+        # Source list title
+        self._add_label("Audio Sources:", 10, 85*scale, "Audio", font_size=int(14*scale))
+
+        # Scrollable frame for sources
+        self.audio_sources_frame = ScrollingFrame(
+            10*scale, 95*scale,
+            tab_width - 20, 135*scale,
+            tab_width - 20, 400*scale,
+            scrollbar_size=8
+        )
+        self.tabs.add_to_tab("Audio", self.audio_sources_frame)
+
+        # Refresh sources button (smaller)
+        refresh_sources_btn = Button(10*scale, 240*scale, 80, 24, "Refresh", int(12*scale))
+        refresh_sources_btn.set_on_click(self._update_audio_sources)
+        self.tabs.add_to_tab("Audio", refresh_sources_btn)
+
+        # Update source list initially
+        self._update_audio_sources()
+
+    def _update_audio_sources(self):
+        """Refresh the list of audio sources in the scrollable frame."""
+        self.audio_sources_frame.clear_content()
+        y = 5
+        audio = self.engine.audio
+
+        if audio is None:
+            label = TextLabel(5*self.scale, 5*self.scale, "Audio manager not available", int(14*self.scale), (200, 100, 100))
+            self.audio_sources_frame.add_child(label)
+            return
+
+        if not hasattr(audio, 'backend') or audio.backend is None:
+            label = TextLabel(5*self.scale, 5*self.scale, "Audio backend not initialized", int(14*self.scale), (200, 100, 100))
+            self.audio_sources_frame.add_child(label)
+            return
+
+        if not audio.backend.is_initialized():
+            label = TextLabel(5*self.scale, 5*self.scale, "OpenAL not available", int(14*self.scale), (200, 100, 100))
+            self.audio_sources_frame.add_child(label)
+            return
+
+        sources = audio.backend.sources if hasattr(audio.backend, 'sources') else []
+        if not sources:
+            label = TextLabel(5*self.scale, 5*self.scale, "No audio sources available", int(14*self.scale), (200, 200, 200))
+            self.audio_sources_frame.add_child(label)
+            return
+
+        for idx, src in enumerate(sources):
+            # Container for each source (smaller)
+            frame = UiFrame(5*self.scale, y*self.scale, self.audio_sources_frame.width - 20*self.scale, 30*self.scale)
+            frame.set_background_color((40, 40, 50, 180))
+            frame.set_corner_radius(3)
+
+            # Source label
+            label = TextLabel(5*self.scale, 15*self.scale, f"Source {idx}", int(16*self.scale), (200, 200, 200), pivot=(0, 0.5))
+            frame.add_child(label)
+
+            # Volume slider
+            vol_label = TextLabel(70*self.scale, 15*self.scale, "Vol:", int(14 *self.scale), (200, 200, 200), pivot=(0, 0.5))
+            frame.add_child(vol_label)
+            vol_slider = Slider(100*self.scale, 10*self.scale, 40*self.scale, 14*self.scale, 0.0, 1.0, src.volume if hasattr(src, 'volume') else 1.0, pivot=(0, 0.5))
+            vol_slider.set_on_value_changed(lambda v, s=src: self._on_source_volume_changed(s, v))
+            frame.add_child(vol_slider)
+
+            # Pan slider
+            pan_label = TextLabel(155*self.scale, 15*self.scale, "Pan:", int(14*self.scale), (200, 200, 200), pivot=(0, 0.5))
+            frame.add_child(pan_label)
+            pan_slider = Slider(175*self.scale, 10*self.scale, 40*self.scale, 14*self.scale, -1.0, 1.0, src.pan if hasattr(src, 'pan') else 0.0, pivot=(0, 0.5))
+            pan_slider.set_on_value_changed(lambda v, s=src: self._on_source_pan_changed(s, v))
+            frame.add_child(pan_slider)
+
+            # Playing indicator
+            is_playing = src.is_playing() if hasattr(src, 'is_playing') else False
+            status_text = "Playing" if is_playing else "Stopped"
+            status_label = TextLabel(230*self.scale, 15*self.scale, status_text, int(14*self.scale), (100, 255, 100) if is_playing else (200, 200, 200), pivot=(0, 0.5))
+            frame.add_child(status_label)
+
+            self.audio_sources_frame.add_child(frame)
+            y += 32
+
+        # Set content height to allow scrolling if needed
+        self.audio_sources_frame.content_height = max(self.audio_sources_frame.height, y + 10)
+
+    def _on_master_volume_changed(self, value: float):
+        """Update master volume."""
+        audio = self.engine.audio
+        if audio and hasattr(audio, 'set_master_volume'):
+            audio.set_master_volume(value)
+            if hasattr(self, 'master_volume_label'):
+                self.master_volume_label.set_text(f"{value:.2f}")
+
+    def _on_source_volume_changed(self, source, value: float):
+        """Update source volume."""
+        if hasattr(source, 'set_volume_immediate'):
+            source.set_volume_immediate(value)
+
+    def _on_source_pan_changed(self, source, value: float):
+        """Update source pan."""
+        if hasattr(source, 'set_pan_immediate'):
+            source.set_pan_immediate(value)
+
+    def _apply_effect(self):
+        """Apply the selected effect with the current intensity to all channels."""
+        audio = self.engine.audio
+        if not audio:
+            return
+        effect_name = self.effect_dropdown.get_selected()[1]
+        intensity = self.effect_slider.value
+        self.effect_label.set_text(f"{intensity:.2f}")
+
+        # Map effect name to method
+        if effect_name == "Reverb":
+            if hasattr(audio, 'set_global_reverb'):
+                audio.set_global_reverb(intensity)
+                print(f"Applied Reverb with intensity {intensity:.2f}")
+        elif effect_name == "Echo":
+            if hasattr(audio, 'set_global_echo'):
+                audio.set_global_echo(intensity)
+                print(f"Applied Echo with intensity {intensity:.2f}")
+        elif effect_name == "Chorus":
+            if hasattr(audio, 'set_global_chorus'):
+                audio.set_global_chorus(intensity)
+                print(f"Applied Chorus with intensity {intensity:.2f}")
+        elif effect_name == "Flanger":
+            if hasattr(audio, 'set_global_flanger'):
+                audio.set_global_flanger(intensity)
+                print(f"Applied Flanger with intensity {intensity:.2f}")
+        elif effect_name == "Distortion":
+            if hasattr(audio, 'set_global_distortion'):
+                audio.set_global_distortion(intensity)
+                print(f"Applied Distortion with intensity {intensity:.2f}")
+        elif effect_name == "Pitch Shift":
+            # Pitch shift uses semitones, map intensity 0-1 to -12 to +12 semitones
+            semitones = (intensity * 24) - 12  # -12 to +12
+            if hasattr(audio, 'set_global_pitch_shift'):
+                audio.set_global_pitch_shift(semitones)
+                print(f"Applied Pitch Shift with {semitones:.1f} semitones")
+        else:
+            print(f"Unknown effect: {effect_name}")
+
+    # ------------------------------------------------------------------
+    # Settings Tab Methods
+    # ------------------------------------------------------------------
+    def _force_kill(self):
+        """Force kill the engine (quit the game)."""
+        self.engine.running = False
+
+    def _reinit_game(self):
+        """Re-initialize the current scene (reloads all UI elements)."""
+        scene = self.engine.current_scene
+        if scene:
+            scene.clear_ui_elements()
+            if hasattr(scene, 'setup_ui'):
+                scene.setup_ui()
+            self._build_root_hierarchy()
+            print("Game re-initialized.")
+
+    def _clear_all_caches(self):
+        renderer = self.engine.renderer
+        if isinstance(renderer, OpenGLRenderer):
+            renderer._text_cache.clear()
+            renderer._text_cache_last_used.clear()
+            renderer._texture_cache.clear()
+            renderer._circle_cache.clear()
+            renderer._polygon_cache.clear()
+            print("All OpenGL caches cleared.")
+        else:
+            print("No OpenGL renderer to clear caches.")
+
+    # ------------------------------------------------------------------
+    # Performance Tab (unchanged)
+    # ------------------------------------------------------------------
+    def _setup_performance_tab(self):
+        scale = self.scale
+        tab_width = self.tabs.width
+
         title = TextLabel(5, 5, "Performance Metrics", int(20*scale), color=self.style.text_color)
         self.tabs.add_to_tab("Performance", title)
 
-        # Left column metrics
         left_x = 10
         right_x = tab_width // 2 + 10
-        line_height = int(17 * scale)   # adjusted scaling
-        y_offset = 33                    # start position
+        line_height = int(17 * scale)
+        y_offset = 33
 
-        # FPS block
         self._add_label("FPS:", left_x, y_offset, "Performance")
         self._perf_labels['fps'] = self._add_value_label("0.0", left_x + 80, y_offset, "Performance")
         y_offset += line_height
@@ -430,7 +947,6 @@ class LiveInspector(UiFrame):
         self._perf_labels['frame_time'] = self._add_value_label("0.00 ms", left_x + 80, y_offset, "Performance")
         y_offset += line_height + 5
 
-        # Scene timings
         self._add_label("Scene Update:", left_x, y_offset, "Performance")
         self._perf_labels['scene_update'] = self._add_value_label("0.00 ms", left_x + 80, y_offset, "Performance")
         y_offset += line_height
@@ -439,7 +955,6 @@ class LiveInspector(UiFrame):
         self._perf_labels['scene_render'] = self._add_value_label("0.00 ms", left_x + 80, y_offset, "Performance")
         y_offset += line_height + 5
 
-        # Scene stats
         self._add_label("UI Elements:", left_x, y_offset, "Performance")
         self._perf_labels['ui_count'] = self._add_value_label("0", left_x + 80, y_offset, "Performance")
         y_offset += line_height
@@ -448,7 +963,6 @@ class LiveInspector(UiFrame):
         self._perf_labels['particles'] = self._add_value_label("0", left_x + 80, y_offset, "Performance")
         y_offset += line_height + 5
 
-        # Cache stats - left column: Text, Texture, Total
         self._add_label("Text Cache:", left_x, y_offset, "Performance")
         self._perf_labels['text_cache'] = self._add_value_label("0 B", left_x + 80, y_offset, "Performance")
         y_offset += line_height
@@ -461,8 +975,7 @@ class LiveInspector(UiFrame):
         self._perf_labels['total_cache'] = self._add_value_label("0 B", left_x + 80, y_offset, "Performance")
         y_offset += line_height
 
-        # Right column: Hardware Info and remaining caches
-        hw_y = 33  # same as left start
+        hw_y = 33
         self._add_label("Hardware Info", right_x, hw_y, "Performance", font_size=int(18*scale))
         hw_y += line_height
 
@@ -498,7 +1011,6 @@ class LiveInspector(UiFrame):
         self._perf_labels['cpu_cores'] = self._add_value_label("N/A", right_x + 80, hw_y, "Performance")
         hw_y += line_height + 5
 
-        # Circle and Polygon caches on right column below hardware
         self._add_label("Circle Cache:", right_x, hw_y, "Performance")
         self._perf_labels['circle_cache'] = self._add_value_label("0 B", right_x + 80, hw_y, "Performance")
         hw_y += line_height
@@ -519,7 +1031,6 @@ class LiveInspector(UiFrame):
         return label
 
     def _update_performance_tab(self):
-        """Refresh all performance metrics and hardware info."""
         if not self.visible or not hasattr(self, '_perf_labels'):
             return
 
@@ -549,7 +1060,6 @@ class LiveInspector(UiFrame):
             self._perf_labels['scene_update'].set_text("0.00 ms")
             self._perf_labels['scene_render'].set_text("0.00 ms")
 
-        # Cache stats
         renderer = self.engine.renderer
         if isinstance(renderer, OpenGLRenderer):
             cache = renderer.get_cache_usage('all', humanize=True)
@@ -565,7 +1075,6 @@ class LiveInspector(UiFrame):
             self._perf_labels['polygon_cache'].set_text("N/A")
             self._perf_labels['total_cache'].set_text("N/A")
 
-        # Hardware info
         hw = pm.get_hardware_info()
         self._perf_labels['os'].set_text(f"{hw.get('system', 'N/A')} {hw.get('release', '')}")
         self._perf_labels['cpu'].set_text(self._get_cpu_model())
@@ -579,30 +1088,23 @@ class LiveInspector(UiFrame):
         self._perf_labels['cpu_cores'].set_text(f"{cores} ({logical})")
 
     def _get_cpu_model(self) -> str:
-        """Extract a friendly CPU model name from platform.processor() or other sources."""
         proc_str = platform.processor()
         if not proc_str or proc_str == "":
             proc_str = platform.uname().processor or "Unknown CPU"
 
-        # Patterns for common CPU families
         patterns = [
-            # AMD Ryzen
             r'Ryzen\s+\d+\s+\d+[A-Z]*',
             r'Ryzen\s+\d+\s+Threadripper',
             r'Ryzen\s+Threadripper',
             r'Ryzen\s+\d+',
-            # AMD older
             r'FX[-\s]?\d+',
             r'Athlon[-\s]?\d+',
-            # Intel Core
             r'Core\s+[iI]\d+[-\s]?\d+[A-Z]*',
             r'Core\s+[iI]\d+',
             r'Celeron\s+[A-Za-z0-9]+',
             r'Pentium\s+[A-Za-z0-9]+',
-            # Intel Xeon
             r'Xeon\s+[A-Za-z0-9]+[\-\s]+\d+v\d+',
             r'Xeon\s+[A-Za-z0-9]+',
-            # Generic patterns
             r'AMD\s+[A-Za-z0-9\-\s]+',
             r'Intel[()]+\s+[A-Za-z0-9\-\s]+',
         ]
@@ -615,7 +1117,6 @@ class LiveInspector(UiFrame):
         return proc_str[:40] if proc_str else "Unknown CPU"
 
     def _get_gpu_info(self) -> str:
-        """Extract clean GPU model name from OpenGL renderer string."""
         try:
             from OpenGL.GL import glGetString, GL_RENDERER
             renderer_str = glGetString(GL_RENDERER).decode()
@@ -643,11 +1144,13 @@ class LiveInspector(UiFrame):
     # Hierarchy navigation methods (fixed)
     # ------------------------------------------------------------------
     def _build_root_hierarchy(self):
-        """Reset stack and show top‑level UI elements from current scene."""
         self.hierarchy_stack.clear()
         root_elements = self.engine.current_scene.ui_elements if self.engine.current_scene else []
         self._current_display_elements = root_elements.copy()
         self._build_hierarchy_view(root_elements)
+
+    def recharge(self):
+        self._build_root_hierarchy()
 
     def _build_hierarchy_view(self, elements: List[UIElement]):
         self._current_display_elements = elements.copy()
@@ -656,14 +1159,18 @@ class LiveInspector(UiFrame):
         y_offset = 5
 
         if self.hierarchy_stack:
-            back_btn = Button(5, y_offset, 50, 24, "..", 14, root_point=(0, 0))
+            back_btn = Button(5, y_offset, 50, 24, "..", 14, pivot=(0, 0))
             back_btn.set_on_click(self._navigate_back)
+            back_btn.add_group('live-inspector-ignore')
             self.hierarchy_scrolling.add_child(back_btn)
             y_offset += 30
 
         for elem in elements:
+            if isinstance(elem, LiveInspector):
+                continue
             btn_text = f"{elem.element_type} [{elem.element_id}]"
-            btn = Button(5, y_offset, self.hierarchy_scrolling.width - 20, 28, btn_text, 14, root_point=(0, 0))
+            btn = Button(5, y_offset, self.hierarchy_scrolling.width - 20, 28, btn_text, 14, pivot=(0, 0))
+            btn.add_group('live-inspector-ignore')
             btn.set_on_click(lambda e=elem: self._on_element_click_with_cooldown(e))
             self.hierarchy_scrolling.add_child(btn)
             y_offset += 32
@@ -671,7 +1178,6 @@ class LiveInspector(UiFrame):
         self.hierarchy_scrolling.content_height = max(self.hierarchy_scrolling.height, y_offset + 10)
 
     def _navigate_back(self):
-        """Navigate back one level in hierarchy (with cooldown)."""
         now = time.time()
         if now - self._last_back_time < 0.2:
             return
@@ -681,7 +1187,6 @@ class LiveInspector(UiFrame):
             previous_list = self.hierarchy_stack.pop()
             self._build_hierarchy_view(previous_list)
         else:
-            # Should not happen because back button only shown when stack not empty
             self._build_root_hierarchy()
 
     def _on_element_click_with_cooldown(self, element: UIElement):
@@ -694,35 +1199,138 @@ class LiveInspector(UiFrame):
     def _on_element_click(self, element: UIElement):
         self._show_element_properties(element)
         if element.children:
-            # Save current list before descending
             self.hierarchy_stack.append(self._current_display_elements)
             self._build_hierarchy_view(element.children)
 
     # ------------------------------------------------------------------
     # Properties display
     # ------------------------------------------------------------------
+    
     def _show_element_properties(self, element: UIElement):
         self.properties_frame.clear_content()
-        title = TextLabel(5, 5, f"Properties of {element.element_type} [{element.element_id}]",
-                          int(16*self.scale), color=self.style.text_color)
+        
+        title = TextLabel(int(5 * self.scale), 0, f"Properties of {element.element_type} [{element.element_id}]",
+                        int(16 * self.scale), color=self.style.text_color)
         self.properties_frame.add_child(title)
 
-        y = 35
         props = getattr(element, '_properties', {})
+        spacing = 25
+        total_props:int = 0
         for prop_name, prop_info in props.items():
-            display_name = prop_info.get('name', prop_name)
-            value = getattr(element, prop_info.get('key', prop_name), None)
-            value_str = repr(value) if value is not None else "None"
-            line = TextLabel(5, y, f"{display_name}: {value_str}", int(14*self.scale), color=(200,200,200))
+            total_props += 1
+            prop_type:Union[Any, None] = prop_info.get('type', None)
+            if prop_type is bool:
+                value = getattr(element, prop_info.get('key', prop_name), False)
+                line = Checkbox(int(5 * self.scale), int((total_props * spacing) * self.scale), int(100 * self.scale), int(18 * self.scale), value, f"{prop_info.get('name', prop_name)}")
+                line.set_on_toggle(lambda val, e=element, k=prop_info.get('key', prop_name): setattr(e, k, val))
+            elif prop_type is int:
+                value = getattr(element, prop_info.get('key', prop_name), 0)
+                min_val, max_val = prop_info.get('range', (0, 100))
+
+                if isinstance(min_val, str):
+                    if min_val == '<SCREEN_WIDTH>':
+                        min_val = self.engine.width
+                    elif min_val == '<SCREEN_HEIGHT>':
+                        min_val = self.engine.height
+                    else:
+                        min_val = 0
+                if isinstance(max_val, str):
+                    if max_val == '<SCREEN_WIDTH>':
+                        max_val = self.engine.width
+                    elif max_val == '<SCREEN_HEIGHT>':
+                        max_val = self.engine.height
+                    else:
+                        max_val = 100
+
+                line = NumberSelector(
+                    int(5 * self.scale),
+                    int((total_props * spacing) * self.scale),
+                    int(120 * self.scale),
+                    int(18 * self.scale),
+                    min_value=min_val,
+                    max_value=max_val,
+                    value=value,
+                    label=prop_info.get('name', prop_name),
+                    label_size=int(14 * self.scale)
+                )
+                line.set_on_value_changed(
+                    lambda val, e=element, k=prop_info.get('key', prop_name): setattr(e, k, val)
+                )
+            elif prop_type is Literal:
+                value = getattr(element, prop_info.get('key', prop_name), None)
+                options = prop_info.get('options', [])
+                if isinstance(options, list) and all(isinstance(opt, str) for opt in options):
+                    line = Dropdown(
+                        int(5 * self.scale),
+                        int((total_props * spacing) * self.scale),
+                        int(150 * self.scale),
+                        int(18 * self.scale),
+                        options,
+                        int(14 * self.scale),
+                        label=prop_info.get('name', prop_name),
+                        label_size=int(14 * self.scale)
+                    )
+                    if value in options:
+                        line.selected_index = options.index(value)
+                    line.set_on_selection_changed(
+                        lambda index, name, e=element, k=prop_info.get('key', prop_name), opts=options: setattr(e, k, opts[index])
+                    )
+                else:
+                    display_name = prop_info.get('name', prop_name)
+                    value_str = repr(value) if value is not None else "None"
+                    line = TextLabel(int(5 * self.scale), int((total_props * spacing) * self.scale), f"{display_name}: {value_str}",
+                                    int(18 * self.scale), color=(200, 200, 200))
+            elif prop_type is str:
+                value = getattr(element, prop_info.get('key', prop_name), "")
+                line = TextBox(int(5 * self.scale), int((total_props * spacing) * self.scale), int(150 * self.scale), int(18 * self.scale), font_size=int(16 * self.scale), label=prop_info.get('name', str(prop_name).capitalize()), label_size=int(14 * self.scale))
+                line.set_text(text=value)
+                line.set_on_text_changed(lambda text, e=element, k=prop_info.get('key', prop_name): setattr(e, k, text))
+            elif prop_type is ElementStyle:
+                value = getattr(element, prop_info.get('key', prop_name), None)
+                print(value)
+            elif prop_type is tuple or prop_type is Color or prop_type is Tuple[int, int, int]:
+                value = getattr(element, prop_info.get('key', prop_name), None)
+                if value is None:  
+                    value = (0,0,0)
+                
+                if isinstance(value, Color):
+                    value = value.to_rgb_tuple()
+                if len(value) < 3:
+                    continue
+                elif len(value) == 3:
+                    line = ColorPicker(
+                        int(5 * self.scale), int((total_props * spacing) * self.scale), int(150 * self.scale), int(22 * self.scale), int(150*self.scale),
+                        color_system='rgb', initial_color=value)
+                    
+                    line.set_on_color_changed(lambda color, e=element, k=prop_info.get('key', prop_name): setattr(e, k, color))
+            else:
+                display_name = prop_info.get('name', prop_name)
+                value = getattr(element, prop_info.get('key', prop_name), None)
+                value_str = repr(value) if value is not None else "None"
+                line = TextLabel(int(5 * self.scale), int((total_props * spacing) * self.scale), f"{display_name}: {value_str}",
+                                int(18 * self.scale), color=(200, 200, 200))
+            line.add_group('live-inspector-ignore')
             self.properties_frame.add_child(line)
-            y += 25
 
-        if not props:
-            msg = TextLabel(5, y, "No editable properties", int(14*self.scale), color=(150,150,150))
+        if not props or total_props <= 0:
+            msg = TextLabel(int(5 * self.scale), 0, "No editable properties",
+                            int(16 * self.scale), color=(150, 150, 150))
             self.properties_frame.add_child(msg)
+        else:
+            kill_element_button = Button(int(5 * self.scale), int((total_props * spacing + 20) * self.scale), int(80 * self.scale), int(18 * self.scale), "Remove", int(14 * self.scale))
+            self.properties_frame.add_child(kill_element_button)
+            kill_element_button.set_on_click(lambda: element.kill())
+            
+            restart_element_button = Button(int(95 * self.scale), int((total_props * spacing + 20) * self.scale), int(80 * self.scale), int(18 * self.scale), "Restart", int(14 * self.scale))
+            self.properties_frame.add_child(restart_element_button)
+            def _e():
+                e = element.restart()
+                self._show_element_properties(e)
+            restart_element_button.set_on_click(_e)
 
-        self.properties_frame.content_height = max(self.properties_frame.height, y + 30)
-
+        self.properties_frame._needs_rearrange = True
+        self.properties_frame.scroll_y = 0
+    
     # ------------------------------------------------------------------
     # Overlays management
     # ------------------------------------------------------------------
@@ -744,11 +1352,11 @@ class LiveInspector(UiFrame):
             if isinstance(ovr, LiveInspector):
                 continue
             fr = UiFrame(10, y, self.overlays_scrolling.width - 20, 32)
-            fr.add_child(TextLabel(5, 16, str(type(ovr).__name__), int(18*self.scale), root_point=(0, 0.5)))
-            hide_btn = Button(fr.width - 5, 16, 50, 24, "Hide", int(16*self.scale), root_point=(1, 0.5))
+            fr.add_child(TextLabel(5, 16, str(type(ovr).__name__), int(18*self.scale), pivot=(0, 0.5)))
+            hide_btn = Button(fr.width - 5, 16, 50, 24, "Hide", int(16*self.scale), pivot=(1, 0.5))
             hide_btn.set_on_click(lambda ovr=ovr: setattr(ovr, 'visible', not ovr.visible))
             fr.add_child(hide_btn)
-            delete_btn = Button(fr.width - 60, 16, 50, 24, "Remove", int(16*self.scale), root_point=(1, 0.5))
+            delete_btn = Button(fr.width - 60, 16, 50, 24, "Remove", int(16*self.scale), pivot=(1, 0.5))
             delete_btn.set_on_click(lambda ovr=ovr: self.debug_manager.remove_overlay(ovr, callback=self.update_overlays_scrolling))
             fr.add_child(delete_btn)
             self.overlays_scrolling.add_child(fr)
@@ -756,12 +1364,6 @@ class LiveInspector(UiFrame):
 
     def set_debug_manager(self, dm: 'DebugManager'):
         self.debug_manager = dm
-
-    def close(self):
-        self.visible = False
-
-    def toggle_fixed(self):
-        self.pinned = not self.pinned
 
     def update(self, dt: float, input_state: InputState):
         if not self.visible:
@@ -783,19 +1385,21 @@ class DebugManager:
 
         @engine.on_event(pygame.KEYDOWN)
         def _toggle_inspector(event: pygame.event.Event) -> None:
-            # Only allow toggling if debug is enabled and the LiveInspector exists
             if not self.debug_enabled:
                 return
             if event.mod & pygame.KMOD_CTRL and event.key == pygame.K_F12:
                 if self.live_inspector:
-                    self.live_inspector.visible = not self.live_inspector.visible
+                    self.live_inspector.set_visible(not self.live_inspector.visible)
 
-    def add_overlay(self, overlay: DebugOverlay) -> None:
+    def on_scene_changed(self):
+        if self.live_inspector:
+            self.live_inspector.on_scene_changed()
+
+    def add_overlay(self, overlay: DebugOverlay|Any) -> None:
         self.overlays.append(overlay)
         if isinstance(overlay, LiveInspector):
             self.live_inspector = overlay
             overlay.set_debug_manager(self)
-            # Ensure LiveInspector starts hidden
             overlay.visible = False
 
     def remove_overlay(self, overlay: DebugOverlay, callback: Optional[Callable] = None) -> None:
@@ -812,14 +1416,12 @@ class DebugManager:
             overlay.visible = not overlay.visible
 
     def update(self, dt: float, input_state: InputState) -> None:
-        # Only update overlays if debugging is enabled
         if not self.debug_enabled:
             return
         for overlay in self.overlays:
             overlay.update(dt, input_state)
 
     def render(self, renderer: OpenGLRenderer) -> None:
-        # Only render overlays if debugging is enabled
         if not self.debug_enabled:
             return
         for overlay in self.overlays:
