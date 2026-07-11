@@ -46,36 +46,37 @@ LunaEngine boasts a rich set of features designed to cover every aspect of 2D ga
 
 | Feature | Description | Status | Note |
 | --- | --- | --- | --- |
-| **Advanced UI System** | Create complex and interactive user interfaces with ease, inspired by Roblox Studio. | ✅ Functional | Highly customizable and extensible. |
-| **OpenGL Rendering** | Hardware-accelerated graphics pipeline for smooth and efficient 2D rendering. | ✅ Functional | Requires OpenGL 3.3+ for optimal performance. |
-| **OpenAL Audio** | Immersive spatial audio capabilities for realistic soundscapes and effects. | ✅ Functional | Supports WAV, OGG, and MP3 formats. |
-| **Dynamic Theming** | Apply pre-built or custom themes to your UI elements for a consistent look. | ✅ Functional | 58+ themes available out-of-the-box. |
-| **Persistent Storage** | Save and load game data effortlessly, managing player progress and configurations. | ✅ Functional | Simple API for data serialization. |
-| **LiveInspector** | Real-time debugging tool to inspect and modify game state during runtime. | ✅ Functional | Accelerates debugging and iteration. |
-| **RichText Rendering** | Advanced text rendering with support for various fonts, styles, and formatting. | ✅ Functional | Enhances in-game text presentation. |
-| **Texture Atlas** | Efficiently manage and render textures using atlases to reduce draw calls. | ✅ Functional | Improves rendering performance. |
-| **Camera System** | Flexible 2D camera for scrolling, zooming, and tracking game entities. | ✅ Functional | Simplified camera controls. |
-| **Particle System** | Create dynamic and visually appealing particle effects for various scenarios. | ✅ Functional | Optimized for performance, but can be intensive. |
-| **Dynamic Lighting** | Implement realistic lighting and shadow effects to enhance scene ambiance. | ✅ Functional | Continuous optimization for performance. |
-| **Notifications** | Display in-game messages and alerts to inform players. | ✅ Functional | Customizable notification styles. |
-| **Charts** | Integrate data visualization directly into your game or debugging tools. | ✅ Functional | Useful for performance monitoring. |
-| **Controller Support** | Native support for game controllers, enhancing player experience. | ✅ Functional | Broad compatibility with various devices. |
-| **Performance Tools** | Built-in tools for monitoring FPS, resource usage, and hardware information. | ✅ Functional | Aids in game optimization. |
-| **Modular Architecture** | Well-organized codebase allowing for easy extension and customization. | ✅ Functional | Designed for maintainability and scalability. |
-| **Post-processing Filters** | Apply visual effects like Blur, Neon, and Pixelate to your game scenes. | ✅ Functional | Can be GPU/CPU intensive depending on usage. |
-| **Scene Management** | Organize game logic into distinct scenes with smooth transitions. | ✅ Functional | Inspired by Godot's scene organization. |
+| **Advanced UI System** | Create complex and interactive user interfaces with ease, inspired by Roblox Studio. |  Functional | Highly customizable and extensible. |
+| **OpenGL Rendering** | Hardware-accelerated graphics pipeline for smooth and efficient 2D rendering. |  Functional | Requires OpenGL 3.3+ for optimal performance. |
+| **OpenAL Audio** | Immersive spatial audio capabilities for realistic soundscapes and effects. |  Functional | Supports WAV, OGG, and MP3 formats. |
+| **Dynamic Theming** | Apply pre-built or custom themes to your UI elements for a consistent look. |  Functional | 58+ themes available out-of-the-box. |
+| **Persistent Storage** | Save and load game data effortlessly, managing player progress and configurations. |  Functional | Simple API for data serialization. |
+| **LiveInspector** | Real-time debugging tool to inspect and modify game state during runtime. |  Functional | Accelerates debugging and iteration. |
+| **RichText Rendering** | Advanced text rendering with support for various fonts, styles, and formatting. |  Functional | Enhances in-game text presentation. |
+| **Texture Atlas** | Efficiently manage and render textures using atlases to reduce draw calls. |  Functional | Improves rendering performance. |
+| **Paperdoll** | User different layers w/ a single spritesheet file | Functional | Easily create modular characters appearances |
+| **Camera System** | Flexible 2D camera for scrolling, zooming, and tracking game entities. |  Functional | Simplified camera controls. |
+| **Particle System** | Create dynamic and visually appealing particle effects for various scenarios. |  Functional | Optimized for performance, but can be intensive. |
+| **Dynamic Lighting** | Implement realistic lighting and shadow effects to enhance scene ambiance. |  Functional | Continuous optimization for performance. |
+| **Notifications** | Display in-game messages and alerts to inform players. |  Functional | Customizable notification styles. |
+| **Charts** | Integrate data visualization directly into your game or debugging tools. |  Functional | Useful for performance monitoring. |
+| **Controller Support** | Native support for game controllers, enhancing player experience. |  Functional | Broad compatibility with various devices. |
+| **Performance Tools** | Built-in tools for monitoring FPS, resource usage, and hardware information. |  Functional | Aids in game optimization. |
+| **Modular Architecture** | Well-organized codebase allowing for easy extension and customization. |  Functional | Designed for maintainability and scalability. |
+| **Post-processing Filters** | Apply visual effects like Blur, Neon, and Pixelate to your game scenes. |  Functional | Can be GPU/CPU intensive depending on usage. |
+| **Scene Management** | Organize game logic into distinct scenes with smooth transitions. |  Functional | Inspired by Godot's scene organization. |
 
 ## Screenshots
 
 LunaEngine in action! Here are some glimpses of what you can create:
 
-![UI Demo](./showcase/ui-demo.png){:height=480px width=720px} - *A demonstration of LunaEngine's versatile UI system.*
+<img src="https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/showcase/ui-demo.png" alt="User Interface" title="User Interface" style="width: auto; max-width: 50%; max-height: 720px; min-width: 25%; min-height: 480px; height: auto;"> - *A demonstration of LunaEngine's versatile UI system.*
 
-![Inspector](./showcase/live-inspector.png){:height=480px width=720px} - *Inspecting game objects in real-time with the LiveInspector.*
+<img src="https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/showcase/live-inspector.png" alt="Live Inspector & Debug" title="Live Inspector & Debug" style="width: auto; max-width: 50%; max-height: 720px; min-width: 25%; min-height: 480px; height: auto;"> - *Inspecting game objects in real-time with the LiveInspector.*
 
-![Particles](./showcase/particle-demo.png){:height=480px width=720px} - *Dynamic particle effects adding visual flair to a scene.*
+<img src="https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/showcase/particle-demo.png" alt="Particles" title="Particles" style="width: auto; max-width: 50%; max-height: 720px; min-width: 25%; min-height: 480px; height: auto;"> - *Dynamic particle effects adding visual flair to a scene.*
 
-![Lighting](./showcase/lightning-demo.png){:height=480px width=720px} - *A scene illuminated with LunaEngine's dynamic lighting system.*
+<img src="https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/showcase/lightning-demo.png" alt="Lightning & Shadow" title="Lightning & Shadow" style="width: auto; max-width: 50%; max-height: 720px; min-width: 25%; min-height: 480px; height: auto;"> - *A scene illuminated with LunaEngine's dynamic lighting system.*
 
 ## Installation
 
