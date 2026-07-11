@@ -69,13 +69,13 @@ LunaEngine boasts a rich set of features designed to cover every aspect of 2D ga
 
 LunaEngine in action! Here are some glimpses of what you can create:
 
-![UI Demo](https://via.placeholder.com/800x450/000000/FFFFFF?text=UI+System+Showcase)*A demonstration of LunaEngine's versatile UI system.*
+![UI Demo](./showcase/ui-demo.png){:height=480px width=720px} - *A demonstration of LunaEngine's versatile UI system.*
 
-![Inspector](https://via.placeholder.com/800x450/000000/FFFFFF?text=LiveInspector+in+Action)*Inspecting game objects in real-time with the LiveInspector.*
+![Inspector](./showcase/live-inspector.png){:height=480px width=720px} - *Inspecting game objects in real-time with the LiveInspector.*
 
-![Particles](https://via.placeholder.com/800x450/000000/FFFFFF?text=Particle+Effects+Demo)*Dynamic particle effects adding visual flair to a scene.*
+![Particles](./showcase/particle-demo.png){:height=480px width=720px} - *Dynamic particle effects adding visual flair to a scene.*
 
-![Lighting](https://via.placeholder.com/800x450/000000/FFFFFF?text=Dynamic+Lighting+Example)*A scene illuminated with LunaEngine's dynamic lighting system.*
+![Lighting](./showcase/lightning-demo.png){:height=480px width=720px} - *A scene illuminated with LunaEngine's dynamic lighting system.*
 
 ## Installation
 
@@ -135,14 +135,13 @@ twine>=4.0.0
 Let's dive into a simple example to see LunaEngine in action. This code snippet demonstrates how to set up a basic game window, create a UI button, and handle an event.
 
 ```python
-import lunaengine as luna
-from lunaengine.core import Engine
+from lunaengine.core import LunaEngine, Scene
 from lunaengine.ui import Button, Label
 from lunaengine.graphics import Color
 
-class MyGame(Engine):
-    def __init__(self):
-        super().__init__(title="My LunaEngine Game", width=800, height=600)
+class MyGame(Scene):
+    def __init__(self, engine: LunaEngine):
+        super().__init__(engine)
         self.set_background_color(Color.DARK_GRAY)
 
         # Create a button
@@ -176,13 +175,17 @@ class MyGame(Engine):
         # Game logic updates here
         pass
 
-    def draw(self):
+    def render(self, renderer):
         # Custom drawing logic here (e.g., drawing game objects)
         pass
 
 if __name__ == "__main__":
-    game = MyGame()
-    game.run()
+    engine = LunaEngine("My Demo", 1024, 720)
+
+    engine.add_scene('scene_name', MyGame)
+    engine.set_scene('scene_name')
+
+    engine.run()
 ```
 
 To run this example:
