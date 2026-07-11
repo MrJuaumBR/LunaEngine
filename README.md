@@ -138,12 +138,10 @@ Let's dive into a simple example to see LunaEngine in action. This code snippet 
 ```python
 from lunaengine.core import LunaEngine, Scene
 from lunaengine.ui import Button, Label
-from lunaengine.graphics import Color
 
 class MyGame(Scene):
     def __init__(self, engine: LunaEngine):
         super().__init__(engine)
-        self.set_background_color(Color.DARK_GRAY)
 
         # Create a button
         self.my_button = Button(
