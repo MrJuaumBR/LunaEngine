@@ -42,7 +42,7 @@ from lunaengine.ui.elements import Button
 quit_btn = Button(x=100, y=100, width=150, height=40, text="Quit")
 
 # You can overwrite the background color directly
-quit_btn.background_color = (255, 50, 50)
+quit_btn.set_background_color((255, 50, 50))
 ```
 
 For most cases, it is recommended to rely on the global theme and create a custom theme if you need extensive changes.

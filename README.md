@@ -207,6 +207,7 @@ LunaEngine is built with a modular and organized architecture to ensure maintain
 | `ui/` | User interface components | Buttons, labels, text boxes, dropdowns, scrolling frames, theming, animations, notifications, tooltips, layout management. |
 | `utils/` | General utility functions | Math helpers, threading, performance monitoring, timers, image conversion. |
 | `misc/` | Miscellaneous tools and assets | Debugging tools, built-in icon sets, internal development assets. |
+| `storage/` | Storage system handling & management | Atlas, Encryption and Resources system. |
 | `tools/` | Internal development scripts | Code statistics, asset helpers (primarily for internal use, not end-users). |
 
 This clear separation of concerns allows developers to focus on specific aspects of their game without getting lost in a monolithic codebase.
@@ -219,7 +220,7 @@ LunaEngine is a continuously evolving project, and its growth is reflected in it
 
 - **Lines of Code (LOC)**: Over 16,000 lines of Python code
 
-- **Themes**: 58+ built-in themes for UI customization
+- **Themes**: 64+ built-in themes for UI customization
 
 - **UI Elements**: 27 distinct UI elements ready for use
 

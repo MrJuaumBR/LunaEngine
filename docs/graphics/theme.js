@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
         themeToggle.addEventListener('click', function() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            console.log("Toggle theme to " + newTheme);
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             if (themeIcon) themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
@@ -72,6 +71,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const searchTerm = urlParams.get('q');
     if (searchTerm) highlightSearchTerm(searchTerm);
+
+    // Keyboard shortcut: Ctrl+K / Cmd+K to focus search
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            const searchInput = document.getElementById('moduleSearch') || document.getElementById('globalSearch');
+            if (searchInput) {
+                searchInput.focus();
+                searchInput.select();
+            }
+        }
+    });
 });
 
 function highlightSearchTerm(term) {
@@ -110,15 +121,15 @@ function initSimpleMarkdownParser() {
 function parseMarkdown(text) {
     if (!text) return '';
     
-    // Processar tabelas PRIMEIRO (antes de qualquer outra coisa)
+    // Process tables FIRST
     text = parseMarkdownTables(text);
     
-    // Process code blocks (proteger o conteúdo)
+    // Process code blocks
     text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, function(match, lang, code) {
         return `<pre><code class="language-${lang || ''}">${code.trim()}</code></pre>`;
     });
     
-    // Headers (só no início da linha)
+    // Headers
     text = text.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
     text = text.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
     text = text.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
@@ -126,10 +137,10 @@ function parseMarkdown(text) {
     text = text.replace(/^##### (.*?)$/gm, '<h5>$1</h5>');
     text = text.replace(/^###### (.*?)$/gm, '<h6>$1</h6>');
     
-    // Bold - apenas **text** (não __text__ para evitar conflitos)
+    // Bold
     text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
     
-    // Italic - apenas *text* (não _text_ para evitar conflitos)
+    // Italic
     text = text.replace(/(^|\s)\*([^*\s][^*]*[^*\s]?)\*($|\s)/g, '$1<em>$2</em>$3');
     
     // Inline code
@@ -140,7 +151,6 @@ function parseMarkdown(text) {
     
     // Lists - unordered
     text = text.replace(/^\s*[-*+] (.*?)$/gm, '<li>$1</li>');
-    // Wrap consecutive list items in ul
     text = text.replace(/(<li>.*<\/li>)/gs, function(match) {
         if (match.includes('</li><li>')) {
             return '<ul>' + match + '</ul>';
@@ -164,11 +174,9 @@ function parseMarkdown(text) {
     text = text.replace(/^\s*---\s*$/gm, '<hr>');
     text = text.replace(/^\s*\*\*\*\s*$/gm, '<hr>');
     
-    // IMPORTANTE: Processar parágrafos ANTES de juntar tudo
-    // Dividir em blocos primeiro
+    // Paragraphs
     const blocks = text.split(/\n\s*\n/);
     const processedBlocks = blocks.map(block => {
-        // Se já é um elemento HTML (table, pre, etc.), não envolver em <p>
         if (block.trim().startsWith('<table') || 
             block.trim().startsWith('<pre') || 
             block.trim().startsWith('<ul') || 
@@ -182,22 +190,16 @@ function parseMarkdown(text) {
             block.trim().startsWith('<h6')) {
             return block;
         }
-        
-        // Se está vazio, pular
         if (!block.trim()) return '';
-        
-        // Para blocos de texto normais, substituir quebras de linha simples por <br>
         const withLineBreaks = block.replace(/\n/g, '<br>');
         return `<p>${withLineBreaks}</p>`;
     });
     
-    // Juntar os blocos processados
     text = processedBlocks.filter(block => block !== '').join('\n');
     
     return text;
 }
 
-// Função específica para parse de tabelas markdown - MELHORADA
 function parseMarkdownTables(text) {
     const lines = text.split('\n');
     let result = [];
@@ -206,36 +208,24 @@ function parseMarkdownTables(text) {
     while (i < lines.length) {
         const line = lines[i];
         
-        // Check if this could be a table start
         if (line.includes('|') && !line.includes('```') && line.trim()) {
             const tableRows = [];
-            let headerRow = null;
-            let separatorRow = null;
-            
-            // Collect potential table rows
             let j = i;
             while (j < lines.length && lines[j].includes('|') && !lines[j].includes('```') && lines[j].trim()) {
                 tableRows.push(lines[j]);
                 j++;
             }
             
-            // Verify if it's a valid markdown table (at least 2 rows, with separator)
             if (tableRows.length >= 2) {
-                headerRow = tableRows[0];
-                separatorRow = tableRows[1];
-                
-                // Check if separator row has dashes (markdown table format)
-                if (separatorRow.replace(/[^\-|]/g, '').length > 0 && 
-                    separatorRow.includes('-')) {
-                    // It's a valid table!
+                const separatorRow = tableRows[1];
+                if (separatorRow.replace(/[^\-|]/g, '').length > 0 && separatorRow.includes('-')) {
                     result.push(convertMarkdownTableToHTML(tableRows));
-                    i = j; // Skip the processed rows
+                    i = j;
                     continue;
                 }
             }
         }
         
-        // If not a table, just add the line as is
         result.push(line);
         i++;
     }
@@ -256,14 +246,13 @@ function convertMarkdownTableToHTML(tableRows) {
     });
     html += '    </tr>\n  </thead>\n';
     
-    // Data rows (skip the separator row at index 1)
+    // Data rows
     html += '  <tbody>\n';
     for (let i = 2; i < tableRows.length; i++) {
         const cells = splitTableRow(tableRows[i]);
         if (cells.length > 0) {
             html += '    <tr>\n';
             cells.forEach(cell => {
-                // Processar formatação básica dentro das células
                 let cellContent = cell.trim();
                 cellContent = cellContent.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
                 cellContent = cellContent.replace(/\*([^*]+)\*/g, '<em>$1</em>');
@@ -291,17 +280,16 @@ function addMarkdownStyles() {
             .markdown-content, .code-stats-content {
                 line-height: 1.6;
             }
-            
             .markdown-content table, .code-stats-content table {
                 width: 100%;
                 border-collapse: collapse;
-                margin: 0.5rem 0 1rem 0; /* MENOS espaçamento */
+                margin: 0.5rem 0 1rem 0;
                 background: white;
                 font-size: 0.9em;
             }
             .markdown-content th, .code-stats-content th,
             .markdown-content td, .code-stats-content td {
-                padding: 0.5rem 0.75rem; /* Padding mais compacto */
+                padding: 0.5rem 0.75rem;
                 border: 1px solid #dee2e6;
                 text-align: left;
             }
@@ -314,15 +302,12 @@ function addMarkdownStyles() {
             .markdown-content td, .code-stats-content td {
                 font-size: 0.85em;
             }
-            
-            /* Espaçamento geral melhorado */
             .markdown-content p, .code-stats-content p {
                 margin: 0.5rem 0 1rem 0;
             }
-            
             .markdown-content h1, .code-stats-content h1 { 
                 font-size: 2rem; 
-                margin: 1rem 0 0.5rem 0; /* Menos margem */
+                margin: 1rem 0 0.5rem 0;
             }
             .markdown-content h2, .code-stats-content h2 { 
                 font-size: 1.75rem; 
@@ -364,7 +349,6 @@ function addMarkdownStyles() {
                 text-decoration: underline;
             }
             
-            /* Dark theme support */
             [data-theme="dark"] .markdown-content,
             [data-theme="dark"] .code-stats-content {
                 color: #e9ecef;
@@ -420,12 +404,9 @@ function addMarkdownStyles() {
 function initCopyButtons() {
     $('pre').each(function() {
         const $pre = $(this);
-        // Check if copy button already exists
         if ($pre.find('.copy-btn').length === 0) {
             const $copyBtn = $('<button class="btn btn-sm btn-outline-secondary copy-btn">Copy</button>');
-            
             $pre.css('position', 'relative').append($copyBtn);
-            
             $copyBtn.on('click', function() {
                 const code = $pre.find('code').text() || $pre.text();
                 navigator.clipboard.writeText(code).then(() => {
@@ -464,10 +445,8 @@ function initCodeStats() {
 }
 
 function initSearchPage() {
-    // Load search.js if not already loaded
     if (typeof window.LunaEngineSearch === 'undefined') {
         console.log('Loading search engine...');
-        // The search.js will initialize itself
     }
 }
 
@@ -483,7 +462,6 @@ function debounce(func, wait) {
     };
 }
 
-// Utility function to escape HTML
 function escapeHtml(unsafe) {
     if (!unsafe) return '';
     return unsafe
@@ -494,11 +472,6 @@ function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
-// Also initialize when navigating
 document.addEventListener('DOMContentLoaded', function() {
-    // document.getElementById('navbar-logo-link').addEventListener('click', function(e) {
-    //     e.preventDefault();
-    //     window.location.href = '/';
-    // })
     setTimeout(initSimpleMarkdownParser, 100);
 });

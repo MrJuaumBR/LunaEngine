@@ -557,3 +557,41 @@ document.addEventListener('DOMContentLoaded', function() {
         window.history.replaceState({}, '', url);
     }
 });
+
+let suggestionIndex = -1;
+const suggestionBox = document.createElement('div');
+suggestionBox.id = 'suggestionBox';
+suggestionBox.className = 'suggestion-box';
+document.querySelector('.input-group').appendChild(suggestionBox);
+
+function updateSuggestions(term) {
+    if (!term || term.length < 2) {
+        suggestionBox.style.display = 'none';
+        return;
+    }
+    // Use the existing searchData (loaded globally)
+    const results = searchIndex.filter(item => 
+        item.content && normalizeText(item.content).includes(normalizeText(term))
+    ).slice(0, 8);
+    
+    if (results.length === 0) {
+        suggestionBox.style.display = 'none';
+        return;
+    }
+    
+    suggestionBox.innerHTML = results.map((item, idx) => `
+        <div class="suggestion-item" data-index="${idx}" data-link="${item.link}">
+            <i class="bi ${item.icon} me-2"></i>
+            <span>${highlightText(item.title || item.name, term)}</span>
+            <small class="text-muted">${item.module || ''}</small>
+        </div>
+    `).join('');
+    suggestionBox.style.display = 'block';
+    
+    // Add click listeners
+    suggestionBox.querySelectorAll('.suggestion-item').forEach(el => {
+        el.addEventListener('click', function() {
+            window.location.href = this.dataset.link;
+        });
+    });
+}

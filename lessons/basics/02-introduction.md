@@ -27,6 +27,8 @@ engine.run()
 ```python
 from lunaengine.core import Scene
 class MyScene(Scene):
+    def __init__(self, engine):
+        super().__init__(engine)
     def on_enter(self): pass
     def update(self, dt): pass
 ```
@@ -35,7 +37,7 @@ class MyScene(Scene):
 
 ```python
 from lunaengine.ui import Button
-button = Button(text="Click", position=(100,100), size=(200,50))
+button = Button(x=100, y=100, width=200, height=50, text="Click")
 ```
 ### Themes
 
@@ -50,8 +52,11 @@ from lunaengine.core import LunaEngine, Scene
 from lunaengine.ui.elements import TextLabel
 
 class HelloScene(Scene):
+    def __init__(self, engine):
+        super().__init__(engine)
+
     def on_enter(self):
-        label = TextLabel(text="Hello, LunaEngine!", position=(400,300), size=(400,100))
+        label = TextLabel(x=400, y=300, text="Hello, LunaEngine!")
         self.add_ui_element(label)
 
 engine = LunaEngine()

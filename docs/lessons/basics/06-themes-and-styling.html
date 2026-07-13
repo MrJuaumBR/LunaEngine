@@ -18,7 +18,7 @@
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (Ctrl+K)">
                     <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 <span class="badge bg-primary me-3">Lessons</span>
@@ -94,7 +94,7 @@ from lunaengine.ui.elements import Button
 quit_btn = Button(x=100, y=100, width=150, height=40, text="Quit")
 
 # You can overwrite the background color directly
-quit_btn.background_color = (255, 50, 50)
+quit_btn.set_background_color((255, 50, 50))
 ```
 
 For most cases, it is recommended to rely on the global theme and create a custom theme if you need extensive changes.
@@ -123,7 +123,7 @@ For most cases, it is recommended to rely on the global theme and create a custo
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-10 21:27
+                        Documentation generated on 2026-07-13 17:23
                     </p>
                 </div>
             </div>
@@ -141,11 +141,17 @@ For most cases, it is recommended to rely on the global theme and create a custo
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
-                    const currentPath = window.location.pathname;
-                    let searchPath = 'search.html';
-                    if (currentPath.split('/').filter(Boolean).length > 2) {
-                        searchPath = '../search.html';
+                    // Compute relative path to root search.html
+                    const path = window.location.pathname;
+                    const parts = path.split('/').filter(p => p && p !== '');
+                    // Remove file part if present
+                    let dirParts = parts;
+                    if (dirParts.length > 0 && dirParts[dirParts.length - 1].includes('.')) {
+                        dirParts = dirParts.slice(0, -1);
                     }
+                    // Number of levels to go up to reach the directory containing search.html
+                    const levels = Math.max(0, dirParts.length - 1);
+                    const searchPath = '../'.repeat(levels) + 'search.html';
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };

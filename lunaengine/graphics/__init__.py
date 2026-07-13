@@ -42,7 +42,8 @@ from .camera import (
     ParallaxBackground,
 )
 from .shadows import ShadowSystem, ShadowCaster, Light, LightType
-from .paperdoll import Layer, Paperdoll, Animation
+from .paperdoll import Layer, Paperdoll
+from .paperdoll import Animation as PaperDollAnimation
 
 __all__ = [
     # Sprite
@@ -74,5 +75,5 @@ __all__ = [
     # Shadows
     "ShadowSystem", "ShadowCaster", 'Light', "LightType",
     # Paperdoll
-    "Layer", "Paperdoll", "Animation"
+    "Layer", "Paperdoll", "PaperDollAnimation"
 ]

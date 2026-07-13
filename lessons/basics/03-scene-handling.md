@@ -17,19 +17,19 @@ class MyScene(Scene):
         # This is where you should instantiate UI elements and initial data.
         self.score = 0
 
-    def on_enter(self, previous_scene_name):
+    def on_enter(self, previous_scene):
         # Triggered every time the engine switches to this scene.
         # Useful for resetting timers, music, or game state.
-        print(f"Entering MyScene from {previous_scene_name}!")
+        print(f"Entering MyScene from {previous_scene}!")
     
     def update(self, dt):
         # Called every frame. 'dt' is delta time (seconds since last frame).
         # Put your game logic here!
         self.score += dt * 10
     
-    def on_exit(self, next_scene_name):
+    def on_exit(self, next_scene):
         # Triggered when leaving this scene.
-        print(f"Leaving MyScene to go to {next_scene_name}!")
+        print(f"Leaving MyScene to go to {next_scene}!")
 ```
 
 ## Adding UI Elements
@@ -43,8 +43,8 @@ class MenuScene(Scene):
     def __init__(self, engine):
         super().__init__(engine)
         
-        self.play_button = Button(text="Play", position=(400, 350), size=(200, 50))
-        self.play_button.on_click = self.start_game
+        self.play_button = Button(x=400, y=350, width=200, height=50, text="Play")
+        self.play_button.set_on_click(self.start_game)
         
         # You MUST add the element to the scene for it to render and work
         self.add_ui_element(self.play_button)

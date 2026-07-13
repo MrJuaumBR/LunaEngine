@@ -203,17 +203,6 @@ class Paperdoll:
             scale_y = height / orig_h
             self.scale = min(scale_x, scale_y)
         else:
-            # We want to stretch to exactly the given size, but we have a single scale factor.
-            # The simplest is to use the average or compute separate scales per layer? 
-            # Since we only have one scale factor, we'll use the width scale for consistency.
-            # Actually, we can use a trick: we can compute scale_x and scale_y separately and use
-            # the smaller one to avoid distortion, or use width scale and adjust height accordingly.
-            # But the user might want to force a specific size, so we'll use the width scale
-            # and let the height be determined by that scale (preserving aspect).
-            # If they want to stretch, we can use separate scales per axis, but our draw method
-            # currently uses a single scale. We could add two scales (scale_x, scale_y) later.
-            # For simplicity, we'll keep aspect ratio.
-            # I'll note this in the docstring.
             print("Warning: set_size with keep_aspect=False is not fully supported yet; using width scale and preserving aspect.")
             self.scale = width / orig_w
 

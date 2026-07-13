@@ -1,5 +1,7 @@
 # 08 - UI Layouts
 
+> To be honest, this was never used or tested >:)
+
 When creating complex menus (like inventories or settings pages), manually calculating and updating the `x` and `y` coordinates of every single button can be a nightmare. 
 
 **Layout Managers** (`lunaengine.ui.layout`) solve this by automatically organizing UI elements according to specified rules.

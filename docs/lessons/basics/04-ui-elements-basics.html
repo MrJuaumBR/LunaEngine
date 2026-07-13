@@ -18,7 +18,7 @@
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (Ctrl+K)">
                     <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 <span class="badge bg-primary me-3">Lessons</span>
@@ -68,17 +68,15 @@ class MenuScene(Scene):
         
         # 1. Create a Label
         self.title_label = TextLabel(
+            x=400, y=100
             text="Welcome to LunaEngine!",
-            position=(400, 100),
-            size=(400, 50),
             font_size=32
         )
         
         # 2. Create a Button
         self.play_button = Button(
-            text="Play Game",
-            position=(400, 300),
-            size=(200, 60)
+            x=400, y=300, width=200, height=60
+            text="Play Game"
         )
 ```
 
@@ -88,10 +86,10 @@ UI Elements in LunaEngine use direct assignment of functions for their events. Y
 
 ```python
         # Using a simple lambda
-        self.play_button.on_click = lambda: print("Button clicked!")
+        self.play_button.set_on_click(lambda: print("Button clicked!"))
         
         # Or using a method
-        self.play_button.on_click = self.start_game
+        self.play_button.set_on_click(self.start_game)
         
     def start_game(self):
         print("Starting game...")
@@ -150,7 +148,7 @@ You can import all of these from `lunaengine.ui.elements`. By learning to combin
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-10 21:27
+                        Documentation generated on 2026-07-13 17:23
                     </p>
                 </div>
             </div>
@@ -168,11 +166,17 @@ You can import all of these from `lunaengine.ui.elements`. By learning to combin
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
-                    const currentPath = window.location.pathname;
-                    let searchPath = 'search.html';
-                    if (currentPath.split('/').filter(Boolean).length > 2) {
-                        searchPath = '../search.html';
+                    // Compute relative path to root search.html
+                    const path = window.location.pathname;
+                    const parts = path.split('/').filter(p => p && p !== '');
+                    // Remove file part if present
+                    let dirParts = parts;
+                    if (dirParts.length > 0 && dirParts[dirParts.length - 1].includes('.')) {
+                        dirParts = dirParts.slice(0, -1);
                     }
+                    // Number of levels to go up to reach the directory containing search.html
+                    const levels = Math.max(0, dirParts.length - 1);
+                    const searchPath = '../'.repeat(levels) + 'search.html';
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };

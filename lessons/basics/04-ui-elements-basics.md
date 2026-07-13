@@ -16,17 +16,15 @@ class MenuScene(Scene):
         
         # 1. Create a Label
         self.title_label = TextLabel(
+            x=400, y=100
             text="Welcome to LunaEngine!",
-            position=(400, 100),
-            size=(400, 50),
             font_size=32
         )
         
         # 2. Create a Button
         self.play_button = Button(
-            text="Play Game",
-            position=(400, 300),
-            size=(200, 60)
+            x=400, y=300, width=200, height=60
+            text="Play Game"
         )
 ```
 
@@ -36,10 +34,10 @@ UI Elements in LunaEngine use direct assignment of functions for their events. Y
 
 ```python
         # Using a simple lambda
-        self.play_button.on_click = lambda: print("Button clicked!")
+        self.play_button.set_on_click(lambda: print("Button clicked!"))
         
         # Or using a method
-        self.play_button.on_click = self.start_game
+        self.play_button.set_on_click(self.start_game)
         
     def start_game(self):
         print("Starting game...")

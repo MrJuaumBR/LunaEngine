@@ -18,7 +18,7 @@
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (Ctrl+K)">
                     <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 
@@ -349,49 +349,7 @@
         <h2 class="mb-4">LunaEngine Modules</h2>
         <div class="row g-4" style="margin-bottom: 1vw;">
     <script>
-    document.addEventListener('DOMContentLoaded', function(){{
-        const installRadios = document.querySelectorAll('input[name="installOption"]');
-        const installCommandSpan = document.getElementById('installCommand');
-        const copyBtn = document.querySelector('.copy-install-btn');
-        const toggleBtn = document.getElementById('toggleStatsBtn');
-        const contentDiv = document.getElementById('codeStatsContent');
-        const icon = document.getElementById('statsToggleIcon');
-        if (toggleBtn && contentDiv && icon) {
-            toggleBtn.addEventListener('click', function() {
-                const isPreview = contentDiv.classList.contains('preview');
-                if (isPreview) {
-                    contentDiv.classList.remove('preview');
-                    icon.classList.replace('bi-chevron-down', 'bi-chevron-up');
-                } else {
-                    contentDiv.classList.add('preview');
-                    icon.classList.replace('bi-chevron-up', 'bi-chevron-down');
-                }
-            });
-        }
-        function updateCommand() {
-            const selected = document.querySelector('input[name="installOption"]:checked').value;
-            switch(selected) {
-                case 'windows': installCommandSpan.textContent = 'pip install lunaengine'; break;
-                case 'linux': installCommandSpan.textContent = 'pip3 install lunaengine'; break;
-                case 'testpypi': installCommandSpan.textContent = 'pip install -i https://test.pypi.org/simple/ lunaengine'; break;
-            }
-        }
-        installRadios.forEach(radio => radio.addEventListener('change', updateCommand));
-        copyBtn.addEventListener('click', function() {
-            const textToCopy = installCommandSpan.textContent;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                const originalIcon = copyBtn.innerHTML;
-                copyBtn.innerHTML = '<i class="bi bi-check"></i>';
-                copyBtn.classList.add('btn-success');
-                copyBtn.classList.remove('btn-outline-secondary');
-                setTimeout(() => {
-                    copyBtn.innerHTML = originalIcon;
-                    copyBtn.classList.remove('btn-success');
-                    copyBtn.classList.add('btn-outline-secondary');
-                }, 2000);
-            });
-        });
-    }});
+    document.addEventListener('DOMContentLoaded', function(){{const installRadios=document.querySelectorAll('input[name="installOption"]');const installCommandSpan=document.getElementById('installCommand');const copyBtn=document.querySelector('.copy-install-btn');const toggleBtn=document.getElementById('toggleStatsBtn');const contentDiv=document.getElementById('codeStatsContent');const icon=document.getElementById('statsToggleIcon');if(toggleBtn&&contentDiv&&icon){toggleBtn.addEventListener('click',function(){const isPreview=contentDiv.classList.contains('preview');if(isPreview){contentDiv.classList.remove('preview');icon.classList.replace('bi-chevron-down','bi-chevron-up');}else{contentDiv.classList.add('preview');icon.classList.replace('bi-chevron-up','bi-chevron-down');}});}function updateCommand(){const selected=document.querySelector('input[name="installOption"]:checked').value;switch(selected){case'windows':installCommandSpan.textContent='pip install lunaengine';break;case'linux':installCommandSpan.textContent='pip3 install lunaengine';break;case'testpypi':installCommandSpan.textContent='pip install -i https://test.pypi.org/simple/ lunaengine';break;}}installRadios.forEach(radio=>radio.addEventListener('change',updateCommand));copyBtn.addEventListener('click',function(){const textToCopy=installCommandSpan.textContent;navigator.clipboard.writeText(textToCopy).then(()=>{const originalIcon=copyBtn.innerHTML;copyBtn.innerHTML='<i class="bi bi-check"></i>';copyBtn.classList.add('btn-success');copyBtn.classList.remove('btn-outline-secondary');setTimeout(()=>{copyBtn.innerHTML=originalIcon;copyBtn.classList.remove('btn-success');copyBtn.classList.add('btn-outline-secondary');},2000);});});}});
     </script>
     
             <div class="col-lg-4 col-md-6">
@@ -615,7 +573,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-10 21:27
+                        Documentation generated on 2026-07-13 17:23
                     </p>
                 </div>
             </div>
@@ -633,11 +591,17 @@
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
-                    const currentPath = window.location.pathname;
-                    let searchPath = 'search.html';
-                    if (currentPath.split('/').filter(Boolean).length > 2) {
-                        searchPath = '../search.html';
+                    // Compute relative path to root search.html
+                    const path = window.location.pathname;
+                    const parts = path.split('/').filter(p => p && p !== '');
+                    // Remove file part if present
+                    let dirParts = parts;
+                    if (dirParts.length > 0 && dirParts[dirParts.length - 1].includes('.')) {
+                        dirParts = dirParts.slice(0, -1);
                     }
+                    // Number of levels to go up to reach the directory containing search.html
+                    const levels = Math.max(0, dirParts.length - 1);
+                    const searchPath = '../'.repeat(levels) + 'search.html';
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };

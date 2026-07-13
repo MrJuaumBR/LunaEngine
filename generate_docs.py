@@ -632,6 +632,7 @@ def generate_lessons():
 # ========== PAGE GENERATORS ==========
 
 def get_navbar_html(path_prefix="./", active_module=None):
+    # Placeholder now includes (Ctrl+K) hint
     return f"""
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
@@ -641,7 +642,7 @@ def get_navbar_html(path_prefix="./", active_module=None):
             </a>
             <div class="d-flex align-items-center">
                 <div class="input-group me-3">
-                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods...">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (Ctrl+K)">
                     <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                 </div>
                 {( '<span class="badge bg-primary me-3">' + active_module.title() + '</span>' if active_module else '')}
@@ -654,6 +655,7 @@ def get_navbar_html(path_prefix="./", active_module=None):
     """
 
 def get_search_script():
+    # Updated to compute relative path correctly
     return """
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -663,11 +665,17 @@ def get_search_script():
             const performSearch = () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
-                    const currentPath = window.location.pathname;
-                    let searchPath = 'search.html';
-                    if (currentPath.split('/').filter(Boolean).length > 2) {
-                        searchPath = '../search.html';
+                    // Compute relative path to root search.html
+                    const path = window.location.pathname;
+                    const parts = path.split('/').filter(p => p && p !== '');
+                    // Remove file part if present
+                    let dirParts = parts;
+                    if (dirParts.length > 0 && dirParts[dirParts.length - 1].includes('.')) {
+                        dirParts = dirParts.slice(0, -1);
                     }
+                    // Number of levels to go up to reach the directory containing search.html
+                    const levels = Math.max(0, dirParts.length - 1);
+                    const searchPath = '../'.repeat(levels) + 'search.html';
                     window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
                 }
             };
@@ -1256,6 +1264,43 @@ def generate_search_page(project, search_data):
         font-size: 0.7rem;
         padding: 0.2rem 0.5rem;
     }}
+    /* Autocomplete dropdown styles */
+    .suggestion-box {{
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 0 0 0.375rem 0.375rem;
+        max-height: 300px;
+        overflow-y: auto;
+        z-index: 1000;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        display: none;
+    }}
+    .suggestion-item {{
+        padding: 8px 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid #f0f0f0;
+    }}
+    .suggestion-item:hover,
+    .suggestion-item.active {{
+        background-color: #f0f7ff;
+    }}
+    .suggestion-item small {{
+        margin-left: auto;
+        color: #6c757d;
+    }}
+    .suggestion-item i {{
+        font-size: 1.1rem;
+    }}
+    .search-group {{
+        position: relative;
+    }}
     </style>
 </head>
 <body>
@@ -1272,13 +1317,14 @@ def generate_search_page(project, search_data):
                 <h1 class="mb-4"><i class="bi bi-search me-2"></i>Search Results</h1>
                 <div id="searchInfo" class="alert alert-info">
                     <i class="bi bi-info-circle me-2"></i>
-                    Global search across all LunaEngine documentation: {total_items} items indexed
+                    Global search across all LunaEngine documentation: <span id="totalIndexCount">0</span> items indexed
                 </div>
-                <div class="input-group mb-4">
-                    <input type="text" id="globalSearch" class="form-control" placeholder="Search everything in LunaEngine...">
+                <div class="input-group mb-4 search-group">
+                    <input type="text" id="globalSearch" class="form-control" placeholder="Search everything in LunaEngine... (Ctrl+K)">
                     <button class="btn btn-primary" type="button" id="searchButton">
                         <i class="bi bi-search"></i> Search
                     </button>
+                    <div id="suggestionBox" class="suggestion-box"></div>
                 </div>
                 <div id="searchResults" class="search-results-container">
                     <div class="alert alert-warning">
@@ -1330,132 +1376,227 @@ def generate_search_page(project, search_data):
             </div>
         </div>
     </div>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {{
-        const searchInput = document.getElementById('globalSearch');
-        const searchButton = document.getElementById('searchButton');
-        const searchResults = document.getElementById('searchResults');
-        const noResults = document.getElementById('noResults');
-        const searchStats = document.getElementById('searchStats');
-        const statsText = document.getElementById('statsText');
-        const urlParams = new URLSearchParams(window.location.search);
-        const searchTerm = urlParams.get('q');
-        if (searchTerm) {{
-            searchInput.value = searchTerm;
-            performSearch(searchTerm);
-        }}
-        if (searchButton) {{
-            searchButton.addEventListener('click', function() {{
-                const term = searchInput.value.trim();
-                if (term) {{
-                    window.location.href = `search.html?q=${{encodeURIComponent(term)}}`;
-                }}
-            }});
-        }}
-        if (searchInput) {{
-            searchInput.addEventListener('keydown', function(e) {{
-                if (e.key === 'Enter') {{
-                    const term = searchInput.value.trim();
-                    if (term) {{
-                        window.location.href = `search.html?q=${{encodeURIComponent(term)}}`;
-                    }}
-                }}
-            }});
-        }}
-        function performSearch(term) {{
-            fetch('search-data.json')
-                .then(response => response.json())
-                .then(data => {{
-                    const results = searchData(data, term.toLowerCase());
-                    displayResults(results, term);
-                }})
-                .catch(error => {{
-                    console.error('Error loading search data:', error);
-                    searchResults.innerHTML = '<div class="alert alert-danger">Error loading search data. Please try again later.</div>';
-                }});
-        }}
-        function searchData(data, term) {{
-            const results = [];
-            data.modules.forEach(module => {{
-                if (module.name.toLowerCase().includes(term) || module.title.toLowerCase().includes(term) || module.description.toLowerCase().includes(term)) {{
-                    results.push({{...module, type: 'module'}});
-                }}
-            }});
-            data.classes.forEach(cls => {{
-                if (cls.name.toLowerCase().includes(term) || cls.description.toLowerCase().includes(term) || cls.module.toLowerCase().includes(term)) {{
-                    results.push({{...cls, type: 'class'}});
-                }}
-            }});
-            data.functions.forEach(func => {{
-                if (func.name.toLowerCase().includes(term) || func.description.toLowerCase().includes(term) || func.module.toLowerCase().includes(term)) {{
-                    results.push({{...func, type: 'function'}});
-                }}
-            }});
-            data.methods.forEach(method => {{
-                if (method.name.toLowerCase().includes(term) || method.description.toLowerCase().includes(term) || method.class.toLowerCase().includes(term) || method.module.toLowerCase().includes(term)) {{
-                    results.push({{...method, type: 'method'}});
-                }}
-            }});
-            data.pages.forEach(page => {{
-                if (page.name.toLowerCase().includes(term) || page.description.toLowerCase().includes(term)) {{
-                    results.push({{...page, type: 'page'}});
-                }}
-            }});
-            if (data.examples) {{
-                data.examples.forEach(example => {{
-                    if (example.name.toLowerCase().includes(term) || example.file.toLowerCase().includes(term)) {{
-                        results.push({{...example, type: 'example'}});
-                    }}
-                }});
-            }}
-            return results;
-        }}
-        function displayResults(results, term) {{
-            if (results.length === 0) {{
-                searchResults.style.display = 'none';
-                noResults.style.display = 'block';
-                searchStats.style.display = 'none';
-                return;
-            }}
-            const typePriority = {{ 'module': 1, 'class': 2, 'method': 3, 'function': 4, 'example': 5, 'page': 6 }};
-            results.sort((a, b) => typePriority[a.type] - typePriority[b.type] || a.name.localeCompare(b.name));
-            let html = '<h5 class="mb-3">Found ' + results.length + ' results for "' + term + '"</h5>';
-            results.forEach(result => {{
-                const typeBadges = {{ 'module': 'primary', 'class': 'success', 'method': 'info', 'function': 'warning', 'example': 'secondary', 'page': 'dark' }};
-                const typeLabels = {{ 'module': 'Module', 'class': 'Class', 'method': 'Method', 'function': 'Function', 'example': 'Example', 'page': 'Page' }};
-                const badgeColor = typeBadges[result.type] || 'secondary';
-                const typeLabel = typeLabels[result.type] || result.type;
-                let description = result.description || 'No description available';
-                if (description.length > 150) description = description.substring(0, 150) + '...';
-                const regex = new RegExp(`(${{term}})`, 'gi');
-                description = description.replace(regex, '<mark class="search-highlight">$1</mark>');
-                html += `
-                <div class="result-item p-3 rounded bg-light">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="mb-0"><a href="${{result.link}}" class="text-decoration-none">${{result.name}}</a></h6>
-                        <span class="badge bg-${{badgeColor}} result-type-badge">${{typeLabel}}</span>
-                    </div>
-                    <p class="text-muted small mb-2">${{description}}</p>
-                    <div class="text-muted small">
-                        ${{result.type === 'method' ? `<i class="bi bi-box me-1"></i>Class: ${{result.class}} | ` : ''}}
-                        ${{result.type === 'class' || result.type === 'function' || result.type === 'method' ? `<i class="bi bi-folder me-1"></i>Module: ${{result.module}} | ` : ''}}
-                        ${{result.type === 'class' && result.methods_count ? `<i class="bi bi-hammer me-1"></i>${{result.methods_count}} methods | ` : ''}}
-                        <a href="${{result.link}}" class="text-primary"><i class="bi bi-arrow-right me-1"></i>View details</a>
-                    </div>
-                </div>`;
-            }});
-            searchResults.innerHTML = html;
-            searchResults.style.display = 'block';
-            noResults.style.display = 'none';
-            searchStats.style.display = 'block';
-            statsText.textContent = `Found ${{results.length}} results for "${{term}}"`;
-        }}
-    }});
-    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="theme.js"></script>
-    {get_search_script()}
+    <script src="search.js"></script>
+    <script>
+    (function() {{
+        'use strict';
+
+        // --- Keyboard shortcut: Ctrl+K / Cmd+K to focus search ---
+        document.addEventListener('keydown', function(e) {{
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {{
+                e.preventDefault();
+                const searchInput = document.getElementById('globalSearch') || document.getElementById('moduleSearch');
+                if (searchInput) {{
+                    searchInput.focus();
+                    searchInput.select();
+                }}
+            }}
+        }});
+
+        // --- Autocomplete dropdown ---
+        let searchData = null;
+        let suggestionTimeout = null;
+        const suggestionBox = document.getElementById('suggestionBox');
+        const globalSearch = document.getElementById('globalSearch');
+
+        // Listen for the custom event when search data is ready
+        document.addEventListener('searchDataReady', function(e) {{
+            searchData = e.detail;
+            document.getElementById('totalIndexCount').textContent = 
+                (searchData.modules?.length || 0) + 
+                (searchData.classes?.length || 0) + 
+                (searchData.functions?.length || 0) + 
+                (searchData.methods?.length || 0) + 
+                (searchData.pages?.length || 0) + 
+                (searchData.examples?.length || 0);
+        }});
+
+        // Helper: highlight text
+        function highlightText(text, term) {{
+            if (!term) return text;
+            const regex = new RegExp(`(${{term}})`, 'gi');
+            return text.replace(regex, '<mark class="search-highlight">$1</mark>');
+        }}
+
+        function updateSuggestions(term) {{
+            if (!searchData || !term || term.length < 2) {{
+                suggestionBox.style.display = 'none';
+                return;
+            }}
+
+            const lowerTerm = term.toLowerCase();
+            const allItems = [];
+
+            const types = [
+                {{ data: searchData.modules, type: 'module', icon: 'bi-folder' }},
+                {{ data: searchData.classes, type: 'class', icon: 'bi-box' }},
+                {{ data: searchData.functions, type: 'function', icon: 'bi-gear' }},
+                {{ data: searchData.methods, type: 'method', icon: 'bi-hammer' }},
+                {{ data: searchData.pages, type: 'page', icon: 'bi-file-text' }},
+                {{ data: searchData.examples, type: 'example', icon: 'bi-code-slash' }}
+            ];
+
+            types.forEach(({{ data, type, icon }}) => {{
+                if (!data) return;
+                data.forEach(item => {{
+                    let name = item.name || item.title || '';
+                    let description = item.description || '';
+                    let module = item.module || '';
+                    let score = 0;
+                    const nameLower = name.toLowerCase();
+                    const descLower = description.toLowerCase();
+                    const moduleLower = module.toLowerCase();
+
+                    if (nameLower.includes(lowerTerm)) {{
+                        score += 10;
+                        if (nameLower.startsWith(lowerTerm)) score += 5;
+                    }}
+                    if (descLower.includes(lowerTerm)) score += 3;
+                    if (moduleLower.includes(lowerTerm)) score += 2;
+
+                    if (score > 0) {{
+                        allItems.push({{
+                            name: name,
+                            description: description,
+                            link: item.link,
+                            module: module,
+                            type: type,
+                            icon: icon,
+                            score: score,
+                            original: item
+                        }});
+                    }}
+                }});
+            }});
+
+            allItems.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+            const top = allItems.slice(0, 10);
+
+            if (top.length === 0) {{
+                suggestionBox.style.display = 'none';
+                return;
+            }}
+
+            suggestionBox.innerHTML = top.map((item, idx) => `
+                <div class="suggestion-item" data-index="${{idx}}" data-link="${{item.link}}">
+                    <i class="bi ${{item.icon}} me-2"></i>
+                    <span>${{highlightText(item.name, term)}}</span>
+                    ${{item.module ? `<small>${{item.module}}</small>` : ''}}
+                    <span class="badge bg-secondary ms-2">${{item.type}}</span>
+                </div>
+            `).join('');
+
+            suggestionBox.style.display = 'block';
+
+            // Click handler
+            suggestionBox.querySelectorAll('.suggestion-item').forEach(el => {{
+                el.addEventListener('click', function() {{
+                    window.location.href = this.dataset.link;
+                }});
+            }});
+        }}
+
+        // Debounce
+        function debounce(func, wait) {{
+            let timeout;
+            return function(...args) {{
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            }};
+        }}
+
+        if (globalSearch) {{
+            globalSearch.addEventListener('input', debounce(function(e) {{
+                const term = this.value.trim();
+                updateSuggestions(term);
+            }}, 150));
+
+            globalSearch.addEventListener('blur', function() {{
+                setTimeout(() => {{
+                    suggestionBox.style.display = 'none';
+                }}, 200);
+            }});
+
+            // Keyboard navigation
+            let selectedIndex = -1;
+            globalSearch.addEventListener('keydown', function(e) {{
+                const items = suggestionBox.querySelectorAll('.suggestion-item');
+                if (items.length === 0) return;
+
+                if (e.key === 'ArrowDown') {{
+                    e.preventDefault();
+                    selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                    updateActive(items, selectedIndex);
+                }} else if (e.key === 'ArrowUp') {{
+                    e.preventDefault();
+                    selectedIndex = Math.max(selectedIndex - 1, -1);
+                    updateActive(items, selectedIndex);
+                }} else if (e.key === 'Enter') {{
+                    if (selectedIndex >= 0 && selectedIndex < items.length) {{
+                        e.preventDefault();
+                        const link = items[selectedIndex].dataset.link;
+                        if (link) window.location.href = link;
+                    }}
+                }}
+            }});
+
+            function updateActive(items, index) {{
+                items.forEach((el, i) => {{
+                    el.classList.toggle('active', i === index);
+                }});
+                if (index >= 0 && index < items.length) {{
+                    items[index].scrollIntoView({{ block: 'nearest' }});
+                }}
+            }}
+        }}
+    }})();
+    </script>
+    <!-- Navbar search script (same as in theme.js but ensures correct path) -->
+    <script>
+    (function() {{
+        document.addEventListener('DOMContentLoaded', function() {{
+            const searchInput = document.getElementById('moduleSearch');
+            const searchIcon = document.querySelector('.input-group-text');
+            if (searchInput && searchIcon) {{
+                const performSearch = () => {{
+                    const searchTerm = searchInput.value.trim();
+                    if (searchTerm) {{
+                        const path = window.location.pathname;
+                        const parts = path.split('/').filter(p => p && p !== '');
+                        let dirParts = parts;
+                        if (dirParts.length > 0 && dirParts[dirParts.length - 1].includes('.')) {{
+                            dirParts = dirParts.slice(0, -1);
+                        }}
+                        const levels = Math.max(0, dirParts.length - 1);
+                        const searchPath = '../'.repeat(levels) + 'search.html';
+                        window.location.href = `${{searchPath}}?q=${{encodeURIComponent(searchTerm)}}`;
+                    }}
+                }};
+                searchInput.addEventListener('keydown', (e) => {{
+                    if (e.key === 'Enter') {{
+                        e.preventDefault(); 
+                        e.stopPropagation();
+                        performSearch();
+                        return false;
+                    }}
+                }});
+                searchIcon.addEventListener('click', performSearch);
+                const form = searchInput.closest('form');
+                if (form) {{
+                    form.addEventListener('submit', (e) => {{
+                        e.preventDefault();
+                        performSearch();
+                        return false;
+                    }});
+                }}
+            }}
+        }});
+    }})();
+    </script>
 </body>
 </html>"""
     with open("docs/search.html", "w", encoding="utf-8") as f:
@@ -1589,6 +1730,43 @@ code {
     background: linear-gradient(transparent, var(--card-bg));
     pointer-events: none;
 }
+/* Suggestion box (added) */
+.suggestion-box {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0 0 0.375rem 0.375rem;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: none;
+}
+.suggestion-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.suggestion-item:hover,
+.suggestion-item.active {
+    background-color: #f0f7ff;
+}
+.suggestion-item small {
+    margin-left: auto;
+    color: #6c757d;
+}
+.suggestion-item i {
+    font-size: 1.1rem;
+}
+.search-group {
+    position: relative;
+}
 """
         with open(css_file, "w", encoding="utf-8") as f:
             f.write(css_content)
@@ -1667,6 +1845,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const searchTerm = urlParams.get('q');
     if (searchTerm) highlightSearchTerm(searchTerm);
+
+    // Keyboard shortcut: Ctrl+K / Cmd+K to focus search
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            const searchInput = document.getElementById('moduleSearch') || document.getElementById('globalSearch');
+            if (searchInput) {
+                searchInput.focus();
+                searchInput.select();
+            }
+        }
+    });
 });
 
 function highlightSearchTerm(term) {
@@ -2479,49 +2669,7 @@ def generate_main_page(project):
         <h2 class="mb-4">LunaEngine Modules</h2>
         <div class="row g-4" style="margin-bottom: 1vw;">
     <script>
-    document.addEventListener('DOMContentLoaded', function()"""+"""{{
-        const installRadios = document.querySelectorAll('input[name="installOption"]');
-        const installCommandSpan = document.getElementById('installCommand');
-        const copyBtn = document.querySelector('.copy-install-btn');
-        const toggleBtn = document.getElementById('toggleStatsBtn');
-        const contentDiv = document.getElementById('codeStatsContent');
-        const icon = document.getElementById('statsToggleIcon');
-        if (toggleBtn && contentDiv && icon) {
-            toggleBtn.addEventListener('click', function() {
-                const isPreview = contentDiv.classList.contains('preview');
-                if (isPreview) {
-                    contentDiv.classList.remove('preview');
-                    icon.classList.replace('bi-chevron-down', 'bi-chevron-up');
-                } else {
-                    contentDiv.classList.add('preview');
-                    icon.classList.replace('bi-chevron-up', 'bi-chevron-down');
-                }
-            });
-        }
-        function updateCommand() {
-            const selected = document.querySelector('input[name="installOption"]:checked').value;
-            switch(selected) {
-                case 'windows': installCommandSpan.textContent = 'pip install lunaengine'; break;
-                case 'linux': installCommandSpan.textContent = 'pip3 install lunaengine'; break;
-                case 'testpypi': installCommandSpan.textContent = 'pip install -i https://test.pypi.org/simple/ lunaengine'; break;
-            }
-        }
-        installRadios.forEach(radio => radio.addEventListener('change', updateCommand));
-        copyBtn.addEventListener('click', function() {
-            const textToCopy = installCommandSpan.textContent;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                const originalIcon = copyBtn.innerHTML;
-                copyBtn.innerHTML = '<i class="bi bi-check"></i>';
-                copyBtn.classList.add('btn-success');
-                copyBtn.classList.remove('btn-outline-secondary');
-                setTimeout(() => {
-                    copyBtn.innerHTML = originalIcon;
-                    copyBtn.classList.remove('btn-success');
-                    copyBtn.classList.add('btn-outline-secondary');
-                }, 2000);
-            });
-        });
-    }});
+    document.addEventListener('DOMContentLoaded', function()"""+"""{{const installRadios=document.querySelectorAll('input[name="installOption"]');const installCommandSpan=document.getElementById('installCommand');const copyBtn=document.querySelector('.copy-install-btn');const toggleBtn=document.getElementById('toggleStatsBtn');const contentDiv=document.getElementById('codeStatsContent');const icon=document.getElementById('statsToggleIcon');if(toggleBtn&&contentDiv&&icon){toggleBtn.addEventListener('click',function(){const isPreview=contentDiv.classList.contains('preview');if(isPreview){contentDiv.classList.remove('preview');icon.classList.replace('bi-chevron-down','bi-chevron-up');}else{contentDiv.classList.add('preview');icon.classList.replace('bi-chevron-up','bi-chevron-down');}});}function updateCommand(){const selected=document.querySelector('input[name="installOption"]:checked').value;switch(selected){case'windows':installCommandSpan.textContent='pip install lunaengine';break;case'linux':installCommandSpan.textContent='pip3 install lunaengine';break;case'testpypi':installCommandSpan.textContent='pip install -i https://test.pypi.org/simple/ lunaengine';break;}}installRadios.forEach(radio=>radio.addEventListener('change',updateCommand));copyBtn.addEventListener('click',function(){const textToCopy=installCommandSpan.textContent;navigator.clipboard.writeText(textToCopy).then(()=>{const originalIcon=copyBtn.innerHTML;copyBtn.innerHTML='<i class="bi bi-check"></i>';copyBtn.classList.add('btn-success');copyBtn.classList.remove('btn-outline-secondary');setTimeout(()=>{copyBtn.innerHTML=originalIcon;copyBtn.classList.remove('btn-success');copyBtn.classList.add('btn-outline-secondary');},2000);});});}});
     </script>
     """
     module_styles = {
