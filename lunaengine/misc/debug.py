@@ -37,6 +37,7 @@ from ..ui.elements.labels import TextLabel
 from ..ui.elements.textinputs import TextBox
 from ..ui.themes import ThemeManager, ThemeStyle
 
+
 class DebugOverlay:
     """Base class for a draggable, fixable, closable debug panel."""
 
@@ -520,12 +521,23 @@ class LiveInspector(UiFrame):
         self.pinned = False
         self.visible = False  # Start hidden
         self._scene_name = None
+        
+        # Console
+        self.console_log_manager = ConsoleLogManager()
+        self._original_stdout = sys.stdout
+        self._original_stderr = sys.stderr
+        self._redirect_console_output()
+        
+        # Custom Functions
+        self.custom_functions = {}  # name -> {callable, parameters, description}
+        self._current_custom_func = None
+        
         self._setup_content(engine)
         # Initially not in scene; will be added when set_visible(True)
         self._registered = False
 
     # ------------------------------------------------------------------
-    # Scene registration (so the inspector receives events)
+    # Scene registration
     # ------------------------------------------------------------------
     def _update_scene_registration(self):
         """Add or remove this inspector from the current scene's ui_elements."""
@@ -551,6 +563,7 @@ class LiveInspector(UiFrame):
     def close(self):
         """Called by header close button."""
         self.set_visible(False)
+        self._restore_console()
 
     def toggle_fixed(self):
         """Called by header lock button."""
@@ -581,6 +594,7 @@ class LiveInspector(UiFrame):
 
         self.tabs.add_tab("Elements")
         self.tabs.add_tab("Console")
+        self.tabs.add_tab("Custom Function")
         self.tabs.add_tab("Performance")
         self.tabs.add_tab("Audio")
         self.tabs.add_tab("Overlays")
@@ -588,6 +602,7 @@ class LiveInspector(UiFrame):
 
         self.tabs.add_to_tab("Elements", TextLabel(5, 5, "Scene Elements", int(18*scale), color=self.style.text_color))
         self.tabs.add_to_tab("Console", TextLabel(5, 5, "Console", int(18*scale), color=self.style.text_color))
+        self.tabs.add_to_tab("Custom Function", TextLabel(5, 5, "Custom Function", int(18*scale), color=self.style.text_color))
         self.tabs.add_to_tab("Settings", TextLabel(5, 5, "Settings", int(18*scale), color=self.style.text_color))
         self.tabs.add_to_tab("Overlays", TextLabel(5, 5, "Overlays", int(18*scale), color=self.style.text_color))
 
@@ -628,11 +643,10 @@ class LiveInspector(UiFrame):
         self.tabs.add_to_tab("Elements", self.properties_frame)
 
         # ---------- Console tab ----------
-        self.console_scrolling = ScrollingFrame(5, 35, self.tabs.width - 10, self.tabs.height - 100, self.tabs.width - 10, 400)
-        self.tabs.add_to_tab("Console", self.console_scrolling)
-        self.clear_console_btn = Button(5, 5, 80, 24, "Clear", int(16*scale))
-        self.clear_console_btn.set_on_click(lambda: self.console_scrolling.clear_content())
-        self.tabs.add_to_tab("Console", self.clear_console_btn)
+        self._setup_console_tab()
+        
+        # ---------- Custom Functions ----------
+        self._setup_custom_tab()
 
         # ---------- Performance Tab ----------
         self._setup_performance_tab()
@@ -913,7 +927,174 @@ class LiveInspector(UiFrame):
             print("No OpenGL renderer to clear caches.")
 
     # ------------------------------------------------------------------
-    # Performance Tab (unchanged)
+    # Custom Function Tab
+    # ------------------------------------------------------------------
+    def _setup_custom_tab(self):
+        scale = self.scale
+        tab_w = self.tabs.width
+
+        # Dropdown for function selection
+        self.custom_dropdown = Dropdown(
+            5*scale, 35*scale,
+            180*scale, 24*scale,
+            ["No functions"], int(16*scale)
+        )
+        self.custom_dropdown.set_on_selection_changed(self._on_custom_func_selected)
+        self.tabs.add_to_tab("Custom Function", self.custom_dropdown)
+
+        # Description label
+        self.custom_desc_label = TextLabel(
+            5*scale, 65*scale,
+            "Select a function above",
+            int(14*scale), color=(200, 200, 200)
+        )
+        self.tabs.add_to_tab("Custom Function", self.custom_desc_label)
+
+        # Parameter inputs container (will be rebuilt on selection)
+        self.custom_params_frame = ScrollingFrame(
+            5*scale, 90*scale,
+            tab_w - 10*scale,
+            120*scale,
+            tab_w - 10*scale,
+            200*scale,
+            scrollbar_size=6
+        )
+        self.tabs.add_to_tab("Custom Function", self.custom_params_frame)
+
+        # Execute button
+        self.custom_execute_btn = Button(
+            5*scale, 220*scale,
+            100*scale, 28*scale,
+            "Execute", int(16*scale)
+        )
+        self.custom_execute_btn.set_on_click(self._execute_custom_func)
+        self.tabs.add_to_tab("Custom Function", self.custom_execute_btn)
+
+        # Result label
+        self.custom_result_label = TextLabel(
+            115*scale, 225*scale,
+            "",
+            int(14*scale), color=(100, 255, 100)
+        )
+        self.tabs.add_to_tab("Custom Function", self.custom_result_label)
+
+        self._refresh_custom_dropdown()
+        
+    def add_custom_function(self, name: str, callable_obj: Callable,
+                        parameters: List[Tuple[str, type]], description: str = ""):
+        """
+        Register a test function.
+        parameters: list of (param_name, param_type) where type is int, float, str, bool.
+        """
+        self.custom_functions[name] = {
+            'callable': callable_obj,
+            'parameters': parameters,
+            'description': description
+        }
+        self._refresh_custom_dropdown()
+        
+        if self.custom_functions:
+            first_name = list(self.custom_functions.keys())[0]
+            self.custom_dropdown.selected_index = 0
+            # Ensure dropdown displays the first name, not "No functions"
+            if hasattr(self.custom_dropdown, '_update_display'):
+                self.custom_dropdown._update_display()
+            self._on_custom_func_selected(0, first_name)
+    
+    def _on_custom_func_selected(self, index: int, name: str):
+        self.custom_params_frame.clear_content()
+        self.custom_desc_label.set_text("")
+        self.custom_result_label.set_text("")
+
+        if name == "No functions" or name not in self.custom_functions:
+            return
+
+        func_info = self.custom_functions[name]
+        self.custom_desc_label.set_text(func_info['description'])
+
+        # Build parameter input fields
+        y = 5
+        self._param_inputs = {}  # store references to input widgets
+        for param_name, param_type in func_info['parameters']:
+            # Label
+            label = TextLabel(5, y, f"{param_name} ({param_type.__name__}):",
+                            int(14*self.scale), color=(200,200,200))
+            self.custom_params_frame.add_child(label)
+
+            # Input widget based on type
+            if param_type is int:
+                widget = NumberSelector(
+                    150, y, 100, 22,
+                    min_value=-1000, max_value=1000,
+                    value=0, label="", label_size=0
+                )
+            elif param_type is float:
+                widget = NumberSelector(
+                    150, y, 100, 22,
+                    min_value=-1000.0, max_value=1000.0,
+                    value=0.0, label="", label_size=0, step=0.1
+                )
+            elif param_type is str:
+                widget = TextBox(
+                    150, y, 100, 22,
+                    font_size=int(16*self.scale), label="", label_size=0
+                )
+            elif param_type is bool:
+                widget = Checkbox(
+                    150, y, 20, 20,
+                    False, label=""
+                )
+            else:
+                widget = TextLabel(150, y+2, "Unsupported type", int(14*self.scale), color=(255,100,100))
+
+            self.custom_params_frame.add_child(widget)
+            self._param_inputs[param_name] = (widget, param_type)
+            y += 28
+
+        self.custom_params_frame.content_height = max(self.custom_params_frame.height, y + 10)
+        self.custom_params_frame.scroll_y = 0
+
+    def _refresh_custom_dropdown(self):
+        names = list(self.custom_functions.keys())
+        if not names:
+            names = ["No functions"]
+        elif names and len(names) >= 1:
+            self.custom_dropdown.set_options(names, 0)
+            
+            first_name = names[0] if names else "No functions"
+            self._on_custom_func_selected(0, first_name)
+        
+    def _execute_custom_func(self):
+        func_name = self.custom_dropdown.get_selected()[1]
+        if func_name == "No functions" or func_name not in self.custom_functions:
+            return
+
+        func_info = self.custom_functions[func_name]
+        args = []
+        try:
+            for param_name, (widget, ptype) in self._param_inputs.items():
+                if ptype is int:
+                    val = int(widget.value)
+                elif ptype is float:
+                    val = float(widget.value)
+                elif ptype is str:
+                    val = widget.text
+                elif ptype is bool:
+                    val = widget.value
+                else:
+                    val = None
+                args.append(val)
+
+            result = func_info['callable'](*args)
+            self.custom_result_label.set_text(f"[s] > Result: {result}")
+            # Also send to console
+            self.console_log_manager.add_log(LogLevel.INFO, f"Custom function '{func_name}' returned: {result}")
+        except Exception as e:
+            self.custom_result_label.set_text(f"[x] > Error: {e}")
+            self.console_log_manager.add_log(LogLevel.ERROR, f"Custom function '{func_name}' error: {e}")
+
+    # ------------------------------------------------------------------
+    # Performance Tab
     # ------------------------------------------------------------------
     def _setup_performance_tab(self):
         scale = self.scale
@@ -1113,8 +1294,8 @@ class LiveInspector(UiFrame):
             if match:
                 model = match.group(0).strip()
                 model = re.sub(r'\s+', ' ', model)
-                return model[:40]
-        return proc_str[:40] if proc_str else "Unknown CPU"
+                return model[:26]
+        return proc_str[:26] if proc_str else "Unknown CPU"
 
     def _get_gpu_info(self) -> str:
         try:
@@ -1141,7 +1322,7 @@ class LiveInspector(UiFrame):
             return "OpenGL (unknown)"
 
     # ------------------------------------------------------------------
-    # Hierarchy navigation methods (fixed)
+    # Hierarchy navigation methods
     # ------------------------------------------------------------------
     def _build_root_hierarchy(self):
         self.hierarchy_stack.clear()
@@ -1331,6 +1512,87 @@ class LiveInspector(UiFrame):
         self.properties_frame._needs_rearrange = True
         self.properties_frame.scroll_y = 0
     
+    # ------------------------------------------------------------------
+    # Console
+    # ------------------------------------------------------------------
+    def _redirect_console_output(self):
+        class ConsoleStream:
+            def __init__(self, log_manager, original, level):
+                self.log_manager = log_manager
+                self.original = original
+                self.level = level
+                self.buffer = ""
+
+            def write(self, text):
+                self.original.write(text)
+                self.buffer += text
+                if text.endswith('\n'):
+                    # Remove trailing newline for display
+                    msg = self.buffer.rstrip('\n')
+                    if msg:
+                        self.log_manager.add_log(self.level, msg)
+                    self.buffer = ""
+
+            def flush(self):
+                self.original.flush()
+
+        # Redirect stdout (INFO) and stderr (ERROR)
+        sys.stdout = ConsoleStream(self.console_log_manager, self._original_stdout, LogLevel.INFO)
+        sys.stderr = ConsoleStream(self.console_log_manager, self._original_stderr, LogLevel.ERROR)
+    
+    def _setup_console_tab(self):
+        scale = self.scale
+        self.console_scrolling = ScrollingFrame(
+            5*scale, 35*scale,
+            self.tabs.width - 10*scale,
+            self.tabs.height - 100*scale,
+            self.tabs.width - 10*scale,
+            400*scale,
+            scrollbar_size=8
+        )
+        self.tabs.add_to_tab("Console", self.console_scrolling)
+
+        # Clear button
+        clear_btn = Button(5*scale, 5*scale, 80*scale, 24*scale, "Clear", int(16*scale))
+        clear_btn.set_on_click(self._clear_console)
+        self.tabs.add_to_tab("Console", clear_btn)
+
+        # Auto‑refresh when logs change
+        self.console_log_manager.on_logs_changed = self._update_console_view
+        self._update_console_view()
+    
+    def _update_console_view(self):
+        self.console_scrolling.clear_content()
+        logs = self.console_log_manager.get_filtered()
+        # Keep only last 40 entries
+        logs = logs[-40:]
+        y = 5
+        for entry in logs:
+            # Format timestamp
+            timestamp = datetime.datetime.fromtimestamp(entry.timestamp).strftime("%H:%M:%S")
+            display_text = f"[{timestamp}] {entry.message}"
+            color = {
+                LogLevel.INFO: (200, 200, 200),
+                LogLevel.WARNING: (255, 255, 100),
+                LogLevel.ERROR: (255, 100, 100),
+                LogLevel.DEBUG: (150, 150, 150)
+            }.get(entry.level, (200, 200, 200))
+            label = TextLabel(5*self.scale, y*self.scale, display_text,
+                            int(14*self.scale), color=color)
+            self.console_scrolling.add_child(label)
+            y += 22
+        self.console_scrolling.content_height = max(self.console_scrolling.height, y + 10)
+        # Auto‑scroll to bottom
+        self.console_scrolling.scroll_y = self.console_scrolling.content_height - self.console_scrolling.height
+    
+    def _clear_console(self):
+        self.console_log_manager.clear()
+        self._update_console_view()
+        
+    def _restore_console(self):
+        if hasattr(self, '_original_stdout'):
+            sys.stdout = self._original_stdout
+            sys.stderr = self._original_stderr
     # ------------------------------------------------------------------
     # Overlays management
     # ------------------------------------------------------------------

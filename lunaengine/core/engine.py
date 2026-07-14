@@ -42,6 +42,7 @@ from typing import Dict, List, Tuple, Callable, Optional, Type, Any, Union
 
 from ..ui.layer_manager import UILayerManager
 from ..ui.notifications import NotificationPosition, NotificationType, notification_manager
+from ..ui.themes import ThemeManager, ThemeType
 from .scene import Scene
 from ..utils import PerformanceMonitor, GarbageCollector
 from ..misc.debug import DebugManager, LiveInspector
@@ -829,7 +830,6 @@ class LunaEngine:
         Returns:
             Dict[str, any]: Dictionary with theme names as keys and theme objects as values
         """
-        from ..ui.themes import ThemeManager, ThemeType
         
         all_themes = {}
         
@@ -862,7 +862,7 @@ class LunaEngine:
         themes = self.get_all_themes()
         return list(themes.keys())
 
-    def set_global_theme(self, theme: str, dark:bool = True) -> bool:
+    def set_global_theme(self, theme: Union[ThemeType, str], dark:Optional[bool] = True) -> bool:
         """
         Set the global theme for the entire engine and update all UI elements
         
@@ -872,7 +872,7 @@ class LunaEngine:
         Returns:
             bool: True if theme was set successfully, False otherwise
         """
-        from ..ui.themes import ThemeManager, ThemeType
+        
         
         if type(theme) is ThemeType:
             theme_name = theme.value
@@ -896,7 +896,6 @@ class LunaEngine:
         Args:
             dark (bool): True
         """
-        from ..ui.themes import ThemeManager
         
         ThemeManager.set_dark_mode(dark)
         current_theme = ThemeManager.get_current_theme()
@@ -909,8 +908,6 @@ class LunaEngine:
         Returns:
             bool: True if dark mode is enabled, False otherwise
         """
-        from ..ui.themes import ThemeManager
-        
         return ThemeManager.get_dark_mode()
 
     def _update_all_ui_themes(self, theme_enum):
@@ -1273,6 +1270,18 @@ class LunaEngine:
             print(f"OpenGL rendering error: {e}")
             import traceback
             traceback.print_exc()
+            
+    def live_inspector(self) -> Union[LiveInspector, None]:
+        return self.debug_manager.live_inspector
+    
+    def add_function_to_live_inspector(self, name:str, callable_obj: Callable, parameters: List[Tuple[str, type]], description: str = "") -> None:
+        if self.debug_manager:
+            if self.debug_manager.live_inspector:
+                self.debug_manager.live_inspector.add_custom_function(name, callable_obj, parameters, description)
+            else:
+                print('No live inspector to add function to.')
+        else:
+            print('No debug manager to add function to.')
     
     def _render_ui_elements(self):
         """Render UI elements with individual profiling if enabled."""

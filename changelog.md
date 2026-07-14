@@ -12,6 +12,18 @@
 
 !!! - The older versions don't have a clear list of the changes that occurred between them, so I simply ignored them.
 
+## 0.2.5.2
+- **Fixes:** Fixed cache problem with textures wich is consuming a huge amount of performance;
+- **Feature/Fixes:** Debug - ``LiveInspector``:
+  - **Feature:** Added a way to create some custom functions to test in your games;
+  - **Fixes:** Fixed CPU text on Debug(Performance tab);
+  - **Fixes:** Finally implemented the *old* ConsoleLogManager to the console tab;
+
+## 0.2.5.1
+- **Fixes:** 2 Animation in graphics;
+- **Fixes:** Lessons wrongly made by *Antigravity*;
+- **Fixes:** Some faults on Readme.md;
+
 ## 0.2.5 – **"The Empire of Code"**
 
 <small>The one who <span style='color: magenta; font-weight: 900;'>RULES</span> the world!</small> :thumbsup:

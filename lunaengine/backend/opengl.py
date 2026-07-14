@@ -10,10 +10,10 @@ OpenGL-based hardware-accelerated renderer for LunaEngine
 
 This version uses the reliable CPU particle system and only uses OpenGL
 for rendering - no compute shaders, no GPU physics.
-v0.2.3
 """
 
 from __future__ import annotations
+import datetime
 
 import pygame
 import ctypes
@@ -24,6 +24,7 @@ import time
 from typing import Tuple, Dict, Any, List, Optional, Union, Callable
 from enum import Enum
 import numpy as np
+import weakref
 
 from ..utils import math_utils as math_utils
 from .types import Color
@@ -516,13 +517,18 @@ class OpenGLRenderer:
         # Current render target
         self._current_target: pygame.Surface | None = None
 
-        # Texture cache (surface id -> (texture_id, size))
-        self._texture_cache: Dict[int, Tuple[int, Tuple[int, int]]] = {}
+        # ---- FIXED TEXTURE CACHE ----
+        # Now uses WeakKeyDictionary to avoid ID reuse issues.
+        # Outer: surface -> inner dict (sub_key -> (tex, size, last_use))
+        # Sub_key = (rect_tuple, dest_tuple, flags)
+        self._texture_cache = weakref.WeakKeyDictionary()
 
         # Text cache
         self._text_cache: Dict[Tuple[str, pygame.font.Font, Tuple[int, int, int], Tuple[bool, bool]], Tuple[int, Tuple[int, int]]] = {}
         self._text_cache_last_used: Dict[Tuple[str, pygame.font.Font, Tuple[int, int, int], Tuple[bool, bool]], float] = {}
         self._text_cache_timeout: float = 10.0
+        self._texture_cache_timeout: float = 10.0
+        self._last_texture_cache_cleanup: float = 0.0
         self._last_text_cache_cleanup: float = 0.0
         self._text_cache_cleanup_interval: float = 5.0
         
@@ -1013,23 +1019,56 @@ class OpenGLRenderer:
         glGenerateMipmap(GL_TEXTURE_2D)
         return tex
 
-    def _surface_to_texture_cached(self, surface: pygame.Surface) -> int:
+    def _surface_to_texture_cached(self, surface: pygame.Surface,
+                                   rect: Optional[pygame.Rect] = None,
+                                   dest: Optional[pygame.Rect] = None,
+                                   flags: int = 0) -> int:
         """
-        Convert a surface to a texture, using a cache keyed by surface id.
+        Convert a surface to a texture, with caching based on the surface object itself.
+        Uses weak references to avoid retaining surfaces after they are garbage‑collected.
 
         Args:
             surface: Source surface.
+            rect: Optional source rectangle (cropping).
+            dest: Optional destination rectangle (ignored for caching, but kept for key).
+            flags: Additional flags that affect texture generation.
 
         Returns:
             OpenGL texture ID (cached).
         """
-        surf_id = id(surface)
-        if surf_id in self._texture_cache:
-            tex, size = self._texture_cache[surf_id]
+        # Build a hashable sub‑key from rect, dest, and flags
+        rect_data = None
+        if rect is not None:
+            if isinstance(rect, pygame.Rect):
+                rect_data = (rect.x, rect.y, rect.w, rect.h)
+            else:
+                rect_data = tuple(rect)  # assume a 4‑tuple
+
+        dest_data = None
+        if dest is not None:
+            if isinstance(dest, pygame.Rect):
+                dest_data = (dest.x, dest.y, dest.w, dest.h)
+            else:
+                dest_data = tuple(dest)
+
+        sub_key = (rect_data, dest_data, flags)
+
+        # Get the inner dict for this specific surface, or create it
+        surf_cache = self._texture_cache.get(surface)
+        if surf_cache is None:
+            surf_cache = {}
+            self._texture_cache[surface] = surf_cache
+
+        # Check if we already have a texture for this sub‑key
+        if sub_key in surf_cache:
+            tex, size, last_use = surf_cache[sub_key]
+            # Safety check: if the surface size has changed, we need a new texture
             if size == surface.get_size():
                 return tex
+
+        # Generate a new texture
         tex = self._surface_to_texture(surface)
-        self._texture_cache[surf_id] = (tex, surface.get_size())
+        surf_cache[sub_key] = (tex, surface.get_size(), time.time())
         return tex
 
     def _convert_color(self, color: Union[Tuple[int, int, int, float], Tuple[int, int, int], Tuple[float, float, float, float], Color, ThemeStyle]) -> Tuple[float, float, float, float]:
@@ -1878,6 +1917,43 @@ class OpenGLRenderer:
 
         self._last_text_cache_cleanup = now
 
+    # ========================================================================
+    # FIXED TEXTURE CACHE CLEANUP
+    # ========================================================================
+
+    def _cleanup_texture_cache(self, time_dur: float = 5.0, force_cleanup: bool = False) -> None:
+        """
+        Remove expired textures from the weakref‑based texture cache.
+
+        This iterates over all live surfaces and removes textures that have not
+        been used for longer than `time_dur` (or all, if `force_cleanup` is True).
+
+        Args:
+            time_dur: Age threshold in seconds.
+            force_cleanup: If True, delete all textures regardless of age.
+        """
+        now = time.time()
+        # Skip if not forced and not enough time has passed
+        if not force_cleanup and (now - self._last_texture_cache_cleanup < self._texture_cache_timeout):
+            return
+
+        # Iterate over a snapshot of the live surface entries
+        for surface, inner_cache in list(self._texture_cache.items()):
+            expired_sub_keys = []
+            for sub_key, (tex, size, last_use) in inner_cache.items():
+                if force_cleanup or (now - last_use > time_dur):
+                    glDeleteTextures(1, [tex])
+                    expired_sub_keys.append(sub_key)
+            # Remove expired entries
+            for key in expired_sub_keys:
+                del inner_cache[key]
+            # If the inner cache becomes empty, remove the surface entry entirely
+            if not inner_cache:
+                # The weakref will also drop it, but we can delete it explicitly
+                del self._texture_cache[surface]
+
+        self._last_texture_cache_cleanup = now
+
     # ------------------------------------------------------------------------
     # Surface blitting (with anchor support)
     # ------------------------------------------------------------------------
@@ -1891,7 +1967,7 @@ class OpenGLRenderer:
     def blit(self, source: pygame.Surface, dest: Union[Tuple[int, int], pygame.Rect],
          area: Optional[pygame.Rect] = None, special_flags: int = 0,
          pivot: Tuple[float, float] = (0.0, 0.0),
-         use_cache: bool = False) -> None:
+         use_cache: bool = True) -> None:
         if not self._initialized or not self.texture_shader.program:
             return
 
@@ -1909,9 +1985,10 @@ class OpenGLRenderer:
 
         x = x - int(pivot[0] * dest_w)
         y = y - int(pivot[1] * dest_h)
+        self._cleanup_texture_cache()
 
         if use_cache:
-            tex = self._surface_to_texture_cached(source)
+            tex = self._surface_to_texture_cached(source, area, dest, special_flags)
         else:
             tex = self._surface_to_texture(source)
 
@@ -2058,9 +2135,8 @@ class OpenGLRenderer:
             glDeleteBuffers(1, [vbo])
             glDeleteBuffers(1, [ebo])
 
-        # Delete texture cache
-        for tex, _ in self._texture_cache.values():
-            glDeleteTextures(1, [tex])
+        # Delete texture cache (force cleanup all)
+        self._cleanup_texture_cache(force_cleanup=True)
 
         self._circle_cache.clear()
         self._polygon_cache.clear()
