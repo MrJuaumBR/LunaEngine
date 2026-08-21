@@ -327,12 +327,27 @@ class TextBox(UIElement):
         input_abs_y = actual_y + self._input_rect.y
 
         bg_color = self._get_background_color()
+
+        # ---- Add shadow to the input background ----
+        # Determine which style to use for shadow
+        shadow_style = None
+        if self.focused:
+            # Use dropdown_expanded shadow if available
+            style_obj = theme.dropdown_expanded
+        else:
+            style_obj = theme.dropdown_normal
+
+        bg_style = {}
+        if style_obj and style_obj.shadow and style_obj.shadow.distance > 0:
+            bg_style['shadow'] = style_obj.shadow
+
         renderer.draw_rect(input_abs_x, input_abs_y,
                            self._input_rect.width, self._input_rect.height,
                            bg_color, fill=True,
                            border_width=self.border_width,
                            corner_radius=self.corner_radius,
-                           border_color=theme.text_primary.color if self.focused else theme.dropdown_border.color)
+                           border_color=theme.text_primary.color if self.focused else theme.dropdown_border.color,
+                           style=bg_style)
 
         # Clip text to the input box bounds
         if hasattr(renderer, 'enable_scissor'):
@@ -985,9 +1000,19 @@ class TextArea(UIElement):
         theme = ThemeManager.get_theme(self.theme_type)
         border_color = theme.button_border.color if (self.focused and theme.button_border) else (theme.border.color if theme.border else (120,120,140))
         bg = theme.background.color if self.focused else (theme.button_disabled.color if theme.button_disabled else (100,100,100))
-        renderer.draw_rect(ax, ay, self.width, self.height, bg, fill=True, border_width=self.border_width, border_color=border_color, corner_radius=self.corner_radius)
+
+        # ---- Add shadow to the background ----
+        bg_style = {}
+        if theme.background and theme.background.shadow and theme.background.shadow.distance > 0:
+            bg_style['shadow'] = theme.background.shadow
+
+        renderer.draw_rect(ax, ay, self.width, self.height, bg, fill=True,
+                           border_width=self.border_width, border_color=border_color,
+                           corner_radius=self.corner_radius, style=bg_style)
+
         if hasattr(renderer, 'enable_scissor'):
             renderer.enable_scissor(ax, ay, self.width, self.height)
+
         if self.line_numbers:
             for ln in self._get_visible_lines():
                 line_y = ay + (ln * self.line_height) - self.scroll_y
@@ -996,17 +1021,22 @@ class TextArea(UIElement):
                 renderer.draw_text(num_text, num_x, line_y, theme.text_secondary.color, self.font)
             sep_x = ax + self.line_number_width - 1
             renderer.draw_rect(sep_x, ay, 1, self.height, theme.border.color, fill=True)
+
         for ln in self._get_visible_lines():
             if ln < len(self.lines):
                 line_text = self.lines[ln]
                 line_y = ay + (ln * self.line_height) - self.scroll_y
                 text_x = ax + self.text_area_x - self.scroll_x
+
                 if self.selection_start and self.selection_end:
                     self._draw_selection_highlight(renderer, ax, ay, ln, line_y)
+
                 renderer.draw_text(line_text, text_x, line_y, theme.text_primary.color, self.font)
+
         if self.focused and self.cursor_visible:
             cx, cy = self._get_cursor_screen_pos()
             renderer.draw_rect(ax + cx, ay + cy, 2, self.line_height, theme.text_primary.color, fill=True)
+
         if hasattr(renderer, 'disable_scissor'):
             renderer.disable_scissor()
 
@@ -1031,4 +1061,4 @@ class TextArea(UIElement):
         hx = ax + self.text_area_x + start_x - self.scroll_x
         hw = end_x - start_x
         if hw > 0:
-            renderer.draw_rect(hx, ay + line_y, hw, self.line_height, (100,150,255,100), fill=True) 
+            renderer.draw_rect(hx, ay + line_y, hw, self.line_height, (100,150,255,100), fill=True)

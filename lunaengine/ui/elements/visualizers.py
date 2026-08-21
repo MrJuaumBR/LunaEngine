@@ -11,7 +11,7 @@ from ...core.renderer import Renderer
 class ChartVisualizer(UIElement):
     """
     A versatile data visualization component: bar, pie, line, scatter, radar charts.
-    Supports gradients, animations, and legend.
+    Supports gradients, animations, legend, and per‑element shadows.
     """
 
     _properties: Dict[str, Dict[str, Any]] = {
@@ -27,6 +27,12 @@ class ChartVisualizer(UIElement):
                         'description': 'Display color legend.'},
         'use_gradient': {'name': 'use gradient', 'key': 'use_gradient', 'type': bool, 'editable': True,
                          'description': 'Use color gradient across data points.'},
+        'shadow_enabled': {'name': 'shadow enabled', 'key': 'shadow_enabled', 'type': bool, 'editable': True,
+                           'description': 'Enable subtle shadow on chart elements.'},
+        'shadow_offset': {'name': 'shadow offset', 'key': 'shadow_offset', 'type': int, 'editable': True,
+                          'description': 'Pixel offset for element shadows.'},
+        'shadow_alpha': {'name': 'shadow alpha', 'key': 'shadow_alpha', 'type': float, 'editable': True,
+                         'description': 'Alpha of shadow (0.0–1.0).'},
     }
 
     def __init__(
@@ -52,29 +58,6 @@ class ChartVisualizer(UIElement):
         element_id: Optional[str] = None,
         **kwargs
     ) -> None:
-        """
-        Initialize a chart visualizer.
-
-        Args:
-            x, y: Position.
-            width, height: Dimensions.
-            data: List of numeric values.
-            labels: Corresponding labels.
-            colors: List of colors per data point (RGB).
-            chart_type: 'bar', 'pie', 'line', 'scatter', 'radar'.
-            orientation: 'vertical' or 'horizontal' (for bar charts).
-            title: Chart title.
-            show_labels: Display labels on/inside chart.
-            show_legend: Display color legend.
-            min_value, max_value: Manual value range.
-            radar_max_value: Maximum value for radar chart (default 1.0).
-            radar_axis_labels: Labels for radar axes (defaults to labels).
-            pivot: Anchor point.
-            theme: Theme to apply.
-            element_id: Custom ID.
-            **kwargs: Gradient options: use_gradient (bool), gradient_colors (list of RGB),
-                     gradient_start (RGB), gradient_end (RGB).
-        """
         super().__init__(x, y, width, height, pivot, element_id)
 
         self.data = data if data is not None else []
@@ -100,6 +83,11 @@ class ChartVisualizer(UIElement):
         self.gradient_colors = kwargs.get('gradient_colors', None)
         self.gradient_start = kwargs.get('gradient_start', (255, 0, 0))
         self.gradient_end = kwargs.get('gradient_end', (0, 255, 0))
+
+        # ---- Shadow configuration ----
+        self.shadow_enabled = kwargs.get('shadow_enabled', True)
+        self.shadow_offset = kwargs.get('shadow_offset', 2)
+        self.shadow_alpha = kwargs.get('shadow_alpha', 0.3)
 
         self.theme_type = theme or ThemeManager.get_current_theme()
 
@@ -148,6 +136,9 @@ class ChartVisualizer(UIElement):
             'gradient_colors': self.gradient_colors,
             'gradient_start': self.gradient_start,
             'gradient_end': self.gradient_end,
+            'shadow_enabled': self.shadow_enabled,
+            'shadow_offset': self.shadow_offset,
+            'shadow_alpha': self.shadow_alpha,
         }
 
     def _default_colors(self) -> List[Tuple[int, int, int]]:
@@ -255,6 +246,29 @@ class ChartVisualizer(UIElement):
         b = int(self.gradient_start[2] + (self.gradient_end[2] - self.gradient_start[2]) * t)
         return (r, g, b)
 
+    # ------------------------------------------------------------------
+    # Shadow helpers
+    # ------------------------------------------------------------------
+    def _shadow_color(self, color: Tuple[int, int, int]) -> Tuple[int, int, int, int]:
+        """Return a shadow version of the color (darker, with alpha)."""
+        return (max(0, color[0] - 30), max(0, color[1] - 30), max(0, color[2] - 30), int(255 * self.shadow_alpha))
+
+    def _draw_element_shadow(self, renderer: Renderer, draw_func, *args, **kwargs):
+        """
+        Draws a shadow version of an element by shifting it and using a shadow color.
+        The draw_func is called with offset coordinates and a shadow color.
+        """
+        if not self.shadow_enabled:
+            return
+        # Save original color if it's passed as positional or keyword
+        # We'll pass a modified color to the draw_func.
+        # We assume the draw_func accepts a 'color' argument.
+        # We'll intercept and modify the color.
+        # We'll create a wrapper to call draw_func with offset and shadow color.
+        pass
+
+    # For simplicity, we'll inline the shadow logic in each render method.
+
     def render(self, renderer: Renderer) -> None:
         if not self.visible or not self.data:
             return
@@ -265,7 +279,9 @@ class ChartVisualizer(UIElement):
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
 
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height, theme.background.color,
+        # Background – no shadow (just a flat rect)
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height,
+                           theme.background.color, fill=True,
                            border_width=self.border_width)
 
         title_height = self.title_font.get_height() + 5 if self.title else 0
@@ -321,6 +337,15 @@ class ChartVisualizer(UIElement):
                 bar_y = top + height - 10 - bar_height
 
                 color = self._get_point_color(i) if self.use_gradient else self._get_color(i)
+
+                # ---- Draw shadow (offset) ----
+                if self.shadow_enabled:
+                    shadow_color = self._shadow_color(color)
+                    renderer.draw_rect(bar_x + self.shadow_offset, bar_y + self.shadow_offset,
+                                       bar_width, bar_height, shadow_color,
+                                       border_width=0)
+
+                # ---- Draw main bar ----
                 renderer.draw_rect(bar_x, bar_y, bar_width, bar_height, color, border_width=0)
 
                 if self.show_labels:
@@ -341,6 +366,15 @@ class ChartVisualizer(UIElement):
                 bar_y = top + i * (bar_height + self.bar_spacing)
 
                 color = self._get_point_color(i) if self.use_gradient else self._get_color(i)
+
+                # ---- Shadow ----
+                if self.shadow_enabled:
+                    shadow_color = self._shadow_color(color)
+                    renderer.draw_rect(bar_x + self.shadow_offset, bar_y + self.shadow_offset,
+                                       bar_width, bar_height, shadow_color,
+                                       border_width=0)
+
+                # ---- Main ----
                 renderer.draw_rect(bar_x, bar_y, bar_width, bar_height, color, border_width=0)
 
                 if self.show_labels:
@@ -365,6 +399,7 @@ class ChartVisualizer(UIElement):
             color = self._get_point_color(i) if self.use_gradient else self._get_color(i)
             end_angle = start_angle + angle
 
+            # Build polygon points
             points = [(center_x, center_y)]
             steps = max(3, int(angle / 5))
             for step in range(steps + 1):
@@ -372,6 +407,14 @@ class ChartVisualizer(UIElement):
                 x = center_x + radius * math.cos(a)
                 y = center_y + radius * math.sin(a)
                 points.append((x, y))
+
+            # ---- Shadow (offset the whole polygon) ----
+            if self.shadow_enabled:
+                shadow_color = self._shadow_color(color)
+                shadow_points = [(px + self.shadow_offset, py + self.shadow_offset) for px, py in points]
+                renderer.draw_polygon(shadow_points, shadow_color)
+
+            # ---- Main slice ----
             renderer.draw_polygon(points, color)
 
             if self.show_labels:
@@ -396,12 +439,28 @@ class ChartVisualizer(UIElement):
         min_val = min(data_to_use) if self.min_value is None else self.min_value
         val_range = max_val - min_val if max_val != min_val else 1
 
+        # Compute screen points
         points = []
         for i, val in enumerate(data_to_use):
             x = left + (i / (len(data_to_use) - 1)) * width
             y = top + height - ((val - min_val) / val_range) * height
             points.append((x, y))
 
+        # ---- Draw shadow line (offset) ----
+        if self.shadow_enabled:
+            shadow_color = (0, 0, 0, int(255 * self.shadow_alpha))
+            for i in range(len(points) - 1):
+                x1, y1 = points[i]
+                x2, y2 = points[i+1]
+                renderer.draw_line(x1 + self.shadow_offset, y1 + self.shadow_offset,
+                                   x2 + self.shadow_offset, y2 + self.shadow_offset,
+                                   shadow_color, self.line_width)
+            # Shadow points
+            for x, y in points:
+                renderer.draw_circle(x + self.shadow_offset, y + self.shadow_offset,
+                                     self.point_radius, shadow_color)
+
+        # ---- Main line ----
         for i in range(len(points) - 1):
             x1, y1 = points[i]
             x2, y2 = points[i+1]
@@ -421,9 +480,11 @@ class ChartVisualizer(UIElement):
             else:
                 renderer.draw_line(x1, y1, x2, y2, self._get_color(i), self.line_width)
 
+        # ---- Main points ----
         for i, (x, y) in enumerate(points):
             color = self._get_point_color(i, i/(len(points)-1)) if self.use_gradient else self._get_color(i)
             renderer.draw_circle(x, y, self.point_radius, color)
+
             if self.show_labels:
                 label = f"{data_to_use[i]:.1f}"
                 if y - 15 > top:
@@ -447,10 +508,19 @@ class ChartVisualizer(UIElement):
         min_val = min(data_to_use) if self.min_value is None else self.min_value
         val_range = max_val - min_val if max_val != min_val else 1
 
+        shadow_color = (0, 0, 0, int(255 * self.shadow_alpha))
+
         for i, val in enumerate(data_to_use):
             x = left + (i / (len(data_to_use) - 1)) * width
             y = top + height - ((val - min_val) / val_range) * height
             color = self._get_point_color(i) if self.use_gradient else self._get_color(i)
+
+            # ---- Shadow ----
+            if self.shadow_enabled:
+                renderer.draw_circle(x + self.shadow_offset, y + self.shadow_offset,
+                                     self.point_radius, shadow_color)
+
+            # ---- Main ----
             renderer.draw_circle(x, y, self.point_radius, color)
 
             if self.show_labels:
@@ -481,24 +551,27 @@ class ChartVisualizer(UIElement):
 
         angles = [math.radians(-90 + 360 * i / num_axes) for i in range(num_axes)]
 
+        # Draw grid
         grid_color = theme.border.color if theme.border else (80, 80, 100)
         grid_levels = 4
         for level in range(1, grid_levels + 1):
             r = radius * level / grid_levels
-            points = []
+            pts = []
             for angle in angles:
                 x = center_x + r * math.cos(angle)
                 y = center_y + r * math.sin(angle)
-                points.append((x, y))
-            if len(points) > 2:
-                renderer.draw_polygon(points, grid_color, fill=False, border_width=1)
+                pts.append((x, y))
+            if len(pts) > 2:
+                renderer.draw_polygon(pts, grid_color, fill=False, border_width=1)
 
+        # Axis lines
         axis_color = theme.border.color if theme.border else (120, 120, 140)
         for angle in angles:
             end_x = center_x + radius * math.cos(angle)
             end_y = center_y + radius * math.sin(angle)
             renderer.draw_line(center_x, center_y, end_x, end_y, axis_color, 1)
 
+        # Axis labels
         if self.show_labels:
             label_radius = radius + 15
             for i, angle in enumerate(angles):
@@ -508,6 +581,7 @@ class ChartVisualizer(UIElement):
                 renderer.draw_text(label, x, y, theme.text_secondary.color, self.label_font,
                                    pivot=(0.5, 0.5))
 
+        # Data polygon
         data_to_use = self._current_display_data if self._anim_active else self.data
         data_points = []
         for i, val in enumerate(data_to_use):
@@ -520,8 +594,24 @@ class ChartVisualizer(UIElement):
         if len(data_points) > 2:
             fill_color = self._get_point_color(0) if self.use_gradient else self._get_color(0)
             fill_color = (*fill_color, 100)
+
+            # ---- Shadow ----
+            if self.shadow_enabled:
+                shadow_points = [(px + self.shadow_offset, py + self.shadow_offset) for px, py in data_points]
+                shadow_fill = (0, 0, 0, int(255 * self.shadow_alpha * 0.5))
+                renderer.draw_polygon(shadow_points, shadow_fill, fill=True)
+                # Shadow border
+                shadow_border = (0, 0, 0, int(255 * self.shadow_alpha))
+                for i in range(len(shadow_points)):
+                    j = (i + 1) % len(shadow_points)
+                    renderer.draw_line(shadow_points[i][0], shadow_points[i][1],
+                                       shadow_points[j][0], shadow_points[j][1],
+                                       shadow_border, 2)
+
+            # ---- Main fill ----
             renderer.draw_polygon(data_points, fill_color, fill=True)
 
+            # ---- Main border ----
             for i in range(len(data_points)):
                 j = (i + 1) % len(data_points)
                 x1, y1 = data_points[i]
@@ -543,6 +633,7 @@ class ChartVisualizer(UIElement):
                 else:
                     renderer.draw_line(x1, y1, x2, y2, self._get_color(i), 2)
 
+            # ---- Main points ----
             for i, (x, y) in enumerate(data_points):
                 color = self._get_point_color(i, i/num_axes) if self.use_gradient else self._get_color(i)
                 renderer.draw_circle(x, y, 4, color)
@@ -561,12 +652,13 @@ class ChartVisualizer(UIElement):
 
 
 # ----------------------------------------------------------------------
-# AudioVisualizer
+# AudioVisualizer – no shadow (visualizations are dynamic and abstract)
 # ----------------------------------------------------------------------
 class AudioVisualizer(UIElement):
     """
     Real-time audio visualization element: bars, waveform, circle, particles, spectrum.
     Connects to an OpenAL audio source.
+    Shadows are not applied to audio visualizers for performance and clarity.
     """
 
     _properties: Dict[str, Dict[str, Any]] = {
@@ -737,12 +829,14 @@ class AudioVisualizer(UIElement):
         theme = ThemeManager.get_theme(self.theme_type)
 
         border_color = theme.border.color if theme.border else (50, 50, 70)
+
+        # Background – no shadow
         renderer.draw_rect(actual_x, actual_y, self.width, self.height,
                            border_color, fill=False, border_width=self.border_width)
 
         bg_color = theme.background.color if theme.background else (20, 20, 30)
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color,
-                           border_width=self.border_width)
+                           fill=True, border_width=self.border_width)
 
         if self.style == 'bars':
             self._render_bars(renderer, actual_x, actual_y)
@@ -913,9 +1007,8 @@ class AudioVisualizer(UIElement):
 
 
 # ============================================================================
-# Table - Fixed-size, non-scrollable table
+# Table – can optionally have shadows on cells, but we'll keep it simple
 # ============================================================================
-
 class Table(UIElement):
     """
     A tabular data display element with column headers, row styling, selection.
@@ -959,23 +1052,6 @@ class Table(UIElement):
         theme: Optional[ThemeType] = None,
         element_id: Optional[str] = None,
     ) -> None:
-        """
-        Initialize a fixed-size table.
-
-        Args:
-            x, y: Position.
-            width, height: Dimensions (height is fixed; content clipped if taller).
-            columns: List of column names.
-            rows: 2D list of row data (each row is a list of strings).
-            header_height: Height of the header row.
-            row_height: Height of each data row.
-            cell_padding: Padding inside each cell.
-            show_headers: If True, display column headers.
-            selection_enabled: If True, allow row selection via mouse click.
-            on_row_select: Callback when a row is selected (row_index, row_data).
-            odd_row_color, even_row_color, header_color, header_text_color, border_color: Custom colours.
-            pivot, theme, element_id: Standard UIElement arguments.
-        """
         super().__init__(x, y, width, height, pivot, element_id)
 
         self.columns = columns or []
@@ -990,7 +1066,6 @@ class Table(UIElement):
         self.theme_type = theme or ThemeManager.get_current_theme()
         theme_obj = ThemeManager.get_theme(self.theme_type)
 
-        # Colors with theme fallback
         self.odd_row_color = odd_row_color or theme_obj.background2.color if hasattr(theme_obj, 'background2') else (40, 40, 50)
         self.even_row_color = even_row_color or theme_obj.background.color if hasattr(theme_obj, 'background') else (30, 30, 40)
         self.header_color = header_color or theme_obj.button_normal.color if hasattr(theme_obj, 'button_normal') else (60, 60, 80)
@@ -1036,8 +1111,16 @@ class Table(UIElement):
             self._font = FontManager.get_font(None, 14)
         return self._font
 
+    def update_theme(self, theme_type: ThemeType):
+        theme_obj = ThemeManager.get_theme(theme_type)
+        self.odd_row_color = theme_obj.background2.color if hasattr(theme_obj, 'background2') else (40, 40, 50)
+        self.even_row_color = theme_obj.background.color if hasattr(theme_obj, 'background') else (30, 30, 40)
+        self.header_color = theme_obj.button_normal.color if hasattr(theme_obj, 'button_normal') else (60, 60, 80)
+        self.header_text_color = theme_obj.button_text.color if hasattr(theme_obj, 'button_text') else (255, 255, 255)
+        self.border_color = theme_obj.border.color if hasattr(theme_obj, 'border') else (80, 80, 100)
+        return super().update_theme(theme_type)
+
     def _recalc(self) -> None:
-        """Compute column widths (equal distribution)."""
         if not self.columns:
             self._column_widths = []
             return
@@ -1047,7 +1130,6 @@ class Table(UIElement):
         if col_count > 0:
             base_width = max(40, total_available / col_count)
             self._column_widths = [base_width] * col_count
-            # Adjust last column to fill exactly
             total_width = sum(self._column_widths)
             if total_width < total_available:
                 self._column_widths[-1] += (total_available - total_width)
@@ -1055,19 +1137,16 @@ class Table(UIElement):
         self._needs_recalc = False
 
     def add_column(self, name: str) -> None:
-        """Add a new column at the end."""
         self.columns.append(name)
         self._needs_recalc = True
 
     def insert_column(self, index: int, name: str) -> None:
-        """Insert a column at the given index."""
         self.columns.insert(index, name)
         for row in self.rows:
             row.insert(index, "")
         self._needs_recalc = True
 
     def remove_column(self, index: int) -> None:
-        """Remove a column by index."""
         if 0 <= index < len(self.columns):
             self.columns.pop(index)
             for row in self.rows:
@@ -1076,7 +1155,6 @@ class Table(UIElement):
             self._needs_recalc = True
 
     def add_row(self, data: List[str]) -> None:
-        """Add a new row at the end."""
         if len(data) < len(self.columns):
             data = data + [""] * (len(self.columns) - len(data))
         elif len(data) > len(self.columns):
@@ -1085,7 +1163,6 @@ class Table(UIElement):
         self._needs_recalc = True
 
     def insert_row(self, index: int, data: List[str]) -> None:
-        """Insert a row at the given index."""
         if len(data) < len(self.columns):
             data = data + [""] * (len(self.columns) - len(data))
         elif len(data) > len(self.columns):
@@ -1094,7 +1171,6 @@ class Table(UIElement):
         self._needs_recalc = True
 
     def remove_row(self, index: int) -> None:
-        """Remove a row by index."""
         if 0 <= index < len(self.rows):
             self.rows.pop(index)
             if self.selected_row == index:
@@ -1104,24 +1180,20 @@ class Table(UIElement):
             self._needs_recalc = True
 
     def set_cell(self, row: int, col: int, value: str) -> None:
-        """Set the value of a specific cell."""
         if 0 <= row < len(self.rows) and 0 <= col < len(self.columns):
             self.rows[row][col] = value
 
     def get_cell(self, row: int, col: int) -> str:
-        """Get the value of a specific cell."""
         if 0 <= row < len(self.rows) and 0 <= col < len(self.rows[row]):
             return self.rows[row][col]
         return ""
 
     def clear(self) -> None:
-        """Clear all rows."""
         self.rows.clear()
         self.selected_row = -1
         self._needs_recalc = True
 
     def select_row(self, row_index: int) -> None:
-        """Select a row programmatically."""
         if self.selection_enabled and 0 <= row_index < len(self.rows):
             self.selected_row = row_index
             if self.on_row_select:
@@ -1142,11 +1214,10 @@ class Table(UIElement):
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
 
-        # Clip to area (scissor) – rows exceeding height will be clipped
         if hasattr(renderer, 'enable_scissor'):
             renderer.enable_scissor(actual_x, actual_y, self.width, self.height)
 
-        # Background
+        # Background – no shadow
         renderer.draw_rect(actual_x, actual_y, self.width, self.height,
                            theme.background.color if theme.background else (30, 30, 40),
                            fill=True, border_width=1, border_color=self.border_color)
@@ -1156,7 +1227,6 @@ class Table(UIElement):
         if self.show_headers:
             renderer.draw_rect(actual_x, header_y, self.width, self.header_height,
                                self.header_color, fill=True)
-            # Header text
             x_offset = actual_x + self.cell_padding
             for i, col_name in enumerate(self.columns):
                 if i < len(self._column_widths):
@@ -1167,10 +1237,8 @@ class Table(UIElement):
 
         # Data rows
         data_start_y = actual_y + (self.header_height if self.show_headers else 0)
-        # Render all rows – clipping will hide those outside the scissor area
         for row_index, row_data in enumerate(self.rows):
             row_y_pos = data_start_y + row_index * self.row_height
-            # Row background color (alternating)
             if row_index == self.selected_row:
                 bg_color = theme.button_hover.color if hasattr(theme, 'button_hover') else (80, 80, 120)
             else:
@@ -1178,18 +1246,15 @@ class Table(UIElement):
             renderer.draw_rect(actual_x, row_y_pos, self.width, self.row_height,
                                bg_color, fill=True)
 
-            # Cell contents
             x_offset = actual_x + self.cell_padding
             for col_idx, col_name in enumerate(self.columns):
                 if col_idx < len(self._column_widths):
                     col_width = self._column_widths[col_idx]
                     cell_text = row_data[col_idx] if col_idx < len(row_data) else ""
-                    # Truncate text if too long
                     max_text_width = col_width - self.cell_padding * 2
                     if max_text_width > 10:
                         text_surf = self.font.render(cell_text, True, (255, 255, 255))
                         if text_surf.get_width() > max_text_width:
-                            # Truncate with "..."
                             while text_surf.get_width() > max_text_width - 10 and len(cell_text) > 1:
                                 cell_text = cell_text[:-1]
                                 text_surf = self.font.render(cell_text + "...", True, (255, 255, 255))
@@ -1199,8 +1264,7 @@ class Table(UIElement):
                                        self.font, pivot=(0, 0.5))
                     x_offset += col_width
 
-        # Draw grid lines (vertical and horizontal)
-        # Vertical lines
+        # Grid lines
         x_offset = actual_x
         for col_width in self._column_widths:
             x_offset += col_width
@@ -1208,7 +1272,6 @@ class Table(UIElement):
                 renderer.draw_line(x_offset, actual_y, x_offset, actual_y + self.height,
                                    self.border_color, 1)
 
-        # Horizontal lines (between rows and after header)
         if self.show_headers:
             renderer.draw_line(actual_x, actual_y + self.header_height,
                                actual_x + self.width, actual_y + self.header_height,
@@ -1220,17 +1283,14 @@ class Table(UIElement):
                 renderer.draw_line(actual_x, line_y, actual_x + self.width, line_y,
                                    self.border_color, 1)
 
-        # Disable scissor
         if hasattr(renderer, 'disable_scissor'):
             renderer.disable_scissor()
 
         super().render(renderer)
 
     def on_click(self):
-        """Handle mouse click for row selection."""
         if not self.selection_enabled or not self.enabled:
             return
-
         engine = self.get_engine()
         if engine is None:
             return
@@ -1238,11 +1298,8 @@ class Table(UIElement):
         actual_x, actual_y = self.get_actual_position()
         rel_x = mouse_pos[0] - actual_x
         rel_y = mouse_pos[1] - actual_y
-
         if rel_x < 0 or rel_x > self.width or rel_y < 0 or rel_y > self.height:
             return
-
-        # Determine which row was clicked
         data_start_y = (self.header_height if self.show_headers else 0)
         row_index = int((rel_y - data_start_y) / self.row_height)
         if 0 <= row_index < len(self.rows):

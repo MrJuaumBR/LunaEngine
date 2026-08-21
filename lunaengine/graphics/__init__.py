@@ -41,7 +41,19 @@ from .camera import (
     ParallaxLayer,
     ParallaxBackground,
 )
-from .shadows import ShadowSystem, ShadowCaster, Light, LightType
+
+from .shadows import (
+    SCSManager,
+    ShadowCaster,
+    LightCaster,
+    ColorKeys,
+    # utility functions
+    pixel_to_centimeter,
+    centimeter_to_pixel,
+    meter_to_pixel,
+)
+
+# Paperdoll
 from .paperdoll import Layer, Paperdoll
 from .paperdoll import Animation as PaperDollAnimation
 
@@ -72,8 +84,17 @@ __all__ = [
     "TraumaEffect",
     "ParallaxLayer",
     "ParallaxBackground",
-    # Shadows
-    "ShadowSystem", "ShadowCaster", 'Light', "LightType",
+    # NEW Shadows (replaces old ShadowSystem, Light, LightType)
+    "SCSManager",
+    "ShadowCaster",
+    "LightCaster",
+    "ColorKeys",
+    # Units
+    "pixel_to_centimeter",
+    "centimeter_to_pixel",
+    "meter_to_pixel",
     # Paperdoll
-    "Layer", "Paperdoll", "PaperDollAnimation"
+    "Layer",
+    "Paperdoll",
+    "PaperDollAnimation"
 ]

@@ -52,7 +52,7 @@ All elements are organized in tabs by functional sections.
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
+# sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), &#x27;..&#x27;))
 
 from lunaengine.ui import *
 from lunaengine.core import LunaEngine, Scene
@@ -92,7 +92,18 @@ class ComprehensiveUIDemo(Scene):
         
         self.setup_ui()
         
+        self.engine.add_function_to_live_inspector(&#x27;My Function&#x27;, lambda x: print(f&#x27;Value to print: {x}&#x27;), [(&#x27;x&#x27;, int)], &#x27;Prints the value of x.&#x27;)
+        self.engine.add_function_to_live_inspector(&#x27;My Function A&#x27;, self.custom_function_a, [(&#x27;x&#x27;, int), (&#x27;b&#x27;, int), (&#x27;z&#x27;, float)], &#x27;Returns the result of (x + b) * z.&#x27;)
+        self.engine.add_function_to_live_inspector(&#x27;My Function B&#x27;, self.custom_function_b, [], &#x27;Returns a random integer between 0 and 100.&#x27;)
+        
         self.shadow_system.enabled = False
+        
+    def custom_function_a(self, x:int, b:int, z:float) -&gt; float:
+        return (x + b) * z
+    
+    def custom_function_b(self) -&gt; int:
+        import random
+        return random.randint(0, 100)
         
     def on_enter(self, previous_scene: str = None):
         print(&quot;=== LunaEngine UI Demo ===&quot;)
@@ -1566,7 +1577,7 @@ if __name__ == &quot;__main__&quot;:
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-13 17:25
+                        Documentation generated on 2026-07-14 15:26
                     </p>
                 </div>
             </div>

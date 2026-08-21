@@ -196,27 +196,37 @@ class DialogBox(UIElement):
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
 
-        # Draw border
+        # ---- Draw border (no shadow, just outline) ----
         if theme.dialog_border:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height,
                                theme.dialog_border.color, fill=False, border_width=self.border_width,
                                corner_radius=self.corner_radius)
 
-        # Draw main dialog box background
+        # ---- Draw main dialog box background with shadow ----
+        bg_style = {}
+        if theme.dialog_background and theme.dialog_background.shadow and theme.dialog_background.shadow.distance > 0:
+            bg_style['shadow'] = theme.dialog_background.shadow
+
         renderer.draw_rect(actual_x, actual_y, self.width, self.height,
                            theme.dialog_background.color, fill=True,
-                           border_width=self.border_width, corner_radius=self.corner_radius)
+                           border_width=self.border_width, corner_radius=self.corner_radius,
+                           style=bg_style)
 
-        # Draw speaker name
+        # ---- Draw speaker name with shadow ----
         if self.speaker_name:
             name_width = self.name_font.size(self.speaker_name)[0] + self.name_padding * 2
             name_height = self.name_font.get_height() + self.name_padding
             name_x = actual_x + 10
             name_y = actual_y - name_height // 2
 
+            name_style = {}
+            if theme.dialog_name_bg and theme.dialog_name_bg.shadow and theme.dialog_name_bg.shadow.distance > 0:
+                name_style['shadow'] = theme.dialog_name_bg.shadow
+
             renderer.draw_rect(name_x, name_y, name_width, name_height,
                                theme.dialog_name_bg.color, fill=True,
-                               corner_radius=self.corner_radius)
+                               corner_radius=self.corner_radius,
+                               style=name_style)
 
             name_surf = self.name_font.render(self.speaker_name, True, theme.dialog_name_text.color)
             renderer.draw_surface(name_surf, name_x + self.name_padding, name_y + self.name_padding // 2)

@@ -1,578 +1,384 @@
 """
-Basic Icons for LunaEngine(All them need to be made in Python to be compiled with the Engine/Framework)
+lunaengine/misc/icons.py
 
-LOCATION: lunaengine/misc/icons.py
+Themed Icon System for LunaEngine
+- Supports PNG icons with white/transparent masks
+- Flat color recoloring via BLEND_RGBA_MULT
+- Gradient recoloring via ColorKeys (linear or radial)
+- Optional scaling to a uniform size (square)
+- Caching per (color, size) combination
+- Factory class Icons with access to all built‑in icons
 """
 
-import pygame as pg
-from enum import Enum
+from pathlib import Path
+import os
+import pygame
 import math
+from typing import Optional, Tuple, Union, List, Literal, Dict
 
-# Color palette for consistent styling
-class Colors:
-    # Primary colors
-    PRIMARY = (70, 130, 180)      # Steel Blue
-    PRIMARY_LIGHT = (100, 149, 237)  # Cornflower Blue
-    PRIMARY_DARK = (30, 100, 150)   # Darker Blue
-    
-    # Status colors
-    SUCCESS = (50, 205, 50)       # Lime Green
-    SUCCESS_LIGHT = (144, 238, 144)  # Light Green
-    ERROR = (220, 20, 60)         # Crimson
-    ERROR_LIGHT = (255, 200, 200) # Light Red
-    WARNING = (255, 165, 0)       # Orange (better visibility than gold)
-    WARNING_LIGHT = (255, 215, 0) # Gold
-    
-    # Neutral colors
-    WHITE = (255, 255, 255)
-    LIGHT_GRAY = (240, 240, 240)
-    DARK_GRAY = (100, 100, 100)
-    BLACK = (40, 40, 40)
-    
-    # Accent colors
-    FOLDER = (255, 215, 0)        # Gold for folder
-    KEY = (184, 134, 11)          # Dark Goldenrod
-    LOCK = (139, 0, 0)           # Dark Red
-    UNLOCK = (0, 139, 0)         # Dark Green
-    HOME = (138, 43, 226)        # Blue Violet
-    SAVE = (34, 139, 34)         # Forest Green
-    LOAD = (65, 105, 225)        # Royal Blue
+from ..backend.types import ColorKeys, Color
+
+# Path to the icons folder (assumes lunaengine/assets/icons/)
+ICONS_PATH = Path(os.path.abspath(os.path.dirname(__file__))).parent / 'assets' / 'icons'
+
 
 class Icon:
-    name:str
-    icon:pg.Surface
-    def __init__(self, name:str, size:int=32):
-        self.name = name
-        self.size = size
-        self.generate()
-        
-    def generate(self):
-        pass
-    
-    def get_icon(self):
-        return self.icon
+    """
+    A theme‑aware icon that can be recoloured with a flat colour or a gradient.
 
-class IconInfo(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        # Draw outer circle with outline
-        pg.draw.circle(self.icon, Colors.PRIMARY_DARK, (self.size//2, self.size//2), self.size//2 - 2)
-        pg.draw.circle(self.icon, Colors.PRIMARY, (self.size//2, self.size//2), self.size//2 - 4)
-        pg.draw.circle(self.icon, Colors.WHITE, (self.size//2, self.size//2), self.size//2 - 6)
-        
-        # Draw question mark
-        font_size = max(12, self.size // 2)
-        font = pg.font.Font(None, font_size)
-        text = font.render("?", True, Colors.PRIMARY)
-        text_rect = text.get_rect(center=(self.size//2, self.size//2))
-        self.icon.blit(text, text_rect)
+    The original PNG must be a white shape on a transparent background.
+    Scaling is performed once per requested size.
+    """
 
-class IconCheck(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw thicker checkmark with better visibility
-        thickness = max(3, self.size//8)
-        offset = self.size // 12
-        
-        points = [
-            (self.size//4 + offset, self.size//2),
-            (self.size//2, 3*self.size//4 - offset),
-            (3*self.size//4 - offset, self.size//4 + offset)
-        ]
-        pg.draw.lines(self.icon, Colors.SUCCESS, False, points, thickness)
+    def __init__(self, icon_filename: str, size: Optional[int] = None):
+        """
+        Args:
+            icon_filename: name of the PNG file inside the icons folder.
+            size: if given, the icon will be scaled to a square of this size.
+                  If None, the original dimensions are kept.
+        """
+        self.icon_path = ICONS_PATH / icon_filename
+        self.name = str(icon_filename.split('.')[0]).upper()
+        if not self.icon_path.exists():
+            raise FileNotFoundError(f"Icon file not found: {self.icon_path}")
 
-class IconCross(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw X with consistent thickness
-        thickness = max(3, self.size//8)
-        margin = self.size // 4
-        
-        pg.draw.line(self.icon, Colors.ERROR, 
-                    (margin, margin), 
-                    (self.size - margin, self.size - margin), 
-                    thickness)
-        pg.draw.line(self.icon, Colors.ERROR, 
-                    (self.size - margin, margin), 
-                    (margin, self.size - margin), 
-                    thickness)
+        # Load the original mask – white pixels on transparent background
+        self._original_surface = pygame.image.load(self.icon_path).convert_alpha()
+        self._original_size = self._original_surface.get_size()  # (width, height)
 
-class IconWarn(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw triangle for warning with outline
-        points = [
-            (self.size//2, self.size//4 + 2),
-            (self.size//4 + 2, 3*self.size//4 - 2),
-            (3*self.size//4 - 2, 3*self.size//4 - 2)
-        ]
-        pg.draw.polygon(self.icon, Colors.WARNING, points)
-        
-        # Draw exclamation mark
-        ex_height = self.size // 2
-        ex_width = max(3, self.size // 10)
-        
-        # Draw stem
-        pg.draw.rect(self.icon, Colors.WHITE, 
-                    (self.size//2 - ex_width//2, self.size//4 + self.size//6, 
-                     ex_width, ex_height))
-        # Draw dot
-        pg.draw.circle(self.icon, Colors.WHITE, 
-                      (self.size//2, 3*self.size//4 - self.size//8), 
-                      ex_width)
+        self._size = size
 
-class IconError(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw circle with X
-        pg.draw.circle(self.icon, Colors.ERROR, (self.size//2, self.size//2), self.size//2 - 2)
-        pg.draw.circle(self.icon, Colors.ERROR_LIGHT, (self.size//2, self.size//2), self.size//2 - 4)
-        pg.draw.circle(self.icon, Colors.WHITE, (self.size//2, self.size//2), self.size//2 - 6)
-        
-        # Draw X inside
-        margin = self.size // 4
-        thickness = max(3, self.size//10)
-        pg.draw.line(self.icon, Colors.ERROR, 
-                    (margin, margin), 
-                    (self.size - margin, self.size - margin), 
-                    thickness)
-        pg.draw.line(self.icon, Colors.ERROR, 
-                    (self.size - margin, margin), 
-                    (margin, self.size - margin), 
-                    thickness)
+        # Cache: key = (color_key_hash, gradient_type, gradient_angle, size)
+        # value = pygame.Surface
+        self._cache = {}
 
-class IconSuccess(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw circle with checkmark
-        pg.draw.circle(self.icon, Colors.SUCCESS, (self.size//2, self.size//2), self.size//2 - 2)
-        pg.draw.circle(self.icon, Colors.SUCCESS_LIGHT, (self.size//2, self.size//2), self.size//2 - 4)
-        pg.draw.circle(self.icon, Colors.WHITE, (self.size//2, self.size//2), self.size//2 - 6)
-        
-        # Draw checkmark inside
-        thickness = max(3, self.size//10)
-        offset = self.size // 12
-        
-        points = [
-            (self.size//4 + offset, self.size//2),
-            (self.size//2, 3*self.size//4 - offset),
-            (3*self.size//4 - offset, self.size//4 + offset)
-        ]
-        pg.draw.lines(self.icon, Colors.SUCCESS, False, points, thickness)
+    def get_surface(
+        self,
+        color: Union[Color, Tuple[int, int, int], ColorKeys, None],
+        gradient_type: Literal['linear', 'radial'] = 'linear',
+        gradient_angle: float = 0.0,
+    ) -> pygame.Surface:
+        """
+        Return a recoloured (and optionally scaled) version of the icon.
 
-class IconTriangleUp(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        points = [
-            (self.size//2, self.size//4),
-            (self.size//4, 3*self.size//4),
-            (3*self.size//4, 3*self.size//4)
-        ]
-        pg.draw.polygon(self.icon, Colors.PRIMARY, points)
-        pg.draw.polygon(self.icon, Colors.PRIMARY_LIGHT, points, 2)  # Outline
+        Args:
+            color: flat colour (Color or (r,g,b)) or a ColorKeys gradient.
+            gradient_type: only used if color is a ColorKeys: 'linear' or 'radial'.
+            gradient_angle: only used for linear gradients (degrees).
+        """
+        # Build a hashable cache key from the colour argument
+        if isinstance(color, ColorKeys):
+            # Use the sorted key-value pairs as a stable key
+            key_data = tuple((k, (v.r, v.g, v.b, v.a)) for k, v in sorted(color.keys.items()))
+            cache_key = (key_data, gradient_type, gradient_angle)
+        elif isinstance(color, Color):
+            # flat colour
+            rgb = (color.r, color.g, color.b)
+            cache_key = ('flat', rgb)
+        elif isinstance(color, tuple):
+            rgb = (color[0], color[1], color[2])
+            cache_key = ('flat', rgb)
+        elif color is None:
+            cache_key = ('flat', (255, 255, 255))
 
-class IconTriangleDown(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        points = [
-            (self.size//4, self.size//4),
-            (3*self.size//4, self.size//4),
-            (self.size//2, 3*self.size//4)
-        ]
-        pg.draw.polygon(self.icon, Colors.PRIMARY, points)
-        pg.draw.polygon(self.icon, Colors.PRIMARY_LIGHT, points, 2)  # Outline
+        # Include size in the full cache key
+        size_key = self._size if self._size is not None else 'original'
+        full_key = (cache_key, size_key)
 
-class IconTriangleLeft(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        points = [
-            (3*self.size//4, self.size//4),
-            (3*self.size//4, 3*self.size//4),
-            (self.size//4, self.size//2)
-        ]
-        pg.draw.polygon(self.icon, Colors.PRIMARY, points)
-        pg.draw.polygon(self.icon, Colors.PRIMARY_LIGHT, points, 2)  # Outline
+        if full_key in self._cache:
+            return self._cache[full_key]
 
-class IconTriangleRight(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        points = [
-            (self.size//4, self.size//4),
-            (self.size//4, 3*self.size//4),
-            (3*self.size//4, self.size//2)
-        ]
-        pg.draw.polygon(self.icon, Colors.PRIMARY, points)
-        pg.draw.polygon(self.icon, Colors.PRIMARY_LIGHT, points, 2)  # Outline
-
-class IconPlus(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw plus sign with circle background
-        pg.draw.circle(self.icon, Colors.PRIMARY, (self.size//2, self.size//2), self.size//2 - 2)
-        pg.draw.circle(self.icon, Colors.WHITE, (self.size//2, self.size//2), self.size//2 - 4)
-        
-        center = self.size // 2
-        thickness = max(3, self.size // 10)
-        length = self.size // 3
-        
-        pg.draw.rect(self.icon, Colors.PRIMARY, 
-                    (center - thickness//2, center - length, 
-                     thickness, length * 2))
-        pg.draw.rect(self.icon, Colors.PRIMARY, 
-                    (center - length, center - thickness//2, 
-                     length * 2, thickness))
-
-class IconMinus(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw minus sign with circle background
-        pg.draw.circle(self.icon, Colors.ERROR, (self.size//2, self.size//2), self.size//2 - 2)
-        pg.draw.circle(self.icon, Colors.WHITE, (self.size//2, self.size//2), self.size//2 - 4)
-        
-        center = self.size // 2
-        thickness = max(3, self.size // 10)
-        length = self.size // 3
-        
-        pg.draw.rect(self.icon, Colors.ERROR, 
-                    (center - length, center - thickness//2, 
-                     length * 2, thickness))
-
-class IconCircle(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        pg.draw.circle(self.icon, Colors.PRIMARY, 
-                      (self.size//2, self.size//2), 
-                      self.size//2 - 2)
-        pg.draw.circle(self.icon, Colors.PRIMARY_LIGHT, 
-                      (self.size//2, self.size//2), 
-                      self.size//2 - 4)
-
-class IconSquare(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        margin = 2
-        pg.draw.rect(self.icon, Colors.PRIMARY, 
-                    (margin, margin, self.size - 2*margin, self.size - 2*margin))
-        pg.draw.rect(self.icon, Colors.PRIMARY_LIGHT, 
-                    (margin + 2, margin + 2, self.size - 2*margin - 4, self.size - 2*margin - 4))
-
-class IconGear(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        center = (self.size//2, self.size//2)
-        radius = self.size//2 - 2
-        
-        # Draw outer circle
-        pg.draw.circle(self.icon, Colors.PRIMARY_DARK, center, radius)
-        pg.draw.circle(self.icon, Colors.PRIMARY, center, radius - 2)
-        
-        # Draw gear teeth
-        for i in range(8):
-            angle = i * math.pi / 4
-            x1 = center[0] + (radius - self.size//6) * math.cos(angle)
-            y1 = center[1] + (radius - self.size//6) * math.sin(angle)
-            x2 = center[0] + (radius + self.size//12) * math.cos(angle)
-            y2 = center[1] + (radius + self.size//12) * math.sin(angle)
-            
-            pg.draw.line(self.icon, Colors.WHITE, (x1, y1), (x2, y2), max(2, self.size//16))
-        
-        # Draw center circle
-        pg.draw.circle(self.icon, Colors.WHITE, center, radius - self.size//3)
-
-# NEW ICONS START HERE
-
-class IconFolder(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw folder shape
-        # Folder tab
-        pg.draw.rect(self.icon, Colors.FOLDER,
-                    (self.size//4, self.size//4, self.size//2, self.size//8))
-        # Folder body
-        pg.draw.rect(self.icon, Colors.FOLDER,
-                    (self.size//6, self.size//3, 
-                     self.size - 2*(self.size//6), 2*self.size//3 - self.size//6))
-        
-        # Add highlight/details
-        pg.draw.rect(self.icon, Colors.WARNING_LIGHT,
-                    (self.size//4 + 2, self.size//4 + 2, 
-                     self.size//2 - 4, self.size//8 - 4))
-        pg.draw.rect(self.icon, Colors.WARNING_LIGHT,
-                    (self.size//6 + 2, self.size//3 + 2, 
-                     self.size - 2*(self.size//6) - 4, 2*self.size//3 - self.size//6 - 4), 1)
-
-class IconKey(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw key handle (circle)
-        pg.draw.circle(self.icon, Colors.KEY, 
-                      (self.size//3, self.size//2), 
-                      self.size//6)
-        
-        # Draw key shaft
-        pg.draw.rect(self.icon, Colors.KEY,
-                    (self.size//3, self.size//2 - self.size//16,
-                     self.size//2, self.size//8))
-        
-        # Draw key teeth (notches)
-        tooth_height = self.size // 6
-        pg.draw.rect(self.icon, Colors.KEY,
-                    (2*self.size//3, self.size//2 - tooth_height//2,
-                     self.size//12, tooth_height))
-
-class IconLockLocked(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw lock body
-        lock_width = self.size // 2
-        lock_height = self.size // 2
-        x = (self.size - lock_width) // 2
-        y = self.size // 3
-        
-        pg.draw.rect(self.icon, Colors.LOCK,
-                    (x, y, lock_width, lock_height))
-        pg.draw.rect(self.icon, Colors.ERROR,
-                    (x + 2, y + 2, lock_width - 4, lock_height - 4))
-        
-        # Draw shackle (U-shaped top)
-        shackle_height = self.size // 6
-        shackle_width = lock_width + self.size // 6
-        shackle_x = (self.size - shackle_width) // 2
-        
-        pg.draw.rect(self.icon, Colors.LOCK,
-                    (shackle_x, y - shackle_height//2,
-                     shackle_width, shackle_height))
-        pg.draw.rect(self.icon, Colors.ERROR,
-                    (shackle_x + 2, y - shackle_height//2 + 2,
-                     shackle_width - 4, shackle_height - 4))
-
-class IconLockUnlocked(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw lock body (open)
-        lock_width = self.size // 2
-        lock_height = self.size // 2
-        x = (self.size - lock_width) // 2
-        y = self.size // 3
-        
-        pg.draw.rect(self.icon, Colors.UNLOCK,
-                    (x, y, lock_width, lock_height))
-        pg.draw.rect(self.icon, Colors.SUCCESS,
-                    (x + 2, y + 2, lock_width - 4, lock_height - 4))
-        
-        # Draw open shackle (just the sides, not connected)
-        shackle_height = self.size // 6
-        shackle_width = lock_width + self.size // 6
-        shackle_x = (self.size - shackle_width) // 2
-        
-        # Left side
-        pg.draw.rect(self.icon, Colors.UNLOCK,
-                    (shackle_x, y - shackle_height//2,
-                     shackle_width // 4, shackle_height))
-        # Right side
-        pg.draw.rect(self.icon, Colors.UNLOCK,
-                    (shackle_x + 3*shackle_width//4, y - shackle_height//2,
-                     shackle_width // 4, shackle_height))
-
-class IconHome(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw house shape
-        # Roof (triangle)
-        roof_points = [
-            (self.size//2, self.size//4),
-            (self.size//4, self.size//2),
-            (3*self.size//4, self.size//2)
-        ]
-        pg.draw.polygon(self.icon, Colors.HOME, roof_points)
-        
-        # House body
-        pg.draw.rect(self.icon, Colors.HOME,
-                    (self.size//3, self.size//2,
-                     self.size//3, self.size//3))
-        
-        # Door
-        pg.draw.rect(self.icon, Colors.PRIMARY_DARK,
-                    (self.size//2 - self.size//12, 2*self.size//3,
-                     self.size//6, self.size//6))
-        
-        # Window
-        pg.draw.rect(self.icon, Colors.PRIMARY_LIGHT,
-                    (self.size//3 + self.size//12, self.size//2 + self.size//12,
-                     self.size//12, self.size//12))
-
-class IconSave(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw floppy disk shape
-        # Main body
-        pg.draw.rect(self.icon, Colors.SAVE,
-                    (self.size//4, self.size//6,
-                     2*self.size//4, 3*self.size//4))
-        
-        # Metal slide
-        pg.draw.rect(self.icon, Colors.DARK_GRAY,
-                    (self.size//4, self.size//6,
-                     2*self.size//4, self.size//8))
-        
-        # Label area
-        pg.draw.rect(self.icon, Colors.WHITE,
-                    (self.size//4 + self.size//12, self.size//3,
-                     2*self.size//4 - 2*(self.size//12), self.size//3))
-        
-        # Write "SAVE" text if size is large enough
-        if self.size >= 24:
-            font_size = max(8, self.size // 4)
-            font = pg.font.Font(None, font_size)
-            text = font.render("SAVE", True, Colors.SAVE)
-            text_rect = text.get_rect(center=(self.size//2, self.size//2))
-            self.icon.blit(text, text_rect)
-
-class IconLoad(Icon):
-    def generate(self):
-        self.icon = pg.Surface((self.size, self.size), pg.SRCALPHA)
-        
-        # Draw download/load arrow
-        # Circle background
-        pg.draw.circle(self.icon, Colors.LOAD, (self.size//2, self.size//2), self.size//2 - 2)
-        pg.draw.circle(self.icon, Colors.WHITE, (self.size//2, self.size//2), self.size//2 - 4)
-        
-        # Arrow pointing down
-        arrow_size = self.size // 3
-        center_x = self.size // 2
-        center_y = self.size // 2
-        
-        # Arrow head (pointing down)
-        points = [
-            (center_x, center_y + arrow_size//2),  # Bottom point
-            (center_x - arrow_size//2, center_y - arrow_size//4),  # Left
-            (center_x + arrow_size//2, center_y - arrow_size//4)   # Right
-        ]
-        pg.draw.polygon(self.icon, Colors.LOAD, points)
-        
-        # Arrow stem
-        stem_height = arrow_size // 2
-        pg.draw.rect(self.icon, Colors.LOAD,
-                    (center_x - arrow_size//6, center_y - arrow_size//4 - stem_height,
-                     arrow_size//3, stem_height))
-
-class Icons(Enum):
-    INFO = "info"
-    CHECK = "check"
-    CROSS = "cross"
-    WARN = "warn"
-    ERROR = "error"
-    SUCCESS = "success"
-    TRIANGLE_UP = "triangle_up"
-    TRIANGLE_DOWN = "triangle_down"
-    TRIANGLE_LEFT = "triangle_left"
-    TRIANGLE_RIGHT = "triangle_right"
-    PLUS = "plus"
-    MINUS = "minus"
-    CIRCLE = "circle"
-    SQUARE = "square"
-    GEAR = "gear"
-    FOLDER = "folder"
-    KEY = "key"
-    LOCK_LOCKED = "lock_locked"
-    LOCK_UNLOCKED = "lock_unlocked"
-    HOME = "home"
-    SAVE = "save"
-    LOAD = "load"
-
-class IconFactory:
-    @staticmethod
-    def get_icon(icon_type: Icons, size: int = 32) -> pg.Surface:
-        """Factory method to get icon by type"""
-        icon_classes = {
-            Icons.INFO: IconInfo,
-            Icons.CHECK: IconCheck,
-            Icons.CROSS: IconCross,
-            Icons.WARN: IconWarn,
-            Icons.ERROR: IconError,
-            Icons.SUCCESS: IconSuccess,
-            Icons.TRIANGLE_UP: IconTriangleUp,
-            Icons.TRIANGLE_DOWN: IconTriangleDown,
-            Icons.TRIANGLE_LEFT: IconTriangleLeft,
-            Icons.TRIANGLE_RIGHT: IconTriangleRight,
-            Icons.PLUS: IconPlus,
-            Icons.MINUS: IconMinus,
-            Icons.CIRCLE: IconCircle,
-            Icons.SQUARE: IconSquare,
-            Icons.GEAR: IconGear,
-            Icons.FOLDER: IconFolder,
-            Icons.KEY: IconKey,
-            Icons.LOCK_LOCKED: IconLockLocked,
-            Icons.LOCK_UNLOCKED: IconLockUnlocked,
-            Icons.HOME: IconHome,
-            Icons.SAVE: IconSave,
-            Icons.LOAD: IconLoad,
-        }
-        
-        if icon_type in icon_classes:
-            return icon_classes[icon_type](icon_type.value, size).get_icon()
+        # Generate the recoloured surface at original size
+        if isinstance(color, ColorKeys):
+            result = self._apply_gradient(color, gradient_type, gradient_angle)
         else:
-            # Fallback to INFO icon
-            return IconInfo("info", size).get_icon()
+            result = self._apply_flat_color(color)
 
-# Convenience functions
-def get_icon(name: str, size: int = 32) -> pg.Surface:
-    """Get icon by name string"""
+        # Scale if a size is requested
+        if self._size is not None:
+            result = pygame.transform.smoothscale(result, (self._size, self._size))
+
+        self._cache[full_key] = result
+        return result
+
+    def _apply_flat_color(self, color: Union[Color, Tuple[int, int, int], None]) -> pygame.Surface:
+        """Recolour with a flat RGB colour using multiply blending."""
+        if isinstance(color, Color):
+            r, g, b = color.r, color.g, color.b
+        elif color is None:
+            r, g, b = 255, 255, 255
+        else:
+            r, g, b = color[0], color[1], color[2]
+
+        # Create a solid colour surface (full alpha to preserve icon alpha)
+        color_surf = pygame.Surface(self._original_surface.get_size(), pygame.SRCALPHA)
+        color_surf.fill((r, g, b, 255))
+
+        # Multiply: white * colour = colour, transparent areas stay transparent
+        result = self._original_surface.copy()
+        result.blit(color_surf, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+        return result
+
+    def _apply_gradient(
+        self,
+        color_keys: ColorKeys,
+        gradient_type: str = 'linear',
+        angle: float = 0.0
+    ) -> pygame.Surface:
+        """
+        Generate a gradient surface and multiply it with the icon mask.
+        """
+        w, h = self._original_surface.get_size()
+        if w <= 0 or h <= 0:
+            return self._original_surface.copy()
+
+        # Create a surface for the gradient (alpha will be set to 255 later)
+        grad_surf = pygame.Surface((w, h), pygame.SRCALPHA)
+
+        # Precompute direction vector for linear gradient
+        rad = math.radians(angle)
+        dx = math.cos(rad)
+        dy = math.sin(rad)
+
+        # Iterate over every pixel (icons are small, so this is fine)
+        for y in range(h):
+            for x in range(w):
+                # Normalised coordinates in [0, 1]
+                u = x / max(1, w - 1)
+                v = y / max(1, h - 1)
+
+                # Compute the interpolation parameter t
+                if gradient_type == 'linear':
+                    # Project (u,v) onto the direction vector
+                    t = u * dx + v * dy
+                    # Map from [-1,1] to [0,1] (handles angles beyond 90°)
+                    t = (t + 1.0) / 2.0
+                else:  # radial
+                    # Distance from centre (0.5, 0.5) scaled to max ~1.0
+                    cx, cy = u - 0.5, v - 0.5
+                    t = math.hypot(cx, cy) * 1.414  # ~ sqrt(2) to map corner distance to 1
+                    t = min(1.0, t)
+
+                t = max(0.0, min(1.0, t))
+                col = color_keys.get_color(t)
+                if col is None:
+                    col = Color(255, 255, 255, 1.0)
+
+                # Set pixel with full alpha (to preserve mask alpha during multiply)
+                grad_surf.set_at((x, y), (col.r, col.g, col.b, 255))
+
+        # Multiply gradient over the white mask
+        result = self._original_surface.copy()
+        result.blit(grad_surf, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+        return result
+
+    def clear_cache(self) -> None:
+        """Clear the internal cache, forcing fresh recolouring on next get_surface()."""
+        self._cache.clear()
+
+
+class Icons:
+    """
+    Factory class for all built‑in icons.
+
+    Each static method returns an Icon instance for the corresponding PNG.
+    The optional `size` parameter sets the desired square size.
+    """
+
+    # List of all available icon names (filenames without extension)
+    _ALL_ICON_NAMES = [
+        'success', 'info', 'warn', 'error',
+        'home', 'folder', 'plus', 'cross',
+        'search', 'settings', 'save', 'load', 'picture'
+    ]
+
+    @classmethod
+    def SUCCESS(cls, size: Optional[int] = None) -> Icon:
+        return Icon('success.png', size=size)
+
+    @classmethod
+    def INFO(cls, size: Optional[int] = None) -> Icon:
+        return Icon('info.png', size=size)
+
+    @classmethod
+    def WARN(cls, size: Optional[int] = None) -> Icon:
+        return Icon('warn.png', size=size)
+
+    @classmethod
+    def ERROR(cls, size: Optional[int] = None) -> Icon:
+        return Icon('error.png', size=size)
+
+    @classmethod
+    def HOME(cls, size: Optional[int] = None) -> Icon:
+        return Icon('home.png', size=size)
+
+    @classmethod
+    def HOUSE(cls, size: Optional[int] = None) -> Icon:
+        return cls.HOME(size)
+
+    @classmethod
+    def FOLDER(cls, size: Optional[int] = None) -> Icon:
+        return Icon('folder.png', size=size)
+
+    @classmethod
+    def PLUS(cls, size: Optional[int] = None) -> Icon:
+        return Icon('plus.png', size=size)
+
+    @classmethod
+    def CROSS(cls, size: Optional[int] = None) -> Icon:
+        return Icon('cross.png', size=size)
+
+    @classmethod
+    def SEARCH(cls, size: Optional[int] = None) -> Icon:
+        return Icon('search.png', size=size)
+
+    @classmethod
+    def SETTINGS(cls, size: Optional[int] = None) -> Icon:
+        return Icon('settings.png', size=size)
+
+    @classmethod
+    def SAVE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('save.png', size=size)
+
+    @classmethod
+    def LOAD(cls, size: Optional[int] = None) -> Icon:
+        return Icon('load.png', size=size)
+
+    @classmethod
+    def PICTURE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('picture.png', size=size)
+    
+    @classmethod
+    def UNLOCK(cls, size: Optional[int] = None) -> Icon:
+        return Icon('unlock.png', size=size)
+    
+    @classmethod
+    def LOCK(cls, size: Optional[int] = None) -> Icon:
+        return Icon('lock.png', size=size)
+            
+    @classmethod
+    def KEY(cls, size: Optional[int] = None) -> Icon:
+        return Icon('key.png', size=size)
+            
+    @classmethod
+    def FILE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('file.png', size=size)
+            
+    @classmethod
+    def WRENCH(cls, size: Optional[int] = None) -> Icon:
+        return Icon('wrench.png', size=size)
+    
+    @classmethod
+    def HAMMER(cls, size: Optional[int] = None) -> Icon:
+        return Icon('hammer.png', size=size)
+        
+    @classmethod
+    def SHIELD(cls, size: Optional[int] = None) -> Icon:
+        return Icon('shield.png', size=size)
+    
+    @classmethod
+    def ENGINE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('engine.png', size=size)
+    
+    @classmethod
+    def BACK(cls, size: Optional[int] = None) -> Icon:
+        return Icon('back.png', size=size)
+    
+    @classmethod
+    def STEAM(cls, size: Optional[int] = None) -> Icon:
+        return Icon('steam.png', size=size)
+    
+    @classmethod
+    def DISCORD(cls, size: Optional[int] = None) -> Icon:
+        return Icon('discord.png', size=size)
+    
+    @classmethod
+    def YOUTUBE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('youtube.png', size=size)
+    
+    @classmethod
+    def GITHUB(cls, size: Optional[int] = None) -> Icon:
+        return Icon('github.png', size=size)
+
+    @classmethod
+    def get_icon(cls, name: str, size: Optional[int] = None) -> Icon:
+        """
+        Get an icon by its name (case‑insensitive).
+
+        Example:
+            icon = Icons.get_icon('home', size=32)
+        """
+        upper = name.upper()
+        method = getattr(cls, upper, None)
+        if method is not None and callable(method):
+            return method(size)
+        else:
+            raise ValueError(f"Icon '{name}' not found. Available: {cls.get_all_names()}")
+
+    @classmethod
+    def get_all(cls, size: Optional[int] = None) -> List[Icon]:
+        """
+        Return a list of Icon instances for all built‑in icons, all at the given size.
+        Order is: success, info, warn, error, home, folder, plus, cross,
+                  search, settings, save, load, picture.
+        """
+        return [
+            cls.SUCCESS(size),
+            cls.INFO(size),
+            cls.WARN(size),
+            cls.ERROR(size),
+            cls.HOME(size),
+            cls.FOLDER(size),
+            cls.PLUS(size),
+            cls.CROSS(size),
+            cls.SEARCH(size),
+            cls.SETTINGS(size),
+            cls.SAVE(size),
+            cls.LOAD(size),
+            cls.PICTURE(size),
+            cls.UNLOCK(size),
+            cls.LOCK(size),
+            cls.KEY(size),
+            cls.FILE(size),
+            cls.WRENCH(size),
+            cls.HAMMER(size),
+            cls.SHIELD(size),
+            cls.ENGINE(size),
+            cls.BACK(size),
+            cls.STEAM(size),
+            cls.DISCORD(size),
+            cls.YOUTUBE(size),
+            cls.GITHUB(size)
+        ]
+        
+    @classmethod
+    def get_all_dict(cls, size: Optional[int] = None) -> Dict[str, Icon]:
+        d = {}
+        for icon in cls.get_all(size):
+            d[icon.name] = icon
+        return d
+
+    @classmethod
+    def get_all_names(cls) -> List[str]:
+        """Return the list of available icon names (as strings)."""
+        return cls._ALL_ICON_NAMES.copy()
+
+
+# ----------------------------------------------------------------------
+# Self‑test (run with python -m lunaengine.misc.icons)
+# ----------------------------------------------------------------------
+if __name__ == '__main__':
+    # Quick demo: create a gradient icon and save it to disk
     try:
-        icon_type = Icons(name.lower())
-        return IconFactory.get_icon(icon_type, size)
-    except ValueError:
-        return IconFactory.get_icon(Icons.INFO, size)
-
-def get_all_icons(size: int = 32) -> dict:
-    """Get dictionary of all icons"""
-    icons_dict = {}
-    for icon_type in Icons:
-        icons_dict[icon_type.value] = IconFactory.get_icon(icon_type, size)
-    return icons_dict
-
-# Quick test function (optional)
-if __name__ == "__main__":
-    pg.init()
-    screen = pg.display.set_mode((800, 600))
-    
-    # Test rendering all icons
-    icons = get_all_icons(32)
-    
-    x, y = 10, 10
-    for name, icon in icons.items():
-        screen.blit(icon, (x, y))
-        x += 40
-        if x > 700:
-            x = 10
-            y += 40
-    
-    pg.display.flip()
-    
-    # Keep window open
-    running = True
-    while running:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                running = False
-    pg.quit()
+        pygame.init()
+        display = pygame.display.set_mode((800, 600))
+        icon = Icons.get_icon('home', size=64)
+        gradient = ColorKeys([
+            (255, 0, 0),   # red
+            (0, 0, 255)    # blue
+        ])
+        surf = icon.get_surface(gradient, gradient_type='linear', gradient_angle=45.0)
+        pygame.image.save(surf, 'home_gradient.png')
+        print("Demo icon saved as 'home_gradient.png'")
+    except Exception as e:
+        print(f"Demo failed: {e}")

@@ -36,8 +36,9 @@ from abc import ABC
 
 from ..themes import ThemeManager, ThemeType
 from ...core.renderer import Renderer
-from ...backend.types import InputState, ElementsList, LayerType, Color
+from ...backend.types import InputState, ElementsList, LayerType, Color, ColorKeys
 from ...backend.opengl import OpenGLRenderer
+
 
 if TYPE_CHECKING:
     from ..tooltips import Tooltip
@@ -324,7 +325,6 @@ class UIElement(ABC):
         self.element_type = self.__class__.__name__.lower()
         self.element_id = element_id if element_id else _uid_generator.generate_id(self.element_type)
         
-    # ---- NEW: property for controller focus ----
     @property
     def can_focus(self) -> bool:
         """Override in subclasses that should be focusable (buttons, inputs, etc.)."""

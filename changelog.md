@@ -10,25 +10,96 @@
     </div>
 </small>
 
-!!! - The older versions don't have a clear list of the changes that occurred between them, so I simply ignored them.
+!!! - The [older versions](#versions-010--018-pre019) don't have a clear list of the changes that occurred between them, so I used an ``AI`` to get it from the commits.
 
-## 0.2.5.2
-- **Fixes:** Fixed cache problem with textures wich is consuming a huge amount of performance;
-- **Feature/Fixes:** Debug - ``LiveInspector``:
-  - **Feature:** Added a way to create some custom functions to test in your games;
-  - **Fixes:** Fixed CPU text on Debug(Performance tab);
-  - **Fixes:** Finally implemented the *old* ConsoleLogManager to the console tab;
+## 0.2.6 – **"The Refinement Engine"**
 
-## 0.2.5.1
-- **Fixes:** 2 Animation in graphics;
-- **Fixes:** Lessons wrongly made by *Antigravity*;
-- **Fixes:** Some faults on Readme.md;
+<small>Performance, threading, and debugging overhaul</small>
+
+*Backstory: This release focuses on making LunaEngine not only powerful but also efficient and developer‑friendly. A brand‑new `BackgroundTaskManager` brings priority‑based, frame‑aware background processing with CPU/memory tracking – perfect for asset loading, shadow updates, and other heavy tasks. The performance monitor now tracks per‑task metrics, and the garbage collector cleans OpenGL caches automatically. The Live Inspector received a complete makeover: vertical tabs, a merged "System" tab (performance + console), and heavy optimisation to keep FPS high even with many tabs. `ScrollingFrame` and `Tabination` now support intelligent culling, skipping off‑screen children and headers to drastically reduce draw calls. The new `to_pygame_color` utility in `math_utils` unifies colour conversion and speeds up UI rendering. This release is all about making your games run faster and your debugging experience smoother.*
+
+<i>To be fair regarding the tools, they’ve been part of the framework for I don’t know how long, but I’ve never talked about them.</i>
+
+- **New System:** `BackgroundTaskManager` in `threading.py`:
+  - **Feature:** Priority‑based scheduling (`LOW`, `NORMAL`, `HIGH`);
+  - **Feature:** Frame‑based repetition (run every N frames);
+  - **Feature:** Task cancellation and status retrieval;
+  - **Feature:** CPU time and memory usage tracking (integrated with `PerformanceMonitor`);
+  - **Feature:** Background consumer thread with priority queue;
+
+- **Enhancement:** `PerformanceMonitor` now tracks per‑task CPU time and memory:
+  - **Feature:** `start_task_timer()` / `end_task_timer()` for background tasks;
+  - **Feature:** `get_task_metrics()` to retrieve task statistics;
+  - **Feature:** Added `_getMemUsageClass()` for debugging (used in UI demo);
+  - **Feature:** `to_pygame_color()` added to `math_utils` – handles `Color`, `ColorKeys`, `ThemeStyle`, hex, and named colors;
+
+- **Enhancement:** `GarbageCollector` now cleans OpenGL renderer caches (textures, text, circles, polygons) when `cleanup()` is called;
+
+- **Refactor:** Complete overhaul of `debug.py`:
+  - **Feature:** Modular tab system with a registry of setup/update functions;
+  - **Feature:** Vertical sidebar – tabs on the left (80px width) to leave more room for content;
+  - **Feature:** Merged "Performance" and "Console" into a single **"System"** tab with two scrolling frames side‑by‑side;
+  - **Feature:** Console now lives in a proper `ScrollingFrame` – no more overflow, and logs update only when they change;
+  - **Performance:** Metrics update only every 0.5 seconds to save CPU;
+  - **Feature:** New "Tasks" tab – displays real‑time status of background tasks (name, priority, runs, CPU time);
+  - **Feature:** `DraggableMixin` eliminates duplicated drag logic across all overlays;
+  - **Performance:** Live Inspector now only updates the active tab, reducing unnecessary work;
+  - **Fixes:** Fixed `ElementStyle` import error – now uses `ThemeStyle` and falls back gracefully;
+
+- **Enhancement:** `ScrollingFrame` performance improvements:
+  - **Feature:** Added `cull_updates` and `cull_rendering` properties (default: update culling off, render culling on);
+  - **Feature:** Children outside the visible area are skipped during rendering, drastically reducing draw calls;
+  - **Feature:** Can optionally skip `update()` for off‑screen children;
+
+- **Enhancement:** `Tabination` performance improvements:
+  - **Feature:** Added `cull_headers` (default `True`) – skips rendering off‑screen tab headers;
+  - **Feature:** Added `use_rounded_tabs` (default `False`) – rounded corners can be enabled for aesthetics, but off by default for speed;
+  - **Performance:** Cached tab metrics (text width/height, scaled icons) to avoid per‑frame `font.size()` and image scaling;
+  - **Performance:** Vertical mode uses pre‑computed offsets (`_cached_tab_offsets`) for O(1) tab rect lookup instead of O(n) loops;
+  - **Legacy:** All old methods (`get_tab_index`, `get_tab_by_name`, `set_tab_title`, `set_tab_icon`) are preserved;
+
+- **Enhancement:** `Slider.set_value()` now accepts `silent` parameter to avoid triggering callbacks when updating from debug UI;
+
+- **Fixes:** Fixed `Slider.set_value()` not accepting `silent` keyword argument (used by debug audio tab);
+- **Fixes:** Fixed `ScrollingFrame` culling double‑applying scroll offsets;
+- **Fixes:** Fixed `Tabination` redefining `to_pygame_color` inside the render loop – eliminated a major performance bottleneck;
+- **Fixes:** Fixed Live Inspector crashing when `debug_manager` is `None`;
+- **Fixes:** Fixed console output redirection causing infinite log loops;
+- **Fixes:** Fixed `ColorPicker` not properly updating parent auto‑arrange when expanded/collapsed;
+
+- **Docs:** Updated `CODE_STATISTICS.md` to reflect new files and lines;
+- **Docs:** Added docstrings to new functions and classes;
+- **New Tools:** CLI utilities in `lunaengine/tools/`:
+  - **Feature:** `theme_tool.py` – compile, uncompile, and fix shadows for theme JSONs;
+  - **Feature:** `database_editor.py` – CLI + Flask UI to edit `.sav` and `.res` files (optional Flask dependency);
+  - **Feature:** `code_stats.py` – generate project statistics and markdown report;
+  - **Feature:** `clear_pycache.py` – recursively remove `__pycache__` folders;
+- **Docs:** New lesson `16-lunaengine-tools.md` covering all CLI tools;
+- **Docs:** Updated `lessons.md` index with the new lesson and renumbered subsequent lessons;
+
+---
+
+> **Note:** The new threading system is optional – you can use `engine.background_tasks.schedule()` for any heavy work that shouldn't block the main loop. The Live Inspector's Tasks tab gives you real‑time insight into running background jobs. The new culling features are enabled by default for `Tabination` and `ScrollingFrame` – if you notice any rendering issues, you can disable them via the properties.
 
 ## 0.2.5 – **"The Empire of Code"**
 
 <small>The one who <span style='color: magenta; font-weight: 900;'>RULES</span> the world!</small> :thumbsup:
 
 *Backstory: After months of relentless iteration, 0.2.5 represents LunaEngine's most ambitious release yet. This version earned its name because it truly rules — it introduced Controller Support, the powerful RichText System, a complete Atlas system for asset management, and the groundbreaking LiveInspector debug mode. It was the first version where the engine felt like a complete empire, with every system working in harmony under one unified vision. The Parallax System was rewritten from scratch, and the CombinedTheme system brought dark/light mode variations, making LunaEngine adaptable to any project. It was the first version where LunaEngine stopped being a "game engine" and became a development kingdom.*
+
+### 0.2.5.2
+- **Fixes:** Fixed cache problem with textures wich is consuming a huge amount of performance;
+- **Feature/Fixes:** Debug - ``LiveInspector``:
+  - **Feature:** Added a way to create some custom functions to test in your games;
+  - **Fixes:** Fixed CPU text on Debug(Performance tab);
+  - **Fixes:** Finally implemented the *old* ConsoleLogManager to the console tab;
+
+### 0.2.5.1
+- **Fixes:** 2 Animation in graphics;
+- **Fixes:** Lessons wrongly made by *Antigravity*;
+- **Fixes:** Some faults on Readme.md;
+  
+<hr>
 
 - **Feature:** All themes now have borders and corner radius;
 

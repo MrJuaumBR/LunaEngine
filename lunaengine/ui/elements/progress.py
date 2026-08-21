@@ -177,10 +177,27 @@ class ProgressBar(UIElement):
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
 
+        # ---- Common shadow styles ----
+        bg_style = {}
+        if theme.slider_track and theme.slider_track.shadow and theme.slider_track.shadow.distance > 0:
+            bg_style['shadow'] = theme.slider_track.shadow
+
+        fg_style = {}
+        if theme.accent1 and theme.accent1.shadow and theme.accent1.shadow.distance > 0:
+            fg_style['shadow'] = theme.accent1.shadow
+
+        border_style = {}
+        if theme.border and theme.border.shadow and theme.border.shadow.distance > 0:
+            border_style['shadow'] = theme.border.shadow
+
         if self.style == 'soundpad':
+            # Background (track) with shadow
             renderer.draw_rect(actual_x, actual_y, self.width, self.height,
                                self.background_color, fill=True,
-                               corner_radius=self.corner_radius, border_color=self.border_color, border_width=self.border_width)
+                               corner_radius=self.corner_radius,
+                               border_color=self.border_color,
+                               border_width=self.border_width,
+                               style=bg_style)
 
             percentage = self.get_percentage() / 100.0
             total_segments = self.segment_count
@@ -196,7 +213,11 @@ class ProgressBar(UIElement):
                     seg_color = self._get_soundpad_color(i / total_segments)
                     if i < filled_segments:
                         renderer.draw_rect(seg_x, actual_y, segment_width, self.height,
-                                           seg_color, fill=True, corner_radius=self.corner_radius, border_color=self.border_color, border_width=self.segment_gap*0.5)
+                                           seg_color, fill=True,
+                                           corner_radius=self.corner_radius,
+                                           border_color=self.border_color,
+                                           border_width=self.segment_gap*0.5,
+                                           style=fg_style)  # apply foreground shadow to each segment
             else:  # vertical
                 total_gap_height = (total_segments - 1) * self.segment_gap
                 segment_height = (self.height - total_gap_height) / total_segments
@@ -207,8 +228,11 @@ class ProgressBar(UIElement):
                     seg_color = self._get_soundpad_color(i / total_segments)
                     if i < filled_segments:
                         renderer.draw_rect(actual_x, seg_y, self.width, segment_height,
-                                           seg_color, fill=True, corner_radius=self.corner_radius)
-            # Skip default drawing for soundpad
+                                           seg_color, fill=True,
+                                           corner_radius=self.corner_radius,
+                                           style=fg_style)
+
+            # Draw percentage text if enabled
             if self.draw_value:
                 font = FontManager.get_font(self.font_draw, self.font_size)
                 renderer.draw_text(
@@ -219,10 +243,15 @@ class ProgressBar(UIElement):
                     font,
                     pivot=(0.5, 0.5)
                 )
-        else:# Default style
+
+        else:  # Default style
+            # Background (track) with shadow
             renderer.draw_rect(actual_x, actual_y, self.width, self.height,
-                            self.background_color, fill=True,
-                            corner_radius=self.corner_radius, border_width=self.border_width, border_color=self.border_color or None)
+                               self.background_color, fill=True,
+                               corner_radius=self.corner_radius,
+                               border_width=self.border_width,
+                               border_color=self.border_color or None,
+                               style=bg_style)
 
             percentage = self.get_percentage() / 100.0
 
@@ -236,7 +265,8 @@ class ProgressBar(UIElement):
                         progress_height,
                         self.foreground_color,
                         fill=True,
-                        corner_radius=self.corner_radius
+                        corner_radius=self.corner_radius,
+                        style=fg_style   # foreground shadow
                     )
             else:  # horizontal
                 progress_width = int(percentage * self.width)
@@ -248,7 +278,8 @@ class ProgressBar(UIElement):
                         self.height,
                         self.foreground_color,
                         fill=True,
-                        corner_radius=self.corner_radius
+                        corner_radius=self.corner_radius,
+                        style=fg_style
                     )
 
             if self.draw_value:

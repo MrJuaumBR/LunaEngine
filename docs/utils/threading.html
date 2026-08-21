@@ -35,68 +35,147 @@
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>threading.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">Threading System - Concurrent Task Execution and Management<br><br>LOCATION: lunaengine/utils/threading.py<br><br>DESCRIPTION:<br>Provides a thread pool system for concurrent task execution, allowing<br>background processing without blocking the main game loop. Supports<br>task submission, execution, and result management.<br><br>KEY COMPONENTS:<br>- Task: Individual executable task with parameters and results<br>- ThreadPool: Managed pool of worker threads for concurrent execution<br>- Queue-based task distribution for efficient load balancing<br>- Exception handling and task result management<br><br>LIBRARIES USED:<br>- threading: Core threading functionality and thread management<br>- queue: Thread-safe task queue implementation<br>- typing: Type hints for callable functions and task parameters<br><br>USAGE:<br>&gt;&gt;&gt; pool = ThreadPool(4)<br>&gt;&gt;&gt; pool.start()<br>&gt;&gt;&gt; task = Task(expensive_calculation, arg1, arg2)<br>&gt;&gt;&gt; pool.submit(task)<br>&gt;&gt;&gt; # Later: check task.result or task.exception<br>&gt;&gt;&gt; pool.stop()</span>
+                <span class="text-muted">threading.py – Background task system with priority, frame‑based scheduling,<br>and resource monitoring.<br><br>Provides:<br>- TaskPriority: LOW, NORMAL, HIGH<br>- BackgroundTaskManager: schedule tasks with interval_frames, track CPU/memory,<br> &nbsp;cancel, and retrieve status.<br>- Integration with PerformanceMonitor for per‑task timing.</span>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-12">
                 
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-task">
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-taskpriority">
             <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Task</h3>
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class TaskPriority</h3>
             </div>
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
+                    <p class="lead fs-6">Task priority – lower integer = higher priority.</p>
                 </div>
-                
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>LOW: Any = 0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>NORMAL: Any = 1</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>HIGH: Any = 2</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-task-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, func: Callable, *args: tuple, **kwargs: dict) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-task-execute">
-                <code class="fs-6 fw-bold text-color-title">def execute(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Execute the task</div>
-            </div>
+                    <p class="text-muted italic">No methods defined.</p>
                 </div>
             </div>
         </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-threadpool">
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-taskinfo">
             <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ThreadPool</h3>
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class TaskInfo</h3>
             </div>
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
+                    <p class="lead fs-6">Metadata for a scheduled task.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>id: str = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>name: str = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>priority: TaskPriority = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>interval_frames: int = 0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>last_run_frame: int = 0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>total_runs: int = 0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>cpu_time_ms: float = 0.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>memory_peak_bytes: int = 0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>active: bool = True</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>result: Any = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>error: Optional[Exception] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_fn: Optional[Callable] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_args: tuple = ()</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_kwargs: dict = field(default_factory=dict)</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    <p class="text-muted italic">No methods defined.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-backgroundtaskmanager">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class BackgroundTaskManager</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Manages background tasks with priority, frame‑based scheduling, and resource tracking.<br>Tasks are executed in a thread pool, but scheduling decisions (when to run) are made<br>on the main thread via update().</p>
                 </div>
                 
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadpool-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, num_threads: int = 4) -> Any</code>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-backgroundtaskmanager-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, max_workers: int = 4, monitor: Optional['PerformanceMonitor'] = None) -> Any</code>
+                <div class="mt-2 text-muted small">Args:<br> &nbsp; &nbsp;max_workers: Number of worker threads in the pool.<br> &nbsp; &nbsp;monitor: Optional PerformanceMonitor instance for timing.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-backgroundtaskmanager-schedule">
+                <code class="fs-6 fw-bold text-color-title">def schedule(self: Any, fn: Callable, name: str = '', priority: TaskPriority = TaskPriority.NORMAL, interval_frames: int = 0, args: tuple = (), kwargs: dict = None) -> str</code>
+                <div class="mt-2 text-muted small">Schedule a task. If interval_frames &gt; 0, it will repeat every that many frames.<br>Returns a task ID that can be used to cancel or check status.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-backgroundtaskmanager-cancel">
+                <code class="fs-6 fw-bold text-color-title">def cancel(self: Any, task_id: str) -> bool</code>
+                <div class="mt-2 text-muted small">Cancel a scheduled task (even if already running).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-backgroundtaskmanager-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float) -> Any</code>
+                <div class="mt-2 text-muted small">Call this every frame on the main thread.<br>- Increments frame counter.<br>- Enqueues recurring tasks that are due.<br>- Processes completed results (updates TaskInfo with result/error).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-backgroundtaskmanager-get_status">
+                <code class="fs-6 fw-bold text-color-title">def get_status(self: Any) -> Dict[str, Dict[str, Any]]</code>
+                <div class="mt-2 text-muted small">Return a summary of all tasks for debugging.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-backgroundtaskmanager-shutdown">
+                <code class="fs-6 fw-bold text-color-title">def shutdown(self: Any, wait: bool = True) -> Any</code>
+                <div class="mt-2 text-muted small">Shut down the thread pool and consumer thread.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-backgroundtaskmanager-_enqueue_task">
+                <code class="fs-6 fw-bold text-color-title">def _enqueue_task(self: Any, task_id: str, info: TaskInfo) -> Any</code>
+                <div class="mt-2 text-muted small">Put a task into the priority queue for the consumer.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-backgroundtaskmanager-_consumer_loop">
+                <code class="fs-6 fw-bold text-color-title">def _consumer_loop(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Runs in a background thread: fetches tasks from priority queue and submits to executor.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-backgroundtaskmanager-_on_task_done">
+                <code class="fs-6 fw-bold text-color-title">def _on_task_done(self: Any, task_id: str, future: concurrent.futures.Future) -> Any</code>
+                <div class="mt-2 text-muted small">Callback when a future completes.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-backgroundtaskmanager-__del__">
+                <code class="fs-6 fw-bold text-color-title">def __del__(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadpool-start">
-                <code class="fs-6 fw-bold text-color-title">def start(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Start the thread pool</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadpool-stop">
-                <code class="fs-6 fw-bold text-color-title">def stop(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Stop the thread pool</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadpool-submit">
-                <code class="fs-6 fw-bold text-color-title">def submit(self: Any, task: Task) -> Any</code>
-                <div class="mt-2 text-muted small">Submit a task to the thread pool</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-threadpool-_worker">
-                <code class="fs-6 fw-bold text-color-title">def _worker(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Worker thread function</div>
             </div>
                 </div>
             </div>
@@ -122,7 +201,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-13 17:25
+                        Documentation generated on 2026-08-17 22:16
                     </p>
                 </div>
             </div>

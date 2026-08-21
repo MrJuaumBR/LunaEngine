@@ -35,127 +35,31 @@
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>shadows.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">lunaengine/graphics/shadows.py<br><br>Simple shadow system: data management + CPU‑based projected shadows.</span>
+                <span class="text-muted">shadows.py – Lightweight real‑time shadow system for LunaEngine.<br><br>Provides:<br>- LightCaster: light source (position, colour, distance).<br>- ShadowCaster: object that casts shadows (circle/rect/polygon/texture).<br>- SCSManager: manager that renders shadows with fallback, optional gradient,<br> &nbsp;optional blur, and debug overlays.</span>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-12">
                 
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-lighttype">
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-lightcaster">
             <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class LightType</h3>
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class LightCaster</h3>
             </div>
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>POINT: Any = 'point'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>DIRECTIONAL: Any = 'directional'</code>
-                </div></div>
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    <p class="text-muted italic">No methods defined.</p>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-lightshape">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class LightShape</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>CIRCLE: Any = 'circle'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>RECTANGLE: Any = 'rectangle'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>CONE: Any = 'cone'</code>
-                </div></div>
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    <p class="text-muted italic">No methods defined.</p>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-shadowtype">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ShadowType</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>TRANSLUCENT: Any = 'translucent'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>OPAQUE: Any = 'opaque'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>BLUR: Any = 'blur'</code>
-                </div></div>
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    <p class="text-muted italic">No methods defined.</p>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-shadowshape">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ShadowShape</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>CIRCLE: Any = 'circle'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>RECTANGLE: Any = 'rectangle'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>CONE: Any = 'cone'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>POLYGON: Any = 'polygon'</code>
-                </div></div>
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    <p class="text-muted italic">No methods defined.</p>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-light">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Light</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Light source that can cast shadows.</p>
+                    <p class="lead fs-6">A light source that illuminates ShadowCasters and casts shadows.</p>
                 </div>
                 
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-light-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, light_type: LightType, position: Tuple[float, float], color: Tuple[float, float, float] = (1.0, 1.0, 1.0), intensity: float = 1.0, range: float = 10.0, cast_shadows: bool = True) -> Any</code>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lightcaster-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, position: Tuple[float, float], shape: Literal['point', 'circle', 'rect'], color_key: Union[ColorKeys, List[Tuple[int, int, int, float]], List[Color]], brightness: float = 8.0, distance: float = 16.0, size: Optional[Union[float, Tuple[float, float]]] = None) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lightcaster-_assert_color_key">
+                <code class="fs-6 fw-bold text-color-title">def _assert_color_key(self: Any, key: Any) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
@@ -168,93 +72,115 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">An object that can cast shadows.</p>
+                    <p class="lead fs-6">An object that casts a shadow when illuminated by a LightCaster.</p>
                 </div>
-                
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>x: Union[int, float] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>y: Union[int, float] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>shape: Literal['rect', 'circle', 'polygon', 'texture'] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>color_key: ColorKeys = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>size: Union[Rect, Tuple[int, int], Tuple[float, float], None] = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>alpha_factor: float = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>shadow_depth: float = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>shadow_spread: float = None</code>
+                </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowcaster-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, vertices: List[Tuple[float, float]], position: Tuple[float, float] = (0, 0), visible: bool = True) -> Any</code>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowcaster-position">
+                <code class="fs-6 fw-bold text-color-title">def position(self: Any) -> Union[Tuple[int, int], Tuple[float, float]]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowcaster-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, position: Union[Vector2, Rect, Tuple[int, int], Tuple[float, float]], shape: Literal['rect', 'circle', 'polygon', 'texture'], color_key: Union[ColorKeys, List[Tuple[int, int, int, float]], List[Color]], size: Optional[Union[Rect, Tuple[int, int], Tuple[float, float]]] = None, alpha_factor: float = 0.6, shadow_depth: float = 1.0, shadow_spread: float = 1.0) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowcaster-assert_color_key">
+                <code class="fs-6 fw-bold text-color-title">def assert_color_key(self: Any, to_assert: Union[ColorKeys, List[Tuple[int, int, int, float]], List[Color]]) -> ColorKeys</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowcaster-compute_shadow_polygon">
+                <code class="fs-6 fw-bold text-color-title">def compute_shadow_polygon(self: Any, lx: float, ly: float, max_dist: float) -> List[Tuple[float, float]]</code>
+                <div class="mt-2 text-muted small">Return the shadow polygon vertices for this caster.<br>The actual length is max_dist * self.shadow_depth.<br>The angular spread is multiplied by self.shadow_spread.</div>
             </div>
                 </div>
             </div>
         </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-shadowsystem">
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-scsmanager">
             <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ShadowSystem</h3>
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class SCSManager</h3>
             </div>
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Manages lights and casters, and renders simple projected shadows.</p>
+                    <p class="lead fs-6">Manages all lights and shadow casters. Renders shadows with fallback,<br>optional gradient (per‑polygon), optional blur, and debug overlays.</p>
                 </div>
                 
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any) -> Any</code>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scsmanager-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, engine: 'LunaEngine') -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-add_light">
-                <code class="fs-6 fw-bold text-color-title">def add_light(self: Any, light: Light) -> Any</code>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scsmanager-add_shadow">
+                <code class="fs-6 fw-bold text-color-title">def add_shadow(self: Any, position: Any, shape: Any, color_key: Any, size: Any = None, alpha_factor: float = 0.6, shadow_depth: float = 1.0, shadow_spread: float = 1.0) -> ShadowCaster</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-remove_light">
-                <code class="fs-6 fw-bold text-color-title">def remove_light(self: Any, light: Light) -> Any</code>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scsmanager-add_light">
+                <code class="fs-6 fw-bold text-color-title">def add_light(self: Any, position: Any, shape: Any, color_key: Any, brightness: float = 8.0, distance: float = 16.0, size: Any = None) -> LightCaster</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-clear_lights">
-                <code class="fs-6 fw-bold text-color-title">def clear_lights(self: Any) -> Any</code>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scsmanager-_draw_caster">
+                <code class="fs-6 fw-bold text-color-title">def _draw_caster(self: Any, caster: ShadowCaster, renderer: OpenGLRenderer, color: Color) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-add_caster">
-                <code class="fs-6 fw-bold text-color-title">def add_caster(self: Any, caster: ShadowCaster) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scsmanager-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> Any</code>
+                <div class="mt-2 text-muted small">Renders all shadows in two passes:<br> &nbsp;1. Fallback ambient shadow (low alpha) for every caster.<br> &nbsp;2. Per‑light shadow polygons with either:<br> &nbsp; &nbsp; - uniform alpha (if use_gradient is False)<br> &nbsp; &nbsp; - linear gradient (if use_gradient is True)<br>If engine.debug_enabled is True, also draws debug overlays.<br>If shadow_blur &gt; 0, shadows are rendered off‑screen, blurred, then composited.</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-remove_caster">
-                <code class="fs-6 fw-bold text-color-title">def remove_caster(self: Any, caster: ShadowCaster) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-clear_casters">
-                <code class="fs-6 fw-bold text-color-title">def clear_casters(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-add_rectangle_caster">
-                <code class="fs-6 fw-bold text-color-title">def add_rectangle_caster(self: Any, x: float, y: float, width: float, height: float) -> ShadowCaster</code>
-                <div class="mt-2 text-muted small">Create a rectangular caster (centered at x,y).</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-add_circle_caster">
-                <code class="fs-6 fw-bold text-color-title">def add_circle_caster(self: Any, x: float, y: float, radius: float, segments: int = 16) -> ShadowCaster</code>
-                <div class="mt-2 text-muted small">Create a circular caster approximated by a polygon.</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-add_point_light">
-                <code class="fs-6 fw-bold text-color-title">def add_point_light(self: Any, x: float, y: float, color: Any = (1, 1, 1), intensity: Any = 1.0, range: Any = 100.0) -> Light</code>
-                <div class="mt-2 text-muted small">Helper to create a point light.</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-add_directional_light">
-                <code class="fs-6 fw-bold text-color-title">def add_directional_light(self: Any, color: Any = (1, 1, 1), intensity: Any = 1.0, range: Any = 500.0, *args: tuple, **kwargs: dict) -> Light</code>
-                <div class="mt-2 text-muted small">Helper to create a directional light (simulated with a distant point).</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-render_shadows_simple">
-                <code class="fs-6 fw-bold text-color-title">def render_shadows_simple(self: Any, renderer: Any, camera: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Draw simple projected shadows for all lights and casters.<br><br>Args:<br> &nbsp; &nbsp;renderer: The OpenGLRenderer instance.<br> &nbsp; &nbsp;camera: The camera (to convert world to screen).</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-apply_lighting">
-                <code class="fs-6 fw-bold text-color-title">def apply_lighting(self: Any, renderer: Any, camera: Any, ambient: float = 0.2, light_power: float = 1.0, saturation: float = 0.5) -> Any</code>
-                <div class="mt-2 text-muted small">Darken areas outside any light&#x27;s range and brighten areas inside lights.<br><br>Args:<br> &nbsp; &nbsp;renderer: The OpenGLRenderer instance.<br> &nbsp; &nbsp;camera: The camera (to convert world to screen).<br> &nbsp; &nbsp;ambient: Base brightness of unlit areas (0.0 = pitch black, 1.0 = fully bright).<br> &nbsp; &nbsp;light_power: Overall brightness multiplier for lights (higher = brighter).<br> &nbsp; &nbsp;saturation: How much the light&#x27;s color affects the scene (0.0 = white light only,<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;1.0 = full color). Values between 0 and 1 mix the light color with white.</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-shadowsystem-get_stats">
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scsmanager-get_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_stats(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Return simple statistics.</div>
             </div>
                 </div>
             </div>
         </div>
+                <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
                 
-                
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-pixel_to_centimeter">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def pixel_to_centimeter(pixels: Union[int, float], dpi: int = 96) -> Union[int, float]</code>
+                    <p class="mt-2 mb-0 text-muted">No documentation</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-centimeter_to_pixel">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def centimeter_to_pixel(centimeters: Union[int, float], dpi: int = 96) -> Union[int, float]</code>
+                    <p class="mt-2 mb-0 text-muted">No documentation</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-meter_to_pixel">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def meter_to_pixel(meters: Union[int, float], dpi: int = 96) -> Union[int, float]</code>
+                    <p class="mt-2 mb-0 text-muted">No documentation</p>
+                </div>
+            </div>
             </div>
         </div>
         <div class="mt-5 mb-5 text-center">
@@ -274,7 +200,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-13 17:25
+                        Documentation generated on 2026-08-17 22:16
                     </p>
                 </div>
             </div>

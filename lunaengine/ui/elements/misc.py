@@ -257,13 +257,24 @@ class FileFinder(UIElement):
             return
 
         actual_x, actual_y = self.get_actual_position()
+        theme = ThemeManager.get_theme(self.theme_type)
 
+        # ---- Draw border (no shadow) ----
         renderer.draw_rect(actual_x, actual_y, self.width, self.height,
                            self.border_color, fill=False, border_width=self.border_width,
                            corner_radius=self.corner_radius)
 
-        renderer.draw_rect(actual_x, actual_y, self.width, self.height,
-                           self.background_color, border_width=self.border_width,
-                           corner_radius=self.corner_radius)
+        # ---- Draw background with shadow ----
+        bg_style = {}
+        if theme.background and theme.background.shadow and theme.background.shadow.distance > 0:
+            bg_style['shadow'] = theme.background.shadow
 
+        renderer.draw_rect(actual_x, actual_y, self.width, self.height,
+                           self.background_color, fill=True,
+                           border_width=self.border_width,
+                           corner_radius=self.corner_radius,
+                           style=bg_style)
+
+        # Children (TextBox, Button, IconLabel) are rendered by super().render()
+        # which will apply their own shadows if they have them.
         super().render(renderer)

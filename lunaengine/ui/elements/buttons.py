@@ -4,6 +4,7 @@ from typing import Optional, Callable, Tuple, Dict, Any, Union
 from .base import *
 from ..themes import ThemeManager, ThemeType, UITheme
 from ...core.renderer import Renderer
+from pathlib import Path
 
 class Button(UIElement):
     """
@@ -53,10 +54,8 @@ class Button(UIElement):
         self.background_color: Tuple[int, int, int] = theme_obj.button_normal.color
         self.text_color: Tuple[int, int, int] = theme_obj.button_text.color
 
-    # ---- NEW: can_focus override ----
     @property
     def can_focus(self) -> bool:
-        """Buttons are focusable for controller navigation."""
         return True
 
     def _get_init_args(self) -> Dict[str, Any]:
@@ -109,6 +108,18 @@ class Button(UIElement):
     def _get_colors(self) -> UITheme:
         return ThemeManager.get_theme(self.theme_type)
 
+    def _get_state_style(self):
+        """Return the theme style for the current state."""
+        theme = self._get_colors()
+        if self.state == UIState.NORMAL:
+            return theme.button_normal
+        elif self.state == UIState.HOVERED:
+            return theme.button_hover
+        elif self.state == UIState.PRESSED:
+            return theme.button_pressed
+        else:
+            return theme.button_disabled
+
     def update(self, dt: float, inputState: InputState) -> None:
         if not self.visible or not self.enabled:
             self.state = UIState.DISABLED
@@ -156,7 +167,14 @@ class Button(UIElement):
 
         actual_x, actual_y = self.get_actual_position()
         theme = self._get_colors()
+        state_style = self._get_state_style()
 
+        # Build style dict with shadow from the current state
+        style = {}
+        if state_style.shadow and state_style.shadow.distance > 0:
+            style['shadow'] = state_style.shadow
+
+        # Border from theme (could also be state-specific, but we use button_border)
         border_color = None
         border_width = 0
         if theme.button_border and theme.button_border.border_width > 0:
@@ -169,7 +187,8 @@ class Button(UIElement):
             fill=True,
             border_color=border_color,
             border_width=border_width,
-            corner_radius=self.corner_radius
+            corner_radius=self.corner_radius,
+            style=style
         )
 
         if self.text:
@@ -187,20 +206,21 @@ class Button(UIElement):
 class ImageButton(UIElement):
     """
     A clickable button that displays an image instead of text.
+    Supports Icon objects and theme shadows.
     """
     category: str = 'button'
 
     _properties: Dict[str, Dict[str, Any]] = {
         **UIElement._properties,
-        'image_path': {'name': 'image path', 'key': 'image_path', 'type': Union[str, pygame.Surface], 'editable': False,
-                       'description': 'Path to image file or Surface object.'},
+        'image_path': {'name': 'image path', 'key': 'image_path', 'type': Union[str, pygame.Surface, Path, 'Icon'], 'editable': False,
+                       'description': 'Path to image file, Surface, or Icon object.'},
     }
 
     def __init__(
         self,
         x: int,
         y: int,
-        image_path: Union[str, pygame.Surface],
+        image_path: Union[str, pygame.Surface, Path, 'Icon'],
         width: Optional[int] = None,
         height: Optional[int] = None,
         pivot: Tuple[float, float] = (0, 0),
@@ -224,10 +244,8 @@ class ImageButton(UIElement):
 
         self.theme_type = theme or ThemeManager.get_current_theme()
 
-    # ---- NEW: can_focus override ----
     @property
     def can_focus(self) -> bool:
-        """Image buttons are focusable."""
         return True
 
     def _get_init_args(self) -> Dict[str, Any]:
@@ -243,16 +261,22 @@ class ImageButton(UIElement):
         }
 
     def _load_image(self) -> None:
+        """Load image from path, Surface, or Icon."""
         if self.image_path is None:
             self._image = pygame.Surface((self.width or 100, self.height or 100))
             self._image.fill((0, 0, 0))
             return
+        from ...misc.icons import Icon
         if isinstance(self.image_path, pygame.Surface):
             self._image = self.image_path
+        elif isinstance(self.image_path, Icon):
+            # Use Icon's get_surface with a default color (white) or we can later allow custom color
+            self._image = self.image_path.get_surface(color=(255, 255, 255))
         elif isinstance(self.image_path, str):
             self._image = pygame.image.load(self.image_path).convert_alpha()
         else:
-            raise TypeError(f"image_path must be str or pygame.Surface, got {type(self.image_path)}")
+            raise TypeError(f"image_path must be str, pygame.Surface, or Icon, got {type(self.image_path)}")
+
         if self.width and self.height:
             self._image = pygame.transform.scale(self._image, (self.width, self.height))
 
@@ -264,15 +288,25 @@ class ImageButton(UIElement):
     def get_image(self) -> pygame.Surface:
         return self._image
 
-    def set_image(self, image_path: Union[str, pygame.Surface]) -> None:
-        if isinstance(image_path, str):
-            self.image_path = image_path
-            self._load_image()
-        elif isinstance(image_path, pygame.Surface):
-            self.image_path = None
-            self._image = image_path
-            if self.width and self.height:
-                self._image = pygame.transform.scale(self._image, (self.width, self.height))
+    def set_image(self, image_path: Union[str, pygame.Surface, 'Icon']) -> None:
+        """Update the image, accepting Icon objects."""
+        self.image_path = image_path
+        self._load_image()
+        # Adjust size if needed
+        if self.width and self.height:
+            self._image = pygame.transform.scale(self._image, (self.width, self.height))
+
+    def _get_state_style(self):
+        """Return the theme style for the current state."""
+        theme = ThemeManager.get_theme(self.theme_type)
+        if self.state == UIState.NORMAL:
+            return theme.button_normal
+        elif self.state == UIState.HOVERED:
+            return theme.button_hover
+        elif self.state == UIState.PRESSED:
+            return theme.button_pressed
+        else:
+            return theme.button_disabled
 
     def update(self, dt: float, inputState: InputState) -> None:
         if not self.visible or not self.enabled:
@@ -312,6 +346,22 @@ class ImageButton(UIElement):
             return
 
         actual_x, actual_y = self.get_actual_position()
+        state_style = self._get_state_style()
+
+        # Build style dict with shadow from the current state
+        style = {}
+        if state_style.shadow and state_style.shadow.distance > 0:
+            style['shadow'] = state_style.shadow
+
+        if style:
+            renderer.draw_rect(
+                actual_x, actual_y, self.width, self.height,
+                color=None,
+                fill=False,
+                border_width=0,
+                corner_radius=self.corner_radius,
+                style=style
+            )
 
         if self._image:
             if self._image.get_width() != self.width or self._image.get_height() != self.height:

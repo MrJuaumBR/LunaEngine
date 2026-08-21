@@ -33,7 +33,8 @@ from .math_utils import (clamp, lerp, normalize_vector, angle_between_points,
                          humanize_number, humanize_time, humanize_size, generate_matrix,
                          get_area_by_diameter, get_area_by_radius, get_circle_area, get_circle_circumference, 
                          get_diameter_by_area,get_diameter_by_circumference,get_diameter_by_radius,get_radius_by_diameter, perspective_matrix,
-                         look_at, interpolate_color)
+                         look_at, interpolate_color, to_pygame_color)
+from .threading import BackgroundTaskManager
 from .timer import Timer, TimeCounter, get_global_timer
 
 __all__ = [
@@ -69,5 +70,7 @@ __all__ = [
     "get_radius_by_diameter",
     "perspective_matrix",
     "look_at",
-    "interpolate_color"
+    "interpolate_color",
+    "to_pygame_color",
+    "BackgroundTaskManager"
 ]

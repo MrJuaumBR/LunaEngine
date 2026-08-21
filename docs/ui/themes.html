@@ -41,6 +41,42 @@
         <div class="row">
             <div class="col-lg-12">
                 
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-uishadow">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class UiShadow</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">No documentation</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>color: Tuple[int, int, int] = (0, 0, 0)</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>alpha: float = 0.6</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>distance: float = 3.0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>direction: Tuple[float, float, float, float] = (0.0, 0.0, 1.0, 1.0)</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uishadow-from_dict">
+                <code class="fs-6 fw-bold text-color-title">def from_dict(cls: Any, data: dict) -> 'UiShadow'</code>
+                <div class="mt-2 text-muted small">Create UiShadow from a dictionary.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uishadow-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, color: Union[Tuple[int, int, int], Tuple[int, int, int, float | int], 'ThemeStyle'], alpha: Optional[float] = None, distance: Optional[float] = None, direction: Optional[Tuple[float, float, float, float]] = None) -> Any</code>
+                <div class="mt-2 text-muted small">Update shadow properties.</div>
+            </div>
+                </div>
+            </div>
+        </div>
         <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-themestyle">
             <div class="card-header bg-success text-white py-3">
                 <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ThemeStyle</h3>
@@ -62,6 +98,9 @@
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>border_width: int = 0</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>shadow: UiShadow = field(default_factory=UiShadow)</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>blur: int = 0</code>
@@ -418,6 +457,36 @@
                     <code>GALAXY: Any = 'galaxy'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
+                    <code>POKER: Any = 'poker'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>CASINO: Any = 'casino'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>JOKER: Any = 'joker'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>WITCHER: Any = 'witcher'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>GUY: Any = 'guy'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>STEAMPUNK: Any = 'steampunk'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>FACTORY: Any = 'factory'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>MIAMI: Any = 'miami'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>SOLARPUNK: Any = 'solarpunk'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>BLENDER: Any = 'blender'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
                     <code>FOREST: Any = 'forest'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
@@ -611,6 +680,10 @@
                 <code class="fs-6 fw-bold text-color-title">def get_alpha(cls: Any, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> float</code>
                 <div class="mt-2 text-muted small">Return alpha (0.0–1.0).</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_shadow">
+                <code class="fs-6 fw-bold text-color-title">def get_shadow(cls: Any, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> UiShadow</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_corner_radius">
                 <code class="fs-6 fw-bold text-color-title">def get_corner_radius(cls: Any, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> int</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -671,7 +744,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-13 17:25
+                        Documentation generated on 2026-08-17 22:16
                     </p>
                 </div>
             </div>

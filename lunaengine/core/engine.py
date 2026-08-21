@@ -44,7 +44,7 @@ from ..ui.layer_manager import UILayerManager
 from ..ui.notifications import NotificationPosition, NotificationType, notification_manager
 from ..ui.themes import ThemeManager, ThemeType
 from .scene import Scene
-from ..utils import PerformanceMonitor, GarbageCollector
+from ..utils import PerformanceMonitor, GarbageCollector, BackgroundTaskManager
 from ..misc.debug import DebugManager, LiveInspector
 from ..backend import OpenGLRenderer, EVENTS, InputState, LExceptions, ControllerManager, Ratio, FocusOrder, JButton, Axis
 from .renderer import Renderer
@@ -54,6 +54,7 @@ from .. import __version__, ui
 from .audio import AudioManager
 
 from ..storage import Atlas, AtlasCategory, AtlasItem
+from ..misc import Icon, Icons
 
 
 class LunaEngine:
@@ -130,6 +131,7 @@ class LunaEngine:
         # Performance monitoring
         self.performance_monitor = PerformanceMonitor()
         self.garbage_collector = GarbageCollector()
+        self.background_tasks = BackgroundTaskManager(monitor=self.performance_monitor)
         
         # Performance profiling settings
         self.enable_performance_profiling(kwargs.get('enable_performance_profiling', True))
@@ -1105,6 +1107,9 @@ class LunaEngine:
             self.debug_manager.update(dt, self.input_state)
             self.performance_monitor.end_timer("ui")
             
+            # Update background tasks
+            self.background_tasks.update(dt)
+            
             # Render with profiling
             self.performance_monitor.start_timer("render")
             self._render()
@@ -1236,23 +1241,20 @@ class LunaEngine:
             self.renderer.clear()
             self.renderer.begin_frame()
 
-            if self.current_scene:
+            curr_scene = self.current_scene
+            if curr_scene:
+                if curr_scene.shadow_system_enabled and hasattr(curr_scene, 'shadow_system'):
+                    self.performance_monitor.start_timer("shadows")
+                    curr_scene.shadow_system.render(self.renderer)
+                    self.performance_monitor.end_timer("shadows")
+                
                 self.performance_monitor.start_timer("scene_render")
-                self.current_scene.render(self.renderer)
+                curr_scene.render(self.renderer)
                 self.performance_monitor.end_timer("scene_render")
             
-            if self.current_scene and hasattr(self.current_scene, 'shadow_system'):
-                self.performance_monitor.start_timer("shadows")
-                self.current_scene.shadow_system.render_shadows_simple(self.renderer, self.current_scene.camera)
-                self.performance_monitor.end_timer("shadows")
-                
-                self.performance_monitor.start_timer("apply_lighting")
-                self.current_scene.shadow_system.apply_lighting(self.renderer, self.current_scene.camera)
-                self.performance_monitor.end_timer("apply_lighting")
-            
             self.performance_monitor.start_timer("particles")
-            if self.current_scene and hasattr(self.current_scene, 'particle_system'):
-                self.current_scene.particle_system.render(self.current_scene.camera)
+            if curr_scene and hasattr(curr_scene, 'particle_system'):
+                curr_scene.particle_system.render(curr_scene.camera)
             self.performance_monitor.end_timer("particles")
 
             self.performance_monitor.start_timer("ui_render")
@@ -1474,8 +1476,10 @@ class LunaEngine:
     def shutdown(self):
         """Cleanup resources."""
         self.garbage_collector.cleanup(force=True)
+        self.background_tasks.shutdown(wait=True)
         self.audio.cleanup()
-        self.renderer.end_frame()
-        self.renderer.cleanup()
+        if self.renderer:
+            self.renderer.end_frame()
+            self.renderer.cleanup()
         pygame.quit()
         sys.exit(0)

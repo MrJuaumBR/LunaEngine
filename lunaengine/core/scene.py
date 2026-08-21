@@ -10,7 +10,7 @@ from typing import Dict, List, Any, Optional, TYPE_CHECKING, Tuple
 from ..ui import UIElement, UiFrame, ScrollingFrame, Tabination, AnimationHandler
 from ..graphics import Camera
 from ..graphics.particles import ThreadedParticleSystem, ParticleSystem
-from ..graphics.shadows import ShadowSystem
+from ..graphics.shadows import SCSManager
 from ..core.audio import AudioManager
 from ..backend.opengl import OpenGLRenderer
 from ..core.renderer import Renderer
@@ -37,7 +37,7 @@ class Scene(ABC):
         # Camera
         self.camera: Camera = Camera(self, engine.width, engine.height)
 
-        # Particle System - GPU version
+        # Particle System
         self.particle_system = ThreadedParticleSystem(
             self.engine.renderer,
             self.engine.renderer.max_particles,
@@ -48,8 +48,9 @@ class Scene(ABC):
             self.particle_system.update_max_particles
         )
 
-        # Shadows System - GPU version
-        self.shadow_system = ShadowSystem()
+        # Shadow System
+        self.shadow_system = SCSManager(self.engine)
+        self.shadow_system_enabled = True
 
         # Animation System
         self.animation_handler = AnimationHandler(engine)
@@ -135,6 +136,10 @@ class Scene(ABC):
 
         self.update(dt)
         self.animation_handler.update(dt)
+        
+    def set_shadows_enabled(self, enabled: bool):
+        self.shadow_system_enabled = enabled
+        self.shadow_system.enabled = enabled
 
     def render(self, renderer: Renderer | OpenGLRenderer) -> None:
         pass

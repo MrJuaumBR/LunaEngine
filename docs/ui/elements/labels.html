@@ -72,7 +72,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">A text label with optional rich text support.</p>
+                    <p class="lead fs-6">A text label with optional rich text support and shadow.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -82,7 +82,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: Union[int, float], y: Union[int, float], text: str, font_size: int = 24, color: Optional[Union[Tuple[int, int, int], Color, ThemeStyle]] = None, font_name: Optional[str] = None, rich_text: bool = False, use_theme_color: bool = True, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: Union[int, float], y: Union[int, float], text: str, font_size: int = 24, color: Optional[Union[Tuple[int, int, int], Color, ThemeStyle]] = None, font_name: Optional[str] = None, rich_text: bool = False, use_theme_color: bool = True, shadow: Optional[UiShadow] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-can_focus">
@@ -92,6 +92,10 @@
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-_get_init_args">
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-set_shadow">
+                <code class="fs-6 fw-bold text-color-title">def set_shadow(self: Any, shadow: Optional[UiShadow]) -> None</code>
+                <div class="mt-2 text-muted small">Set or remove text shadow.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-get_text">
                 <code class="fs-6 fw-bold text-color-title">def get_text(self: Any) -> str</code>
@@ -139,7 +143,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">A multi-line text label with optional rich text support and word wrapping.</p>
+                    <p class="lead fs-6">A multi-line text label with optional rich text support, word wrapping, and shadow.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -149,7 +153,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: Union[int, float], y: Union[int, float], text: str, width: Optional[int] = None, height: Optional[int] = None, font_size: int = 24, color: Optional[Union[Tuple[int, int, int], Color, ThemeStyle]] = None, font_name: Optional[str] = None, rich_text: bool = False, line_spacing: int = 4, wrap_width: int = 0, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: Union[int, float], y: Union[int, float], text: str, width: Optional[int] = None, height: Optional[int] = None, font_size: int = 24, color: Optional[Union[Tuple[int, int, int], Color, ThemeStyle]] = None, font_name: Optional[str] = None, rich_text: bool = False, line_spacing: int = 4, wrap_width: int = 0, shadow: Optional[UiShadow] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-_calculate_text_size">
@@ -167,6 +171,10 @@
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-_measure_rich_text_line">
                 <code class="fs-6 fw-bold text-color-title">def _measure_rich_text_line(self: Any, line: List[RichTextSegment]) -> int</code>
                 <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-set_shadow">
+                <code class="fs-6 fw-bold text-color-title">def set_shadow(self: Any, shadow: Optional[UiShadow]) -> None</code>
+                <div class="mt-2 text-muted small">Set or remove text shadow.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-set_text_color">
                 <code class="fs-6 fw-bold text-color-title">def set_text_color(self: Any, color: Union[Tuple[int, int, int], Color, ThemeStyle]) -> None</code>
@@ -202,17 +210,17 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">A simple label that displays an image (non‑interactive).</p>
+                    <p class="lead fs-6">A simple label that displays an image (non‑interactive).<br>Supports Icon objects (detected by presence of &#x27;get_surface&#x27; method).</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'image_path': {'name': 'image path', 'key': 'image_path', 'type': Union[str, pygame.Surface], 'editable': False, 'description': 'Path to image file or Surface object.'}}</code>
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'image_path': {'name': 'image path', 'key': 'image_path', 'type': Union[str, pygame.Surface, 'Icon'], 'editable': False, 'description': 'Path to image file, Surface, or Icon object.'}}</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: Union[str, pygame.Surface], width: Optional[int] = None, height: Optional[int] = None, pivot: Tuple[float, float] = (0, 0), element_id: Optional[str] = None) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: Union[str, pygame.Surface, 'Icon'], width: Optional[int] = None, height: Optional[int] = None, pivot: Tuple[float, float] = (0, 0), element_id: Optional[str] = None, **kwargs: dict) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-can_focus">
@@ -223,12 +231,20 @@
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-_is_icon_like">
+                <code class="fs-6 fw-bold text-color-title">def _is_icon_like(self: Any, obj: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Detect if an object is an Icon by checking for the get_surface method.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-_load_image">
                 <code class="fs-6 fw-bold text-color-title">def _load_image(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-set_image">
-                <code class="fs-6 fw-bold text-color-title">def set_image(self: Any, image_path: Union[str, pygame.Surface]) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def set_image(self: Any, image_path: Union[str, pygame.Surface, Path, AtlasItem, 'Icon']) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-set_image_color">
+                <code class="fs-6 fw-bold text-color-title">def set_image_color(self: Any, color: Union[Tuple[int, int, int], Color, ThemeStyle, ColorKeys]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-get_image">
@@ -297,7 +313,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-13 17:25
+                        Documentation generated on 2026-08-17 22:16
                     </p>
                 </div>
             </div>

@@ -11,7 +11,7 @@ All elements are organized in tabs by functional sections.
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+# sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
 from lunaengine.ui import *
 from lunaengine.core import LunaEngine, Scene
@@ -51,7 +51,18 @@ class ComprehensiveUIDemo(Scene):
         
         self.setup_ui()
         
+        self.engine.add_function_to_live_inspector('My Function', lambda x: print(f'Value to print: {x}'), [('x', int)], 'Prints the value of x.')
+        self.engine.add_function_to_live_inspector('My Function A', self.custom_function_a, [('x', int), ('b', int), ('z', float)], 'Returns the result of (x + b) * z.')
+        self.engine.add_function_to_live_inspector('My Function B', self.custom_function_b, [], 'Returns a random integer between 0 and 100.')
+        
         self.shadow_system.enabled = False
+        
+    def custom_function_a(self, x:int, b:int, z:float) -> float:
+        return (x + b) * z
+    
+    def custom_function_b(self) -> int:
+        import random
+        return random.randint(0, 100)
         
     def on_enter(self, previous_scene: str = None):
         print("=== LunaEngine UI Demo ===")

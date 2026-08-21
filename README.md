@@ -378,6 +378,8 @@ Before contributing code, please review our `CONTRIBUTING.md` (if available) for
 
 LunaEngine is released under the [MIT License](https://opensource.org/licenses/MIT). This means you are free to use, modify, and distribute the engine for both commercial and non-commercial purposes, provided that the original copyright notice and license are included in all copies or substantial portions of the software.
 
+All the icons from the [assets/icons](./lunaengine/assets/icons/) are from [icons8](https://icons8.com/)
+
 ## Final Message
 
 Hey there, fellow game dev! It's been an incredible journey building LunaEngine, pouring my heart and soul into creating something truly special. This isn't just a piece of software; it's a labor of love, a toolkit designed to bring your 2D game ideas to life with a dash of Python magic and a whole lot of fun. I genuinely believe in the power of open-source and the creativity it unleashes. So, go forth, experiment, build amazing games, and most importantly, have a blast doing it! Your imagination is the only limit. Let's make some awesome games together! ✨

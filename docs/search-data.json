@@ -15,7 +15,7 @@
       "description": "User interface components - Buttons, Layouts, Themes",
       "link": "ui/index.html",
       "files_count": 18,
-      "classes_count": 65,
+      "classes_count": 66,
       "functions_count": 13
     },
     {
@@ -24,8 +24,8 @@
       "description": "Graphics and rendering - Sprites, Lighting, Particles",
       "link": "graphics/index.html",
       "files_count": 5,
-      "classes_count": 34,
-      "functions_count": 11
+      "classes_count": 30,
+      "functions_count": 14
     },
     {
       "name": "utils",
@@ -33,8 +33,8 @@
       "description": "Utility functions - Performance, Math, Threading",
       "link": "utils/index.html",
       "files_count": 5,
-      "classes_count": 10,
-      "functions_count": 25
+      "classes_count": 11,
+      "functions_count": 26
     },
     {
       "name": "backend",
@@ -42,8 +42,8 @@
       "description": "Renderer backends - OpenGL, Pygame",
       "link": "backend/index.html",
       "files_count": 6,
-      "classes_count": 41,
-      "functions_count": 5
+      "classes_count": 44,
+      "functions_count": 7
     },
     {
       "name": "misc",
@@ -51,17 +51,17 @@
       "description": "Miscellaneous functions - Bones, Icons",
       "link": "misc/index.html",
       "files_count": 2,
-      "classes_count": 37,
-      "functions_count": 2
+      "classes_count": 14,
+      "functions_count": 0
     },
     {
       "name": "tools",
       "title": "Tools",
       "description": "Development tools - Documentation, Analysis",
       "link": "tools/index.html",
-      "files_count": 3,
+      "files_count": 4,
       "classes_count": 1,
-      "functions_count": 7
+      "functions_count": 19
     },
     {
       "name": "storage",
@@ -128,7 +128,7 @@
       "file": "engine.py",
       "description": "Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether to start in fullscreen mode<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene<br> &nbsp; &nbsp;atlas (Atlas): Resource catalog for all assets<br> &nbsp; &nbsp;bundle_path (Optional[Path]): Path to resource bundle (.res) if any",
       "link": "core/engine.html#class-lunaengine",
-      "methods_count": 94
+      "methods_count": 96
     },
     {
       "name": "Renderer",
@@ -144,7 +144,7 @@
       "file": "scene.py",
       "description": "No documentation",
       "link": "core/scene.html#class-scene",
-      "methods_count": 28
+      "methods_count": 29
     },
     {
       "name": "Window",
@@ -291,6 +291,14 @@
       "methods_count": 1
     },
     {
+      "name": "UiShadow",
+      "module": "ui",
+      "file": "themes.py",
+      "description": "No documentation",
+      "link": "ui/themes.html#class-uishadow",
+      "methods_count": 2
+    },
+    {
       "name": "ThemeStyle",
       "module": "ui",
       "file": "themes.py",
@@ -328,7 +336,7 @@
       "file": "themes.py",
       "description": "Manages complete UI themes with local/remote loading.",
       "link": "ui/themes.html#class-thememanager",
-      "methods_count": 31
+      "methods_count": 32
     },
     {
       "name": "TooltipConfig",
@@ -456,15 +464,15 @@
       "file": "buttons.py",
       "description": "A clickable button with text and theming support.",
       "link": "ui/elements/buttons.html#class-button",
-      "methods_count": 16
+      "methods_count": 17
     },
     {
       "name": "ImageButton",
       "module": "ui",
       "file": "buttons.py",
-      "description": "A clickable button that displays an image instead of text.",
+      "description": "A clickable button that displays an image instead of text.<br>Supports Icon objects and theme shadows.",
       "link": "ui/elements/buttons.html#class-imagebutton",
-      "methods_count": 10
+      "methods_count": 11
     },
     {
       "name": "Clock",
@@ -496,15 +504,15 @@
       "file": "containers.py",
       "description": "No documentation",
       "link": "ui/elements/containers.html#class-scrollingframe",
-      "methods_count": 14
+      "methods_count": 19
     },
     {
       "name": "Tabination",
       "module": "ui",
       "file": "containers.py",
-      "description": "Tabbed container. Does not use auto_arrange_y because tabs are managed separately.",
+      "description": "Tabbed container. Fully optimized with cached metrics for vertical mode.",
       "link": "ui/elements/containers.html#class-tabination",
-      "methods_count": 21
+      "methods_count": 32
     },
     {
       "name": "Pagination",
@@ -550,25 +558,25 @@
       "name": "TextLabel",
       "module": "ui",
       "file": "labels.py",
-      "description": "A text label with optional rich text support.",
+      "description": "A text label with optional rich text support and shadow.",
       "link": "ui/elements/labels.html#class-textlabel",
-      "methods_count": 12
+      "methods_count": 13
     },
     {
       "name": "LongTextLabel",
       "module": "ui",
       "file": "labels.py",
-      "description": "A multi-line text label with optional rich text support and word wrapping.",
+      "description": "A multi-line text label with optional rich text support, word wrapping, and shadow.",
       "link": "ui/elements/labels.html#class-longtextlabel",
-      "methods_count": 11
+      "methods_count": 12
     },
     {
       "name": "ImageLabel",
       "module": "ui",
       "file": "labels.py",
-      "description": "A simple label that displays an image (non\u2011interactive).",
+      "description": "A simple label that displays an image (non\u2011interactive).<br>Supports Icon objects (detected by presence of &#x27;get_surface&#x27; method).",
       "link": "ui/elements/labels.html#class-imagelabel",
-      "methods_count": 8
+      "methods_count": 10
     },
     {
       "name": "FileFinder",
@@ -654,15 +662,15 @@
       "name": "ChartVisualizer",
       "module": "ui",
       "file": "visualizers.py",
-      "description": "A versatile data visualization component: bar, pie, line, scatter, radar charts.<br>Supports gradients, animations, and legend.",
+      "description": "A versatile data visualization component: bar, pie, line, scatter, radar charts.<br>Supports gradients, animations, legend, and per\u2011element shadows.",
       "link": "ui/elements/visualizers.html#class-chartvisualizer",
-      "methods_count": 18
+      "methods_count": 20
     },
     {
       "name": "AudioVisualizer",
       "module": "ui",
       "file": "visualizers.py",
-      "description": "Real-time audio visualization element: bars, waveform, circle, particles, spectrum.<br>Connects to an OpenAL audio source.",
+      "description": "Real-time audio visualization element: bars, waveform, circle, particles, spectrum.<br>Connects to an OpenAL audio source.<br>Shadows are not applied to audio visualizers for performance and clarity.",
       "link": "ui/elements/visualizers.html#class-audiovisualizer",
       "methods_count": 24
     },
@@ -672,7 +680,7 @@
       "file": "visualizers.py",
       "description": "A tabular data display element with column headers, row styling, selection.<br>Fixed size and position; rows exceeding the height are clipped.",
       "link": "ui/elements/visualizers.html#class-table",
-      "methods_count": 17
+      "methods_count": 18
     },
     {
       "name": "CameraMode",
@@ -875,60 +883,28 @@
       "methods_count": 12
     },
     {
-      "name": "LightType",
+      "name": "LightCaster",
       "module": "graphics",
       "file": "shadows.py",
-      "description": "No documentation",
-      "link": "graphics/shadows.html#class-lighttype",
-      "methods_count": 0
-    },
-    {
-      "name": "LightShape",
-      "module": "graphics",
-      "file": "shadows.py",
-      "description": "No documentation",
-      "link": "graphics/shadows.html#class-lightshape",
-      "methods_count": 0
-    },
-    {
-      "name": "ShadowType",
-      "module": "graphics",
-      "file": "shadows.py",
-      "description": "No documentation",
-      "link": "graphics/shadows.html#class-shadowtype",
-      "methods_count": 0
-    },
-    {
-      "name": "ShadowShape",
-      "module": "graphics",
-      "file": "shadows.py",
-      "description": "No documentation",
-      "link": "graphics/shadows.html#class-shadowshape",
-      "methods_count": 0
-    },
-    {
-      "name": "Light",
-      "module": "graphics",
-      "file": "shadows.py",
-      "description": "Light source that can cast shadows.",
-      "link": "graphics/shadows.html#class-light",
-      "methods_count": 1
+      "description": "A light source that illuminates ShadowCasters and casts shadows.",
+      "link": "graphics/shadows.html#class-lightcaster",
+      "methods_count": 2
     },
     {
       "name": "ShadowCaster",
       "module": "graphics",
       "file": "shadows.py",
-      "description": "An object that can cast shadows.",
+      "description": "An object that casts a shadow when illuminated by a LightCaster.",
       "link": "graphics/shadows.html#class-shadowcaster",
-      "methods_count": 1
+      "methods_count": 4
     },
     {
-      "name": "ShadowSystem",
+      "name": "SCSManager",
       "module": "graphics",
       "file": "shadows.py",
-      "description": "Manages lights and casters, and renders simple projected shadows.",
-      "link": "graphics/shadows.html#class-shadowsystem",
-      "methods_count": 14
+      "description": "Manages all lights and shadow casters. Renders shadows with fallback,<br>optional gradient (per\u2011polygon), optional blur, and debug overlays.",
+      "link": "graphics/shadows.html#class-scsmanager",
+      "methods_count": 6
     },
     {
       "name": "SpriteSheet",
@@ -974,7 +950,7 @@
       "name": "PerformanceProfiler",
       "module": "utils",
       "file": "performance.py",
-      "description": "Performance profiling with detailed timing breakdown",
+      "description": "No documentation",
       "link": "utils/performance.html#class-performanceprofiler",
       "methods_count": 14
     },
@@ -982,33 +958,41 @@
       "name": "PerformanceMonitor",
       "module": "utils",
       "file": "performance.py",
-      "description": "Optimized performance monitoring with minimal overhead",
+      "description": "No documentation",
       "link": "utils/performance.html#class-performancemonitor",
-      "methods_count": 21
+      "methods_count": 24
     },
     {
       "name": "GarbageCollector",
       "module": "utils",
       "file": "performance.py",
-      "description": "Manages cleanup of unused resources",
+      "description": "No documentation",
       "link": "utils/performance.html#class-garbagecollector",
       "methods_count": 4
     },
     {
-      "name": "Task",
+      "name": "TaskPriority",
       "module": "utils",
       "file": "threading.py",
-      "description": "No documentation",
-      "link": "utils/threading.html#class-task",
-      "methods_count": 2
+      "description": "Task priority \u2013 lower integer = higher priority.",
+      "link": "utils/threading.html#class-taskpriority",
+      "methods_count": 0
     },
     {
-      "name": "ThreadPool",
+      "name": "TaskInfo",
       "module": "utils",
       "file": "threading.py",
-      "description": "No documentation",
-      "link": "utils/threading.html#class-threadpool",
-      "methods_count": 5
+      "description": "Metadata for a scheduled task.",
+      "link": "utils/threading.html#class-taskinfo",
+      "methods_count": 0
+    },
+    {
+      "name": "BackgroundTaskManager",
+      "module": "utils",
+      "file": "threading.py",
+      "description": "Manages background tasks with priority, frame\u2011based scheduling, and resource tracking.<br>Tasks are executed in a thread pool, but scheduling decisions (when to run) are made<br>on the main thread via update().",
+      "link": "utils/threading.html#class-backgroundtaskmanager",
+      "methods_count": 10
     },
     {
       "name": "TimeCounter",
@@ -1230,7 +1214,7 @@
       "name": "ShaderProgram",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Base class for all shader programs with automatic uniform location caching.<br><br>Attributes:<br> &nbsp; &nbsp;vertex_source (str | None): Path or source code for vertex shader.<br> &nbsp; &nbsp;fragment_source (str | None): Path or source code for fragment shader.<br> &nbsp; &nbsp;geometry_source (str | None): Path or source code for geometry shader.<br> &nbsp; &nbsp;program (int | None): OpenGL shader program handle.<br> &nbsp; &nbsp;vao (int | None): Vertex Array Object handle.<br> &nbsp; &nbsp;vbo (int | None): Vertex Buffer Object handle.<br> &nbsp; &nbsp;ebo (int | None): Element Buffer Object handle.",
+      "description": "Base shader program that loads from combined shader files using macros.<br><br>The shader source is taken from one of these (in order of priority):<br> &nbsp;1. A dedicated file named &#x27;&lt;shader_name&gt;.vert&#x27; (or .frag/.geom) in the shader folder.<br> &nbsp;2. A combined file &#x27;shaders.vert&#x27; (or .frag/.geom) with a #define for the shader name.<br> &nbsp;3. A raw string passed directly (if it contains &#x27;#version&#x27;).<br><br>This allows both compact distribution and per\u2011shader overrides.",
       "link": "backend/opengl.html#class-shaderprogram",
       "methods_count": 7
     },
@@ -1238,7 +1222,7 @@
       "name": "ParticleShader",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Instanced particle rendering shader. Each particle is a point with size and colour.",
+      "description": "No documentation",
       "link": "backend/opengl.html#class-particleshader",
       "methods_count": 2
     },
@@ -1246,7 +1230,7 @@
       "name": "SimpleShader",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Simple shader for drawing solid colour rectangles and shapes.",
+      "description": "No documentation",
       "link": "backend/opengl.html#class-simpleshader",
       "methods_count": 2
     },
@@ -1254,7 +1238,7 @@
       "name": "TextureShader",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Shader for rendering textured quads (surfaces, images).",
+      "description": "No documentation",
       "link": "backend/opengl.html#class-textureshader",
       "methods_count": 2
     },
@@ -1262,7 +1246,7 @@
       "name": "RoundedRectShader",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Shader that draws rectangles with per\u2011corner rounded corners using signed distance fields.",
+      "description": "No documentation",
       "link": "backend/opengl.html#class-roundedrectshader",
       "methods_count": 2
     },
@@ -1270,17 +1254,33 @@
       "name": "FilterShader",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Full\u2011screen quad shader for applying post\u2011processing filters and effects.",
+      "description": "No documentation",
       "link": "backend/opengl.html#class-filtershader",
+      "methods_count": 2
+    },
+    {
+      "name": "MaskShader",
+      "module": "backend",
+      "file": "opengl.py",
+      "description": "No documentation",
+      "link": "backend/opengl.html#class-maskshader",
+      "methods_count": 2
+    },
+    {
+      "name": "DepthShader",
+      "module": "backend",
+      "file": "opengl.py",
+      "description": "No documentation",
+      "link": "backend/opengl.html#class-depthshader",
       "methods_count": 2
     },
     {
       "name": "OpenGLRenderer",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Main hardware\u2011accelerated renderer for LunaEngine.<br><br>Manages OpenGL context, shaders, framebuffers, geometry caches,<br>filters, particles, and all drawing operations.<br><br>Attributes:<br> &nbsp; &nbsp;width (int): Current viewport width.<br> &nbsp; &nbsp;height (int): Current viewport height.<br> &nbsp; &nbsp;camera_position (pygame.math.Vector2): World camera position.<br> &nbsp; &nbsp;filters (List[Filter]): Active post\u2011processing filters.",
+      "description": "Main hardware\u2011accelerated renderer for LunaEngine.",
       "link": "backend/opengl.html#class-openglrenderer",
-      "methods_count": 71
+      "methods_count": 80
     },
     {
       "name": "EVENTS",
@@ -1355,12 +1355,28 @@
       "methods_count": 19
     },
     {
+      "name": "ColorKeys",
+      "module": "backend",
+      "file": "types.py",
+      "description": "Manages a set of keyframe colours over time [0.0, 1.0].<br>Supports list input (evenly spaced) or explicit dict.",
+      "link": "backend/types.html#class-colorkeys",
+      "methods_count": 4
+    },
+    {
+      "name": "DraggableMixin",
+      "module": "misc",
+      "file": "debug.py",
+      "description": "Mixin to add drag\u2011and\u2011drop behavior to any overlay.",
+      "link": "misc/debug.html#class-draggablemixin",
+      "methods_count": 4
+    },
+    {
       "name": "DebugOverlay",
       "module": "misc",
       "file": "debug.py",
       "description": "Base class for a draggable, fixable, closable debug panel.",
       "link": "misc/debug.html#class-debugoverlay",
-      "methods_count": 7
+      "methods_count": 5
     },
     {
       "name": "FPSOverlay",
@@ -1368,7 +1384,7 @@
       "file": "debug.py",
       "description": "No documentation",
       "link": "misc/debug.html#class-fpsoverlay",
-      "methods_count": 4
+      "methods_count": 3
     },
     {
       "name": "SceneStatsOverlay",
@@ -1376,7 +1392,7 @@
       "file": "debug.py",
       "description": "No documentation",
       "link": "misc/debug.html#class-scenestatsoverlay",
-      "methods_count": 4
+      "methods_count": 3
     },
     {
       "name": "SoundOverlay",
@@ -1384,7 +1400,7 @@
       "file": "debug.py",
       "description": "No documentation",
       "link": "misc/debug.html#class-soundoverlay",
-      "methods_count": 4
+      "methods_count": 3
     },
     {
       "name": "ClockOverlay",
@@ -1392,7 +1408,7 @@
       "file": "debug.py",
       "description": "No documentation",
       "link": "misc/debug.html#class-clockoverlay",
-      "methods_count": 4
+      "methods_count": 3
     },
     {
       "name": "VersionOverlay",
@@ -1400,7 +1416,7 @@
       "file": "debug.py",
       "description": "No documentation",
       "link": "misc/debug.html#class-versionoverlay",
-      "methods_count": 4
+      "methods_count": 3
     },
     {
       "name": "LogLevel",
@@ -1430,9 +1446,9 @@
       "name": "LiveInspector",
       "module": "misc",
       "file": "debug.py",
-      "description": "No documentation",
+      "description": "Main debugging panel. Organised into tabs on the left side:<br>- Elements: hierarchy + properties<br>- Custom Function: user\u2011defined test functions<br>- System: performance + console (merged)<br>- Audio: master volume, effects, source list<br>- Overlays: manage debug overlays<br>- Settings: theme, dark mode, utilities<br>- Tasks: background task status",
       "link": "misc/debug.html#class-liveinspector",
-      "methods_count": 34
+      "methods_count": 52
     },
     {
       "name": "DebugManager",
@@ -1443,212 +1459,20 @@
       "methods_count": 7
     },
     {
-      "name": "Colors",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-colors",
-      "methods_count": 0
-    },
-    {
       "name": "Icon",
       "module": "misc",
       "file": "icons.py",
-      "description": "No documentation",
+      "description": "A theme\u2011aware icon that can be recoloured with a flat colour or a gradient.<br><br>The original PNG must be a white shape on a transparent background.<br>Scaling is performed once per requested size.",
       "link": "misc/icons.html#class-icon",
-      "methods_count": 3
-    },
-    {
-      "name": "IconInfo",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconinfo",
-      "methods_count": 1
-    },
-    {
-      "name": "IconCheck",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconcheck",
-      "methods_count": 1
-    },
-    {
-      "name": "IconCross",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconcross",
-      "methods_count": 1
-    },
-    {
-      "name": "IconWarn",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconwarn",
-      "methods_count": 1
-    },
-    {
-      "name": "IconError",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconerror",
-      "methods_count": 1
-    },
-    {
-      "name": "IconSuccess",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconsuccess",
-      "methods_count": 1
-    },
-    {
-      "name": "IconTriangleUp",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-icontriangleup",
-      "methods_count": 1
-    },
-    {
-      "name": "IconTriangleDown",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-icontriangledown",
-      "methods_count": 1
-    },
-    {
-      "name": "IconTriangleLeft",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-icontriangleleft",
-      "methods_count": 1
-    },
-    {
-      "name": "IconTriangleRight",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-icontriangleright",
-      "methods_count": 1
-    },
-    {
-      "name": "IconPlus",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconplus",
-      "methods_count": 1
-    },
-    {
-      "name": "IconMinus",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconminus",
-      "methods_count": 1
-    },
-    {
-      "name": "IconCircle",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconcircle",
-      "methods_count": 1
-    },
-    {
-      "name": "IconSquare",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconsquare",
-      "methods_count": 1
-    },
-    {
-      "name": "IconGear",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-icongear",
-      "methods_count": 1
-    },
-    {
-      "name": "IconFolder",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconfolder",
-      "methods_count": 1
-    },
-    {
-      "name": "IconKey",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconkey",
-      "methods_count": 1
-    },
-    {
-      "name": "IconLockLocked",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconlocklocked",
-      "methods_count": 1
-    },
-    {
-      "name": "IconLockUnlocked",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconlockunlocked",
-      "methods_count": 1
-    },
-    {
-      "name": "IconHome",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconhome",
-      "methods_count": 1
-    },
-    {
-      "name": "IconSave",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconsave",
-      "methods_count": 1
-    },
-    {
-      "name": "IconLoad",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconload",
-      "methods_count": 1
+      "methods_count": 5
     },
     {
       "name": "Icons",
       "module": "misc",
       "file": "icons.py",
-      "description": "No documentation",
+      "description": "Factory class for all built\u2011in icons.<br><br>Each static method returns an Icon instance for the corresponding PNG.<br>The optional `size` parameter sets the desired square size.",
       "link": "misc/icons.html#class-icons",
-      "methods_count": 0
-    },
-    {
-      "name": "IconFactory",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "No documentation",
-      "link": "misc/icons.html#class-iconfactory",
-      "methods_count": 1
+      "methods_count": 31
     },
     {
       "name": "CodeStatistics",
@@ -1917,6 +1741,30 @@
       "is_method": false
     },
     {
+      "name": "pixel_to_centimeter",
+      "module": "graphics",
+      "file": "shadows.py",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#func-pixel_to_centimeter",
+      "is_method": false
+    },
+    {
+      "name": "centimeter_to_pixel",
+      "module": "graphics",
+      "file": "shadows.py",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#func-centimeter_to_pixel",
+      "is_method": false
+    },
+    {
+      "name": "meter_to_pixel",
+      "module": "graphics",
+      "file": "shadows.py",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#func-meter_to_pixel",
+      "is_method": false
+    },
+    {
       "name": "lerp",
       "module": "utils",
       "file": "math_utils.py",
@@ -2109,6 +1957,14 @@
       "is_method": false
     },
     {
+      "name": "to_pygame_color",
+      "module": "utils",
+      "file": "math_utils.py",
+      "description": "Convert various color representations to a pygame.Color object.<br>Supports:<br>- pygame.Color<br>- Color (from backend.types)<br>- ThemeStyle (from ui.themes)<br>- ColorKeys (returns the first key&#x27;s color)<br>- tuple/list of 3 or 4 ints/floats<br>- int (grayscale)<br>- str (hex or named color)",
+      "link": "utils/math_utils.html#func-to_pygame_color",
+      "is_method": false
+    },
+    {
       "name": "get_global_timer",
       "module": "utils",
       "file": "timer.py",
@@ -2157,19 +2013,19 @@
       "is_method": false
     },
     {
-      "name": "get_icon",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "Get icon by name string",
-      "link": "misc/icons.html#func-get_icon",
+      "name": "set_shader_folder",
+      "module": "backend",
+      "file": "opengl.py",
+      "description": "Set the base folder where shader files are located.<br>This affects all ShaderProgram instances that load shader files by relative name.<br><br>Args:<br> &nbsp; &nbsp;folder: Absolute path to the shader folder.",
+      "link": "backend/opengl.html#func-set_shader_folder",
       "is_method": false
     },
     {
-      "name": "get_all_icons",
-      "module": "misc",
-      "file": "icons.py",
-      "description": "Get dictionary of all icons",
-      "link": "misc/icons.html#func-get_all_icons",
+      "name": "get_shader_folder",
+      "module": "backend",
+      "file": "opengl.py",
+      "description": "Return the current shader folder path.",
+      "link": "backend/opengl.html#func-get_shader_folder",
       "is_method": false
     },
     {
@@ -2197,35 +2053,131 @@
       "is_method": false
     },
     {
+      "name": "cli_list_tables",
+      "module": "tools",
+      "file": "database_editor.py",
+      "description": "No documentation",
+      "link": "tools/database_editor.html#func-cli_list_tables",
+      "is_method": false
+    },
+    {
+      "name": "cli_show_table",
+      "module": "tools",
+      "file": "database_editor.py",
+      "description": "No documentation",
+      "link": "tools/database_editor.html#func-cli_show_table",
+      "is_method": false
+    },
+    {
+      "name": "cli_insert_row",
+      "module": "tools",
+      "file": "database_editor.py",
+      "description": "No documentation",
+      "link": "tools/database_editor.html#func-cli_insert_row",
+      "is_method": false
+    },
+    {
+      "name": "cli_update_row",
+      "module": "tools",
+      "file": "database_editor.py",
+      "description": "No documentation",
+      "link": "tools/database_editor.html#func-cli_update_row",
+      "is_method": false
+    },
+    {
+      "name": "cli_delete_row",
+      "module": "tools",
+      "file": "database_editor.py",
+      "description": "No documentation",
+      "link": "tools/database_editor.html#func-cli_delete_row",
+      "is_method": false
+    },
+    {
+      "name": "cli_export_json",
+      "module": "tools",
+      "file": "database_editor.py",
+      "description": "No documentation",
+      "link": "tools/database_editor.html#func-cli_export_json",
+      "is_method": false
+    },
+    {
+      "name": "cli_import_json",
+      "module": "tools",
+      "file": "database_editor.py",
+      "description": "No documentation",
+      "link": "tools/database_editor.html#func-cli_import_json",
+      "is_method": false
+    },
+    {
+      "name": "cli_list_resources",
+      "module": "tools",
+      "file": "database_editor.py",
+      "description": "No documentation",
+      "link": "tools/database_editor.html#func-cli_list_resources",
+      "is_method": false
+    },
+    {
+      "name": "cli_extract_resource",
+      "module": "tools",
+      "file": "database_editor.py",
+      "description": "No documentation",
+      "link": "tools/database_editor.html#func-cli_extract_resource",
+      "is_method": false
+    },
+    {
+      "name": "create_flask_app",
+      "module": "tools",
+      "file": "database_editor.py",
+      "description": "No documentation",
+      "link": "tools/database_editor.html#func-create_flask_app",
+      "is_method": false
+    },
+    {
       "name": "main",
       "module": "tools",
-      "file": "image_conversion_tool.py",
+      "file": "database_editor.py",
       "description": "No documentation",
-      "link": "tools/image_conversion_tool.html#func-main",
+      "link": "tools/database_editor.html#func-main",
       "is_method": false
     },
     {
-      "name": "show_preview",
+      "name": "get_shadow_for_variant",
       "module": "tools",
-      "file": "image_conversion_tool.py",
-      "description": "Show a preview of the original and converted image",
-      "link": "tools/image_conversion_tool.html#func-show_preview",
+      "file": "theme_tool.py",
+      "description": "Generate shadow dict from variant mode and base colour.",
+      "link": "tools/theme_tool.html#func-get_shadow_for_variant",
       "is_method": false
     },
     {
-      "name": "print_statistics",
+      "name": "compile_themes",
       "module": "tools",
-      "file": "image_conversion_tool.py",
-      "description": "Print conversion statistics",
-      "link": "tools/image_conversion_tool.html#func-print_statistics",
+      "file": "theme_tool.py",
+      "description": "Compile all theme JSON files into a single themes.json.",
+      "link": "tools/theme_tool.html#func-compile_themes",
       "is_method": false
     },
     {
-      "name": "batch_convert",
+      "name": "uncompile_themes",
       "module": "tools",
-      "file": "image_conversion_tool.py",
-      "description": "Batch convert multiple images",
-      "link": "tools/image_conversion_tool.html#func-batch_convert",
+      "file": "theme_tool.py",
+      "description": "Split a themes.json into separate theme files.",
+      "link": "tools/theme_tool.html#func-uncompile_themes",
+      "is_method": false
+    },
+    {
+      "name": "fix_shadows",
+      "module": "tools",
+      "file": "theme_tool.py",
+      "description": "Add shadow properties to every style entry in all themes.",
+      "link": "tools/theme_tool.html#func-fix_shadows",
+      "is_method": false
+    },
+    {
+      "name": "main",
+      "module": "tools",
+      "file": "theme_tool.py",
+      "description": "No documentation",
+      "link": "tools/theme_tool.html#func-main",
       "is_method": false
     },
     {
@@ -3215,6 +3167,22 @@
       "is_method": true
     },
     {
+      "name": "live_inspector",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/engine.html#method-lunaengine-live_inspector",
+      "is_method": true
+    },
+    {
+      "name": "add_function_to_live_inspector",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/engine.html#method-lunaengine-add_function_to_live_inspector",
+      "is_method": true
+    },
+    {
       "name": "_render_ui_elements",
       "class": "LunaEngine",
       "module": "core",
@@ -3932,6 +3900,14 @@
       "module": "core",
       "description": "No documentation",
       "link": "core/scene.html#method-scene-_update",
+      "is_method": true
+    },
+    {
+      "name": "set_shadows_enabled",
+      "class": "Scene",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/scene.html#method-scene-set_shadows_enabled",
       "is_method": true
     },
     {
@@ -4767,6 +4743,22 @@
       "is_method": true
     },
     {
+      "name": "from_dict",
+      "class": "UiShadow",
+      "module": "ui",
+      "description": "Create UiShadow from a dictionary.",
+      "link": "ui/themes.html#method-uishadow-from_dict",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "UiShadow",
+      "module": "ui",
+      "description": "Update shadow properties.",
+      "link": "ui/themes.html#method-uishadow-update",
+      "is_method": true
+    },
+    {
       "name": "to_rgb",
       "class": "ThemeStyle",
       "module": "ui",
@@ -4964,6 +4956,14 @@
       "module": "ui",
       "description": "Return alpha (0.0\u20131.0).",
       "link": "ui/themes.html#method-thememanager-get_alpha",
+      "is_method": true
+    },
+    {
+      "name": "get_shadow",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/themes.html#method-thememanager-get_shadow",
       "is_method": true
     },
     {
@@ -5994,7 +5994,7 @@
       "name": "can_focus",
       "class": "Button",
       "module": "ui",
-      "description": "Buttons are focusable for controller navigation.",
+      "description": "No documentation",
       "link": "ui/elements/buttons.html#method-button-can_focus",
       "is_method": true
     },
@@ -6079,6 +6079,14 @@
       "is_method": true
     },
     {
+      "name": "_get_state_style",
+      "class": "Button",
+      "module": "ui",
+      "description": "Return the theme style for the current state.",
+      "link": "ui/elements/buttons.html#method-button-_get_state_style",
+      "is_method": true
+    },
+    {
       "name": "update",
       "class": "Button",
       "module": "ui",
@@ -6122,7 +6130,7 @@
       "name": "can_focus",
       "class": "ImageButton",
       "module": "ui",
-      "description": "Image buttons are focusable.",
+      "description": "No documentation",
       "link": "ui/elements/buttons.html#method-imagebutton-can_focus",
       "is_method": true
     },
@@ -6138,7 +6146,7 @@
       "name": "_load_image",
       "class": "ImageButton",
       "module": "ui",
-      "description": "No documentation",
+      "description": "Load image from path, Surface, or Icon.",
       "link": "ui/elements/buttons.html#method-imagebutton-_load_image",
       "is_method": true
     },
@@ -6162,8 +6170,16 @@
       "name": "set_image",
       "class": "ImageButton",
       "module": "ui",
-      "description": "No documentation",
+      "description": "Update the image, accepting Icon objects.",
       "link": "ui/elements/buttons.html#method-imagebutton-set_image",
+      "is_method": true
+    },
+    {
+      "name": "_get_state_style",
+      "class": "ImageButton",
+      "module": "ui",
+      "description": "Return the theme style for the current state.",
+      "link": "ui/elements/buttons.html#method-imagebutton-_get_state_style",
       "is_method": true
     },
     {
@@ -6551,10 +6567,50 @@
       "is_method": true
     },
     {
+      "name": "set_cull_updates",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-scrollingframe-set_cull_updates",
+      "is_method": true
+    },
+    {
+      "name": "set_cull_rendering",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-scrollingframe-set_cull_rendering",
+      "is_method": true
+    },
+    {
+      "name": "_get_child_logical_pos",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "Return the child&#x27;s logical (non-scrolled) position.",
+      "link": "ui/elements/containers.html#method-scrollingframe-_get_child_logical_pos",
+      "is_method": true
+    },
+    {
+      "name": "_get_child_screen_rect",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "Return the child&#x27;s bounding box in screen coordinates (with scroll applied).",
+      "link": "ui/elements/containers.html#method-scrollingframe-_get_child_screen_rect",
+      "is_method": true
+    },
+    {
+      "name": "_get_visible_rect",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-scrollingframe-_get_visible_rect",
+      "is_method": true
+    },
+    {
       "name": "scroll_by",
       "class": "ScrollingFrame",
       "module": "ui",
-      "description": "Scroll the content by the given delta amounts (in pixels).<br>Useful for controller joystick input.",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-scrollingframe-scroll_by",
       "is_method": true
     },
@@ -6562,7 +6618,7 @@
       "name": "set_scroll",
       "class": "ScrollingFrame",
       "module": "ui",
-      "description": "Set the exact scroll offset, clamped to valid range.",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-scrollingframe-set_scroll",
       "is_method": true
     },
@@ -6663,6 +6719,14 @@
       "is_method": true
     },
     {
+      "name": "_recompute_tab_metrics",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "Recalculate cached text sizes and scaled icons for all tabs.",
+      "link": "ui/elements/containers.html#method-tabination-_recompute_tab_metrics",
+      "is_method": true
+    },
+    {
       "name": "_calculate_tab_colors",
       "class": "Tabination",
       "module": "ui",
@@ -6684,22 +6748,6 @@
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/containers.html#method-tabination-update_theme",
-      "is_method": true
-    },
-    {
-      "name": "next_tab",
-      "class": "Tabination",
-      "module": "ui",
-      "description": "Switch to the next tab (cyclic). Returns True if successful.",
-      "link": "ui/elements/containers.html#method-tabination-next_tab",
-      "is_method": true
-    },
-    {
-      "name": "previous_tab",
-      "class": "Tabination",
-      "module": "ui",
-      "description": "Switch to the previous tab (cyclic). Returns True if successful.",
-      "link": "ui/elements/containers.html#method-tabination-previous_tab",
       "is_method": true
     },
     {
@@ -6727,11 +6775,19 @@
       "is_method": true
     },
     {
-      "name": "get_tab_index",
+      "name": "next_tab",
       "class": "Tabination",
       "module": "ui",
       "description": "No documentation",
-      "link": "ui/elements/containers.html#method-tabination-get_tab_index",
+      "link": "ui/elements/containers.html#method-tabination-next_tab",
+      "is_method": true
+    },
+    {
+      "name": "previous_tab",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-previous_tab",
       "is_method": true
     },
     {
@@ -6743,19 +6799,99 @@
       "is_method": true
     },
     {
+      "name": "get_tab_index",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-get_tab_index",
+      "is_method": true
+    },
+    {
+      "name": "get_tab_by_name",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-get_tab_by_name",
+      "is_method": true
+    },
+    {
+      "name": "get_tab_frame",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "Return the frame (UiFrame) of the tab with the given name.",
+      "link": "ui/elements/containers.html#method-tabination-get_tab_frame",
+      "is_method": true
+    },
+    {
+      "name": "get_tab_frame_by_index",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-get_tab_frame_by_index",
+      "is_method": true
+    },
+    {
+      "name": "get_current_tab_index",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-get_current_tab_index",
+      "is_method": true
+    },
+    {
+      "name": "get_current_tab_name",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-get_current_tab_name",
+      "is_method": true
+    },
+    {
+      "name": "get_tab_count",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-get_tab_count",
+      "is_method": true
+    },
+    {
+      "name": "get_all_tab_names",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-get_all_tab_names",
+      "is_method": true
+    },
+    {
+      "name": "set_tab_title",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "Rename a tab. Returns True if successful.",
+      "link": "ui/elements/containers.html#method-tabination-set_tab_title",
+      "is_method": true
+    },
+    {
+      "name": "set_tab_icon",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "Set or clear an icon for a tab. Returns True if successful.",
+      "link": "ui/elements/containers.html#method-tabination-set_tab_icon",
+      "is_method": true
+    },
+    {
+      "name": "_update_tab_offsets",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "Recalculate cached offsets for vertical tab layouts.",
+      "link": "ui/elements/containers.html#method-tabination-_update_tab_offsets",
+      "is_method": true
+    },
+    {
       "name": "_update_tab_scroll",
       "class": "Tabination",
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/containers.html#method-tabination-_update_tab_scroll",
-      "is_method": true
-    },
-    {
-      "name": "_get_tab_width",
-      "class": "Tabination",
-      "module": "ui",
-      "description": "No documentation",
-      "link": "ui/elements/containers.html#method-tabination-_get_tab_width",
       "is_method": true
     },
     {
@@ -6767,11 +6903,35 @@
       "is_method": true
     },
     {
+      "name": "_get_tab_width",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-_get_tab_width",
+      "is_method": true
+    },
+    {
       "name": "_get_tab_rect",
       "class": "Tabination",
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/containers.html#method-tabination-_get_tab_rect",
+      "is_method": true
+    },
+    {
+      "name": "_get_tab_area_rect",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-_get_tab_area_rect",
+      "is_method": true
+    },
+    {
+      "name": "_get_visible_size",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-_get_visible_size",
       "is_method": true
     },
     {
@@ -6788,22 +6948,6 @@
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/containers.html#method-tabination-update",
-      "is_method": true
-    },
-    {
-      "name": "_get_visible_size",
-      "class": "Tabination",
-      "module": "ui",
-      "description": "No documentation",
-      "link": "ui/elements/containers.html#method-tabination-_get_visible_size",
-      "is_method": true
-    },
-    {
-      "name": "_get_tab_area_rect",
-      "class": "Tabination",
-      "module": "ui",
-      "description": "No documentation",
-      "link": "ui/elements/containers.html#method-tabination-_get_tab_area_rect",
       "is_method": true
     },
     {
@@ -7375,6 +7519,14 @@
       "is_method": true
     },
     {
+      "name": "set_shadow",
+      "class": "TextLabel",
+      "module": "ui",
+      "description": "Set or remove text shadow.",
+      "link": "ui/elements/labels.html#method-textlabel-set_shadow",
+      "is_method": true
+    },
+    {
       "name": "get_text",
       "class": "TextLabel",
       "module": "ui",
@@ -7487,6 +7639,14 @@
       "is_method": true
     },
     {
+      "name": "set_shadow",
+      "class": "LongTextLabel",
+      "module": "ui",
+      "description": "Set or remove text shadow.",
+      "link": "ui/elements/labels.html#method-longtextlabel-set_shadow",
+      "is_method": true
+    },
+    {
       "name": "set_text_color",
       "class": "LongTextLabel",
       "module": "ui",
@@ -7559,6 +7719,14 @@
       "is_method": true
     },
     {
+      "name": "_is_icon_like",
+      "class": "ImageLabel",
+      "module": "ui",
+      "description": "Detect if an object is an Icon by checking for the get_surface method.",
+      "link": "ui/elements/labels.html#method-imagelabel-_is_icon_like",
+      "is_method": true
+    },
+    {
       "name": "_load_image",
       "class": "ImageLabel",
       "module": "ui",
@@ -7572,6 +7740,14 @@
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/labels.html#method-imagelabel-set_image",
+      "is_method": true
+    },
+    {
+      "name": "set_image_color",
+      "class": "ImageLabel",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/labels.html#method-imagelabel-set_image_color",
       "is_method": true
     },
     {
@@ -9074,7 +9250,7 @@
       "name": "__init__",
       "class": "ChartVisualizer",
       "module": "ui",
-      "description": "Initialize a chart visualizer.<br><br>Args:<br> &nbsp; &nbsp;x, y: Position.<br> &nbsp; &nbsp;width, height: Dimensions.<br> &nbsp; &nbsp;data: List of numeric values.<br> &nbsp; &nbsp;labels: Corresponding labels.<br> &nbsp; &nbsp;colors: List of colors per data point (RGB).<br> &nbsp; &nbsp;chart_type: &#x27;bar&#x27;, &#x27;pie&#x27;, &#x27;line&#x27;, &#x27;scatter&#x27;, &#x27;radar&#x27;.<br> &nbsp; &nbsp;orientation: &#x27;vertical&#x27; or &#x27;horizontal&#x27; (for bar charts).<br> &nbsp; &nbsp;title: Chart title.<br> &nbsp; &nbsp;show_labels: Display labels on/inside chart.<br> &nbsp; &nbsp;show_legend: Display color legend.<br> &nbsp; &nbsp;min_value, max_value: Manual value range.<br> &nbsp; &nbsp;radar_max_value: Maximum value for radar chart (default 1.0).<br> &nbsp; &nbsp;radar_axis_labels: Labels for radar axes (defaults to labels).<br> &nbsp; &nbsp;pivot: Anchor point.<br> &nbsp; &nbsp;theme: Theme to apply.<br> &nbsp; &nbsp;element_id: Custom ID.<br> &nbsp; &nbsp;**kwargs: Gradient options: use_gradient (bool), gradient_colors (list of RGB),<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; gradient_start (RGB), gradient_end (RGB).",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-chartvisualizer-__init__",
       "is_method": true
     },
@@ -9156,6 +9332,22 @@
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-chartvisualizer-_get_point_color",
+      "is_method": true
+    },
+    {
+      "name": "_shadow_color",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Return a shadow version of the color (darker, with alpha).",
+      "link": "ui/elements/visualizers.html#method-chartvisualizer-_shadow_color",
+      "is_method": true
+    },
+    {
+      "name": "_draw_element_shadow",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "Draws a shadow version of an element by shifting it and using a shadow color.<br>The draw_func is called with offset coordinates and a shadow color.",
+      "link": "ui/elements/visualizers.html#method-chartvisualizer-_draw_element_shadow",
       "is_method": true
     },
     {
@@ -9410,7 +9602,7 @@
       "name": "__init__",
       "class": "Table",
       "module": "ui",
-      "description": "Initialize a fixed-size table.<br><br>Args:<br> &nbsp; &nbsp;x, y: Position.<br> &nbsp; &nbsp;width, height: Dimensions (height is fixed; content clipped if taller).<br> &nbsp; &nbsp;columns: List of column names.<br> &nbsp; &nbsp;rows: 2D list of row data (each row is a list of strings).<br> &nbsp; &nbsp;header_height: Height of the header row.<br> &nbsp; &nbsp;row_height: Height of each data row.<br> &nbsp; &nbsp;cell_padding: Padding inside each cell.<br> &nbsp; &nbsp;show_headers: If True, display column headers.<br> &nbsp; &nbsp;selection_enabled: If True, allow row selection via mouse click.<br> &nbsp; &nbsp;on_row_select: Callback when a row is selected (row_index, row_data).<br> &nbsp; &nbsp;odd_row_color, even_row_color, header_color, header_text_color, border_color: Custom colours.<br> &nbsp; &nbsp;pivot, theme, element_id: Standard UIElement arguments.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-__init__",
       "is_method": true
     },
@@ -9431,10 +9623,18 @@
       "is_method": true
     },
     {
+      "name": "update_theme",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/visualizers.html#method-table-update_theme",
+      "is_method": true
+    },
+    {
       "name": "_recalc",
       "class": "Table",
       "module": "ui",
-      "description": "Compute column widths (equal distribution).",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-_recalc",
       "is_method": true
     },
@@ -9442,7 +9642,7 @@
       "name": "add_column",
       "class": "Table",
       "module": "ui",
-      "description": "Add a new column at the end.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-add_column",
       "is_method": true
     },
@@ -9450,7 +9650,7 @@
       "name": "insert_column",
       "class": "Table",
       "module": "ui",
-      "description": "Insert a column at the given index.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-insert_column",
       "is_method": true
     },
@@ -9458,7 +9658,7 @@
       "name": "remove_column",
       "class": "Table",
       "module": "ui",
-      "description": "Remove a column by index.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-remove_column",
       "is_method": true
     },
@@ -9466,7 +9666,7 @@
       "name": "add_row",
       "class": "Table",
       "module": "ui",
-      "description": "Add a new row at the end.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-add_row",
       "is_method": true
     },
@@ -9474,7 +9674,7 @@
       "name": "insert_row",
       "class": "Table",
       "module": "ui",
-      "description": "Insert a row at the given index.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-insert_row",
       "is_method": true
     },
@@ -9482,7 +9682,7 @@
       "name": "remove_row",
       "class": "Table",
       "module": "ui",
-      "description": "Remove a row by index.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-remove_row",
       "is_method": true
     },
@@ -9490,7 +9690,7 @@
       "name": "set_cell",
       "class": "Table",
       "module": "ui",
-      "description": "Set the value of a specific cell.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-set_cell",
       "is_method": true
     },
@@ -9498,7 +9698,7 @@
       "name": "get_cell",
       "class": "Table",
       "module": "ui",
-      "description": "Get the value of a specific cell.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-get_cell",
       "is_method": true
     },
@@ -9506,7 +9706,7 @@
       "name": "clear",
       "class": "Table",
       "module": "ui",
-      "description": "Clear all rows.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-clear",
       "is_method": true
     },
@@ -9514,7 +9714,7 @@
       "name": "select_row",
       "class": "Table",
       "module": "ui",
-      "description": "Select a row programmatically.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-select_row",
       "is_method": true
     },
@@ -9538,7 +9738,7 @@
       "name": "on_click",
       "class": "Table",
       "module": "ui",
-      "description": "Handle mouse click for row selection.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-on_click",
       "is_method": true
     },
@@ -10512,10 +10712,26 @@
     },
     {
       "name": "__init__",
-      "class": "Light",
+      "class": "LightCaster",
       "module": "graphics",
       "description": "No documentation",
-      "link": "graphics/shadows.html#method-light-__init__",
+      "link": "graphics/shadows.html#method-lightcaster-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_assert_color_key",
+      "class": "LightCaster",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#method-lightcaster-_assert_color_key",
+      "is_method": true
+    },
+    {
+      "name": "position",
+      "class": "ShadowCaster",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#method-shadowcaster-position",
       "is_method": true
     },
     {
@@ -10527,115 +10743,67 @@
       "is_method": true
     },
     {
-      "name": "__init__",
-      "class": "ShadowSystem",
+      "name": "assert_color_key",
+      "class": "ShadowCaster",
       "module": "graphics",
       "description": "No documentation",
-      "link": "graphics/shadows.html#method-shadowsystem-__init__",
+      "link": "graphics/shadows.html#method-shadowcaster-assert_color_key",
+      "is_method": true
+    },
+    {
+      "name": "compute_shadow_polygon",
+      "class": "ShadowCaster",
+      "module": "graphics",
+      "description": "Return the shadow polygon vertices for this caster.<br>The actual length is max_dist * self.shadow_depth.<br>The angular spread is multiplied by self.shadow_spread.",
+      "link": "graphics/shadows.html#method-shadowcaster-compute_shadow_polygon",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "SCSManager",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#method-scsmanager-__init__",
+      "is_method": true
+    },
+    {
+      "name": "add_shadow",
+      "class": "SCSManager",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/shadows.html#method-scsmanager-add_shadow",
       "is_method": true
     },
     {
       "name": "add_light",
-      "class": "ShadowSystem",
+      "class": "SCSManager",
       "module": "graphics",
       "description": "No documentation",
-      "link": "graphics/shadows.html#method-shadowsystem-add_light",
+      "link": "graphics/shadows.html#method-scsmanager-add_light",
       "is_method": true
     },
     {
-      "name": "remove_light",
-      "class": "ShadowSystem",
+      "name": "_draw_caster",
+      "class": "SCSManager",
       "module": "graphics",
       "description": "No documentation",
-      "link": "graphics/shadows.html#method-shadowsystem-remove_light",
+      "link": "graphics/shadows.html#method-scsmanager-_draw_caster",
       "is_method": true
     },
     {
-      "name": "clear_lights",
-      "class": "ShadowSystem",
+      "name": "render",
+      "class": "SCSManager",
       "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/shadows.html#method-shadowsystem-clear_lights",
-      "is_method": true
-    },
-    {
-      "name": "add_caster",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/shadows.html#method-shadowsystem-add_caster",
-      "is_method": true
-    },
-    {
-      "name": "remove_caster",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/shadows.html#method-shadowsystem-remove_caster",
-      "is_method": true
-    },
-    {
-      "name": "clear_casters",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "No documentation",
-      "link": "graphics/shadows.html#method-shadowsystem-clear_casters",
-      "is_method": true
-    },
-    {
-      "name": "add_rectangle_caster",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Create a rectangular caster (centered at x,y).",
-      "link": "graphics/shadows.html#method-shadowsystem-add_rectangle_caster",
-      "is_method": true
-    },
-    {
-      "name": "add_circle_caster",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Create a circular caster approximated by a polygon.",
-      "link": "graphics/shadows.html#method-shadowsystem-add_circle_caster",
-      "is_method": true
-    },
-    {
-      "name": "add_point_light",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Helper to create a point light.",
-      "link": "graphics/shadows.html#method-shadowsystem-add_point_light",
-      "is_method": true
-    },
-    {
-      "name": "add_directional_light",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Helper to create a directional light (simulated with a distant point).",
-      "link": "graphics/shadows.html#method-shadowsystem-add_directional_light",
-      "is_method": true
-    },
-    {
-      "name": "render_shadows_simple",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Draw simple projected shadows for all lights and casters.<br><br>Args:<br> &nbsp; &nbsp;renderer: The OpenGLRenderer instance.<br> &nbsp; &nbsp;camera: The camera (to convert world to screen).",
-      "link": "graphics/shadows.html#method-shadowsystem-render_shadows_simple",
-      "is_method": true
-    },
-    {
-      "name": "apply_lighting",
-      "class": "ShadowSystem",
-      "module": "graphics",
-      "description": "Darken areas outside any light&#x27;s range and brighten areas inside lights.<br><br>Args:<br> &nbsp; &nbsp;renderer: The OpenGLRenderer instance.<br> &nbsp; &nbsp;camera: The camera (to convert world to screen).<br> &nbsp; &nbsp;ambient: Base brightness of unlit areas (0.0 = pitch black, 1.0 = fully bright).<br> &nbsp; &nbsp;light_power: Overall brightness multiplier for lights (higher = brighter).<br> &nbsp; &nbsp;saturation: How much the light&#x27;s color affects the scene (0.0 = white light only,<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;1.0 = full color). Values between 0 and 1 mix the light color with white.",
-      "link": "graphics/shadows.html#method-shadowsystem-apply_lighting",
+      "description": "Renders all shadows in two passes:<br> &nbsp;1. Fallback ambient shadow (low alpha) for every caster.<br> &nbsp;2. Per\u2011light shadow polygons with either:<br> &nbsp; &nbsp; - uniform alpha (if use_gradient is False)<br> &nbsp; &nbsp; - linear gradient (if use_gradient is True)<br>If engine.debug_enabled is True, also draws debug overlays.<br>If shadow_blur &gt; 0, shadows are rendered off\u2011screen, blurred, then composited.",
+      "link": "graphics/shadows.html#method-scsmanager-render",
       "is_method": true
     },
     {
       "name": "get_stats",
-      "class": "ShadowSystem",
+      "class": "SCSManager",
       "module": "graphics",
       "description": "Return simple statistics.",
-      "link": "graphics/shadows.html#method-shadowsystem-get_stats",
+      "link": "graphics/shadows.html#method-scsmanager-get_stats",
       "is_method": true
     },
     {
@@ -11034,7 +11202,7 @@
       "name": "record_current",
       "class": "TimeProfile",
       "module": "utils",
-      "description": "Record the current duration into history.",
+      "description": "No documentation",
       "link": "utils/performance.html#method-timeprofile-record_current",
       "is_method": true
     },
@@ -11122,7 +11290,7 @@
       "name": "begin_frame",
       "class": "PerformanceProfiler",
       "module": "utils",
-      "description": "Begin a new frame of profiling",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performanceprofiler-begin_frame",
       "is_method": true
     },
@@ -11130,7 +11298,7 @@
       "name": "end_frame",
       "class": "PerformanceProfiler",
       "module": "utils",
-      "description": "End current frame: record all used timers and store durations.",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performanceprofiler-end_frame",
       "is_method": true
     },
@@ -11138,7 +11306,7 @@
       "name": "get_frame_timings",
       "class": "PerformanceProfiler",
       "module": "utils",
-      "description": "Get durations (ms) of the last completed frame.",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performanceprofiler-get_frame_timings",
       "is_method": true
     },
@@ -11159,10 +11327,42 @@
       "is_method": true
     },
     {
+      "name": "start_task_timer",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Start measuring CPU time and memory for a background task.",
+      "link": "utils/performance.html#method-performancemonitor-start_task_timer",
+      "is_method": true
+    },
+    {
+      "name": "end_task_timer",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Stop measuring and return {&#x27;cpu_ms&#x27;: ..., &#x27;mem_bytes&#x27;: ...}.",
+      "link": "utils/performance.html#method-performancemonitor-end_task_timer",
+      "is_method": true
+    },
+    {
+      "name": "get_task_metrics",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Return the last recorded metrics for a task.",
+      "link": "utils/performance.html#method-performancemonitor-get_task_metrics",
+      "is_method": true
+    },
+    {
+      "name": "clear_task_metrics",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Clear all stored task metrics.",
+      "link": "utils/performance.html#method-performancemonitor-clear_task_metrics",
+      "is_method": true
+    },
+    {
       "name": "get_frame_timing_breakdown",
       "class": "PerformanceMonitor",
       "module": "utils",
-      "description": "Convenience: get last frame&#x27;s timing per category.",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performancemonitor-get_frame_timing_breakdown",
       "is_method": true
     },
@@ -11170,7 +11370,7 @@
       "name": "get_performance_summary",
       "class": "PerformanceMonitor",
       "module": "utils",
-      "description": "Comprehensive summary including FPS and last frame timings.",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performancemonitor-get_performance_summary",
       "is_method": true
     },
@@ -11178,7 +11378,7 @@
       "name": "enable_profiling",
       "class": "PerformanceMonitor",
       "module": "utils",
-      "description": "Enable or disable detailed performance profiling",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performancemonitor-enable_profiling",
       "is_method": true
     },
@@ -11186,7 +11386,7 @@
       "name": "is_profiling_enabled",
       "class": "PerformanceMonitor",
       "module": "utils",
-      "description": "Check if detailed profiling is enabled",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performancemonitor-is_profiling_enabled",
       "is_method": true
     },
@@ -11242,7 +11442,7 @@
       "name": "get_update_timing_stats",
       "class": "PerformanceMonitor",
       "module": "utils",
-      "description": "Get update timing statistics",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performancemonitor-get_update_timing_stats",
       "is_method": true
     },
@@ -11250,7 +11450,7 @@
       "name": "get_timing",
       "class": "PerformanceMonitor",
       "module": "utils",
-      "description": "Get the last recorded timing for a specific category.",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performancemonitor-get_timing",
       "is_method": true
     },
@@ -11258,31 +11458,15 @@
       "name": "get_render_timing_stats",
       "class": "PerformanceMonitor",
       "module": "utils",
-      "description": "Get render timing statistics",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performancemonitor-get_render_timing_stats",
-      "is_method": true
-    },
-    {
-      "name": "get_performance_summary",
-      "class": "PerformanceMonitor",
-      "module": "utils",
-      "description": "Get comprehensive performance summary",
-      "link": "utils/performance.html#method-performancemonitor-get_performance_summary",
-      "is_method": true
-    },
-    {
-      "name": "_getMemUsageClass",
-      "class": "PerformanceMonitor",
-      "module": "utils",
-      "description": "Workaround to access internal usage data of a class instance",
-      "link": "utils/performance.html#method-performancemonitor-_getmemusageclass",
       "is_method": true
     },
     {
       "name": "get_hardware_info",
       "class": "PerformanceMonitor",
       "module": "utils",
-      "description": "Get system hardware information with caching",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performancemonitor-get_hardware_info",
       "is_method": true
     },
@@ -11290,7 +11474,7 @@
       "name": "update_frame",
       "class": "PerformanceMonitor",
       "module": "utils",
-      "description": "Update frame timing - FIXED VERSION",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performancemonitor-update_frame",
       "is_method": true
     },
@@ -11298,7 +11482,7 @@
       "name": "end_frame",
       "class": "PerformanceMonitor",
       "module": "utils",
-      "description": "End the current frame and record profiling data",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performancemonitor-end_frame",
       "is_method": true
     },
@@ -11306,15 +11490,23 @@
       "name": "get_stats",
       "class": "PerformanceMonitor",
       "module": "utils",
-      "description": "Get FPS statistics with optimized calculations - FIXED",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performancemonitor-get_stats",
+      "is_method": true
+    },
+    {
+      "name": "_getMemUsageClass",
+      "class": "PerformanceMonitor",
+      "module": "utils",
+      "description": "Workaround to access internal usage data of a class instance.<br>Used by the UI demo; returns sizes of attributes in bytes (or humanised).",
+      "link": "utils/performance.html#method-performancemonitor-_getmemusageclass",
       "is_method": true
     },
     {
       "name": "_get_empty_stats",
       "class": "PerformanceMonitor",
       "module": "utils",
-      "description": "Return empty stats structure - FIXED",
+      "description": "No documentation",
       "link": "utils/performance.html#method-performancemonitor-_get_empty_stats",
       "is_method": true
     },
@@ -11330,7 +11522,7 @@
       "name": "mark_font_unused",
       "class": "GarbageCollector",
       "module": "utils",
-      "description": "Mark a font as potentially unused",
+      "description": "No documentation",
       "link": "utils/performance.html#method-garbagecollector-mark_font_unused",
       "is_method": true
     },
@@ -11338,7 +11530,7 @@
       "name": "mark_surface_unused",
       "class": "GarbageCollector",
       "module": "utils",
-      "description": "Mark a surface as potentially unused",
+      "description": "No documentation",
       "link": "utils/performance.html#method-garbagecollector-mark_surface_unused",
       "is_method": true
     },
@@ -11346,64 +11538,88 @@
       "name": "cleanup",
       "class": "GarbageCollector",
       "module": "utils",
-      "description": "Clean up unused resources",
+      "description": "No documentation",
       "link": "utils/performance.html#method-garbagecollector-cleanup",
       "is_method": true
     },
     {
       "name": "__init__",
-      "class": "Task",
+      "class": "BackgroundTaskManager",
+      "module": "utils",
+      "description": "Args:<br> &nbsp; &nbsp;max_workers: Number of worker threads in the pool.<br> &nbsp; &nbsp;monitor: Optional PerformanceMonitor instance for timing.",
+      "link": "utils/threading.html#method-backgroundtaskmanager-__init__",
+      "is_method": true
+    },
+    {
+      "name": "schedule",
+      "class": "BackgroundTaskManager",
+      "module": "utils",
+      "description": "Schedule a task. If interval_frames &gt; 0, it will repeat every that many frames.<br>Returns a task ID that can be used to cancel or check status.",
+      "link": "utils/threading.html#method-backgroundtaskmanager-schedule",
+      "is_method": true
+    },
+    {
+      "name": "cancel",
+      "class": "BackgroundTaskManager",
+      "module": "utils",
+      "description": "Cancel a scheduled task (even if already running).",
+      "link": "utils/threading.html#method-backgroundtaskmanager-cancel",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "BackgroundTaskManager",
+      "module": "utils",
+      "description": "Call this every frame on the main thread.<br>- Increments frame counter.<br>- Enqueues recurring tasks that are due.<br>- Processes completed results (updates TaskInfo with result/error).",
+      "link": "utils/threading.html#method-backgroundtaskmanager-update",
+      "is_method": true
+    },
+    {
+      "name": "get_status",
+      "class": "BackgroundTaskManager",
+      "module": "utils",
+      "description": "Return a summary of all tasks for debugging.",
+      "link": "utils/threading.html#method-backgroundtaskmanager-get_status",
+      "is_method": true
+    },
+    {
+      "name": "shutdown",
+      "class": "BackgroundTaskManager",
+      "module": "utils",
+      "description": "Shut down the thread pool and consumer thread.",
+      "link": "utils/threading.html#method-backgroundtaskmanager-shutdown",
+      "is_method": true
+    },
+    {
+      "name": "_enqueue_task",
+      "class": "BackgroundTaskManager",
+      "module": "utils",
+      "description": "Put a task into the priority queue for the consumer.",
+      "link": "utils/threading.html#method-backgroundtaskmanager-_enqueue_task",
+      "is_method": true
+    },
+    {
+      "name": "_consumer_loop",
+      "class": "BackgroundTaskManager",
+      "module": "utils",
+      "description": "Runs in a background thread: fetches tasks from priority queue and submits to executor.",
+      "link": "utils/threading.html#method-backgroundtaskmanager-_consumer_loop",
+      "is_method": true
+    },
+    {
+      "name": "_on_task_done",
+      "class": "BackgroundTaskManager",
+      "module": "utils",
+      "description": "Callback when a future completes.",
+      "link": "utils/threading.html#method-backgroundtaskmanager-_on_task_done",
+      "is_method": true
+    },
+    {
+      "name": "__del__",
+      "class": "BackgroundTaskManager",
       "module": "utils",
       "description": "No documentation",
-      "link": "utils/threading.html#method-task-__init__",
-      "is_method": true
-    },
-    {
-      "name": "execute",
-      "class": "Task",
-      "module": "utils",
-      "description": "Execute the task",
-      "link": "utils/threading.html#method-task-execute",
-      "is_method": true
-    },
-    {
-      "name": "__init__",
-      "class": "ThreadPool",
-      "module": "utils",
-      "description": "No documentation",
-      "link": "utils/threading.html#method-threadpool-__init__",
-      "is_method": true
-    },
-    {
-      "name": "start",
-      "class": "ThreadPool",
-      "module": "utils",
-      "description": "Start the thread pool",
-      "link": "utils/threading.html#method-threadpool-start",
-      "is_method": true
-    },
-    {
-      "name": "stop",
-      "class": "ThreadPool",
-      "module": "utils",
-      "description": "Stop the thread pool",
-      "link": "utils/threading.html#method-threadpool-stop",
-      "is_method": true
-    },
-    {
-      "name": "submit",
-      "class": "ThreadPool",
-      "module": "utils",
-      "description": "Submit a task to the thread pool",
-      "link": "utils/threading.html#method-threadpool-submit",
-      "is_method": true
-    },
-    {
-      "name": "_worker",
-      "class": "ThreadPool",
-      "module": "utils",
-      "description": "Worker thread function",
-      "link": "utils/threading.html#method-threadpool-_worker",
+      "link": "utils/threading.html#method-backgroundtaskmanager-__del__",
       "is_method": true
     },
     {
@@ -12615,26 +12831,26 @@
       "is_method": true
     },
     {
-      "name": "get_source",
-      "class": "ShaderProgram",
-      "module": "backend",
-      "description": "Load shader source from a file if the provided string is a file name.<br><br>Args:<br> &nbsp; &nbsp;source: File name or raw source code.<br> &nbsp; &nbsp;type: Type of shader (&#x27;vertex&#x27;, &#x27;fragment&#x27;, &#x27;geometry&#x27;).",
-      "link": "backend/opengl.html#method-shaderprogram-get_source",
-      "is_method": true
-    },
-    {
       "name": "__init__",
       "class": "ShaderProgram",
       "module": "backend",
-      "description": "Initialize the shader program by loading sources and compiling.<br><br>Args:<br> &nbsp; &nbsp;vertex_source: File name or raw source for vertex shader.<br> &nbsp; &nbsp;fragment_source: File name or raw source for fragment shader.<br> &nbsp; &nbsp;geometry_source: Optional file name or raw source for geometry shader.",
+      "description": "Args:<br> &nbsp; &nbsp;shader_name: e.g., &#x27;particle&#x27;, &#x27;simple&#x27;, &#x27;texture&#x27;, &#x27;filter&#x27;, &#x27;rounded_rect&#x27;, &#x27;depth&#x27;<br> &nbsp; &nbsp;has_geometry: True if this shader uses a geometry stage.",
       "link": "backend/opengl.html#method-shaderprogram-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_load_source",
+      "class": "ShaderProgram",
+      "module": "backend",
+      "description": "Load source for a given stage (&#x27;vert&#x27;, &#x27;frag&#x27;, &#x27;geom&#x27;).<br>Returns the source code string, or None if not found.",
+      "link": "backend/opengl.html#method-shaderprogram-_load_source",
       "is_method": true
     },
     {
       "name": "_get_uniform_location",
       "class": "ShaderProgram",
       "module": "backend",
-      "description": "Get cached uniform location (avoids repeated glGetUniformLocation calls).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-shaderprogram-_get_uniform_location",
       "is_method": true
     },
@@ -12642,7 +12858,7 @@
       "name": "_create_program",
       "class": "ShaderProgram",
       "module": "backend",
-      "description": "Compile vertex/fragment (and optional geometry) shaders and link the program.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-shaderprogram-_create_program",
       "is_method": true
     },
@@ -12650,7 +12866,7 @@
       "name": "use",
       "class": "ShaderProgram",
       "module": "backend",
-      "description": "Activate this shader program for rendering.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-shaderprogram-use",
       "is_method": true
     },
@@ -12658,7 +12874,7 @@
       "name": "unuse",
       "class": "ShaderProgram",
       "module": "backend",
-      "description": "Deactivate the currently active shader program.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-shaderprogram-unuse",
       "is_method": true
     },
@@ -12666,7 +12882,7 @@
       "name": "_setup_geometry",
       "class": "ShaderProgram",
       "module": "backend",
-      "description": "Set up vertex arrays, VBOs, etc. Overridden by subclasses.",
+      "description": "Override in subclasses.",
       "link": "backend/opengl.html#method-shaderprogram-_setup_geometry",
       "is_method": true
     },
@@ -12674,7 +12890,7 @@
       "name": "__init__",
       "class": "ParticleShader",
       "module": "backend",
-      "description": "Initialise the particle shader from external vertex/fragment files.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-particleshader-__init__",
       "is_method": true
     },
@@ -12682,7 +12898,7 @@
       "name": "_setup_geometry",
       "class": "ParticleShader",
       "module": "backend",
-      "description": "Set up a dummy VAO with a single vertex (used for instancing).<br>Also creates VBOs for instance data (position, size, alpha) and instance colours.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-particleshader-_setup_geometry",
       "is_method": true
     },
@@ -12690,7 +12906,7 @@
       "name": "__init__",
       "class": "SimpleShader",
       "module": "backend",
-      "description": "Initialise the simple shader from external files.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-simpleshader-__init__",
       "is_method": true
     },
@@ -12698,7 +12914,7 @@
       "name": "_setup_geometry",
       "class": "SimpleShader",
       "module": "backend",
-      "description": "Set up a unit quad (0,0) to (1,1) with index buffer.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-simpleshader-_setup_geometry",
       "is_method": true
     },
@@ -12706,7 +12922,7 @@
       "name": "__init__",
       "class": "TextureShader",
       "module": "backend",
-      "description": "Initialise the texture shader from external files.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-textureshader-__init__",
       "is_method": true
     },
@@ -12714,7 +12930,7 @@
       "name": "_setup_geometry",
       "class": "TextureShader",
       "module": "backend",
-      "description": "Set up a quad with position and UV coordinates.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-textureshader-_setup_geometry",
       "is_method": true
     },
@@ -12722,7 +12938,7 @@
       "name": "__init__",
       "class": "RoundedRectShader",
       "module": "backend",
-      "description": "Initialise the rounded rectangle shader from external files.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-roundedrectshader-__init__",
       "is_method": true
     },
@@ -12730,7 +12946,7 @@
       "name": "_setup_geometry",
       "class": "RoundedRectShader",
       "module": "backend",
-      "description": "Set up a simple quad geometry (the shader handles rounding).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-roundedrectshader-_setup_geometry",
       "is_method": true
     },
@@ -12738,7 +12954,7 @@
       "name": "__init__",
       "class": "FilterShader",
       "module": "backend",
-      "description": "Initialise the filter shader from external files.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-filtershader-__init__",
       "is_method": true
     },
@@ -12746,15 +12962,47 @@
       "name": "_setup_geometry",
       "class": "FilterShader",
       "module": "backend",
-      "description": "Set up a full\u2011screen quad (clip space coordinates).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-filtershader-_setup_geometry",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "MaskShader",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-maskshader-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_setup_geometry",
+      "class": "MaskShader",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-maskshader-_setup_geometry",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "DepthShader",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-depthshader-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_setup_geometry",
+      "class": "DepthShader",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-depthshader-_setup_geometry",
       "is_method": true
     },
     {
       "name": "__init__",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Initialise the OpenGL renderer with given screen dimensions.<br><br>Args:<br> &nbsp; &nbsp;width: Initial viewport width.<br> &nbsp; &nbsp;height: Initial viewport height.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-__init__",
       "is_method": true
     },
@@ -12770,7 +13018,7 @@
       "name": "set_text_cache_timeout",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Set how long a text texture stays in cache without being used.<br><br>Args:<br> &nbsp; &nbsp;seconds: Timeout in seconds (&gt;= 0.1).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-set_text_cache_timeout",
       "is_method": true
     },
@@ -12778,7 +13026,7 @@
       "name": "get_cache_usage",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Return cache usage as size in bytes or as a dictionary of sizes.<br><br>Args:<br> &nbsp; &nbsp;target: One of &#x27;text&#x27;, &#x27;texture&#x27;, &#x27;circle&#x27;, &#x27;polygon&#x27;, &#x27;total&#x27;, or &#x27;all&#x27;.<br> &nbsp; &nbsp;humanize: If True, return human\u2011readable strings (e.g., &quot;1.2 KB&quot;).<br><br>Returns:<br> &nbsp; &nbsp;Size in bytes (or humanised string) or a dictionary of all caches.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-get_cache_usage",
       "is_method": true
     },
@@ -12786,7 +13034,7 @@
       "name": "max_particles",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Maximum number of particles that can be rendered simultaneously.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-max_particles",
       "is_method": true
     },
@@ -12794,7 +13042,7 @@
       "name": "max_particles",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Change the maximum particle count and trigger resize callbacks.<br><br>Args:<br> &nbsp; &nbsp;value: New maximum number of particles.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-max_particles",
       "is_method": true
     },
@@ -12802,7 +13050,7 @@
       "name": "initialize",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Set up OpenGL context, compile shaders, create framebuffers.<br><br>Returns:<br> &nbsp; &nbsp;True if initialisation succeeded, False otherwise.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-initialize",
       "is_method": true
     },
@@ -12810,7 +13058,7 @@
       "name": "_initialize_filter_framebuffer",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Create the off\u2011screen framebuffer used for applying filters.<br><br>Returns:<br> &nbsp; &nbsp;True if successful, False otherwise.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_initialize_filter_framebuffer",
       "is_method": true
     },
@@ -12818,7 +13066,7 @@
       "name": "add_filter",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Add a filter to the active filter stack.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-add_filter",
       "is_method": true
     },
@@ -12826,7 +13074,7 @@
       "name": "remove_filter",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Remove a specific filter from the stack.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-remove_filter",
       "is_method": true
     },
@@ -12834,7 +13082,7 @@
       "name": "clear_filters",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Remove all active filters.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-clear_filters",
       "is_method": true
     },
@@ -12842,7 +13090,7 @@
       "name": "create_quick_filter",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Create and add a filter with common sensible defaults.<br><br>Args:<br> &nbsp; &nbsp;filter_type: Type of filter effect.<br> &nbsp; &nbsp;intensity: Strength (0.0 to 1.0).<br> &nbsp; &nbsp;x, y: Position of the region.<br> &nbsp; &nbsp;width, height: Dimensions of rectangular region (if None, uses screen size).<br> &nbsp; &nbsp;radius: Circle radius (if circular region).<br> &nbsp; &nbsp;feather: Edge softness.<br><br>Returns:<br> &nbsp; &nbsp;The created Filter object (already added to the stack).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-create_quick_filter",
       "is_method": true
     },
@@ -12850,7 +13098,7 @@
       "name": "apply_vignette",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Add a vignette (darkened edges) effect.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_vignette",
       "is_method": true
     },
@@ -12858,7 +13106,7 @@
       "name": "apply_blur",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Add a gaussian\u2011like blur effect, optionally within a rectangle.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_blur",
       "is_method": true
     },
@@ -12866,7 +13114,7 @@
       "name": "apply_sepia",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Add a sepia tone (warm brownish) effect.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_sepia",
       "is_method": true
     },
@@ -12874,7 +13122,7 @@
       "name": "apply_grayscale",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Convert colours to grayscale.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_grayscale",
       "is_method": true
     },
@@ -12882,7 +13130,7 @@
       "name": "apply_invert",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Invert colours (negative).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_invert",
       "is_method": true
     },
@@ -12890,7 +13138,7 @@
       "name": "apply_warm_temperature",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Increase warm colours (orange/red).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_warm_temperature",
       "is_method": true
     },
@@ -12898,7 +13146,7 @@
       "name": "apply_cold_temperature",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Increase cold colours (blue).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_cold_temperature",
       "is_method": true
     },
@@ -12906,7 +13154,7 @@
       "name": "apply_night_vision",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Simulate night vision (green tint + noise).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_night_vision",
       "is_method": true
     },
@@ -12914,7 +13162,7 @@
       "name": "apply_crt_effect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Add CRT monitor scanlines and curvature.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_crt_effect",
       "is_method": true
     },
@@ -12922,7 +13170,7 @@
       "name": "apply_pixelate",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Pixelate the image (lower resolution).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_pixelate",
       "is_method": true
     },
@@ -12930,7 +13178,7 @@
       "name": "apply_bloom",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Add a bloom (glow) effect around bright areas.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_bloom",
       "is_method": true
     },
@@ -12938,7 +13186,7 @@
       "name": "apply_edge_detect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Detect and highlight edges.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_edge_detect",
       "is_method": true
     },
@@ -12946,7 +13194,7 @@
       "name": "apply_emboss",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Apply an emboss (raised edges) effect.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_emboss",
       "is_method": true
     },
@@ -12954,7 +13202,7 @@
       "name": "apply_sharpen",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Sharpen the image.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_sharpen",
       "is_method": true
     },
@@ -12962,7 +13210,7 @@
       "name": "apply_posterize",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Reduce the number of colour bands.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_posterize",
       "is_method": true
     },
@@ -12970,7 +13218,7 @@
       "name": "apply_neon",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Add a neon glow effect.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_neon",
       "is_method": true
     },
@@ -12978,7 +13226,7 @@
       "name": "apply_radial_blur",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Blur outward from the centre.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_radial_blur",
       "is_method": true
     },
@@ -12986,7 +13234,7 @@
       "name": "apply_fisheye",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Apply a fisheye lens distortion.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_fisheye",
       "is_method": true
     },
@@ -12994,7 +13242,7 @@
       "name": "apply_twirl",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Twirl (swirl) the image around its centre.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_twirl",
       "is_method": true
     },
@@ -13002,7 +13250,7 @@
       "name": "apply_circular_grayscale",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Apply grayscale inside a circular region.<br><br>Args:<br> &nbsp; &nbsp;center_x, center_y: Centre of the circle.<br> &nbsp; &nbsp;radius: Radius of the circle.<br> &nbsp; &nbsp;intensity: Effect strength.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_circular_grayscale",
       "is_method": true
     },
@@ -13010,7 +13258,7 @@
       "name": "apply_rectangular_blur",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Apply blur only inside a rectangular region.<br><br>Args:<br> &nbsp; &nbsp;x, y: Top\u2011left corner of the rectangle.<br> &nbsp; &nbsp;width, height: Size of the rectangle.<br> &nbsp; &nbsp;intensity: Blur strength.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-apply_rectangular_blur",
       "is_method": true
     },
@@ -13018,7 +13266,7 @@
       "name": "begin_frame",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Start rendering a new frame.<br><br>Binds the filter framebuffer if filters are active and clears the buffer.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-begin_frame",
       "is_method": true
     },
@@ -13026,7 +13274,7 @@
       "name": "end_frame",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Finish rendering the frame and apply any active filters.<br><br>If filters are present, they are applied before swapping buffers.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-end_frame",
       "is_method": true
     },
@@ -13034,7 +13282,7 @@
       "name": "_apply_filters",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Stack and apply all active filters to the screen (or to the filter framebuffer).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_apply_filters",
       "is_method": true
     },
@@ -13042,7 +13290,7 @@
       "name": "get_surface",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Return the main display surface (created by pygame).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-get_surface",
       "is_method": true
     },
@@ -13050,7 +13298,7 @@
       "name": "set_surface",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Redirect rendering to a custom pygame surface (using a framebuffer).<br><br>Args:<br> &nbsp; &nbsp;surface: Target surface, or None to reset to the main display.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-set_surface",
       "is_method": true
     },
@@ -13058,7 +13306,7 @@
       "name": "_surface_to_texture",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Convert a pygame Surface into an OpenGL texture (without caching).<br><br>Args:<br> &nbsp; &nbsp;surface: Source surface (should have alpha channel for best results).<br><br>Returns:<br> &nbsp; &nbsp;OpenGL texture ID.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_surface_to_texture",
       "is_method": true
     },
@@ -13066,7 +13314,7 @@
       "name": "_surface_to_texture_cached",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Convert a surface to a texture, using a cache keyed by surface id.<br><br>Args:<br> &nbsp; &nbsp;surface: Source surface.<br><br>Returns:<br> &nbsp; &nbsp;OpenGL texture ID (cached).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_surface_to_texture_cached",
       "is_method": true
     },
@@ -13074,15 +13322,23 @@
       "name": "_convert_color",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Normalise a colour to (r, g, b, a) floats in [0, 1].<br><br>Args:<br> &nbsp; &nbsp;color: Colour as (r, g, b) or (r, g, b, a) with values 0\u2011255 or 0\u20111 (alpha 0\u2011255 also allowed).<br><br>Returns:<br> &nbsp; &nbsp;Normalised (r, g, b, a) where each component is in [0, 1].",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_convert_color",
+      "is_method": true
+    },
+    {
+      "name": "_read_texture_pixel",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Read a single pixel from an OpenGL texture (for debugging).<br>Returns (R, G, B, A) as integers 0-255.",
+      "link": "backend/opengl.html#method-openglrenderer-_read_texture_pixel",
       "is_method": true
     },
     {
       "name": "enable_scissor",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Push a scissor rectangle, intersecting with any existing one.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-enable_scissor",
       "is_method": true
     },
@@ -13090,7 +13346,7 @@
       "name": "disable_scissor",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Pop the top scissor rectangle and restore the previous one.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-disable_scissor",
       "is_method": true
     },
@@ -13098,31 +13354,23 @@
       "name": "draw_rect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a rectangle with optional fill, border, and rounded corners.<br><br>Args:<br> &nbsp; &nbsp;x, y: Position (before anchor adjustment).<br> &nbsp; &nbsp;width, height: Rectangle dimensions.<br> &nbsp; &nbsp;color: Fill colour (if fill=True).<br> &nbsp; &nbsp;fill: If True, filled rectangle; otherwise outline only.<br> &nbsp; &nbsp;pivot: Anchor as (fx, fy) where (0,0) is top\u2011left, (1,1) bottom\u2011right.<br> &nbsp; &nbsp;border_width: Thickness of the border in pixels (used when border_color provided or fill=False).<br> &nbsp; &nbsp;surface: Optional target surface (defaults to current render target).<br> &nbsp; &nbsp;corner_radius: Radius for all corners (int) or per\u2011corner (top\u2011left, top\u2011right, bottom\u2011right, bottom\u2011left).<br> &nbsp; &nbsp;border_color: Colour of the border (if None and fill=False, uses `color` for outline).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_rect",
       "is_method": true
     },
     {
-      "name": "draw_isosceles_triangle",
+      "name": "_draw_rect_fast",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw an isosceles triangle with a horizontal base at the bottom.<br><br>The triangle is defined by a bounding box:<br> &nbsp; &nbsp;top vertex at (x + width/2, y)<br> &nbsp; &nbsp;bottom-left at (x, y + height)<br> &nbsp; &nbsp;bottom-right at (x + width, y + height)<br><br>Args:<br> &nbsp; &nbsp;x, y: Top\u2011left corner of the bounding box.<br> &nbsp; &nbsp;width, height: Bounding box dimensions.<br> &nbsp; &nbsp;color: Fill colour (if fill=True) or outline colour (if no border_color).<br> &nbsp; &nbsp;fill: If True, fills the triangle; otherwise draws only the outline.<br> &nbsp; &nbsp;border_width: Thickness of the outline (used when fill=False or border_color given).<br> &nbsp; &nbsp;border_color: Colour for the outline; if provided, an outline is drawn<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;on top of the fill (if fill=True) or as the only outline<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(if fill=False). If None and fill=False, `color` is used.",
-      "link": "backend/opengl.html#method-openglrenderer-draw_isosceles_triangle",
-      "is_method": true
-    },
-    {
-      "name": "draw_equilateral_triangle",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "Draw an equilateral triangle with a horizontal base at the bottom.<br><br>The triangle is defined by the side length `width`. The bounding box<br>has width = side length and height = side * sqrt(3)/2, with top-left at (x, y).<br><br>Args:<br> &nbsp; &nbsp;x, y: Top\u2011left corner of the bounding box.<br> &nbsp; &nbsp;width: Side length of the equilateral triangle.<br> &nbsp; &nbsp;color: Fill colour (if fill=True) or outline colour (if no border_color).<br> &nbsp; &nbsp;fill: If True, fills the triangle; otherwise draws only the outline.<br> &nbsp; &nbsp;border_width: Thickness of the outline (used when fill=False or border_color given).<br> &nbsp; &nbsp;border_color: Colour for the outline; if provided, an outline is drawn<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;on top of the fill (if fill=True) or as the only outline<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(if fill=False). If None and fill=False, `color` is used.",
-      "link": "backend/opengl.html#method-openglrenderer-draw_equilateral_triangle",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-openglrenderer-_draw_rect_fast",
       "is_method": true
     },
     {
       "name": "_draw_outline_rect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Internal: draw only the outline of a rectangle.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_draw_outline_rect",
       "is_method": true
     },
@@ -13130,7 +13378,7 @@
       "name": "_draw_sharp_rect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Internal: draw a rectangle without rounded corners (sharp).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_draw_sharp_rect",
       "is_method": true
     },
@@ -13138,15 +13386,31 @@
       "name": "_draw_rounded_rect",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Internal: draw a rounded rectangle (filled or outline) using the rounded rect shader.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_draw_rounded_rect",
+      "is_method": true
+    },
+    {
+      "name": "draw_isosceles_triangle",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-openglrenderer-draw_isosceles_triangle",
+      "is_method": true
+    },
+    {
+      "name": "draw_equilateral_triangle",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-openglrenderer-draw_equilateral_triangle",
       "is_method": true
     },
     {
       "name": "draw_line",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a thick line between two points.<br><br>Args:<br> &nbsp; &nbsp;start_x, start_y: Start point.<br> &nbsp; &nbsp;end_x, end_y: End point.<br> &nbsp; &nbsp;color: RGB or RGBA colour.<br> &nbsp; &nbsp;width: Line thickness in pixels.<br> &nbsp; &nbsp;surface: Optional target surface.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_line",
       "is_method": true
     },
@@ -13154,7 +13418,7 @@
       "name": "_draw_thick_line",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Internal: draw a line by creating a quad perpendicular to the direction.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_draw_thick_line",
       "is_method": true
     },
@@ -13162,7 +13426,7 @@
       "name": "draw_lines",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw multiple line segments.<br><br>Args:<br> &nbsp; &nbsp;points: List of ((x1,y1), (x2,y2)) pairs.<br> &nbsp; &nbsp;color: Line colour.<br> &nbsp; &nbsp;width: Line thickness.<br> &nbsp; &nbsp;surface: Optional target surface.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_lines",
       "is_method": true
     },
@@ -13170,15 +13434,23 @@
       "name": "draw_circle",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a circle (filled or outline) with caching.<br><br>Args:<br> &nbsp; &nbsp;center_x, center_y: Centre position (before anchor).<br> &nbsp; &nbsp;radius: Circle radius.<br> &nbsp; &nbsp;color: Fill or outline colour.<br> &nbsp; &nbsp;fill: If True, filled circle; otherwise outline.<br> &nbsp; &nbsp;border_width: Thickness of outline (used when fill=False).<br> &nbsp; &nbsp;surface: Optional target surface.<br> &nbsp; &nbsp;pivot: Anchor point for positioning (default centre).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_circle",
+      "is_method": true
+    },
+    {
+      "name": "_draw_circle_fast",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Draw a circle using the simple shader (no style).",
+      "link": "backend/opengl.html#method-openglrenderer-_draw_circle_fast",
       "is_method": true
     },
     {
       "name": "_generate_filled_circle_geometry",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Generate vertex and index arrays for a filled circle (unit coordinates).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_generate_filled_circle_geometry",
       "is_method": true
     },
@@ -13186,7 +13458,7 @@
       "name": "_generate_hollow_circle_geometry",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Generate geometry for a hollow circle (outline) as a single triangle strip.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_generate_hollow_circle_geometry",
       "is_method": true
     },
@@ -13194,7 +13466,7 @@
       "name": "_upload_geometry",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Create VAO, VBO, EBO and upload vertex/index data. Returns (vao, vbo, ebo).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_upload_geometry",
       "is_method": true
     },
@@ -13202,7 +13474,7 @@
       "name": "draw_polygon",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a convex polygon (filled or outline).<br><br>Args:<br> &nbsp; &nbsp;points: List of (x, y) vertices.<br> &nbsp; &nbsp;color: Fill or outline colour.<br> &nbsp; &nbsp;fill: If True, filled polygon; otherwise outline.<br> &nbsp; &nbsp;border_width: Outline thickness (only used when fill=False).<br> &nbsp; &nbsp;surface: Optional target surface.<br> &nbsp; &nbsp;pivot: Offset applied to all points.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_polygon",
       "is_method": true
     },
@@ -13210,7 +13482,7 @@
       "name": "_generate_filled_polygon_geometry",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Generate triangulation for a filled polygon (assumes convex).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_generate_filled_polygon_geometry",
       "is_method": true
     },
@@ -13218,8 +13490,16 @@
       "name": "_generate_hollow_polygon_geometry",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Generate geometry for a hollow polygon outline.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_generate_hollow_polygon_geometry",
+      "is_method": true
+    },
+    {
+      "name": "_draw_polygon_fast",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Draw a polygon using the simple shader (no style).",
+      "link": "backend/opengl.html#method-openglrenderer-_draw_polygon_fast",
       "is_method": true
     },
     {
@@ -13234,7 +13514,7 @@
       "name": "draw_rich_text",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw rich text using the rich text parser.<br><br>Args:<br> &nbsp; &nbsp;text: Rich text string with markup<br> &nbsp; &nbsp;x, y: Position<br> &nbsp; &nbsp;default_color: Default text color (can be Color, ThemeStyle, or tuple)<br> &nbsp; &nbsp;font: Base font<br> &nbsp; &nbsp;surface: Optional target surface<br> &nbsp; &nbsp;pivot: Anchor point<br> &nbsp; &nbsp;**kwargs: Additional arguments for draw_text",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_rich_text",
       "is_method": true
     },
@@ -13242,7 +13522,7 @@
       "name": "draw_rich_text_line",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a pre-parsed rich text line.<br><br>Args:<br> &nbsp; &nbsp;line: List of RichTextSegment objects<br> &nbsp; &nbsp;x, y: Position<br> &nbsp; &nbsp;default_color: Default text color (can be Color, ThemeStyle, or tuple)<br> &nbsp; &nbsp;font: Base font<br> &nbsp; &nbsp;surface: Optional target surface",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_rich_text_line",
       "is_method": true
     },
@@ -13250,15 +13530,23 @@
       "name": "_cleanup_text_cache",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Remove text textures that have not been used for longer than the timeout.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_cleanup_text_cache",
+      "is_method": true
+    },
+    {
+      "name": "_cleanup_texture_cache",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-openglrenderer-_cleanup_texture_cache",
       "is_method": true
     },
     {
       "name": "draw_surface",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Alias for blit with optional cache control.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_surface",
       "is_method": true
     },
@@ -13274,7 +13562,7 @@
       "name": "fill_screen",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Fill the entire screen (or current framebuffer) with a solid colour.<br><br>Args:<br> &nbsp; &nbsp;color: RGBA tuple with components 0\u2011255 (RGB) and alpha 0\u20111, or RGB tuple with components 0\u2011255.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-fill_screen",
       "is_method": true
     },
@@ -13282,7 +13570,7 @@
       "name": "clear",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Clear the colour and depth buffers.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-clear",
       "is_method": true
     },
@@ -13290,7 +13578,7 @@
       "name": "render_particles",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Render particle system using instancing.<br><br>Args:<br> &nbsp; &nbsp;particle_data: Dictionary with keys:<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;active_count&#x27;: number of active particles<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;positions&#x27;: numpy array (N,2) world positions<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;sizes&#x27;: numpy array (N,) sizes (world units)<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;colors&#x27;: numpy array (N,3) uint8 RGB<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;alphas&#x27;: numpy array (N,) uint8 alpha<br> &nbsp; &nbsp;camera: Camera object that provides world_to_screen and convert_size_zoom.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-render_particles",
       "is_method": true
     },
@@ -13298,15 +13586,47 @@
       "name": "_ensure_particle_capacity",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Resize instance buffers if needed to accommodate `required` particles.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_ensure_particle_capacity",
+      "is_method": true
+    },
+    {
+      "name": "_ensure_temp_fbo",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Create or resize temporary FBOs and textures.",
+      "link": "backend/opengl.html#method-openglrenderer-_ensure_temp_fbo",
+      "is_method": true
+    },
+    {
+      "name": "_generate_gradient_texture",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-openglrenderer-_generate_gradient_texture",
+      "is_method": true
+    },
+    {
+      "name": "_apply_blur_to_texture",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-openglrenderer-_apply_blur_to_texture",
+      "is_method": true
+    },
+    {
+      "name": "_apply_shadow_to_shape",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-openglrenderer-_apply_shadow_to_shape",
       "is_method": true
     },
     {
       "name": "cleanup",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Release all OpenGL resources (shaders, textures, buffers, framebuffers).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-cleanup",
       "is_method": true
     },
@@ -13314,7 +13634,7 @@
       "name": "set_blend_mode",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Set the OpenGL blending mode.<br><br>Args:<br> &nbsp; &nbsp;mode: One of &#x27;normal&#x27;, &#x27;add&#x27;, &#x27;multiply&#x27;, &#x27;screen&#x27;.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-set_blend_mode",
       "is_method": true
     },
@@ -13736,6 +14056,70 @@
     },
     {
       "name": "__init__",
+      "class": "ColorKeys",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/types.html#method-colorkeys-__init__",
+      "is_method": true
+    },
+    {
+      "name": "set_alpha_factor",
+      "class": "ColorKeys",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/types.html#method-colorkeys-set_alpha_factor",
+      "is_method": true
+    },
+    {
+      "name": "get_color",
+      "class": "ColorKeys",
+      "module": "backend",
+      "description": "Get the interpolated color at position t (0.0-1.0).<br>Returns None if no keys exist.",
+      "link": "backend/types.html#method-colorkeys-get_color",
+      "is_method": true
+    },
+    {
+      "name": "avg",
+      "class": "ColorKeys",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/types.html#method-colorkeys-avg",
+      "is_method": true
+    },
+    {
+      "name": "_init_drag",
+      "class": "DraggableMixin",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-draggablemixin-_init_drag",
+      "is_method": true
+    },
+    {
+      "name": "_handle_drag",
+      "class": "DraggableMixin",
+      "module": "misc",
+      "description": "Call this in update() to handle dragging.",
+      "link": "misc/debug.html#method-draggablemixin-_handle_drag",
+      "is_method": true
+    },
+    {
+      "name": "toggle_fixed",
+      "class": "DraggableMixin",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-draggablemixin-toggle_fixed",
+      "is_method": true
+    },
+    {
+      "name": "close",
+      "class": "DraggableMixin",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-draggablemixin-close",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
       "class": "DebugOverlay",
       "module": "misc",
       "description": "No documentation",
@@ -13756,22 +14140,6 @@
       "module": "misc",
       "description": "No documentation",
       "link": "misc/debug.html#method-debugoverlay-render_content",
-      "is_method": true
-    },
-    {
-      "name": "toggle_fixed",
-      "class": "DebugOverlay",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/debug.html#method-debugoverlay-toggle_fixed",
-      "is_method": true
-    },
-    {
-      "name": "close",
-      "class": "DebugOverlay",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/debug.html#method-debugoverlay-close",
       "is_method": true
     },
     {
@@ -13815,14 +14183,6 @@
       "is_method": true
     },
     {
-      "name": "update",
-      "class": "FPSOverlay",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/debug.html#method-fpsoverlay-update",
-      "is_method": true
-    },
-    {
       "name": "__init__",
       "class": "SceneStatsOverlay",
       "module": "misc",
@@ -13844,14 +14204,6 @@
       "module": "misc",
       "description": "No documentation",
       "link": "misc/debug.html#method-scenestatsoverlay-render_content",
-      "is_method": true
-    },
-    {
-      "name": "update",
-      "class": "SceneStatsOverlay",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/debug.html#method-scenestatsoverlay-update",
       "is_method": true
     },
     {
@@ -13879,14 +14231,6 @@
       "is_method": true
     },
     {
-      "name": "update",
-      "class": "SoundOverlay",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/debug.html#method-soundoverlay-update",
-      "is_method": true
-    },
-    {
       "name": "__init__",
       "class": "ClockOverlay",
       "module": "misc",
@@ -13911,14 +14255,6 @@
       "is_method": true
     },
     {
-      "name": "update",
-      "class": "ClockOverlay",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/debug.html#method-clockoverlay-update",
-      "is_method": true
-    },
-    {
       "name": "__init__",
       "class": "VersionOverlay",
       "module": "misc",
@@ -13940,14 +14276,6 @@
       "module": "misc",
       "description": "No documentation",
       "link": "misc/debug.html#method-versionoverlay-render_content",
-      "is_method": true
-    },
-    {
-      "name": "update",
-      "class": "VersionOverlay",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/debug.html#method-versionoverlay-update",
       "is_method": true
     },
     {
@@ -13991,10 +14319,18 @@
       "is_method": true
     },
     {
+      "name": "_get_tab_frame",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "Return the frame (UiFrame) of the tab with the given name, or None.",
+      "link": "misc/debug.html#method-liveinspector-_get_tab_frame",
+      "is_method": true
+    },
+    {
       "name": "_update_scene_registration",
       "class": "LiveInspector",
       "module": "misc",
-      "description": "Add or remove this inspector from the current scene&#x27;s ui_elements.",
+      "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-_update_scene_registration",
       "is_method": true
     },
@@ -14002,7 +14338,7 @@
       "name": "set_visible",
       "class": "LiveInspector",
       "module": "misc",
-      "description": "Override visibility to handle scene registration.",
+      "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-set_visible",
       "is_method": true
     },
@@ -14010,7 +14346,7 @@
       "name": "close",
       "class": "LiveInspector",
       "module": "misc",
-      "description": "Called by header close button.",
+      "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-close",
       "is_method": true
     },
@@ -14018,7 +14354,7 @@
       "name": "toggle_fixed",
       "class": "LiveInspector",
       "module": "misc",
-      "description": "Called by header lock button.",
+      "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-toggle_fixed",
       "is_method": true
     },
@@ -14026,7 +14362,7 @@
       "name": "on_scene_changed",
       "class": "LiveInspector",
       "module": "misc",
-      "description": "Called by debug manager when the active scene changes.",
+      "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-on_scene_changed",
       "is_method": true
     },
@@ -14039,26 +14375,90 @@
       "is_method": true
     },
     {
+      "name": "_setup_elements_tab",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_setup_elements_tab",
+      "is_method": true
+    },
+    {
+      "name": "_update_elements_tab",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_update_elements_tab",
+      "is_method": true
+    },
+    {
+      "name": "_setup_custom_tab",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_setup_custom_tab",
+      "is_method": true
+    },
+    {
+      "name": "_setup_system_tab",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_setup_system_tab",
+      "is_method": true
+    },
+    {
+      "name": "_update_console_view_system",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "Update the console view in the System tab.",
+      "link": "misc/debug.html#method-liveinspector-_update_console_view_system",
+      "is_method": true
+    },
+    {
+      "name": "_update_system_tab",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "Update performance metrics and console (called every frame).",
+      "link": "misc/debug.html#method-liveinspector-_update_system_tab",
+      "is_method": true
+    },
+    {
       "name": "_setup_audio_tab",
       "class": "LiveInspector",
       "module": "misc",
-      "description": "Create the audio control tab with master volume, effects, and source list.",
+      "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-_setup_audio_tab",
+      "is_method": true
+    },
+    {
+      "name": "_update_audio_tab",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "Update audio source values without rebuilding the entire list.",
+      "link": "misc/debug.html#method-liveinspector-_update_audio_tab",
       "is_method": true
     },
     {
       "name": "_update_audio_sources",
       "class": "LiveInspector",
       "module": "misc",
-      "description": "Refresh the list of audio sources in the scrollable frame.",
+      "description": "Rebuild the source list from scratch (called when source count changes).",
       "link": "misc/debug.html#method-liveinspector-_update_audio_sources",
+      "is_method": true
+    },
+    {
+      "name": "_force_refresh_audio_sources",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "Force a rebuild (called by Refresh button).",
+      "link": "misc/debug.html#method-liveinspector-_force_refresh_audio_sources",
       "is_method": true
     },
     {
       "name": "_on_master_volume_changed",
       "class": "LiveInspector",
       "module": "misc",
-      "description": "Update master volume.",
+      "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-_on_master_volume_changed",
       "is_method": true
     },
@@ -14066,7 +14466,7 @@
       "name": "_on_source_volume_changed",
       "class": "LiveInspector",
       "module": "misc",
-      "description": "Update source volume.",
+      "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-_on_source_volume_changed",
       "is_method": true
     },
@@ -14074,7 +14474,7 @@
       "name": "_on_source_pan_changed",
       "class": "LiveInspector",
       "module": "misc",
-      "description": "Update source pan.",
+      "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-_on_source_pan_changed",
       "is_method": true
     },
@@ -14082,15 +14482,31 @@
       "name": "_apply_effect",
       "class": "LiveInspector",
       "module": "misc",
-      "description": "Apply the selected effect with the current intensity to all channels.",
+      "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-_apply_effect",
+      "is_method": true
+    },
+    {
+      "name": "_setup_overlays_tab",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_setup_overlays_tab",
+      "is_method": true
+    },
+    {
+      "name": "_setup_settings_tab",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_setup_settings_tab",
       "is_method": true
     },
     {
       "name": "_force_kill",
       "class": "LiveInspector",
       "module": "misc",
-      "description": "Force kill the engine (quit the game).",
+      "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-_force_kill",
       "is_method": true
     },
@@ -14098,7 +14514,7 @@
       "name": "_reinit_game",
       "class": "LiveInspector",
       "module": "misc",
-      "description": "Re-initialize the current scene (reloads all UI elements).",
+      "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-_reinit_game",
       "is_method": true
     },
@@ -14111,11 +14527,27 @@
       "is_method": true
     },
     {
-      "name": "_setup_performance_tab",
+      "name": "_setup_tasks_tab",
       "class": "LiveInspector",
       "module": "misc",
       "description": "No documentation",
-      "link": "misc/debug.html#method-liveinspector-_setup_performance_tab",
+      "link": "misc/debug.html#method-liveinspector-_setup_tasks_tab",
+      "is_method": true
+    },
+    {
+      "name": "_update_tasks_tab",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_update_tasks_tab",
+      "is_method": true
+    },
+    {
+      "name": "_update_tasks_view",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_update_tasks_view",
       "is_method": true
     },
     {
@@ -14135,14 +14567,6 @@
       "is_method": true
     },
     {
-      "name": "_update_performance_tab",
-      "class": "LiveInspector",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/debug.html#method-liveinspector-_update_performance_tab",
-      "is_method": true
-    },
-    {
       "name": "_get_cpu_model",
       "class": "LiveInspector",
       "module": "misc",
@@ -14156,6 +14580,38 @@
       "module": "misc",
       "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-_get_gpu_info",
+      "is_method": true
+    },
+    {
+      "name": "add_custom_function",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-add_custom_function",
+      "is_method": true
+    },
+    {
+      "name": "_refresh_custom_dropdown",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_refresh_custom_dropdown",
+      "is_method": true
+    },
+    {
+      "name": "_on_custom_func_selected",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_on_custom_func_selected",
+      "is_method": true
+    },
+    {
+      "name": "_execute_custom_func",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_execute_custom_func",
       "is_method": true
     },
     {
@@ -14255,6 +14711,22 @@
       "is_method": true
     },
     {
+      "name": "_redirect_console_output",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_redirect_console_output",
+      "is_method": true
+    },
+    {
+      "name": "_restore_console",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_restore_console",
+      "is_method": true
+    },
+    {
       "name": "__init__",
       "class": "DebugManager",
       "module": "misc",
@@ -14314,208 +14786,288 @@
       "name": "__init__",
       "class": "Icon",
       "module": "misc",
-      "description": "No documentation",
+      "description": "Args:<br> &nbsp; &nbsp;icon_filename: name of the PNG file inside the icons folder.<br> &nbsp; &nbsp;size: if given, the icon will be scaled to a square of this size.<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If None, the original dimensions are kept.",
       "link": "misc/icons.html#method-icon-__init__",
       "is_method": true
     },
     {
-      "name": "generate",
+      "name": "get_surface",
       "class": "Icon",
       "module": "misc",
+      "description": "Return a recoloured (and optionally scaled) version of the icon.<br><br>Args:<br> &nbsp; &nbsp;color: flat colour (Color or (r,g,b)) or a ColorKeys gradient.<br> &nbsp; &nbsp;gradient_type: only used if color is a ColorKeys: &#x27;linear&#x27; or &#x27;radial&#x27;.<br> &nbsp; &nbsp;gradient_angle: only used for linear gradients (degrees).",
+      "link": "misc/icons.html#method-icon-get_surface",
+      "is_method": true
+    },
+    {
+      "name": "_apply_flat_color",
+      "class": "Icon",
+      "module": "misc",
+      "description": "Recolour with a flat RGB colour using multiply blending.",
+      "link": "misc/icons.html#method-icon-_apply_flat_color",
+      "is_method": true
+    },
+    {
+      "name": "_apply_gradient",
+      "class": "Icon",
+      "module": "misc",
+      "description": "Generate a gradient surface and multiply it with the icon mask.",
+      "link": "misc/icons.html#method-icon-_apply_gradient",
+      "is_method": true
+    },
+    {
+      "name": "clear_cache",
+      "class": "Icon",
+      "module": "misc",
+      "description": "Clear the internal cache, forcing fresh recolouring on next get_surface().",
+      "link": "misc/icons.html#method-icon-clear_cache",
+      "is_method": true
+    },
+    {
+      "name": "SUCCESS",
+      "class": "Icons",
+      "module": "misc",
       "description": "No documentation",
-      "link": "misc/icons.html#method-icon-generate",
+      "link": "misc/icons.html#method-icons-success",
+      "is_method": true
+    },
+    {
+      "name": "INFO",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-info",
+      "is_method": true
+    },
+    {
+      "name": "WARN",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-warn",
+      "is_method": true
+    },
+    {
+      "name": "ERROR",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-error",
+      "is_method": true
+    },
+    {
+      "name": "HOME",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-home",
+      "is_method": true
+    },
+    {
+      "name": "HOUSE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-house",
+      "is_method": true
+    },
+    {
+      "name": "FOLDER",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-folder",
+      "is_method": true
+    },
+    {
+      "name": "PLUS",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-plus",
+      "is_method": true
+    },
+    {
+      "name": "CROSS",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-cross",
+      "is_method": true
+    },
+    {
+      "name": "SEARCH",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-search",
+      "is_method": true
+    },
+    {
+      "name": "SETTINGS",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-settings",
+      "is_method": true
+    },
+    {
+      "name": "SAVE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-save",
+      "is_method": true
+    },
+    {
+      "name": "LOAD",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-load",
+      "is_method": true
+    },
+    {
+      "name": "PICTURE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-picture",
+      "is_method": true
+    },
+    {
+      "name": "UNLOCK",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-unlock",
+      "is_method": true
+    },
+    {
+      "name": "LOCK",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-lock",
+      "is_method": true
+    },
+    {
+      "name": "KEY",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-key",
+      "is_method": true
+    },
+    {
+      "name": "FILE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-file",
+      "is_method": true
+    },
+    {
+      "name": "WRENCH",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-wrench",
+      "is_method": true
+    },
+    {
+      "name": "HAMMER",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-hammer",
+      "is_method": true
+    },
+    {
+      "name": "SHIELD",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-shield",
+      "is_method": true
+    },
+    {
+      "name": "ENGINE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-engine",
+      "is_method": true
+    },
+    {
+      "name": "BACK",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-back",
+      "is_method": true
+    },
+    {
+      "name": "STEAM",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-steam",
+      "is_method": true
+    },
+    {
+      "name": "DISCORD",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-discord",
+      "is_method": true
+    },
+    {
+      "name": "YOUTUBE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-youtube",
+      "is_method": true
+    },
+    {
+      "name": "GITHUB",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-github",
       "is_method": true
     },
     {
       "name": "get_icon",
-      "class": "Icon",
+      "class": "Icons",
       "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-icon-get_icon",
+      "description": "Get an icon by its name (case\u2011insensitive).<br><br>Example:<br> &nbsp; &nbsp;icon = Icons.get_icon(&#x27;home&#x27;, size=32)",
+      "link": "misc/icons.html#method-icons-get_icon",
       "is_method": true
     },
     {
-      "name": "generate",
-      "class": "IconInfo",
+      "name": "get_all",
+      "class": "Icons",
       "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconinfo-generate",
+      "description": "Return a list of Icon instances for all built\u2011in icons, all at the given size.<br>Order is: success, info, warn, error, home, folder, plus, cross,<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;search, settings, save, load, picture.",
+      "link": "misc/icons.html#method-icons-get_all",
       "is_method": true
     },
     {
-      "name": "generate",
-      "class": "IconCheck",
+      "name": "get_all_dict",
+      "class": "Icons",
       "module": "misc",
       "description": "No documentation",
-      "link": "misc/icons.html#method-iconcheck-generate",
+      "link": "misc/icons.html#method-icons-get_all_dict",
       "is_method": true
     },
     {
-      "name": "generate",
-      "class": "IconCross",
+      "name": "get_all_names",
+      "class": "Icons",
       "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconcross-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconWarn",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconwarn-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconError",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconerror-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconSuccess",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconsuccess-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconTriangleUp",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-icontriangleup-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconTriangleDown",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-icontriangledown-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconTriangleLeft",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-icontriangleleft-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconTriangleRight",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-icontriangleright-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconPlus",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconplus-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconMinus",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconminus-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconCircle",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconcircle-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconSquare",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconsquare-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconGear",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-icongear-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconFolder",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconfolder-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconKey",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconkey-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconLockLocked",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconlocklocked-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconLockUnlocked",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconlockunlocked-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconHome",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconhome-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconSave",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconsave-generate",
-      "is_method": true
-    },
-    {
-      "name": "generate",
-      "class": "IconLoad",
-      "module": "misc",
-      "description": "No documentation",
-      "link": "misc/icons.html#method-iconload-generate",
-      "is_method": true
-    },
-    {
-      "name": "get_icon",
-      "class": "IconFactory",
-      "module": "misc",
-      "description": "Factory method to get icon by type",
-      "link": "misc/icons.html#method-iconfactory-get_icon",
+      "description": "Return the list of available icon names (as strings).",
+      "link": "misc/icons.html#method-icons-get_all_names",
       "is_method": true
     },
     {
@@ -15169,63 +15721,9 @@
   ],
   "examples": [
     {
-      "name": "Atlas Demo",
-      "file": "atlas_demo.py",
-      "link": "examples/atlas_demo.html",
-      "type": "example"
-    },
-    {
-      "name": "Audio Demo",
-      "file": "audio_demo.py",
-      "link": "examples/audio_demo.html",
-      "type": "example"
-    },
-    {
-      "name": "Convert Themes",
-      "file": "convert_themes.py",
-      "link": "examples/convert_themes.html",
-      "type": "example"
-    },
-    {
-      "name": "Filters Demo",
-      "file": "filters_demo.py",
-      "link": "examples/filters_demo.html",
-      "type": "example"
-    },
-    {
-      "name": "Image Conversion Demo",
-      "file": "image_conversion_demo.py",
-      "link": "examples/image_conversion_demo.html",
-      "type": "example"
-    },
-    {
       "name": "Multiplayer Demo",
       "file": "multiplayer_demo.py",
       "link": "examples/multiplayer_demo.html",
-      "type": "example"
-    },
-    {
-      "name": "New Frame",
-      "file": "new_frame.py",
-      "link": "examples/new_frame.html",
-      "type": "example"
-    },
-    {
-      "name": "Paperdoll Demo",
-      "file": "paperdoll_demo.py",
-      "link": "examples/paperdoll_demo.html",
-      "type": "example"
-    },
-    {
-      "name": "Parallax Demo",
-      "file": "parallax_demo.py",
-      "link": "examples/parallax_demo.html",
-      "type": "example"
-    },
-    {
-      "name": "Particle Demo",
-      "file": "particle_demo.py",
-      "link": "examples/particle_demo.html",
       "type": "example"
     },
     {
@@ -15235,27 +15733,9 @@
       "type": "example"
     },
     {
-      "name": "Shadow Demo",
-      "file": "shadow_demo.py",
-      "link": "examples/shadow_demo.html",
-      "type": "example"
-    },
-    {
       "name": "Snake Demo",
       "file": "snake_demo.py",
       "link": "examples/snake_demo.html",
-      "type": "example"
-    },
-    {
-      "name": "Spritesheets",
-      "file": "spritesheets.py",
-      "link": "examples/spritesheets.html",
-      "type": "example"
-    },
-    {
-      "name": "Storage Demo",
-      "file": "storage_demo.py",
-      "link": "examples/storage_demo.html",
       "type": "example"
     },
     {
@@ -15263,19 +15743,7 @@
       "file": "topdown_farming_demo.py",
       "link": "examples/topdown_farming_demo.html",
       "type": "example"
-    },
-    {
-      "name": "Ui Comprehensive Demo",
-      "file": "ui_comprehensive_demo.py",
-      "link": "examples/ui_comprehensive_demo.html",
-      "type": "example"
-    },
-    {
-      "name": "Windows Events Demo",
-      "file": "windows_events_demo.py",
-      "link": "examples/windows_events_demo.html",
-      "type": "example"
     }
   ],
-  "last_updated": "2026-07-13T17:25:06.709130"
+  "last_updated": "2026-08-17T22:16:46.413360"
 }

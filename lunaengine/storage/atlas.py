@@ -26,17 +26,17 @@ CATEGORY_EXTENSIONS = {
 }
 
 class AtlasItem:
-    def __init__(self, name: str, path: Path, category: AtlasCategory = AtlasCategory.UNKNOWN, *, validate: bool = True):
+    def __init__(self, name: str, path: Union[Path, str], category: AtlasCategory = AtlasCategory.UNKNOWN, *, validate: bool = True):
         self.name = name
-        self.path = path
+        self.path = Path(path).resolve()
         self.category = category
         self._data: Optional[bytes] = None
         if validate and category not in (AtlasCategory.FOLDER, AtlasCategory.UNKNOWN):
-            ext = path.suffix.lower().lstrip('.')
+            ext = self.path.suffix.lower().lstrip('.')
             allowed = CATEGORY_EXTENSIONS.get(category, [])
             if ext not in allowed:
                 raise ValueError(
-                    f"File '{path}' has extension '.{ext}' which is not allowed for category '{category.value}'. "
+                    f"File '{self.path}' has extension '.{ext}' which is not allowed for category '{category.value}'. "
                     f"Allowed: {allowed or 'none'}"
                 )
 
@@ -51,7 +51,8 @@ class Atlas:
         self._bundle_manifest: Optional[dict] = None
 
     @staticmethod
-    def guess_category_from_path(path: Path) -> AtlasCategory:
+    def guess_category_from_path(path: Union[Path, str]) -> AtlasCategory:
+        path = Path(path).resolve()
         if path.is_dir():
             return AtlasCategory.FOLDER
         ext = path.suffix.lower().lstrip('.')

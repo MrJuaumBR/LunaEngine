@@ -121,15 +121,15 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-set_background_color">
-                <code class="fs-6 fw-bold text-color-title">def set_background_color(self: Any, color: Optional[Tuple[int, int, int]]) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def set_background_color(self: Any, color: Optional[Union[Tuple[int, int, int], Tuple[int, int, int, int | float]]]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-set_border_color">
-                <code class="fs-6 fw-bold text-color-title">def set_border_color(self: Any, color: Optional[Tuple[int, int, int]]) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def set_border_color(self: Any, color: Optional[Union[Tuple[int, int, int], Tuple[int, int, int, int | float]]]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-set_border">
-                <code class="fs-6 fw-bold text-color-title">def set_border(self: Any, color: Optional[Tuple[int, int, int]], width: int = 1) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def set_border(self: Any, color: Optional[Union[Tuple[int, int, int], Tuple[int, int, int, int | float]]], width: int = 1) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-set_padding">
@@ -194,7 +194,7 @@
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>_properties: Any = {**UiFrame._properties, 'content_width': {'name': 'content width', 'key': 'content_width', 'type': int, 'editable': True, 'description': 'Total width of scrollable content'}, 'content_height': {'name': 'content height', 'key': 'content_height', 'type': int, 'editable': True, 'description': 'Total height of scrollable content'}, 'scroll_x': {'name': 'scroll x', 'key': 'scroll_x', 'type': int, 'editable': False, 'description': 'Horizontal scroll offset'}, 'scroll_y': {'name': 'scroll y', 'key': 'scroll_y', 'type': int, 'editable': False, 'description': 'Vertical scroll offset'}, 'scrollbar_size': {'name': 'scrollbar size', 'key': 'scrollbar_size', 'type': int, 'editable': True, 'description': 'Width/height of scrollbars'}}</code>
+                    <code>_properties: Any = {**UiFrame._properties, 'content_width': {'name': 'content width', 'key': 'content_width', 'type': int, 'editable': True, 'description': 'Total width of scrollable content'}, 'content_height': {'name': 'content height', 'key': 'content_height', 'type': int, 'editable': True, 'description': 'Total height of scrollable content'}, 'scroll_x': {'name': 'scroll x', 'key': 'scroll_x', 'type': int, 'editable': False, 'description': 'Horizontal scroll offset'}, 'scroll_y': {'name': 'scroll y', 'key': 'scroll_y', 'type': int, 'editable': False, 'description': 'Vertical scroll offset'}, 'scrollbar_size': {'name': 'scrollbar size', 'key': 'scrollbar_size', 'type': int, 'editable': True, 'description': 'Width/height of scrollbars'}, 'cull_updates': {'name': 'cull updates', 'key': 'cull_updates', 'type': bool, 'editable': True, 'description': 'Skip update() for off-screen children'}, 'cull_rendering': {'name': 'cull rendering', 'key': 'cull_rendering', 'type': bool, 'editable': True, 'description': 'Skip render() for off-screen children'}}</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
@@ -207,13 +207,33 @@
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-set_cull_updates">
+                <code class="fs-6 fw-bold text-color-title">def set_cull_updates(self: Any, enabled: bool) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-set_cull_rendering">
+                <code class="fs-6 fw-bold text-color-title">def set_cull_rendering(self: Any, enabled: bool) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-_get_child_logical_pos">
+                <code class="fs-6 fw-bold text-color-title">def _get_child_logical_pos(self: Any, child: UIElement) -> Tuple[float, float]</code>
+                <div class="mt-2 text-muted small">Return the child&#x27;s logical (non-scrolled) position.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-_get_child_screen_rect">
+                <code class="fs-6 fw-bold text-color-title">def _get_child_screen_rect(self: Any, child: UIElement) -> pygame.Rect</code>
+                <div class="mt-2 text-muted small">Return the child&#x27;s bounding box in screen coordinates (with scroll applied).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-_get_visible_rect">
+                <code class="fs-6 fw-bold text-color-title">def _get_visible_rect(self: Any) -> pygame.Rect</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-scroll_by">
                 <code class="fs-6 fw-bold text-color-title">def scroll_by(self: Any, dx: float, dy: float) -> None</code>
-                <div class="mt-2 text-muted small">Scroll the content by the given delta amounts (in pixels).<br>Useful for controller joystick input.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-set_scroll">
                 <code class="fs-6 fw-bold text-color-title">def set_scroll(self: Any, x: int, y: int) -> None</code>
-                <div class="mt-2 text-muted small">Set the exact scroll offset, clamped to valid range.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-clear_content">
                 <code class="fs-6 fw-bold text-color-title">def clear_content(self: Any, reset_scroll: bool = True) -> None</code>
@@ -265,11 +285,11 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Tabbed container. Does not use auto_arrange_y because tabs are managed separately.</p>
+                    <p class="lead fs-6">Tabbed container. Fully optimized with cached metrics for vertical mode.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>_properties: Any = {**UiFrame._properties, 'orientation': {'name': 'orientation', 'key': 'orientation', 'type': Literal, 'editable': True, 'description': 'Tab layout: horizontal, vertical1, vertical2', 'options': ['horizontal', 'vertical1', 'vertical2']}, 'tab_height': {'name': 'tab height', 'key': 'tab_height', 'type': int, 'editable': True, 'description': 'Height of each tab (vertical) or tab bar (horizontal)'}, 'tab_width': {'name': 'tab width', 'key': 'tab_width', 'type': int, 'editable': True, 'description': 'Width of each tab (horizontal) or tab bar (vertical)'}, 'current_tab': {'name': 'current tab', 'key': 'current_tab', 'type': int, 'editable': False, 'description': 'Index of active tab'}}</code>
+                    <code>_properties: Any = {**UiFrame._properties, 'orientation': {'name': 'orientation', 'key': 'orientation', 'type': Literal, 'editable': True, 'description': 'Tab layout: horizontal, vertical1, vertical2', 'options': ['horizontal', 'vertical1', 'vertical2']}, 'tab_height': {'name': 'tab height', 'key': 'tab_height', 'type': int, 'editable': True, 'description': 'Height of each tab (vertical) or tab bar (horizontal)'}, 'tab_width': {'name': 'tab width', 'key': 'tab_width', 'type': int, 'editable': True, 'description': 'Width of each tab (horizontal) or tab bar (vertical)'}, 'current_tab': {'name': 'current tab', 'key': 'current_tab', 'type': int, 'editable': False, 'description': 'Index of active tab'}, 'cull_headers': {'name': 'cull headers', 'key': 'cull_headers', 'type': bool, 'editable': True, 'description': 'Skip rendering tab headers outside visible area'}, 'use_rounded_tabs': {'name': 'use rounded tabs', 'key': 'use_rounded_tabs', 'type': bool, 'editable': True, 'description': 'Use rounded corners on tab headers (slightly slower)'}}</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
@@ -281,6 +301,10 @@
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_init_args">
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_recompute_tab_metrics">
+                <code class="fs-6 fw-bold text-color-title">def _recompute_tab_metrics(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Recalculate cached text sizes and scaled icons for all tabs.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_calculate_tab_colors">
                 <code class="fs-6 fw-bold text-color-title">def _calculate_tab_colors(self: Any) -> None</code>
@@ -294,14 +318,6 @@
                 <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: ThemeType) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-next_tab">
-                <code class="fs-6 fw-bold text-color-title">def next_tab(self: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Switch to the next tab (cyclic). Returns True if successful.</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-previous_tab">
-                <code class="fs-6 fw-bold text-color-title">def previous_tab(self: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Switch to the previous tab (cyclic). Returns True if successful.</div>
-            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-add_tab">
                 <code class="fs-6 fw-bold text-color-title">def add_tab(self: Any, tab_name: str, icon: Optional[Union[str, pygame.Surface]] = None) -> bool</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -314,28 +330,84 @@
                 <code class="fs-6 fw-bold text-color-title">def switch_tab(self: Any, tab_index: int) -> bool</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-get_tab_index">
-                <code class="fs-6 fw-bold text-color-title">def get_tab_index(self: Any, tab_name: str) -> int</code>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-next_tab">
+                <code class="fs-6 fw-bold text-color-title">def next_tab(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-previous_tab">
+                <code class="fs-6 fw-bold text-color-title">def previous_tab(self: Any) -> bool</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-remove_tab">
                 <code class="fs-6 fw-bold text-color-title">def remove_tab(self: Any, tab_name: str) -> bool</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_update_tab_scroll">
-                <code class="fs-6 fw-bold text-color-title">def _update_tab_scroll(self: Any) -> None</code>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-get_tab_index">
+                <code class="fs-6 fw-bold text-color-title">def get_tab_index(self: Any, tab_name: str) -> int</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_tab_width">
-                <code class="fs-6 fw-bold text-color-title">def _get_tab_width(self: Any) -> int</code>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-get_tab_by_name">
+                <code class="fs-6 fw-bold text-color-title">def get_tab_by_name(self: Any, tab_name: str) -> Optional[Dict[str, Any]]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-get_tab_frame">
+                <code class="fs-6 fw-bold text-color-title">def get_tab_frame(self: Any, tab_name: str) -> Optional[UiFrame]</code>
+                <div class="mt-2 text-muted small">Return the frame (UiFrame) of the tab with the given name.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-get_tab_frame_by_index">
+                <code class="fs-6 fw-bold text-color-title">def get_tab_frame_by_index(self: Any, index: int) -> Optional[UiFrame]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-get_current_tab_index">
+                <code class="fs-6 fw-bold text-color-title">def get_current_tab_index(self: Any) -> Optional[int]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-get_current_tab_name">
+                <code class="fs-6 fw-bold text-color-title">def get_current_tab_name(self: Any) -> Optional[str]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-get_tab_count">
+                <code class="fs-6 fw-bold text-color-title">def get_tab_count(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-get_all_tab_names">
+                <code class="fs-6 fw-bold text-color-title">def get_all_tab_names(self: Any) -> List[str]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-set_tab_title">
+                <code class="fs-6 fw-bold text-color-title">def set_tab_title(self: Any, old_name: str, new_name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Rename a tab. Returns True if successful.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-set_tab_icon">
+                <code class="fs-6 fw-bold text-color-title">def set_tab_icon(self: Any, tab_name: str, icon: Optional[Union[str, pygame.Surface]]) -> bool</code>
+                <div class="mt-2 text-muted small">Set or clear an icon for a tab. Returns True if successful.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_update_tab_offsets">
+                <code class="fs-6 fw-bold text-color-title">def _update_tab_offsets(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Recalculate cached offsets for vertical tab layouts.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_update_tab_scroll">
+                <code class="fs-6 fw-bold text-color-title">def _update_tab_scroll(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_tab_height_for_name">
                 <code class="fs-6 fw-bold text-color-title">def _get_tab_height_for_name(self: Any, tab_name: str) -> int</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_tab_width">
+                <code class="fs-6 fw-bold text-color-title">def _get_tab_width(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_tab_rect">
                 <code class="fs-6 fw-bold text-color-title">def _get_tab_rect(self: Any, idx: int, fx: int, fy: int) -> pygame.Rect</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_tab_area_rect">
+                <code class="fs-6 fw-bold text-color-title">def _get_tab_area_rect(self: Any, fx: int, fy: int) -> pygame.Rect</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_visible_size">
+                <code class="fs-6 fw-bold text-color-title">def _get_visible_size(self: Any) -> int</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_draw_arrow">
@@ -344,14 +416,6 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, input_state: InputState) -> None</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_visible_size">
-                <code class="fs-6 fw-bold text-color-title">def _get_visible_size(self: Any) -> int</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_tab_area_rect">
-                <code class="fs-6 fw-bold text-color-title">def _get_tab_area_rect(self: Any, fx: int, fy: int) -> pygame.Rect</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-render">
@@ -652,7 +716,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-13 17:25
+                        Documentation generated on 2026-08-17 22:16
                     </p>
                 </div>
             </div>

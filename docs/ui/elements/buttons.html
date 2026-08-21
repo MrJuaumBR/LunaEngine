@@ -66,7 +66,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-can_focus">
                 <code class="fs-6 fw-bold text-color-title">def can_focus(self: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Buttons are focusable for controller navigation.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-_get_init_args">
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
@@ -108,6 +108,10 @@
                 <code class="fs-6 fw-bold text-color-title">def _get_colors(self: Any) -> UITheme</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-_get_state_style">
+                <code class="fs-6 fw-bold text-color-title">def _get_state_style(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Return the theme style for the current state.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-button-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -134,25 +138,25 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">A clickable button that displays an image instead of text.</p>
+                    <p class="lead fs-6">A clickable button that displays an image instead of text.<br>Supports Icon objects and theme shadows.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
                     <code>category: str = 'button'</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'image_path': {'name': 'image path', 'key': 'image_path', 'type': Union[str, pygame.Surface], 'editable': False, 'description': 'Path to image file or Surface object.'}}</code>
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'image_path': {'name': 'image path', 'key': 'image_path', 'type': Union[str, pygame.Surface, Path, 'Icon'], 'editable': False, 'description': 'Path to image file, Surface, or Icon object.'}}</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: Union[str, pygame.Surface], width: Optional[int] = None, height: Optional[int] = None, pivot: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: Union[str, pygame.Surface, Path, 'Icon'], width: Optional[int] = None, height: Optional[int] = None, pivot: Tuple[float, float] = (0, 0), theme: ThemeType = None, element_id: Optional[str] = None) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-can_focus">
                 <code class="fs-6 fw-bold text-color-title">def can_focus(self: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Image buttons are focusable.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-_get_init_args">
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
@@ -160,7 +164,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-_load_image">
                 <code class="fs-6 fw-bold text-color-title">def _load_image(self: Any) -> None</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Load image from path, Surface, or Icon.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-set_on_click">
                 <code class="fs-6 fw-bold text-color-title">def set_on_click(self: Any, callback: Callable, *args: tuple, **kwargs: dict) -> None</code>
@@ -171,8 +175,12 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-set_image">
-                <code class="fs-6 fw-bold text-color-title">def set_image(self: Any, image_path: Union[str, pygame.Surface]) -> None</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def set_image(self: Any, image_path: Union[str, pygame.Surface, 'Icon']) -> None</code>
+                <div class="mt-2 text-muted small">Update the image, accepting Icon objects.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-_get_state_style">
+                <code class="fs-6 fw-bold text-color-title">def _get_state_style(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Return the theme style for the current state.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagebutton-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> None</code>
@@ -210,7 +218,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-13 17:25
+                        Documentation generated on 2026-08-17 22:16
                     </p>
                 </div>
             </div>

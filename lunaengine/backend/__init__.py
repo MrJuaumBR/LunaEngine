@@ -54,6 +54,7 @@ from .types import (
     WindowEventType,
     Ratio,
     Color,
+    ColorKeys,
 )
 from .network import (
     NetworkHost,
@@ -93,6 +94,7 @@ __all__ = [
     "WindowEventType",
     "Ratio",
     "Color",
+    "ColorKeys",
     # Controllers
     "Controller",
     "ControllerManager",

@@ -180,8 +180,16 @@ class Select(UIElement):
         if self._manipulating:
             bg_color = theme.dropdown_option_selected.color  # or a brighter color
 
+        # Apply shadow for the selector background
+        style = {}
+        if theme.dropdown_normal and theme.dropdown_normal.shadow and theme.dropdown_normal.shadow.distance > 0:
+            style['shadow'] = theme.dropdown_normal.shadow
+
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color,
-                           fill=True, border_width=self.border_width, corner_radius=self.corner_radius, border_color=theme.dropdown_border.color or (0,0,0))
+                           fill=True, border_width=self.border_width,
+                           corner_radius=self.corner_radius,
+                           border_color=theme.dropdown_border.color or (0,0,0),
+                           style=style)
 
         self._render_select_content(renderer, actual_x, actual_y, theme)
 
@@ -350,11 +358,32 @@ class Switch(UIElement):
 
         actual_x, actual_y = self.get_actual_position()
         track_color, thumb_color = self._get_colors()
+        theme = ThemeManager.get_theme(self.theme_type)
 
         border_color = ThemeManager.get_color('border') or (150, 150, 150)
+
+        # Track shadow
+        track_style = {}
+        if self.checked:
+            if theme.switch_track_on and theme.switch_track_on.shadow and theme.switch_track_on.shadow.distance > 0:
+                track_style['shadow'] = theme.switch_track_on.shadow
+        else:
+            if theme.switch_track_off and theme.switch_track_off.shadow and theme.switch_track_off.shadow.distance > 0:
+                track_style['shadow'] = theme.switch_track_off.shadow
+
         renderer.draw_rect(actual_x, actual_y, self.width, self.height,
                            track_color, fill=True, border_width=self.border_width,
-                           corner_radius=self.corner_radius, border_color=border_color)
+                           corner_radius=self.corner_radius, border_color=border_color,
+                           style=track_style)
+
+        # Thumb shadow
+        thumb_style = {}
+        if self.checked:
+            if theme.switch_thumb_on and theme.switch_thumb_on.shadow and theme.switch_thumb_on.shadow.distance > 0:
+                thumb_style['shadow'] = theme.switch_thumb_on.shadow
+        else:
+            if theme.switch_thumb_off and theme.switch_thumb_off.shadow and theme.switch_thumb_off.shadow.distance > 0:
+                thumb_style['shadow'] = theme.switch_thumb_off.shadow
 
         thumb_size = max(10, int(self.height * 0.7))
         thumb_margin = max(2, (self.height - thumb_size) // 2)
@@ -365,7 +394,8 @@ class Switch(UIElement):
 
         renderer.draw_rect(thumb_x, thumb_y, thumb_size, thumb_size,
                            thumb_color, fill=True, border_width=self.border_width,
-                           corner_radius=thumb_size // 2)
+                           corner_radius=thumb_size // 2,
+                           style=thumb_style)
 
         super().render(renderer)
 
@@ -473,9 +503,9 @@ class Slider(UIElement):
     def _get_colors(self) -> 'UITheme':
         return ThemeManager.get_theme(self.theme_type)
 
-    def set_value(self, value: float) -> None:
+    def set_value(self, value: float, silent: bool = False) -> None:
         self.value = max(self.min_val, min(self.max_val, value))
-        if self.on_value_changed:
+        if not silent and self.on_value_changed:
             self.on_value_changed(self.value)
 
     def update(self, dt: float, inputState: InputState) -> None:
@@ -526,16 +556,35 @@ class Slider(UIElement):
         theme = self._get_colors()
         actual_x, actual_y = self.get_actual_position()
 
+        # Track shadow
+        track_style = {}
+        if theme.slider_track and theme.slider_track.shadow and theme.slider_track.shadow.distance > 0:
+            track_style['shadow'] = theme.slider_track.shadow
+
         if self.orientation == 'horizontal':
             track_y = actual_y + self.height // 2 - 2
             renderer.draw_rect(actual_x, track_y, self.width, 4,
                                theme.slider_track.color, fill=True,
-                               corner_radius=self.corner_radius)
+                               corner_radius=self.corner_radius,
+                               style=track_style)
         else:
             track_x = actual_x + self.width // 2 - 2
             renderer.draw_rect(track_x, actual_y, 4, self.height,
                                theme.slider_track.color, fill=True,
-                               corner_radius=self.corner_radius)
+                               corner_radius=self.corner_radius,
+                               style=track_style)
+
+        # Thumb shadow
+        thumb_style = {}
+        if self.state == UIState.PRESSED:
+            if theme.slider_thumb_pressed and theme.slider_thumb_pressed.shadow and theme.slider_thumb_pressed.shadow.distance > 0:
+                thumb_style['shadow'] = theme.slider_thumb_pressed.shadow
+        elif self.state == UIState.HOVERED:
+            if theme.slider_thumb_hover and theme.slider_thumb_hover.shadow and theme.slider_thumb_hover.shadow.distance > 0:
+                thumb_style['shadow'] = theme.slider_thumb_hover.shadow
+        else:
+            if theme.slider_thumb_normal and theme.slider_thumb_normal.shadow and theme.slider_thumb_normal.shadow.distance > 0:
+                thumb_style['shadow'] = theme.slider_thumb_normal.shadow
 
         thumb_color = theme.slider_thumb_normal.color
         if self.state == UIState.PRESSED:
@@ -544,18 +593,20 @@ class Slider(UIElement):
             thumb_color = theme.slider_thumb_hover.color
         elif self._manipulating:
             # Highlight when in manipulation mode
-            thumb_color = theme.slider_thumb_hover.color  # or a special color
+            thumb_color = theme.slider_thumb_hover.color
 
         if self.orientation == 'horizontal':
             thumb_x = actual_x + int((self.value - self.min_val) / (self.max_val - self.min_val) * self.width)
             thumb_x -= self.thumb_size // 2
             renderer.draw_rect(thumb_x, actual_y, self.thumb_size, self.height,
-                               thumb_color, fill=True, corner_radius=self.corner_radius)
+                               thumb_color, fill=True, corner_radius=self.corner_radius,
+                               style=thumb_style)
         else:
             thumb_y = actual_y + int((self.value - self.min_val) / (self.max_val - self.min_val) * self.height)
             thumb_y -= self.thumb_size // 2
             renderer.draw_rect(actual_x, thumb_y, self.width, self.thumb_size,
-                               thumb_color, fill=True, corner_radius=self.corner_radius)
+                               thumb_color, fill=True, corner_radius=self.corner_radius,
+                               style=thumb_style)
 
         font = FontManager.get_font(None, 12)
         value_text = f"{self.value:.1f}"
@@ -1124,6 +1175,11 @@ class Dropdown(UIElement):
                 pivot=(0, 0)
             )
 
+        # Button shadow
+        btn_style = {}
+        if theme.dropdown_normal and theme.dropdown_normal.shadow and theme.dropdown_normal.shadow.distance > 0:
+            btn_style['shadow'] = theme.dropdown_normal.shadow
+
         if self.state == UIState.NORMAL:
             main_color = theme.dropdown_normal.color
         else:
@@ -1133,7 +1189,8 @@ class Dropdown(UIElement):
             main_color, fill=True,
             border_color=theme.dropdown_border.color,
             border_width=theme.dropdown_border.border_width,
-            corner_radius=self.corner_radius
+            corner_radius=self.corner_radius,
+            style=btn_style
         )
 
         if self.options:
@@ -1190,12 +1247,19 @@ class Dropdown(UIElement):
             return
 
         exp_rect = self._get_expanded_screen_rect()
+
+        # Expanded options shadow
+        exp_style = {}
+        if theme.dropdown_expanded and theme.dropdown_expanded.shadow and theme.dropdown_expanded.shadow.distance > 0:
+            exp_style['shadow'] = theme.dropdown_expanded.shadow
+
         renderer.draw_rect(
             exp_rect.x, exp_rect.y, exp_rect.width, exp_rect.height,
             theme.dropdown_expanded.color, fill=True,
             border_width=self.border_width,
             border_color=theme.dropdown_border.color,
-            corner_radius=self.corner_radius
+            corner_radius=self.corner_radius,
+            style=exp_style
         )
 
         for i, opt_index in enumerate(visible_indices):
@@ -1520,12 +1584,18 @@ class NumberSelector(UIElement):
 
         # Highlight when manipulating
         if self._manipulating:
-            bg_color = theme.dropdown_option_selected.color  # or a brighter color
+            bg_color = theme.dropdown_option_selected.color
+
+        # Background shadow
+        bg_style = {}
+        if theme.background2 and theme.background2.shadow and theme.background2.shadow.distance > 0:
+            bg_style['shadow'] = theme.background2.shadow
 
         renderer.draw_rect(actual_x, actual_y, self.width, self.height,
                            bg_color, fill=True, border_width=1,
                            border_color=theme.border.color if theme.border else (80, 80, 90),
-                           corner_radius=self.corner_radius)
+                           corner_radius=self.corner_radius,
+                           style=bg_style)
 
         if self.label and label_rect.width > 0:
             label_abs_x = actual_x + label_rect.x
@@ -1555,17 +1625,26 @@ class NumberSelector(UIElement):
                     up_color = theme.button_hover.color
                     down_color = theme.button_hover.color
 
+            # Up button shadow
+            up_style = {}
+            if theme.button_normal and theme.button_normal.shadow and theme.button_normal.shadow.distance > 0:
+                up_style['shadow'] = theme.button_normal.shadow
+
             renderer.draw_rect(up_abs_x, up_abs_y, up_rect.width, up_rect.height,
                                up_color, fill=True, border_width=1,
                                border_color=theme.button_border.color if theme.button_border else (0,0,0),
-                               corner_radius=self.corner_radius // 2)
+                               corner_radius=self.corner_radius // 2,
+                               style=up_style)
 
             down_abs_x = actual_x + down_rect.x
             down_abs_y = actual_y + down_rect.y
+            # Down button shadow (same style)
+            down_style = up_style.copy()
             renderer.draw_rect(down_abs_x, down_abs_y, down_rect.width, down_rect.height,
                                down_color, fill=True, border_width=1,
                                border_color=theme.button_border.color if theme.button_border else (0,0,0),
-                               corner_radius=self.corner_radius // 2)
+                               corner_radius=self.corner_radius // 2,
+                               style=down_style)
 
             # Up arrow
             center_up = (up_abs_x + up_rect.width // 2, up_abs_y + up_rect.height // 2)
@@ -1736,6 +1815,12 @@ class Checkbox(UIElement):
 
         actual_x, actual_y = self.get_actual_position()
         box_color, check_color, border_color, label_color = self._get_colors()
+        theme = ThemeManager.get_theme(self.theme_type)
+
+        # Box shadow
+        box_style = {}
+        if theme.button_normal and theme.button_normal.shadow and theme.button_normal.shadow.distance > 0:
+            box_style['shadow'] = theme.button_normal.shadow
 
         box_x = actual_x
         if self.label:
@@ -1749,7 +1834,8 @@ class Checkbox(UIElement):
 
         renderer.draw_rect(box_x, actual_y, self.box_size, self.box_size,
                            box_color, fill=True, border_width=self.border_width,
-                           corner_radius=self.corner_radius, border_color=border_color)
+                           corner_radius=self.corner_radius, border_color=border_color,
+                           style=box_style)
 
         if self.checked:
             check_points = [

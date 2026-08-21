@@ -3,13 +3,14 @@ import pygame
 import os
 import re
 from typing import Optional, Tuple, Dict, Any, Union, List
-from .base import UIElement, FontManager, Color
-from ..themes import ThemeManager, ThemeType, ThemeStyle
+from .base import UIElement, FontManager, Color, ColorKeys
+from ..themes import ThemeManager, ThemeType, ThemeStyle, UiShadow
 from ...core.renderer import Renderer
-
+from pathlib import Path
+from ...storage.atlas import AtlasItem
 
 # ============================================================================
-# Rich Text Parser
+# Rich Text Parser (unchanged)
 # ============================================================================
 
 class RichTextSegment:
@@ -368,7 +369,7 @@ def render_rich_text_line(line: List[RichTextSegment], renderer, x: int, y: int,
 
 class TextLabel(UIElement):
     """
-    A text label with optional rich text support.
+    A text label with optional rich text support and shadow.
     """
     
     _properties: Dict[str, Dict[str, Any]] = {
@@ -397,6 +398,7 @@ class TextLabel(UIElement):
         font_name: Optional[str] = None,
         rich_text: bool = False,
         use_theme_color: bool = True,
+        shadow: Optional[UiShadow] = None,
         pivot: Tuple[float, float] = (0, 0),
         theme: Optional[ThemeType] = None,
         element_id: Optional[str] = None,
@@ -406,6 +408,7 @@ class TextLabel(UIElement):
         self._font = FontManager.get_font(font_name, font_size)
         self.rich_text = rich_text
         self.use_theme_color = use_theme_color
+        self.shadow = shadow or ThemeManager.get_shadow('text_primary')
 
         # Calculate size based on text
         if rich_text:
@@ -448,6 +451,7 @@ class TextLabel(UIElement):
             'font_name': self.font_name,
             'rich_text': self.rich_text,
             'use_theme_color': self.use_theme_color,
+            'shadow': self.shadow,
             'pivot': self.pivot,
             'theme': self.theme_type,
             'element_id': self.element_id,
@@ -455,6 +459,10 @@ class TextLabel(UIElement):
         if self.custom_color:
             args['color'] = self.custom_color.to_tuple() if isinstance(self.custom_color, Color) else self.custom_color
         return args
+
+    def set_shadow(self, shadow: Optional[UiShadow]) -> None:
+        """Set or remove text shadow."""
+        self.shadow = shadow
 
     def get_text(self) -> str:
         return self.text
@@ -515,8 +523,12 @@ class TextLabel(UIElement):
             return
 
         actual_x, actual_y = self.get_actual_position()
-        
+        style = {}
+        if self.shadow:
+            style['shadow'] = self.shadow
+
         if self.rich_text:
+            # Rich text does not support shadow yet (skip it)
             default_color = self._get_text_color()
             render_rich_text(
                 self.text,
@@ -534,7 +546,7 @@ class TextLabel(UIElement):
                 color_tuple = (text_color.r, text_color.g, text_color.b)
             else:
                 color_tuple = text_color
-            renderer.draw_text(self.text, actual_x, actual_y, color_tuple, self.font)
+            renderer.draw_text(self.text, actual_x, actual_y, color_tuple, self.font, style=style)
 
         super().render(renderer)
 
@@ -545,7 +557,7 @@ class TextLabel(UIElement):
 
 class LongTextLabel(UIElement):
     """
-    A multi-line text label with optional rich text support and word wrapping.
+    A multi-line text label with optional rich text support, word wrapping, and shadow.
     """
     
     _properties: Dict[str, Dict[str, Any]] = {
@@ -579,6 +591,7 @@ class LongTextLabel(UIElement):
         rich_text: bool = False,
         line_spacing: int = 4,
         wrap_width: int = 0,
+        shadow: Optional[UiShadow] = None,
         pivot: Tuple[float, float] = (0, 0),
         theme: Optional[ThemeType] = None,
         element_id: Optional[str] = None,
@@ -589,6 +602,7 @@ class LongTextLabel(UIElement):
         self.rich_text = rich_text
         self.line_spacing = line_spacing
         self.wrap_width = wrap_width
+        self.shadow = shadow
         self.custom_color: Optional[Color] = None
         if color is not None:
             self.set_text_color(color)
@@ -719,6 +733,10 @@ class LongTextLabel(UIElement):
             total += seg_font.size(seg.text)[0]
         return total
 
+    def set_shadow(self, shadow: Optional[UiShadow]) -> None:
+        """Set or remove text shadow."""
+        self.shadow = shadow
+
     def set_text_color(self, color: Union[Tuple[int, int, int], Color, ThemeStyle]) -> None:
         if isinstance(color, Color):
             self.custom_color = color
@@ -757,7 +775,10 @@ class LongTextLabel(UIElement):
 
         actual_x, actual_y = self.get_actual_position()
         default_color = self._get_text_color()
-        
+        style = {}
+        if self.shadow:
+            style['shadow'] = self.shadow
+
         if self._cache_dirty:
             if self.rich_text:
                 self._lines_cache = self._wrap_rich_text(self._raw_text, self.wrap_width or self.width)
@@ -765,12 +786,14 @@ class LongTextLabel(UIElement):
                 plain_lines = self._wrap_plain_text(self._raw_text, self.wrap_width or self.width)
                 self._lines_cache = [[RichTextSegment(line)] for line in plain_lines]
             self._cache_dirty = False
-        
+
         current_y = actual_y
         for line in self._lines_cache:
             if self.rich_text:
+                # Rich text does not support shadow yet; render without it.
                 render_rich_text_line(line, renderer, actual_x, current_y, default_color, self.font)
             else:
+                # Plain text line: we can apply shadow
                 text = ''.join(seg.text for seg in line)
                 if isinstance(default_color, ThemeStyle):
                     color_tuple = default_color.color
@@ -778,37 +801,40 @@ class LongTextLabel(UIElement):
                     color_tuple = (default_color.r, default_color.g, default_color.b)
                 else:
                     color_tuple = default_color
-                renderer.draw_text(text, actual_x, current_y, color_tuple, self.font)
+                renderer.draw_text(text, actual_x, current_y, color_tuple, self.font, style=style)
             current_y += self.font.get_height() + self.line_spacing
 
         super().render(renderer)
 
 
 # ============================================================================
-# ImageLabel
+# ImageLabel (with Icon support via duck typing)
 # ============================================================================
 
 class ImageLabel(UIElement):
     """
     A simple label that displays an image (non‑interactive).
+    Supports Icon objects (detected by presence of 'get_surface' method).
     """
     _properties: Dict[str, Dict[str, Any]] = {
         **UIElement._properties,
-        'image_path': {'name': 'image path', 'key': 'image_path', 'type': Union[str, pygame.Surface], 'editable': False,
-                       'description': 'Path to image file or Surface object.'},
+        'image_path': {'name': 'image path', 'key': 'image_path', 'type': Union[str, pygame.Surface, 'Icon'], 'editable': False,
+                       'description': 'Path to image file, Surface, or Icon object.'},
     }
 
     def __init__(
         self,
         x: int,
         y: int,
-        image_path: Union[str, pygame.Surface],
+        image_path: Union[str, pygame.Surface, 'Icon'],
         width: Optional[int] = None,
         height: Optional[int] = None,
         pivot: Tuple[float, float] = (0, 0),
-        element_id: Optional[str] = None
+        element_id: Optional[str] = None,
+        **kwargs
     ) -> None:
         self.image_path = image_path
+        self.image_color = kwargs.get('image_color', None)  # optional color for Icon
         self._image: Optional[pygame.Surface] = None
         self._load_image()
 
@@ -832,7 +858,12 @@ class ImageLabel(UIElement):
             'height': self.height,
             'pivot': self.pivot,
             'element_id': self.element_id,
+            'image_color': self.image_color,
         }
+
+    def _is_icon_like(self, obj) -> bool:
+        """Detect if an object is an Icon by checking for the get_surface method."""
+        return hasattr(obj, 'get_surface') and callable(getattr(obj, 'get_surface'))
 
     def _load_image(self) -> None:
         if self.image_path is None:
@@ -841,6 +872,10 @@ class ImageLabel(UIElement):
             return
         if isinstance(self.image_path, pygame.Surface):
             self._image = self.image_path
+        elif self._is_icon_like(self.image_path):
+            # It's an Icon-like object; call get_surface with the stored color
+            color = self.image_color if self.image_color is not None else (255, 255, 255)
+            self._image = self.image_path.get_surface(color=color)
         elif isinstance(self.image_path, str):
             if not os.path.exists(self.image_path):
                 self._image = pygame.Surface((100, 100))
@@ -848,15 +883,34 @@ class ImageLabel(UIElement):
                 return
             self._image = pygame.image.load(self.image_path).convert_alpha()
         else:
-            raise TypeError(f"image_path must be str or pygame.Surface, got {type(self.image_path)}")
+            raise TypeError(f"image_path must be str, pygame.Surface, or Icon-like object, got {type(self.image_path)}")
 
-    def set_image(self, image_path: Union[str, pygame.Surface]) -> None:
+    def set_image(self, image_path: Union[str, pygame.Surface, Path, AtlasItem, 'Icon']) -> None:
         if isinstance(image_path, str):
             self.image_path = image_path
             self._load_image()
         elif isinstance(image_path, pygame.Surface):
             self.image_path = None
             self._image = image_path
+        elif isinstance(image_path, Path):
+            self.image_path = str(image_path)
+            self._load_image()
+        elif isinstance(image_path, AtlasItem):
+            self.image_path = str(image_path.path)
+            self._load_image()
+        elif self._is_icon_like(image_path):
+            self.image_path = image_path
+            self._load_image()
+        else:
+            raise TypeError("Unsupported image type")
+
+    def set_image_color(self, color: Union[Tuple[int, int, int], Color, ThemeStyle, ColorKeys]) -> None:
+        if isinstance(color, ThemeStyle):
+            color = color.color
+        self.image_color = color
+        # Reload icon if current image_path is an Icon-like object
+        if self._is_icon_like(self.image_path):
+            self._load_image()
 
     def get_image(self) -> pygame.Surface:
         return self._image

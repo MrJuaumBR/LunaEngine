@@ -330,3 +330,55 @@ def interpolate_color(colors, t):
         c1[i] + (c2[i] - c1[i]) * t_seg
         for i in range(4)
     )
+    
+def to_pygame_color(color_val):
+    """
+    Convert various color representations to a pygame.Color object.
+    Supports:
+    - pygame.Color
+    - Color (from backend.types)
+    - ThemeStyle (from ui.themes)
+    - ColorKeys (returns the first key's color)
+    - tuple/list of 3 or 4 ints/floats
+    - int (grayscale)
+    - str (hex or named color)
+    """
+    import pygame
+    from ..backend.types import Color
+    from ..ui.themes import ThemeStyle
+    from ..backend.types import ColorKeys
+
+    if isinstance(color_val, pygame.Color):
+        return color_val
+    if isinstance(color_val, Color):
+        return pygame.Color(color_val.r, color_val.g, color_val.b, int(color_val.a * 255))
+    if isinstance(color_val, ThemeStyle):
+        r, g, b = color_val.color
+        a = int(color_val.alpha * 255)
+        return pygame.Color(r, g, b, a)
+    if isinstance(color_val, ColorKeys):
+        # Get the first color (or average if you prefer)
+        if hasattr(color_val, 'keys') and color_val.keys:
+            first_color = next(iter(color_val.keys.values()))
+            return pygame.Color(first_color.r, first_color.g, first_color.b, int(first_color.a * 255))
+        else:
+            return pygame.Color(255, 255, 255)
+    if isinstance(color_val, (tuple, list)):
+        if len(color_val) == 3:
+            return pygame.Color(int(color_val[0]), int(color_val[1]), int(color_val[2]))
+        elif len(color_val) >= 4:
+            return pygame.Color(int(color_val[0]), int(color_val[1]), int(color_val[2]),
+                                int(color_val[3]) if color_val[3] is not None else 255)
+    if isinstance(color_val, int):
+        v = max(0, min(255, color_val))
+        return pygame.Color(v, v, v)
+    if isinstance(color_val, str):
+        # Try hex
+        if color_val.startswith('#'):
+            return pygame.Color(color_val)
+        # Try named color (pygame supports many)
+        try:
+            return pygame.Color(color_val)
+        except ValueError:
+            pass
+    return pygame.Color(255, 255, 255)

@@ -48,18 +48,18 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">A versatile data visualization component: bar, pie, line, scatter, radar charts.<br>Supports gradients, animations, and legend.</p>
+                    <p class="lead fs-6">A versatile data visualization component: bar, pie, line, scatter, radar charts.<br>Supports gradients, animations, legend, and per‑element shadows.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'chart_type': {'name': 'chart type', 'key': 'chart_type', 'type': str, 'editable': True, 'description': 'Type of chart: bar, pie, line, scatter, radar', 'options': ['bar', 'pie', 'line', 'scatter', 'radar']}, 'title': {'name': 'title', 'key': 'title', 'type': str, 'editable': True, 'description': 'Chart title text.'}, 'show_labels': {'name': 'show labels', 'key': 'show_labels', 'type': bool, 'editable': True, 'description': 'Display data labels.'}, 'show_legend': {'name': 'show legend', 'key': 'show_legend', 'type': bool, 'editable': True, 'description': 'Display color legend.'}, 'use_gradient': {'name': 'use gradient', 'key': 'use_gradient', 'type': bool, 'editable': True, 'description': 'Use color gradient across data points.'}}</code>
+                    <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'chart_type': {'name': 'chart type', 'key': 'chart_type', 'type': str, 'editable': True, 'description': 'Type of chart: bar, pie, line, scatter, radar', 'options': ['bar', 'pie', 'line', 'scatter', 'radar']}, 'title': {'name': 'title', 'key': 'title', 'type': str, 'editable': True, 'description': 'Chart title text.'}, 'show_labels': {'name': 'show labels', 'key': 'show_labels', 'type': bool, 'editable': True, 'description': 'Display data labels.'}, 'show_legend': {'name': 'show legend', 'key': 'show_legend', 'type': bool, 'editable': True, 'description': 'Display color legend.'}, 'use_gradient': {'name': 'use gradient', 'key': 'use_gradient', 'type': bool, 'editable': True, 'description': 'Use color gradient across data points.'}, 'shadow_enabled': {'name': 'shadow enabled', 'key': 'shadow_enabled', 'type': bool, 'editable': True, 'description': 'Enable subtle shadow on chart elements.'}, 'shadow_offset': {'name': 'shadow offset', 'key': 'shadow_offset', 'type': int, 'editable': True, 'description': 'Pixel offset for element shadows.'}, 'shadow_alpha': {'name': 'shadow alpha', 'key': 'shadow_alpha', 'type': float, 'editable': True, 'description': 'Alpha of shadow (0.0–1.0).'}}</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, data: Optional[List[float]] = None, labels: Optional[List[str]] = None, colors: Optional[List[Tuple[int, int, int]]] = None, chart_type: Literal['bar', 'pie', 'line', 'scatter', 'radar'] = 'bar', orientation: Literal['vertical', 'horizontal'] = 'vertical', title: str = '', show_labels: bool = True, show_legend: bool = False, min_value: Optional[float] = None, max_value: Optional[float] = None, radar_max_value: float = 1.0, radar_axis_labels: Optional[List[str]] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
-                <div class="mt-2 text-muted small">Initialize a chart visualizer.<br><br>Args:<br> &nbsp; &nbsp;x, y: Position.<br> &nbsp; &nbsp;width, height: Dimensions.<br> &nbsp; &nbsp;data: List of numeric values.<br> &nbsp; &nbsp;labels: Corresponding labels.<br> &nbsp; &nbsp;colors: List of colors per data point (RGB).<br> &nbsp; &nbsp;chart_type: &#x27;bar&#x27;, &#x27;pie&#x27;, &#x27;line&#x27;, &#x27;scatter&#x27;, &#x27;radar&#x27;.<br> &nbsp; &nbsp;orientation: &#x27;vertical&#x27; or &#x27;horizontal&#x27; (for bar charts).<br> &nbsp; &nbsp;title: Chart title.<br> &nbsp; &nbsp;show_labels: Display labels on/inside chart.<br> &nbsp; &nbsp;show_legend: Display color legend.<br> &nbsp; &nbsp;min_value, max_value: Manual value range.<br> &nbsp; &nbsp;radar_max_value: Maximum value for radar chart (default 1.0).<br> &nbsp; &nbsp;radar_axis_labels: Labels for radar axes (defaults to labels).<br> &nbsp; &nbsp;pivot: Anchor point.<br> &nbsp; &nbsp;theme: Theme to apply.<br> &nbsp; &nbsp;element_id: Custom ID.<br> &nbsp; &nbsp;**kwargs: Gradient options: use_gradient (bool), gradient_colors (list of RGB),<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; gradient_start (RGB), gradient_end (RGB).</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_get_init_args">
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
@@ -101,6 +101,14 @@
                 <code class="fs-6 fw-bold text-color-title">def _get_point_color(self: Any, index: int, t: Optional[float] = None) -> Tuple[int, int, int]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_shadow_color">
+                <code class="fs-6 fw-bold text-color-title">def _shadow_color(self: Any, color: Tuple[int, int, int]) -> Tuple[int, int, int, int]</code>
+                <div class="mt-2 text-muted small">Return a shadow version of the color (darker, with alpha).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_draw_element_shadow">
+                <code class="fs-6 fw-bold text-color-title">def _draw_element_shadow(self: Any, renderer: Renderer, draw_func: Any, *args: tuple, **kwargs: dict) -> Any</code>
+                <div class="mt-2 text-muted small">Draws a shadow version of an element by shifting it and using a shadow color.<br>The draw_func is called with offset coordinates and a shadow color.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-render">
                 <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -139,7 +147,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Real-time audio visualization element: bars, waveform, circle, particles, spectrum.<br>Connects to an OpenAL audio source.</p>
+                    <p class="lead fs-6">Real-time audio visualization element: bars, waveform, circle, particles, spectrum.<br>Connects to an OpenAL audio source.<br>Shadows are not applied to audio visualizers for performance and clarity.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -265,7 +273,7 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, columns: Optional[List[str]] = None, rows: Optional[List[List[str]]] = None, header_height: int = 25, row_height: int = 25, cell_padding: int = 5, show_headers: bool = True, selection_enabled: bool = False, on_row_select: Optional[Callable[[int, List[str]], None]] = None, odd_row_color: Optional[Tuple[int, int, int]] = None, even_row_color: Optional[Tuple[int, int, int]] = None, header_color: Optional[Tuple[int, int, int]] = None, header_text_color: Optional[Tuple[int, int, int]] = None, border_color: Optional[Tuple[int, int, int]] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None) -> None</code>
-                <div class="mt-2 text-muted small">Initialize a fixed-size table.<br><br>Args:<br> &nbsp; &nbsp;x, y: Position.<br> &nbsp; &nbsp;width, height: Dimensions (height is fixed; content clipped if taller).<br> &nbsp; &nbsp;columns: List of column names.<br> &nbsp; &nbsp;rows: 2D list of row data (each row is a list of strings).<br> &nbsp; &nbsp;header_height: Height of the header row.<br> &nbsp; &nbsp;row_height: Height of each data row.<br> &nbsp; &nbsp;cell_padding: Padding inside each cell.<br> &nbsp; &nbsp;show_headers: If True, display column headers.<br> &nbsp; &nbsp;selection_enabled: If True, allow row selection via mouse click.<br> &nbsp; &nbsp;on_row_select: Callback when a row is selected (row_index, row_data).<br> &nbsp; &nbsp;odd_row_color, even_row_color, header_color, header_text_color, border_color: Custom colours.<br> &nbsp; &nbsp;pivot, theme, element_id: Standard UIElement arguments.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_get_init_args">
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
@@ -275,49 +283,53 @@
                 <code class="fs-6 fw-bold text-color-title">def font(self: Any) -> pygame.font.Font</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-update_theme">
+                <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: ThemeType) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_recalc">
                 <code class="fs-6 fw-bold text-color-title">def _recalc(self: Any) -> None</code>
-                <div class="mt-2 text-muted small">Compute column widths (equal distribution).</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-add_column">
                 <code class="fs-6 fw-bold text-color-title">def add_column(self: Any, name: str) -> None</code>
-                <div class="mt-2 text-muted small">Add a new column at the end.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-insert_column">
                 <code class="fs-6 fw-bold text-color-title">def insert_column(self: Any, index: int, name: str) -> None</code>
-                <div class="mt-2 text-muted small">Insert a column at the given index.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-remove_column">
                 <code class="fs-6 fw-bold text-color-title">def remove_column(self: Any, index: int) -> None</code>
-                <div class="mt-2 text-muted small">Remove a column by index.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-add_row">
                 <code class="fs-6 fw-bold text-color-title">def add_row(self: Any, data: List[str]) -> None</code>
-                <div class="mt-2 text-muted small">Add a new row at the end.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-insert_row">
                 <code class="fs-6 fw-bold text-color-title">def insert_row(self: Any, index: int, data: List[str]) -> None</code>
-                <div class="mt-2 text-muted small">Insert a row at the given index.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-remove_row">
                 <code class="fs-6 fw-bold text-color-title">def remove_row(self: Any, index: int) -> None</code>
-                <div class="mt-2 text-muted small">Remove a row by index.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-set_cell">
                 <code class="fs-6 fw-bold text-color-title">def set_cell(self: Any, row: int, col: int, value: str) -> None</code>
-                <div class="mt-2 text-muted small">Set the value of a specific cell.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-get_cell">
                 <code class="fs-6 fw-bold text-color-title">def get_cell(self: Any, row: int, col: int) -> str</code>
-                <div class="mt-2 text-muted small">Get the value of a specific cell.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-clear">
                 <code class="fs-6 fw-bold text-color-title">def clear(self: Any) -> None</code>
-                <div class="mt-2 text-muted small">Clear all rows.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-select_row">
                 <code class="fs-6 fw-bold text-color-title">def select_row(self: Any, row_index: int) -> None</code>
-                <div class="mt-2 text-muted small">Select a row programmatically.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: Any) -> None</code>
@@ -329,7 +341,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-on_click">
                 <code class="fs-6 fw-bold text-color-title">def on_click(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Handle mouse click for row selection.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
             </div>
@@ -355,7 +367,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-13 17:25
+                        Documentation generated on 2026-08-17 22:16
                     </p>
                 </div>
             </div>

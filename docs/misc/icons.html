@@ -35,88 +35,12 @@
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>icons.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">Basic Icons for LunaEngine(All them need to be made in Python to be compiled with the Engine/Framework)<br><br>LOCATION: lunaengine/misc/icons.py</span>
+                <span class="text-muted">lunaengine/misc/icons.py<br><br>Themed Icon System for LunaEngine<br>- Supports PNG icons with white/transparent masks<br>- Flat color recoloring via BLEND_RGBA_MULT<br>- Gradient recoloring via ColorKeys (linear or radial)<br>- Optional scaling to a uniform size (square)<br>- Caching per (color, size) combination<br>- Factory class Icons with access to all built‑in icons</span>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-12">
                 
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-colors">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Colors</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>PRIMARY: Any = (70, 130, 180)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>PRIMARY_LIGHT: Any = (100, 149, 237)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>PRIMARY_DARK: Any = (30, 100, 150)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>SUCCESS: Any = (50, 205, 50)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>SUCCESS_LIGHT: Any = (144, 238, 144)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>ERROR: Any = (220, 20, 60)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>ERROR_LIGHT: Any = (255, 200, 200)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>WARNING: Any = (255, 165, 0)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>WARNING_LIGHT: Any = (255, 215, 0)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>WHITE: Any = (255, 255, 255)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>LIGHT_GRAY: Any = (240, 240, 240)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>DARK_GRAY: Any = (100, 100, 100)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>BLACK: Any = (40, 40, 40)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>FOLDER: Any = (255, 215, 0)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>KEY: Any = (184, 134, 11)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>LOCK: Any = (139, 0, 0)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>UNLOCK: Any = (0, 139, 0)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>HOME: Any = (138, 43, 226)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>SAVE: Any = (34, 139, 34)</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>LOAD: Any = (65, 105, 225)</code>
-                </div></div>
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    <p class="text-muted italic">No methods defined.</p>
-                </div>
-            </div>
-        </div>
         <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-icon">
             <div class="card-header bg-success text-white py-3">
                 <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Icon</h3>
@@ -124,469 +48,31 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
+                    <p class="lead fs-6">A theme‑aware icon that can be recoloured with a flat colour or a gradient.<br><br>The original PNG must be a white shape on a transparent background.<br>Scaling is performed once per requested size.</p>
                 </div>
-                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>name: str = None</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>icon: pg.Surface = None</code>
-                </div></div>
+                
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icon-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, name: str, size: int = 32) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icon-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icon-get_icon">
-                <code class="fs-6 fw-bold text-color-title">def get_icon(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconinfo">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconInfo</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconinfo-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconcheck">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconCheck</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconcheck-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconcross">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconCross</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconcross-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconwarn">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconWarn</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconwarn-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconerror">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconError</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconerror-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconsuccess">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconSuccess</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconsuccess-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-icontriangleup">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconTriangleUp</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icontriangleup-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-icontriangledown">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconTriangleDown</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icontriangledown-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-icontriangleleft">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconTriangleLeft</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icontriangleleft-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-icontriangleright">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconTriangleRight</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icontriangleright-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconplus">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconPlus</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconplus-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconminus">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconMinus</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconminus-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconcircle">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconCircle</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconcircle-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconsquare">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconSquare</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconsquare-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-icongear">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconGear</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icongear-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconfolder">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconFolder</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconfolder-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconkey">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconKey</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconkey-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconlocklocked">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconLockLocked</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconlocklocked-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconlockunlocked">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconLockUnlocked</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconlockunlocked-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconhome">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconHome</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconhome-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconsave">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconSave</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconsave-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
-            </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconload">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconLoad</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconload-generate">
-                <code class="fs-6 fw-bold text-color-title">def generate(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, icon_filename: str, size: Optional[int] = None) -> Any</code>
+                <div class="mt-2 text-muted small">Args:<br> &nbsp; &nbsp;icon_filename: name of the PNG file inside the icons folder.<br> &nbsp; &nbsp;size: if given, the icon will be scaled to a square of this size.<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If None, the original dimensions are kept.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icon-get_surface">
+                <code class="fs-6 fw-bold text-color-title">def get_surface(self: Any, color: Union[Color, Tuple[int, int, int], ColorKeys, None], gradient_type: Literal['linear', 'radial'] = 'linear', gradient_angle: float = 0.0) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Return a recoloured (and optionally scaled) version of the icon.<br><br>Args:<br> &nbsp; &nbsp;color: flat colour (Color or (r,g,b)) or a ColorKeys gradient.<br> &nbsp; &nbsp;gradient_type: only used if color is a ColorKeys: &#x27;linear&#x27; or &#x27;radial&#x27;.<br> &nbsp; &nbsp;gradient_angle: only used for linear gradients (degrees).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icon-_apply_flat_color">
+                <code class="fs-6 fw-bold text-color-title">def _apply_flat_color(self: Any, color: Union[Color, Tuple[int, int, int], None]) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Recolour with a flat RGB colour using multiply blending.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icon-_apply_gradient">
+                <code class="fs-6 fw-bold text-color-title">def _apply_gradient(self: Any, color_keys: ColorKeys, gradient_type: str = 'linear', angle: float = 0.0) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Generate a gradient surface and multiply it with the icon mask.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icon-clear_cache">
+                <code class="fs-6 fw-bold text-color-title">def clear_cache(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Clear the internal cache, forcing fresh recolouring on next get_surface().</div>
             </div>
                 </div>
             </div>
@@ -598,115 +84,144 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
+                    <p class="lead fs-6">Factory class for all built‑in icons.<br><br>Each static method returns an Icon instance for the corresponding PNG.<br>The optional `size` parameter sets the desired square size.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>INFO: Any = 'info'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>CHECK: Any = 'check'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>CROSS: Any = 'cross'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>WARN: Any = 'warn'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>ERROR: Any = 'error'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>SUCCESS: Any = 'success'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>TRIANGLE_UP: Any = 'triangle_up'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>TRIANGLE_DOWN: Any = 'triangle_down'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>TRIANGLE_LEFT: Any = 'triangle_left'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>TRIANGLE_RIGHT: Any = 'triangle_right'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>PLUS: Any = 'plus'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>MINUS: Any = 'minus'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>CIRCLE: Any = 'circle'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>SQUARE: Any = 'square'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>GEAR: Any = 'gear'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>FOLDER: Any = 'folder'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>KEY: Any = 'key'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>LOCK_LOCKED: Any = 'lock_locked'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>LOCK_UNLOCKED: Any = 'lock_unlocked'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>HOME: Any = 'home'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>SAVE: Any = 'save'</code>
-                </div>
-                <div class="attribute-item ms-3 mb-2">
-                    <code>LOAD: Any = 'load'</code>
+                    <code>_ALL_ICON_NAMES: Any = ['success', 'info', 'warn', 'error', 'home', 'folder', 'plus', 'cross', 'search', 'settings', 'save', 'load', 'picture']</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
-                    <p class="text-muted italic">No methods defined.</p>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-iconfactory">
-            <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class IconFactory</h3>
-            </div>
-            <div class="card-body">
-                <div class="docstring-section mb-4">
-                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">No documentation</p>
-                </div>
-                
-                <div class="methods-section">
-                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-iconfactory-get_icon">
-                <code class="fs-6 fw-bold text-color-title">def get_icon(icon_type: Icons, size: int = 32) -> pg.Surface</code>
-                <div class="mt-2 text-muted small">Factory method to get icon by type</div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-success">
+                <code class="fs-6 fw-bold text-color-title">def SUCCESS(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-info">
+                <code class="fs-6 fw-bold text-color-title">def INFO(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-warn">
+                <code class="fs-6 fw-bold text-color-title">def WARN(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-error">
+                <code class="fs-6 fw-bold text-color-title">def ERROR(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-home">
+                <code class="fs-6 fw-bold text-color-title">def HOME(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-house">
+                <code class="fs-6 fw-bold text-color-title">def HOUSE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-folder">
+                <code class="fs-6 fw-bold text-color-title">def FOLDER(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-plus">
+                <code class="fs-6 fw-bold text-color-title">def PLUS(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-cross">
+                <code class="fs-6 fw-bold text-color-title">def CROSS(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-search">
+                <code class="fs-6 fw-bold text-color-title">def SEARCH(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-settings">
+                <code class="fs-6 fw-bold text-color-title">def SETTINGS(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-save">
+                <code class="fs-6 fw-bold text-color-title">def SAVE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-load">
+                <code class="fs-6 fw-bold text-color-title">def LOAD(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-picture">
+                <code class="fs-6 fw-bold text-color-title">def PICTURE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-unlock">
+                <code class="fs-6 fw-bold text-color-title">def UNLOCK(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-lock">
+                <code class="fs-6 fw-bold text-color-title">def LOCK(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-key">
+                <code class="fs-6 fw-bold text-color-title">def KEY(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-file">
+                <code class="fs-6 fw-bold text-color-title">def FILE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-wrench">
+                <code class="fs-6 fw-bold text-color-title">def WRENCH(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-hammer">
+                <code class="fs-6 fw-bold text-color-title">def HAMMER(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-shield">
+                <code class="fs-6 fw-bold text-color-title">def SHIELD(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-engine">
+                <code class="fs-6 fw-bold text-color-title">def ENGINE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-back">
+                <code class="fs-6 fw-bold text-color-title">def BACK(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-steam">
+                <code class="fs-6 fw-bold text-color-title">def STEAM(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-discord">
+                <code class="fs-6 fw-bold text-color-title">def DISCORD(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-youtube">
+                <code class="fs-6 fw-bold text-color-title">def YOUTUBE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-github">
+                <code class="fs-6 fw-bold text-color-title">def GITHUB(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-get_icon">
+                <code class="fs-6 fw-bold text-color-title">def get_icon(cls: Any, name: str, size: Optional[int] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">Get an icon by its name (case‑insensitive).<br><br>Example:<br> &nbsp; &nbsp;icon = Icons.get_icon(&#x27;home&#x27;, size=32)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-get_all">
+                <code class="fs-6 fw-bold text-color-title">def get_all(cls: Any, size: Optional[int] = None) -> List[Icon]</code>
+                <div class="mt-2 text-muted small">Return a list of Icon instances for all built‑in icons, all at the given size.<br>Order is: success, info, warn, error, home, folder, plus, cross,<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;search, settings, save, load, picture.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-get_all_dict">
+                <code class="fs-6 fw-bold text-color-title">def get_all_dict(cls: Any, size: Optional[int] = None) -> Dict[str, Icon]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-get_all_names">
+                <code class="fs-6 fw-bold text-color-title">def get_all_names(cls: Any) -> List[str]</code>
+                <div class="mt-2 text-muted small">Return the list of available icon names (as strings).</div>
             </div>
                 </div>
             </div>
         </div>
-                <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
                 
-            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-get_icon">
-                <div class="card-body">
-                    <code class="fs-5 fw-bold text-color-title">def get_icon(name: str, size: int = 32) -> pg.Surface</code>
-                    <p class="mt-2 mb-0 text-muted">Get icon by name string</p>
-                </div>
-            </div>
-            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-get_all_icons">
-                <div class="card-body">
-                    <code class="fs-5 fw-bold text-color-title">def get_all_icons(size: int = 32) -> dict</code>
-                    <p class="mt-2 mb-0 text-muted">Get dictionary of all icons</p>
-                </div>
-            </div>
+                
             </div>
         </div>
         <div class="mt-5 mb-5 text-center">
@@ -726,7 +241,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-13 17:25
+                        Documentation generated on 2026-08-17 22:16
                     </p>
                 </div>
             </div>

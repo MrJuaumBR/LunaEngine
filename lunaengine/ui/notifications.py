@@ -15,8 +15,7 @@ from .elements import UIElement, TextLabel, UiFrame, Button, FontManager, UIStat
 from .layer_manager import LayerType
 from .themes import ThemeManager, ThemeType
 from ..backend.types import InputState
-from ..misc.icons import IconFactory, Icons, get_icon
-
+from ..misc.icons import Icon, Icons
 
 class NotificationType(Enum):
     """Types of notifications with different visual styles."""
@@ -49,7 +48,7 @@ class NotificationStyle:
                  bg_color: Tuple[int, int, int],
                  border_color: Tuple[int, int, int],
                  text_color: Tuple[int, int, int],
-                 icon_type: Optional[Icons] = None,
+                 icon_type: Optional[Icon] = None,
                  duration: float = 5.0,
                  show_icon: bool = True):
         """
@@ -87,7 +86,7 @@ class NotificationConfig:
                  on_close: Optional[Callable] = None,
                  on_click: Optional[Callable] = None,
                  metadata: Any = None,
-                 custom_icon: Optional[Icons] = None):
+                 custom_icon: Optional[Icon] = None):
         """
         Initialize notification configuration.
         
@@ -371,7 +370,7 @@ class Notification(UIElement):
         if self.nstyle.show_icon and self.nstyle.icon_type:
             try:
                 # Create icon surface
-                icon_surface = IconFactory.get_icon(self.nstyle.icon_type, icon_size)
+                icon_surface = self.nstyle.icon_type(icon_size).get_surface(ThemeManager.get_color('accent1', theme_type=self.theme_type))
                 
                 # Create a simple UI element to display the icon
                 self.icon_element = UIElement(
@@ -445,7 +444,7 @@ class Notification(UIElement):
             
             # Add cross icon to close button
             try:
-                cross_icon = IconFactory.get_icon(Icons.CROSS, close_btn_size - 4)
+                cross_icon = Icons.CROSS(close_btn_size).get_surface(self.nstyle.text_color)
                 self.close_button.icon_surface = cross_icon
                 
                 # Override button render to include icon

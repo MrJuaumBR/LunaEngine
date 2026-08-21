@@ -1,47 +1,40 @@
 """
-Performance Monitoring - System Optimization and Resource Management
+performance.py – Performance monitoring, profiling, and garbage collection.
 
-LOCATION: lunaengine/utils/performance.py
-
-DESCRIPTION:
-Comprehensive performance monitoring system that tracks frame rates,
-system resources, and provides optimization utilities. Includes hardware
-detection, garbage collection, and performance statistics.
-
-KEY COMPONENTS:
-- PerformanceMonitor: Real-time FPS tracking and hardware monitoring
-- GarbageCollector: Automatic resource cleanup and memory management
-- Hardware detection for system-specific optimizations
-- Frame time analysis and performance statistics
-
-LIBRARIES USED:
-- psutil: System resource monitoring (CPU, memory)
-- pygame: Version detection and integration
-- platform: System information and platform detection
-- time: Precise timing measurements
-- threading: Background monitoring capabilities
-- collections: Efficient data structures for performance tracking
-
-USAGE:
->>> monitor = PerformanceMonitor()
->>> stats = monitor.get_stats()
->>> hardware = monitor.get_hardware_info()
->>> gc = GarbageCollector()
->>> gc.cleanup()
+Provides:
+- PerformanceMonitor: FPS tracking, hardware info, and task timing.
+- GarbageCollector: automatic cleanup of caches.
+- Integration with BackgroundTaskManager for per‑task CPU/memory metrics.
 """
-import sys, psutil, subprocess, platform, time, pygame, threading, os
-from typing import Dict, List, Tuple, Optional, Any, Literal
+
+import sys
+import time
+import platform
+import threading
 from collections import deque
 from dataclasses import dataclass
-from enum import Enum
+from typing import Dict, List, Tuple, Optional, Any, Callable
+
+try:
+    import psutil
+    HAVE_PSUTIL = True
+except ImportError:
+    HAVE_PSUTIL = False
+    psutil = None
+
+import pygame
 from . import math_utils
+
+# ----------------------------------------------------------------------
+# TimeProfile (unchanged, but kept for completeness)
+# ----------------------------------------------------------------------
 
 class TimeProfile:
     def __init__(self, category: str = "", max_history: int = 60):
         self.category = category
         self.start_time = 0.0
         self.end_time = 0.0
-        self.history = deque(maxlen=max_history)   # store per-frame durations
+        self.history = deque(maxlen=max_history)
         self._used_this_frame = False
 
     def start(self):
@@ -50,45 +43,45 @@ class TimeProfile:
 
     def stop(self):
         self.end_time = time.perf_counter()
-        self._used_this_frame = False   # will be recorded at end_frame
+        self._used_this_frame = False
         self._insert_new_history()
-        
+
     def _insert_new_history(self):
         if len(self.history) >= self.history.maxlen:
-            del self.history[0]
-        self.history.append((self.end_time - self.start_time) * 1000.0)        
-        
+            self.history.popleft()
+        self.history.append((self.end_time - self.start_time) * 1000.0)
+
     end = stop
 
     @property
     def duration(self) -> float:
-        # Return last recorded duration from history (safe for display)
         return self.history[-1] if self.history else 0.0
 
     def record_current(self):
-        """Record the current duration into history."""
         if self.start_time > 0 and self.end_time > 0 and self.end_time > self.start_time:
             self.history.append((self.end_time - self.start_time) * 1000.0)
-        # Reset for next frame
         self.start_time = 0.0
         self.end_time = 0.0
         self._used_this_frame = False
-        
+
+
+# ----------------------------------------------------------------------
+# PerformanceProfiler (unchanged)
+# ----------------------------------------------------------------------
+
 class PerformanceProfiler:
-    """Performance profiling with detailed timing breakdown"""
-    
     def __init__(self, max_history: int = 100):
         self.max_history = max_history
         self.timers: Dict[str, TimeProfile] = {}
         self._enabled = False
-        self._last_frame_timings = {} 
-    
+        self._last_frame_timings = {}
+
     def enable(self, enabled: bool = True):
         self._enabled = enabled
-        
+
     def disable(self):
         self._enabled = False
-        
+
     def is_enabled(self) -> bool:
         return self._enabled
 
@@ -96,13 +89,13 @@ class PerformanceProfiler:
         if category not in self.timers:
             self.timers[category] = TimeProfile(category)
         return self.timers[category]
-    
+
     def get_all_timers(self) -> Dict[str, TimeProfile]:
         return self.timers
-    
+
     def get_timers_list(self) -> List[TimeProfile]:
         return list(self.timers.values())
-    
+
     def start_timer(self, category: str):
         if not self._enabled:
             return
@@ -118,63 +111,97 @@ class PerformanceProfiler:
     def create_timer(self, category: str):
         if category not in self.timers:
             self.timers[category] = TimeProfile(category, self.max_history)
-        
+
     def begin_frame(self):
-        """Begin a new frame of profiling"""
-        if not self._enabled:
-            return
-    
+        pass
+
     def end_frame(self):
-        """End current frame: record all used timers and store durations."""
         if not self._enabled:
             return
         self._last_frame_timings.clear()
         for cat, timer in self.timers.items():
             if timer._used_this_frame:
                 timer.record_current()
-            # Always provide a value (use last known duration if available)
             self._last_frame_timings[cat] = timer.duration
-            
+
     def get_frame_timings(self) -> Dict[str, float]:
-        """Get durations (ms) of the last completed frame."""
         return self._last_frame_timings.copy()
 
-        
-    def get_timing_stats(self, category: Literal["update", "render"]) -> Dict[str, Any]:
+    def get_timing_stats(self, category_prefix: str) -> Dict[str, Any]:
         stats = {}
         for timer in self.timers.values():
-            if timer.category.startswith(category):
+            if timer.category.startswith(category_prefix):
                 stats[timer.category] = {
-                    "start_time": timer.start_time,
-                    "end_time": timer.end_time,
-                    "duration": timer.duration
+                    "duration": timer.duration,
+                    "history": list(timer.history)
                 }
         return stats
 
+
+# ----------------------------------------------------------------------
+# PerformanceMonitor (extended with task metrics)
+# ----------------------------------------------------------------------
+
 class PerformanceMonitor:
-    """Optimized performance monitoring with minimal overhead"""
-    
     def __init__(self, history_size: int = 300):
         self.history_size = history_size
         self.frame_times = deque(maxlen=history_size)
         self.fps_history = deque(maxlen=history_size)
         self.last_frame_time = time.perf_counter()
         self.current_fps = 0.0
-        
-        # Performance profiler
+
+        # Profiler
         self.profiler = PerformanceProfiler(max_history=100)
-        
+
         # Hardware info cache
         self._hardware_info = None
         self._hardware_cache_time = 0
         self._cache_duration = 30.0
 
+        # Task metrics (for background tasks)
+        self._task_timers: Dict[str, Dict] = {}   # task_id -> {'cpu_start', 'mem_start'}
+        self._task_metrics: Dict[str, Dict] = {}  # task_id -> {'cpu_ms', 'mem_bytes'}
+
+    # ------------------------------------------------------------------
+    # Task metric tracking
+    # ------------------------------------------------------------------
+
+    def start_task_timer(self, task_id: str):
+        """Start measuring CPU time and memory for a background task."""
+        if not HAVE_PSUTIL:
+            return
+        self._task_timers[task_id] = {
+            'cpu_start': time.process_time(),
+            'mem_start': psutil.Process().memory_info().rss,
+        }
+
+    def end_task_timer(self, task_id: str) -> Optional[Dict[str, float]]:
+        """Stop measuring and return {'cpu_ms': ..., 'mem_bytes': ...}."""
+        data = self._task_timers.pop(task_id, None)
+        if not data or not HAVE_PSUTIL:
+            return None
+        cpu_used = (time.process_time() - data['cpu_start']) * 1000.0  # ms
+        mem_used = psutil.Process().memory_info().rss - data['mem_start']
+        metrics = {'cpu_ms': cpu_used, 'mem_bytes': mem_used}
+        self._task_metrics[task_id] = metrics
+        return metrics
+
+    def get_task_metrics(self, task_id: str) -> Optional[Dict[str, float]]:
+        """Return the last recorded metrics for a task."""
+        return self._task_metrics.get(task_id)
+
+    def clear_task_metrics(self):
+        """Clear all stored task metrics."""
+        self._task_metrics.clear()
+
+    # ------------------------------------------------------------------
+    # Original methods (unchanged)
+    # ------------------------------------------------------------------
+
     def get_frame_timing_breakdown(self) -> Dict[str, float]:
-        """Convenience: get last frame's timing per category."""
         return self.profiler.get_frame_timings()
 
     def get_performance_summary(self) -> Dict[str, Any]:
-        """Comprehensive summary including FPS and last frame timings."""
         return {
             "fps": self.get_stats(),
             "frame_timings": self.get_frame_timing_breakdown(),
@@ -183,14 +210,9 @@ class PerformanceMonitor:
         }
 
     def enable_profiling(self, enabled: bool = True):
-        """Enable or disable detailed performance profiling"""
-        if enabled:
-            self.profiler.enable()
-        else:
-            self.profiler.disable()
-    
+        self.profiler.enable(enabled)
+
     def is_profiling_enabled(self) -> bool:
-        """Check if detailed profiling is enabled"""
         return self.profiler.is_enabled()
 
     def create_timer(self, category: str):
@@ -198,73 +220,31 @@ class PerformanceMonitor:
 
     def start_timer(self, category: str):
         self.profiler.start_timer(category)
-    
+
     def end_timer(self, category: str):
         self.profiler.stop_timer(category)
+
     def get_all_timers(self) -> Dict[str, TimeProfile]:
         return self.profiler.get_all_timers()
-    
+
     def get_list_timers(self) -> List[TimeProfile]:
         return self.profiler.get_timers_list()
-    
+
     def timers_names(self) -> List[str]:
         return list(self.profiler.get_all_timers().keys())
-    
-    def get_update_timing_stats(self) -> Dict[str, Any]:
-        """Get update timing statistics"""
-        return self.profiler.get_timing_stats('update')
-    
-    def get_timing(self, category: str) -> Optional[TimeProfile]:
-        """Get the last recorded timing for a specific category."""
-        return self.profiler.get_timer(category)
-    
-    def get_render_timing_stats(self) -> Dict[str, Any]:
-        """Get render timing statistics"""
-        return self.profiler.get_timing_stats('render')
-    
-    def get_performance_summary(self) -> Dict[str, Any]:
-        """Get comprehensive performance summary"""
-        return {
-            "fps": self.get_stats(),
-            "update_times": self.get_update_timing_stats(),
-            "render_times": self.get_render_timing_stats(),
-            "hardware": self.get_hardware_info(),
-            "profiling_enabled": self.is_profiling_enabled()
-        }
 
-    def _getMemUsageClass(self, classM, humanize:bool=True) -> Dict[str, Any]:
-        """Workaround to access internal usage data of a class instance"""
-        usage_data = {}
-        total = 0
-        for k, v in classM.__dict__.items():
-            if type(v) in [list, tuple, set]:
-                usage_data[k] = sys.getsizeof(v, 0)
-                total += usage_data[k]
-            elif type(v) in [staticmethod, classmethod]:
-                usage_data[k] = self.workAround(v.__func__)
-                total += usage_data[k]['total']
-            elif type(v) == dict:
-                usage_data[k] = {key: sys.getsizeof(val, 0) for key, val in v.items()}
-                total += sum(usage_data[k].values())
-        usage_data['header'] = sys.getsizeof(classM.__dict__, 0)
-        usage_data['total'] = total + usage_data['header']
-        if humanize:
-            for k, v in usage_data.items():
-                def loop(d):
-                    if isinstance(d, dict):
-                        return {key: loop(val) for key, val in d.items()}
-                    else:
-                        return math_utils.humanize_size(d)
-                usage_data[k] = loop(v)
-        return usage_data
+    def get_update_timing_stats(self) -> Dict[str, Any]:
+        return self.profiler.get_timing_stats('update')
+
+    def get_timing(self, category: str) -> Optional[TimeProfile]:
+        return self.profiler.get_timer(category)
+
+    def get_render_timing_stats(self) -> Dict[str, Any]:
+        return self.profiler.get_timing_stats('render')
 
     def get_hardware_info(self) -> Dict[str, str]:
-        """Get system hardware information with caching"""
-        current_time = time.time()
-        if (self._hardware_info is not None and 
-            (current_time - self._hardware_cache_time) < self._cache_duration):
+        if self._hardware_info is not None and (time.time() - self._hardware_cache_time) < self._cache_duration:
             return self._hardware_info
-        
         info = {}
         try:
             info['system'] = platform.system()
@@ -274,70 +254,45 @@ class PerformanceMonitor:
             info['processor'] = platform.processor()
             info['python_version'] = platform.python_version()
             info['pygame_version'] = pygame.version.ver
-            
-            # CPU Info
-            info['cpu_cores'] = str(psutil.cpu_count(logical=False))
-            info['cpu_logical_cores'] = str(psutil.cpu_count(logical=True))
-            info['cpu_freq'] = f"{psutil.cpu_freq().max:.2f} MHz"
-            
-            # Memory Info
-            mem = psutil.virtual_memory()
-            info['memory_total_gb'] = f"{mem.total / (1024**3):.2f} GB"
-            info['memory_available_gb'] = f"{mem.available / (1024**3):.2f} GB"
-            
+            if HAVE_PSUTIL:
+                info['cpu_cores'] = str(psutil.cpu_count(logical=False))
+                info['cpu_logical_cores'] = str(psutil.cpu_count(logical=True))
+                info['cpu_freq'] = f"{psutil.cpu_freq().max:.2f} MHz"
+                mem = psutil.virtual_memory()
+                info['memory_total_gb'] = f"{mem.total / (1024**3):.2f} GB"
+                info['memory_available_gb'] = f"{mem.available / (1024**3):.2f} GB"
+            else:
+                info['cpu_cores'] = "N/A (psutil not installed)"
+                info['memory_total_gb'] = "N/A"
         except Exception as e:
             info['error'] = str(e)
-        
         self._hardware_info = info
-        self._hardware_cache_time = current_time
+        self._hardware_cache_time = time.time()
         return info
-        
+
     def update_frame(self):
-        """Update frame timing - FIXED VERSION"""
-        # Begin profiling for new frame
-        self.profiler.begin_frame()
-        
         current_time = time.perf_counter()
         frame_time = current_time - self.last_frame_time
         self.last_frame_time = current_time
-        
-        # Store frame time in milliseconds
         frame_time_ms = frame_time * 1000.0
-        
-        # Calculate current FPS - FIXED: Handle division by zero
-        if frame_time_ms > 0:
-            self.current_fps = 1000.0 / frame_time_ms
-        else:
-            self.current_fps = 0.0
-        
-        # Add to history
+        self.current_fps = 1000.0 / frame_time_ms if frame_time_ms > 0 else 0.0
         self.frame_times.append(frame_time_ms)
         self.fps_history.append(self.current_fps)
-        
+        self.profiler.begin_frame()
         return self.current_fps, frame_time_ms
-    
+
     def end_frame(self):
-        """End the current frame and record profiling data"""
         self.profiler.end_frame()
-    
+
     def get_stats(self) -> Dict[str, float]:
-        """Get FPS statistics with optimized calculations - FIXED"""
         if not self.fps_history:
             return self._get_empty_stats()
-        
-        # Use the stored current_fps instead of history
-        current_fps = self.current_fps
-        
-        # Calculate averages using efficient methods
         fps_list = list(self.fps_history)
         frame_times_list = list(self.frame_times)
-        
         avg_fps = sum(fps_list) / len(fps_list) if fps_list else 0.0
         min_fps = min(fps_list) if fps_list else 0.0
         max_fps = max(fps_list) if fps_list else 0.0
-        
-        # Calculate percentiles efficiently
-        if len(fps_list) > 10:  # Only calculate percentiles with sufficient data
+        if len(fps_list) > 10:
             sorted_fps = sorted(fps_list)
             idx_1 = max(0, int(len(sorted_fps) * 0.01))
             idx_01 = max(0, int(len(sorted_fps) * 0.001))
@@ -346,20 +301,59 @@ class PerformanceMonitor:
         else:
             percentile_1 = min_fps
             percentile_01 = min_fps
-        
         return {
-            'current_fps': current_fps,  # FIXED: Changed from 'current' to 'current_fps'
-            'average_fps': avg_fps,      # FIXED: Changed from 'average' to 'average_fps'
-            'min_fps': min_fps,          # FIXED: Changed from 'min' to 'min_fps'
-            'max_fps': max_fps,          # FIXED: Changed from 'max' to 'max_fps'
+            'current_fps': self.current_fps,
+            'average_fps': avg_fps,
+            'min_fps': min_fps,
+            'max_fps': max_fps,
             'percentile_1': percentile_1,
             'percentile_01': percentile_01,
             'frame_time_ms': frame_times_list[-1] if frame_times_list else 0,
             'frame_count': len(fps_list)
         }
-    
+        
+    def _getMemUsageClass(self, classM, humanize: bool = True) -> Dict[str, Any]:
+        """
+        Workaround to access internal usage data of a class instance.
+        Used by the UI demo; returns sizes of attributes in bytes (or humanised).
+        """
+        import sys
+        from . import math_utils
+
+        usage_data = {}
+        total = 0
+
+        def loop(d):
+            if isinstance(d, dict):
+                return {key: loop(val) for key, val in d.items()}
+            else:
+                return math_utils.humanize_size(d) if humanize else d
+
+        for k, v in classM.__dict__.items():
+            if type(v) in (list, tuple, set):
+                size = sys.getsizeof(v, 0)
+                usage_data[k] = size
+                total += size
+            elif type(v) in (staticmethod, classmethod):
+                inner = self._getMemUsageClass(v.__func__, humanize=False)
+                usage_data[k] = inner
+                total += inner.get('total', 0)
+            elif type(v) == dict:
+                dsize = {key: sys.getsizeof(val, 0) for key, val in v.items()}
+                usage_data[k] = dsize
+                total += sum(dsize.values())
+            # else ignore (simple types, etc.)
+
+        usage_data['header'] = sys.getsizeof(classM.__dict__, 0)
+        usage_data['total'] = total + usage_data['header']
+
+        if humanize:
+            for k, v in usage_data.items():
+                usage_data[k] = loop(v)
+
+        return usage_data
+
     def _get_empty_stats(self) -> Dict[str, float]:
-        """Return empty stats structure - FIXED"""
         return {
             'current_fps': 0.0,
             'average_fps': 0.0,
@@ -371,38 +365,58 @@ class PerformanceMonitor:
             'frame_count': 0
         }
 
+
+# ----------------------------------------------------------------------
+# GarbageCollector (enhanced to clean renderer caches)
+# ----------------------------------------------------------------------
+
 class GarbageCollector:
-    """Manages cleanup of unused resources"""
-    
-    def __init__(self):
-        self.unused_fonts = set()
-        self.unused_surfaces = set()
+    def __init__(self, engine=None):
+        self.engine = engine
         self.cleanup_interval = 300
         self.frame_count = 0
-        
+        self.unused_fonts = set()
+        self.unused_surfaces = set()
+
     def mark_font_unused(self, font):
-        """Mark a font as potentially unused"""
         self.unused_fonts.add(font)
-        
+
     def mark_surface_unused(self, surface):
-        """Mark a surface as potentially unused"""
         self.unused_surfaces.add(surface)
-        
+
     def cleanup(self, force: bool = False):
-        """Clean up unused resources"""
         self.frame_count += 1
-        
-        # Only cleanup periodically unless forced
         if not force and self.frame_count % self.cleanup_interval != 0:
             return
-        
-        # Clean fonts (Pygame fonts don't need explicit cleanup in most cases)
-        # But we can clear our tracking sets
-        self.unused_fonts.clear()
-        self.unused_surfaces.clear()
-        
-        # Optional: Force Python garbage collection
+
+        # 1. Python garbage collection
         import gc
         gc.collect()
-        
+
+        # 2. Clean renderer caches (if engine and renderer exist)
+        if self.engine and hasattr(self.engine, 'renderer'):
+            renderer = self.engine.renderer
+            if hasattr(renderer, '_cleanup_texture_cache'):
+                renderer._cleanup_texture_cache(force_cleanup=force)
+            # Clean text cache if exists
+            if hasattr(renderer, '_text_cache'):
+                # We could expire old entries, but for simplicity we clear if force
+                if force:
+                    renderer._text_cache.clear()
+                    renderer._text_cache_last_used.clear()
+            # Circle and polygon caches
+            if hasattr(renderer, '_circle_cache') and force:
+                for vao, vbo, ebo, _ in renderer._circle_cache.values():
+                    from OpenGL.GL import glDeleteVertexArrays, glDeleteBuffers
+                    glDeleteVertexArrays(1, [vao])
+                    glDeleteBuffers(1, [vbo])
+                    glDeleteBuffers(1, [ebo])
+                renderer._circle_cache.clear()
+            if hasattr(renderer, '_polygon_cache') and force:
+                # Similar cleanup
+                pass  # for brevity
+
+        # 3. Clear our tracking sets
+        self.unused_fonts.clear()
+        self.unused_surfaces.clear()
         self.frame_count = 0

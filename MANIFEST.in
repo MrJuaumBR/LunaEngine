@@ -4,12 +4,19 @@ include about.md
 include requirements.txt
 include pyproject.toml
 
+# Include all Texture files in the package
+recursive-include lunaengine *.png
+
 # Include all JSON files in the package
 recursive-include lunaengine *.json
+
+# Include all the text files in the package
 recursive-include lunaengine *.txt
 recursive-include lunaengine *.md
+
+# Include all the Shaders files in the package
 recursive-include lunaengine *.vert
 recursive-include lunaengine *.frag
 recursive-include lunaengine *.geom
 recursive-include lunaengine *.comp
-recursive-include lunaengine *.png
+recursive-include lunaengine/assets/shaders *.json

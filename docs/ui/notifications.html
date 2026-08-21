@@ -132,7 +132,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationstyle-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, bg_color: Tuple[int, int, int], border_color: Tuple[int, int, int], text_color: Tuple[int, int, int], icon_type: Optional[Icons] = None, duration: float = 5.0, show_icon: bool = True) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, bg_color: Tuple[int, int, int], border_color: Tuple[int, int, int], text_color: Tuple[int, int, int], icon_type: Optional[Icon] = None, duration: float = 5.0, show_icon: bool = True) -> Any</code>
                 <div class="mt-2 text-muted small">Initialize notification style.<br><br>Args:<br> &nbsp; &nbsp;bg_color: Background color (RGB)<br> &nbsp; &nbsp;border_color: Border color (RGB)<br> &nbsp; &nbsp;text_color: Text color (RGB)<br> &nbsp; &nbsp;icon_type: Optional icon type from Icons enum<br> &nbsp; &nbsp;duration: Default duration in seconds<br> &nbsp; &nbsp;show_icon: Whether to show icon</div>
             </div>
                 </div>
@@ -152,7 +152,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-notificationconfig-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, text: str, notification_type: NotificationType = NotificationType.INFO, duration: Optional[float] = None, position: Union[NotificationPosition, Tuple[int, int]] = NotificationPosition.TOP_RIGHT, width: int = 300, height: int = 60, show_close_button: bool = True, auto_close: bool = True, animation_speed: float = 0.3, show_progress_bar: bool = False, on_close: Optional[Callable] = None, on_click: Optional[Callable] = None, metadata: Any = None, custom_icon: Optional[Icons] = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, text: str, notification_type: NotificationType = NotificationType.INFO, duration: Optional[float] = None, position: Union[NotificationPosition, Tuple[int, int]] = NotificationPosition.TOP_RIGHT, width: int = 300, height: int = 60, show_close_button: bool = True, auto_close: bool = True, animation_speed: float = 0.3, show_progress_bar: bool = False, on_close: Optional[Callable] = None, on_click: Optional[Callable] = None, metadata: Any = None, custom_icon: Optional[Icon] = None) -> Any</code>
                 <div class="mt-2 text-muted small">Initialize notification configuration.<br><br>Args:<br> &nbsp; &nbsp;text: Notification text<br> &nbsp; &nbsp;notification_type: Type of notification<br> &nbsp; &nbsp;duration: Display duration in seconds (None for default based on type)<br> &nbsp; &nbsp;position: Position (NotificationPosition enum or custom (x, y) tuple)<br> &nbsp; &nbsp;width: Width of notification<br> &nbsp; &nbsp;height: Height of notification<br> &nbsp; &nbsp;show_close_button: Whether to show close button<br> &nbsp; &nbsp;auto_close: Whether notification auto-closes after duration<br> &nbsp; &nbsp;animation_speed: Speed of slide/fade animations in seconds<br> &nbsp; &nbsp;show_progress_bar: Whether to show progress bar for remaining time<br> &nbsp; &nbsp;on_close: Callback when notification is closed<br> &nbsp; &nbsp;on_click: Callback when notification is clicked<br> &nbsp; &nbsp;metadata: Optional metadata attached to notification<br> &nbsp; &nbsp;custom_icon: Optional custom icon</div>
             </div>
                 </div>
@@ -405,7 +405,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-13 17:25
+                        Documentation generated on 2026-08-17 22:16
                     </p>
                 </div>
             </div>

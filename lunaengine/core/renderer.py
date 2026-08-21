@@ -146,7 +146,8 @@ class Renderer(ABC):
                 Tuple[float, float, float, float],
                 'ThemeStyle'
             ]
-        ] = None
+        ] = None,
+        style: Dict[str, Any] = {}
     ) -> None:
         """
         Draw a rectangle (filled or outline) with optional rounded corners.
@@ -386,6 +387,7 @@ class Renderer(ABC):
         pivot: Tuple[float, float] = (0.0, 0.0),
         flip: Tuple[bool, bool] = (False, False),
         rotate: float = 0.0,
+        style:Dict[str, Any] = {},
         *args,
         **kwargs
     ) -> None:

@@ -36,7 +36,7 @@ Yeah, I get it. LunaEngine, like any growing project, has had its share oforgani
 
 But through some coding magic (and a lot of coffee), I’ve managed to inject more docstrings into this project than I have in my entire Python-coding life. Seriously, it’s a personal best!
 
-So, what’s the deal with Luna’s structure? We operate on six main pillars, neatly tucked away in their own folders: `backend`, `core`, `graphics`, `tools`, `ui`, `misc`, and `utils`. Each one is a specialist, handling its own domain. Don’t fret too much about `tools` – that’s mostly my personal playground for developing Luna itself. You probably won’t need to venture in there, unless you’re feeling particularly adventurous.
+So, what’s the deal with Luna’s structure? We operate on seven main pillars, neatly tucked away in their own folders: `backend`, `core`, `graphics`, `tools`, `ui`, `misc`, `storage`, and `utils`. Each one is a specialist, handling its own domain. Don’t fret too much about `tools` – that’s mostly my personal playground for developing Luna itself. You probably won’t need to venture in there, unless you’re feeling particularly adventurous.
 
 ## Engine Structure: A Deeper Dive
 
@@ -50,6 +50,7 @@ LunaEngine prides itself on a modular architecture, designed for clarity, mainta
 | **`ui/`** | The complete user interface system, a true gem of LunaEngine. It’s packed with elements like buttons, text boxes, dropdowns, and scrolling frames. Plus, it handles theming, animations (hello, tweening!), notifications, tooltips, and ensures everything looks perfectly laid out. |
 | **`utils/`** | Your go-to for general utility functions. Need some math helpers? Threading magic? Performance monitoring? Timers? Or perhaps some image conversion? This folder has your back, providing all those handy tools that make development smoother. |
 | **`misc/`** | A collection of miscellaneous tools and assets. This includes debugging utilities and a charming set of built-in icons. It’s the junk drawer you actually want to rummage through. |
+| **`storage/`** | All the storage system, it includes Atlas for files management, encryption tools and a save-data system |
 | **`tools/`** | Primarily for internal development scripts, such as code statistics and asset helpers. While fascinating, it’s generally not intended for end-users. Consider it the engine’s secret workshop. |
 
 And for those who love numbers, here’s a quick snapshot:
@@ -62,7 +63,7 @@ And for those who love numbers, here’s a quick snapshot:
 
 ## Documentation: Your Guide to the Luna-verse
 
-I’m a firm believer that good documentation is like a warm hug for developers. While I’ve poured a lot into making LunaEngine intuitive, sometimes you need a map. I’ve even whipped up a script that auto-generates documentation, proudly hosted on GitHub. You can dive into it right here: [LunaEngine Docs](https://mrjuaumbr.github.io/LunaEngine/).
+I’m a firm believer that good documentation is like a warm hug for developers. While I’ve poured a lot into making LunaEngine intuitive, sometimes you need a map. I’ve even whipped up a script that auto-generates documentation, proudly hosted on GitHub. You can dive into it right here:  [LunaEngine Docs](https://mrjuaumbr.github.io/LunaEngine/).
 
 Now, I’ll be honest, sometimes the auto-generated docs might have a few gaps. If you ever find yourself scratching your head, don’t suffer in silence! Hop onto our [Discord server](https://discord.com/invite/fb84sHDX7R). I’m usually lurking around, happy to help untangle any knots and chat about all things Luna.
 
@@ -126,7 +127,7 @@ A: Absolutely, go for it! LunaEngine is released under a permissive license, mea
 
 **Q: How can I contribute to the LunaEngine project?**
 
-A: Your contributions are incredibly welcome! Whether you’re a seasoned developer or just starting out, there are many ways to help. You can report bugs, suggest new features, improve the documentation (yes, even this `about.md`!), or contribute code. Check out the `CONTRIBUTING.md` file (if it exists) in the main repository for detailed guidelines. Every little bit helps make LunaEngine better for everyone!
+A: Your contributions are incredibly welcome! Whether you’re a seasoned developer or just starting out, there are many ways to help. You can report bugs, suggest new features, improve the documentation (yes, even this `about.md`!), or contribute code. Every little bit helps make LunaEngine better for everyone!
 
 ## Final Message: From My Heart to Yours
 
@@ -135,3 +136,38 @@ And so, we reach the end of our little chat. Building LunaEngine has been an abs
 ---
 
 *P.S. If you’ve read this far, you’re officially awesome. Now go make something cool!*
+
+**Cute message for you guys :)**
+
+<div style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 30px;">    
+    <div style="flex: 1; min-width: 150px; max-width: 180px;">
+      <div style="background: #fff; border: 2px solid #3498db; border-radius: 10px; padding: 20px; text-align: center;">
+        <div style="font-size: 36px; font-weight: 800; color: #3498db;">Ca</div>
+        <div style="font-size: 18px; color: #2c3e50; margin: 10px 0;">20</div>
+        <div style="font-size: 14px; color: #7f8c8d;">Cálcio</div>
+      </div>
+    </div>
+    <div style="flex: 1; min-width: 150px; max-width: 180px;">
+      <div style="background: #fff; border: 2px solid #e74c3c; border-radius: 10px; padding: 20px; text-align: center;">
+        <div style="font-size: 36px; font-weight: 800; color: #e74c3c;">Ga</div>
+        <div style="font-size: 18px; color: #2c3e50; margin: 10px 0;">31</div>
+        <div style="font-size: 14px; color: #7f8c8d;">Gálio</div>
+      </div>
+    </div>
+    <div style="flex: 1; min-width: 150px; max-width: 180px;">
+      <div style="background: #fff; border: 2px solid #2ecc71; border-radius: 10px; padding: 20px; text-align: center;">
+        <div style="font-size: 36px; font-weight: 800; color: #2ecc71;">N</div>
+        <div style="font-size: 18px; color: #2c3e50; margin: 10px 0;">7</div>
+        <div style="font-size: 14px; color: #7f8c8d;">Nitrogênio</div>
+      </div>
+    </div>
+    <div style="flex: 1; min-width: 150px; max-width: 180px;">
+      <div style="background: #fff; border: 2px solid #f39c12; border-radius: 10px; padding: 20px; text-align: center;">
+        <div style="font-size: 36px; font-weight: 800; color: #f39c12;">O</div>
+        <div style="font-size: 18px; color: #2c3e50; margin: 10px 0;">8</div>
+        <div style="font-size: 14px; color: #7f8c8d;">Oxigênio</div>
+      </div>
+    </div>  
+  </div>
+</div>

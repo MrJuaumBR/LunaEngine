@@ -151,7 +151,8 @@ class ElementsList(list['UiElement']):
             self.on_change('extend', iterable)
     
     def remove(self, item:'UiElement'):
-        super().remove(item)
+        if item in self:
+            super().remove(item)
         if self.on_change:
             self.on_change('remove', item)
     
@@ -405,3 +406,80 @@ class Color:
             h /= 6
         
         return (h * 360, s * 100, l * 100)
+    
+class ColorKeys:
+    """
+    Manages a set of keyframe colours over time [0.0, 1.0].
+    Supports list input (evenly spaced) or explicit dict.
+    """
+    keys: Dict[float, Color] = {}
+
+    def __init__(self, colors: Union[List[Tuple[int, int, int, float]], List[Color], Dict[float, Color]], alpha_factor: float = 1.0):
+        if isinstance(colors, list) and len(colors) >= 2:
+            if isinstance(colors[0], Color):
+                color_list = colors
+            elif isinstance(colors[0], tuple):
+                color_list = [Color(*c) for c in colors]
+            else:
+                raise TypeError("Unsupported list element type")
+
+            n = len(color_list)
+            self.keys = {i / (n - 1): color for i, color in enumerate(color_list)}
+        elif isinstance(colors, list) and len(colors) == 1:
+            self.keys = {0.0: Color(*colors[0]), 1.0: Color(*colors[0])}
+        elif isinstance(colors, dict):
+            self.keys = colors
+        else:
+            raise ValueError("Input must be a list or dict with at least 2 items for list mode")
+
+        self.set_alpha_factor(alpha_factor)
+
+    def set_alpha_factor(self, alpha_factor: float) -> None:
+        for color in self.keys.values():
+            color.a *= alpha_factor
+            
+    def get_color(self, t: float) -> Optional[Color]:
+        """
+        Get the interpolated color at position t (0.0-1.0).
+        Returns None if no keys exist.
+        """
+        if not self.keys:
+            return None
+        # Clamp t
+        t = max(0.0, min(1.0, t))
+        # If exactly at a key, return it
+        if t in self.keys:
+            return self.keys[t]
+        # Get sorted keys
+        sorted_keys = sorted(self.keys.keys())
+        # If t is before first key, return first key's color
+        if t <= sorted_keys[0]:
+            return self.keys[sorted_keys[0]]
+        # If t is after last key, return last key's color
+        if t >= sorted_keys[-1]:
+            return self.keys[sorted_keys[-1]]
+        # Find the two keys that surround t
+        for i in range(len(sorted_keys) - 1):
+            low = sorted_keys[i]
+            high = sorted_keys[i+1]
+            if low <= t <= high:
+                frac = (t - low) / (high - low) if high != low else 0
+                col_low = self.keys[low]
+                col_high = self.keys[high]
+                r = col_low.r + (col_high.r - col_low.r) * frac
+                g = col_low.g + (col_high.g - col_low.g) * frac
+                b = col_low.b + (col_high.b - col_low.b) * frac
+                a = col_low.a + (col_high.a - col_low.a) * frac
+                return Color(int(r), int(g), int(b), a)
+        return None
+
+    @property
+    def avg(self) -> Color:
+        r = g = b = a = 0
+        for color in self.keys.values():
+            r += color.r
+            g += color.g
+            b += color.b
+            a += color.a
+        n = len(self.keys)
+        return Color(r / n, g / n, b / n, a / n)

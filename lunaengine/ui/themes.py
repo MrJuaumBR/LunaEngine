@@ -50,12 +50,48 @@ color_name_type = Literal[
 ]
 
 @dataclass
+class UiShadow:
+    color: Tuple[int, int, int] = (0,0,0)
+    alpha: float = 0.6
+    distance: float = 3.0 # px
+    direction: Tuple[float, float, float, float] = (0.0, 0.0, 1.0, 1.0)  
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> 'UiShadow':
+        """Create UiShadow from a dictionary."""
+        color = tuple(data.get('color', (0, 0, 0)))
+        alpha = data.get('alpha', 0.6)
+        distance = data.get('distance', 3.0)
+        direction = tuple(data.get('direction', (0.0, 0.0, 1.0, 1.0)))
+        return cls(color=color, alpha=alpha, distance=distance, direction=direction)
+    
+    def update(self, color: Union[Tuple[int, int, int], Tuple[int, int, int, float|int], 'ThemeStyle'], alpha: Optional[float] = None, distance: Optional[float] = None, direction: Optional[Tuple[float, float, float, float]] = None):
+        """Update shadow properties."""
+        if type(color) is tuple:
+            if len(color) == 3:
+                self.color = color
+            elif len(color) == 4:
+                self.color = (color[0], color[1], color[2])
+                self.alpha = float(color[3]) if isinstance(color[3], (int, float)) else self.alpha
+        elif isinstance(color, ThemeStyle):
+            self.color = color.color
+            self.alpha = color.alpha
+        if alpha is not None:
+            self.alpha = alpha
+        if distance is not None:
+            self.distance = distance
+        if direction is not None:
+            self.direction = direction
+        
+    
+@dataclass
 class ThemeStyle:
     """Complete style definition for a single UI element state."""
     color: Tuple[int, int, int]      # RGB (0-255)
     alpha: float = 1.0               # 0.0 - 1.0
     corner_radius: int = 0
     border_width: int = 0
+    shadow: UiShadow = field(default_factory=UiShadow)
     blur: int = 0
 
     def to_rgb(self) -> Tuple[int, int, int]:
@@ -83,7 +119,7 @@ class ThemeStyle:
 @dataclass
 class UITheme:
     """Complete UI theme configuration for all elements."""
-    # All required fields first (no default values)
+    # All required fields first
     button_normal: ThemeStyle
     button_hover: ThemeStyle
     button_pressed: ThemeStyle
@@ -224,6 +260,16 @@ class ThemeType(Enum):
     MATRIX = "matrix"
     BUILDER = "builder"
     GALAXY = "galaxy"
+    POKER = "poker"
+    CASINO = "casino"
+    JOKER = "joker"
+    WITCHER = "witcher"
+    GUY = "guy"
+    STEAMPUNK = "steampunk"
+    FACTORY = "factory"
+    MIAMI = "miami"
+    SOLARPUNK = "solarpunk"
+    BLENDER = "blender"
     
     # Nature themes
     FOREST = "forest"
@@ -332,7 +378,8 @@ class ThemeManager:
                 alpha=alpha,
                 corner_radius=data.get('cornerRadius', 0),
                 border_width=data.get('borderWidth', 0),
-                blur=data.get('blur', 0)
+                blur=data.get('blur', 0),
+                shadow=UiShadow.from_dict(data.get('shadow', {}))
             )
         elif isinstance(data, (list, tuple)) and len(data) == 3:
             # Legacy format: [R, G, B]
@@ -610,6 +657,11 @@ class ThemeManager:
         """Return alpha (0.0–1.0)."""
         alpha = cls._get_style_property(color_name, 'alpha', theme_type)
         return alpha if alpha is not None else 1.0
+    
+    @classmethod
+    def get_shadow(cls, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> UiShadow:
+        shadow = cls._get_style_property(color_name, 'shadow', theme_type)
+        return shadow if shadow is not None else UiShadow()
     
     @classmethod
     def get_corner_radius(cls, color_name: color_name_type | str, theme_type: Optional[ThemeType] = None) -> int:

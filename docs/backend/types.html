@@ -561,6 +561,41 @@
                 </div>
             </div>
         </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-colorkeys">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class ColorKeys</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Manages a set of keyframe colours over time [0.0, 1.0].<br>Supports list input (evenly spaced) or explicit dict.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>keys: Dict[float, Color] = {}</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-colorkeys-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, colors: Union[List[Tuple[int, int, int, float]], List[Color], Dict[float, Color]], alpha_factor: float = 1.0) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-colorkeys-set_alpha_factor">
+                <code class="fs-6 fw-bold text-color-title">def set_alpha_factor(self: Any, alpha_factor: float) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-colorkeys-get_color">
+                <code class="fs-6 fw-bold text-color-title">def get_color(self: Any, t: float) -> Optional[Color]</code>
+                <div class="mt-2 text-muted small">Get the interpolated color at position t (0.0-1.0).<br>Returns None if no keys exist.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-colorkeys-avg">
+                <code class="fs-6 fw-bold text-color-title">def avg(self: Any) -> Color</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
                 
                 
             </div>
@@ -582,7 +617,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-13 17:25
+                        Documentation generated on 2026-08-17 22:16
                     </p>
                 </div>
             </div>

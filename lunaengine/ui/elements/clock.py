@@ -251,12 +251,24 @@ class Clock(UIElement):
         center_y = y + self.diameter // 2
         radius = self.diameter // 2
 
-        # Draw border
+        theme = ThemeManager.get_theme(self.theme_type)
+
+        # --- Draw border with shadow ---
         if self.border_color:
+            border_style = {}
+            if theme.border and theme.border.shadow and theme.border.shadow.distance > 0:
+                border_style['shadow'] = theme.border.shadow
             renderer.draw_circle(center_x, center_y, radius, self.border_color,
-                                 fill=False, border_width=self.border_width)
-        # Draw clock face
-        renderer.draw_circle(center_x, center_y, radius, self.face_color, border_width=self.border_width)
+                                 fill=False, border_width=self.border_width,
+                                 style=border_style)
+
+        # --- Draw clock face with shadow ---
+        face_style = {}
+        if theme.background and theme.background.shadow and theme.background.shadow.distance > 0:
+            face_style['shadow'] = theme.background.shadow
+        renderer.draw_circle(center_x, center_y, radius, self.face_color,
+                             fill=True, border_width=0,
+                             style=face_style)
 
         # Draw numbers if enabled
         if self.show_numbers:
@@ -360,20 +372,32 @@ class Clock(UIElement):
     def _render_digital_clock(self, renderer: Renderer, x: int, y: int) -> None:
         """Render the digital clock display."""
         time_str = self.get_time_string()
+        theme = ThemeManager.get_theme(self.theme_type)
 
         if self.mode == 'digital':
             center_x = x + self.width // 2
             center_y = y + self.height // 2
 
+            # Background shadow
+            bg_style = {}
+            if theme.background and theme.background.shadow and theme.background.shadow.distance > 0:
+                bg_style['shadow'] = theme.background.shadow
+
+            # Draw border and background
             if self.border_color:
                 renderer.draw_rect(x, y, self.width, self.height,
-                                   self.border_color, fill=False, border_width=self.border_width)
-            renderer.draw_rect(x, y, self.width, self.height, self.face_color, border_width=self.border_width)
+                                   self.border_color, fill=False, border_width=self.border_width,
+                                   style=bg_style)
+            renderer.draw_rect(x, y, self.width, self.height, self.face_color,
+                               fill=True, border_width=self.border_width,
+                               style=bg_style)
+
             renderer.draw_text(time_str, center_x, center_y, self.digital_text_color,
                                self.font, pivot=(0.5, 0.5))
 
         elif self.mode == 'both':
             digital_y = y + self.diameter + 10
             digital_x = x + self.diameter // 2
+            # Digital text can optionally have a background, but we'll just draw text.
             renderer.draw_text(time_str, digital_x, digital_y, self.digital_text_color,
                                self.font, pivot=(0.5, 0))

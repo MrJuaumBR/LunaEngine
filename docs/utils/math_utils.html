@@ -187,6 +187,12 @@
                     <p class="mt-2 mb-0 text-muted">Interpolate between a list of colors.<br>colors: list of (r,g,b) or (r,g,b,a) tuples, values 0-1.<br>t: float between 0 and 1.<br>Returns an RGBA tuple with values 0-1.</p>
                 </div>
             </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-to_pygame_color">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def to_pygame_color(color_val: Any) -> Any</code>
+                    <p class="mt-2 mb-0 text-muted">Convert various color representations to a pygame.Color object.<br>Supports:<br>- pygame.Color<br>- Color (from backend.types)<br>- ThemeStyle (from ui.themes)<br>- ColorKeys (returns the first key&#x27;s color)<br>- tuple/list of 3 or 4 ints/floats<br>- int (grayscale)<br>- str (hex or named color)</p>
+                </div>
+            </div>
             </div>
         </div>
         <div class="mt-5 mb-5 text-center">
@@ -206,7 +212,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-13 17:25
+                        Documentation generated on 2026-08-17 22:16
                     </p>
                 </div>
             </div>

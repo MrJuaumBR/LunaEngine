@@ -35,7 +35,7 @@
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>performance.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">Performance Monitoring - System Optimization and Resource Management<br><br>LOCATION: lunaengine/utils/performance.py<br><br>DESCRIPTION:<br>Comprehensive performance monitoring system that tracks frame rates,<br>system resources, and provides optimization utilities. Includes hardware<br>detection, garbage collection, and performance statistics.<br><br>KEY COMPONENTS:<br>- PerformanceMonitor: Real-time FPS tracking and hardware monitoring<br>- GarbageCollector: Automatic resource cleanup and memory management<br>- Hardware detection for system-specific optimizations<br>- Frame time analysis and performance statistics<br><br>LIBRARIES USED:<br>- psutil: System resource monitoring (CPU, memory)<br>- pygame: Version detection and integration<br>- platform: System information and platform detection<br>- time: Precise timing measurements<br>- threading: Background monitoring capabilities<br>- collections: Efficient data structures for performance tracking<br><br>USAGE:<br>&gt;&gt;&gt; monitor = PerformanceMonitor()<br>&gt;&gt;&gt; stats = monitor.get_stats()<br>&gt;&gt;&gt; hardware = monitor.get_hardware_info()<br>&gt;&gt;&gt; gc = GarbageCollector()<br>&gt;&gt;&gt; gc.cleanup()</span>
+                <span class="text-muted">performance.py – Performance monitoring, profiling, and garbage collection.<br><br>Provides:<br>- PerformanceMonitor: FPS tracking, hardware info, and task timing.<br>- GarbageCollector: automatic cleanup of caches.<br>- Integration with BackgroundTaskManager for per‑task CPU/memory metrics.</span>
             </div>
         </div>
         <div class="row">
@@ -79,7 +79,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timeprofile-record_current">
                 <code class="fs-6 fw-bold text-color-title">def record_current(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Record the current duration into history.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
             </div>
@@ -91,7 +91,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Performance profiling with detailed timing breakdown</p>
+                    <p class="lead fs-6">No documentation</p>
                 </div>
                 
                 <div class="methods-section">
@@ -139,18 +139,18 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performanceprofiler-begin_frame">
                 <code class="fs-6 fw-bold text-color-title">def begin_frame(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Begin a new frame of profiling</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performanceprofiler-end_frame">
                 <code class="fs-6 fw-bold text-color-title">def end_frame(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">End current frame: record all used timers and store durations.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performanceprofiler-get_frame_timings">
                 <code class="fs-6 fw-bold text-color-title">def get_frame_timings(self: Any) -> Dict[str, float]</code>
-                <div class="mt-2 text-muted small">Get durations (ms) of the last completed frame.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performanceprofiler-get_timing_stats">
-                <code class="fs-6 fw-bold text-color-title">def get_timing_stats(self: Any, category: Literal['update', 'render']) -> Dict[str, Any]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_timing_stats(self: Any, category_prefix: str) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
@@ -163,7 +163,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Optimized performance monitoring with minimal overhead</p>
+                    <p class="lead fs-6">No documentation</p>
                 </div>
                 
                 <div class="methods-section">
@@ -173,21 +173,37 @@
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, history_size: int = 300) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-start_task_timer">
+                <code class="fs-6 fw-bold text-color-title">def start_task_timer(self: Any, task_id: str) -> Any</code>
+                <div class="mt-2 text-muted small">Start measuring CPU time and memory for a background task.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-end_task_timer">
+                <code class="fs-6 fw-bold text-color-title">def end_task_timer(self: Any, task_id: str) -> Optional[Dict[str, float]]</code>
+                <div class="mt-2 text-muted small">Stop measuring and return {&#x27;cpu_ms&#x27;: ..., &#x27;mem_bytes&#x27;: ...}.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-get_task_metrics">
+                <code class="fs-6 fw-bold text-color-title">def get_task_metrics(self: Any, task_id: str) -> Optional[Dict[str, float]]</code>
+                <div class="mt-2 text-muted small">Return the last recorded metrics for a task.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-clear_task_metrics">
+                <code class="fs-6 fw-bold text-color-title">def clear_task_metrics(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Clear all stored task metrics.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-get_frame_timing_breakdown">
                 <code class="fs-6 fw-bold text-color-title">def get_frame_timing_breakdown(self: Any) -> Dict[str, float]</code>
-                <div class="mt-2 text-muted small">Convenience: get last frame&#x27;s timing per category.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-get_performance_summary">
                 <code class="fs-6 fw-bold text-color-title">def get_performance_summary(self: Any) -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Comprehensive summary including FPS and last frame timings.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-enable_profiling">
                 <code class="fs-6 fw-bold text-color-title">def enable_profiling(self: Any, enabled: bool = True) -> Any</code>
-                <div class="mt-2 text-muted small">Enable or disable detailed performance profiling</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-is_profiling_enabled">
                 <code class="fs-6 fw-bold text-color-title">def is_profiling_enabled(self: Any) -> bool</code>
-                <div class="mt-2 text-muted small">Check if detailed profiling is enabled</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-create_timer">
                 <code class="fs-6 fw-bold text-color-title">def create_timer(self: Any, category: str) -> Any</code>
@@ -215,43 +231,39 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-get_update_timing_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_update_timing_stats(self: Any) -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Get update timing statistics</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-get_timing">
                 <code class="fs-6 fw-bold text-color-title">def get_timing(self: Any, category: str) -> Optional[TimeProfile]</code>
-                <div class="mt-2 text-muted small">Get the last recorded timing for a specific category.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-get_render_timing_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_render_timing_stats(self: Any) -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Get render timing statistics</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-get_performance_summary">
-                <code class="fs-6 fw-bold text-color-title">def get_performance_summary(self: Any) -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Get comprehensive performance summary</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-_getmemusageclass">
-                <code class="fs-6 fw-bold text-color-title">def _getMemUsageClass(self: Any, classM: Any, humanize: bool = True) -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Workaround to access internal usage data of a class instance</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-get_hardware_info">
                 <code class="fs-6 fw-bold text-color-title">def get_hardware_info(self: Any) -> Dict[str, str]</code>
-                <div class="mt-2 text-muted small">Get system hardware information with caching</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-update_frame">
                 <code class="fs-6 fw-bold text-color-title">def update_frame(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Update frame timing - FIXED VERSION</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-end_frame">
                 <code class="fs-6 fw-bold text-color-title">def end_frame(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">End the current frame and record profiling data</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-get_stats">
                 <code class="fs-6 fw-bold text-color-title">def get_stats(self: Any) -> Dict[str, float]</code>
-                <div class="mt-2 text-muted small">Get FPS statistics with optimized calculations - FIXED</div>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-_getmemusageclass">
+                <code class="fs-6 fw-bold text-color-title">def _getMemUsageClass(self: Any, classM: Any, humanize: bool = True) -> Dict[str, Any]</code>
+                <div class="mt-2 text-muted small">Workaround to access internal usage data of a class instance.<br>Used by the UI demo; returns sizes of attributes in bytes (or humanised).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-performancemonitor-_get_empty_stats">
                 <code class="fs-6 fw-bold text-color-title">def _get_empty_stats(self: Any) -> Dict[str, float]</code>
-                <div class="mt-2 text-muted small">Return empty stats structure - FIXED</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
             </div>
@@ -263,27 +275,27 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Manages cleanup of unused resources</p>
+                    <p class="lead fs-6">No documentation</p>
                 </div>
                 
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-garbagecollector-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, engine: Any = None) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-garbagecollector-mark_font_unused">
                 <code class="fs-6 fw-bold text-color-title">def mark_font_unused(self: Any, font: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Mark a font as potentially unused</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-garbagecollector-mark_surface_unused">
                 <code class="fs-6 fw-bold text-color-title">def mark_surface_unused(self: Any, surface: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Mark a surface as potentially unused</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-garbagecollector-cleanup">
                 <code class="fs-6 fw-bold text-color-title">def cleanup(self: Any, force: bool = False) -> Any</code>
-                <div class="mt-2 text-muted small">Clean up unused resources</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
             </div>
@@ -309,7 +321,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-07-13 17:25
+                        Documentation generated on 2026-08-17 22:16
                     </p>
                 </div>
             </div>

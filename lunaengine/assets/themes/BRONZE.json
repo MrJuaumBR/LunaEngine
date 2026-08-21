@@ -1,682 +1,2922 @@
 {
-  "themeName": "BRONZE",
-  "themeDescription": "Warm metallic bronze (#CD7F32) with rich earthy tones. Dark mode is deep brown with golden highlights; light mode is soft beige with bronze accents.",
-  "variants": {
-    "dark": {
-      "button_normal": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [205, 127, 50, 1.0],
-        "blur": 0
-      },
-      "button_hover": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [185, 107, 30, 1.0],
-        "blur": 0
-      },
-      "button_pressed": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [165, 87, 10, 1.0],
-        "blur": 0
-      },
-      "button_disabled": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [140, 110, 80, 1.0],
-        "blur": 0
-      },
-      "button_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "button_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [210, 150, 80, 1.0],
-        "blur": 0
-      },
-      "dropdown_normal": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [160, 100, 40, 1.0],
-        "blur": 0
-      },
-      "dropdown_hover": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [140, 80, 20, 1.0],
-        "blur": 0
-      },
-      "dropdown_expanded": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [150, 90, 30, 1.0],
-        "blur": 0
-      },
-      "dropdown_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "dropdown_option_normal": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [130, 70, 15, 1.0],
-        "blur": 0
-      },
-      "dropdown_option_hover": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [145, 85, 25, 1.0],
-        "blur": 0
-      },
-      "dropdown_option_selected": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [160, 100, 40, 1.0],
-        "blur": 0
-      },
-      "dropdown_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [210, 150, 80, 1.0],
-        "blur": 0
-      },
-      "slider_track": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [110, 60, 10, 1.0],
-        "blur": 0
-      },
-      "slider_thumb_normal": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [210, 140, 60, 1.0],
-        "blur": 0
-      },
-      "slider_thumb_hover": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [220, 160, 80, 1.0],
-        "blur": 0
-      },
-      "slider_thumb_pressed": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [190, 120, 40, 1.0],
-        "blur": 0
-      },
-      "slider_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "label_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [90, 50, 5, 1.0],
-        "blur": 0
-      },
-      "background2": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [70, 35, 3, 1.0],
-        "blur": 0
-      },
-      "text_primary": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "text_secondary": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 220, 170, 1.0],
-        "blur": 0
-      },
-      "switch_track_on": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [205, 127, 50, 1.0],
-        "blur": 0
-      },
-      "switch_track_off": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [110, 60, 10, 1.0],
-        "blur": 0
-      },
-      "switch_thumb_on": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "switch_thumb_off": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [210, 140, 60, 1.0],
-        "blur": 0
-      },
-      "border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [205, 127, 50, 1.0],
-        "blur": 0
-      },
-      "border2": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [170, 100, 30, 1.0],
-        "blur": 0
-      },
-      "dialog_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [110, 70, 25, 1.0],
-        "blur": 0
-      },
-      "dialog_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [205, 127, 50, 1.0],
-        "blur": 0
-      },
-      "dialog_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "dialog_name_bg": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [205, 127, 50, 1.0],
-        "blur": 0
-      },
-      "dialog_name_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "dialog_continue_indicator": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [220, 180, 120, 1.0],
-        "blur": 0
-      },
-      "tooltip_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [70, 35, 3, 1.0],
-        "blur": 0
-      },
-      "tooltip_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [170, 100, 30, 1.0],
-        "blur": 0
-      },
-      "tooltip_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "notification_success_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [40, 167, 69, 1.0],
-        "blur": 0
-      },
-      "notification_success_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [20, 147, 49, 1.0],
-        "blur": 0
-      },
-      "notification_success_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "notification_info_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [23, 162, 184, 1.0],
-        "blur": 0
-      },
-      "notification_info_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [3, 142, 164, 1.0],
-        "blur": 0
-      },
-      "notification_info_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "notification_warning_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 193, 7, 1.0],
-        "blur": 0
-      },
-      "notification_warning_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [235, 173, 0, 1.0],
-        "blur": 0
-      },
-      "notification_warning_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [0, 0, 0, 1.0],
-        "blur": 0
-      },
-      "notification_custom_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [147, 112, 219, 1.0],
-        "blur": 0
-      },
-      "notification_custom_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [127, 92, 199, 1.0],
-        "blur": 0
-      },
-      "notification_custom_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "notification_error_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [220, 53, 69, 1.0],
-        "blur": 0
-      },
-      "notification_error_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [200, 33, 49, 1.0],
-        "blur": 0
-      },
-      "notification_error_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "accent1": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [205, 127, 50, 1.0],
-        "blur": 0
-      },
-      "accent2": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [210, 140, 60, 1.0],
-        "blur": 0
-      }
-    },
-    "light": {
-      "button_normal": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [205, 127, 50, 1.0],
-        "blur": 0
-      },
-      "button_hover": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [185, 107, 30, 1.0],
-        "blur": 0
-      },
-      "button_pressed": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [165, 87, 10, 1.0],
-        "blur": 0
-      },
-      "button_disabled": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [210, 190, 170, 1.0],
-        "blur": 0
-      },
-      "button_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "button_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [210, 150, 80, 1.0],
-        "blur": 0
-      },
-      "dropdown_normal": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 245, 230, 1.0],
-        "blur": 0
-      },
-      "dropdown_hover": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 250, 240, 1.0],
-        "blur": 0
-      },
-      "dropdown_expanded": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [250, 242, 225, 1.0],
-        "blur": 0
-      },
-      "dropdown_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [50, 30, 10, 1.0],
-        "blur": 0
-      },
-      "dropdown_option_normal": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 248, 240, 1.0],
-        "blur": 0
-      },
-      "dropdown_option_hover": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 250, 245, 1.0],
-        "blur": 0
-      },
-      "dropdown_option_selected": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [205, 127, 50, 1.0],
-        "blur": 0
-      },
-      "dropdown_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [180, 140, 100, 1.0],
-        "blur": 0
-      },
-      "slider_track": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [220, 200, 180, 1.0],
-        "blur": 0
-      },
-      "slider_thumb_normal": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [210, 140, 60, 1.0],
-        "blur": 0
-      },
-      "slider_thumb_hover": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [220, 160, 80, 1.0],
-        "blur": 0
-      },
-      "slider_thumb_pressed": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [190, 120, 40, 1.0],
-        "blur": 0
-      },
-      "slider_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [50, 30, 10, 1.0],
-        "blur": 0
-      },
-      "label_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [50, 30, 10, 1.0],
-        "blur": 0
-      },
-      "background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [250, 240, 230, 1.0],
-        "blur": 0
-      },
-      "background2": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [240, 228, 215, 1.0],
-        "blur": 0
-      },
-      "text_primary": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [50, 30, 10, 1.0],
-        "blur": 0
-      },
-      "text_secondary": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [100, 70, 40, 1.0],
-        "blur": 0
-      },
-      "switch_track_on": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [205, 127, 50, 1.0],
-        "blur": 0
-      },
-      "switch_track_off": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [220, 200, 180, 1.0],
-        "blur": 0
-      },
-      "switch_thumb_on": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "switch_thumb_off": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [180, 140, 100, 1.0],
-        "blur": 0
-      },
-      "border2": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [200, 170, 130, 1.0],
-        "blur": 0
-      },
-      "dialog_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 248, 240, 1.0],
-        "blur": 0
-      },
-      "dialog_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [180, 140, 100, 1.0],
-        "blur": 0
-      },
-      "dialog_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [50, 30, 10, 1.0],
-        "blur": 0
-      },
-      "dialog_name_bg": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [205, 127, 50, 1.0],
-        "blur": 0
-      },
-      "dialog_name_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "dialog_continue_indicator": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [100, 80, 60, 1.0],
-        "blur": 0
-      },
-      "tooltip_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [240, 228, 215, 1.0],
-        "blur": 0
-      },
-      "tooltip_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [200, 170, 130, 1.0],
-        "blur": 0
-      },
-      "tooltip_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [50, 30, 10, 1.0],
-        "blur": 0
-      },
-      "notification_success_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [40, 167, 69, 1.0],
-        "blur": 0
-      },
-      "notification_success_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [20, 147, 49, 1.0],
-        "blur": 0
-      },
-      "notification_success_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "notification_info_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [23, 162, 184, 1.0],
-        "blur": 0
-      },
-      "notification_info_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [3, 142, 164, 1.0],
-        "blur": 0
-      },
-      "notification_info_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "notification_warning_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 193, 7, 1.0],
-        "blur": 0
-      },
-      "notification_warning_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [235, 173, 0, 1.0],
-        "blur": 0
-      },
-      "notification_warning_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [0, 0, 0, 1.0],
-        "blur": 0
-      },
-      "notification_custom_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [147, 112, 219, 1.0],
-        "blur": 0
-      },
-      "notification_custom_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [127, 92, 199, 1.0],
-        "blur": 0
-      },
-      "notification_custom_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "notification_error_background": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [220, 53, 69, 1.0],
-        "blur": 0
-      },
-      "notification_error_border": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [200, 33, 49, 1.0],
-        "blur": 0
-      },
-      "notification_error_text": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [255, 255, 255, 1.0],
-        "blur": 0
-      },
-      "accent1": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [205, 127, 50, 1.0],
-        "blur": 0
-      },
-      "accent2": {
-        "cornerRadius": 5,
-        "borderWidth": 2,
-        "color": [210, 140, 60, 1.0],
-        "blur": 0
-      }
+    "themeName":"BRONZE",
+    "themeDescription":"Warm metallic bronze (#CD7F32) with rich earthy tones. Dark mode is deep brown with golden highlights; light mode is soft beige with bronze accents.",
+    "variants":{
+        "dark":{
+            "button_normal":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    205,
+                    127,
+                    50,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        143,
+                        88,
+                        35
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "button_hover":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    185,
+                    107,
+                    30,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        129,
+                        74,
+                        21
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "button_pressed":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    165,
+                    87,
+                    10,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        115,
+                        60,
+                        7
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "button_disabled":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    140,
+                    110,
+                    80,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        98,
+                        77,
+                        56
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "button_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "button_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    210,
+                    150,
+                    80,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        147,
+                        105,
+                        56
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_normal":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    160,
+                    100,
+                    40,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        112,
+                        70,
+                        28
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_hover":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    140,
+                    80,
+                    20,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        98,
+                        56,
+                        14
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_expanded":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    150,
+                    90,
+                    30,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        105,
+                        62,
+                        21
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_option_normal":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    130,
+                    70,
+                    15,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        91,
+                        49,
+                        10
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_option_hover":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    145,
+                    85,
+                    25,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        101,
+                        59,
+                        17
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_option_selected":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    160,
+                    100,
+                    40,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        112,
+                        70,
+                        28
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    210,
+                    150,
+                    80,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        147,
+                        105,
+                        56
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "slider_track":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    110,
+                    60,
+                    10,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        77,
+                        42,
+                        7
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "slider_thumb_normal":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    210,
+                    140,
+                    60,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        147,
+                        98,
+                        42
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "slider_thumb_hover":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    220,
+                    160,
+                    80,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        154,
+                        112,
+                        56
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "slider_thumb_pressed":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    190,
+                    120,
+                    40,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        133,
+                        84,
+                        28
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "slider_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "label_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    90,
+                    50,
+                    5,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        62,
+                        35,
+                        3
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "background2":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    70,
+                    35,
+                    3,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        49,
+                        24,
+                        2
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "text_primary":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "text_secondary":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    220,
+                    170,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        154,
+                        118
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "switch_track_on":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    205,
+                    127,
+                    50,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        143,
+                        88,
+                        35
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "switch_track_off":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    110,
+                    60,
+                    10,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        77,
+                        42,
+                        7
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "switch_thumb_on":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "switch_thumb_off":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    210,
+                    140,
+                    60,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        147,
+                        98,
+                        42
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    205,
+                    127,
+                    50,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        143,
+                        88,
+                        35
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "border2":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    170,
+                    100,
+                    30,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        118,
+                        70,
+                        21
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dialog_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    110,
+                    70,
+                    25,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        77,
+                        49,
+                        17
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dialog_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    205,
+                    127,
+                    50,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        143,
+                        88,
+                        35
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dialog_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dialog_name_bg":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    205,
+                    127,
+                    50,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        143,
+                        88,
+                        35
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dialog_name_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dialog_continue_indicator":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    220,
+                    180,
+                    120,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        154,
+                        125,
+                        84
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "tooltip_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    70,
+                    35,
+                    3,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        49,
+                        24,
+                        2
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "tooltip_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    170,
+                    100,
+                    30,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        118,
+                        70,
+                        21
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "tooltip_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_success_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    40,
+                    167,
+                    69,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        28,
+                        116,
+                        48
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_success_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    20,
+                    147,
+                    49,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        14,
+                        102,
+                        34
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_success_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_info_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    23,
+                    162,
+                    184,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        16,
+                        113,
+                        128
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_info_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    3,
+                    142,
+                    164,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        2,
+                        99,
+                        114
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_info_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_warning_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    193,
+                    7,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        135,
+                        4
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_warning_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    235,
+                    173,
+                    0,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        164,
+                        121,
+                        0
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_warning_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    0,
+                    0,
+                    0,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        0,
+                        0,
+                        0
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_custom_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    147,
+                    112,
+                    219,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        102,
+                        78,
+                        153
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_custom_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    127,
+                    92,
+                    199,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        88,
+                        64,
+                        139
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_custom_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_error_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    220,
+                    53,
+                    69,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        154,
+                        37,
+                        48
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_error_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    200,
+                    33,
+                    49,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        140,
+                        23,
+                        34
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_error_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "accent1":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    205,
+                    127,
+                    50,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        143,
+                        88,
+                        35
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "accent2":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    210,
+                    140,
+                    60,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        147,
+                        98,
+                        42
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            }
+        },
+        "light":{
+            "button_normal":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    205,
+                    127,
+                    50,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        143,
+                        88,
+                        35
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "button_hover":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    185,
+                    107,
+                    30,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        129,
+                        74,
+                        21
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "button_pressed":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    165,
+                    87,
+                    10,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        115,
+                        60,
+                        7
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "button_disabled":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    210,
+                    190,
+                    170,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        147,
+                        133,
+                        118
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "button_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "button_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    210,
+                    150,
+                    80,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        147,
+                        105,
+                        56
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_normal":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    245,
+                    230,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        171,
+                        161
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_hover":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    250,
+                    240,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        175,
+                        168
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_expanded":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    250,
+                    242,
+                    225,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        175,
+                        169,
+                        157
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    50,
+                    30,
+                    10,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        35,
+                        21,
+                        7
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_option_normal":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    248,
+                    240,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        173,
+                        168
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_option_hover":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    250,
+                    245,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        175,
+                        171
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_option_selected":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    205,
+                    127,
+                    50,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        143,
+                        88,
+                        35
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dropdown_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    180,
+                    140,
+                    100,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        125,
+                        98,
+                        70
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "slider_track":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    220,
+                    200,
+                    180,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        154,
+                        140,
+                        125
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "slider_thumb_normal":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    210,
+                    140,
+                    60,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        147,
+                        98,
+                        42
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "slider_thumb_hover":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    220,
+                    160,
+                    80,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        154,
+                        112,
+                        56
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "slider_thumb_pressed":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    190,
+                    120,
+                    40,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        133,
+                        84,
+                        28
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "slider_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    50,
+                    30,
+                    10,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        35,
+                        21,
+                        7
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "label_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    50,
+                    30,
+                    10,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        35,
+                        21,
+                        7
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    250,
+                    240,
+                    230,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        175,
+                        168,
+                        161
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "background2":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    240,
+                    228,
+                    215,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        168,
+                        159,
+                        150
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "text_primary":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    50,
+                    30,
+                    10,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        35,
+                        21,
+                        7
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "text_secondary":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    100,
+                    70,
+                    40,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        70,
+                        49,
+                        28
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "switch_track_on":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    205,
+                    127,
+                    50,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        143,
+                        88,
+                        35
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "switch_track_off":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    220,
+                    200,
+                    180,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        154,
+                        140,
+                        125
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "switch_thumb_on":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "switch_thumb_off":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    180,
+                    140,
+                    100,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        125,
+                        98,
+                        70
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "border2":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    200,
+                    170,
+                    130,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        140,
+                        118,
+                        91
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dialog_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    248,
+                    240,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        173,
+                        168
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dialog_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    180,
+                    140,
+                    100,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        125,
+                        98,
+                        70
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dialog_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    50,
+                    30,
+                    10,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        35,
+                        21,
+                        7
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dialog_name_bg":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    205,
+                    127,
+                    50,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        143,
+                        88,
+                        35
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dialog_name_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "dialog_continue_indicator":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    100,
+                    80,
+                    60,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        70,
+                        56,
+                        42
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "tooltip_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    240,
+                    228,
+                    215,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        168,
+                        159,
+                        150
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "tooltip_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    200,
+                    170,
+                    130,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        140,
+                        118,
+                        91
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "tooltip_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    50,
+                    30,
+                    10,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        35,
+                        21,
+                        7
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_success_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    40,
+                    167,
+                    69,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        28,
+                        116,
+                        48
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_success_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    20,
+                    147,
+                    49,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        14,
+                        102,
+                        34
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_success_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_info_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    23,
+                    162,
+                    184,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        16,
+                        113,
+                        128
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_info_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    3,
+                    142,
+                    164,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        2,
+                        99,
+                        114
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_info_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_warning_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    193,
+                    7,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        135,
+                        4
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_warning_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    235,
+                    173,
+                    0,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        164,
+                        121,
+                        0
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_warning_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    0,
+                    0,
+                    0,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        0,
+                        0,
+                        0
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_custom_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    147,
+                    112,
+                    219,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        102,
+                        78,
+                        153
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_custom_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    127,
+                    92,
+                    199,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        88,
+                        64,
+                        139
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_custom_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_error_background":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    220,
+                    53,
+                    69,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        154,
+                        37,
+                        48
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_error_border":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    200,
+                    33,
+                    49,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        140,
+                        23,
+                        34
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "notification_error_text":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    255,
+                    255,
+                    255,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        178,
+                        178,
+                        178
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "accent1":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    205,
+                    127,
+                    50,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        143,
+                        88,
+                        35
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            "accent2":{
+                "cornerRadius":5,
+                "borderWidth":2,
+                "color":[
+                    210,
+                    140,
+                    60,
+                    1.0
+                ],
+                "blur":0,
+                "shadow":{
+                    "distance":2,
+                    "color":[
+                        147,
+                        98,
+                        42
+                    ],
+                    "alpha":0.5,
+                    "direction":[
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            }
+        }
     }
-  }
 }

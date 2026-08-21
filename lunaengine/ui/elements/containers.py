@@ -11,6 +11,7 @@ from ...backend.types import InputState
 from ...backend.controller import JButton, Axis, FocusOrder
 from ...backend.opengl import OpenGLRenderer
 from .labels import TextLabel
+from ...utils.math_utils import to_pygame_color
 
 
 @dataclass
@@ -90,6 +91,7 @@ class UiFrame(UIElement):
 
         self.theme_type = theme or ThemeManager.get_current_theme()
         self.background_color = kwargs.get('background_color', None)
+        self.shadow = ThemeManager.get_shadow('background')
         self.border_color = kwargs.get('border_color', None)
         self.border_width = kwargs.get('border_width', 1)
         self.padding = kwargs.get('padding', 5)
@@ -160,13 +162,16 @@ class UiFrame(UIElement):
         actual_x, actual_y = self.get_actual_position()
         return pygame.Rect(actual_x, actual_y, self.width, self.header_height)
 
-    def set_background_color(self, color: Optional[Tuple[int, int, int]]) -> None:
-        self.background_color = color
+    def set_background_color(self, color: Optional[Union[Tuple[int, int, int], Tuple[int, int, int, int|float]]]) -> None:
+        if isinstance(color, tuple):
+            self.background_color = color
+            if len(color) == 4:
+                self.shadow.alpha = color[3]
 
-    def set_border_color(self, color: Optional[Tuple[int, int, int]]) -> None:
+    def set_border_color(self, color: Optional[Union[Tuple[int, int, int], Tuple[int, int, int, int|float]]]) -> None:
         self.border_color = color
 
-    def set_border(self, color: Optional[Tuple[int, int, int]], width: int = 1) -> None:
+    def set_border(self, color: Optional[Union[Tuple[int, int, int], Tuple[int, int, int, int|float]]], width: int = 1) -> None:
         self.border_color = color
         self.border_width = width
 
@@ -208,6 +213,8 @@ class UiFrame(UIElement):
 
     def update_theme(self, theme_type: ThemeType) -> None:
         self.theme_type = theme_type
+        self.background_color = ThemeManager.get_theme(self.theme_type).background.color
+        self.border_color = ThemeManager.get_theme(self.theme_type).border.color if ThemeManager.get_theme(self.theme_type).border else None
         super().update_theme(theme_type)
 
     def update(self, dt: float, input_state: InputState) -> None:
@@ -307,17 +314,23 @@ class UiFrame(UIElement):
 
         bg_color = self.background_color or theme.background.color
         border_color = self.border_color or (theme.border.color if theme.border else (0,0,0))
+        style = {}
+        if theme.background and theme.background.shadow and theme.background.shadow.distance > 0:
+            style['shadow'] = theme.background.shadow
+
         if bg_color:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color,
                                fill=True,
                                border_color=border_color,
                                border_width=self.border_width,
-                               corner_radius=self.corner_radius)
+                               corner_radius=self.corner_radius,
+                               style=style)
         elif border_color:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color,
                                fill=False,
                                border_width=self.border_width,
-                               corner_radius=self.corner_radius)
+                               corner_radius=self.corner_radius,
+                               style=style)
 
         if self.header_enabled:
             header_bg = theme.button_normal.color if theme.button_normal else (80, 80, 100)
@@ -344,7 +357,7 @@ class UiFrame(UIElement):
 
 
 # ----------------------------------------------------------------------
-# ScrollingFrame – inherits from UiFrame
+# ScrollingFrame
 # ----------------------------------------------------------------------
 
 class ScrollingFrame(UiFrame):
@@ -360,6 +373,10 @@ class ScrollingFrame(UiFrame):
                      'description': 'Vertical scroll offset'},
         'scrollbar_size': {'name': 'scrollbar size', 'key': 'scrollbar_size', 'type': int, 'editable': True,
                            'description': 'Width/height of scrollbars'},
+        'cull_updates': {'name': 'cull updates', 'key': 'cull_updates', 'type': bool, 'editable': True,
+                         'description': 'Skip update() for off-screen children'},
+        'cull_rendering': {'name': 'cull rendering', 'key': 'cull_rendering', 'type': bool, 'editable': True,
+                           'description': 'Skip render() for off-screen children'},
     }
 
     def __init__(
@@ -394,28 +411,62 @@ class ScrollingFrame(UiFrame):
         self._background_color_override = None
         self.padding = 0
 
+        self.cull_updates = kwargs.get('cull_updates', False)
+        self.cull_rendering = kwargs.get('cull_rendering', True)
+
     def _get_init_args(self) -> Dict[str, Any]:
         args = super()._get_init_args()
         args.update({
             'content_width': self.content_width,
             'content_height': self.content_height,
             'scrollbar_size': self.scrollbar_size,
+            'cull_updates': self.cull_updates,
+            'cull_rendering': self.cull_rendering,
         })
         return args
 
-    # ---- NEW: scrolling control methods for controller ----
+    def set_cull_updates(self, enabled: bool) -> None:
+        self.cull_updates = enabled
+
+    def set_cull_rendering(self, enabled: bool) -> None:
+        self.cull_rendering = enabled
+
+    # ---- FIXED: get the child's logical position (without scroll applied) ----
+    def _get_child_logical_pos(self, child: UIElement) -> Tuple[float, float]:
+        """Return the child's logical (non-scrolled) position."""
+        layout = self._child_layout_data.get(child)
+        if layout:
+            return layout.CurrentPos.x, layout.CurrentPos.y
+        return child.x, child.y
+
+    # ---- FIXED: compute screen rect from logical position ----
+    def _get_child_screen_rect(self, child: UIElement) -> pygame.Rect:
+        """Return the child's bounding box in screen coordinates (with scroll applied)."""
+        actual_x, actual_y = self.get_actual_position()
+        log_x, log_y = self._get_child_logical_pos(child)
+        return pygame.Rect(
+            actual_x + log_x - self.scroll_x,
+            actual_y + log_y - self.scroll_y,
+            child.width,
+            child.height
+        )
+
+    def _get_visible_rect(self) -> pygame.Rect:
+        actual_x, actual_y = self.get_actual_position()
+        return pygame.Rect(
+            actual_x,
+            actual_y + self.header_height,
+            self.width,
+            self.height - self.header_height
+        )
+
     def scroll_by(self, dx: float, dy: float) -> None:
-        """
-        Scroll the content by the given delta amounts (in pixels).
-        Useful for controller joystick input.
-        """
         max_scroll_x = max(0, self.content_width - self.width)
         max_scroll_y = max(0, self.content_height - (self.height - self.header_height))
         self.scroll_x = max(0, min(max_scroll_x, self.scroll_x + int(dx)))
         self.scroll_y = max(0, min(max_scroll_y, self.scroll_y + int(dy)))
 
     def set_scroll(self, x: int, y: int) -> None:
-        """Set the exact scroll offset, clamped to valid range."""
         max_scroll_x = max(0, self.content_width - self.width)
         max_scroll_y = max(0, self.content_height - (self.height - self.header_height))
         self.scroll_x = max(0, min(max_scroll_x, x))
@@ -430,7 +481,7 @@ class ScrollingFrame(UiFrame):
     def set_background_color(self, color: Tuple[int, int, int]) -> None:
         self._background_color_override = color
 
-    def _arrange_children(self) -> int|float:
+    def _arrange_children(self) -> int | float:
         current_y = super()._arrange_children()
         total_height = current_y - self.arrange_spacing + self.padding
         if total_height > self.content_height:
@@ -442,11 +493,10 @@ class ScrollingFrame(UiFrame):
             self.state = UIState.DISABLED
             return
 
-        super().update(dt, input_state)   # handles header drag, etc.
+        super().update(dt, input_state)
         if self._dragging:
             return
 
-        # ---- Scrollbar dragging (unchanged) ----
         actual_x, actual_y = self.get_actual_position()
         mouse_pos = input_state.mouse_pos
         mouse_pressed = input_state.mouse_buttons_pressed.left
@@ -484,7 +534,19 @@ class ScrollingFrame(UiFrame):
             self.scroll_x = max(0, min(max_scroll_x, self.scroll_start_x + int(ratio * max_scroll_x)))
 
         self._rearrange_children_if_needed()
-    
+
+        if self.cull_updates:
+            visible_rect = self._get_visible_rect()
+            for child in self.children:
+                child_rect = self._get_child_screen_rect(child)
+                if visible_rect.colliderect(child_rect):
+                    if hasattr(child, 'update'):
+                        child.update(dt, input_state)
+        else:
+            for child in self.children:
+                if hasattr(child, 'update'):
+                    child.update(dt, input_state)
+
     def on_scroll(self, event: pygame.event.Event) -> None:
         if not self.visible or not self.enabled:
             return
@@ -503,19 +565,24 @@ class ScrollingFrame(UiFrame):
 
         border_color = self.border_color or (theme.border.color if theme.border else None)
         bg_color = self._background_color_override or theme.background.color
+        style = {}
+        if theme.background and theme.background.shadow and theme.background.shadow.distance > 0:
+            style['shadow'] = theme.background.shadow
+
         if bg_color:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color,
                                fill=True,
                                border_color=border_color,
                                border_width=self.border_width,
-                               corner_radius=self.corner_radius)
+                               corner_radius=self.corner_radius,
+                               style=style)
         elif border_color:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color,
                                fill=False,
                                border_width=self.border_width,
-                               corner_radius=self.corner_radius)
+                               corner_radius=self.corner_radius,
+                               style=style)
 
-        # Draw header (if any)
         if self.header_enabled:
             header_bg = theme.button_normal.color if theme.button_normal else (80, 80, 100)
             renderer.draw_rect(actual_x, actual_y, self.width, self.header_height,
@@ -537,38 +604,49 @@ class ScrollingFrame(UiFrame):
         if hasattr(renderer, 'enable_scissor'):
             renderer.enable_scissor(actual_x, content_top, self.width, content_height)
 
-        # Render children with scroll offset applied via their own get_actual_position
+        visible_rect = self._get_visible_rect() if self.cull_rendering else None
+
         for child in self._global_engine.layer_manager.get_elements_in_order_from(self.children):
             if not child.visible:
                 continue
-            layout = self._child_layout_data.get(child)
-            if layout and self.auto_arrange_y:
-                child.x = layout.CurrentPos.x - self.scroll_x
-                child.y = layout.CurrentPos.y - self.scroll_y
-            else:
-                child.x -= self.scroll_x
-                child.y -= self.scroll_y
+
+            # Get logical position (without scroll)
+            log_x, log_y = self._get_child_logical_pos(child)
+
+            # Compute screen position
+            screen_x = log_x - self.scroll_x
+            screen_y = log_y - self.scroll_y
+
+            # Culling check using the child's screen rect
+            if self.cull_rendering and visible_rect is not None:
+                child_rect = pygame.Rect(
+                    actual_x + screen_x,
+                    actual_y + screen_y,
+                    child.width,
+                    child.height
+                )
+                if not visible_rect.colliderect(child_rect):
+                    continue
+
+            # Temporarily set the child's position to screen position
+            old_x, old_y = child.x, child.y
+            child.x = screen_x
+            child.y = screen_y
 
             child.render(renderer)
 
-            # Restore original positions
-            if layout and self.auto_arrange_y:
-                child.x = layout.CurrentPos.x
-                child.y = layout.CurrentPos.y
-            else:
-                child.x += self.scroll_x
-                child.y += self.scroll_y
+            # Restore logical position
+            child.x, child.y = old_x, old_y
 
         if hasattr(renderer, 'disable_scissor'):
             renderer.disable_scissor()
 
-        # Draw scrollbars if needed
         if self.content_width > self.width:
             self._draw_horizontal_scrollbar(renderer, actual_x, content_top, theme)
         if self.content_height > content_height:
             self._draw_vertical_scrollbar(renderer, actual_x, content_top, theme)
 
-    # --- Scrollbar helper methods (unchanged) ---
+    # ---- Scrollbar helpers (unchanged) ----
     def _get_vertical_scrollbar_rect(self, fx: int, fy: int) -> pygame.Rect:
         if self.content_height <= self.height - self.header_height:
             return pygame.Rect(0, 0, 0, 0)
@@ -615,16 +693,15 @@ class ScrollingFrame(UiFrame):
         renderer.draw_rect(sb_x, sb_y, sb_w, sb_h, theme.slider_track.color, fill=True)
         thumb = self._get_vertical_scrollbar_rect(fx, fy)
         color = theme.slider_thumb_pressed.color if self.dragging_vertical else theme.slider_thumb_normal.color
-        renderer.draw_rect(thumb.x, thumb.y, thumb.width, thumb.height, color, fill=True)
-
-
+        renderer.draw_rect(thumb.x, thumb.y, thumb.width, thumb.height, color, fill=True) 
+        
 # ----------------------------------------------------------------------
-# Tabination – does not use auto_arrange_y because tabs are managed separately.
+# Tabination
 # ----------------------------------------------------------------------
 
 class Tabination(UiFrame):
     """
-    Tabbed container. Does not use auto_arrange_y because tabs are managed separately.
+    Tabbed container. Fully optimized with cached metrics for vertical mode.
     """
 
     _properties = {
@@ -637,6 +714,10 @@ class Tabination(UiFrame):
                       'description': 'Width of each tab (horizontal) or tab bar (vertical)'},
         'current_tab': {'name': 'current tab', 'key': 'current_tab', 'type': int, 'editable': False,
                         'description': 'Index of active tab'},
+        'cull_headers': {'name': 'cull headers', 'key': 'cull_headers', 'type': bool, 'editable': True,
+                         'description': 'Skip rendering tab headers outside visible area'},
+        'use_rounded_tabs': {'name': 'use rounded tabs', 'key': 'use_rounded_tabs', 'type': bool, 'editable': True,
+                              'description': 'Use rounded corners on tab headers (slightly slower)'},
     }
 
     def __init__(
@@ -656,7 +737,7 @@ class Tabination(UiFrame):
         super().__init__(x, y, width, height, pivot, theme, element_id, **kwargs)
 
         self.orientation = orientation
-        self.tabs = []
+        self.tabs: List[Dict[str, Any]] = []
         self.current_tab = None
 
         if orientation == 'horizontal':
@@ -674,6 +755,7 @@ class Tabination(UiFrame):
         self.tab_spacing = 2
 
         self._font = None
+        self._font_height = 0
         self._even_tab_bg = None
         self._odd_tab_bg = None
         self._calculate_tab_colors()
@@ -688,6 +770,14 @@ class Tabination(UiFrame):
         self._arrow_size = 20
         self.padding = 0
 
+        # Culling and appearance
+        self.cull_headers = kwargs.get('cull_headers', True)
+        self.use_rounded_tabs = kwargs.get('use_rounded_tabs', False)
+
+        # Cached offsets for vertical mode
+        self._cached_tab_offsets: List[Tuple[int, int]] = []  # (y_offset, height)
+        self._update_tab_offsets()
+
     def _get_init_args(self) -> Dict[str, Any]:
         args = super()._get_init_args()
         args.update({
@@ -696,8 +786,52 @@ class Tabination(UiFrame):
             'orientation': self.orientation,
             'tab_height': self.tab_height,
             'tab_width': self.tab_width,
+            'cull_headers': self.cull_headers,
+            'use_rounded_tabs': self.use_rounded_tabs,
         })
         return args
+
+    # ---- Caching helpers ----
+    def _recompute_tab_metrics(self):
+        """Recalculate cached text sizes and scaled icons for all tabs."""
+        if self._font is None:
+            FontManager.initialize()
+            self._font = FontManager.get_font(self.font_name, self.font_size)
+            self._font_height = self._font.get_height()
+
+        for tab in self.tabs:
+            # Text size
+            text_width, text_height = self._font.size(tab['name'])
+            tab['text_width'] = text_width
+            tab['text_height'] = text_height
+
+            # Scaled icon (if any)
+            icon_surf = tab.get('icon')
+            if icon_surf:
+                if self.orientation == 'horizontal':
+                    max_icon_h = self.tab_height - 8
+                    if icon_surf.get_height() > max_icon_h:
+                        scale = max_icon_h / icon_surf.get_height()
+                        new_w = int(icon_surf.get_width() * scale)
+                        new_h = max_icon_h
+                        icon_scaled = pygame.transform.smoothscale(icon_surf, (new_w, new_h))
+                    else:
+                        icon_scaled = icon_surf
+                else:  # vertical
+                    max_icon_w = self.tab_width - 12
+                    if icon_surf.get_width() > max_icon_w:
+                        scale = max_icon_w / icon_surf.get_width()
+                        new_w = max_icon_w
+                        new_h = int(icon_surf.get_height() * scale)
+                        icon_scaled = pygame.transform.smoothscale(icon_surf, (new_w, new_h))
+                    else:
+                        icon_scaled = icon_surf
+                tab['icon_scaled'] = icon_scaled
+            else:
+                tab['icon_scaled'] = None
+
+        # Update offsets after metrics change
+        self._update_tab_offsets()
 
     def _calculate_tab_colors(self) -> None:
         theme = ThemeManager.get_theme(self.theme_type)
@@ -710,6 +844,7 @@ class Tabination(UiFrame):
         if self._font is None:
             FontManager.initialize()
             self._font = FontManager.get_font(self.font_name, self.font_size)
+            self._font_height = self._font.get_height()
         return self._font
 
     def update_theme(self, theme_type: ThemeType) -> None:
@@ -717,24 +852,10 @@ class Tabination(UiFrame):
         self._calculate_tab_colors()
         for tab in self.tabs:
             tab['frame'].update_theme(theme_type)
+        # Font might change? Not usually, but we'll recompute metrics
+        self._recompute_tab_metrics()
 
-    # ---- NEW: methods for controller tab switching ----
-    def next_tab(self) -> bool:
-        """Switch to the next tab (cyclic). Returns True if successful."""
-        if not self.tabs:
-            return False
-        current_idx = self.current_tab if self.current_tab is not None else -1
-        new_idx = (current_idx + 1) % len(self.tabs)
-        return self.switch_tab(new_idx)
-
-    def previous_tab(self) -> bool:
-        """Switch to the previous tab (cyclic). Returns True if successful."""
-        if not self.tabs:
-            return False
-        current_idx = self.current_tab if self.current_tab is not None else 0
-        new_idx = (current_idx - 1) % len(self.tabs)
-        return self.switch_tab(new_idx)
-
+    # ---- Tab management ----
     def add_tab(self, tab_name: str, icon: Optional[Union[str, pygame.Surface]] = None) -> bool:
         for tab in self.tabs:
             if tab['name'].lower() == tab_name.lower():
@@ -747,6 +868,7 @@ class Tabination(UiFrame):
             elif isinstance(icon, pygame.Surface):
                 icon_surface = icon
 
+        # Create the tab frame
         if self.orientation == 'horizontal':
             cx, cy, cw, ch = 0, self.tab_height, self.width, self.height - self.tab_height
         else:
@@ -756,18 +878,23 @@ class Tabination(UiFrame):
         tab_frame.visible = False
         super().add_child(tab_frame)
 
-        self.tabs.append({
+        tab_entry = {
             'name': tab_name,
             'frame': tab_frame,
             'icon': icon_surface,
-            'visible': False
-        })
+            'visible': False,
+            'text_width': 0,
+            'text_height': 0,
+            'icon_scaled': None,
+        }
+        self.tabs.append(tab_entry)
 
         if self.current_tab is None:
             self.current_tab = 0
             self.tabs[0]['visible'] = True
             self.tabs[0]['frame'].visible = True
 
+        self._recompute_tab_metrics()
         self._update_tab_scroll()
         return True
 
@@ -787,11 +914,9 @@ class Tabination(UiFrame):
         self.current_tab = tab_index
         self.tabs[tab_index]['visible'] = True
         self.tabs[tab_index]['frame'].visible = True
-        # Ensure the new tab is in view (scroll to it)
         self._update_tab_scroll()
         if self._global_engine and self.current_tab is not None:
             frame = self.tabs[self.current_tab]['frame']
-            # Collect focusable children inside this frame (global visibility already true because frame is visible)
             focusable_children = []
             def collect_children(elem):
                 if elem.is_globally_visible() and elem.enabled and elem.can_focus:
@@ -800,7 +925,6 @@ class Tabination(UiFrame):
                     collect_children(child)
             collect_children(frame)
             if focusable_children:
-                # Sort them by current focus order for consistency
                 if self._global_engine.focus_order == FocusOrder.SO_X_Y:
                     focusable_children.sort(key=lambda e: (e.selection_order, e.x, e.y))
                 else:
@@ -808,11 +932,19 @@ class Tabination(UiFrame):
                 self._global_engine.focused_ui_element = focusable_children[0]
         return True
 
-    def get_tab_index(self, tab_name: str) -> int:
-        for i, tab in enumerate(self.tabs):
-            if tab['name'].lower() == tab_name.lower():
-                return i
-        return -1
+    def next_tab(self) -> bool:
+        if not self.tabs:
+            return False
+        current_idx = self.current_tab if self.current_tab is not None else -1
+        new_idx = (current_idx + 1) % len(self.tabs)
+        return self.switch_tab(new_idx)
+
+    def previous_tab(self) -> bool:
+        if not self.tabs:
+            return False
+        current_idx = self.current_tab if self.current_tab is not None else 0
+        new_idx = (current_idx - 1) % len(self.tabs)
+        return self.switch_tab(new_idx)
 
     def remove_tab(self, tab_name: str) -> bool:
         idx = self.get_tab_index(tab_name)
@@ -830,52 +962,136 @@ class Tabination(UiFrame):
         self.tabs.pop(idx)
         if self.current_tab is not None and self.current_tab >= len(self.tabs):
             self.current_tab = len(self.tabs) - 1
+        self._update_tab_offsets()
         self._update_tab_scroll()
         return True
+
+    # ---- Legacy getters ----
+    def get_tab_index(self, tab_name: str) -> int:
+        for i, tab in enumerate(self.tabs):
+            if tab['name'].lower() == tab_name.lower():
+                return i
+        return -1
+
+    def get_tab_by_name(self, tab_name: str) -> Optional[Dict[str, Any]]:
+        idx = self.get_tab_index(tab_name)
+        if idx != -1:
+            return self.tabs[idx]
+        return None
+
+    def get_tab_frame(self, tab_name: str) -> Optional[UiFrame]:
+        """Return the frame (UiFrame) of the tab with the given name."""
+        tab = self.get_tab_by_name(tab_name)
+        return tab['frame'] if tab else None
+
+    def get_tab_frame_by_index(self, index: int) -> Optional[UiFrame]:
+        if 0 <= index < len(self.tabs):
+            return self.tabs[index]['frame']
+        return None
+
+    def get_current_tab_index(self) -> Optional[int]:
+        return self.current_tab
+
+    def get_current_tab_name(self) -> Optional[str]:
+        if self.current_tab is not None and self.current_tab < len(self.tabs):
+            return self.tabs[self.current_tab]['name']
+        return None
+
+    def get_tab_count(self) -> int:
+        return len(self.tabs)
+
+    def get_all_tab_names(self) -> List[str]:
+        return [tab['name'] for tab in self.tabs]
+
+    # ---- Setters for tab properties ----
+    def set_tab_title(self, old_name: str, new_name: str) -> bool:
+        """Rename a tab. Returns True if successful."""
+        idx = self.get_tab_index(old_name)
+        if idx == -1:
+            return False
+        # Check if new name already exists
+        for i, tab in enumerate(self.tabs):
+            if i != idx and tab['name'].lower() == new_name.lower():
+                return False
+        self.tabs[idx]['name'] = new_name
+        self._recompute_tab_metrics()  # text size may change
+        self._update_tab_scroll()
+        return True
+
+    def set_tab_icon(self, tab_name: str, icon: Optional[Union[str, pygame.Surface]]) -> bool:
+        """Set or clear an icon for a tab. Returns True if successful."""
+        idx = self.get_tab_index(tab_name)
+        if idx == -1:
+            return False
+        icon_surface = None
+        if icon:
+            if isinstance(icon, str) and os.path.exists(icon):
+                icon_surface = pygame.image.load(icon).convert_alpha()
+            elif isinstance(icon, pygame.Surface):
+                icon_surface = icon
+        self.tabs[idx]['icon'] = icon_surface
+        self._recompute_tab_metrics()  # icon size may change
+        self._update_tab_scroll()
+        return True
+
+    # ---- Internal helpers ----
+    def _update_tab_offsets(self) -> None:
+        """Recalculate cached offsets for vertical tab layouts."""
+        if self.orientation in ('vertical1', 'vertical2'):
+            offsets = []
+            y = 0
+            for tab in self.tabs:
+                h = self._get_tab_height_for_name(tab['name'])
+                offsets.append((y, h))
+                y += h + self.tab_spacing
+            self._cached_tab_offsets = offsets
+            self._update_tab_scroll()
+        else:
+            self._cached_tab_offsets = []
 
     def _update_tab_scroll(self) -> None:
         if not self.tabs:
             return
         if self.orientation == 'horizontal':
-            tab_size = self._get_tab_width()
-            total = len(self.tabs) * (tab_size + self.tab_spacing) - self.tab_spacing
+            tab_w = self._get_tab_width()
+            total = len(self.tabs) * (tab_w + self.tab_spacing) - self.tab_spacing
             self._total_tab_size = total
             max_scroll = max(0, total - self.width)
             self._scroll_offset = max(0, min(self._scroll_offset, max_scroll))
             self._show_prev_arrow = self._scroll_offset > 0
             self._show_next_arrow = self._scroll_offset < max_scroll
         else:
-            tab_heights = [self._get_tab_height_for_name(tab['name']) for tab in self.tabs]
-            total = sum(tab_heights) + (len(self.tabs) - 1) * self.tab_spacing
+            if self._cached_tab_offsets:
+                last_off, last_h = self._cached_tab_offsets[-1]
+                total = last_off + last_h
+            else:
+                total = 0
             self._total_tab_size = total
             max_scroll = max(0, total - self.height)
             self._scroll_offset = max(0, min(self._scroll_offset, max_scroll))
             self._show_prev_arrow = self._scroll_offset > 0
             self._show_next_arrow = self._scroll_offset < max_scroll
 
+    def _get_tab_height_for_name(self, tab_name: str) -> int:
+        for tab in self.tabs:
+            if tab['name'] == tab_name:
+                text_h = tab['text_height']
+                icon_h = 0
+                if tab['icon_scaled']:
+                    icon_h = tab['icon_scaled'].get_height()
+                content_h = max(text_h, icon_h) + self.tab_padding * 2
+                return max(content_h, self.tab_height)
+        return self.tab_height
+
     def _get_tab_width(self) -> int:
         if not self.tabs:
             return 0
-        max_text = max(self.font.size(tab['name'])[0] for tab in self.tabs)
+        max_text = max(tab['text_width'] for tab in self.tabs)
         max_icon = 0
         for tab in self.tabs:
-            if tab['icon']:
-                max_icon = max(max_icon, tab['icon'].get_width())
+            if tab['icon_scaled']:
+                max_icon = max(max_icon, tab['icon_scaled'].get_width())
         return max_text + max_icon + self.tab_padding * 2 + 10
-
-    def _get_tab_height_for_name(self, tab_name: str) -> int:
-        text_h = self.font.size(tab_name)[1]
-        icon_h = 0
-        for tab in self.tabs:
-            if tab['name'] == tab_name and tab['icon']:
-                icon_h = tab['icon'].get_height()
-                max_icon_w = self.tab_width - 8
-                if icon_h > 0:
-                    scale = max_icon_w / tab['icon'].get_width()
-                    icon_h = int(icon_h * scale)
-                break
-        content_h = max(text_h, icon_h) + self.tab_padding * 2
-        return max(content_h, self.tab_height)
 
     def _get_tab_rect(self, idx: int, fx: int, fy: int) -> pygame.Rect:
         if self.orientation == 'horizontal':
@@ -884,14 +1100,23 @@ class Tabination(UiFrame):
             y = fy
             w, h = tab_w, self.tab_height
         else:
-            y = fy
-            for i in range(idx):
-                y += self._get_tab_height_for_name(self.tabs[i]['name']) + self.tab_spacing
-            y -= self._scroll_offset
+            if idx < len(self._cached_tab_offsets):
+                y_off, h = self._cached_tab_offsets[idx]
+            else:
+                y_off, h = 0, self.tab_height
+            y = fy + y_off - self._scroll_offset
             x = fx
-            h = self._get_tab_height_for_name(self.tabs[idx]['name'])
             w = self.tab_width
         return pygame.Rect(x, y, w, h)
+
+    def _get_tab_area_rect(self, fx: int, fy: int) -> pygame.Rect:
+        if self.orientation == 'horizontal':
+            return pygame.Rect(fx, fy, self.width, self.tab_height)
+        else:
+            return pygame.Rect(fx, fy, self.tab_width, self.height)
+
+    def _get_visible_size(self) -> int:
+        return self.width if self.orientation == 'horizontal' else self.height
 
     def _draw_arrow(self, renderer: OpenGLRenderer, x: int, y: int, direction: str, hover: bool) -> None:
         theme = ThemeManager.get_theme(self.theme_type)
@@ -958,15 +1183,6 @@ class Tabination(UiFrame):
         if self.current_tab is not None:
             self.tabs[self.current_tab]['frame'].update(dt, input_state)
 
-    def _get_visible_size(self) -> int:
-        return self.width if self.orientation == 'horizontal' else self.height
-
-    def _get_tab_area_rect(self, fx: int, fy: int) -> pygame.Rect:
-        if self.orientation == 'horizontal':
-            return pygame.Rect(fx, fy, self.width, self.tab_height)
-        else:
-            return pygame.Rect(fx, fy, self.tab_width, self.height)
-
     def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
@@ -977,17 +1193,23 @@ class Tabination(UiFrame):
         # Draw border and background
         bg_color = self.background_color or theme.background.color
         border_color = self.border_color or (theme.border.color if theme.border else None)
+        style = {}
+        if theme.background and theme.background.shadow and theme.background.shadow.distance > 0:
+            style['shadow'] = theme.background.shadow
+
         if bg_color:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, bg_color,
                                fill=True,
                                border_color=border_color,
                                border_width=self.border_width,
-                               corner_radius=self.corner_radius)
+                               corner_radius=self.corner_radius,
+                               style=style)
         elif border_color:
             renderer.draw_rect(actual_x, actual_y, self.width, self.height, border_color,
                                fill=False,
                                border_width=self.border_width,
-                               corner_radius=self.corner_radius)
+                               corner_radius=self.corner_radius,
+                               style=style)
 
         tab_area = self._get_tab_area_rect(actual_x, actual_y)
         renderer.draw_rect(tab_area.x, tab_area.y, tab_area.width, tab_area.height,
@@ -997,94 +1219,72 @@ class Tabination(UiFrame):
         if hasattr(renderer, 'enable_scissor'):
             renderer.enable_scissor(tab_area.x, tab_area.y, tab_area.width, tab_area.height)
 
+        visible_rect = self._get_tab_area_rect(actual_x, actual_y) if self.cull_headers else None
+
         for i, tab in enumerate(self.tabs):
             rect = self._get_tab_rect(i, actual_x, actual_y)
-            if self.orientation == 'horizontal':
-                if rect.right < tab_area.left or rect.left > tab_area.right:
-                    continue
-            else:
-                if rect.bottom < tab_area.top or rect.top > tab_area.bottom:
+
+            if self.cull_headers and visible_rect is not None:
+                if not visible_rect.colliderect(rect):
                     continue
 
             is_active = (i == self.current_tab)
             is_hovered = rect.collidepoint(pygame.mouse.get_pos())
 
-            def to_pygame_color(color_val):
-                if isinstance(color_val, pygame.Color):
-                    return color_val
-                if isinstance(color_val, Color):
-                    return pygame.Color(color_val.r, color_val.g, color_val.b, int(color_val.a * 255))
-                if isinstance(color_val, (tuple, list)):
-                    if len(color_val) >= 3:
-                        return pygame.Color(int(color_val[0]), int(color_val[1]), int(color_val[2]),
-                                            int(color_val[3]) if len(color_val) > 3 else 255)
-                return pygame.Color(200, 200, 200)
-
             if is_active:
                 bg = theme.button_normal.color
-                text_color_obj = to_pygame_color(theme.button_text.color)
-                text_color = (text_color_obj.r, text_color_obj.g, text_color_obj.b)
+                text_color = theme.button_text.color
             elif is_hovered:
                 bg = theme.button_hover.color
-                text_color_obj = to_pygame_color(theme.button_text.color)
-                text_color = (text_color_obj.r, text_color_obj.g, text_color_obj.b)
+                text_color = theme.button_text.color
             else:
                 bg = self._even_tab_bg if i % 2 == 0 else self._odd_tab_bg
-                base = to_pygame_color(theme.button_text.color)
-                text_color = (max(0, base.r - 50), max(0, base.g - 50), max(0, base.b - 50))
+                tc = theme.button_text.color
+                text_color = (max(0, tc[0] - 50), max(0, tc[1] - 50), max(0, tc[2] - 50))
 
+            radius = self.corner_radius if self.use_rounded_tabs else 0
             renderer.draw_rect(rect.x, rect.y, rect.width, rect.height, bg, fill=True,
-                               corner_radius=self.corner_radius)
+                               corner_radius=radius)
 
-            icon_surf = tab['icon']
+            icon_surf = tab.get('icon_scaled')
             text = tab['name']
+            text_w = tab['text_width']
+            text_h = tab['text_height']
 
             if self.orientation == 'horizontal':
-                icon_x = rect.x + 5
-                icon_y = rect.y + (rect.height - (icon_surf.get_height() if icon_surf else 0)) // 2
                 if icon_surf:
-                    max_icon_h = rect.height - 8
-                    if icon_surf.get_height() > max_icon_h:
-                        scale = max_icon_h / icon_surf.get_height()
-                        new_w = int(icon_surf.get_width() * scale)
-                        new_h = max_icon_h
-                        icon_surf = pygame.transform.smoothscale(icon_surf, (new_w, new_h))
+                    icon_x = rect.x + 5
+                    icon_y = rect.y + (rect.height - icon_surf.get_height()) // 2
                     renderer.blit(icon_surf, (icon_x, icon_y))
                     text_x = icon_x + icon_surf.get_width() + 5
                 else:
-                    text_x = rect.x + (rect.width - self.font.size(text)[0]) // 2
-                text_y = rect.y + (rect.height - self.font.get_height()) // 2
+                    text_x = rect.x + (rect.width - text_w) // 2
+                text_y = rect.y + (rect.height - text_h) // 2
                 renderer.draw_text(text, text_x, text_y, text_color,
-                                   FontManager.get_font(self.font_name, self.font_size),
-                                   pivot=(0, 0), rotate=0.0)
+                                   self.font, pivot=(0, 0), rotate=0.0)
             else:
                 rotate_angle = -90.0 if self.orientation == 'vertical2' else 0.0
-                max_icon_w = rect.width - 12
-                if icon_surf and icon_surf.get_width() > max_icon_w:
-                    scale = max_icon_w / icon_surf.get_width()
-                    new_w = max_icon_w
-                    new_h = int(icon_surf.get_height() * scale)
-                    icon_surf = pygame.transform.smoothscale(icon_surf, (new_w, new_h))
-                if rotate_angle != 0 and icon_surf:
-                    icon_surf = pygame.transform.rotate(icon_surf, rotate_angle)
                 if icon_surf:
                     icon_x = rect.x + (rect.width - icon_surf.get_width()) // 2
                     icon_y = rect.y + 5
-                    renderer.blit(icon_surf, (icon_x, icon_y))
+                    if rotate_angle != 0:
+                        icon_rot = pygame.transform.rotate(icon_surf, rotate_angle)
+                        renderer.blit(icon_rot, (icon_x, icon_y))
+                    else:
+                        renderer.blit(icon_surf, (icon_x, icon_y))
                     text_y = icon_y + icon_surf.get_height() + 5
                 else:
-                    text_y = rect.y + (rect.height - self.font.get_height()) // 2
+                    text_y = rect.y + (rect.height - text_h) // 2
+
                 if rotate_angle != 0:
                     text_x = rect.x + rect.width // 2
                     text_y = rect.y + rect.height // 2
                     renderer.draw_text(text, text_x, text_y, text_color,
-                                       (self.font_name, self.font_size),
-                                       pivot=(0.5, 0.5), rotate=rotate_angle)
+                                       self.font, pivot=(0.5, 0.5), rotate=rotate_angle)
                 else:
-                    text_x = rect.x + (rect.width - self.font.size(text)[0]) // 2
+                    text_x = rect.x + (rect.width - text_w) // 2
                     renderer.draw_text(text, text_x, text_y, text_color,
-                                       (self.font_name, self.font_size),
-                                       pivot=(0, 0), rotate=0.0)
+                                       self.font, pivot=(0, 0), rotate=0.0)
 
         if hasattr(renderer, 'disable_scissor'):
             renderer.disable_scissor()
@@ -1105,9 +1305,8 @@ class Tabination(UiFrame):
         if self.current_tab is not None:
             self.tabs[self.current_tab]['frame'].render(renderer)
 
-
 # ----------------------------------------------------------------------
-# Pagination – does not use auto_arrange_y.
+# Pagination
 # ----------------------------------------------------------------------
 
 class Pagination(UiFrame):
@@ -1349,7 +1548,7 @@ class Pagination(UiFrame):
 
 
 # ----------------------------------------------------------------------
-# Expandable – inherits from UiFrame. Its content frame can have its own auto_arrange.
+# Expandable
 # ----------------------------------------------------------------------
 
 class Expandable(UiFrame):
