@@ -37,13 +37,23 @@ jobs:
           cache: pip
 
       - name: Install package and development dependencies
-        run: python -m pip install --upgrade pip && python -m pip install -e '.[dev]'
+        run: |
+          # The editable install reads dependencies from pyproject.toml.
+          # requirements.txt is kept aligned for direct/manual installs.
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[dev]'
+          python -m pip check
+
+      - name: Show runtime versions
+        run: |
+          python --version
+          python -m pip show numpy pygame pytest PyOpenGL PyOpenAL psutil
 
       - name: Compile all Python modules
         run: python -m compileall -q lunaengine tests
 
       - name: Run regression tests
-        run: python -m pytest -q
+        run: python -m pytest -ra --tb=long -vv
 
       - name: Import smoke test
         run: |
