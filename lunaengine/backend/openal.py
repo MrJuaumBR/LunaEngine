@@ -19,9 +19,14 @@ from typing import Dict, List, Optional, Tuple, Any, Callable
 try:
     from openal import al, alc, ALuint, ALint, ALfloat
     OPENAL_AVAILABLE = True
-except ImportError:
+    OPENAL_IMPORT_ERROR = None
+except Exception as exc:
+    # PyOpenAL can be installed while the platform's native OpenAL shared
+    # library is absent. Audio is optional, so importing LunaEngine must not
+    # fail just because this backend cannot be loaded.
     OPENAL_AVAILABLE = False
-    print("Warning: PyOpenAL not installed. Using pygame fallback.")
+    OPENAL_IMPORT_ERROR = exc
+    print(f"Warning: OpenAL unavailable ({exc}). Using pygame fallback.")
     class DummyOpenAL:
         def __getattr__(self, name):
             return lambda *args, **kwargs: None

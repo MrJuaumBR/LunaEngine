@@ -36,6 +36,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
 
+      - name: Install native audio libraries
+        run: sudo apt-get update && sudo apt-get install -y libopenal1 libopenal-dev
+
       - name: Install package and development dependencies
         run: |
           # The editable install reads dependencies from pyproject.toml.
@@ -108,6 +111,9 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
+
+      - name: Install native audio libraries
+        run: sudo apt-get update && sudo apt-get install -y libopenal1 libopenal-dev
 
       - name: Install package and documentation dependencies
         run: python -m pip install --upgrade pip && python -m pip install -e '.[dev]'
