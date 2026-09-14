@@ -24,12 +24,12 @@ classifiers = [
 ]
 
 dependencies = [
-    "pygame>=2.6.1",
-    "numpy>=2.5.2",
-    "PyOpenGL>=3.1.10",
-    "PyOpenGL-accelerate>=3.1.10",
-    "PyOpenAL",
-    "psutil"
+        "pygame>=2.6.1",
+        "numpy>=2.4.6",
+        "PyOpenGL>=3.1.10",
+        "PyOpenGL-accelerate>=3.1.10",
+        "PyOpenAL",
+        "psutil"
 ]
 
 [project.optional-dependencies]
