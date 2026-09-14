@@ -2,11 +2,14 @@
 import pygame
 import time
 import math
+import io
 import numpy as np
 from typing import Optional, List, Tuple, Literal, Dict, Any, Callable
+from pathlib import Path
 from .base import UIElement, FontManager, ThemeManager, ThemeType
-from ...core.renderer import Renderer
-
+from ...backend.opengl import OpenGLRenderer
+from ...storage.atlas import AtlasItem
+from ...misc.icons import Icon
 
 class ChartVisualizer(UIElement):
     """
@@ -253,7 +256,7 @@ class ChartVisualizer(UIElement):
         """Return a shadow version of the color (darker, with alpha)."""
         return (max(0, color[0] - 30), max(0, color[1] - 30), max(0, color[2] - 30), int(255 * self.shadow_alpha))
 
-    def _draw_element_shadow(self, renderer: Renderer, draw_func, *args, **kwargs):
+    def _draw_element_shadow(self, renderer: OpenGLRenderer, draw_func, *args, **kwargs):
         """
         Draws a shadow version of an element by shifting it and using a shadow color.
         The draw_func is called with offset coordinates and a shadow color.
@@ -269,7 +272,7 @@ class ChartVisualizer(UIElement):
 
     # For simplicity, we'll inline the shadow logic in each render method.
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible or not self.data:
             return
 
@@ -821,7 +824,7 @@ class AudioVisualizer(UIElement):
             self._process_audio_data(audio_data)
             self._last_update = current_time
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 
@@ -854,7 +857,7 @@ class AudioVisualizer(UIElement):
     # ------------------------------------------------------------------
     # Bars Visualizer
     # ------------------------------------------------------------------
-    def _render_bars(self, renderer: Renderer, x: int, y: int) -> None:
+    def _render_bars(self, renderer: OpenGLRenderer, x: int, y: int) -> None:
         if not self.smoothed_data:
             return
         total_bars = min(self.num_bars, len(self.smoothed_data))
@@ -874,7 +877,7 @@ class AudioVisualizer(UIElement):
     # ------------------------------------------------------------------
     # Waveform Visualizer
     # ------------------------------------------------------------------
-    def _render_waveform(self, renderer: Renderer, x: int, y: int) -> None:
+    def _render_waveform(self, renderer: OpenGLRenderer, x: int, y: int) -> None:
         if not self.smoothed_data:
             return
         center_y = y + self.height // 2
@@ -894,7 +897,7 @@ class AudioVisualizer(UIElement):
     # ------------------------------------------------------------------
     # Circle Visualizer
     # ------------------------------------------------------------------
-    def _render_circle(self, renderer: Renderer, x: int, y: int) -> None:
+    def _render_circle(self, renderer: OpenGLRenderer, x: int, y: int) -> None:
         if not self.smoothed_data:
             return
         center_x = x + self.width // 2
@@ -925,7 +928,7 @@ class AudioVisualizer(UIElement):
     # ------------------------------------------------------------------
     # Particles Visualizer
     # ------------------------------------------------------------------
-    def _render_particles(self, renderer: Renderer, x: int, y: int) -> None:
+    def _render_particles(self, renderer: OpenGLRenderer, x: int, y: int) -> None:
         if not self.smoothed_data:
             return
         center_x = x + self.width // 2
@@ -953,7 +956,7 @@ class AudioVisualizer(UIElement):
     # ------------------------------------------------------------------
     # Spectrum Visualizer
     # ------------------------------------------------------------------
-    def _render_spectrum(self, renderer: Renderer, x: int, y: int) -> None:
+    def _render_spectrum(self, renderer: OpenGLRenderer, x: int, y: int) -> None:
         if not self.smoothed_data:
             return
         spectrum_data = sorted(self.smoothed_data)
@@ -1013,6 +1016,7 @@ class Table(UIElement):
     """
     A tabular data display element with column headers, row styling, selection.
     Fixed size and position; rows exceeding the height are clipped.
+    Supports images in cells (Path, AtlasItem, Icon, pygame.Surface).
     """
 
     _properties: Dict[str, Dict[str, Any]] = {
@@ -1031,18 +1035,18 @@ class Table(UIElement):
 
     def __init__(
         self,
-        x: int,
-        y: int,
-        width: int,
-        height: int,
+        x: int|float,
+        y: int|float,
+        width: int|float,
+        height: int|float,
         columns: Optional[List[str]] = None,
-        rows: Optional[List[List[str]]] = None,
-        header_height: int = 25,
-        row_height: int = 25,
-        cell_padding: int = 5,
+        rows: Optional[List[List[Any]]] = None,
+        header_height: int|float = 25,
+        row_height: int|float = 25,
+        cell_padding: int|float = 5,
         show_headers: bool = True,
         selection_enabled: bool = False,
-        on_row_select: Optional[Callable[[int, List[str]], None]] = None,
+        on_row_select: Optional[Callable[[int, List[Any]], None]] = None,
         odd_row_color: Optional[Tuple[int, int, int]] = None,
         even_row_color: Optional[Tuple[int, int, int]] = None,
         header_color: Optional[Tuple[int, int, int]] = None,
@@ -1136,6 +1140,91 @@ class Table(UIElement):
 
         self._needs_recalc = False
 
+    # ------------------------------------------------------------------
+    # Image cell helpers (new)
+    # ------------------------------------------------------------------
+    def _get_image_surface(self, data: Any) -> Optional[pygame.Surface]:
+        """
+        Convert various image-like objects into a pygame.Surface.
+        Returns None if the data is not an image or loading fails.
+        """
+        # 1. Already a Surface
+        if isinstance(data, pygame.Surface):
+            return data
+
+        # 2. Icon object
+        if isinstance(data, Icon):
+            # Use white as default color (the icon mask will be recolored)
+            return data.get_surface(color=None)  # None -> white
+
+        # 3. AtlasItem
+        if isinstance(data, AtlasItem):
+            # Try to get bytes from bundle (if loaded) or load from file
+            image_bytes = None
+            if hasattr(data, '_data') and data._data is not None:
+                image_bytes = data._data
+            else:
+                # Fallback to reading from disk
+                if data.path.exists():
+                    with open(data.path, 'rb') as f:
+                        image_bytes = f.read()
+            if image_bytes is None:
+                return None
+            try:
+                return pygame.image.load(io.BytesIO(image_bytes)).convert_alpha()
+            except Exception:
+                return None
+
+        # 4. Path or string – check if it's an image file
+        if isinstance(data, (str, Path)):
+            path = Path(data)
+            if path.exists() and path.suffix.lower() in {'.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tga', '.dds'}:
+                try:
+                    return pygame.image.load(str(path)).convert_alpha()
+                except Exception:
+                    return None
+        return None
+
+    def _draw_cell_image(self, renderer: OpenGLRenderer, surf: pygame.Surface,
+                         cell_x: int, cell_y: int, cell_w: int, cell_h: int) -> None:
+        """
+        Draw the image centered and scaled to fit inside the cell,
+        respecting cell_padding.
+        """
+        # Compute padding inside cell
+        pad = self.cell_padding
+        available_w = cell_w - 2 * pad
+        available_h = cell_h - 2 * pad
+        if available_w <= 0 or available_h <= 0:
+            return
+
+        # Scale preserving aspect ratio
+        surf_w, surf_h = surf.get_size()
+        if surf_w <= 0 or surf_h <= 0:
+            return
+        scale = min(available_w / surf_w, available_h / surf_h)
+        new_w = int(surf_w * scale)
+        new_h = int(surf_h * scale)
+        if new_w <= 0 or new_h <= 0:
+            return
+
+        # Center in cell
+        offset_x = (cell_w - new_w) // 2
+        offset_y = (cell_h - new_h) // 2
+        dest_x = cell_x + offset_x
+        dest_y = cell_y + offset_y
+
+        # Scale the surface if needed
+        if new_w != surf_w or new_h != surf_h:
+            scaled_surf = pygame.transform.smoothscale(surf, (new_w, new_h))
+        else:
+            scaled_surf = surf
+
+        renderer.draw_surface(scaled_surf, dest_x, dest_y)
+
+    # ------------------------------------------------------------------
+    # Data manipulation methods
+    # ------------------------------------------------------------------
     def add_column(self, name: str) -> None:
         self.columns.append(name)
         self._needs_recalc = True
@@ -1154,7 +1243,7 @@ class Table(UIElement):
                     row.pop(index)
             self._needs_recalc = True
 
-    def add_row(self, data: List[str]) -> None:
+    def add_row(self, data: List[Any]) -> None:
         if len(data) < len(self.columns):
             data = data + [""] * (len(self.columns) - len(data))
         elif len(data) > len(self.columns):
@@ -1162,7 +1251,7 @@ class Table(UIElement):
         self.rows.append(data)
         self._needs_recalc = True
 
-    def insert_row(self, index: int, data: List[str]) -> None:
+    def insert_row(self, index: int, data: List[Any]) -> None:
         if len(data) < len(self.columns):
             data = data + [""] * (len(self.columns) - len(data))
         elif len(data) > len(self.columns):
@@ -1179,11 +1268,11 @@ class Table(UIElement):
                 self.selected_row -= 1
             self._needs_recalc = True
 
-    def set_cell(self, row: int, col: int, value: str) -> None:
+    def set_cell(self, row: int, col: int, value: Any) -> None:
         if 0 <= row < len(self.rows) and 0 <= col < len(self.columns):
             self.rows[row][col] = value
 
-    def get_cell(self, row: int, col: int) -> str:
+    def get_cell(self, row: int, col: int) -> Any:
         if 0 <= row < len(self.rows) and 0 <= col < len(self.rows[row]):
             return self.rows[row][col]
         return ""
@@ -1204,7 +1293,10 @@ class Table(UIElement):
         if self._needs_recalc:
             self._recalc()
 
-    def render(self, renderer: Renderer) -> None:
+    # ------------------------------------------------------------------
+    # Render
+    # ------------------------------------------------------------------
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 
@@ -1250,18 +1342,27 @@ class Table(UIElement):
             for col_idx, col_name in enumerate(self.columns):
                 if col_idx < len(self._column_widths):
                     col_width = self._column_widths[col_idx]
-                    cell_text = row_data[col_idx] if col_idx < len(row_data) else ""
-                    max_text_width = col_width - self.cell_padding * 2
-                    if max_text_width > 10:
-                        text_surf = self.font.render(cell_text, True, (255, 255, 255))
-                        if text_surf.get_width() > max_text_width:
-                            while text_surf.get_width() > max_text_width - 10 and len(cell_text) > 1:
-                                cell_text = cell_text[:-1]
-                                text_surf = self.font.render(cell_text + "...", True, (255, 255, 255))
-                            cell_text += "..."
-                    renderer.draw_text(cell_text, x_offset, row_y_pos + self.row_height // 2,
-                                       theme.text_primary.color if theme.text_primary else (255, 255, 255),
-                                       self.font, pivot=(0, 0.5))
+                    cell_data = row_data[col_idx] if col_idx < len(row_data) else ""
+
+                    # ---- Try to render as image ----
+                    image_surf = self._get_image_surface(cell_data)
+                    if image_surf is not None:
+                        self._draw_cell_image(renderer, image_surf, x_offset, row_y_pos,
+                                              col_width, self.row_height)
+                    else:
+                        # ---- Render as text ----
+                        cell_text = str(cell_data)
+                        max_text_width = col_width - self.cell_padding * 2
+                        if max_text_width > 10:
+                            text_surf = self.font.render(cell_text, True, (255, 255, 255))
+                            if text_surf.get_width() > max_text_width:
+                                while text_surf.get_width() > max_text_width - 10 and len(cell_text) > 1:
+                                    cell_text = cell_text[:-1]
+                                    text_surf = self.font.render(cell_text + "...", True, (255, 255, 255))
+                                cell_text += "..."
+                        renderer.draw_text(cell_text, x_offset, row_y_pos + self.row_height // 2,
+                                           theme.text_primary.color if theme.text_primary else (255, 255, 255),
+                                           self.font, pivot=(0, 0.5))
                     x_offset += col_width
 
         # Grid lines

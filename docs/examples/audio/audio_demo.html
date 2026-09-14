@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Demo - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (Ctrl+K)">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../../examples/index.html">Examples Hub</a></li><li class="breadcrumb-item active">Audio</li><li class="breadcrumb-item active">Audio Demo</li></ol></nav>
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Audio Demo</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>audio_demo.py</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">&quot;&quot;&quot;
+Audio Demo for LunaEngine 0.2.5+
+Showcases the new AudioManager with named channels, curves, balance, and device selection.
+&quot;&quot;&quot;
+
+import sys
+import os
+import time
+import math
+import random
+sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
+
+from lunaengine.core import Scene, LunaEngine
+from lunaengine.core.audio import AudioManager, AudioChannel, AudioCurve, AudioEvent
+from lunaengine.ui import *
+from lunaengine.ui.tween import Tween, EasingType, AnimationHandler
+import pygame
+import numpy as np
+
+
+class AudioDemoScene(Scene):
+    def on_enter(self, previous_scene=None):
+        self.engine.set_global_theme(ThemeType.GRUVBOX)
+
+    def __init__(self, engine: LunaEngine):
+        super().__init__(engine)
+
+        # Sound names
+        self.sfx_name = &quot;explosion&quot;
+        self.music_name = &quot;bg_music&quot;
+
+        # UI state
+        self.sfx_volume = 0.8
+        self.music_volume = 0.7
+        self.sfx_pitch = 1.0
+        self.music_pitch = 1.0
+        self.sfx_balance = 0.0
+        self.music_balance = 0.0
+        self.curve_duration = 2.0
+
+        # Active channel references for status
+        self.active_sfx_channels = {}  # key -&gt; channel name
+        self.music_channel = None
+
+        # Event log
+        self.event_log = []
+
+        # Load audio files (or create placeholders)
+        self.load_audio()
+
+        # Setup UI tabs
+        self.setup_ui()
+
+        # Register audio events for logging
+        self.audio_manager.on_event(AudioEvent.PLAYBACK_STARTED, self.on_audio_event)
+        self.audio_manager.on_event(AudioEvent.PLAYBACK_COMPLETED, self.on_audio_event)
+        self.audio_manager.on_event(AudioEvent.CURVE_FINISHED, self.on_audio_event)
+
+        # Keyboard shortcuts
+        @engine.on_event(pygame.KEYDOWN)
+        def on_key(event):
+            self.handle_key(event.key)
+
+    # ---------- Audio Loading ----------
+    def load_audio(self):
+        &quot;&quot;&quot;Load sound files; if missing, create placeholder tones.&quot;&quot;&quot;
+        try:
+            # Try loading real files
+            path = os.path.dirname(os.path.abspath(__file__))
+            sfx_path = f&quot;{path}/../examples/explosion.wav&quot;
+            music_path = f&quot;{path}/../examples/music.mp3&quot;
+
+            if os.path.exists(sfx_path):
+                self.audio_manager.load_sound(self.sfx_name, sfx_path)
+                print(&quot;Loaded explosion.wav&quot;)
+            else:
+                self.create_placeholder_sound(self.sfx_name, duration=1.0, freq=440)
+
+            if os.path.exists(music_path):
+                self.audio_manager.load_sound(self.music_name, music_path)
+                print(&quot;Loaded music.mp3&quot;)
+            else:
+                self.create_placeholder_sound(self.music_name, duration=5.0, freq=523)
+
+        except Exception as e:
+            print(f&quot;Audio loading error: {e}&quot;)
+            self.create_placeholder_sound(self.sfx_name, duration=1.0, freq=440)
+            self.create_placeholder_sound(self.music_name, duration=5.0, freq=523)
+
+    def create_placeholder_sound(self, name: str, duration: float = 1.0, freq: float = 440.0):
+        &quot;&quot;&quot;Generate a simple sine wave tone and load it as a sound.&quot;&quot;&quot;
+        try:
+            import tempfile
+            import wave
+            sample_rate = 44100
+            t = np.linspace(0, duration, int(sample_rate * duration), False)
+            tone = np.sin(2 * np.pi * freq * t)
+            tone = (tone * 32767).astype(np.int16)
+            stereo = np.column_stack((tone, tone))
+            with tempfile.NamedTemporaryFile(suffix=&#x27;.wav&#x27;, delete=False) as tmp:
+                with wave.open(tmp.name, &#x27;wb&#x27;) as wf:
+                    wf.setnchannels(2)
+                    wf.setsampwidth(2)
+                    wf.setframerate(sample_rate)
+                    wf.writeframes(stereo.tobytes())
+                self.audio_manager.load_sound(name, tmp.name)
+                os.unlink(tmp.name)
+            print(f&quot;Created placeholder tone &#x27;{name}&#x27; ({freq}Hz, {duration}s)&quot;)
+        except Exception as e:
+            print(f&quot;Failed to create placeholder: {e}&quot;)
+
+    # ---------- UI Setup ----------
+    def setup_ui(self):
+        self.engine.set_global_theme(ThemeType.DEFAULT)
+
+        # Title
+        title = TextLabel(512, 30, &quot;Audio Demo - LunaEngine 0.2.5&quot;, 36, pivot=(0.5, 0))
+        self.add_ui_element(title)
+
+        # Create main tabs container – adjust height to fit the window (720 - 90 for header = 630)
+        self.main_tabs = Tabination(25, 80, 980, 610, 20)
+        self.main_tabs.set_corner_radius((8, 8, 8, 8))
+
+        # --- ADD TABS FIRST ---
+        self.main_tabs.add_tab(&#x27;Sound Effects&#x27;)
+        self.main_tabs.add_tab(&#x27;Music&#x27;)
+        self.main_tabs.add_tab(&#x27;Transitions &amp; Curves&#x27;)
+        self.main_tabs.add_tab(&#x27;Visualizer&#x27;)
+        self.main_tabs.add_tab(&#x27;Monitor&#x27;)
+        self.main_tabs.add_tab(&#x27;Settings&#x27;)
+
+        # Now fill each tab with content
+        self.setup_sfx_tab()
+        self.setup_music_tab()
+        self.setup_curves_tab()
+        self.setup_visualizer_tab()
+        self.setup_monitor_tab()
+        self.setup_settings_tab()
+
+        self.add_ui_element(self.main_tabs)
+
+        # FPS display
+        self.fps_label = TextLabel(self.engine.width - 10, 10, &quot;FPS: --&quot;, 14, (100, 255, 100), pivot=(1, 0))
+        self.add_ui_element(self.fps_label)
+
+    # ---------- SFX Tab ----------
+    def setup_sfx_tab(self):
+        tab = &#x27;Sound Effects&#x27;
+        # Create three named channels for SFX
+        self.audio_manager.create_channel(&#x27;sfx1&#x27;, volume=0.8, balance=0.0)
+        self.audio_manager.create_channel(&#x27;sfx2&#x27;, volume=0.8, balance=0.0)
+        self.audio_manager.create_channel(&#x27;sfx3&#x27;, volume=0.8, balance=0.0)
+
+        # Header
+        self.main_tabs.add_to_tab(tab, TextLabel(10, 10, &quot;Sound Effects&quot;, 24, (255, 255, 0)))
+
+        y = 50
+        # Channel 1 controls
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y, &quot;Channel 1 (sfx1):&quot;, 18))
+        b1 = Button(200, y, 100, 30, &quot;Play&quot;)
+        b1.set_on_click(lambda: self.play_sfx(&#x27;sfx1&#x27;, volume=0.8, pitch=1.0, balance=0.0))
+        self.main_tabs.add_to_tab(tab, b1)
+
+        b1_slow = Button(310, y, 100, 30, &quot;Slow (0.5x)&quot;)
+        b1_slow.set_on_click(lambda: self.play_sfx(&#x27;sfx1&#x27;, volume=0.8, pitch=0.5, balance=0.0))
+        self.main_tabs.add_to_tab(tab, b1_slow)
+
+        b1_fast = Button(420, y, 100, 30, &quot;Fast (2.0x)&quot;)
+        b1_fast.set_on_click(lambda: self.play_sfx(&#x27;sfx1&#x27;, volume=0.8, pitch=2.0, balance=0.0))
+        self.main_tabs.add_to_tab(tab, b1_fast)
+
+        y += 50
+        # Channel 2 controls
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y, &quot;Channel 2 (sfx2):&quot;, 18))
+        b2 = Button(200, y, 100, 30, &quot;Play&quot;)
+        b2.set_on_click(lambda: self.play_sfx(&#x27;sfx2&#x27;, volume=0.6, pitch=1.0, balance=0.0))
+        self.main_tabs.add_to_tab(tab, b2)
+
+        b2_loop = Button(310, y, 100, 30, &quot;Loop&quot;)
+        b2_loop.set_on_click(lambda: self.play_sfx(&#x27;sfx2&#x27;, volume=0.6, pitch=1.0, balance=0.0, loop=True))
+        self.main_tabs.add_to_tab(tab, b2_loop)
+
+        y += 50
+        # Balance controls for channel 3
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y, &quot;Channel 3 (sfx3) - Balance:&quot;, 18))
+        b_left = Button(200, y, 80, 30, &quot;Left&quot;)
+        b_left.set_on_click(lambda: self.play_sfx(&#x27;sfx3&#x27;, volume=0.8, pitch=1.0, balance=-0.8))
+        self.main_tabs.add_to_tab(tab, b_left)
+
+        b_center = Button(290, y, 80, 30, &quot;Center&quot;)
+        b_center.set_on_click(lambda: self.play_sfx(&#x27;sfx3&#x27;, volume=0.8, pitch=1.0, balance=0.0))
+        self.main_tabs.add_to_tab(tab, b_center)
+
+        b_right = Button(380, y, 80, 30, &quot;Right&quot;)
+        b_right.set_on_click(lambda: self.play_sfx(&#x27;sfx3&#x27;, volume=0.8, pitch=1.0, balance=0.8))
+        self.main_tabs.add_to_tab(tab, b_right)
+
+        y += 50
+        # Stop all SFX
+        stop_btn = Button(10, y, 120, 30, &quot;Stop All SFX&quot;)
+        stop_btn.set_on_click(lambda: self.stop_sfx_channels())
+        self.main_tabs.add_to_tab(tab, stop_btn)
+
+        y += 50
+        self.sfx_status = TextLabel(10, y, &quot;No SFX playing&quot;, 16, (200, 200, 200))
+        self.main_tabs.add_to_tab(tab, self.sfx_status)
+
+    # ---------- Music Tab ----------
+    def setup_music_tab(self):
+        tab = &#x27;Music&#x27;
+        # Header
+        self.main_tabs.add_to_tab(tab, TextLabel(10, 10, &quot;Music Controls&quot;, 24, (255, 255, 0)))
+
+        # Get the existing music channel (already created by AudioManager)
+        music_channel = self.audio_manager.get_channel(&#x27;music&#x27;)
+        if music_channel is None:
+            # Fallback: create it (should not happen)
+            music_channel = self.audio_manager.create_channel(&#x27;music&#x27;, volume=0.7, balance=0.0, loop=True)
+        else:
+            # Ensure it&#x27;s configured correctly
+            music_channel.volume = 0.7
+            music_channel.balance = 0.0
+            music_channel.loop = True
+
+        self.music_channel = music_channel
+        self.music_volume = music_channel.volume
+        self.music_pitch = music_channel.pitch
+        self.music_balance = music_channel.balance
+
+        y = 50
+        # Play / Pause / Stop
+        play_btn = Button(10, y, 100, 30, &quot;Play&quot;)
+        play_btn.set_on_click(lambda: self.play_music())
+        self.main_tabs.add_to_tab(tab, play_btn)
+
+        pause_btn = Button(120, y, 100, 30, &quot;Pause&quot;)
+        pause_btn.set_on_click(lambda: self.pause_music())
+        self.main_tabs.add_to_tab(tab, pause_btn)
+
+        resume_btn = Button(230, y, 100, 30, &quot;Resume&quot;)
+        resume_btn.set_on_click(lambda: self.resume_music())
+        self.main_tabs.add_to_tab(tab, resume_btn)
+
+        stop_btn = Button(340, y, 100, 30, &quot;Stop&quot;)
+        stop_btn.set_on_click(lambda: self.stop_music())
+        self.main_tabs.add_to_tab(tab, stop_btn)
+
+        y += 50
+        # Volume slider
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y, &quot;Volume:&quot;, 16))
+        vol_slider = Slider(100, y, 200, 20, 0.0, 1.0, self.music_volume)
+        vol_slider.on_value_changed = lambda v: self.set_music_volume(v)
+        self.main_tabs.add_to_tab(tab, vol_slider)
+        self.music_vol_label = TextLabel(310, y, f&quot;{self.music_volume:.2f}&quot;, 14)
+        self.main_tabs.add_to_tab(tab, self.music_vol_label)
+
+        y += 40
+        # Pitch slider
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y, &quot;Pitch:&quot;, 16))
+        pitch_slider = Slider(100, y, 200, 20, 0.5, 2.0, self.music_pitch)
+        pitch_slider.on_value_changed = lambda v: self.set_music_pitch(v)
+        self.main_tabs.add_to_tab(tab, pitch_slider)
+        self.music_pitch_label = TextLabel(310, y, f&quot;{self.music_pitch:.2f}x&quot;, 14)
+        self.main_tabs.add_to_tab(tab, self.music_pitch_label)
+
+        y += 40
+        # Balance slider
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y, &quot;Balance:&quot;, 16))
+        bal_slider = Slider(100, y, 200, 20, -1.0, 1.0, self.music_balance)
+        bal_slider.on_value_changed = lambda v: self.set_music_balance(v)
+        self.main_tabs.add_to_tab(tab, bal_slider)
+        self.music_bal_label = TextLabel(310, y, f&quot;{self.music_balance:.2f}&quot;, 14)
+        self.main_tabs.add_to_tab(tab, self.music_bal_label)
+
+        y += 50
+        self.music_status = TextLabel(10, y, &quot;Stopped&quot;, 16, (255, 100, 100))
+        self.main_tabs.add_to_tab(tab, self.music_status)
+
+        y += 30
+        self.music_pos = TextLabel(10, y, &quot;Position: 0.00s&quot;, 14, (200, 200, 200))
+        self.main_tabs.add_to_tab(tab, self.music_pos)
+
+    # ---------- Curves / Transitions Tab ----------
+    def setup_curves_tab(self):
+        tab = &#x27;Transitions &amp; Curves&#x27;
+        self.main_tabs.add_to_tab(tab, TextLabel(10, 10, &quot;Audio Curves &amp; Transitions&quot;, 24, (255, 255, 0)))
+
+        y = 50
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y, &quot;Volume Curve (0→1→0.5 over 3s):&quot;, 16))
+        btn_vol_curve = Button(300, y, 150, 30, &quot;Apply to SFX1&quot;)
+        btn_vol_curve.set_on_click(lambda: self.apply_volume_curve())
+        self.main_tabs.add_to_tab(tab, btn_vol_curve)
+
+        y += 40
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y, &quot;Pitch Curve (0.5→2.0→1.0 over 2s):&quot;, 16))
+        btn_pitch_curve = Button(320, y, 150, 30, &quot;Apply to SFX2&quot;)
+        btn_pitch_curve.set_on_click(lambda: self.apply_pitch_curve())
+        self.main_tabs.add_to_tab(tab, btn_pitch_curve)
+
+        y += 40
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y, &quot;Balance Curve (L→R→Center over 2s):&quot;, 16))
+        btn_bal_curve = Button(330, y, 150, 30, &quot;Apply to SFX3&quot;)
+        btn_bal_curve.set_on_click(lambda: self.apply_balance_curve())
+        self.main_tabs.add_to_tab(tab, btn_bal_curve)
+
+        y += 50
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y, &quot;Combined: volume ↑ + pitch ↑ (2s)&quot;, 16))
+        btn_combined = Button(280, y, 150, 30, &quot;Apply to Music&quot;)
+        btn_combined.set_on_click(lambda: self.apply_combined_curve())
+        self.main_tabs.add_to_tab(tab, btn_combined)
+
+        y += 50
+        self.main_tabs.add_to_tab(tab, TextLabel(10, y, &quot;Curve Duration:&quot;, 16))
+        dur_slider = Slider(150, y, 200, 20, 0.5, 5.0, self.curve_duration)
+        dur_slider.on_value_changed = lambda v: self.set_curve_duration(v)
+        self.main_tabs.add_to_tab(tab, dur_slider)
+        self.curve_dur_label = TextLabel(360, y, f&quot;{self.curve_duration:.1f}s&quot;, 14)
+        self.main_tabs.add_to_tab(tab, self.curve_dur_label)
+
+    # ---------- Visualizer Tab ----------
+    def setup_visualizer_tab(self):
+        tab = &#x27;Visualizer&#x27;
+        self.main_tabs.add_to_tab(tab, TextLabel(10, 10, &quot;Audio Visualizer&quot;, 24, (255, 255, 0)))
+
+        from lunaengine.ui.elements import AudioVisualizer
+
+        self.audio_visualizer = AudioVisualizer(
+            x=20, y=50, width=600, height=200,
+            style=&#x27;bars&#x27;,
+            source=None,
+            color_gradient=[(100, 0, 200), (0, 150, 255), (0, 255, 200), (100, 255, 100)]
+        )
+        self.main_tabs.add_to_tab(tab, self.audio_visualizer)
+
+        controls_y = 270
+        self.main_tabs.add_to_tab(tab, TextLabel(20, controls_y, &quot;Style:&quot;, 16))
+        style_dd = Dropdown(100, controls_y-10, 120, 30, [&#x27;Bars&#x27;, &#x27;Waveform&#x27;, &#x27;Circle&#x27;, &#x27;Spectrum&#x27;])
+        style_dd.set_on_selection_changed(lambda i, v: self.audio_visualizer.set_style(v.lower()))
+        self.main_tabs.add_to_tab(tab, style_dd)
+
+        self.main_tabs.add_to_tab(tab, TextLabel(250, controls_y, &quot;Source:&quot;, 16))
+        src_dd = Dropdown(310, controls_y-10, 120, 30, [&#x27;Music&#x27;, &#x27;SFX1&#x27;, &#x27;SFX2&#x27;, &#x27;SFX3&#x27;])
+        src_dd.set_on_selection_changed(lambda i, v: self.set_visualizer_source(v.lower()))
+        self.main_tabs.add_to_tab(tab, src_dd)
+
+        controls_y += 40
+        self.main_tabs.add_to_tab(tab, TextLabel(20, controls_y, &quot;Sensitivity:&quot;, 16))
+        sens_slider = Slider(120, controls_y, 150, 20, 0.5, 3.0, 1.5)
+        sens_slider.on_value_changed = lambda v: self.audio_visualizer.set_sensitivity(v)
+        self.main_tabs.add_to_tab(tab, sens_slider)
+
+        self.main_tabs.add_to_tab(tab, TextLabel(300, controls_y, &quot;Smoothing:&quot;, 16))
+        smooth_slider = Slider(390, controls_y, 150, 20, 0.1, 0.9, 0.7)
+        smooth_slider.on_value_changed = lambda v: self.audio_visualizer.set_smoothing(v)
+        self.main_tabs.add_to_tab(tab, smooth_slider)
+
+    # ---------- Monitor Tab ----------
+    def setup_monitor_tab(self):
+        tab = &#x27;Monitor&#x27;
+        self.main_tabs.add_to_tab(tab, TextLabel(10, 10, &quot;Audio Monitor&quot;, 24, (255, 255, 0)))
+
+        self.main_tabs.add_to_tab(tab, TextLabel(10, 50, &quot;Active Channels:&quot;, 16, (200, 200, 255)))
+        self.channel_list_label = TextLabel(10, 75, &quot;None&quot;, 14, (200, 200, 200))
+        self.main_tabs.add_to_tab(tab, self.channel_list_label)
+
+        self.main_tabs.add_to_tab(tab, TextLabel(10, 120, &quot;Event Log:&quot;, 16, (200, 200, 255)))
+        self.event_log_labels = []
+        for i in range(8):
+            lbl = TextLabel(10, 140 + i*22, &quot;&quot;, 12, (200, 200, 200))
+            self.event_log_labels.append(lbl)
+            self.main_tabs.add_to_tab(tab, lbl)
+
+        clear_btn = Button(10, 320, 100, 25, &quot;Clear Log&quot;)
+        clear_btn.set_on_click(lambda: self.clear_event_log())
+        self.main_tabs.add_to_tab(tab, clear_btn)
+
+    # ---------- Settings Tab ----------
+    def setup_settings_tab(self):
+        tab = &#x27;Settings&#x27;
+        self.main_tabs.add_to_tab(tab, TextLabel(10, 10, &quot;Audio Settings&quot;, 24, (255, 255, 0)))
+
+        self.main_tabs.add_to_tab(tab, TextLabel(10, 50, &quot;Audio Output Device:&quot;, 16, (200, 200, 255)))
+        devices = self.audio_manager.list_devices()
+        if not devices:
+            devices = [&quot;default&quot;]
+        self.device_dropdown = Dropdown(10, 75, 300, 30, devices)
+        self.device_dropdown.set_on_selection_changed(lambda i, v: self.change_device(v))
+        self.main_tabs.add_to_tab(tab, self.device_dropdown)
+
+        self.device_status = TextLabel(10, 120, f&quot;Current: {devices[0] if devices else &#x27;default&#x27;}&quot;, 14, (200, 200, 200))
+        self.main_tabs.add_to_tab(tab, self.device_status)
+
+        self.main_tabs.add_to_tab(tab, TextLabel(10, 170, &quot;Master Volume:&quot;, 16, (200, 200, 255)))
+        master_slider = Slider(150, 165, 200, 20, 0.0, 1.0, 1.0)
+        master_slider.on_value_changed = lambda v: self.set_master_volume(v)
+        self.main_tabs.add_to_tab(tab, master_slider)
+
+        reload_btn = Button(10, 210, 150, 30, &quot;Reload Sounds&quot;)
+        reload_btn.set_on_click(lambda: self.reload_sounds())
+        self.main_tabs.add_to_tab(tab, reload_btn)
+
+    # ---------- Audio Control Methods ----------
+    def play_sfx(self, channel_name, volume=1.0, pitch=1.0, balance=0.0, loop=False):
+        ch = self.audio_manager.get_channel(channel_name)
+        if not ch:
+            self.add_event(f&quot;Channel {channel_name} not found&quot;)
+            return
+        ch.volume = volume
+        ch.pitch = pitch
+        ch.balance = balance
+        if ch.play(self.sfx_name, loop=loop):
+            self.add_event(f&quot;SFX on {channel_name}: vol={volume:.2f}, pitch={pitch:.2f}, bal={balance:.2f}&quot;)
+            self.update_sfx_status()
+        else:
+            self.add_event(f&quot;Failed to play on {channel_name}&quot;)
+
+    def stop_sfx_channels(self):
+        for name in [&#x27;sfx1&#x27;, &#x27;sfx2&#x27;, &#x27;sfx3&#x27;]:
+            ch = self.audio_manager.get_channel(name)
+            if ch:
+                ch.stop()
+        self.add_event(&quot;All SFX stopped&quot;)
+        self.update_sfx_status()
+
+    def update_sfx_status(self):
+        active = []
+        for name in [&#x27;sfx1&#x27;, &#x27;sfx2&#x27;, &#x27;sfx3&#x27;]:
+            ch = self.audio_manager.get_channel(name)
+            if ch and ch.is_playing():
+                active.append(name)
+        if active:
+            self.sfx_status.set_text(f&quot;Playing: {&#x27;, &#x27;.join(active)}&quot;)
+        else:
+            self.sfx_status.set_text(&quot;No SFX playing&quot;)
+
+    def play_music(self):
+        ch = self.music_channel
+        if ch is None:
+            ch = self.audio_manager.get_channel(&#x27;music&#x27;)
+            if ch is None:
+                ch = self.audio_manager.create_channel(&#x27;music&#x27;, volume=self.music_volume, balance=self.music_balance, loop=True)
+                self.music_channel = ch
+        if ch.play(self.music_name, loop=True):
+            self.music_status.set_text(&quot;Playing&quot;)
+            self.music_status.color = (100, 255, 100)
+            self.add_event(&quot;Music started&quot;)
+        else:
+            self.add_event(&quot;Failed to start music&quot;)
+
+    def pause_music(self):
+        ch = self.music_channel
+        if ch and ch.is_playing():
+            ch.pause()
+            self.music_status.set_text(&quot;Paused&quot;)
+            self.music_status.color = (255, 255, 100)
+            self.add_event(&quot;Music paused&quot;)
+
+    def resume_music(self):
+        ch = self.music_channel
+        if ch and ch.is_paused():
+            ch.resume()
+            self.music_status.set_text(&quot;Playing&quot;)
+            self.music_status.color = (100, 255, 100)
+            self.add_event(&quot;Music resumed&quot;)
+
+    def stop_music(self):
+        ch = self.music_channel
+        if ch:
+            ch.stop()
+            self.music_status.set_text(&quot;Stopped&quot;)
+            self.music_status.color = (255, 100, 100)
+            self.add_event(&quot;Music stopped&quot;)
+
+    def set_music_volume(self, vol):
+        self.music_volume = vol
+        self.music_vol_label.set_text(f&quot;{vol:.2f}&quot;)
+        ch = self.music_channel
+        if ch:
+            ch.set_volume(vol)
+
+    def set_music_pitch(self, pitch):
+        self.music_pitch = pitch
+        self.music_pitch_label.set_text(f&quot;{pitch:.2f}x&quot;)
+        ch = self.music_channel
+        if ch:
+            ch.set_pitch(pitch)
+
+    def set_music_balance(self, bal):
+        self.music_balance = bal
+        self.music_bal_label.set_text(f&quot;{bal:.2f}&quot;)
+        ch = self.music_channel
+        if ch:
+            ch.set_balance(bal)
+
+    def set_curve_duration(self, dur):
+        self.curve_duration = dur
+        self.curve_dur_label.set_text(f&quot;{dur:.1f}s&quot;)
+
+    # Curve applications
+    def apply_volume_curve(self):
+        ch = self.audio_manager.get_channel(&#x27;sfx1&#x27;)
+        if not ch or not ch.is_playing():
+            self.add_event(&quot;SFX1 not playing, cannot apply curve&quot;)
+            return
+        dur = self.curve_duration
+        keyframes = [(0.0, 0.0), (dur*0.5, 1.0), (dur, 0.5)]
+        curve = AudioCurve(&#x27;volume&#x27;, keyframes, interpolation=&#x27;smoothstep&#x27;)
+        ch.apply_curve(curve)
+        self.add_event(f&quot;Volume curve applied to sfx1 ({dur}s)&quot;)
+
+    def apply_pitch_curve(self):
+        ch = self.audio_manager.get_channel(&#x27;sfx2&#x27;)
+        if not ch or not ch.is_playing():
+            self.add_event(&quot;SFX2 not playing, cannot apply curve&quot;)
+            return
+        dur = self.curve_duration
+        keyframes = [(0.0, 0.5), (dur*0.5, 2.0), (dur, 1.0)]
+        curve = AudioCurve(&#x27;pitch&#x27;, keyframes, interpolation=&#x27;smoothstep&#x27;)
+        ch.apply_curve(curve)
+        self.add_event(f&quot;Pitch curve applied to sfx2 ({dur}s)&quot;)
+
+    def apply_balance_curve(self):
+        ch = self.audio_manager.get_channel(&#x27;sfx3&#x27;)
+        if not ch or not ch.is_playing():
+            self.add_event(&quot;SFX3 not playing, cannot apply curve&quot;)
+            return
+        dur = self.curve_duration
+        keyframes = [(0.0, -0.8), (dur*0.5, 0.8), (dur, 0.0)]
+        curve = AudioCurve(&#x27;balance&#x27;, keyframes, interpolation=&#x27;smoothstep&#x27;)
+        ch.apply_curve(curve)
+        self.add_event(f&quot;Balance curve applied to sfx3 ({dur}s)&quot;)
+
+    def apply_combined_curve(self):
+        ch = self.music_channel
+        if not ch or not ch.is_playing():
+            self.add_event(&quot;Music not playing, cannot apply combined curve&quot;)
+            return
+        dur = self.curve_duration
+        vol_curve = AudioCurve(&#x27;volume&#x27;, [(0.0, 0.5), (dur, 1.0)], &#x27;smoothstep&#x27;)
+        pitch_curve = AudioCurve(&#x27;pitch&#x27;, [(0.0, 1.0), (dur, 1.5)], &#x27;smoothstep&#x27;)
+        ch.apply_curve(vol_curve)
+        ch.apply_curve(pitch_curve)
+        self.add_event(f&quot;Combined volume+pitch curve on music ({dur}s)&quot;)
+
+    def set_visualizer_source(self, source_name):
+        if source_name == &#x27;music&#x27;:
+            ch = self.music_channel
+        else:
+            ch = self.audio_manager.get_channel(source_name)
+        if ch and ch.is_playing():
+            self.audio_visualizer.set_source(ch)
+        else:
+            self.audio_visualizer.set_source(None)
+
+    # ---------- Settings ----------
+    def change_device(self, device_name):
+        if self.audio_manager.set_device(device_name):
+            self.device_status.set_text(f&quot;Current: {device_name}&quot;)
+            self.add_event(f&quot;Device changed to {device_name}&quot;)
+        else:
+            self.add_event(f&quot;Failed to switch to {device_name}&quot;)
+
+    def set_master_volume(self, vol):
+        for ch in self.audio_manager.channels.values():
+            ch.set_volume(ch.volume * vol)
+        self.add_event(f&quot;Master volume set to {vol:.2f}&quot;)
+
+    def reload_sounds(self):
+        self.add_event(&quot;Reloading sounds...&quot;)
+        self.load_audio()
+        self.add_event(&quot;Sounds reloaded&quot;)
+
+    # ---------- Event Logging ----------
+    def on_audio_event(self, manager, **kwargs):
+        event = kwargs.get(&#x27;event&#x27;, None)
+        if event:
+            self.add_event(f&quot;AudioEvent: {event}&quot;)
+        else:
+            self.add_event(&quot;Audio event occurred&quot;)
+
+    def add_event(self, text):
+        self.event_log.append(text)
+        if len(self.event_log) &gt; 8:
+            self.event_log.pop(0)
+        self.update_event_log()
+
+    def update_event_log(self):
+        for i, lbl in enumerate(self.event_log_labels):
+            if i &lt; len(self.event_log):
+                lbl.set_text(self.event_log[i])
+            else:
+                lbl.set_text(&quot;&quot;)
+
+    def clear_event_log(self):
+        self.event_log.clear()
+        for lbl in self.event_log_labels:
+            lbl.set_text(&quot;&quot;)
+
+    # ---------- Update ----------
+    def update(self, dt):
+        self.audio_manager.update(dt)
+
+        # Update music position
+        ch = self.music_channel
+        if ch and ch.is_playing():
+            pos = ch.get_position()
+            self.music_pos.set_text(f&quot;Position: {pos:.2f}s&quot;)
+        else:
+            self.music_pos.set_text(&quot;Position: 0.00s&quot;)
+
+        fps_stats = self.engine.get_fps_stats()
+        self.fps_label.set_text(f&quot;FPS: {fps_stats[&#x27;current_fps&#x27;]:.1f}&quot;)
+
+        active = [name for name, ch in self.audio_manager.channels.items() if ch.is_playing()]
+        if active:
+            self.channel_list_label.set_text(&quot;, &quot;.join(active))
+        else:
+            self.channel_list_label.set_text(&quot;None&quot;)
+
+    # ---------- Keyboard ----------
+    def handle_key(self, key):
+        if key == pygame.K_1:
+            self.play_sfx(&#x27;sfx1&#x27;, volume=0.8, pitch=1.0)
+        elif key == pygame.K_2:
+            self.play_sfx(&#x27;sfx2&#x27;, volume=0.7, pitch=1.0)
+        elif key == pygame.K_3:
+            self.play_sfx(&#x27;sfx3&#x27;, volume=0.8, pitch=1.0, balance=-0.5)
+        elif key == pygame.K_4:
+            self.play_music()
+        elif key == pygame.K_5:
+            self.pause_music()
+        elif key == pygame.K_6:
+            self.resume_music()
+        elif key == pygame.K_7:
+            self.stop_music()
+        elif key == pygame.K_ESCAPE:
+            self.engine.set_scene(&quot;MainMenu&quot;)
+
+    # ---------- Render ----------
+    def render(self, renderer):
+        renderer.fill_screen(ThemeManager.get_color(&#x27;background&#x27;))
+        renderer.draw_rect(0, 0, self.engine.width, 80, ThemeManager.get_color(&#x27;background2&#x27;))
+        # UI elements rendered automatically
+
+
+# ---------- Main ----------
+def main():
+    engine = LunaEngine(&quot;Audio Demo - LunaEngine&quot;, 1024, 720, debug=True)
+    engine.fps = 60
+
+    engine.add_scene(&quot;AudioDemo&quot;, AudioDemoScene)
+    engine.set_scene(&quot;AudioDemo&quot;)
+
+    print(&quot;\n=== Audio Demo Controls ===&quot;)
+    print(&quot;1-3: Play SFX on channels 1-3&quot;)
+    print(&quot;4: Play music&quot;)
+    print(&quot;5: Pause music&quot;)
+    print(&quot;6: Resume music&quot;)
+    print(&quot;7: Stop music&quot;)
+    print(&quot;ESC: Exit demo&quot;)
+    print(&quot;Use UI tabs for full control\n&quot;)
+
+    engine.run()
+
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Audio Demo for LunaEngine 0.2.5+</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="audio_demo.py" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-09-14 16:30
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../../theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // Compute relative path to root search.html
+                    const path = window.location.pathname;
+                    const parts = path.split('/').filter(p => p && p !== '');
+                    // Remove file part if present
+                    let dirParts = parts;
+                    if (dirParts.length > 0 && dirParts[dirParts.length - 1].includes('.')) {
+                        dirParts = dirParts.slice(0, -1);
+                    }
+                    // Number of levels to go up to reach the directory containing search.html
+                    const levels = Math.max(0, dirParts.length - 1);
+                    const searchPath = '../'.repeat(levels) + 'search.html';
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

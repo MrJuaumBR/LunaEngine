@@ -12,7 +12,6 @@ from .containers import UiFrame, Tabination
 from .buttons import Button
 from .labels import TextLabel, ImageLabel
 from ..themes import ThemeManager, ThemeType
-from ...core.renderer import Renderer
 from ...backend.opengl import OpenGLRenderer
 
 
@@ -164,7 +163,7 @@ class Select(UIElement):
 
         self.state = UIState.HOVERED if (left_arrow_hover or right_arrow_hover) else UIState.NORMAL
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 
@@ -195,7 +194,7 @@ class Select(UIElement):
 
         super().render(renderer)
 
-    def _render_select_content(self, renderer: Renderer, actual_x: int, actual_y: int, theme) -> None:
+    def _render_select_content(self, renderer: OpenGLRenderer, actual_x: int, actual_y: int, theme) -> None:
         arrow_color = theme.dropdown_text.color
 
         left_arrow_x = actual_x + 5
@@ -223,7 +222,7 @@ class Select(UIElement):
         renderer.draw_text(str(self.options[self.selected_index]), actual_x + self.width // 2, actual_y + self.height // 2,
                            theme.dropdown_text.color, self.font, pivot=(0.5, 0.5))
 
-    def _draw_fallback_arrows(self, renderer: Renderer, actual_x: int, actual_y: int, arrow_color) -> None:
+    def _draw_fallback_arrows(self, renderer: OpenGLRenderer, actual_x: int, actual_y: int, arrow_color) -> None:
         left_arrow_points = [
             (actual_x + 15, actual_y + self.height // 2 - 5),
             (actual_x + 5, actual_y + self.height // 2),
@@ -352,7 +351,7 @@ class Switch(UIElement):
             track = tuple(min(255, c + 20) for c in track)
         return track, thumb
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 
@@ -549,7 +548,7 @@ class Slider(UIElement):
             else:
                 self.state = UIState.NORMAL
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 
@@ -1154,7 +1153,7 @@ class Dropdown(UIElement):
         else:
             self.state = UIState.NORMAL
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 
@@ -1571,7 +1570,7 @@ class NumberSelector(UIElement):
             return 10.0
         return 1.0
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 
@@ -1809,7 +1808,7 @@ class Checkbox(UIElement):
             self.state = UIState.NORMAL
             self._was_pressed = False
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 

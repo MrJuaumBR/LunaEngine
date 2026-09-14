@@ -42,19 +42,23 @@ from typing import Dict, List, Tuple, Callable, Optional, Type, Any, Union
 
 from ..ui.layer_manager import UILayerManager
 from ..ui.notifications import NotificationPosition, NotificationType, notification_manager
-from ..ui.themes import ThemeManager, ThemeType
+from ..ui.themes import ThemeManager, ThemeType, ThemeKey
+from ..utils.timer import Timer, get_global_timer
 from .scene import Scene
 from ..utils import PerformanceMonitor, GarbageCollector, BackgroundTaskManager
 from ..misc.debug import DebugManager, LiveInspector
 from ..backend import OpenGLRenderer, EVENTS, InputState, LExceptions, ControllerManager, Ratio, FocusOrder, JButton, Axis
-from .renderer import Renderer
+from ..storage.savedata import Savedata
 from .window import Window
-from .. import __version__, ui
+from .. import __version__, ui, __status__
 
 from .audio import AudioManager
 
 from ..storage import Atlas, AtlasCategory, AtlasItem
 from ..misc import Icon, Icons
+
+# ---- SCENE TRANSITION SYSTEM (CPU surface version) ----
+from ..backend.transition import Transition, TransitionType
 
 
 class LunaEngine:
@@ -76,7 +80,7 @@ class LunaEngine:
         atlas (Atlas): Resource catalog for all assets
         bundle_path (Optional[Path]): Path to resource bundle (.res) if any
     """
-    def __init__(self, title: str = "LunaEngine Game", width: int = 800, height: int = 600, fullscreen: bool = False, icon: Optional[Union[str, pygame.Surface, None]] = None, **kwargs):
+    def __init__(self, title: str = "LunaEngine Game", width: int = 800, height: int = 600, fullscreen: bool = False, icon: Optional[Union[str, Path, pygame.Surface, Icon, AtlasItem, Callable[[], Icon], None]] = None, **kwargs):
         """
         Initialize the LunaEngine.
         
@@ -175,9 +179,20 @@ class LunaEngine:
         if self.debug_enabled:
             self.debug_manager.add_overlay(LiveInspector(self))
         
+        # Timer system
+        self.timer = Timer()
+        
+        if kwargs.get('has_savedata', False) and kwargs.get('savedata_path', None) is not None:
+            self.savedata = Savedata(str(kwargs['savedata_path']), encryption_key=kwargs.get('savedata_key', None))
+        
         # Version
         self.version = __version__
-        
+        self.status = __status__
+
+        # ---- SCENE TRANSITION SYSTEM ----
+        self._transition: Optional[Transition] = None
+        self._transitioning: bool = False
+
     def _auto_discover_assets(self) -> None:
         """Scan the atlas root for common asset folders and add them automatically."""
         root = self.atlas.root_path
@@ -241,6 +256,7 @@ class LunaEngine:
         renderer_success = self.renderer.initialize()
         
         self.running = True
+        self.start_time = time.time()
         print("Engine initialization complete")
         
         from ..ui.elements import UIElement
@@ -266,6 +282,7 @@ class LunaEngine:
         if not self.renderer: return
 
         version = __version__
+        status = __status__
         splash_duration = 2.0
         anim_duration = 0.5
         start_time = time.time()
@@ -287,7 +304,7 @@ class LunaEngine:
 
         title_surf = title_font.render("LunaEngine", True, (255, 255, 255))
         subtitle_surf = subtitle_font.render("It is a Framework, not an engine", True, (200, 200, 200))
-        version_surf = version_font.render(f"Version {version}", True, (150, 150, 150))
+        version_surf = version_font.render(f"Version {version}-{str(status).upper()[0:2]}", True, (150, 150, 150))
 
         # Pre‑compute final positions
         screen_center_x = self.width // 2
@@ -435,13 +452,69 @@ class LunaEngine:
         pygame.display.set_caption(title)
     setTitle = set_title
         
-    def set_icon(self, icon: Optional[Union[str, pygame.Surface, None]]):
-        """Set the window icon."""
+    def set_icon(self, icon: Optional[Union[str, Path, pygame.Surface, Icon, AtlasItem, Callable[[], Icon], None]]):
+        """
+        Set the window icon.
+
+        Supports:
+            - file path (str or Path)
+            - pygame.Surface
+            - Icon (from icons.py)
+            - AtlasItem (from the resource atlas)
+            - callable returning an Icon (e.g. Icons.BRAIN)
+
+        The icon is automatically scaled to 64×64 for best window compatibility.
+        """
         if icon is None:
             return
-        if isinstance(icon, str):
-            icon = pygame.image.load(icon).convert()
-        pygame.display.set_icon(icon)
+
+        # If it's a callable (like Icons.BRAIN), call it to get the Icon
+        if callable(icon) and not isinstance(icon, type):
+            try:
+                result = icon()
+                if isinstance(result, Icon):
+                    icon = result
+            except Exception:
+                # If calling fails, we'll treat it as an unsupported type
+                pass
+
+        surf = None
+
+        if isinstance(icon, (str, Path)):
+            try:
+                surf = pygame.image.load(str(icon)).convert_alpha()
+            except pygame.error:
+                surf = pygame.image.load(str(icon)).convert()
+
+        elif isinstance(icon, pygame.Surface):
+            surf = icon
+
+        elif isinstance(icon, Icon):
+            # Default to white colour for the window icon
+            surf = icon.get_surface(color=(255, 255, 255))
+
+        elif isinstance(icon, AtlasItem):
+            # Try to load from bundle memory first
+            data = self.atlas.get_bytes(icon.name)
+            if data:
+                surf = pygame.image.load(io.BytesIO(data)).convert_alpha()
+            else:
+                # Fallback to reading from disk
+                try:
+                    surf = pygame.image.load(str(icon.path)).convert_alpha()
+                except pygame.error:
+                    surf = pygame.image.load(str(icon.path)).convert()
+            if surf is None:
+                raise ValueError(f"Could not load icon from {icon.path}")
+
+        else:
+            raise TypeError(f"Unsupported icon type: {type(icon)}")
+
+        # Scale to 64×64 if not already
+        if surf.get_size() != (64, 64):
+            surf = pygame.transform.smoothscale(surf, (64, 64))
+
+        pygame.display.set_icon(surf)
     setIcon = set_icon
     
     def update_camera_renderer(self):
@@ -484,15 +557,94 @@ class LunaEngine:
             self.focused_ui_element = elems[0]
             return True
         
-        current_index = elems.index(self.focused_ui_element)
-        
-        if direction in ('down', 'right', 'next'):
-            new_index = (current_index + 1) % len(elems)
-        else:  # 'up', 'left', 'prev'
-            new_index = (current_index - 1) % len(elems)
-        
-        self.focused_ui_element = elems[new_index]
+        if direction in ('next', 'prev'):
+            current_index = elems.index(self.focused_ui_element)
+            step = 1 if direction == 'next' else -1
+            self.focused_ui_element = elems[(current_index + step) % len(elems)]
+        else:
+            vectors = {'left': (-1.0, 0.0), 'right': (1.0, 0.0),
+                       'up': (0.0, -1.0), 'down': (0.0, 1.0)}
+            if direction not in vectors:
+                return False
+            return self.move_focus_vector(*vectors[direction], _elements=elems)
+
+        self._ensure_focus_visible(self.focused_ui_element)
         return True
+
+    def move_focus_vector(self, dx: float, dy: float, _elements=None) -> bool:
+        """Focus the nearest visible element in an arbitrary screen-space direction."""
+        elems = _elements if _elements is not None else self.get_focusable_elements()
+        if not elems:
+            return False
+        if self.focused_ui_element is None or self.focused_ui_element not in elems:
+            self.focused_ui_element = elems[0]
+            self._ensure_focus_visible(self.focused_ui_element)
+            return True
+        magnitude = (dx * dx + dy * dy) ** 0.5
+        if magnitude <= 0.001:
+            return False
+        ux, uy = dx / magnitude, dy / magnitude
+        current_rect = self.focused_ui_element.getCollideRect()
+        cx, cy = current_rect.center
+        candidates = []
+        for elem in elems:
+            if elem is self.focused_ui_element:
+                continue
+            ex, ey = elem.getCollideRect().center
+            vx, vy = ex - cx, ey - cy
+            distance = (vx * vx + vy * vy) ** 0.5
+            if distance <= 0.001:
+                continue
+            alignment = (vx * ux + vy * uy) / distance
+            if alignment <= 0.05:
+                continue
+            # Prefer elements in the stick direction, then the nearest one.
+            score = distance * (1.0 + (1.0 - alignment) * 1.75)
+            candidates.append((score, distance, elem))
+        if not candidates:
+            return False
+        candidates.sort(key=lambda item: (item[0], item[1]))
+        self.focused_ui_element = candidates[0][2]
+        self._ensure_focus_visible(self.focused_ui_element)
+        return True
+
+    def handle_controller_vector(self, dx: float, dy: float) -> bool:
+        """Dispatch an arbitrary analog-stick vector to the focused widget."""
+        elem = self.focused_ui_element
+        direction = None
+        if abs(dx) >= abs(dy):
+            direction = 'right' if dx > 0 else 'left'
+        else:
+            direction = 'down' if dy > 0 else 'up'
+        if elem and elem.is_globally_visible() and elem.enabled:
+            if hasattr(elem, 'on_directional_input') and elem.on_directional_input(direction):
+                return True
+        return self.move_focus_vector(dx, dy)
+
+    def _ensure_focus_visible(self, element: Optional['ui.UIElement']) -> None:
+        """Scroll every ancestor until a newly focused element is visible."""
+        if element is None:
+            return
+        from ..ui.elements.containers import ScrollingFrame
+        current = element
+        while current:
+            parent = current.parent
+            if isinstance(parent, ScrollingFrame):
+                child_rect = parent._get_child_screen_rect(current)
+                view = parent._get_visible_rect()
+                dx = 0
+                dy = 0
+                if child_rect.left < view.left:
+                    dx = child_rect.left - view.left
+                elif child_rect.right > view.right:
+                    dx = child_rect.right - view.right
+                if child_rect.top < view.top:
+                    dy = child_rect.top - view.top
+                elif child_rect.bottom > view.bottom:
+                    dy = child_rect.bottom - view.bottom
+                if dx or dy:
+                    parent.scroll_by(dx, dy)
+            current = parent
     
     def update_controller_ui_navigation(self, dt: float):
         """Handle all controller-based UI navigation: focus, scrolling, tab switching, and activation."""
@@ -537,11 +689,20 @@ class LunaEngine:
         rx_active = abs(rx) > THRESHOLD
         ry_active = abs(ry) > THRESHOLD
         
-        # ---- 1. ACTIVATION (A button or B button) ----
+        # ---- 1. ACTIVATION / BACK ----
         if a_pressed and not prev['a']:
             self.activate_focused_element()
         if b_pressed and not prev['b']:
-            self.activate_focused_element()
+            # Roblox-style back behavior: close an open selector first, then
+            # leave the current tab when possible. Do not invoke the focused
+            # element's action accidentally with the back button.
+            elem = self.focused_ui_element
+            if elem and getattr(elem, 'expanded', False):
+                elem.expanded = False
+            elif elem:
+                tab = self._find_tabination_ancestor(elem)
+                if tab:
+                    tab.previous_tab()
         
         # ---- 2. TAB SWITCHING (LB / RB) ----
         if lb_pressed and not prev['lb']:
@@ -558,19 +719,19 @@ class LunaEngine:
         # ---- 3. FOCUS MOVEMENT (Left stick or D-pad) ----
         moved = False
         if dpad_left and not prev['dpad_left']:
-            moved = self.move_focus('left')
+            moved = self.handle_controller_direction('left')
         elif dpad_right and not prev['dpad_right']:
-            moved = self.move_focus('right')
+            moved = self.handle_controller_direction('right')
         elif dpad_up and not prev['dpad_up']:
-            moved = self.move_focus('up')
+            moved = self.handle_controller_direction('up')
         elif dpad_down and not prev['dpad_down']:
-            moved = self.move_focus('down')
+            moved = self.handle_controller_direction('down')
         
         if not moved and (lx_active or ly_active):
             if lx_active and prev['lx'] == 0:
-                moved = self.move_focus('right' if lx > 0 else 'left')
+                moved = self.handle_controller_vector(lx, -ly if ly_active else 0.0)
             elif ly_active and prev['ly'] == 0:
-                moved = self.move_focus('down' if ly < 0 else 'up')
+                moved = self.handle_controller_vector(lx if lx_active else 0.0, -ly)
         
         # ---- 4. SCROLLING (Right stick) ----
         if self.focused_ui_element:
@@ -628,6 +789,10 @@ class LunaEngine:
             return False
         if not elem.is_globally_visible():
             return False
+        # Give widgets such as Select, Dropdown, Slider, and Checkbox a
+        # controller-specific activation hook before callback fallback.
+        if hasattr(elem, 'on_activate'):
+            elem.on_activate()
         if hasattr(elem, 'on_click_callback'):
             if elem.on_click_callback is not None:
                 if elem.on_click_args or elem.on_click_kwargs:
@@ -648,7 +813,39 @@ class LunaEngine:
             return True
             
         return False
-    
+
+    def handle_controller_direction(self, direction: str) -> bool:
+        """Let the focused widget consume direction before moving focus."""
+        elem = self.focused_ui_element
+        if elem and elem.is_globally_visible() and elem.enabled:
+            if hasattr(elem, 'on_directional_input') and elem.on_directional_input(direction):
+                return True
+        return self.move_focus(direction)
+
+    def get_clipboard(self, default: str = "") -> str:
+        """Return text from the system clipboard, or ``default`` if unavailable."""
+        try:
+            if not pygame.scrap.get_init():
+                pygame.scrap.init()
+            data = pygame.scrap.get(pygame.SCRAP_TEXT)
+            if data is None:
+                return default
+            if isinstance(data, bytes):
+                return data.decode('utf-8', errors='replace').rstrip('\x00')
+            return str(data)
+        except (pygame.error, AttributeError, TypeError):
+            return default
+
+    def set_clipboard(self, text: Any) -> bool:
+        """Set text in the system clipboard; return False if unavailable."""
+        try:
+            if not pygame.scrap.get_init():
+                pygame.scrap.init()
+            pygame.scrap.put(pygame.SCRAP_TEXT, str(text).encode('utf-8'))
+            return True
+        except (pygame.error, AttributeError, TypeError):
+            return False
+
     def add_scene(self, name: str, scene_class: Type[Scene], *args, **kwargs):
         """
         Add a scene to the engine by class (the engine will instantiate it).
@@ -667,14 +864,10 @@ class LunaEngine:
         scene_instance.name = name
     addScene = add_scene
         
-    def set_scene(self, name: str):
+    def _switch_scene_immediate(self, name: str):
         """
-        Set the current active scene.
-        
-        Calls on_exit on the current scene and on_enter on the new scene.
-        
-        Args:
-            name (str): The name of the scene to set as current
+        Immediately switch to a scene without any transition effect.
+        This is the core logic extracted from the old set_scene.
         """
         if name in self.scenes:
             # Call on_exit for current scene
@@ -694,6 +887,25 @@ class LunaEngine:
             if hasattr(self, 'debug_manager') and self.debug_manager:
                 self.debug_manager.on_scene_changed()
             self.current_scene.on_enter(self.previous_scene_name)
+            # The main loop rebuilds this cache before event/update processing.
+            # Refresh it here as well so an immediate scene switch cannot render
+            # the previous scene's controls for one extra frame.
+            self._rebuild_ui_layers()
+    
+    def set_scene(self, name: str, effect: Optional[TransitionType] = None, duration: float = 0.5):
+        """
+        Set the current active scene, optionally with a transition effect.
+
+        Args:
+            name (str): The name of the scene to set as current.
+            effect (TransitionType, optional): Type of transition effect.
+                If None or TransitionType.NONE, switch immediately.
+            duration (float): Duration of the transition in seconds (default 0.5).
+        """
+        if effect is None or effect == TransitionType.NONE:
+            self._switch_scene_immediate(name)
+        else:
+            self.transition_to(name, effect, duration)
     setScene = set_scene
     
     def find_event_handlers(self, event: int, rep_id: str) -> bool:
@@ -885,23 +1097,25 @@ class LunaEngine:
         if theme_name in themes:
             theme_data = ThemeManager.get_theme_type_by_name(theme_name)
             ThemeManager.set_current_theme(theme_data)
-            ThemeManager.set_dark_mode(dark)
+            self.set_dark_mode(dark)
             self._update_all_ui_themes(theme_data)
             return True
         
         return False
     
-    def set_dark_mode(self, dark: bool):
+    def set_dark_mode(self, dark: bool|None):
         """
         Set the global dark mode for the engine and update all UI elements
         
         Args:
             dark (bool): True
         """
-        
+        if dark is None: return
         ThemeManager.set_dark_mode(dark)
         current_theme = ThemeManager.get_current_theme()
         self._update_all_ui_themes(current_theme)
+        from ..ui.tooltips import UITooltipManager
+        UITooltipManager.update_all_themes(current_theme)
         
     def get_dark_mode(self) -> bool:
         """
@@ -1054,6 +1268,8 @@ class LunaEngine:
             self.input_state.using_controller = self.controller_manager.is_using_controller()
             self.input_state.active_controller = self.controller_manager.get_first_connected()
             self.input_state.controller_count = len(self.controller_manager)
+            if self.controller_manager.is_using_controller():
+                self.controller_ui_mode = True
             if self.input_state.active_controller:
                 self.update_controller_ui_navigation(dt)
             
@@ -1107,13 +1323,24 @@ class LunaEngine:
             self.debug_manager.update(dt, self.input_state)
             self.performance_monitor.end_timer("ui")
             
+            # Update timers
+            self.performance_monitor.start_timer("timers")
+            self.timer.update()
+            self.performance_monitor.end_timer("timers")
+            
             # Update background tasks
             self.background_tasks.update(dt)
+
+            # ---- SCENE TRANSITION UPDATE ----
+            if self._transitioning:
+                self._update_transition(dt)
             
             # Render with profiling
             self.performance_monitor.start_timer("render")
-            self._render()
-            self.debug_manager.render(self.renderer)
+            if self._transitioning and self._transition:
+                self._render_transition()
+            else:
+                self._render()
             self.performance_monitor.end_timer("render")
             
             self.performance_monitor.end_timer('frame')
@@ -1125,6 +1352,254 @@ class LunaEngine:
             self.garbage_collector.cleanup()
         
         self.shutdown()
+        
+    # ---- SCENE TRANSITION SYSTEM (CPU SURFACE VERSION) ----
+
+    def transition_to(self, scene_name: str,
+                      effect: TransitionType = TransitionType.NONE,
+                      duration: float = 0.5):
+        """
+        Start a transition using immutable snapshots of both scenes.
+        """
+        if self._transitioning:
+            return
+
+        from_scene = self.current_scene
+        to_scene = self.scenes.get(scene_name)
+        if not to_scene:
+            raise ValueError(f"Scene '{scene_name}' not found")
+
+        if effect == TransitionType.NONE:
+            self._switch_scene_immediate(scene_name)
+            return
+
+        if from_scene is to_scene:
+            return
+
+        # Prepare the target before capturing it, so enter-time setup is visible
+        # in the snapshot. It is not updated until the transition completes.
+        to_scene.on_enter(from_scene.name if from_scene else None)
+
+        # Capture both scenes as surfaces
+        from_surf = self._capture_scene_surface(from_scene)
+        to_surf = self._capture_scene_surface(to_scene)
+
+        self._transition = Transition(
+            from_scene=from_scene,
+            to_scene=to_scene,
+            effect=effect,
+            duration=duration,
+            from_surface=from_surf,
+            to_surface=to_surf
+        )
+        self._transitioning = True
+
+    def _capture_scene_surface(self, scene: 'Scene') -> pygame.Surface:
+        """
+        Render the given scene (including UI and particles) to a pygame.Surface.
+        """
+        if scene is None:
+            surf = pygame.Surface((self.width, self.height), pygame.SRCALPHA, 32)
+            surf.fill((0, 0, 0, 255))
+            return surf
+
+        def draw_scene():
+            if scene.shadow_system_enabled and hasattr(scene, 'shadow_system'):
+                scene.shadow_system.render(self.renderer)
+            scene.render(self.renderer)
+            if hasattr(scene, 'particle_system') and scene.particle_system:
+                scene.particle_system.render(scene.camera)
+            self._render_ui_elements_for_scene(scene)
+
+        return self.renderer.capture_to_surface(draw_scene)
+
+    def _render_ui_elements_for_scene(self, scene):
+        """Render all UI elements of a given scene (sorted by z_index)."""
+        if not scene or not hasattr(scene, 'ui_elements'):
+            return
+        # Sort by z_index (ascending)
+        elements = sorted(scene.ui_elements, key=lambda e: getattr(e, 'z_index', 0))
+        for elem in elements:
+            elem.render(self.renderer)
+
+    def _update_transition(self, dt: float):
+        if not self._transitioning or not self._transition:
+            return
+
+        tr = self._transition
+        if tr.duration == 0.0:
+            tr.progress = 1.0
+        else:
+            tr.progress += dt / tr.duration
+
+        if tr.progress >= 1.0:
+            tr.progress = 1.0
+            tr.finished = True
+
+            # Finalise scene switch
+            if tr.from_scene:
+                tr.from_scene.on_exit(tr.to_scene.name if tr.to_scene else None)
+            self.current_scene = tr.to_scene
+            if hasattr(self, 'debug_manager') and self.debug_manager:
+                self.debug_manager.on_scene_changed()
+            # Transition completion happens after the frame's normal layer
+            # rebuild, so refresh now before the first full target-scene render.
+            self._rebuild_ui_layers()
+            if self.focused_ui_element not in self.get_focusable_elements():
+                self.focused_ui_element = None
+
+            # Clean up surfaces
+            tr.from_surface = None
+            tr.to_surface = None
+
+            self._transitioning = False
+            self._transition = None
+
+    def _render_transition(self):
+        tr = self._transition
+        if not tr or tr.from_surface is None or tr.to_surface is None:
+            return
+
+        progress = tr.eased_progress
+        old, new = tr.from_surface, tr.to_surface
+        blended = pygame.Surface((self.width, self.height), pygame.SRCALPHA, 32)
+        blended.fill((0, 0, 0, 255))
+
+        if tr.effect == TransitionType.FADE:
+            blended.blit(old, (0, 0))
+            new_copy = new.copy(); new_copy.set_alpha(int(progress * 255)); blended.blit(new_copy, (0, 0))
+        elif tr.effect in (TransitionType.SLIDE_LEFT, TransitionType.SLIDE_RIGHT,
+                           TransitionType.SLIDE_UP, TransitionType.SLIDE_DOWN):
+            dx, dy = 0, 0
+            if tr.effect == TransitionType.SLIDE_LEFT: dx = -self.width
+            if tr.effect == TransitionType.SLIDE_RIGHT: dx = self.width
+            if tr.effect == TransitionType.SLIDE_UP: dy = -self.height
+            if tr.effect == TransitionType.SLIDE_DOWN: dy = self.height
+            blended.blit(old, (int(dx * progress), int(dy * progress)))
+            blended.blit(new, (int(-dx * (1.0 - progress)), int(-dy * (1.0 - progress))))
+        elif tr.effect in (TransitionType.ZOOM_IN, TransitionType.ZOOM_OUT):
+            if tr.effect == TransitionType.ZOOM_IN:
+                # Target scene starts small at the center and grows to full size.
+                blended.blit(old, (0, 0))
+                scale = max(0.01, progress)
+                zoom = pygame.transform.smoothscale(new, (max(1, int(self.width * scale)), max(1, int(self.height * scale))))
+                blended.blit(zoom, zoom.get_rect(center=(self.width // 2, self.height // 2)))
+            else:
+                # Target is already visible while the outgoing scene shrinks away.
+                blended.blit(new, (0, 0))
+                scale = 1.0 - progress
+                zoom = pygame.transform.smoothscale(old, (max(1, int(self.width * scale)), max(1, int(self.height * scale))))
+                blended.blit(zoom, zoom.get_rect(center=(self.width // 2, self.height // 2)))
+        elif tr.effect in (TransitionType.ORBITAL_LEFT, TransitionType.ORBITAL_RIGHT):
+            # Rotate both snapshots around the screen center. Alpha handoff
+            # keeps the outgoing image exact at t=0 and the incoming image
+            # exact at t=1, while preserving transparent rotated corners.
+            direction = -1 if tr.effect == TransitionType.ORBITAL_LEFT else 1
+            old_spin = pygame.transform.rotate(old, direction * 180.0 * progress)
+            new_spin = pygame.transform.rotate(new, direction * 180.0 * (progress - 1.0))
+            old_spin.set_alpha(int((1.0 - progress) * 255))
+            new_spin.set_alpha(int(progress * 255))
+            blended.blit(old_spin, old_spin.get_rect(center=(self.width // 2, self.height // 2)))
+            blended.blit(new_spin, new_spin.get_rect(center=(self.width // 2, self.height // 2)))
+        elif tr.effect == TransitionType.MORPH:
+            # A surface snapshot cannot perform semantic pixel morphing, but a
+            # cross-dissolve with a small scale change gives a stable, useful
+            # morph-like result without requiring a shader or scene changes.
+            old_scale = 1.0 + (0.06 * progress)
+            new_scale = 0.94 + (0.06 * progress)
+            old_morph = pygame.transform.smoothscale(old, (int(self.width * old_scale), int(self.height * old_scale)))
+            new_morph = pygame.transform.smoothscale(new, (int(self.width * new_scale), int(self.height * new_scale)))
+            old_morph.set_alpha(int((1.0 - progress) * 255))
+            new_morph.set_alpha(int(progress * 255))
+            blended.blit(old_morph, old_morph.get_rect(center=(self.width // 2, self.height // 2)))
+            blended.blit(new_morph, new_morph.get_rect(center=(self.width // 2, self.height // 2)))
+        elif tr.effect == TransitionType.FLASH:
+            # White flash peaks at the midpoint, with the scene change hidden
+            # inside the flash so the result reads as a camera-flash cut.
+            if progress < 0.5:
+                blended.blit(old, (0, 0))
+                white_alpha = int(progress * 2.0 * 255)
+            else:
+                blended.blit(new, (0, 0))
+                white_alpha = int((1.0 - progress) * 2.0 * 255)
+            flash = pygame.Surface((self.width, self.height), pygame.SRCALPHA, 32)
+            flash.fill((255, 255, 255, max(0, min(255, white_alpha))))
+            blended.blit(flash, (0, 0))
+        else:
+            blended.blit(old, (0, 0))
+            new_copy = new.copy(); new_copy.set_alpha(int(progress * 255)); blended.blit(new_copy, (0, 0))
+
+        # Draw the blended result to the screen
+        self.renderer.clear()
+        self.renderer.begin_frame()
+        self.renderer.draw_surface(blended, 0, 0)
+        self.renderer.end_frame()
+
+    # ---- END SCENE TRANSITION SYSTEM ----
+
+    def add_timer(self, name: str, duration: float, callback: Optional[Callable] = None,
+              callback_args: tuple = (), callback_kwargs: dict = None,
+              repeats: bool = False) -> bool:
+        """Add a timer. Returns True if added successfully."""
+        return self.timer.add(name, duration, callback, callback_args, callback_kwargs, repeats)
+
+    def add_anonymous_timer(self, duration: float, callback: Callable,
+                            callback_args: tuple = (), callback_kwargs: dict = None,
+                            repeats: bool = False) -> str:
+        """Add a timer with an auto‑generated name and return its name."""
+        return self.timer.add_timer_to(duration, callback, callback_args, callback_kwargs, repeats)
+
+    def remove_timer(self, name: str) -> bool:
+        """Remove a timer immediately."""
+        return self.timer.remove(name)
+
+    def destroy_timer(self, name: str) -> bool:
+        """Mark a timer for destruction (removed on next update)."""
+        return self.timer.destroy(name)
+
+    def pause_timer(self, name: str) -> bool:
+        """Pause a timer."""
+        return self.timer.pause(name)
+
+    def resume_timer(self, name: str) -> bool:
+        """Resume a paused timer."""
+        return self.timer.resume(name)
+
+    def reset_timer(self, name: str) -> bool:
+        """Reset a timer to start counting from now."""
+        return self.timer.reset(name)
+
+    def timer_elapsed(self, name: str) -> Optional[float]:
+        """Get elapsed time for a timer."""
+        return self.timer.get_elapsed(name)
+
+    def timer_remaining(self, name: str) -> Optional[float]:
+        """Get remaining time for a timer."""
+        return self.timer.get_remaining(name)
+
+    def timer_done(self, name: str) -> Optional[bool]:
+        """Check if a timer has completed."""
+        return self.timer.is_done(name)
+
+    def timer_exists(self, name: str) -> bool:
+        """Check if a timer exists."""
+        return self.timer.exists(name)
+
+    def timer_paused(self, name: str) -> Optional[bool]:
+        """Check if a timer is paused."""
+        return self.timer.is_paused(name)
+
+    def clear_timers(self) -> None:
+        """Remove all timers."""
+        self.timer.clear()
+
+    def get_all_timers(self) -> List[str]:
+        """Get names of all active timers."""
+        return self.timer.get_all_timers()
+
+    def get_timer_count(self) -> int:
+        """Get the number of active timers."""
+        return self.timer.get_timer_count()
         
     def on_window_resize(self, func: Callable):
         """Decorator for window resize event."""
@@ -1318,22 +1793,8 @@ class LunaEngine:
                 print(f"OpenGL particle rendering error: {e}")
 
     def _update_ui_elements(self, dt):
-        """
-        Update UI elements with individual profiling and proper click propagation.
-        """
         if not self.current_scene or not hasattr(self.current_scene, 'ui_elements'):
             return
-
-        all_elements = self.layer_manager.get_elements_in_order()
-        all_elements.reverse()
-
-        mouse_pressed_this_frame = self.input_state.mouse_just_pressed
-
-        if mouse_pressed_this_frame:
-            for elem in all_elements:
-                if elem.visible and elem.enabled and elem.mouse_over(self.input_state):
-                    self.input_state.consume_global_mouse()
-                    break
 
         self.performance_monitor.start_timer("ui_total")
         self.layer_manager.update(dt, self.input_state)

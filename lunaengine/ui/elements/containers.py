@@ -6,12 +6,15 @@ from dataclasses import dataclass
 from .base import *
 from .buttons import Button
 from ..themes import ThemeManager, ThemeType
-from ...core.renderer import Renderer
 from ...backend.types import InputState
 from ...backend.controller import JButton, Axis, FocusOrder
-from ...backend.opengl import OpenGLRenderer
+from ...backend.opengl import OpenGLRenderer, Filter, FilterType
 from .labels import TextLabel
 from ...utils.math_utils import to_pygame_color
+try:
+    from OpenGL.GL import *
+    from OpenGL.GL.shaders import compileProgram, compileShader
+except ImportError: pass
 
 
 @dataclass
@@ -68,21 +71,21 @@ class UiFrame(UIElement):
         'arrange_spacing': {'name': 'arrange spacing', 'key': 'arrange_spacing', 'type': int, 'editable': True,
                             'description': 'Spacing between arranged children (pixels)'},
         'arrange_align': {'name': 'arrange align', 'key': 'arrange_align', 'type': str, 'editable': True,
-                          'description': 'Alignment for arranged children: left, center, right'},
+                          'description': 'Alignment for arranged children: left, center, right'}
     }
     category:str = 'container'
     def __init__(
         self,
-        x: int,
-        y: int,
-        width: int,
-        height: int,
-        pivot: Tuple[float, float] = (0, 0),
-        theme: Optional[ThemeType] = None,
+        x: int|float,
+        y: int|float,
+        width: int|float,
+        height: int|float,
+        pivot: Tuple[int|float, int|float] = (0, 0),
+        theme: Optional[ThemeType|ThemeKey] = None,
         element_id: Optional[str] = None,
         header_enabled: bool = False,
         header_title: str = "",
-        header_icon: Optional[Union[str, pygame.Surface]] = None,
+        header_icon: Optional[Union[str, pygame.Surface, Path, AtlasItem, Any]] = None,   # now accepts Icon/callable
         header_height: int = 30,
         draggable: bool = False,
         **kwargs
@@ -116,6 +119,9 @@ class UiFrame(UIElement):
         self._drag_start_mouse = (0, 0)
         self._drag_start_pos = (self.x, self.y)
         self._header_font = None
+        self._header_icon_raw = header_icon
+        self._header_icon_surface = None
+        self._refresh_header_icon()
 
         # Auto‑arrangement state
         self._child_layout_data: Dict[UIElement, _ChildLayoutInfo] = {}
@@ -128,6 +134,85 @@ class UiFrame(UIElement):
             self._header_font = FontManager.get_font(None, int(self.header_height * 0.6))
         return self._header_font
 
+    def _refresh_header_icon(self):
+        if self.header_enabled and self._header_icon_raw:
+            max_icon_size = self.header_height - 6
+            self._header_icon_surface = self._resolve_icon_to_surface(self._header_icon_raw, max_icon_size)
+        else:
+            self._header_icon_surface = None    
+
+    def _resolve_icon_to_surface(self, icon_input: Any, max_size: int, color: Optional[Tuple[int, int, int]] = None) -> Optional[pygame.Surface]:
+        """
+        Convert various icon inputs to a pygame.Surface scaled to fit within max_size (square).
+        Supports:
+            - callables returning any supported type (e.g., Icons.BRAIN)
+            - objects with get_surface(color) (duck‑typed Icon)
+            - pygame.Surface
+            - str or Path (file path)
+            - AtlasItem (loads from bundle or disk)
+        """
+        if icon_input is None:
+            return None
+
+        # Resolve callables
+        if callable(icon_input):
+            try:
+                icon_input = icon_input()
+            except Exception:
+                return None
+
+        # Try to get a surface
+        surf = None
+        if hasattr(icon_input, 'get_surface') and callable(icon_input.get_surface):
+            # Duck‑typed Icon – use provided color or fallback to header text color
+            if color is None:
+                color = self._get_header_text_color()
+            surf = icon_input.get_surface(color=color)
+
+        elif isinstance(icon_input, pygame.Surface):
+            surf = icon_input
+
+        elif isinstance(icon_input, (str, Path)):
+            try:
+                surf = pygame.image.load(str(icon_input)).convert_alpha()
+            except pygame.error:
+                return None
+
+        elif isinstance(icon_input, AtlasItem):
+            # Try bundle first, then disk
+            data = None
+            if self._global_engine and hasattr(self._global_engine, 'atlas'):
+                data = self._global_engine.atlas.get_bytes(icon_input.name)
+            if data:
+                surf = pygame.image.load(io.BytesIO(data)).convert_alpha()
+            else:
+                try:
+                    surf = pygame.image.load(str(icon_input.path)).convert_alpha()
+                except pygame.error:
+                    return None
+
+        if surf is None:
+            return None
+
+        # Scale to fit within max_size (preserve aspect ratio)
+        w, h = surf.get_size()
+        if w == 0 or h == 0:
+            return None
+        if w > h:
+            new_w = max_size
+            new_h = int(h * (max_size / w))
+        else:
+            new_h = max_size
+            new_w = int(w * (max_size / h))
+        if new_w <= 0 or new_h <= 0:
+            return surf
+        return pygame.transform.smoothscale(surf, (new_w, new_h))
+
+    def _get_header_text_color(self) -> Tuple[int, int, int]:
+        """Return the text color for the header (from the current theme)."""
+        theme = ThemeManager.get_theme(self.theme_type)
+        return theme.button_text.color if theme.button_text else (255, 255, 255)
+    
     def _get_init_args(self) -> Dict[str, Any]:
         return {
             'x': self.x,
@@ -150,10 +235,11 @@ class UiFrame(UIElement):
             'auto_arrange_y': self.auto_arrange_y,
             'arrange_spacing': self.arrange_spacing,
             'arrange_align': self.arrange_align,
+            'header_icon': self._header_icon_raw,
         }
 
     @property
-    def usable_space(self) -> Tuple[int, int]:
+    def usable_space(self) -> Tuple[int|float, int|float]:
         usable_w = self.width - (self.padding * 2)
         usable_h = self.height - (self.padding * 2) - self.header_height
         return (usable_w, usable_h)
@@ -162,7 +248,7 @@ class UiFrame(UIElement):
         actual_x, actual_y = self.get_actual_position()
         return pygame.Rect(actual_x, actual_y, self.width, self.header_height)
 
-    def set_background_color(self, color: Optional[Union[Tuple[int, int, int], Tuple[int, int, int, int|float]]]) -> None:
+    def set_background_color(self, color: Optional[Union[Tuple[int, int, int], Tuple[int, int, int, int|float], Color, ColorKeys]]) -> None:
         if isinstance(color, tuple):
             self.background_color = color
             if len(color) == 4:
@@ -182,7 +268,7 @@ class UiFrame(UIElement):
     def set_corner_radius(self, radius: Union[int, Tuple[int, int, int, int]]) -> None:
         self.corner_radius = radius
 
-    def get_content_rect(self) -> Tuple[int, int, int, int]:
+    def get_content_rect(self) -> Tuple[int|float, int|float, int|float, int|float]:
         actual_x, actual_y = self.get_actual_position()
         content_x = actual_x + self.padding
         content_y = actual_y + self.header_height + self.padding
@@ -190,13 +276,15 @@ class UiFrame(UIElement):
         content_h = self.height - self.header_height - (self.padding * 2)
         return (content_x, content_y, content_w, content_h)
 
-    def add_child(self, child: UIElement) -> None:
+    def add_child(self, child: UIElement) -> UIElement:
         super().add_child(child)
         self._child_layout_data[child] = _ChildLayoutInfo(
             (child.x, child.y), (child.x, child.y),
             (child.width, child.height), (child.width, child.height)
         )
         self._needs_rearrange = True
+        
+        return child
 
     def remove_child(self, child: UIElement) -> None:
         super().remove_child(child)
@@ -215,6 +303,7 @@ class UiFrame(UIElement):
         self.theme_type = theme_type
         self.background_color = ThemeManager.get_theme(self.theme_type).background.color
         self.border_color = ThemeManager.get_theme(self.theme_type).border.color if ThemeManager.get_theme(self.theme_type).border else None
+        self._refresh_header_icon()
         super().update_theme(theme_type)
 
     def update(self, dt: float, input_state: InputState) -> None:
@@ -338,14 +427,14 @@ class UiFrame(UIElement):
                                header_bg, fill=True,
                                corner_radius=(self.corner_radius, self.corner_radius, 0, 0))
 
-            if self.header_icon:
-                icon_h = self.header_height - 6
-                icon_w = int(self.header_icon.get_width() * (icon_h / self.header_icon.get_height()))
-                icon_scaled = pygame.transform.smoothscale(self.header_icon, (icon_w, icon_h))
-                renderer.blit(icon_scaled, (actual_x + 5, actual_y + 3))
+            if self.header_icon and self._header_icon_surface:
+                icon_w, icon_h = self._header_icon_surface.get_size()
+                icon_x = actual_x + 5
+                icon_y = actual_y + (self.header_height - icon_h) // 2
+                renderer.blit(self._header_icon_surface, (icon_x, icon_y))
 
             if self.header_title and self.header_font:
-                renderer.draw_text(self.header_title, actual_x + (self.header_icon.get_width() + 10 if self.header_icon else 5), actual_y, self.style.text_color, self.header_font)
+                renderer.draw_text(self.header_title, actual_x + (self._header_icon_surface.get_width() + 10 if self._header_icon_surface else 5), actual_y, self.style.text_color, self.header_font)
 
         for child in self._global_engine.layer_manager.get_elements_in_order_from(self.children):
             if child.visible:
@@ -471,6 +560,17 @@ class ScrollingFrame(UiFrame):
         max_scroll_y = max(0, self.content_height - (self.height - self.header_height))
         self.scroll_x = max(0, min(max_scroll_x, x))
         self.scroll_y = max(0, min(max_scroll_y, y))
+        
+    def update_content_area(self, width: Optional[int] = None, height: Optional[int] = None) -> None:
+        if width is not None:
+            self.content_width = width
+        if height is not None:
+            self.content_height = height
+            
+        max_scroll_x = max(0, self.content_width - self.width)
+        max_scroll_y = max(0, self.content_height - (self.height - self.header_height))
+        self.scroll_x = max(0, min(max_scroll_x, self.scroll_x))
+        self.scroll_y = max(0, min(max_scroll_y, self.scroll_y))
 
     def clear_content(self, reset_scroll: bool = True) -> None:
         self.clear_children()
@@ -702,6 +802,7 @@ class ScrollingFrame(UiFrame):
 class Tabination(UiFrame):
     """
     Tabbed container. Fully optimized with cached metrics for vertical mode.
+    Supports icons on tabs with left/right positioning for horizontal orientation.
     """
 
     _properties = {
@@ -738,7 +839,7 @@ class Tabination(UiFrame):
 
         self.orientation = orientation
         self.tabs: List[Dict[str, Any]] = []
-        self.current_tab = None
+        self.current_tab: Optional[int] = None
 
         if orientation == 'horizontal':
             default_tab_height = 30
@@ -754,10 +855,10 @@ class Tabination(UiFrame):
         self.tab_padding = 10
         self.tab_spacing = 2
 
-        self._font = None
+        self._font: Optional[pygame.font.Font] = None
         self._font_height = 0
-        self._even_tab_bg = None
-        self._odd_tab_bg = None
+        self._even_tab_bg: Optional[Tuple[int, int, int]] = None
+        self._odd_tab_bg: Optional[Tuple[int, int, int]] = None
         self._calculate_tab_colors()
 
         self._scroll_offset = 0
@@ -792,12 +893,16 @@ class Tabination(UiFrame):
         return args
 
     # ---- Caching helpers ----
-    def _recompute_tab_metrics(self):
+    def _recompute_tab_metrics(self) -> None:
         """Recalculate cached text sizes and scaled icons for all tabs."""
         if self._font is None:
             FontManager.initialize()
             self._font = FontManager.get_font(self.font_name, self.font_size)
             self._font_height = self._font.get_height()
+
+        # Determine max icon size based on orientation
+        max_icon_size = self.tab_height - 8 if self.orientation == 'horizontal' else self.tab_width - 8
+        text_color = self._get_header_text_color()
 
         for tab in self.tabs:
             # Text size
@@ -805,30 +910,12 @@ class Tabination(UiFrame):
             tab['text_width'] = text_width
             tab['text_height'] = text_height
 
-            # Scaled icon (if any)
-            icon_surf = tab.get('icon')
-            if icon_surf:
-                if self.orientation == 'horizontal':
-                    max_icon_h = self.tab_height - 8
-                    if icon_surf.get_height() > max_icon_h:
-                        scale = max_icon_h / icon_surf.get_height()
-                        new_w = int(icon_surf.get_width() * scale)
-                        new_h = max_icon_h
-                        icon_scaled = pygame.transform.smoothscale(icon_surf, (new_w, new_h))
-                    else:
-                        icon_scaled = icon_surf
-                else:  # vertical
-                    max_icon_w = self.tab_width - 12
-                    if icon_surf.get_width() > max_icon_w:
-                        scale = max_icon_w / icon_surf.get_width()
-                        new_w = max_icon_w
-                        new_h = int(icon_surf.get_height() * scale)
-                        icon_scaled = pygame.transform.smoothscale(icon_surf, (new_w, new_h))
-                    else:
-                        icon_scaled = icon_surf
-                tab['icon_scaled'] = icon_scaled
+            # Icon resolution and scaling
+            icon_raw = tab.get('icon_raw')
+            if icon_raw:
+                tab['icon_surface'] = self._resolve_icon_to_surface(icon_raw, max_icon_size, text_color)
             else:
-                tab['icon_scaled'] = None
+                tab['icon_surface'] = None
 
         # Update offsets after metrics change
         self._update_tab_offsets()
@@ -856,17 +943,24 @@ class Tabination(UiFrame):
         self._recompute_tab_metrics()
 
     # ---- Tab management ----
-    def add_tab(self, tab_name: str, icon: Optional[Union[str, pygame.Surface]] = None) -> bool:
+    def add_tab(
+        self,
+        tab_name: str,
+        icon: Optional[Union[str, pygame.Surface, Path, AtlasItem, Any]] = None,
+        icon_position: Literal['left', 'right'] = 'left'
+    ) -> UIElement|None:
+        """
+        Add a new tab.
+
+        Args:
+            tab_name: Display name of the tab.
+            icon: Icon input (supports Icon, AtlasItem, str/Path, Surface, callable).
+            icon_position: For horizontal tabs, place icon left or right of text.
+        """
         for tab in self.tabs:
             if tab['name'].lower() == tab_name.lower():
-                return False
-
-        icon_surface = None
-        if icon:
-            if isinstance(icon, str) and os.path.exists(icon):
-                icon_surface = pygame.image.load(icon).convert_alpha()
-            elif isinstance(icon, pygame.Surface):
-                icon_surface = icon
+                # Returns the frame
+                return tab['frame']
 
         # Create the tab frame
         if self.orientation == 'horizontal':
@@ -878,14 +972,15 @@ class Tabination(UiFrame):
         tab_frame.visible = False
         super().add_child(tab_frame)
 
-        tab_entry = {
+        tab_entry: Dict[str, Any] = {
             'name': tab_name,
             'frame': tab_frame,
-            'icon': icon_surface,
+            'icon_raw': icon,
+            'icon_position': icon_position,
+            'icon_surface': None,
             'visible': False,
             'text_width': 0,
             'text_height': 0,
-            'icon_scaled': None,
         }
         self.tabs.append(tab_entry)
 
@@ -896,14 +991,14 @@ class Tabination(UiFrame):
 
         self._recompute_tab_metrics()
         self._update_tab_scroll()
-        return True
-
-    def add_to_tab(self, tab_name: str, ui_element: UIElement) -> bool:
+        return tab_frame
+    
+    def add_to_tab(self, tab_name: str, ui_element: UIElement) -> UIElement|None:
         for tab in self.tabs:
             if tab['name'].lower() == tab_name.lower():
                 tab['frame'].add_child(ui_element)
-                return True
-        return False
+                return ui_element
+        return None
 
     def switch_tab(self, tab_index: int) -> bool:
         if tab_index < 0 or tab_index >= len(self.tabs):
@@ -918,11 +1013,13 @@ class Tabination(UiFrame):
         if self._global_engine and self.current_tab is not None:
             frame = self.tabs[self.current_tab]['frame']
             focusable_children = []
-            def collect_children(elem):
+
+            def collect_children(elem: UIElement) -> None:
                 if elem.is_globally_visible() and elem.enabled and elem.can_focus:
                     focusable_children.append(elem)
                 for child in elem.children:
                     collect_children(child)
+
             collect_children(frame)
             if focusable_children:
                 if self._global_engine.focus_order == FocusOrder.SO_X_Y:
@@ -1018,19 +1115,19 @@ class Tabination(UiFrame):
         self._update_tab_scroll()
         return True
 
-    def set_tab_icon(self, tab_name: str, icon: Optional[Union[str, pygame.Surface]]) -> bool:
+    def set_tab_icon(
+        self,
+        tab_name: str,
+        icon: Optional[Union[str, pygame.Surface, Path, AtlasItem, Any]],
+        icon_position: Literal['left', 'right'] = 'left'
+    ) -> bool:
         """Set or clear an icon for a tab. Returns True if successful."""
         idx = self.get_tab_index(tab_name)
         if idx == -1:
             return False
-        icon_surface = None
-        if icon:
-            if isinstance(icon, str) and os.path.exists(icon):
-                icon_surface = pygame.image.load(icon).convert_alpha()
-            elif isinstance(icon, pygame.Surface):
-                icon_surface = icon
-        self.tabs[idx]['icon'] = icon_surface
-        self._recompute_tab_metrics()  # icon size may change
+        self.tabs[idx]['icon_raw'] = icon
+        self.tabs[idx]['icon_position'] = icon_position
+        self._recompute_tab_metrics()
         self._update_tab_scroll()
         return True
 
@@ -1077,8 +1174,8 @@ class Tabination(UiFrame):
             if tab['name'] == tab_name:
                 text_h = tab['text_height']
                 icon_h = 0
-                if tab['icon_scaled']:
-                    icon_h = tab['icon_scaled'].get_height()
+                if tab.get('icon_surface'):
+                    icon_h = tab['icon_surface'].get_height()
                 content_h = max(text_h, icon_h) + self.tab_padding * 2
                 return max(content_h, self.tab_height)
         return self.tab_height
@@ -1089,8 +1186,8 @@ class Tabination(UiFrame):
         max_text = max(tab['text_width'] for tab in self.tabs)
         max_icon = 0
         for tab in self.tabs:
-            if tab['icon_scaled']:
-                max_icon = max(max_icon, tab['icon_scaled'].get_width())
+            if tab.get('icon_surface'):
+                max_icon = max(max_icon, tab['icon_surface'].get_width())
         return max_text + max_icon + self.tab_padding * 2 + 10
 
     def _get_tab_rect(self, idx: int, fx: int, fy: int) -> pygame.Rect:
@@ -1115,10 +1212,10 @@ class Tabination(UiFrame):
         else:
             return pygame.Rect(fx, fy, self.tab_width, self.height)
 
-    def _get_visible_size(self) -> int:
+    def _get_visible_size(self) -> int|float:
         return self.width if self.orientation == 'horizontal' else self.height
 
-    def _draw_arrow(self, renderer: OpenGLRenderer, x: int, y: int, direction: str, hover: bool) -> None:
+    def _draw_arrow(self, renderer: OpenGLRenderer, x: int | float, y: int | float, direction: str, hover: bool) -> None:
         theme = ThemeManager.get_theme(self.theme_type)
         color = theme.button_hover.color if hover else theme.button_normal.color
         renderer.draw_rect(x, y, self._arrow_size, self._arrow_size, color, fill=True, corner_radius=4)
@@ -1246,23 +1343,32 @@ class Tabination(UiFrame):
             renderer.draw_rect(rect.x, rect.y, rect.width, rect.height, bg, fill=True,
                                corner_radius=radius)
 
-            icon_surf = tab.get('icon_scaled')
+            icon_surf = tab.get('icon_surface')
             text = tab['name']
             text_w = tab['text_width']
             text_h = tab['text_height']
 
             if self.orientation == 'horizontal':
                 if icon_surf:
-                    icon_x = rect.x + 5
-                    icon_y = rect.y + (rect.height - icon_surf.get_height()) // 2
-                    renderer.blit(icon_surf, (icon_x, icon_y))
-                    text_x = icon_x + icon_surf.get_width() + 5
+                    icon_pos = tab.get('icon_position', 'left')
+                    if icon_pos == 'left':
+                        icon_x = rect.x + 5
+                        icon_y = rect.y + (rect.height - icon_surf.get_height()) // 2
+                        renderer.blit(icon_surf, (icon_x, icon_y))
+                        text_x = icon_x + icon_surf.get_width() + 5
+                    else:  # right
+                        icon_x = rect.x + rect.width - icon_surf.get_width() - 5
+                        icon_y = rect.y + (rect.height - icon_surf.get_height()) // 2
+                        renderer.blit(icon_surf, (icon_x, icon_y))
+                        text_x = rect.x + 5
                 else:
                     text_x = rect.x + (rect.width - text_w) // 2
                 text_y = rect.y + (rect.height - text_h) // 2
                 renderer.draw_text(text, text_x, text_y, text_color,
                                    self.font, pivot=(0, 0), rotate=0.0)
+
             else:
+                # Vertical orientation: icon above text (ignore position)
                 rotate_angle = -90.0 if self.orientation == 'vertical2' else 0.0
                 if icon_surf:
                     icon_x = rect.x + (rect.width - icon_surf.get_width()) // 2
@@ -1304,7 +1410,7 @@ class Tabination(UiFrame):
 
         if self.current_tab is not None:
             self.tabs[self.current_tab]['frame'].render(renderer)
-
+    
 # ----------------------------------------------------------------------
 # Pagination
 # ----------------------------------------------------------------------
@@ -1541,7 +1647,7 @@ class Pagination(UiFrame):
         super().update(dt, input_state)
         self._update_button_states()
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
         super().render(renderer)
@@ -1685,7 +1791,11 @@ class Expandable(UiFrame):
             x, y = self.header_button.get_actual_position()
             renderer.draw_surface(self.header_button_icon, x + 10, y + 5)
             
-            
+
+# ----------------------------------------------------------------------
+# Color Picker
+# ----------------------------------------------------------------------
+      
 class ColorPicker(UiFrame):
     """
     A color picker widget that expands/collapses to show sliders and hex input.
@@ -2195,3 +2305,194 @@ class ColorPicker(UiFrame):
             corner_radius=2, border_width=1,
             border_color=(200, 200, 200), pivot=(0, 0.5)
         )
+        
+# --
+# Canvas
+# 
+
+class Canvas(UIElement):
+    """
+    A custom drawable area with an internal surface.
+    Supports border and child positioning modes.
+    """
+    category: str = 'canvas'
+
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        logical_width: Optional[int] = None,
+        logical_height: Optional[int] = None,
+        scale_mode: Literal['none', 'fit', 'stretch'] = 'fit',
+        background_color: Optional[Tuple[int, int, int]] = None,
+        alpha: float = 1.0,
+        pivot: Tuple[float, float] = (0, 0),
+        theme: Optional[ThemeType] = None,
+        element_id: Optional[str] = None,
+        position_mode: Literal['scaled', 'pixel'] = 'pixel',
+        border_color: Optional[Tuple[int, int, int]] = None,
+        border_width: int = 0,
+        corner_radius: Union[int, Tuple[int, int, int, int]] = 0,
+    ) -> None:
+        super().__init__(x, y, width, height, pivot, element_id)
+        self.logical_width = logical_width or width
+        self.logical_height = logical_height or height
+        self.scale_mode = scale_mode
+        self.background_color = background_color or ThemeManager.get_color('background2')
+        self.alpha = max(0.0, min(1.0, alpha))
+        self.theme_type = theme or ThemeManager.get_current_theme()
+        self.filters: List[Filter] = []
+
+        # Border properties
+        self.border_color = border_color or ThemeManager.get_color('button_border')
+        self.border_width = border_width
+        self.corner_radius = corner_radius
+
+        # Positioning mode for children
+        self.position_mode = position_mode
+
+        flags = pygame.SRCALPHA if background_color is None else 0
+        self._surface = pygame.Surface((self.logical_width, self.logical_height), flags, 32)
+        if background_color is not None:
+            self._surface.fill(background_color)
+
+        self.draw_callback: Optional[Callable[['Canvas', OpenGLRenderer], None]] = None
+
+    # ------------------------------------------------------------------
+    # Public API
+    # ------------------------------------------------------------------
+    def set_draw_callback(self, callback: Callable[['Canvas', OpenGLRenderer], None]) -> None:
+        self.draw_callback = callback
+
+    def set_border(self, color: Optional[Tuple[int, int, int]], width: int = 1,
+                   corner_radius: Union[int, Tuple[int, int, int, int]] = 0) -> None:
+        """Set the border appearance."""
+        self.border_color = color
+        self.border_width = width
+        self.corner_radius = corner_radius
+
+    def set_position_mode(self, mode: Literal['scaled', 'pixel']) -> None:
+        """Set how child elements are positioned inside the canvas."""
+        self.position_mode = mode
+
+    # ------------------------------------------------------------------
+    # Child coordinate mapping
+    # ------------------------------------------------------------------
+    def _map_child_coordinates(self, child: UIElement) -> Tuple[int, int, int, int]:
+        """
+        Convert child's x, y, width, height from the current position_mode
+        to logical pixel coordinates (0..logical_width, 0..logical_height).
+        """
+        lw, lh = self.logical_width, self.logical_height
+        if self.position_mode == 'scaled':
+            # Normalized -1..1 -> 0..logical_size
+            cx = int((child.x + 1.0) * lw / 2.0)
+            cy = int((child.y + 1.0) * lh / 2.0)
+            cw = int(child.width * lw / 2.0) if child.width <= 2.0 else int(child.width)
+            ch = int(child.height * lh / 2.0) if child.height <= 2.0 else int(child.height)
+            return cx, cy, cw, ch
+        else:  # 'pixel'
+            return int(child.x), int(child.y), int(child.width), int(child.height)
+
+    # ------------------------------------------------------------------
+    # Render
+    # ------------------------------------------------------------------
+    def render(self, renderer: OpenGLRenderer) -> None:
+        if not self.visible:
+            return
+
+        # --------------------------------------------------------------
+        # 1. Blit the canvas surface to the screen (or parent)
+        # --------------------------------------------------------------
+        ax, ay = self.get_actual_position()
+        sw, sh = self.width, self.height
+        lw, lh = self.logical_width, self.logical_height
+
+        if self.scale_mode == 'none':
+            dest_x, dest_y = ax, ay
+            dest_w, dest_h = lw, lh
+            if lw > sw or lh > sh:
+                renderer.enable_scissor(ax, ay, sw, sh)
+        elif self.scale_mode == 'fit':
+            ratio = min(sw / lw, sh / lh)
+            dest_w = int(lw * ratio)
+            dest_h = int(lh * ratio)
+            dest_x = ax + (sw - dest_w) // 2
+            dest_y = ay + (sh - dest_h) // 2
+        else:  # stretch
+            dest_x, dest_y = ax, ay
+            dest_w, dest_h = sw, sh
+
+        # Apply alpha
+        surf = self._surface
+        if self.alpha < 1.0:
+            surf = surf.copy()
+            surf.set_alpha(int(self.alpha * 255))
+
+        renderer.draw_surface(surf, dest_x, dest_y, pivot=(0, 0))
+
+        # --------------------------------------------------------------
+        # 2. Draw border (over the surface) – this appears ON TOP
+        # --------------------------------------------------------------
+        if self.border_color and self.border_width > 0:
+            renderer.draw_rect(
+                dest_x, dest_y, dest_w, dest_h,
+                color=None,
+                fill=False,
+                border_color=self.border_color,
+                border_width=self.border_width,
+                corner_radius=self.corner_radius
+            )
+
+        if self.scale_mode == 'none' and (lw > sw or lh > sh):
+            renderer.disable_scissor()
+
+        # --------------------------------------------------------------
+        # 3. Render user content onto the internal surface
+        # --------------------------------------------------------------
+        if self.draw_callback:
+            old_target = renderer._current_target
+            old_viewport = glGetIntegerv(GL_VIEWPORT)
+
+            # Switch to canvas surface
+            renderer.set_surface(self._surface)
+            w, h = self._surface.get_size()
+            glViewport(0, 0, w, h)
+
+            # Clear with background colour (this is the "background")
+            if self.background_color:
+                r, g, b = self.background_color
+                glClearColor(r / 255.0, g / 255.0, b / 255.0, 1.0)
+            else:
+                glClearColor(0.0, 0.0, 0.0, 0.0)
+            glClear(GL_COLOR_BUFFER_BIT)
+
+            # Draw content (this goes on top of the background)
+            try:
+                self.draw_callback(self, renderer)
+            except Exception as e:
+                print(f"Canvas draw error: {e}")
+
+            # Restore previous state
+            renderer.set_surface(old_target)
+            glViewport(old_viewport[0], old_viewport[1], old_viewport[2], old_viewport[3])
+
+        # --------------------------------------------------------------
+        # 4. Render children (with position mapping if needed)
+        # --------------------------------------------------------------
+        if self.position_mode == 'scaled':
+            original_positions = []
+            for child in self.children:
+                if not child.visible:
+                    continue
+                cx, cy, cw, ch = self._map_child_coordinates(child)
+                original_positions.append((child, child.x, child.y, child.width, child.height))
+                child.x, child.y, child.width, child.height = cx, cy, cw, ch
+
+        super().render(renderer)
+
+        if self.position_mode == 'scaled':
+            for child, ox, oy, ow, oh in original_positions:
+                child.x, child.y, child.width, child.height = ox, oy, ow, oh

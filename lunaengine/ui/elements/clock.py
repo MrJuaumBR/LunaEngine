@@ -4,7 +4,7 @@ import math
 from typing import Optional, Tuple, Literal, Dict, Any, Union
 from .base import *
 from ..themes import ThemeManager, ThemeType
-from ...core.renderer import Renderer
+from ...backend.opengl import OpenGLRenderer
 
 class Clock(UIElement):
     """
@@ -230,7 +230,7 @@ class Clock(UIElement):
                 self.current_time = current
                 self.last_update = current
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         """Render the clock."""
         if not self.visible:
             return
@@ -245,7 +245,7 @@ class Clock(UIElement):
 
         super().render(renderer)
 
-    def _render_analog_clock(self, renderer: Renderer, x: int, y: int) -> None:
+    def _render_analog_clock(self, renderer: OpenGLRenderer, x: int, y: int) -> None:
         """Render the analog clock face and hands."""
         center_x = x + self.diameter // 2
         center_y = y + self.diameter // 2
@@ -300,7 +300,7 @@ class Clock(UIElement):
         # Center dot
         renderer.draw_circle(center_x, center_y, 4, self.second_hand_color)
 
-    def _draw_clock_numbers(self, renderer: Renderer, center_x: int, center_y: int, radius: int) -> None:
+    def _draw_clock_numbers(self, renderer: OpenGLRenderer, center_x: int, center_y: int, radius: int) -> None:
         """Draw numbers 1-12 around the clock face."""
         for hour in range(1, 13):
             angle = math.radians(hour * 30 - 90)   # 30° per hour, offset -90°
@@ -309,7 +309,7 @@ class Clock(UIElement):
             y = center_y + num_radius * math.sin(angle)
             renderer.draw_text(str(hour), x, y, self.number_color, self.small_font, pivot=(0.5, 0.5))
 
-    def _draw_tick_marks(self, renderer: Renderer, center_x: int, center_y: int, radius: int) -> None:
+    def _draw_tick_marks(self, renderer: OpenGLRenderer, center_x: int, center_y: int, radius: int) -> None:
         """Draw tick marks for minutes/seconds."""
         for minute in range(0, 60):
             angle = math.radians(minute * 6 - 90)   # 6° per minute
@@ -343,7 +343,7 @@ class Clock(UIElement):
                     if hasattr(renderer, 'draw_polygon'):
                         renderer.draw_polygon(points, color)
 
-    def _draw_hand(self, renderer: Renderer, center_x: int, center_y: int,
+    def _draw_hand(self, renderer: OpenGLRenderer, center_x: int, center_y: int,
                    angle: float, length: float, width: int, color: Tuple[int, int, int]) -> None:
         """Draw a single clock hand."""
         x = center_x + length * math.cos(angle)
@@ -369,7 +369,7 @@ class Clock(UIElement):
                 if hasattr(renderer, 'draw_polygon'):
                     renderer.draw_polygon(points, color)
 
-    def _render_digital_clock(self, renderer: Renderer, x: int, y: int) -> None:
+    def _render_digital_clock(self, renderer: OpenGLRenderer, x: int, y: int) -> None:
         """Render the digital clock display."""
         time_str = self.get_time_string()
         theme = ThemeManager.get_theme(self.theme_type)

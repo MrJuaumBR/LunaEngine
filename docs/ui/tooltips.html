@@ -106,6 +106,10 @@
                 <code class="fs-6 fw-bold text-color-title">def _update_position(self: Any, screen_width: int, screen_height: int, mouse_pos: Tuple[int, int]) -> Any</code>
                 <div class="mt-2 text-muted small">Update tooltip position to follow mouse and stay within screen bounds.<br><br>Args:<br> &nbsp; &nbsp;screen_width (int): Screen width for boundary checking<br> &nbsp; &nbsp;screen_height (int): Screen height for boundary checking<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tooltip-update_theme">
+                <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: ThemeType) -> Any</code>
+                <div class="mt-2 text-muted small">Update the tooltip&#x27;s theme.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tooltip-render">
                 <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Render tooltip using OpenGL backend</div>
@@ -151,6 +155,10 @@
                 <code class="fs-6 fw-bold text-color-title">def unregister_tooltip(cls: Any, element: UIElement) -> Any</code>
                 <div class="mt-2 text-muted small">Unregister tooltip for a UI element.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to remove tooltip from</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uitooltipmanager-update_all_themes">
+                <code class="fs-6 fw-bold text-color-title">def update_all_themes(cls: Any, theme_type: ThemeType | ThemeKey) -> Any</code>
+                <div class="mt-2 text-muted small">Update all registered tooltips to the new theme.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uitooltipmanager-update">
                 <code class="fs-6 fw-bold text-color-title">def update(cls: Any, engine: 'LunaEngine', dt: float) -> Any</code>
                 <div class="mt-2 text-muted small">Update all tooltips and determine which one should be active.<br><br>Args:<br> &nbsp; &nbsp;engine (LunaEngine): The main engine instance<br> &nbsp; &nbsp;dt (float): Delta time in seconds</div>
@@ -191,7 +199,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-08-17 22:16
+                        Documentation generated on 2026-09-14 16:30
                     </p>
                 </div>
             </div>
@@ -199,7 +207,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="../theme.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {

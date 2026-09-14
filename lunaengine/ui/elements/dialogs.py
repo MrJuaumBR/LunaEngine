@@ -3,8 +3,8 @@ import pygame
 from typing import Optional, Callable, Literal, Dict, Any, Tuple
 from .base import UIElement, FontManager, UIState, Color
 from ..themes import ThemeManager, ThemeType
-from ...core.renderer import Renderer
 from ...backend.types import InputState
+from ...backend.opengl import OpenGLRenderer
 
 class DialogBox(UIElement):
     """
@@ -189,7 +189,7 @@ class DialogBox(UIElement):
                 self.continue_timer = 0.0
                 self.continue_indicator_blink = not self.continue_indicator_blink
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 
@@ -257,7 +257,7 @@ class DialogBox(UIElement):
                 renderer.draw_rect(indicator_x, indicator_y, indicator_size, indicator_size,
                                    theme.dialog_continue_indicator.color)
 
-    def _render_wrapped_text(self, renderer: Renderer, x: int, y: int, width: int, height: int, theme) -> None:
+    def _render_wrapped_text(self, renderer: OpenGLRenderer, x: int, y: int, width: int, height: int, theme) -> None:
         if not self.displayed_text:
             return
 

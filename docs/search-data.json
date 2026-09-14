@@ -5,8 +5,8 @@
       "title": "Core",
       "description": "Core framework systems - Engine/LunaEngine, Window, Renderer",
       "link": "core/index.html",
-      "files_count": 5,
-      "classes_count": 10,
+      "files_count": 4,
+      "classes_count": 9,
       "functions_count": 0
     },
     {
@@ -15,7 +15,7 @@
       "description": "User interface components - Buttons, Layouts, Themes",
       "link": "ui/index.html",
       "files_count": 18,
-      "classes_count": 66,
+      "classes_count": 67,
       "functions_count": 13
     },
     {
@@ -41,8 +41,8 @@
       "title": "Backend",
       "description": "Renderer backends - OpenGL, Pygame",
       "link": "backend/index.html",
-      "files_count": 6,
-      "classes_count": 44,
+      "files_count": 7,
+      "classes_count": 46,
       "functions_count": 7
     },
     {
@@ -51,7 +51,7 @@
       "description": "Miscellaneous functions - Bones, Icons",
       "link": "misc/index.html",
       "files_count": 2,
-      "classes_count": 14,
+      "classes_count": 15,
       "functions_count": 0
     },
     {
@@ -59,9 +59,9 @@
       "title": "Tools",
       "description": "Development tools - Documentation, Analysis",
       "link": "tools/index.html",
-      "files_count": 4,
+      "files_count": 5,
       "classes_count": 1,
-      "functions_count": 19
+      "functions_count": 23
     },
     {
       "name": "storage",
@@ -128,15 +128,7 @@
       "file": "engine.py",
       "description": "Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether to start in fullscreen mode<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene<br> &nbsp; &nbsp;atlas (Atlas): Resource catalog for all assets<br> &nbsp; &nbsp;bundle_path (Optional[Path]): Path to resource bundle (.res) if any",
       "link": "core/engine.html#class-lunaengine",
-      "methods_count": 96
-    },
-    {
-      "name": "Renderer",
-      "module": "core",
-      "file": "renderer.py",
-      "description": "Abstract base class for all renderers in LunaEngine.<br><br>All drawing operations are defined here; concrete implementations<br>(e.g., OpenGLRenderer, PygameRenderer) must implement these methods.",
-      "link": "core/renderer.html#class-renderer",
-      "methods_count": 55
+      "methods_count": 123
     },
     {
       "name": "Scene",
@@ -144,7 +136,7 @@
       "file": "scene.py",
       "description": "No documentation",
       "link": "core/scene.html#class-scene",
-      "methods_count": 29
+      "methods_count": 32
     },
     {
       "name": "Window",
@@ -336,7 +328,7 @@
       "file": "themes.py",
       "description": "Manages complete UI themes with local/remote loading.",
       "link": "ui/themes.html#class-thememanager",
-      "methods_count": 32
+      "methods_count": 40
     },
     {
       "name": "TooltipConfig",
@@ -352,7 +344,7 @@
       "file": "tooltips.py",
       "description": "Tooltip element that displays helpful information when hovering over UI elements.<br>Automatically adjusts position to stay within screen boundaries.",
       "link": "ui/tooltips.html#class-tooltip",
-      "methods_count": 10
+      "methods_count": 11
     },
     {
       "name": "UITooltipManager",
@@ -360,7 +352,7 @@
       "file": "tooltips.py",
       "description": "Manages tooltips globally to ensure proper display and positioning.<br>Supports multiple tooltips for different UI elements.",
       "link": "ui/tooltips.html#class-uitooltipmanager",
-      "methods_count": 7
+      "methods_count": 8
     },
     {
       "name": "EasingType",
@@ -448,7 +440,7 @@
       "file": "base.py",
       "description": "Manages fonts and ensures Pygame font system is initialized.<br>Supports both system fonts (by name) and file fonts (by path).<br>Caches fonts with style variants (bold/italic).<br>Also supports resolving font names via the engine&#x27;s Atlas resource catalog,<br>and loading fonts from a bundled resource (using io.BytesIO).<br><br>Usage:<br> &nbsp; &nbsp;# Basic usage<br> &nbsp; &nbsp;font = FontManager.get_font(&quot;Arial&quot;, 24)<br> &nbsp; &nbsp;<br> &nbsp; &nbsp;# Using an atlas-registered font<br> &nbsp; &nbsp;FontManager.set_atlas(engine.atlas)<br> &nbsp; &nbsp;font = FontManager.get_font(&quot;main_font&quot;, 24) &nbsp;# looks up &quot;main_font&quot; in atlas<br> &nbsp; &nbsp;<br> &nbsp; &nbsp;# File font<br> &nbsp; &nbsp;font = FontManager.get_font(&quot;path/to/font.ttf&quot;, 16)",
       "link": "ui/elements/base.html#class-fontmanager",
-      "methods_count": 4
+      "methods_count": 5
     },
     {
       "name": "UIElement",
@@ -464,7 +456,7 @@
       "file": "buttons.py",
       "description": "A clickable button with text and theming support.",
       "link": "ui/elements/buttons.html#class-button",
-      "methods_count": 17
+      "methods_count": 21
     },
     {
       "name": "ImageButton",
@@ -496,7 +488,7 @@
       "file": "containers.py",
       "description": "A container frame that can have an optional draggable header with title and icon.<br>Supports automatic vertical arrangement of children when their sizes change.",
       "link": "ui/elements/containers.html#class-uiframe",
-      "methods_count": 20
+      "methods_count": 23
     },
     {
       "name": "ScrollingFrame",
@@ -504,13 +496,13 @@
       "file": "containers.py",
       "description": "No documentation",
       "link": "ui/elements/containers.html#class-scrollingframe",
-      "methods_count": 19
+      "methods_count": 20
     },
     {
       "name": "Tabination",
       "module": "ui",
       "file": "containers.py",
-      "description": "Tabbed container. Fully optimized with cached metrics for vertical mode.",
+      "description": "Tabbed container. Fully optimized with cached metrics for vertical mode.<br>Supports icons on tabs with left/right positioning for horizontal orientation.",
       "link": "ui/elements/containers.html#class-tabination",
       "methods_count": 32
     },
@@ -537,6 +529,14 @@
       "description": "A color picker widget that expands/collapses to show sliders and hex input.<br>Inherits from UiFrame so that when its height changes (on expand/collapse),<br>any parent with auto_arrange_y=True will automatically reposition its children.<br><br>Attributes:<br> &nbsp; &nbsp;color (Color): Currently selected color.<br> &nbsp; &nbsp;expanded (bool): Whether the picker is expanded.<br> &nbsp; &nbsp;color_system (str): &#x27;rgb&#x27;, &#x27;hsl&#x27;, or &#x27;hsv&#x27;.<br> &nbsp; &nbsp;show_alpha (bool): If True, an alpha slider is shown.<br> &nbsp; &nbsp;on_color_changed (Callable[[Color], None]): Callback when color changes.",
       "link": "ui/elements/containers.html#class-colorpicker",
       "methods_count": 28
+    },
+    {
+      "name": "Canvas",
+      "module": "ui",
+      "file": "containers.py",
+      "description": "A custom drawable area with an internal surface.<br>Supports border and child positioning modes.",
+      "link": "ui/elements/containers.html#class-canvas",
+      "methods_count": 6
     },
     {
       "name": "DialogBox",
@@ -576,7 +576,7 @@
       "file": "labels.py",
       "description": "A simple label that displays an image (non\u2011interactive).<br>Supports Icon objects (detected by presence of &#x27;get_surface&#x27; method).",
       "link": "ui/elements/labels.html#class-imagelabel",
-      "methods_count": 10
+      "methods_count": 13
     },
     {
       "name": "FileFinder",
@@ -678,9 +678,9 @@
       "name": "Table",
       "module": "ui",
       "file": "visualizers.py",
-      "description": "A tabular data display element with column headers, row styling, selection.<br>Fixed size and position; rows exceeding the height are clipped.",
+      "description": "A tabular data display element with column headers, row styling, selection.<br>Fixed size and position; rows exceeding the height are clipped.<br>Supports images in cells (Path, AtlasItem, Icon, pygame.Surface).",
       "link": "ui/elements/visualizers.html#class-table",
-      "methods_count": 18
+      "methods_count": 20
     },
     {
       "name": "CameraMode",
@@ -1190,7 +1190,7 @@
       "name": "FilterType",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Enumeration of all available post-processing filter types.",
+      "description": "No documentation",
       "link": "backend/opengl.html#class-filtertype",
       "methods_count": 0
     },
@@ -1198,7 +1198,7 @@
       "name": "FilterRegionType",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Defines the shape/region where a filter is applied.",
+      "description": "No documentation",
       "link": "backend/opengl.html#class-filterregiontype",
       "methods_count": 0
     },
@@ -1206,7 +1206,7 @@
       "name": "Filter",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Represents a post-processing filter with configurable region and intensity.<br><br>Attributes:<br> &nbsp; &nbsp;filter_type (FilterType): The type of effect to apply.<br> &nbsp; &nbsp;intensity (float): Strength of the effect (0.0 to 1.0).<br> &nbsp; &nbsp;region_type (FilterRegionType): Shape of the affected area.<br> &nbsp; &nbsp;region_pos (Tuple[float, float]): Position (top\u2011left for rect, center for circle).<br> &nbsp; &nbsp;region_size (Tuple[float, float]): Width and height of rectangular region.<br> &nbsp; &nbsp;radius (float): Radius for circular regions.<br> &nbsp; &nbsp;feather (float): Edge softness in pixels.<br> &nbsp; &nbsp;blend_mode (str): How the filter blends with the background (e.g., &quot;normal&quot;).<br> &nbsp; &nbsp;enabled (bool): Whether this filter is active.<br> &nbsp; &nbsp;time (float): Accumulated time for animated filters.",
+      "description": "No documentation",
       "link": "backend/opengl.html#class-filter",
       "methods_count": 3
     },
@@ -1214,7 +1214,7 @@
       "name": "ShaderProgram",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Base shader program that loads from combined shader files using macros.<br><br>The shader source is taken from one of these (in order of priority):<br> &nbsp;1. A dedicated file named &#x27;&lt;shader_name&gt;.vert&#x27; (or .frag/.geom) in the shader folder.<br> &nbsp;2. A combined file &#x27;shaders.vert&#x27; (or .frag/.geom) with a #define for the shader name.<br> &nbsp;3. A raw string passed directly (if it contains &#x27;#version&#x27;).<br><br>This allows both compact distribution and per\u2011shader overrides.",
+      "description": "No documentation",
       "link": "backend/opengl.html#class-shaderprogram",
       "methods_count": 7
     },
@@ -1278,9 +1278,25 @@
       "name": "OpenGLRenderer",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Main hardware\u2011accelerated renderer for LunaEngine.",
+      "description": "No documentation",
       "link": "backend/opengl.html#class-openglrenderer",
       "methods_count": 80
+    },
+    {
+      "name": "TransitionType",
+      "module": "backend",
+      "file": "transition.py",
+      "description": "No documentation",
+      "link": "backend/transition.html#class-transitiontype",
+      "methods_count": 0
+    },
+    {
+      "name": "Transition",
+      "module": "backend",
+      "file": "transition.py",
+      "description": "No documentation",
+      "link": "backend/transition.html#class-transition",
+      "methods_count": 2
     },
     {
       "name": "EVENTS",
@@ -1419,6 +1435,14 @@
       "methods_count": 3
     },
     {
+      "name": "StorageOverlay",
+      "module": "misc",
+      "file": "debug.py",
+      "description": "A compact overlay showing storage system status:<br>- Atlas: root path, item count, bundle status<br>- Savedata: file path, table count, total rows",
+      "link": "misc/debug.html#class-storageoverlay",
+      "methods_count": 4
+    },
+    {
       "name": "LogLevel",
       "module": "misc",
       "file": "debug.py",
@@ -1446,9 +1470,9 @@
       "name": "LiveInspector",
       "module": "misc",
       "file": "debug.py",
-      "description": "Main debugging panel. Organised into tabs on the left side:<br>- Elements: hierarchy + properties<br>- Custom Function: user\u2011defined test functions<br>- System: performance + console (merged)<br>- Audio: master volume, effects, source list<br>- Overlays: manage debug overlays<br>- Settings: theme, dark mode, utilities<br>- Tasks: background task status",
+      "description": "Main debugging panel. Organised into tabs on the left side:<br>- Elements: hierarchy + properties<br>- Custom Function: user\u2011defined test functions<br>- System: performance + console (merged)<br>- Audio: master volume, effects, source list<br>- Overlays: manage debug overlays<br>- Settings: theme, dark mode, utilities<br>- Tasks: background task status<br>- Storage: sub\u2011tabs for Atlas, Savedata, Encryption",
       "link": "misc/debug.html#class-liveinspector",
-      "methods_count": 52
+      "methods_count": 57
     },
     {
       "name": "DebugManager",
@@ -1472,7 +1496,7 @@
       "file": "icons.py",
       "description": "Factory class for all built\u2011in icons.<br><br>Each static method returns an Icon instance for the corresponding PNG.<br>The optional `size` parameter sets the desired square size.",
       "link": "misc/icons.html#class-icons",
-      "methods_count": 31
+      "methods_count": 76
     },
     {
       "name": "CodeStatistics",
@@ -1504,7 +1528,7 @@
       "file": "atlas.py",
       "description": "No documentation",
       "link": "storage/atlas.html#class-atlas",
-      "methods_count": 14
+      "methods_count": 20
     },
     {
       "name": "MachineEncryption",
@@ -1536,7 +1560,7 @@
       "file": "savedata.py",
       "description": "Fluent query builder for Table.",
       "link": "storage/savedata.html#class-query",
-      "methods_count": 5
+      "methods_count": 6
     },
     {
       "name": "Savedata",
@@ -2016,7 +2040,7 @@
       "name": "set_shader_folder",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Set the base folder where shader files are located.<br>This affects all ShaderProgram instances that load shader files by relative name.<br><br>Args:<br> &nbsp; &nbsp;folder: Absolute path to the shader folder.",
+      "description": "No documentation",
       "link": "backend/opengl.html#func-set_shader_folder",
       "is_method": false
     },
@@ -2024,24 +2048,24 @@
       "name": "get_shader_folder",
       "module": "backend",
       "file": "opengl.py",
-      "description": "Return the current shader folder path.",
+      "description": "No documentation",
       "link": "backend/opengl.html#func-get_shader_folder",
       "is_method": false
     },
     {
-      "name": "walkThroughPycache",
+      "name": "walk_through_pycache",
       "module": "tools",
       "file": "clear_pycache.py",
-      "description": "No documentation",
-      "link": "tools/clear_pycache.html#func-walkthroughpycache",
+      "description": "Recursively delete __pycache__ directories.<br>Returns the number of removed directories.",
+      "link": "tools/clear_pycache.html#func-walk_through_pycache",
       "is_method": false
     },
     {
       "name": "main",
       "module": "tools",
-      "file": "code_stats.py",
+      "file": "clear_pycache.py",
       "description": "No documentation",
-      "link": "tools/code_stats.html#func-main",
+      "link": "tools/clear_pycache.html#func-main",
       "is_method": false
     },
     {
@@ -2050,6 +2074,14 @@
       "file": "code_stats.py",
       "description": "Save a detailed markdown report",
       "link": "tools/code_stats.html#func-save_detailed_report",
+      "is_method": false
+    },
+    {
+      "name": "main",
+      "module": "tools",
+      "file": "code_stats.py",
+      "description": "No documentation",
+      "link": "tools/code_stats.html#func-main",
       "is_method": false
     },
     {
@@ -2138,6 +2170,30 @@
       "file": "database_editor.py",
       "description": "No documentation",
       "link": "tools/database_editor.html#func-main",
+      "is_method": false
+    },
+    {
+      "name": "should_ignore",
+      "module": "tools",
+      "file": "file_tree.py",
+      "description": "Return True if the path should be excluded.",
+      "link": "tools/file_tree.html#func-should_ignore",
+      "is_method": false
+    },
+    {
+      "name": "generate_tree_lines",
+      "module": "tools",
+      "file": "file_tree.py",
+      "description": "Recursively build the tree as a list of strings.<br>Directories are listed first, then files (both sorted alphabetically).",
+      "link": "tools/file_tree.html#func-generate_tree_lines",
+      "is_method": false
+    },
+    {
+      "name": "main",
+      "module": "tools",
+      "file": "file_tree.py",
+      "description": "No documentation",
+      "link": "tools/file_tree.html#func-main",
       "is_method": false
     },
     {
@@ -2666,7 +2722,7 @@
       "name": "set_icon",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Set the window icon.",
+      "description": "Set the window icon.<br><br>Supports:<br> &nbsp; &nbsp;- file path (str or Path)<br> &nbsp; &nbsp;- pygame.Surface<br> &nbsp; &nbsp;- Icon (from icons.py)<br> &nbsp; &nbsp;- AtlasItem (from the resource atlas)<br> &nbsp; &nbsp;- callable returning an Icon (e.g. Icons.BRAIN)<br><br>The icon is automatically scaled to 64\u00d764 for best window compatibility.",
       "link": "core/engine.html#method-lunaengine-set_icon",
       "is_method": true
     },
@@ -2692,6 +2748,30 @@
       "module": "core",
       "description": "Move focus to the next/previous element in the focusable list.<br>Direction: &#x27;up&#x27;, &#x27;down&#x27;, &#x27;left&#x27;, &#x27;right&#x27; (uses spatial logic) or &#x27;next&#x27;, &#x27;prev&#x27;.",
       "link": "core/engine.html#method-lunaengine-move_focus",
+      "is_method": true
+    },
+    {
+      "name": "move_focus_vector",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Focus the nearest visible element in an arbitrary screen-space direction.",
+      "link": "core/engine.html#method-lunaengine-move_focus_vector",
+      "is_method": true
+    },
+    {
+      "name": "handle_controller_vector",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Dispatch an arbitrary analog-stick vector to the focused widget.",
+      "link": "core/engine.html#method-lunaengine-handle_controller_vector",
+      "is_method": true
+    },
+    {
+      "name": "_ensure_focus_visible",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Scroll every ancestor until a newly focused element is visible.",
+      "link": "core/engine.html#method-lunaengine-_ensure_focus_visible",
       "is_method": true
     },
     {
@@ -2727,6 +2807,30 @@
       "is_method": true
     },
     {
+      "name": "handle_controller_direction",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Let the focused widget consume direction before moving focus.",
+      "link": "core/engine.html#method-lunaengine-handle_controller_direction",
+      "is_method": true
+    },
+    {
+      "name": "get_clipboard",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Return text from the system clipboard, or ``default`` if unavailable.",
+      "link": "core/engine.html#method-lunaengine-get_clipboard",
+      "is_method": true
+    },
+    {
+      "name": "set_clipboard",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Set text in the system clipboard; return False if unavailable.",
+      "link": "core/engine.html#method-lunaengine-set_clipboard",
+      "is_method": true
+    },
+    {
       "name": "add_scene",
       "class": "LunaEngine",
       "module": "core",
@@ -2735,10 +2839,18 @@
       "is_method": true
     },
     {
+      "name": "_switch_scene_immediate",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Immediately switch to a scene without any transition effect.<br>This is the core logic extracted from the old set_scene.",
+      "link": "core/engine.html#method-lunaengine-_switch_scene_immediate",
+      "is_method": true
+    },
+    {
       "name": "set_scene",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Set the current active scene.<br><br>Calls on_exit on the current scene and on_enter on the new scene.<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene to set as current",
+      "description": "Set the current active scene, optionally with a transition effect.<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene to set as current.<br> &nbsp; &nbsp;effect (TransitionType, optional): Type of transition effect.<br> &nbsp; &nbsp; &nbsp; &nbsp;If None or TransitionType.NONE, switch immediately.<br> &nbsp; &nbsp;duration (float): Duration of the transition in seconds (default 0.5).",
       "link": "core/engine.html#method-lunaengine-set_scene",
       "is_method": true
     },
@@ -2956,6 +3068,166 @@
       "module": "core",
       "description": "Main game loop.",
       "link": "core/engine.html#method-lunaengine-run",
+      "is_method": true
+    },
+    {
+      "name": "transition_to",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Start a transition using immutable snapshots of both scenes.",
+      "link": "core/engine.html#method-lunaengine-transition_to",
+      "is_method": true
+    },
+    {
+      "name": "_capture_scene_surface",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Render the given scene (including UI and particles) to a pygame.Surface.",
+      "link": "core/engine.html#method-lunaengine-_capture_scene_surface",
+      "is_method": true
+    },
+    {
+      "name": "_render_ui_elements_for_scene",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Render all UI elements of a given scene (sorted by z_index).",
+      "link": "core/engine.html#method-lunaengine-_render_ui_elements_for_scene",
+      "is_method": true
+    },
+    {
+      "name": "_update_transition",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/engine.html#method-lunaengine-_update_transition",
+      "is_method": true
+    },
+    {
+      "name": "_render_transition",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/engine.html#method-lunaengine-_render_transition",
+      "is_method": true
+    },
+    {
+      "name": "add_timer",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Add a timer. Returns True if added successfully.",
+      "link": "core/engine.html#method-lunaengine-add_timer",
+      "is_method": true
+    },
+    {
+      "name": "add_anonymous_timer",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Add a timer with an auto\u2011generated name and return its name.",
+      "link": "core/engine.html#method-lunaengine-add_anonymous_timer",
+      "is_method": true
+    },
+    {
+      "name": "remove_timer",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Remove a timer immediately.",
+      "link": "core/engine.html#method-lunaengine-remove_timer",
+      "is_method": true
+    },
+    {
+      "name": "destroy_timer",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Mark a timer for destruction (removed on next update).",
+      "link": "core/engine.html#method-lunaengine-destroy_timer",
+      "is_method": true
+    },
+    {
+      "name": "pause_timer",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Pause a timer.",
+      "link": "core/engine.html#method-lunaengine-pause_timer",
+      "is_method": true
+    },
+    {
+      "name": "resume_timer",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Resume a paused timer.",
+      "link": "core/engine.html#method-lunaengine-resume_timer",
+      "is_method": true
+    },
+    {
+      "name": "reset_timer",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Reset a timer to start counting from now.",
+      "link": "core/engine.html#method-lunaengine-reset_timer",
+      "is_method": true
+    },
+    {
+      "name": "timer_elapsed",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get elapsed time for a timer.",
+      "link": "core/engine.html#method-lunaengine-timer_elapsed",
+      "is_method": true
+    },
+    {
+      "name": "timer_remaining",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get remaining time for a timer.",
+      "link": "core/engine.html#method-lunaengine-timer_remaining",
+      "is_method": true
+    },
+    {
+      "name": "timer_done",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Check if a timer has completed.",
+      "link": "core/engine.html#method-lunaengine-timer_done",
+      "is_method": true
+    },
+    {
+      "name": "timer_exists",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Check if a timer exists.",
+      "link": "core/engine.html#method-lunaengine-timer_exists",
+      "is_method": true
+    },
+    {
+      "name": "timer_paused",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Check if a timer is paused.",
+      "link": "core/engine.html#method-lunaengine-timer_paused",
+      "is_method": true
+    },
+    {
+      "name": "clear_timers",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Remove all timers.",
+      "link": "core/engine.html#method-lunaengine-clear_timers",
+      "is_method": true
+    },
+    {
+      "name": "get_all_timers",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get names of all active timers.",
+      "link": "core/engine.html#method-lunaengine-get_all_timers",
+      "is_method": true
+    },
+    {
+      "name": "get_timer_count",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Get the number of active timers.",
+      "link": "core/engine.html#method-lunaengine-get_timer_count",
       "is_method": true
     },
     {
@@ -3202,7 +3474,7 @@
       "name": "_update_ui_elements",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Update UI elements with individual profiling and proper click propagation.",
+      "description": "No documentation",
       "link": "core/engine.html#method-lunaengine-_update_ui_elements",
       "is_method": true
     },
@@ -3367,443 +3639,27 @@
       "is_method": true
     },
     {
-      "name": "max_particles",
-      "class": "Renderer",
+      "name": "ratio",
+      "class": "Scene",
       "module": "core",
-      "description": "Get the maximum number of particles supported by the renderer.<br><br>Returns:<br> &nbsp; &nbsp;Maximum number of particles that can be rendered simultaneously.",
-      "link": "core/renderer.html#method-renderer-max_particles",
+      "description": "No documentation",
+      "link": "core/scene.html#method-scene-ratio",
       "is_method": true
     },
     {
-      "name": "max_particles",
-      "class": "Renderer",
+      "name": "renderer",
+      "class": "Scene",
       "module": "core",
-      "description": "Set the maximum number of particles and trigger any necessary resize.<br><br>Args:<br> &nbsp; &nbsp;value: New maximum particle count.",
-      "link": "core/renderer.html#method-renderer-max_particles",
+      "description": "No documentation",
+      "link": "core/scene.html#method-scene-renderer",
       "is_method": true
     },
     {
-      "name": "initialize",
-      "class": "Renderer",
+      "name": "savedata",
+      "class": "Scene",
       "module": "core",
-      "description": "Initialize the renderer and required resources (shaders, buffers, etc.).<br><br>Returns:<br> &nbsp; &nbsp;True if initialisation succeeded, False otherwise.",
-      "link": "core/renderer.html#method-renderer-initialize",
-      "is_method": true
-    },
-    {
-      "name": "begin_frame",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Begin a new rendering frame.<br><br>Clears buffers, prepares the render target, and resets internal states.",
-      "link": "core/renderer.html#method-renderer-begin_frame",
-      "is_method": true
-    },
-    {
-      "name": "end_frame",
-      "class": "Renderer",
-      "module": "core",
-      "description": "End the current rendering frame.<br><br>Applies post\u2011processing (filters) and swaps buffers (if applicable).",
-      "link": "core/renderer.html#method-renderer-end_frame",
-      "is_method": true
-    },
-    {
-      "name": "get_surface",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Get the main rendering surface (the display surface).<br><br>Returns:<br> &nbsp; &nbsp;The pygame Surface that is currently being rendered to.",
-      "link": "core/renderer.html#method-renderer-get_surface",
-      "is_method": true
-    },
-    {
-      "name": "set_surface",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Set a custom surface as the render target.<br><br>Args:<br> &nbsp; &nbsp;surface: Target surface, or None to reset to the main display.",
-      "link": "core/renderer.html#method-renderer-set_surface",
-      "is_method": true
-    },
-    {
-      "name": "draw_rect",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Draw a rectangle (filled or outline) with optional rounded corners.<br><br>Args:<br> &nbsp; &nbsp;x, y: Position (before anchor adjustment).<br> &nbsp; &nbsp;width, height: Rectangle dimensions.<br> &nbsp; &nbsp;color: Fill colour (if fill=True).<br> &nbsp; &nbsp;fill: If True, draw filled rectangle; otherwise only the outline.<br> &nbsp; &nbsp;pivot: Anchor (fx, fy) relative to width/height.<br> &nbsp; &nbsp;border_width: Thickness of the border (used when border_color given or fill=False).<br> &nbsp; &nbsp;surface: Optional target surface (defaults to current target).<br> &nbsp; &nbsp;corner_radius: Radius for all corners (int/float) or per\u2011corner (tl, tr, br, bl).<br> &nbsp; &nbsp;border_color: Colour of the border (if None and fill=False, uses `color` for outline).",
-      "link": "core/renderer.html#method-renderer-draw_rect",
-      "is_method": true
-    },
-    {
-      "name": "draw_isosceles_triangle",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Draw an isosceles triangle with a horizontal base at the bottom.<br><br>The triangle is defined by a bounding box:<br> &nbsp; &nbsp;top vertex at (x + width/2, y)<br> &nbsp; &nbsp;bottom-left at (x, y + height)<br> &nbsp; &nbsp;bottom-right at (x + width, y + height)<br><br>Args:<br> &nbsp; &nbsp;x, y: Top\u2011left corner of the bounding box.<br> &nbsp; &nbsp;width, height: Bounding box dimensions.<br> &nbsp; &nbsp;color: Fill colour (if fill=True) or outline colour (if no border_color).<br> &nbsp; &nbsp;fill: If True, fills the triangle; otherwise draws only the outline.<br> &nbsp; &nbsp;border_width: Thickness of the outline (used when fill=False or border_color given).<br> &nbsp; &nbsp;border_color: Colour for the outline; if provided, an outline is drawn<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;on top of the fill (if fill=True) or as the only outline<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(if fill=False). If None and fill=False, `color` is used.",
-      "link": "core/renderer.html#method-renderer-draw_isosceles_triangle",
-      "is_method": true
-    },
-    {
-      "name": "draw_equilateral_triangle",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Draw an equilateral triangle with a horizontal base at the bottom.<br><br>The triangle is defined by the side length `width`. The bounding box<br>has width = side length and height = side * sqrt(3)/2, with top-left at (x, y).<br><br>Args:<br> &nbsp; &nbsp;x, y: Top\u2011left corner of the bounding box.<br> &nbsp; &nbsp;width: Side length of the equilateral triangle.<br> &nbsp; &nbsp;color: Fill colour (if fill=True) or outline colour (if no border_color).<br> &nbsp; &nbsp;fill: If True, fills the triangle; otherwise draws only the outline.<br> &nbsp; &nbsp;border_width: Thickness of the outline (used when fill=False or border_color given).<br> &nbsp; &nbsp;border_color: Colour for the outline; if provided, an outline is drawn<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;on top of the fill (if fill=True) or as the only outline<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(if fill=False). If None and fill=False, `color` is used.",
-      "link": "core/renderer.html#method-renderer-draw_equilateral_triangle",
-      "is_method": true
-    },
-    {
-      "name": "draw_circle",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Draw a circle (filled or outline).<br><br>Args:<br> &nbsp; &nbsp;center_x, center_y: Centre point (before anchor adjustment).<br> &nbsp; &nbsp;radius: Circle radius.<br> &nbsp; &nbsp;color: Fill or outline colour.<br> &nbsp; &nbsp;fill: If True, filled circle; otherwise outline.<br> &nbsp; &nbsp;border_width: Outline thickness (only when fill=False).<br> &nbsp; &nbsp;surface: Optional target surface.<br> &nbsp; &nbsp;pivot: Anchor point for positioning (default centre).",
-      "link": "core/renderer.html#method-renderer-draw_circle",
-      "is_method": true
-    },
-    {
-      "name": "draw_line",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Draw a thick line between two points.<br><br>Args:<br> &nbsp; &nbsp;start_x, start_y: Start point.<br> &nbsp; &nbsp;end_x, end_y: End point.<br> &nbsp; &nbsp;color: Line colour.<br> &nbsp; &nbsp;width: Thickness in pixels.<br> &nbsp; &nbsp;surface: Optional target surface.",
-      "link": "core/renderer.html#method-renderer-draw_line",
-      "is_method": true
-    },
-    {
-      "name": "draw_lines",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Draw multiple line segments.<br><br>Args:<br> &nbsp; &nbsp;points: List of ((x1, y1), (x2, y2)) pairs.<br> &nbsp; &nbsp;color: Line colour.<br> &nbsp; &nbsp;width: Thickness in pixels.<br> &nbsp; &nbsp;surface: Optional target surface.",
-      "link": "core/renderer.html#method-renderer-draw_lines",
-      "is_method": true
-    },
-    {
-      "name": "draw_polygon",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Draw a convex polygon (filled or outline).<br><br>Args:<br> &nbsp; &nbsp;points: List of (x, y) vertices.<br> &nbsp; &nbsp;color: Fill or outline colour.<br> &nbsp; &nbsp;fill: If True, filled polygon; otherwise outline.<br> &nbsp; &nbsp;border_width: Outline thickness (used only when fill=False).<br> &nbsp; &nbsp;surface: Optional target surface.<br> &nbsp; &nbsp;pivot: Offset applied to all vertices.",
-      "link": "core/renderer.html#method-renderer-draw_polygon",
-      "is_method": true
-    },
-    {
-      "name": "draw_text",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Draw text using a pygame font, with optional flip and rotation.<br><br>Args:<br> &nbsp; &nbsp;text: String to render.<br> &nbsp; &nbsp;x, y: Position (before anchor).<br> &nbsp; &nbsp;color: Any colour format accepted (pygame.Color, tuple, etc.).<br> &nbsp; &nbsp;font: Pygame font object.<br> &nbsp; &nbsp;surface: Optional target surface.<br> &nbsp; &nbsp;pivot: Anchor (fx, fy) relative to text size.<br> &nbsp; &nbsp;flip: (flip_horizontal, flip_vertical).<br> &nbsp; &nbsp;rotate: Rotation angle in degrees (clockwise).<br> &nbsp; &nbsp;*args, **kwargs: Additional arguments (e.g., bold, italic) passed to font rendering.",
-      "link": "core/renderer.html#method-renderer-draw_text",
-      "is_method": true
-    },
-    {
-      "name": "draw_rich_text",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Draw rich text using the rich text parser.<br><br>Args:<br> &nbsp; &nbsp;text: Rich text string with markup<br> &nbsp; &nbsp;x, y: Position<br> &nbsp; &nbsp;default_color: Default text color (can be Color, ThemeStyle, or tuple)<br> &nbsp; &nbsp;font: Base font<br> &nbsp; &nbsp;surface: Optional target surface<br> &nbsp; &nbsp;pivot: Anchor point<br> &nbsp; &nbsp;**kwargs: Additional arguments for draw_text",
-      "link": "core/renderer.html#method-renderer-draw_rich_text",
-      "is_method": true
-    },
-    {
-      "name": "draw_rich_text_line",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Draw a pre-parsed rich text line.<br><br>Args:<br> &nbsp; &nbsp;line: List of RichTextSegment objects<br> &nbsp; &nbsp;x, y: Position<br> &nbsp; &nbsp;default_color: Default text color (can be Color, ThemeStyle, or tuple)<br> &nbsp; &nbsp;font: Base font<br> &nbsp; &nbsp;surface: Optional target surface",
-      "link": "core/renderer.html#method-renderer-draw_rich_text_line",
-      "is_method": true
-    },
-    {
-      "name": "draw_surface",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Alias for blit \u2013 draws a surface at (x, y) with default anchor (0,0).",
-      "link": "core/renderer.html#method-renderer-draw_surface",
-      "is_method": true
-    },
-    {
-      "name": "blit",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Blit a source surface onto the current render target.<br><br>Args:<br> &nbsp; &nbsp;source: Surface to draw.<br> &nbsp; &nbsp;dest: Destination position (x,y) or rectangle.<br> &nbsp; &nbsp;area: Sub\u2011region of the source surface to draw.<br> &nbsp; &nbsp;special_flags: Additional blitting flags (implementation dependent).<br> &nbsp; &nbsp;pivot: Anchor (fx, fy) relative to the source size.",
-      "link": "core/renderer.html#method-renderer-blit",
-      "is_method": true
-    },
-    {
-      "name": "fill_screen",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Fill the entire screen (or current framebuffer) with a solid colour.<br><br>Args:<br> &nbsp; &nbsp;color: RGBA tuple with RGB 0\u2011255 and alpha 0\u20111, or RGB tuple.",
-      "link": "core/renderer.html#method-renderer-fill_screen",
-      "is_method": true
-    },
-    {
-      "name": "clear",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Clear the current render target (colour and depth buffers).",
-      "link": "core/renderer.html#method-renderer-clear",
-      "is_method": true
-    },
-    {
-      "name": "render_particles",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Render particle systems with batch processing.<br><br>Args:<br> &nbsp; &nbsp;particle_data: Dictionary containing particle arrays:<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;active_count&#x27;: int<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;positions&#x27;: np.ndarray (N,2) world positions<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;sizes&#x27;: np.ndarray (N,) sizes<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;colors&#x27;: np.ndarray (N,3) uint8 RGB<br> &nbsp; &nbsp; &nbsp; &nbsp;- &#x27;alphas&#x27;: np.ndarray (N,) uint8 alpha<br> &nbsp; &nbsp;camera: Camera object providing world_to_screen and convert_size_zoom.",
-      "link": "core/renderer.html#method-renderer-render_particles",
-      "is_method": true
-    },
-    {
-      "name": "enable_scissor",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Enable scissor test to restrict drawing to a rectangular region.<br><br>Coordinates follow the pygame system (origin top\u2011left).<br><br>Args:<br> &nbsp; &nbsp;x, y: Top\u2011left corner.<br> &nbsp; &nbsp;width, height: Size of the scissor rectangle.",
-      "link": "core/renderer.html#method-renderer-enable_scissor",
-      "is_method": true
-    },
-    {
-      "name": "disable_scissor",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Disable the scissor test (no clipping).",
-      "link": "core/renderer.html#method-renderer-disable_scissor",
-      "is_method": true
-    },
-    {
-      "name": "add_filter",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Add a filter to the active filter stack.",
-      "link": "core/renderer.html#method-renderer-add_filter",
-      "is_method": true
-    },
-    {
-      "name": "remove_filter",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Remove a specific filter from the stack.",
-      "link": "core/renderer.html#method-renderer-remove_filter",
-      "is_method": true
-    },
-    {
-      "name": "clear_filters",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Remove all active filters.",
-      "link": "core/renderer.html#method-renderer-clear_filters",
-      "is_method": true
-    },
-    {
-      "name": "create_quick_filter",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Create and add a filter with common sensible defaults.<br><br>Args:<br> &nbsp; &nbsp;filter_type: Type of filter effect.<br> &nbsp; &nbsp;intensity: Strength (0.0 to 1.0).<br> &nbsp; &nbsp;x, y: Position of the region.<br> &nbsp; &nbsp;width, height: Dimensions of rectangular region (if None, uses screen size).<br> &nbsp; &nbsp;radius: Circle radius (if circular region).<br> &nbsp; &nbsp;feather: Edge softness.<br><br>Returns:<br> &nbsp; &nbsp;The created Filter object (already added to the stack).",
-      "link": "core/renderer.html#method-renderer-create_quick_filter",
-      "is_method": true
-    },
-    {
-      "name": "apply_vignette",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Add a vignette (darkened edges) effect.",
-      "link": "core/renderer.html#method-renderer-apply_vignette",
-      "is_method": true
-    },
-    {
-      "name": "apply_blur",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Add a gaussian\u2011like blur effect, optionally within a rectangle.",
-      "link": "core/renderer.html#method-renderer-apply_blur",
-      "is_method": true
-    },
-    {
-      "name": "apply_sepia",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Add a sepia tone (warm brownish) effect.",
-      "link": "core/renderer.html#method-renderer-apply_sepia",
-      "is_method": true
-    },
-    {
-      "name": "apply_grayscale",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Convert colours to grayscale.",
-      "link": "core/renderer.html#method-renderer-apply_grayscale",
-      "is_method": true
-    },
-    {
-      "name": "apply_invert",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Invert colours (negative).",
-      "link": "core/renderer.html#method-renderer-apply_invert",
-      "is_method": true
-    },
-    {
-      "name": "apply_warm_temperature",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Increase warm colours (orange/red).",
-      "link": "core/renderer.html#method-renderer-apply_warm_temperature",
-      "is_method": true
-    },
-    {
-      "name": "apply_cold_temperature",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Increase cold colours (blue).",
-      "link": "core/renderer.html#method-renderer-apply_cold_temperature",
-      "is_method": true
-    },
-    {
-      "name": "apply_night_vision",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Simulate night vision (green tint + noise).",
-      "link": "core/renderer.html#method-renderer-apply_night_vision",
-      "is_method": true
-    },
-    {
-      "name": "apply_crt_effect",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Add CRT monitor scanlines and curvature.",
-      "link": "core/renderer.html#method-renderer-apply_crt_effect",
-      "is_method": true
-    },
-    {
-      "name": "apply_pixelate",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Pixelate the image (lower resolution).",
-      "link": "core/renderer.html#method-renderer-apply_pixelate",
-      "is_method": true
-    },
-    {
-      "name": "apply_bloom",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Add a bloom (glow) effect around bright areas.",
-      "link": "core/renderer.html#method-renderer-apply_bloom",
-      "is_method": true
-    },
-    {
-      "name": "apply_edge_detect",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Detect and highlight edges.",
-      "link": "core/renderer.html#method-renderer-apply_edge_detect",
-      "is_method": true
-    },
-    {
-      "name": "apply_emboss",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Apply an emboss (raised edges) effect.",
-      "link": "core/renderer.html#method-renderer-apply_emboss",
-      "is_method": true
-    },
-    {
-      "name": "apply_sharpen",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Sharpen the image.",
-      "link": "core/renderer.html#method-renderer-apply_sharpen",
-      "is_method": true
-    },
-    {
-      "name": "apply_posterize",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Reduce the number of colour bands.",
-      "link": "core/renderer.html#method-renderer-apply_posterize",
-      "is_method": true
-    },
-    {
-      "name": "apply_neon",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Add a neon glow effect.",
-      "link": "core/renderer.html#method-renderer-apply_neon",
-      "is_method": true
-    },
-    {
-      "name": "apply_radial_blur",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Blur outward from the centre.",
-      "link": "core/renderer.html#method-renderer-apply_radial_blur",
-      "is_method": true
-    },
-    {
-      "name": "apply_fisheye",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Apply a fisheye lens distortion.",
-      "link": "core/renderer.html#method-renderer-apply_fisheye",
-      "is_method": true
-    },
-    {
-      "name": "apply_twirl",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Twirl (swirl) the image around its centre.",
-      "link": "core/renderer.html#method-renderer-apply_twirl",
-      "is_method": true
-    },
-    {
-      "name": "apply_circular_grayscale",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Apply grayscale inside a circular region.<br><br>Args:<br> &nbsp; &nbsp;center_x, center_y: Centre of the circle.<br> &nbsp; &nbsp;radius: Radius of the circle.<br> &nbsp; &nbsp;intensity: Effect strength.",
-      "link": "core/renderer.html#method-renderer-apply_circular_grayscale",
-      "is_method": true
-    },
-    {
-      "name": "apply_rectangular_blur",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Apply blur only inside a rectangular region.<br><br>Args:<br> &nbsp; &nbsp;x, y: Top\u2011left corner of the rectangle.<br> &nbsp; &nbsp;width, height: Size of the rectangle.<br> &nbsp; &nbsp;intensity: Blur strength.",
-      "link": "core/renderer.html#method-renderer-apply_rectangular_blur",
-      "is_method": true
-    },
-    {
-      "name": "set_blend_mode",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Set the blending mode.<br><br>Args:<br> &nbsp; &nbsp;mode: One of &#x27;normal&#x27;, &#x27;add&#x27;, &#x27;multiply&#x27;, &#x27;screen&#x27;.",
-      "link": "core/renderer.html#method-renderer-set_blend_mode",
-      "is_method": true
-    },
-    {
-      "name": "set_text_cache_timeout",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Set how long a text texture stays in cache without being used.<br><br>Args:<br> &nbsp; &nbsp;seconds: Timeout in seconds (&gt;= 0.1).",
-      "link": "core/renderer.html#method-renderer-set_text_cache_timeout",
-      "is_method": true
-    },
-    {
-      "name": "get_cache_usage",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Return cache usage as size in bytes or as a dictionary of sizes.<br><br>Args:<br> &nbsp; &nbsp;target: One of &#x27;text&#x27;, &#x27;texture&#x27;, &#x27;circle&#x27;, &#x27;polygon&#x27;, &#x27;total&#x27;, or &#x27;all&#x27;.<br> &nbsp; &nbsp;humanize: If True, return human\u2011readable strings (e.g., &quot;1.2 KB&quot;).<br><br>Returns:<br> &nbsp; &nbsp;Size in bytes (or humanised string) or a dictionary of all caches.",
-      "link": "core/renderer.html#method-renderer-get_cache_usage",
-      "is_method": true
-    },
-    {
-      "name": "cleanup",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Release all rendering resources (shaders, textures, buffers).",
-      "link": "core/renderer.html#method-renderer-cleanup",
-      "is_method": true
-    },
-    {
-      "name": "resize",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Resize a surface to exact dimensions.<br><br>Args:<br> &nbsp; &nbsp;surface: Source surface.<br> &nbsp; &nbsp;width: New width.<br> &nbsp; &nbsp;height: New height.<br><br>Returns:<br> &nbsp; &nbsp;The resized surface.",
-      "link": "core/renderer.html#method-renderer-resize",
-      "is_method": true
-    },
-    {
-      "name": "scale",
-      "class": "Renderer",
-      "module": "core",
-      "description": "Scale a surface by a percentage.<br><br>Args:<br> &nbsp; &nbsp;surface: Source surface.<br> &nbsp; &nbsp;width: Horizontal scale factor (e.g., 2.0 for double).<br> &nbsp; &nbsp;height: Vertical scale factor.<br><br>Returns:<br> &nbsp; &nbsp;The scaled surface.",
-      "link": "core/renderer.html#method-renderer-scale",
+      "description": "No documentation",
+      "link": "core/scene.html#method-scene-savedata",
       "is_method": true
     },
     {
@@ -4831,6 +4687,70 @@
       "is_method": true
     },
     {
+      "name": "_normalize_theme_name",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Normalize and validate a runtime custom-theme identifier.",
+      "link": "ui/themes.html#method-thememanager-_normalize_theme_name",
+      "is_method": true
+    },
+    {
+      "name": "_resolve_theme_key",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Resolve an enum or string theme identifier to a registered key.",
+      "link": "ui/themes.html#method-thememanager-_resolve_theme_key",
+      "is_method": true
+    },
+    {
+      "name": "_build_theme_from_data",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Build a theme from either a combined or legacy JSON dictionary.",
+      "link": "ui/themes.html#method-thememanager-_build_theme_from_data",
+      "is_method": true
+    },
+    {
+      "name": "_read_theme_source",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Read a theme from a filesystem path or an AtlasItem.<br><br>AtlasItem normally points to a filesystem resource. If an AtlasItem has<br>cached bytes in its private `_data` field, those bytes are preferred;<br>this also supports applications that populate AtlasItem data themselves.",
+      "link": "ui/themes.html#method-thememanager-_read_theme_source",
+      "is_method": true
+    },
+    {
+      "name": "load_custom_theme",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Load and register a custom theme under a caller-provided name.<br><br>`source` may be a JSON filesystem path or an AtlasItem. The returned<br>string is the normalized identifier used by `set_global_theme()`.",
+      "link": "ui/themes.html#method-thememanager-load_custom_theme",
+      "is_method": true
+    },
+    {
+      "name": "load_custom_theme_from_atlas_item",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Explicit AtlasItem convenience wrapper for load_custom_theme().",
+      "link": "ui/themes.html#method-thememanager-load_custom_theme_from_atlas_item",
+      "is_method": true
+    },
+    {
+      "name": "unload_custom_theme",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Remove a custom theme. Built-in themes cannot be removed.",
+      "link": "ui/themes.html#method-thememanager-unload_custom_theme",
+      "is_method": true
+    },
+    {
+      "name": "has_theme",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "Return whether a built-in or custom theme is registered.",
+      "link": "ui/themes.html#method-thememanager-has_theme",
+      "is_method": true
+    },
+    {
       "name": "_load_theme_from_json_file",
       "class": "ThemeManager",
       "module": "ui",
@@ -4930,7 +4850,7 @@
       "name": "get_theme_type_by_name",
       "class": "ThemeManager",
       "module": "ui",
-      "description": "No documentation",
+      "description": "Return a built-in ThemeType or a custom string key by name.",
       "link": "ui/themes.html#method-thememanager-get_theme_type_by_name",
       "is_method": true
     },
@@ -5111,6 +5031,14 @@
       "is_method": true
     },
     {
+      "name": "update_theme",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Update the tooltip&#x27;s theme.",
+      "link": "ui/tooltips.html#method-tooltip-update_theme",
+      "is_method": true
+    },
+    {
       "name": "render",
       "class": "Tooltip",
       "module": "ui",
@@ -5148,6 +5076,14 @@
       "module": "ui",
       "description": "Unregister tooltip for a UI element.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to remove tooltip from",
       "link": "ui/tooltips.html#method-uitooltipmanager-unregister_tooltip",
+      "is_method": true
+    },
+    {
+      "name": "update_all_themes",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Update all registered tooltips to the new theme.",
+      "link": "ui/tooltips.html#method-uitooltipmanager-update_all_themes",
       "is_method": true
     },
     {
@@ -5671,6 +5607,14 @@
       "is_method": true
     },
     {
+      "name": "set_default_font",
+      "class": "FontManager",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/base.html#method-fontmanager-set_default_font",
+      "is_method": true
+    },
+    {
       "name": "get_system_fonts",
       "class": "FontManager",
       "module": "ui",
@@ -5906,7 +5850,7 @@
       "name": "update",
       "class": "UIElement",
       "module": "ui",
-      "description": "Update element state based on mouse interaction and input.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds since last update.<br> &nbsp; &nbsp;inputState (InputState): Current input state.",
+      "description": "No documentation",
       "link": "ui/elements/base.html#method-uielement-update",
       "is_method": true
     },
@@ -5991,6 +5935,30 @@
       "is_method": true
     },
     {
+      "name": "icon_padding",
+      "class": "Button",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/buttons.html#method-button-icon_padding",
+      "is_method": true
+    },
+    {
+      "name": "icon_padding",
+      "class": "Button",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/buttons.html#method-button-icon_padding",
+      "is_method": true
+    },
+    {
+      "name": "_refresh_icon_surface",
+      "class": "Button",
+      "module": "ui",
+      "description": "Create or update the cached icon surface based on current size and color.",
+      "link": "ui/elements/buttons.html#method-button-_refresh_icon_surface",
+      "is_method": true
+    },
+    {
       "name": "can_focus",
       "class": "Button",
       "module": "ui",
@@ -6010,7 +5978,7 @@
       "name": "set_background_color",
       "class": "Button",
       "module": "ui",
-      "description": "No documentation",
+      "description": "Override if needed (no icon change, but keep for consistency).",
       "link": "ui/elements/buttons.html#method-button-set_background_color",
       "is_method": true
     },
@@ -6018,8 +5986,16 @@
       "name": "set_text_color",
       "class": "Button",
       "module": "ui",
-      "description": "No documentation",
+      "description": "Override to refresh icon colour.",
       "link": "ui/elements/buttons.html#method-button-set_text_color",
+      "is_method": true
+    },
+    {
+      "name": "set_icon",
+      "class": "Button",
+      "module": "ui",
+      "description": "Change the icon and refresh.",
+      "link": "ui/elements/buttons.html#method-button-set_icon",
       "is_method": true
     },
     {
@@ -6407,6 +6383,30 @@
       "is_method": true
     },
     {
+      "name": "_refresh_header_icon",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-uiframe-_refresh_header_icon",
+      "is_method": true
+    },
+    {
+      "name": "_resolve_icon_to_surface",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Convert various icon inputs to a pygame.Surface scaled to fit within max_size (square).<br>Supports:<br> &nbsp; &nbsp;- callables returning any supported type (e.g., Icons.BRAIN)<br> &nbsp; &nbsp;- objects with get_surface(color) (duck\u2011typed Icon)<br> &nbsp; &nbsp;- pygame.Surface<br> &nbsp; &nbsp;- str or Path (file path)<br> &nbsp; &nbsp;- AtlasItem (loads from bundle or disk)",
+      "link": "ui/elements/containers.html#method-uiframe-_resolve_icon_to_surface",
+      "is_method": true
+    },
+    {
+      "name": "_get_header_text_color",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "Return the text color for the header (from the current theme).",
+      "link": "ui/elements/containers.html#method-uiframe-_get_header_text_color",
+      "is_method": true
+    },
+    {
       "name": "_get_init_args",
       "class": "UiFrame",
       "module": "ui",
@@ -6623,6 +6623,14 @@
       "is_method": true
     },
     {
+      "name": "update_content_area",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-scrollingframe-update_content_area",
+      "is_method": true
+    },
+    {
       "name": "clear_content",
       "class": "ScrollingFrame",
       "module": "ui",
@@ -6754,7 +6762,7 @@
       "name": "add_tab",
       "class": "Tabination",
       "module": "ui",
-      "description": "No documentation",
+      "description": "Add a new tab.<br><br>Args:<br> &nbsp; &nbsp;tab_name: Display name of the tab.<br> &nbsp; &nbsp;icon: Icon input (supports Icon, AtlasItem, str/Path, Surface, callable).<br> &nbsp; &nbsp;icon_position: For horizontal tabs, place icon left or right of text.",
       "link": "ui/elements/containers.html#method-tabination-add_tab",
       "is_method": true
     },
@@ -7392,6 +7400,54 @@
     },
     {
       "name": "__init__",
+      "class": "Canvas",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-canvas-__init__",
+      "is_method": true
+    },
+    {
+      "name": "set_draw_callback",
+      "class": "Canvas",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-canvas-set_draw_callback",
+      "is_method": true
+    },
+    {
+      "name": "set_border",
+      "class": "Canvas",
+      "module": "ui",
+      "description": "Set the border appearance.",
+      "link": "ui/elements/containers.html#method-canvas-set_border",
+      "is_method": true
+    },
+    {
+      "name": "set_position_mode",
+      "class": "Canvas",
+      "module": "ui",
+      "description": "Set how child elements are positioned inside the canvas.",
+      "link": "ui/elements/containers.html#method-canvas-set_position_mode",
+      "is_method": true
+    },
+    {
+      "name": "_map_child_coordinates",
+      "class": "Canvas",
+      "module": "ui",
+      "description": "Convert child&#x27;s x, y, width, height from the current position_mode<br>to logical pixel coordinates (0..logical_width, 0..logical_height).",
+      "link": "ui/elements/containers.html#method-canvas-_map_child_coordinates",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "Canvas",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-canvas-render",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
       "class": "DialogBox",
       "module": "ui",
       "description": "Initialize a dialog box.<br><br>Args:<br> &nbsp; &nbsp;x: X coordinate (before anchor).<br> &nbsp; &nbsp;y: Y coordinate (before anchor).<br> &nbsp; &nbsp;width: Width of dialog box.<br> &nbsp; &nbsp;height: Height of dialog box.<br> &nbsp; &nbsp;style: Visual style (&quot;default&quot;, &quot;rpg&quot;, &quot;pokemon&quot;, &quot;modern&quot;).<br> &nbsp; &nbsp;theme: Theme to apply.<br> &nbsp; &nbsp;element_id: Custom element ID.",
@@ -7730,7 +7786,7 @@
       "name": "_load_image",
       "class": "ImageLabel",
       "module": "ui",
-      "description": "No documentation",
+      "description": "Load or reload the image from the current image_path and image_color.<br>Supports:<br>- str (file path)<br>- Path<br>- pygame.Surface<br>- Icon instance (has get_surface() method)<br>- AtlasItem<br>- Callable returning any of the above",
       "link": "ui/elements/labels.html#method-imagelabel-_load_image",
       "is_method": true
     },
@@ -7764,6 +7820,30 @@
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/labels.html#method-imagelabel-set_size",
+      "is_method": true
+    },
+    {
+      "name": "set_effect",
+      "class": "ImageLabel",
+      "module": "ui",
+      "description": "Apply a visual effect (filter) to the image.<br><br>Args:<br> &nbsp; &nbsp;filter_type: A FilterType enum (e.g., FilterType.BLUR).<br> &nbsp; &nbsp;intensity: Strength of the effect (0.0 - 1.0).",
+      "link": "ui/elements/labels.html#method-imagelabel-set_effect",
+      "is_method": true
+    },
+    {
+      "name": "clear_effect",
+      "class": "ImageLabel",
+      "module": "ui",
+      "description": "Remove any applied effect.",
+      "link": "ui/elements/labels.html#method-imagelabel-clear_effect",
+      "is_method": true
+    },
+    {
+      "name": "_apply_effect",
+      "class": "ImageLabel",
+      "module": "ui",
+      "description": "Apply the current effect to the original image and return a filtered surface.<br>This uses the renderer&#x27;s OpenGL filter capabilities.",
+      "link": "ui/elements/labels.html#method-imagelabel-_apply_effect",
       "is_method": true
     },
     {
@@ -9636,6 +9716,22 @@
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-_recalc",
+      "is_method": true
+    },
+    {
+      "name": "_get_image_surface",
+      "class": "Table",
+      "module": "ui",
+      "description": "Convert various image-like objects into a pygame.Surface.<br>Returns None if the data is not an image or loading fails.",
+      "link": "ui/elements/visualizers.html#method-table-_get_image_surface",
+      "is_method": true
+    },
+    {
+      "name": "_draw_cell_image",
+      "class": "Table",
+      "module": "ui",
+      "description": "Draw the image centered and scaled to fit inside the cell,<br>respecting cell_padding.",
+      "link": "ui/elements/visualizers.html#method-table-_draw_cell_image",
       "is_method": true
     },
     {
@@ -12810,7 +12906,7 @@
       "name": "__init__",
       "class": "Filter",
       "module": "backend",
-      "description": "Initialize a filter with all parameters.<br><br>Args:<br> &nbsp; &nbsp;filter_type: Type of filter effect.<br> &nbsp; &nbsp;intensity: Filter strength (0.0 to 1.0).<br> &nbsp; &nbsp;region_type: Shape of filter region.<br> &nbsp; &nbsp;region_pos: Position of region (top-left for rect, center for circle).<br> &nbsp; &nbsp;region_size: Size of region (width, height).<br> &nbsp; &nbsp;radius: Radius for circular regions.<br> &nbsp; &nbsp;feather: Edge softness in pixels.<br> &nbsp; &nbsp;blend_mode: How filter blends with background.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-filter-__init__",
       "is_method": true
     },
@@ -12818,7 +12914,7 @@
       "name": "update",
       "class": "Filter",
       "module": "backend",
-      "description": "Update filter for animation (e.g., time\u2011based effects).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-filter-update",
       "is_method": true
     },
@@ -12826,7 +12922,7 @@
       "name": "copy",
       "class": "Filter",
       "module": "backend",
-      "description": "Create a deep copy of this filter.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-filter-copy",
       "is_method": true
     },
@@ -12834,7 +12930,7 @@
       "name": "__init__",
       "class": "ShaderProgram",
       "module": "backend",
-      "description": "Args:<br> &nbsp; &nbsp;shader_name: e.g., &#x27;particle&#x27;, &#x27;simple&#x27;, &#x27;texture&#x27;, &#x27;filter&#x27;, &#x27;rounded_rect&#x27;, &#x27;depth&#x27;<br> &nbsp; &nbsp;has_geometry: True if this shader uses a geometry stage.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-shaderprogram-__init__",
       "is_method": true
     },
@@ -12842,7 +12938,7 @@
       "name": "_load_source",
       "class": "ShaderProgram",
       "module": "backend",
-      "description": "Load source for a given stage (&#x27;vert&#x27;, &#x27;frag&#x27;, &#x27;geom&#x27;).<br>Returns the source code string, or None if not found.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-shaderprogram-_load_source",
       "is_method": true
     },
@@ -12882,7 +12978,7 @@
       "name": "_setup_geometry",
       "class": "ShaderProgram",
       "module": "backend",
-      "description": "Override in subclasses.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-shaderprogram-_setup_geometry",
       "is_method": true
     },
@@ -13279,6 +13375,14 @@
       "is_method": true
     },
     {
+      "name": "apply_filter_to_texture",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Render the texture through the filter shader and produce a new filtered texture.<br><br>Args:<br> &nbsp; &nbsp;tex_id: OpenGL texture ID of the source image.<br> &nbsp; &nbsp;width, height: Dimensions of the texture (must match the texture).<br> &nbsp; &nbsp;filter_type: The filter to apply (e.g., FilterType.BLUR).<br> &nbsp; &nbsp;intensity: Filter intensity (0.0\u20131.0).<br><br>Returns:<br> &nbsp; &nbsp;int: New texture ID with the filter applied. Caller must delete it when done.",
+      "link": "backend/opengl.html#method-openglrenderer-apply_filter_to_texture",
+      "is_method": true
+    },
+    {
       "name": "_apply_filters",
       "class": "OpenGLRenderer",
       "module": "backend",
@@ -13300,6 +13404,14 @@
       "module": "backend",
       "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-set_surface",
+      "is_method": true
+    },
+    {
+      "name": "capture_to_surface",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Render once into an off-screen framebuffer and return a pygame surface.<br><br>OpenGL rendering cannot populate a ``pygame.Surface`` directly. The old<br>transition prototype attached a texture to an FBO but then read the<br>untouched pygame surface, which produced blank captures. This helper<br>owns the FBO, reads its pixels back, and restores the caller&#x27;s target.",
+      "link": "backend/opengl.html#method-openglrenderer-capture_to_surface",
       "is_method": true
     },
     {
@@ -13330,7 +13442,7 @@
       "name": "_read_texture_pixel",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Read a single pixel from an OpenGL texture (for debugging).<br>Returns (R, G, B, A) as integers 0-255.",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_read_texture_pixel",
       "is_method": true
     },
@@ -13442,7 +13554,7 @@
       "name": "_draw_circle_fast",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a circle using the simple shader (no style).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-_draw_circle_fast",
       "is_method": true
     },
@@ -13479,6 +13591,14 @@
       "is_method": true
     },
     {
+      "name": "_draw_polygon_outline",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "Draw a clean polygon outline using GL_LINE_LOOP.<br>This avoids shrinking geometry issues.",
+      "link": "backend/opengl.html#method-openglrenderer-_draw_polygon_outline",
+      "is_method": true
+    },
+    {
       "name": "_generate_filled_polygon_geometry",
       "class": "OpenGLRenderer",
       "module": "backend",
@@ -13487,26 +13607,34 @@
       "is_method": true
     },
     {
-      "name": "_generate_hollow_polygon_geometry",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/opengl.html#method-openglrenderer-_generate_hollow_polygon_geometry",
-      "is_method": true
-    },
-    {
       "name": "_draw_polygon_fast",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw a polygon using the simple shader (no style).",
+      "description": "Draw a filled polygon using the simple shader.",
       "link": "backend/opengl.html#method-openglrenderer-_draw_polygon_fast",
+      "is_method": true
+    },
+    {
+      "name": "_generate_gradient_texture",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-openglrenderer-_generate_gradient_texture",
+      "is_method": true
+    },
+    {
+      "name": "_ensure_temp_fbo",
+      "class": "OpenGLRenderer",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/opengl.html#method-openglrenderer-_ensure_temp_fbo",
       "is_method": true
     },
     {
       "name": "draw_text",
       "class": "OpenGLRenderer",
       "module": "backend",
-      "description": "Draw text using a pygame font, with optional flip, rotation, and caching.<br><br>Args:<br> &nbsp; &nbsp;text: The string to render.<br> &nbsp; &nbsp;x, y: Position (before anchor).<br> &nbsp; &nbsp;color: Any colour format accepted (pygame.Color, tuple, etc.).<br> &nbsp; &nbsp;font: Pygame font object.<br> &nbsp; &nbsp;surface: Optional target surface.<br> &nbsp; &nbsp;pivot: Anchor (fx, fy) relative to text size.<br> &nbsp; &nbsp;flip: (flip_horizontal, flip_vertical).<br> &nbsp; &nbsp;rotate: Rotation angle in degrees (clockwise).",
+      "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-draw_text",
       "is_method": true
     },
@@ -13591,38 +13719,6 @@
       "is_method": true
     },
     {
-      "name": "_ensure_temp_fbo",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "Create or resize temporary FBOs and textures.",
-      "link": "backend/opengl.html#method-openglrenderer-_ensure_temp_fbo",
-      "is_method": true
-    },
-    {
-      "name": "_generate_gradient_texture",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/opengl.html#method-openglrenderer-_generate_gradient_texture",
-      "is_method": true
-    },
-    {
-      "name": "_apply_blur_to_texture",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/opengl.html#method-openglrenderer-_apply_blur_to_texture",
-      "is_method": true
-    },
-    {
-      "name": "_apply_shadow_to_shape",
-      "class": "OpenGLRenderer",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/opengl.html#method-openglrenderer-_apply_shadow_to_shape",
-      "is_method": true
-    },
-    {
       "name": "cleanup",
       "class": "OpenGLRenderer",
       "module": "backend",
@@ -13636,6 +13732,22 @@
       "module": "backend",
       "description": "No documentation",
       "link": "backend/opengl.html#method-openglrenderer-set_blend_mode",
+      "is_method": true
+    },
+    {
+      "name": "__post_init__",
+      "class": "Transition",
+      "module": "backend",
+      "description": "Keep transition state safe even when callers provide bad values.",
+      "link": "backend/transition.html#method-transition-__post_init__",
+      "is_method": true
+    },
+    {
+      "name": "eased_progress",
+      "class": "Transition",
+      "module": "backend",
+      "description": "Smooth-step progress for less abrupt movement and fades.",
+      "link": "backend/transition.html#method-transition-eased_progress",
       "is_method": true
     },
     {
@@ -14280,6 +14392,38 @@
     },
     {
       "name": "__init__",
+      "class": "StorageOverlay",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-storageoverlay-__init__",
+      "is_method": true
+    },
+    {
+      "name": "refresh",
+      "class": "StorageOverlay",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-storageoverlay-refresh",
+      "is_method": true
+    },
+    {
+      "name": "render_content",
+      "class": "StorageOverlay",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-storageoverlay-render_content",
+      "is_method": true
+    },
+    {
+      "name": "_human_size",
+      "class": "StorageOverlay",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-storageoverlay-_human_size",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
       "class": "ConsoleLogManager",
       "module": "misc",
       "description": "No documentation",
@@ -14548,6 +14692,46 @@
       "module": "misc",
       "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-_update_tasks_view",
+      "is_method": true
+    },
+    {
+      "name": "_setup_storage_tab",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "Create the Storage tab with sub-tabs for Atlas, Savedata, and Encryption.",
+      "link": "misc/debug.html#method-liveinspector-_setup_storage_tab",
+      "is_method": true
+    },
+    {
+      "name": "_update_storage_tab",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "Update the Storage tab views (called every frame when visible).",
+      "link": "misc/debug.html#method-liveinspector-_update_storage_tab",
+      "is_method": true
+    },
+    {
+      "name": "_update_atlas_view",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "Update the Atlas sub-tab content.",
+      "link": "misc/debug.html#method-liveinspector-_update_atlas_view",
+      "is_method": true
+    },
+    {
+      "name": "_update_savedata_view",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "Update the Savedata sub-tab content.",
+      "link": "misc/debug.html#method-liveinspector-_update_savedata_view",
+      "is_method": true
+    },
+    {
+      "name": "_update_encryption_view",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "Update the Encryption sub-tab content.",
+      "link": "misc/debug.html#method-liveinspector-_update_encryption_view",
       "is_method": true
     },
     {
@@ -15039,6 +15223,366 @@
       "is_method": true
     },
     {
+      "name": "AUDIO",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-audio",
+      "is_method": true
+    },
+    {
+      "name": "CALENDAR",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-calendar",
+      "is_method": true
+    },
+    {
+      "name": "CLOCK",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-clock",
+      "is_method": true
+    },
+    {
+      "name": "CLOUD",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-cloud",
+      "is_method": true
+    },
+    {
+      "name": "DATABASE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-database",
+      "is_method": true
+    },
+    {
+      "name": "BRAIN",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-brain",
+      "is_method": true
+    },
+    {
+      "name": "LINK",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-link",
+      "is_method": true
+    },
+    {
+      "name": "LOCATION",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-location",
+      "is_method": true
+    },
+    {
+      "name": "MICROPHONE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-microphone",
+      "is_method": true
+    },
+    {
+      "name": "MUTE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-mute",
+      "is_method": true
+    },
+    {
+      "name": "UNMUTE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-unmute",
+      "is_method": true
+    },
+    {
+      "name": "PYTHON",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-python",
+      "is_method": true
+    },
+    {
+      "name": "SYNCHRONIZE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-synchronize",
+      "is_method": true
+    },
+    {
+      "name": "CAMERA",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-camera",
+      "is_method": true
+    },
+    {
+      "name": "WIFI",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-wifi",
+      "is_method": true
+    },
+    {
+      "name": "TRASH",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-trash",
+      "is_method": true
+    },
+    {
+      "name": "UNDO",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-undo",
+      "is_method": true
+    },
+    {
+      "name": "REDO",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-redo",
+      "is_method": true
+    },
+    {
+      "name": "CUBE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-cube",
+      "is_method": true
+    },
+    {
+      "name": "SPHERE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-sphere",
+      "is_method": true
+    },
+    {
+      "name": "ROCKET",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-rocket",
+      "is_method": true
+    },
+    {
+      "name": "NOTIFICATION",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-notification",
+      "is_method": true
+    },
+    {
+      "name": "DIALOG",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-dialog",
+      "is_method": true
+    },
+    {
+      "name": "CONTROLLER",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-controller",
+      "is_method": true
+    },
+    {
+      "name": "HIDE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-hide",
+      "is_method": true
+    },
+    {
+      "name": "SHOW",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-show",
+      "is_method": true
+    },
+    {
+      "name": "RANKING",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-ranking",
+      "is_method": true
+    },
+    {
+      "name": "ICONS",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-icons",
+      "is_method": true
+    },
+    {
+      "name": "SELECTION",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-selection",
+      "is_method": true
+    },
+    {
+      "name": "PUZZLE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-puzzle",
+      "is_method": true
+    },
+    {
+      "name": "LIGHT",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-light",
+      "is_method": true
+    },
+    {
+      "name": "ID",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-id",
+      "is_method": true
+    },
+    {
+      "name": "CARD",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-card",
+      "is_method": true
+    },
+    {
+      "name": "TARGET",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-target",
+      "is_method": true
+    },
+    {
+      "name": "AIM",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-aim",
+      "is_method": true
+    },
+    {
+      "name": "CLICK",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-click",
+      "is_method": true
+    },
+    {
+      "name": "DEBUG",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-debug",
+      "is_method": true
+    },
+    {
+      "name": "ANVIL",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-anvil",
+      "is_method": true
+    },
+    {
+      "name": "TIMER",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-timer",
+      "is_method": true
+    },
+    {
+      "name": "TIMER",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-timer",
+      "is_method": true
+    },
+    {
+      "name": "PI",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-pi",
+      "is_method": true
+    },
+    {
+      "name": "OPTIONS",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-options",
+      "is_method": true
+    },
+    {
+      "name": "PLANE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-plane",
+      "is_method": true
+    },
+    {
+      "name": "DOCUMENTATION",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-documentation",
+      "is_method": true
+    },
+    {
+      "name": "FIRE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-fire",
+      "is_method": true
+    },
+    {
       "name": "get_icon",
       "class": "Icons",
       "module": "misc",
@@ -15167,11 +15711,59 @@
       "is_method": true
     },
     {
+      "name": "set_root",
+      "class": "Atlas",
+      "module": "storage",
+      "description": "No documentation",
+      "link": "storage/atlas.html#method-atlas-set_root",
+      "is_method": true
+    },
+    {
+      "name": "add_alias",
+      "class": "Atlas",
+      "module": "storage",
+      "description": "Register a virtual path prefix, e.g. ``assets/player.png``.",
+      "link": "storage/atlas.html#method-atlas-add_alias",
+      "is_method": true
+    },
+    {
+      "name": "remove_alias",
+      "class": "Atlas",
+      "module": "storage",
+      "description": "No documentation",
+      "link": "storage/atlas.html#method-atlas-remove_alias",
+      "is_method": true
+    },
+    {
+      "name": "get_alias_path",
+      "class": "Atlas",
+      "module": "storage",
+      "description": "No documentation",
+      "link": "storage/atlas.html#method-atlas-get_alias_path",
+      "is_method": true
+    },
+    {
+      "name": "list_aliases",
+      "class": "Atlas",
+      "module": "storage",
+      "description": "No documentation",
+      "link": "storage/atlas.html#method-atlas-list_aliases",
+      "is_method": true
+    },
+    {
       "name": "guess_category_from_path",
       "class": "Atlas",
       "module": "storage",
       "description": "No documentation",
       "link": "storage/atlas.html#method-atlas-guess_category_from_path",
+      "is_method": true
+    },
+    {
+      "name": "_resolve_resource_path",
+      "class": "Atlas",
+      "module": "storage",
+      "description": "No documentation",
+      "link": "storage/atlas.html#method-atlas-_resolve_resource_path",
       "is_method": true
     },
     {
@@ -15527,6 +16119,14 @@
       "is_method": true
     },
     {
+      "name": "get_all",
+      "class": "Query",
+      "module": "storage",
+      "description": "Shortcut to execute the query and return all matching rows.",
+      "link": "storage/savedata.html#method-query-get_all",
+      "is_method": true
+    },
+    {
       "name": "execute",
       "class": "Query",
       "module": "storage",
@@ -15721,6 +16321,12 @@
   ],
   "examples": [
     {
+      "name": "Font Sizes",
+      "file": "font_sizes.py",
+      "link": "examples/font_sizes.html",
+      "type": "example"
+    },
+    {
       "name": "Multiplayer Demo",
       "file": "multiplayer_demo.py",
       "link": "examples/multiplayer_demo.html",
@@ -15733,9 +16339,27 @@
       "type": "example"
     },
     {
+      "name": "Scenes Transitions Demo",
+      "file": "scenes_transitions_demo.py",
+      "link": "examples/scenes_transitions_demo.html",
+      "type": "example"
+    },
+    {
+      "name": "Shapes Styling Demo",
+      "file": "shapes_styling_demo.py",
+      "link": "examples/shapes_styling_demo.html",
+      "type": "example"
+    },
+    {
       "name": "Snake Demo",
       "file": "snake_demo.py",
       "link": "examples/snake_demo.html",
+      "type": "example"
+    },
+    {
+      "name": "Timer Demo",
+      "file": "timer_demo.py",
+      "link": "examples/timer_demo.html",
       "type": "example"
     },
     {
@@ -15745,5 +16369,5 @@
       "type": "example"
     }
   ],
-  "last_updated": "2026-08-17T22:16:46.413360"
+  "last_updated": "2026-09-14T16:30:18.044333"
 }

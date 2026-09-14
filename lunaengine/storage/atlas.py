@@ -44,11 +44,48 @@ class Atlas:
     def __init__(self, root_path: Optional[Union[str, Path]] = None):
         self.root_path = Path(root_path).resolve() if root_path else Path(os.path.dirname(os.path.abspath(__file__)))
         self.atlas: Dict[str, AtlasItem] = {}
+        self.aliases: Dict[str, Path] = {"root": self.root_path}
         # Bundle state
         self._bundle_path: Optional[Path] = None
         self._bundle_data: Dict[str, bytes] = {}
         self._use_bundle: bool = False
         self._bundle_manifest: Optional[dict] = None
+
+    def set_root(self, root: Union[str, Path, AtlasItem]):
+        if isinstance(root, AtlasItem):
+            self.root_path = root.path.parent
+        else:
+            self.root_path = Path(root).resolve()
+        self.aliases["root"] = self.root_path
+
+    def add_alias(self, alias: str, path: Union[str, Path, AtlasItem]) -> Path:
+        """Register a virtual path prefix, e.g. ``assets/player.png``."""
+        alias = str(alias).strip().strip("/\\").lower()
+        if not alias or "/" in alias or "\\" in alias:
+            raise ValueError("Alias must be a non-empty single path component")
+        if isinstance(path, AtlasItem):
+            resolved = path.path
+        else:
+            resolved = Path(path)
+            if not resolved.is_absolute():
+                resolved = self.root_path / resolved
+            resolved = resolved.resolve()
+        if not resolved.exists() or not resolved.is_dir():
+            raise NotADirectoryError(f"Atlas alias path is not a directory: {resolved}")
+        self.aliases[alias] = resolved
+        return resolved
+
+    def remove_alias(self, alias: str) -> None:
+        alias = str(alias).lower()
+        if alias == "root":
+            raise ValueError("The root alias cannot be removed")
+        self.aliases.pop(alias, None)
+
+    def get_alias_path(self, alias: str = "root") -> Optional[Path]:
+        return self.aliases.get(str(alias).lower())
+
+    def list_aliases(self) -> Dict[str, Path]:
+        return dict(self.aliases)
 
     @staticmethod
     def guess_category_from_path(path: Union[Path, str]) -> AtlasCategory:
@@ -61,6 +98,22 @@ class Atlas:
                 return cat
         return AtlasCategory.UNKNOWN
 
+    def _resolve_resource_path(self, path: Path) -> Path:
+        if path.is_absolute():
+            return path.resolve()
+        parts = path.parts
+        if parts:
+            first = parts[0]
+            alias_path = self.aliases.get(first.lower())
+            if alias_path is not None:
+                return (alias_path / Path(*parts[1:])).resolve()
+            if first == self.root_path.name:
+                # Strip the virtual root prefix and resolve relative to the real root
+                stripped = Path(*parts[1:])
+                return (self.root_path / stripped).resolve()
+        # Fallback: treat as relative to root
+        return (self.root_path / path).resolve()
+
     def add_to_atlas(
         self,
         name: str,
@@ -70,7 +123,8 @@ class Atlas:
         auto_detect: bool = True,
         validate: bool = True
     ) -> AtlasItem:
-        path = Path(path).resolve()
+        path = self._resolve_resource_path(Path(path))
+
         if category is None:
             category = self.guess_category_from_path(path) if auto_detect else AtlasCategory.UNKNOWN
         item = AtlasItem(name, path, category, validate=validate)
@@ -78,7 +132,18 @@ class Atlas:
         return item
 
     def get_item(self, name: str) -> Optional[AtlasItem]:
-        return self.atlas.get(name)
+        item = self.atlas.get(name)
+        if item is not None:
+            return item
+        # Also allow lookup by an aliased path, such as assets/player.png.
+        try:
+            resolved = self._resolve_resource_path(Path(name))
+        except (TypeError, ValueError):
+            return None
+        for candidate in self.atlas.values():
+            if candidate.path == resolved:
+                return candidate
+        return None
 
     def get_bytes(self, name: str) -> Optional[bytes]:
         if self._use_bundle:
@@ -105,7 +170,9 @@ class Atlas:
         return self.add_to_atlas(name, path, AtlasCategory.DATASTORE)
 
     def add_folder(self, name: str, path: Union[str, Path]) -> AtlasItem:
-        return self.add_to_atlas(name, path, AtlasCategory.FOLDER)
+        item = self.add_to_atlas(name, path, AtlasCategory.FOLDER)
+        self.add_alias(name, item.path)
+        return item
 
     # ----------------------------------------------------------------------
     # Bundle creation

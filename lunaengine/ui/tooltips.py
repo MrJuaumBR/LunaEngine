@@ -9,7 +9,7 @@ import pygame
 from typing import Optional, Tuple, List, Dict
 from enum import Enum
 from .elements import UIElement, UIState
-from .themes import ThemeManager, ThemeType
+from .themes import ThemeManager, ThemeType, ThemeKey
 from ..backend.types import InputState
 
 class TooltipConfig:
@@ -228,6 +228,11 @@ class Tooltip(UIElement):
         self.x = x
         self.y = y
     
+    def update_theme(self, theme_type: ThemeType):
+        """Update the tooltip's theme."""
+        self.theme_type = theme_type
+        self._calculate_size()
+    
     def render(self, renderer):
         """Render tooltip using OpenGL backend"""
         if not self._visible:
@@ -235,16 +240,10 @@ class Tooltip(UIElement):
         actual_x, actual_y = self.get_actual_position()
         theme = ThemeManager.get_theme(self.theme_type)
         
-        # Draw border
-        if theme.tooltip_border:
-            renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
-                             theme.tooltip_border.color, fill=False, border_width=1,
-                             corner_radius=self.config.corner_radius)
-        
         # Draw background (simplified rectangle for OpenGL)
         renderer.draw_rect(actual_x, actual_y, self.width, self.height, 
                          theme.tooltip_background.color,
-                         corner_radius=self.config.corner_radius)
+                         corner_radius=self.config.corner_radius, border_width=1.5 if theme.tooltip_border else 0, border_color=theme.tooltip_border.color or None)
         
         # Draw wrapped text
         self._render_wrapped_text(renderer, actual_x, actual_y, theme)
@@ -307,6 +306,12 @@ class UITooltipManager:
         """
         if element.element_id in cls._tooltips:
             del cls._tooltips[element.element_id]
+    
+    @classmethod
+    def update_all_themes(cls, theme_type: ThemeType|ThemeKey):
+        """Update all registered tooltips to the new theme."""
+        for tooltip in cls._tooltips.values():
+            tooltip.update_theme(theme_type)
     
     @classmethod
     def update(cls, engine: 'LunaEngine', dt: float):

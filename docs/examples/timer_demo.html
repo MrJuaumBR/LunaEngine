@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer Demo - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (Ctrl+K)">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="../examples/index.html">Examples Hub</a></li><li class="breadcrumb-item active">General</li><li class="breadcrumb-item active">Timer Demo</li></ol></nav>
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Timer Demo</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>timer_demo.py</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">&quot;&quot;&quot;
+timer_demo.py - Timer System Demo for LunaEngine
+
+This demo demonstrates the integrated timer system accessible via the engine.
+It shows:
+- Adding one-shot and repeating timers
+- Pausing/resuming timers
+- Resetting timers
+- Removing/destroying timers
+- Anonymous timers
+- Live display of timer status (elapsed, remaining, done)
+- Global timer controls (pause all, resume all, clear all)
+- Notifications on timer completion
+&quot;&quot;&quot;
+
+import sys
+import os
+import time
+# sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), &#x27;..&#x27;))
+
+from lunaengine.ui import *
+from lunaengine.core import LunaEngine, Scene
+from lunaengine.misc.icons import Icons
+from lunaengine.backend import *
+
+
+class TimerDemoScene(Scene):
+    def __init__(self, engine: LunaEngine):
+        super().__init__(engine)
+        # Store references to timer UI entries: name -&gt; dict of UI elements
+        self.timer_ui_entries = {}
+        self.timer_ui_frames = []  # list of frames for scrolling
+
+        # Global controls
+        self.paused_all = False
+        self.timer_list_updated = True  # flag to rebuild list
+
+        # Setup the UI
+        self.setup_ui()
+
+        # Add a convenience function to LiveInspector
+        self.engine.add_function_to_live_inspector(
+            &#x27;List Timers&#x27;,
+            lambda: print(f&quot;Active timers: {self.engine.get_all_timers()}&quot;),
+            [],
+            &#x27;Prints all active timer names to console.&#x27;
+        )
+
+    def on_enter(self, previous_scene: str | None = None):
+        print(&quot;=== Timer Demo ===&quot;)
+        print(&quot;Use the controls to add, manage, and monitor timers.&quot;)
+        print(&quot;Timers fire notifications upon completion.&quot;)
+
+    def on_exit(self, next_scene: str | None = None):
+        # Clean up all timers
+        self.engine.clear_timers()
+        print(&quot;All timers cleared.&quot;)
+
+    def setup_ui(self):
+        &quot;&quot;&quot;Build the UI for the timer demo.&quot;&quot;&quot;
+        self.engine.set_global_theme(ThemeType.DEFAULT)
+
+        # --- Title ---
+        title = TextLabel(512, 30, &quot;LunaEngine - Timer Demo&quot;, 36, pivot=(0.5, 0))
+        self.add_ui_element(title)
+
+        # --- Main Frame ---
+        main_frame = UiFrame(20, 70, 984, 680)
+        main_frame.set_background_color((30, 30, 40, 200))
+        main_frame.set_border((80, 80, 100), 1)
+        main_frame.set_corner_radius(8)
+        self.add_ui_element(main_frame)
+
+        # --- Add Timer Controls ---
+        controls_y = 20
+
+        # Duration label + input
+        duration_label = TextLabel(20, controls_y + 5, &quot;Duration (s):&quot;, 16, (200, 200, 255))
+        main_frame.add_child(duration_label)
+        self.duration_selector = NumberSelector(105, controls_y, 80, 30, 1, 60, 5, step=1)
+        self.duration_selector.set_simple_tooltip(&quot;Timer duration in seconds&quot;)
+        main_frame.add_child(self.duration_selector)
+
+        # Repeating checkbox
+        self.repeating_checkbox = Checkbox(195, controls_y + 2, 120, 30, False, label=&quot;Repeating&quot;)
+        self.repeating_checkbox.set_simple_tooltip(&quot;If checked, timer will repeat indefinitely&quot;)
+        main_frame.add_child(self.repeating_checkbox)
+
+        # Add Timer button
+        add_btn = Button(325, controls_y, 125, 30, &quot;Add Timer&quot;, icon=Icons.PLUS)
+        add_btn.set_on_click(self.add_timer)
+        add_btn.set_simple_tooltip(&quot;Add a timer with the specified duration&quot;)
+        main_frame.add_child(add_btn)
+
+        # Add Anonymous Timer button
+        anon_btn = Button(460, controls_y, 140, 30, &quot;Add Anonymous&quot;)
+        anon_btn.set_on_click(self.add_anonymous_timer)
+        anon_btn.set_simple_tooltip(&quot;Add a timer with an auto-generated name&quot;)
+        main_frame.add_child(anon_btn)
+
+        # Global controls
+        pause_all_btn = Button(620, controls_y, 100, 30, &quot;Pause All&quot;)
+        pause_all_btn.set_on_click(self.pause_all_timers)
+        main_frame.add_child(pause_all_btn)
+
+        resume_all_btn = Button(730, controls_y, 100, 30, &quot;Resume All&quot;)
+        resume_all_btn.set_on_click(self.resume_all_timers)
+        main_frame.add_child(resume_all_btn)
+
+        clear_all_btn = Button(840, controls_y, 80, 30, &quot;Clear&quot;, icon=Icons.TRASH)
+        clear_all_btn.set_on_click(self.clear_all_timers)
+        clear_all_btn.set_simple_tooltip(&quot;Remove all timers&quot;)
+        main_frame.add_child(clear_all_btn)
+
+        # --- Scrolling Frame for Timer List ---
+        self.timer_scroll = ScrollingFrame(20, 70, 944, 580, 920, 1200)
+        self.timer_scroll.set_simple_tooltip(&quot;List of active timers - scroll to see all&quot;)
+        main_frame.add_child(self.timer_scroll)
+
+        # Initial placeholder
+        self.placeholder = TextLabel(10, 10, &quot;No timers active. Use the &#x27;Add Timer&#x27; button above.&quot;, 18, (150, 150, 150))
+        self.timer_scroll.add_child(self.placeholder)
+
+        # --- Bottom status ---
+        self.status_label = TextLabel(20, 660, &quot;Ready&quot;, 14, (200, 200, 200))
+        main_frame.add_child(self.status_label)
+
+        # --- FPS and other info (optional) ---
+        self.fps_display = TextLabel(self.engine.width - 10, 20, &quot;FPS: --&quot;, 14, (100, 255, 100), pivot=(1, 0))
+        self.add_ui_element(self.fps_display)
+
+    def add_timer(self):
+        &quot;&quot;&quot;Add a timer with the specified duration and repeating option.&quot;&quot;&quot;
+        duration = self.duration_selector.value
+        repeats = self.repeating_checkbox.value
+        name = f&quot;timer_{int(time.time() * 1000)}_{len(self.engine.get_all_timers())}&quot;
+
+        # Define a callback that shows a notification
+        def on_timer_done(timer_name):
+            self.engine.show_success(f&quot;Timer &#x27;{timer_name}&#x27; completed!&quot;, duration=2.0)
+            # The UI will refresh automatically in update()
+
+        success = self.engine.add_timer(name, duration, on_timer_done, callback_args=(name,), repeats=repeats)
+        if success:
+            self.engine.show_info(f&quot;Timer &#x27;{name}&#x27; added ({duration}s, repeats={repeats})&quot;)
+            self.status_label.set_text(f&quot;Added timer: {name}&quot;)
+            self.timer_list_updated = True
+        else:
+            self.engine.show_error(f&quot;Could not add timer &#x27;{name}&#x27;. It may already exist.&quot;)
+
+    def add_anonymous_timer(self):
+        &quot;&quot;&quot;Add a timer with an auto-generated name.&quot;&quot;&quot;
+        duration = self.duration_selector.value
+        repeats = self.repeating_checkbox.value
+
+        def on_timer_done():
+            self.engine.show_success(&quot;An anonymous timer completed!&quot;, duration=2.0)
+
+        name = self.engine.add_anonymous_timer(duration, on_timer_done, repeats=repeats)
+        self.engine.show_info(f&quot;Anonymous timer &#x27;{name}&#x27; added ({duration}s, repeats={repeats})&quot;)
+        self.status_label.set_text(f&quot;Added anonymous timer: {name}&quot;)
+        self.timer_list_updated = True
+
+    def pause_all_timers(self):
+        &quot;&quot;&quot;Pause all timers.&quot;&quot;&quot;
+        # We need to get all timer names and pause each
+        for name in self.engine.get_all_timers():
+            self.engine.pause_timer(name)
+        self.engine.show_info(&quot;All timers paused&quot;)
+        self.status_label.set_text(&quot;All timers paused&quot;)
+        self.timer_list_updated = True
+
+    def resume_all_timers(self):
+        &quot;&quot;&quot;Resume all timers.&quot;&quot;&quot;
+        for name in self.engine.get_all_timers():
+            self.engine.resume_timer(name)
+        self.engine.show_info(&quot;All timers resumed&quot;)
+        self.status_label.set_text(&quot;All timers resumed&quot;)
+        self.timer_list_updated = True
+
+    def clear_all_timers(self):
+        &quot;&quot;&quot;Remove all timers.&quot;&quot;&quot;
+        self.engine.clear_timers()
+        self.engine.show_info(&quot;All timers cleared&quot;)
+        self.status_label.set_text(&quot;All timers cleared&quot;)
+        self.timer_list_updated = True
+
+    def rebuild_timer_list(self):
+        &quot;&quot;&quot;Rebuild the UI list of timers based on current engine timers.&quot;&quot;&quot;
+        # Clear existing UI entries
+        for frame in self.timer_ui_frames:
+            self.timer_scroll.remove_child(frame)
+        self.timer_ui_frames.clear()
+        self.timer_ui_entries.clear()
+
+        # Remove placeholder if exists
+        if self.placeholder in self.timer_scroll.children:
+            self.timer_scroll.remove_child(self.placeholder)
+
+        # Get all timers
+        timer_names = self.engine.get_all_timers()
+        if not timer_names:
+            # Re-add placeholder
+            self.timer_scroll.add_child(self.placeholder)
+            return
+
+        # Sort by name for consistency
+        timer_names.sort()
+
+        y_offset = 10
+        for idx, name in enumerate(timer_names):
+            # Create a frame for each timer
+            frame = UiFrame(10, y_offset, 900, 50)
+            frame.set_background_color((50, 50, 70, 200))
+            frame.set_border((80, 80, 120), 1)
+            frame.set_corner_radius(5)
+            self.timer_scroll.add_child(frame)
+            self.timer_ui_frames.append(frame)
+
+            # Timer name
+            name_label = TextLabel(10, 10, name, 16, (255, 255, 255))
+            frame.add_child(name_label)
+
+            # Duration
+            dur_label = TextLabel(175, 10, &quot;Duration: --&quot;, 14, (200, 200, 200))
+            frame.add_child(dur_label)
+
+            # Elapsed / Remaining
+            elapsed_label = TextLabel(270, 10, &quot;Elapsed: --&quot;, 14, (100, 255, 100))
+            frame.add_child(elapsed_label)
+
+            remaining_label = TextLabel(370, 10, &quot;Remaining: --&quot;, 14, (255, 200, 100))
+            frame.add_child(remaining_label)
+
+            # Status
+            status_label = TextLabel(470, 10, &quot;Status: --&quot;, 14, (200, 200, 200))
+            frame.add_child(status_label)
+
+            # Buttons
+            pause_btn = Button(570, 8, 60, 28, &quot;Pause&quot;)
+            pause_btn.set_on_click(lambda n=name: self.pause_timer(n))
+            pause_btn.set_simple_tooltip(f&quot;Pause timer &#x27;{name}&#x27;&quot;)
+            frame.add_child(pause_btn)
+
+            resume_btn = Button(645, 8, 60, 28, &quot;Resume&quot;)
+            resume_btn.set_on_click(lambda n=name: self.resume_timer(n))
+            resume_btn.set_simple_tooltip(f&quot;Resume timer &#x27;{name}&#x27;&quot;)
+            frame.add_child(resume_btn)
+
+            reset_btn = Button(720, 8, 60, 28, &quot;Reset&quot;)
+            reset_btn.set_on_click(lambda n=name: self.reset_timer(n))
+            reset_btn.set_simple_tooltip(f&quot;Reset timer &#x27;{name}&#x27;&quot;)
+            frame.add_child(reset_btn)
+
+            destroy_btn = Button(795, 8, 75, 32, &quot;Destroy&quot;, icon=Icons.TRASH)
+            destroy_btn.set_on_click(lambda n=name: self.destroy_timer(n))
+            destroy_btn.set_simple_tooltip(f&quot;Destroy timer &#x27;{name}&#x27;&quot;)
+            frame.add_child(destroy_btn)
+
+            # Store references for updating
+            self.timer_ui_entries[name] = {
+                &#x27;frame&#x27;: frame,
+                &#x27;duration_label&#x27;: dur_label,
+                &#x27;elapsed_label&#x27;: elapsed_label,
+                &#x27;remaining_label&#x27;: remaining_label,
+                &#x27;status_label&#x27;: status_label,
+                &#x27;pause_btn&#x27;: pause_btn,
+                &#x27;resume_btn&#x27;: resume_btn,
+                &#x27;reset_btn&#x27;: reset_btn,
+                &#x27;destroy_btn&#x27;: destroy_btn,
+            }
+
+            y_offset += 60
+
+        # Update scroll area content height
+        self.timer_scroll.content_height = y_offset + 20
+        self.timer_list_updated = False
+
+    def pause_timer(self, name: str):
+        if self.engine.pause_timer(name):
+            self.engine.show_info(f&quot;Timer &#x27;{name}&#x27; paused&quot;)
+            self.status_label.set_text(f&quot;Paused: {name}&quot;)
+        else:
+            self.engine.show_warning(f&quot;Could not pause &#x27;{name}&#x27;. Check if it exists or is already paused.&quot;)
+
+    def resume_timer(self, name: str):
+        if self.engine.resume_timer(name):
+            self.engine.show_info(f&quot;Timer &#x27;{name}&#x27; resumed&quot;)
+            self.status_label.set_text(f&quot;Resumed: {name}&quot;)
+        else:
+            self.engine.show_warning(f&quot;Could not resume &#x27;{name}&#x27;. Check if it exists or is not paused.&quot;)
+
+    def reset_timer(self, name: str):
+        if self.engine.reset_timer(name):
+            self.engine.show_info(f&quot;Timer &#x27;{name}&#x27; reset&quot;)
+            self.status_label.set_text(f&quot;Reset: {name}&quot;)
+        else:
+            self.engine.show_warning(f&quot;Could not reset &#x27;{name}&#x27;. Timer may not exist.&quot;)
+
+    def destroy_timer(self, name: str):
+        if self.engine.destroy_timer(name):
+            self.engine.show_info(f&quot;Timer &#x27;{name}&#x27; marked for destruction&quot;)
+            self.status_label.set_text(f&quot;Destroying: {name}&quot;)
+            self.timer_list_updated = True
+        else:
+            self.engine.show_warning(f&quot;Could not destroy &#x27;{name}&#x27;. Timer may not exist.&quot;)
+
+    def update_timer_list(self):
+        &quot;&quot;&quot;Update the labels of all timer entries with current data.&quot;&quot;&quot;
+        for name, entry in self.timer_ui_entries.items():
+            # Check if timer still exists
+            if not self.engine.timer_exists(name):
+                # Timer was removed/destroyed, flag for rebuild
+                self.timer_list_updated = True
+                continue
+            elapsed = self.engine.timer_elapsed(name)
+            remaining = self.engine.timer_remaining(name)
+            done = self.engine.timer_done(name)
+            paused = self.engine.timer_paused(name)
+
+            if elapsed is not None:
+                entry[&#x27;elapsed_label&#x27;].set_text(f&quot;Elapsed: {elapsed:.1f}s&quot;)
+            if remaining is not None:
+                entry[&#x27;remaining_label&#x27;].set_text(f&quot;Remaining: {remaining:.1f}s&quot;)
+
+            # Status
+            if done:
+                entry[&#x27;status_label&#x27;].set_text(&quot;Status: Done&quot;)
+                entry[&#x27;status_label&#x27;].set_color((255, 100, 100))
+            elif paused:
+                entry[&#x27;status_label&#x27;].set_text(&quot;Status: Paused&quot;)
+                entry[&#x27;status_label&#x27;].set_color((255, 200, 50))
+            else:
+                entry[&#x27;status_label&#x27;].set_text(&quot;Status: Running&quot;)
+                entry[&#x27;status_label&#x27;].set_color((100, 255, 100))
+
+            # Update button states
+            if paused:
+                entry[&#x27;pause_btn&#x27;].enabled = False
+                entry[&#x27;resume_btn&#x27;].enabled = True
+            else:
+                entry[&#x27;pause_btn&#x27;].enabled = True
+                entry[&#x27;resume_btn&#x27;].enabled = False
+
+    def update(self, dt):
+        # Update FPS
+        stats = self.engine.get_fps_stats()
+        self.fps_display.set_text(f&quot;FPS: {stats.get(&#x27;current_fps&#x27;, 0):.1f}&quot;)
+
+        # Rebuild timer list if needed
+        if self.timer_list_updated:
+            self.rebuild_timer_list()
+        else:
+            # Update existing entries
+            self.update_timer_list()
+
+        # Also check for new timers added via other means? We&#x27;ll just check count.
+        current_count = self.engine.get_timer_count()
+        if current_count != len(self.timer_ui_entries):
+            self.timer_list_updated = True
+
+    def render(self, renderer):
+        renderer.clear()
+        renderer.fill_screen(ThemeManager.get_color(&#x27;background&#x27;))
+
+
+def main():
+    # Create engine with debug enabled
+    engine = LunaEngine(&quot;LunaEngine - Timer Demo&quot;, 1024, 768, icon=Icons.TIMER, debug=True)
+    engine.fps = 60
+
+    # Add the scene
+    engine.add_scene(&quot;timer_demo&quot;, TimerDemoScene)
+    engine.set_scene(&quot;timer_demo&quot;)
+
+    engine.run()
+
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>timer_demo.py - Timer System Demo for LunaEngine</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="timer_demo.py" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-09-14 16:30
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // Compute relative path to root search.html
+                    const path = window.location.pathname;
+                    const parts = path.split('/').filter(p => p && p !== '');
+                    // Remove file part if present
+                    let dirParts = parts;
+                    if (dirParts.length > 0 && dirParts[dirParts.length - 1].includes('.')) {
+                        dirParts = dirParts.slice(0, -1);
+                    }
+                    // Number of levels to go up to reach the directory containing search.html
+                    const levels = Math.max(0, dirParts.length - 1);
+                    const searchPath = '../'.repeat(levels) + 'search.html';
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

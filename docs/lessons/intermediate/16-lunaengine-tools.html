@@ -52,7 +52,7 @@
                     <div class="card-body markdown-content">
                         # Lesson 16 – LunaEngine Tools
 
-LunaEngine comes with a suite of command‑line tools to help you manage themes, analyse your code, clear cache, and edit game databases. This lesson covers each tool in detail, including installation, usage, and common workflows.
+LunaEngine comes with a suite of command‑line tools to help you manage themes, analyse your code, clear cache, and edit game databases. This lesson covers each tool in detail, including installation, usage, and common workflows. All tools now support `--help` to display available options.
 
 ---
 
@@ -74,44 +74,48 @@ python -m lunaengine.tools.theme_tool <command> [options]
 
 #### `compile` – Merge themes into one file
 ```bash
-python -m lunaengine.tools.theme_tool compile [-i INPUT] [-o OUTPUT] [-c]
+python -m lunaengine.tools.theme_tool compile [-i INPUT] [-o OUTPUT] [-c] [-v]
 ```
 - `-i, --input` : folder containing individual theme JSONs (default: `lunaengine/assets/themes/`)
 - `-o, --output`: output file path (default: `lunaengine/themes.json`)
 - `-c, --compact`: produce minified JSON (no indentation)
+- `-v, --verbose`: show detailed progress
 
 **Example:**
 ```bash
-python -m lunaengine.tools.theme_tool compile -c
+python -m lunaengine.tools.theme_tool compile -c -v
 ```
-> This creates a compact `themes.json` from all themes in `assets/themes/`.
+> This compiles themes into a compact `themes.json` with verbose output.
 
 #### `uncompile` – Split themes.json into separate files
 ```bash
-python -m lunaengine.tools.theme_tool uncompile [-i INPUT] [-o OUTPUT] [-c]
+python -m lunaengine.tools.theme_tool uncompile [-i INPUT] [-o OUTPUT] [-c] [-v]
 ```
 - `-i, --input` : `themes.json` to split (default: `lunaengine/themes.json`)
 - `-o, --output`: folder where individual theme JSONs will be written (default: `lunaengine/assets/themes/`)
 - `-c, --compact`: produce compact JSON for each theme
+- `-v, --verbose`: show each file being written
 
 **Example:**
 ```bash
-python -m lunaengine.tools.theme_tool uncompile
+python -m lunaengine.tools.theme_tool uncompile -v
 ```
-> This recreates all individual theme files in `assets/themes/` from the combined `themes.json`.
+> This recreates all individual theme files in `assets/themes/` from the combined `themes.json` and lists each one.
 
 #### `fix-shadows` – Add/update shadow properties
 ```bash
-python -m lunaengine.tools.theme_tool fix-shadows [-i INPUT] [-o OUTPUT]
+python -m lunaengine.tools.theme_tool fix-shadows [-i INPUT] [-o OUTPUT] [--overwrite] [-v]
 ```
 - `-i, --input` : `themes.json` to modify (default: `lunaengine/themes.json`)
-- `-o, --output`: output file (if omitted, overwrites input)
+- `-o, --output`: output file (if not using `--overwrite`)
+- `--overwrite` : overwrite the input file directly (instead of writing to a different output)
+- `-v, --verbose`: show more details during processing
 
 **Example:**
 ```bash
-python -m lunaengine.tools.theme_tool fix-shadows -i themes.json -o themes_fixed.json
+python -m lunaengine.tools.theme_tool fix-shadows -i themes.json --overwrite
 ```
-> This walks through every style in every variant and adds a `shadow` object based on the theme’s mode (dark/light) and base colour.
+> This updates the shadow properties in place.
 
 ### Workflow Example
 1. Edit a theme JSON manually in `assets/themes/`.
@@ -121,7 +125,7 @@ python -m lunaengine.tools.theme_tool fix-shadows -i themes.json -o themes_fixed
    ```
 3. (Optional) Fix shadows after changing colours:
    ```bash
-   python -m lunaengine.tools.theme_tool fix-shadows
+   python -m lunaengine.tools.theme_tool fix-shadows --overwrite
    ```
 
 ---
@@ -137,29 +141,40 @@ lunaengine/tools/code_stats.py
 
 ### Usage
 ```bash
-python -m lunaengine.tools.code_stats
+python -m lunaengine.tools.code_stats [options]
 ```
 
-No arguments needed – it automatically scans the parent directory of `tools/` (the project root).
+### Options
+- `--json` : output statistics as JSON instead of the formatted console report.
+- `-o, --output FILE` : if `--json` is used, write JSON to this file (otherwise prints to stdout).
+- `--no-structure` : exclude the project structure tree from the output (works with `--json`).
+- `--no-markdown` : prevent generation of the `CODE_STATISTICS.md` report (default: generates it).
 
-### Output
-- **Console** – prints a summary with:
-  - Overall lines (total, code, comments, blank)
-  - Theme statistics (number of themes, variants)
-  - UI element count
-  - Files by extension and directory
-  - 10 largest files and most commented files
-  - Project structure tree
-  - Code density rating
+### Output Modes
 
-- **Markdown report** – saved as `CODE_STATISTICS.md` in the project root, containing all statistics in a structured table format.
-
-### Example
+#### Default (console + Markdown)
 ```bash
 python -m lunaengine.tools.code_stats
 ```
+Prints a summary and creates `CODE_STATISTICS.md` in the project root.
 
-**Sample console output:**
+#### JSON Output
+```bash
+python -m lunaengine.tools.code_stats --json
+```
+Prints the complete statistics dictionary as JSON.
+
+To save to a file:
+```bash
+python -m lunaengine.tools.code_stats --json --output stats.json
+```
+
+To omit the file tree:
+```bash
+python -m lunaengine.tools.code_stats --json --no-structure
+```
+
+### Sample Console Output (truncated)
 ```
 ============================================================
 LUNAENGINE CODE STATISTICS
@@ -180,9 +195,7 @@ LUNAENGINE CODE STATISTICS
 📁 FILES BY EXTENSION:
    .py      57 files (93.4%)
    .md       1 files ( 1.6%)
-   .frag     1 files ( 1.6%)
-   .geom     1 files ( 1.6%)
-   .vert     1 files ( 1.6%)
+   ...
 
 🌳 PROJECT STRUCTURE:
 [ROT] LunaEngine/
@@ -190,12 +203,10 @@ LUNAENGINE CODE STATISTICS
 │   ├── [DIR] icons/
 │   └── [DIR] shaders/
 │       ├── [SHD] shaders.frag
-│       ├── [SHD] shaders.geom
-│       └── [SHD] shaders.vert
 ...
 ```
 
-> 📄 Detailed report saved to: CODE_STATISTICS.md
+> 📄 Detailed report also saved to: CODE_STATISTICS.md
 
 ---
 
@@ -210,17 +221,32 @@ lunaengine/tools/clear_pycache.py
 
 ### Usage
 ```bash
+python -m lunaengine.tools.clear_pycache [--path DIR] [--dry-run] [-v]
+```
+
+### Options
+- `--path DIR` : root directory to start searching (default: the project root, i.e., parent of `tools/`).
+- `--dry-run` : preview which directories would be removed without actually deleting them.
+- `-v, --verbose` : show each removal (same as default behaviour; kept for consistency).
+
+### Examples
+
+**Clean the entire project:**
+```bash
 python -m lunaengine.tools.clear_pycache
 ```
 
-It walks through every subdirectory of the project root and removes any folder named `__pycache__`.
-
-**Example output:**
+**Test what would be removed in a subfolder:**
+```bash
+python -m lunaengine.tools.clear_pycache --path ./lunaengine --dry-run
 ```
-Removing ...\LunaEngine\lunaengine\__pycache__
-Removing ...\LunaEngine\lunaengine\backend\__pycache__
+
+**Output:**
+```
+[DRY RUN] Would remove .../LunaEngine/lunaengine/__pycache__
+[DRY RUN] Would remove .../LunaEngine/lunaengine/backend/__pycache__
 ...
-Total items removed: 27
+Total __pycache__ directories removed: 27
 ```
 
 ---
@@ -239,8 +265,19 @@ lunaengine/tools/database_editor.py
 
 ### Basic Usage
 ```bash
-python -m lunaengine.tools.database_editor [--savedata FILE] [--atlas-bundle FILE] [--encryption-key KEY] [--no-ui] [--host HOST] [--port PORT] [COMMANDS]
+python -m lunaengine.tools.database_editor [--savedata FILE] [--atlas-bundle FILE] [--encryption-key KEY] [--no-ui] [--host HOST] [--port PORT] [--debug] [--no-browser] [COMMANDS]
 ```
+
+### General Options
+- `--savedata FILE` : path to the `.sav` file to load.
+- `--atlas-bundle FILE` : path to an Atlas bundle (`.res`).
+- `--atlas-root DIR` : root directory for file‑based Atlas (alternative to bundle).
+- `--encryption-key KEY` : encryption key for savedata/atlas (if needed).
+- `--no-ui` : run only CLI commands (no Flask server).
+- `--host HOST` : bind address (default `127.0.0.1`).
+- `--port PORT` : port for the web UI (default `5000`).
+- `--debug` : enable Flask debug mode (auto‑reload on changes).
+- `--no-browser` : prevent automatic opening of the browser when the UI starts.
 
 ### CLI Commands
 
@@ -258,11 +295,11 @@ python -m lunaengine.tools.database_editor [--savedata FILE] [--atlas-bundle FIL
 
 ### Web UI (Flask)
 
-If Flask is installed, running the editor without `--no-ui` launches a browser-based interface:
+If Flask is installed, running the editor without `--no-ui` launches a browser‑based interface:
 ```bash
-python -m lunaengine.tools.database_editor --savedata game.sav --atlas-bundle assets.res
+python -m lunaengine.tools.database_editor --savedata game.sav --atlas-bundle assets.res --debug
 ```
-Then open `http://127.0.0.1:5000`. The UI allows you to:
+Then open `http://127.0.0.1:5000` (or it opens automatically unless `--no-browser` is used). The UI allows you to:
 - Browse and edit tables (insert, update, delete rows)
 - Upload a `.sav` file directly
 - Export/import JSON
@@ -333,32 +370,145 @@ python -m lunaengine.tools.database_editor --atlas-bundle assets.res --extract-r
 
 ---
 
+## 5. File Tree Exporter (`file_tree.py`)
+
+This tool generates a text‑based tree of the project’s file and folder structure, with sensible exclusions for development artefacts (cache, version control, compiled files). It’s designed to give LLMs, AI assistants, or documentation a clear, human‑readable snapshot of your repository layout.
+
+### Location
+```
+lunaengine/tools/file_tree.py
+```
+
+### Usage
+```bash
+python -m lunaengine.tools.file_tree [options]
+```
+
+### Options
+- `--path DIR` : root directory to start from (default: project root, i.e., parent of `tools/`).
+- `--output FILE` : write the tree to a file instead of stdout.
+- `--depth N` : limit traversal to `N` levels deep (`-1` means unlimited, default).
+- `--ignore-dirs DIR1 DIR2 ...` : additional directory names to ignore (space separated). Defaults: `__pycache__ .git build dist venv env .vscode .idea`
+- `--ignore-files PATTERN1 PATTERN2 ...` : additional file patterns (glob‑style) to ignore. Defaults: `*.pyc *.pyo *.pyd *.so *.dll`
+- `--no-default-ignore` : disable the default ignore lists and only use custom ones.
+
+### Examples
+
+**Basic tree of the whole project:**
+```bash
+python -m lunaengine.tools.file_tree
+```
+Output (excerpt):
+```
+\LunaEngine\lunaengine/
+├── assets/
+│   ├── icons/
+│   │   ├── ...
+│   ├── shaders/
+│   │   └── ...
+│   ├── themes/
+│   │   └── ...
+│   └── lunaengine-icon.png
+├── backend/
+│   ├── __init__.py
+│   ├── controller.py
+│   ├── exceptions.py
+│   ├── network.py
+│   ├── openal.py
+│   ├── opengl.py
+│   └── types.py
+├── core/
+│   ├── __init__.py
+│   ├── audio.py
+│   ├── engine.py
+│   ├── renderer.py
+│   ├── scene.py
+│   └── window.py
+├── graphics/
+│   ├── __init__.py
+│   ├── camera.py
+│   ├── paperdoll.py
+│   ├── particles.py
+│   ├── shadows.py
+│   └── spritesheet.py
+├── misc/
+│   ├── __init__.py
+│   ├── debug.py
+│   └── icons.py
+├── storage/
+│   ├── __init__.py
+│   ├── atlas.py
+│   ├── encrypter.py
+│   └── savedata.py
+├── tools/
+│   ├── __init__.py
+│   ├── clear_pycache.py
+│   ├── code_stats.py
+│   ├── database_editor.py
+│   ├── file_tree.py
+│   └── theme_tool.py
+├── ui/
+│   ├── elements/
+│   │   ├── ...
+│   ├── __init__.py
+│   ├── layer_manager.py
+│   ├── layout.py
+│   ├── notifications.py
+│   ├── styles.py
+│   ├── themes.py
+│   ├── tooltips.py
+│   └── tween.py
+├── utils/
+│   ├── __init__.py
+│   ├── image_converter.py
+│   ├── math_utils.py
+│   ├── performance.py
+│   ├── threading.py
+│   └── timer.py
+├── __init__.py
+└── CODE_STATISTICS.md
+```
+
+**Limit depth and save to file:**
+```bash
+python -m lunaengine.tools.file_tree --depth 2 --output project_tree.txt
+```
+
+**Ignore additional folders (e.g., `docs/` and `tests/`):**
+```bash
+python -m lunaengine.tools.file_tree --ignore-dirs docs tests
+```
+
+**Use only custom ignores (no defaults):**
+```bash
+python -m lunaengine.tools.file_tree --no-default-ignore --ignore-dirs build
+```
+
+---
+
 ## Summary
 
-| Tool | Purpose | Optional Dependencies |
-|------|---------|-----------------------|
-| `theme_tool.py` | Manage themes (compile/uncompile/fix shadows) | None |
-| `code_stats.py` | Generate project code statistics | None |
-| `clear_pycache.py` | Remove Python cache files | None |
-| `database_editor.py` | Edit Savedata and Atlas bundles | Flask (for web UI) |
+| Tool | Purpose | Key New Options |
+|------|---------|----------------|
+| `theme_tool.py` | Manage themes (compile/uncompile/fix shadows) | `--verbose`, `--overwrite` |
+| `code_stats.py` | Generate project code statistics | `--json`, `--output`, `--no-structure`, `--no-markdown` |
+| `clear_pycache.py` | Remove Python cache files | `--path`, `--dry-run` |
+| `database_editor.py` | Edit Savedata and Atlas bundles | `--debug`, `--no-browser` |
+| `file_tree.py` | Export a text‑based file tree | `--depth`, `--output`, `--ignore-dirs`, `--ignore-files` |
 
-All tools are located in the `lunaengine/tools/` directory and can be run with `python -m lunaengine.tools.<tool_name>`.
+
+All tools are located in the `lunaengine/tools/` directory and can be run with `python -m lunaengine.tools.<tool_name>`. Use `--help` with any tool to see the full list of options.
 
 ---
 
 ## Next Steps
 
 Now that you know how to use these utilities, you can integrate them into your development workflow:
-- Run `code_stats.py` before commits to keep track of project growth.
-- Use `theme_tool.py` to manage custom themes.
-- Debug and manipulate game saves with `database_editor.py`.
+- Run `code_stats.py --json` to export metrics for automated analysis.
+- Use `clear_pycache.py --dry-run` before cleaning to avoid surprises.
+- Debug game saves with `database_editor.py --debug --no-browser` to keep the console clean.
 
 In the next lesson, we’ll dive into [Advanced UI](../advanced/17-advanced-ui.md) – building complex interfaces with custom layouts and interactions.
-```
-
----
-
-Let me know if you want any adjustments, like renaming the other lesson files or renumbering. I've updated `lessons.md` accordingly.
                     </div>
                     <div class="card-footer bg-transparent">
                         <div class="d-flex justify-content-between">
@@ -384,7 +534,7 @@ Let me know if you want any adjustments, like renaming the other lesson files or
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-08-17 22:16
+                        Documentation generated on 2026-09-14 16:30
                     </p>
                 </div>
             </div>
@@ -392,7 +542,7 @@ Let me know if you want any adjustments, like renaming the other lesson files or
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="../theme.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {

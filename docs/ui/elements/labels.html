@@ -82,7 +82,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: Union[int, float], y: Union[int, float], text: str, font_size: int = 24, color: Optional[Union[Tuple[int, int, int], Color, ThemeStyle]] = None, font_name: Optional[str] = None, rich_text: bool = False, use_theme_color: bool = True, shadow: Optional[UiShadow] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: Union[int, float], y: Union[int, float], text: str, font_size: int | float = 24, color: Optional[Union[Tuple[int, int, int], Color, ThemeStyle]] = None, font_name: Optional[str] = None, rich_text: bool = False, use_theme_color: bool = True, shadow: Optional[UiShadow] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-can_focus">
@@ -130,7 +130,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textlabel-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
@@ -197,7 +197,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-longtextlabel-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
@@ -220,7 +220,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: Union[str, pygame.Surface, 'Icon'], width: Optional[int] = None, height: Optional[int] = None, pivot: Tuple[float, float] = (0, 0), element_id: Optional[str] = None, **kwargs: dict) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, image_path: Union[str, pygame.Surface, Path, AtlasItem, 'Icon'], width: Optional[int] = None, height: Optional[int] = None, pivot: Tuple[float, float] = (0, 0), element_id: Optional[str] = None, **kwargs: dict) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-can_focus">
@@ -237,7 +237,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-_load_image">
                 <code class="fs-6 fw-bold text-color-title">def _load_image(self: Any) -> None</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <div class="mt-2 text-muted small">Load or reload the image from the current image_path and image_color.<br>Supports:<br>- str (file path)<br>- Path<br>- pygame.Surface<br>- Icon instance (has get_surface() method)<br>- AtlasItem<br>- Callable returning any of the above</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-set_image">
                 <code class="fs-6 fw-bold text-color-title">def set_image(self: Any, image_path: Union[str, pygame.Surface, Path, AtlasItem, 'Icon']) -> None</code>
@@ -255,8 +255,20 @@
                 <code class="fs-6 fw-bold text-color-title">def set_size(self: Any, width: int, height: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-set_effect">
+                <code class="fs-6 fw-bold text-color-title">def set_effect(self: Any, filter_type: FilterType, intensity: float = 1.0) -> None</code>
+                <div class="mt-2 text-muted small">Apply a visual effect (filter) to the image.<br><br>Args:<br> &nbsp; &nbsp;filter_type: A FilterType enum (e.g., FilterType.BLUR).<br> &nbsp; &nbsp;intensity: Strength of the effect (0.0 - 1.0).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-clear_effect">
+                <code class="fs-6 fw-bold text-color-title">def clear_effect(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Remove any applied effect.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-_apply_effect">
+                <code class="fs-6 fw-bold text-color-title">def _apply_effect(self: Any, renderer: OpenGLRenderer) -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Apply the current effect to the original image and return a filtered surface.<br>This uses the renderer&#x27;s OpenGL filter capabilities.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-imagelabel-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
@@ -313,7 +325,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-08-17 22:16
+                        Documentation generated on 2026-09-14 16:30
                     </p>
                 </div>
             </div>
@@ -321,7 +333,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="../theme.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scenes Transitions Demo - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (Ctrl+K)">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Home</a></li><li class="breadcrumb-item"><a href="../examples/index.html">Examples Hub</a></li><li class="breadcrumb-item active">General</li><li class="breadcrumb-item active">Scenes Transitions Demo</li></ol></nav>
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Scenes Transitions Demo</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>scenes_transitions_demo.py</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">&quot;&quot;&quot;
+scenes_transitions_demo.py - Scene Transition System Demo
+
+This demo demonstrates LunaEngine&#x27;s new scene transition system.
+It features:
+- 4 scenes with different pastel background colors
+- Dropdown to select target scene
+- Dropdown to select transition effect (Fade, Slide, Zoom, etc.)
+- Button to trigger the transition
+- Title centered at the top of each scene
+&quot;&quot;&quot;
+
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
+
+from lunaengine.core import LunaEngine, Scene
+from lunaengine.ui import (
+    Dropdown, Button, TextLabel, UiFrame,
+    ThemeType, ThemeManager
+)
+from lunaengine.backend.transition import TransitionType
+from lunaengine.misc.icons import Icons
+
+
+# ----------------------------------------------------------------------------
+# Base scene class that provides common UI: scene selector, effect selector,
+# and a transition button.
+# ----------------------------------------------------------------------------
+class TransitionDemoScene(Scene):
+    &quot;&quot;&quot;Base scene for the transition demo.&quot;&quot;&quot;
+
+    def __init__(self, engine: LunaEngine, bg_color: tuple, scene_name: str):
+        super().__init__(engine)
+        self.bg_color = bg_color
+        self.scene_name = scene_name
+
+        # --- Title (top center) ---
+        self.title = TextLabel(
+            self.engine.width // 2, 30,
+            f&quot;Scene: {scene_name}&quot;,
+            font_size=32,
+            color=(255, 255, 255),
+            pivot=(0.5, 0),
+            use_theme_color=False
+        )
+        self.add_ui_element(self.title)
+
+        # --- Control panel (centered, with a frame) ---
+        panel_width = 400
+        panel_height = 160
+        panel_x = (self.engine.width - panel_width) // 2
+        panel_y = (self.engine.height - panel_height) // 2 + 40
+
+        self.panel = UiFrame(panel_x, panel_y, panel_width, panel_height)
+        self.panel.set_background_color((40, 40, 50, 200))
+        self.panel.set_border((100, 100, 150), 1)
+        self.panel.set_corner_radius(10)
+        self.add_ui_element(self.panel)
+
+        # --- Scene selection dropdown ---
+        self.scene_dropdown = Dropdown(
+            20, 20, 160, 30,
+            options=[&quot;Teal&quot;, &quot;Yellow&quot;, &quot;Green&quot;, &quot;Red&quot;],
+            font_size=18,
+            label=&quot;Target:&quot;,
+            label_position=&quot;left&quot;,
+            label_size=18
+        )
+        self.panel.add_child(self.scene_dropdown)
+
+        # --- Effect selection dropdown ---
+        effect_options = [
+            &quot;None&quot;,
+            &quot;Fade&quot;,
+            &quot;Slide Left&quot;,
+            &quot;Slide Right&quot;,
+            &quot;Slide Up&quot;,
+            &quot;Slide Down&quot;,
+            &quot;Zoom In&quot;,
+            &quot;Zoom Out&quot;,
+            &quot;Orbital Left&quot;,
+            &quot;Orbital Right&quot;,
+            &quot;Morph&quot;,
+            &quot;Flash&quot;
+        ]
+        self.effect_dropdown = Dropdown(
+            20, 60, 160, 30,
+            options=effect_options,
+            font_size=18,
+            label=&quot;Effect:&quot;,
+            label_position=&quot;left&quot;,
+            label_size=18
+        )
+        self.panel.add_child(self.effect_dropdown)
+
+        # --- Transition button ---
+        self.transition_btn = Button(
+            220, 20, 140, 70,
+            text=&quot;Go!&quot;,
+            font_size=24,
+            icon=Icons.CLICK
+        )
+        self.transition_btn.set_on_click(self._on_transition_clicked)
+        self.panel.add_child(self.transition_btn)
+
+        # --- Info label (shows current selection) ---
+        self.info_label = TextLabel(
+            20, 100,
+            &quot;Select target and effect, then click Go!&quot;,
+            font_size=14,
+            color=(180, 200, 255),
+            use_theme_color=False
+        )
+        self.panel.add_child(self.info_label)
+
+        # Map dropdown text to TransitionType
+        self._effect_map = {
+            &quot;None&quot;: TransitionType.NONE,
+            &quot;Fade&quot;: TransitionType.FADE,
+            &quot;Slide Left&quot;: TransitionType.SLIDE_LEFT,
+            &quot;Slide Right&quot;: TransitionType.SLIDE_RIGHT,
+            &quot;Slide Up&quot;: TransitionType.SLIDE_UP,
+            &quot;Slide Down&quot;: TransitionType.SLIDE_DOWN,
+            &quot;Zoom In&quot;: TransitionType.ZOOM_IN,
+            &quot;Zoom Out&quot;: TransitionType.ZOOM_OUT,
+            &quot;Orbital Left&quot;: TransitionType.ORBITAL_LEFT,
+            &quot;Orbital Right&quot;: TransitionType.ORBITAL_RIGHT,
+            &quot;Morph&quot;: TransitionType.MORPH,
+            &quot;Flash&quot;: TransitionType.FLASH,
+        }
+
+        # Map scene name to registered scene name (lowercase)
+        self._scene_map = {
+            &quot;Teal&quot;: &quot;teal&quot;,
+            &quot;Yellow&quot;: &quot;yellow&quot;,
+            &quot;Green&quot;: &quot;green&quot;,
+            &quot;Red&quot;: &quot;red&quot;,
+        }
+
+    def _on_transition_clicked(self):
+        &quot;&quot;&quot;Handle the transition button click.&quot;&quot;&quot;
+        target_name = self.scene_dropdown.options[self.scene_dropdown.selected_index]
+        effect_text = self.effect_dropdown.options[self.effect_dropdown.selected_index]
+        effect = self._effect_map.get(effect_text, TransitionType.NONE)
+        target_scene = self._scene_map.get(target_name)
+
+        if target_scene:
+            # Update info label
+            self.info_label.set_text(f&quot;Transitioning to {target_name} with {effect_text}...&quot;)
+            # Trigger the transition
+            self.engine.transition_to(target_scene, effect=effect, duration=0.8)
+        else:
+            self.info_label.set_text(f&quot;Error: Unknown scene &#x27;{target_name}&#x27;&quot;)
+
+    def render(self, renderer):
+        &quot;&quot;&quot;Fill the background with the scene&#x27;s color.&quot;&quot;&quot;
+        renderer.clear()
+        renderer.fill_screen(self.bg_color)
+
+    def update(self, dt):
+        &quot;&quot;&quot;Update the control panel (no extra logic needed).&quot;&quot;&quot;
+        pass
+
+
+# ----------------------------------------------------------------------------
+# Define the four concrete scenes with their background colors.
+# ----------------------------------------------------------------------------
+class TealScene(TransitionDemoScene):
+    def __init__(self, engine):
+        super().__init__(engine, (173, 216, 230), &quot;Teal&quot;)  # Light pastel teal
+
+class YellowScene(TransitionDemoScene):
+    def __init__(self, engine):
+        super().__init__(engine, (255, 255, 204), &quot;Yellow&quot;)  # Pastel yellow
+
+class GreenScene(TransitionDemoScene):
+    def __init__(self, engine):
+        super().__init__(engine, (204, 255, 204), &quot;Green&quot;)   # Pastel green
+
+class RedScene(TransitionDemoScene):
+    def __init__(self, engine):
+        super().__init__(engine, (255, 204, 204), &quot;Red&quot;)     # Pastel red
+
+
+# ----------------------------------------------------------------------------
+# Main entry point.
+# ----------------------------------------------------------------------------
+def main():
+    engine = LunaEngine(
+        title=&quot;LunaEngine - Scene Transitions Demo&quot;,
+        width=1024,
+        height=720,
+        icon=Icons.FIRE,
+        debug=True
+    )
+    engine.fps = 60
+
+    # Register all scenes
+    engine.add_scene(&quot;teal&quot;, TealScene)
+    engine.add_scene(&quot;yellow&quot;, YellowScene)
+    engine.add_scene(&quot;green&quot;, GreenScene)
+    engine.add_scene(&quot;red&quot;, RedScene)
+
+    # Start with the teal scene (no transition)
+    engine.set_scene(&quot;teal&quot;)
+
+    engine.run()
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>scenes_transitions_demo.py - Scene Transition System Demo</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="scenes_transitions_demo.py" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-09-14 16:30
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // Compute relative path to root search.html
+                    const path = window.location.pathname;
+                    const parts = path.split('/').filter(p => p && p !== '');
+                    // Remove file part if present
+                    let dirParts = parts;
+                    if (dirParts.length > 0 && dirParts[dirParts.length - 1].includes('.')) {
+                        dirParts = dirParts.slice(0, -1);
+                    }
+                    // Number of levels to go up to reach the directory containing search.html
+                    const levels = Math.max(0, dirParts.length - 1);
+                    const searchPath = '../'.repeat(levels) + 'search.html';
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

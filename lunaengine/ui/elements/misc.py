@@ -7,7 +7,7 @@ from .textinputs import TextBox
 from .buttons import Button
 from .labels import ImageLabel
 from ..themes import ThemeManager, ThemeType
-from ...core.renderer import Renderer
+from ...backend.opengl import OpenGLRenderer
 from ...backend.types import InputState
 
 class FileFinder(UIElement):
@@ -252,7 +252,7 @@ class FileFinder(UIElement):
             if self.on_file_selected:
                 self.on_file_selected(self.file_path)
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 

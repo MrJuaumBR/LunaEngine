@@ -12,6 +12,7 @@ MODULES PROVIDED:
 - types: Common types and event definitions
 - network: Networking components for client-server architecture (experimental)
 - controller: Game controller support with hot-plug, gyro, touchpad
+- transitions: Transition effects for UI elements
 
 LIBRARIES USED:
 - pygame: Core graphics and window management
@@ -76,6 +77,7 @@ from .controller import (
     FocusOrder,
     sort_elements_for_focus,
 )
+from .transition import *
 from . import exceptions as LExceptions
 from OpenGL.GL import glEnable, glDisable, GL_DEPTH_TEST
 
@@ -132,4 +134,7 @@ __all__ = [
     "glEnable",
     "glDisable",
     "GL_DEPTH_TEST",
+    # Transition
+    "TransitionType",
+    "Transition"
 ]

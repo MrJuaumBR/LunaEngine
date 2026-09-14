@@ -20,6 +20,46 @@
 
 <i>To be fair regarding the tools, they’ve been part of the framework for I don’t know how long, but I’ve never talked about them.</i>
 
+### 0.2.6.1
+- **Added:** New 46 Icons;
+- **Fix:**
+  - Fixed some problems with ``theme_tool.py``;
+  - Some typehints added to UIElements(For some reason the ``PyLance`` is angry with me);
+  - More typehints to ``OpenGLRenderer``;
+  - Fully updated ``renderer.py``;
+  - Some Fixes and general enhancements to the **Documentation**;
+  - Maybe, Again, Maybe i fixed the polygon support to gradient;
+  - Fixes to the ``build`` files;
+  - Fix to mouse clicking ``elements``;
+  - Fixed the ``Table`` row click;
+  - Fixed ``Tooltip`` not following the ``Theme`` and not drawing borders;
+- **Added:** Direct Access to ``Ratio`` in ``Scene``;
+- **Added:** Scene Transition (12 Different transitions);
+- **Refactor:** 
+  - **Fix:** *Themes* Shadows in Themes;
+  - **Added:** All ``tools`` should have argument support and help methods;
+- **Enhancement:**
+  - **Added:** *Themes* ``load_custom_theme`` so you can load custom themes;
+  - **Added:** *Atlas* now have ``set_root``;
+  - **Added:** *Atlas* can access root folders more easily;
+  - **Added:** *Debug* A Storage focused tab;
+  - **Added:** *Debug* A Storage focused Overlay;
+  - **Added:** *UIElements*/*Scene* now ``add_child`` and ``add_ui_element``  returns the ``UiElement`` itself;
+  - **Added:** *Fonts* now have a system to define the default font utilized;
+  - **Added:** *UIElements*/*Button* now can use ``Icon`` from the ``framework``;
+  - **Added:** *UiFrame* and it's descendants now support ``Icon`` and ``AtlasItem/Path`` in the Header;
+  - **Added:** *Tabination* now supports icons in the tabs;
+  - **Added:** *Window* now supports ``Icon`` and ``AtlasItem
+  - **Added:** *Framework* added ``__status__`` that will show the current status of the version(More management of future fixes);
+  - **Added:** *Code Statistics* now will show the amount of icons and ``Version + Status`` of the Framework;
+  - **Added:** Direct connection to **Timer** in the **LunaEngine** class;
+- **Added:** New ``Canva`` UIElement;
+- **Added:** Default Font to engine;
+- **Added:** new ``file_tree.py`` tool;
+- **Removed:** the old ``Renderer`` and ``Renderer.py``, they aren't very useful at all.
+
+<hr>
+
 - **New System:** `BackgroundTaskManager` in `threading.py`:
   - **Feature:** Priority‑based scheduling (`LOW`, `NORMAL`, `HIGH`);
   - **Feature:** Frame‑based repetition (run every N frames);

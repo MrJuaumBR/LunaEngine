@@ -1,0 +1,624 @@
+{
+  "version": "0.2.6",
+  "version_status": "Alpha",
+  "total_files": 63,
+  "files_by_extension": {
+    ".md": 1,
+    ".py": 59,
+    ".frag": 1,
+    ".geom": 1,
+    ".vert": 1
+  },
+  "files_by_directory": {
+    "root": 2,
+    "assets\\shaders": 3,
+    "backend": 8,
+    "core": 5,
+    "graphics": 6,
+    "misc": 3,
+    "storage": 4,
+    "tools": 6,
+    "ui": 8,
+    "ui\\elements": 12,
+    "utils": 6
+  },
+  "total_lines": 35319,
+  "code_lines": 24834,
+  "comment_lines": 5516,
+  "blank_lines": 4969,
+  "files": [
+    {
+      "path": "CODE_STATISTICS.md",
+      "total_lines": 198,
+      "code_lines": 173,
+      "comment_lines": 9,
+      "blank_lines": 16,
+      "size_kb": 7.0166015625
+    },
+    {
+      "path": "__init__.py",
+      "total_lines": 12,
+      "code_lines": 5,
+      "comment_lines": 3,
+      "blank_lines": 4,
+      "size_kb": 0.296875
+    },
+    {
+      "path": "assets\\shaders\\shaders.frag",
+      "total_lines": 440,
+      "code_lines": 368,
+      "comment_lines": 15,
+      "blank_lines": 57,
+      "size_kb": 14.4052734375
+    },
+    {
+      "path": "assets\\shaders\\shaders.geom",
+      "total_lines": 27,
+      "code_lines": 20,
+      "comment_lines": 3,
+      "blank_lines": 4,
+      "size_kb": 0.6845703125
+    },
+    {
+      "path": "assets\\shaders\\shaders.vert",
+      "total_lines": 144,
+      "code_lines": 103,
+      "comment_lines": 15,
+      "blank_lines": 26,
+      "size_kb": 4.0732421875
+    },
+    {
+      "path": "backend\\controller.py",
+      "total_lines": 652,
+      "code_lines": 503,
+      "comment_lines": 63,
+      "blank_lines": 86,
+      "size_kb": 23.4814453125
+    },
+    {
+      "path": "backend\\exceptions.py",
+      "total_lines": 21,
+      "code_lines": 5,
+      "comment_lines": 11,
+      "blank_lines": 5,
+      "size_kb": 0.6201171875
+    },
+    {
+      "path": "backend\\network.py",
+      "total_lines": 1092,
+      "code_lines": 770,
+      "comment_lines": 140,
+      "blank_lines": 182,
+      "size_kb": 40.12890625
+    },
+    {
+      "path": "backend\\openal.py",
+      "total_lines": 589,
+      "code_lines": 481,
+      "comment_lines": 55,
+      "blank_lines": 53,
+      "size_kb": 22.091796875
+    },
+    {
+      "path": "backend\\opengl.py",
+      "total_lines": 3145,
+      "code_lines": 2691,
+      "comment_lines": 151,
+      "blank_lines": 303,
+      "size_kb": 114.3671875
+    },
+    {
+      "path": "backend\\transition.py",
+      "total_lines": 45,
+      "code_lines": 37,
+      "comment_lines": 2,
+      "blank_lines": 6,
+      "size_kb": 1.115234375
+    },
+    {
+      "path": "backend\\types.py",
+      "total_lines": 485,
+      "code_lines": 353,
+      "comment_lines": 51,
+      "blank_lines": 81,
+      "size_kb": 17.224609375
+    },
+    {
+      "path": "backend\\__init__.py",
+      "total_lines": 140,
+      "code_lines": 103,
+      "comment_lines": 30,
+      "blank_lines": 7,
+      "size_kb": 3.0087890625
+    },
+    {
+      "path": "core\\audio.py",
+      "total_lines": 611,
+      "code_lines": 471,
+      "comment_lines": 69,
+      "blank_lines": 71,
+      "size_kb": 22.9833984375
+    },
+    {
+      "path": "core\\engine.py",
+      "total_lines": 1946,
+      "code_lines": 1221,
+      "comment_lines": 411,
+      "blank_lines": 314,
+      "size_kb": 80.6064453125
+    },
+    {
+      "path": "core\\scene.py",
+      "total_lines": 229,
+      "code_lines": 162,
+      "comment_lines": 20,
+      "blank_lines": 47,
+      "size_kb": 8.27734375
+    },
+    {
+      "path": "core\\window.py",
+      "total_lines": 358,
+      "code_lines": 138,
+      "comment_lines": 158,
+      "blank_lines": 62,
+      "size_kb": 11.98828125
+    },
+    {
+      "path": "core\\__init__.py",
+      "total_lines": 51,
+      "code_lines": 25,
+      "comment_lines": 20,
+      "blank_lines": 6,
+      "size_kb": 1.193359375
+    },
+    {
+      "path": "graphics\\camera.py",
+      "total_lines": 1105,
+      "code_lines": 643,
+      "comment_lines": 266,
+      "blank_lines": 196,
+      "size_kb": 43.4375
+    },
+    {
+      "path": "graphics\\paperdoll.py",
+      "total_lines": 411,
+      "code_lines": 213,
+      "comment_lines": 130,
+      "blank_lines": 68,
+      "size_kb": 15.685546875
+    },
+    {
+      "path": "graphics\\particles.py",
+      "total_lines": 742,
+      "code_lines": 580,
+      "comment_lines": 78,
+      "blank_lines": 84,
+      "size_kb": 23.9111328125
+    },
+    {
+      "path": "graphics\\shadows.py",
+      "total_lines": 411,
+      "code_lines": 278,
+      "comment_lines": 74,
+      "blank_lines": 59,
+      "size_kb": 16.1640625
+    },
+    {
+      "path": "graphics\\spritesheet.py",
+      "total_lines": 930,
+      "code_lines": 469,
+      "comment_lines": 309,
+      "blank_lines": 152,
+      "size_kb": 33.302734375
+    },
+    {
+      "path": "graphics\\__init__.py",
+      "total_lines": 100,
+      "code_lines": 72,
+      "comment_lines": 21,
+      "blank_lines": 7,
+      "size_kb": 1.994140625
+    },
+    {
+      "path": "misc\\debug.py",
+      "total_lines": 1845,
+      "code_lines": 1391,
+      "comment_lines": 178,
+      "blank_lines": 276,
+      "size_kb": 79.6962890625
+    },
+    {
+      "path": "misc\\icons.py",
+      "total_lines": 617,
+      "code_lines": 427,
+      "comment_lines": 76,
+      "blank_lines": 114,
+      "size_kb": 21.0126953125
+    },
+    {
+      "path": "misc\\__init__.py",
+      "total_lines": 15,
+      "code_lines": 5,
+      "comment_lines": 7,
+      "blank_lines": 3,
+      "size_kb": 0.46484375
+    },
+    {
+      "path": "storage\\atlas.py",
+      "total_lines": 319,
+      "code_lines": 255,
+      "comment_lines": 28,
+      "blank_lines": 36,
+      "size_kb": 13.2890625
+    },
+    {
+      "path": "storage\\encrypter.py",
+      "total_lines": 45,
+      "code_lines": 35,
+      "comment_lines": 0,
+      "blank_lines": 10,
+      "size_kb": 1.2841796875
+    },
+    {
+      "path": "storage\\savedata.py",
+      "total_lines": 905,
+      "code_lines": 600,
+      "comment_lines": 210,
+      "blank_lines": 95,
+      "size_kb": 36.259765625
+    },
+    {
+      "path": "storage\\__init__.py",
+      "total_lines": 15,
+      "code_lines": 9,
+      "comment_lines": 4,
+      "blank_lines": 2,
+      "size_kb": 0.4775390625
+    },
+    {
+      "path": "tools\\clear_pycache.py",
+      "total_lines": 64,
+      "code_lines": 48,
+      "comment_lines": 10,
+      "blank_lines": 6,
+      "size_kb": 2.013671875
+    },
+    {
+      "path": "tools\\code_stats.py",
+      "total_lines": 490,
+      "code_lines": 359,
+      "comment_lines": 54,
+      "blank_lines": 77,
+      "size_kb": 20.021484375
+    },
+    {
+      "path": "tools\\database_editor.py",
+      "total_lines": 579,
+      "code_lines": 212,
+      "comment_lines": 313,
+      "blank_lines": 54,
+      "size_kb": 21.6513671875
+    },
+    {
+      "path": "tools\\file_tree.py",
+      "total_lines": 184,
+      "code_lines": 144,
+      "comment_lines": 20,
+      "blank_lines": 20,
+      "size_kb": 5.09765625
+    },
+    {
+      "path": "tools\\theme_tool.py",
+      "total_lines": 164,
+      "code_lines": 119,
+      "comment_lines": 15,
+      "blank_lines": 30,
+      "size_kb": 7.0791015625
+    },
+    {
+      "path": "tools\\__init__.py",
+      "total_lines": 3,
+      "code_lines": 1,
+      "comment_lines": 1,
+      "blank_lines": 1,
+      "size_kb": 0.046875
+    },
+    {
+      "path": "ui\\layer_manager.py",
+      "total_lines": 165,
+      "code_lines": 110,
+      "comment_lines": 31,
+      "blank_lines": 24,
+      "size_kb": 6.2802734375
+    },
+    {
+      "path": "ui\\layout.py",
+      "total_lines": 231,
+      "code_lines": 97,
+      "comment_lines": 91,
+      "blank_lines": 43,
+      "size_kb": 7.3466796875
+    },
+    {
+      "path": "ui\\notifications.py",
+      "total_lines": 931,
+      "code_lines": 576,
+      "comment_lines": 199,
+      "blank_lines": 156,
+      "size_kb": 37.919921875
+    },
+    {
+      "path": "ui\\styles.py",
+      "total_lines": 91,
+      "code_lines": 35,
+      "comment_lines": 38,
+      "blank_lines": 18,
+      "size_kb": 2.6826171875
+    },
+    {
+      "path": "ui\\themes.py",
+      "total_lines": 863,
+      "code_lines": 666,
+      "comment_lines": 82,
+      "blank_lines": 115,
+      "size_kb": 32.189453125
+    },
+    {
+      "path": "ui\\tooltips.py",
+      "total_lines": 369,
+      "code_lines": 182,
+      "comment_lines": 119,
+      "blank_lines": 68,
+      "size_kb": 13.099609375
+    },
+    {
+      "path": "ui\\tween.py",
+      "total_lines": 1202,
+      "code_lines": 550,
+      "comment_lines": 423,
+      "blank_lines": 229,
+      "size_kb": 36.689453125
+    },
+    {
+      "path": "ui\\__init__.py",
+      "total_lines": 73,
+      "code_lines": 26,
+      "comment_lines": 30,
+      "blank_lines": 17,
+      "size_kb": 2.7119140625
+    },
+    {
+      "path": "ui\\elements\\base.py",
+      "total_lines": 724,
+      "code_lines": 395,
+      "comment_lines": 213,
+      "blank_lines": 116,
+      "size_kb": 28.4287109375
+    },
+    {
+      "path": "ui\\elements\\buttons.py",
+      "total_lines": 507,
+      "code_lines": 398,
+      "comment_lines": 38,
+      "blank_lines": 71,
+      "size_kb": 19.7783203125
+    },
+    {
+      "path": "ui\\elements\\clock.py",
+      "total_lines": 403,
+      "code_lines": 274,
+      "comment_lines": 71,
+      "blank_lines": 58,
+      "size_kb": 17.439453125
+    },
+    {
+      "path": "ui\\elements\\containers.py",
+      "total_lines": 2498,
+      "code_lines": 2033,
+      "comment_lines": 145,
+      "blank_lines": 320,
+      "size_kb": 104.8828125
+    },
+    {
+      "path": "ui\\elements\\dialogs.py",
+      "total_lines": 303,
+      "code_lines": 210,
+      "comment_lines": 47,
+      "blank_lines": 46,
+      "size_kb": 12.4033203125
+    },
+    {
+      "path": "ui\\elements\\labels.py",
+      "total_lines": 1060,
+      "code_lines": 782,
+      "comment_lines": 138,
+      "blank_lines": 140,
+      "size_kb": 40.69921875
+    },
+    {
+      "path": "ui\\elements\\misc.py",
+      "total_lines": 280,
+      "code_lines": 207,
+      "comment_lines": 29,
+      "blank_lines": 44,
+      "size_kb": 10.751953125
+    },
+    {
+      "path": "ui\\elements\\progress.py",
+      "total_lines": 294,
+      "code_lines": 219,
+      "comment_lines": 42,
+      "blank_lines": 33,
+      "size_kb": 12.8154296875
+    },
+    {
+      "path": "ui\\elements\\selectors.py",
+      "total_lines": 1854,
+      "code_lines": 1520,
+      "comment_lines": 71,
+      "blank_lines": 263,
+      "size_kb": 77.6279296875
+    },
+    {
+      "path": "ui\\elements\\textinputs.py",
+      "total_lines": 1064,
+      "code_lines": 879,
+      "comment_lines": 71,
+      "blank_lines": 114,
+      "size_kb": 45.326171875
+    },
+    {
+      "path": "ui\\elements\\visualizers.py",
+      "total_lines": 1407,
+      "code_lines": 1101,
+      "comment_lines": 131,
+      "blank_lines": 175,
+      "size_kb": 63.322265625
+    },
+    {
+      "path": "ui\\elements\\__init__.py",
+      "total_lines": 48,
+      "code_lines": 24,
+      "comment_lines": 22,
+      "blank_lines": 2,
+      "size_kb": 2.1494140625
+    },
+    {
+      "path": "utils\\image_converter.py",
+      "total_lines": 251,
+      "code_lines": 177,
+      "comment_lines": 25,
+      "blank_lines": 49,
+      "size_kb": 9.1708984375
+    },
+    {
+      "path": "utils\\math_utils.py",
+      "total_lines": 384,
+      "code_lines": 214,
+      "comment_lines": 118,
+      "blank_lines": 52,
+      "size_kb": 12.080078125
+    },
+    {
+      "path": "utils\\performance.py",
+      "total_lines": 422,
+      "code_lines": 304,
+      "comment_lines": 44,
+      "blank_lines": 74,
+      "size_kb": 14.8583984375
+    },
+    {
+      "path": "utils\\threading.py",
+      "total_lines": 263,
+      "code_lines": 155,
+      "comment_lines": 77,
+      "blank_lines": 31,
+      "size_kb": 9.9638671875
+    },
+    {
+      "path": "utils\\timer.py",
+      "total_lines": 427,
+      "code_lines": 164,
+      "comment_lines": 179,
+      "blank_lines": 84,
+      "size_kb": 13.7841796875
+    },
+    {
+      "path": "utils\\__init__.py",
+      "total_lines": 76,
+      "code_lines": 47,
+      "comment_lines": 22,
+      "blank_lines": 7,
+      "size_kb": 2.669921875
+    }
+  ],
+  "themes": {
+    "total_themes": 72,
+    "themes_with_both_variants": 72,
+    "total_variants": 144,
+    "error": null
+  },
+  "total_icons": 70,
+  "elements": {
+    "total_elements": 30,
+    "error": null
+  },
+  "project_structure": [
+    "[ROT] lunaengine/",
+    "\u251c\u2500\u2500 [PYT] __init__.py",
+    "\u251c\u2500\u2500 [DIR] assets/",
+    "\u2502   \u251c\u2500\u2500 [DIR] icons/",
+    "\u2502   \u2514\u2500\u2500 [DIR] shaders/",
+    "\u2502       \u251c\u2500\u2500 [SHD] shaders.frag",
+    "\u2502       \u251c\u2500\u2500 [SHD] shaders.geom",
+    "\u2502       \u2514\u2500\u2500 [SHD] shaders.vert",
+    "\u251c\u2500\u2500 [DIR] backend/",
+    "\u2502   \u251c\u2500\u2500 [PYT] __init__.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] controller.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] exceptions.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] network.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] openal.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] opengl.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] transition.py",
+    "\u2502   \u2514\u2500\u2500 [PYT] types.py",
+    "\u251c\u2500\u2500 [MDN] CODE_STATISTICS.md",
+    "\u251c\u2500\u2500 [DIR] core/",
+    "\u2502   \u251c\u2500\u2500 [PYT] __init__.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] audio.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] engine.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] scene.py",
+    "\u2502   \u2514\u2500\u2500 [PYT] window.py",
+    "\u251c\u2500\u2500 [DIR] graphics/",
+    "\u2502   \u251c\u2500\u2500 [PYT] __init__.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] camera.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] paperdoll.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] particles.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] shadows.py",
+    "\u2502   \u2514\u2500\u2500 [PYT] spritesheet.py",
+    "\u251c\u2500\u2500 [DIR] misc/",
+    "\u2502   \u251c\u2500\u2500 [PYT] __init__.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] debug.py",
+    "\u2502   \u2514\u2500\u2500 [PYT] icons.py",
+    "\u251c\u2500\u2500 [DIR] storage/",
+    "\u2502   \u251c\u2500\u2500 [PYT] __init__.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] atlas.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] encrypter.py",
+    "\u2502   \u2514\u2500\u2500 [PYT] savedata.py",
+    "\u251c\u2500\u2500 [DIR] tools/",
+    "\u2502   \u251c\u2500\u2500 [PYT] __init__.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] clear_pycache.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] code_stats.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] database_editor.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] file_tree.py",
+    "\u2502   \u2514\u2500\u2500 [PYT] theme_tool.py",
+    "\u251c\u2500\u2500 [DIR] ui/",
+    "\u2502   \u251c\u2500\u2500 [PYT] __init__.py",
+    "\u2502   \u251c\u2500\u2500 [DIR] elements/",
+    "\u2502   \u2502   \u251c\u2500\u2500 [PYT] __init__.py",
+    "\u2502   \u2502   \u251c\u2500\u2500 [PYT] base.py",
+    "\u2502   \u2502   \u251c\u2500\u2500 [PYT] buttons.py",
+    "\u2502   \u2502   \u251c\u2500\u2500 [PYT] clock.py",
+    "\u2502   \u2502   \u251c\u2500\u2500 [PYT] containers.py",
+    "\u2502   \u2502   \u251c\u2500\u2500 [PYT] dialogs.py",
+    "\u2502   \u2502   \u251c\u2500\u2500 [PYT] labels.py",
+    "\u2502   \u2502   \u251c\u2500\u2500 [PYT] misc.py",
+    "\u2502   \u2502   \u251c\u2500\u2500 [PYT] progress.py",
+    "\u2502   \u2502   \u251c\u2500\u2500 [PYT] selectors.py",
+    "\u2502   \u2502   \u251c\u2500\u2500 [PYT] textinputs.py",
+    "\u2502   \u2502   \u2514\u2500\u2500 [PYT] visualizers.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] layer_manager.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] layout.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] notifications.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] styles.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] themes.py",
+    "\u2502   \u251c\u2500\u2500 [PYT] tooltips.py",
+    "\u2502   \u2514\u2500\u2500 [PYT] tween.py",
+    "\u2514\u2500\u2500 [DIR] utils/",
+    "    \u251c\u2500\u2500 [PYT] __init__.py",
+    "    \u251c\u2500\u2500 [PYT] image_converter.py",
+    "    \u251c\u2500\u2500 [PYT] math_utils.py",
+    "    \u251c\u2500\u2500 [PYT] performance.py",
+    "    \u251c\u2500\u2500 [PYT] threading.py",
+    "    \u2514\u2500\u2500 [PYT] timer.py"
+  ]
+}

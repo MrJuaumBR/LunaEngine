@@ -7,6 +7,7 @@ import argparse
 import sys
 import json
 import os
+import webbrowser
 from pathlib import Path
 from typing import Optional, Dict, Any, List, Union
 
@@ -425,7 +426,10 @@ def create_flask_app(initial_savedata: Savedata, atlas: Optional[Atlas] = None):
 # ----------------------------------------------------------------------
 
 def main():
-    parser = argparse.ArgumentParser(description="LunaEngine Database Editor")
+    parser = argparse.ArgumentParser(
+        description="LunaEngine Database Editor",
+        epilog="Example: %(prog)s --savedata game.sav --atlas-bundle resources.res --no-ui --list-tables"
+    )
     parser.add_argument('--savedata', '-s', help="Path to Savedata file (.sav)", default=None)
     parser.add_argument('--atlas-bundle', '-b', help="Path to Atlas bundle (.res)", default=None)
     parser.add_argument('--atlas-root', help="Root directory for Atlas (if not using bundle)", default=None)
@@ -433,7 +437,10 @@ def main():
     parser.add_argument('--no-ui', action='store_true', help="Disable Flask UI; run CLI commands only")
     parser.add_argument('--host', default='127.0.0.1', help="Flask host (default 127.0.0.1)")
     parser.add_argument('--port', type=int, default=5000, help="Flask port (default 5000)")
+    parser.add_argument('--debug', action='store_true', help="Run Flask in debug mode")
+    parser.add_argument('--no-browser', action='store_true', help="Do not open browser automatically")
 
+    # CLI actions
     parser.add_argument('--list-tables', action='store_true', help="List all tables (CLI)")
     parser.add_argument('--show-table', help="Show rows of a table (CLI)")
     parser.add_argument('--insert', help="Insert row: table,col=val,... (CLI)")
@@ -561,8 +568,11 @@ def main():
         sys.exit(1)
 
     app = create_flask_app(savedata, atlas)
-    print(f"Starting LunaEngine Editor at http://{args.host}:{args.port}")
-    app.run(host=args.host, port=args.port, debug=False)
+    url = f"http://{args.host}:{args.port}"
+    print(f"Starting LunaEngine Editor at {url}")
+    if not args.no_browser:
+        webbrowser.open(url)
+    app.run(host=args.host, port=args.port, debug=args.debug)
 
 
 if __name__ == "__main__":

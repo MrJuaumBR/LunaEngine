@@ -137,7 +137,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-elementstyle-loadfromtheme">
-                <code class="fs-6 fw-bold text-color-title">def loadFromTheme(theme_type: ThemeType) -> 'ElementStyle'</code>
+                <code class="fs-6 fw-bold text-color-title">def loadFromTheme(theme_type: ThemeType | ThemeKey) -> 'ElementStyle'</code>
                 <div class="mt-2 text-muted small">Load complete element style from the theme system.<br>Uses button_* properties as base, but can be overridden for specific elements.</div>
             </div>
                 </div>
@@ -157,10 +157,13 @@
                     <code>_initialized: Any = False</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>_font_cache: Dict[Tuple[str, int, bool, bool], pygame.font.Font] = {}</code>
+                    <code>_font_cache: Dict[Tuple[str | None, int, bool, bool], pygame.font.Font] = {}</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>_atlas: Any = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>_df_font: str | None = None</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
@@ -174,8 +177,12 @@
                 <div class="mt-2 text-muted small">Set the Atlas instance to use for font resolution.<br><br>Args:<br> &nbsp; &nbsp;atlas: An Atlas instance (from ..misc.atlas) or None to disable.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-fontmanager-get_font">
-                <code class="fs-6 fw-bold text-color-title">def get_font(cls: Any, font_name: Optional[str] = None, font_size: int = 24, bold: bool = False, italic: bool = False) -> pygame.font.Font</code>
+                <code class="fs-6 fw-bold text-color-title">def get_font(cls: Any, font_name: Optional[Union[str, Path, AtlasItem]] = None, font_size: int | float = 24, bold: bool = False, italic: bool = False) -> pygame.font.Font</code>
                 <div class="mt-2 text-muted small">Get a font object with the given name, size, and style.<br><br>Resolution order:<br>1. Check internal cache.<br>2. If atlas is set and the name exists in atlas:<br> &nbsp; a. If atlas is in bundle mode and has bytes for this font, load from bytes.<br> &nbsp; b. Otherwise load from file path.<br>3. If `font_name` exists as a file path, load it directly.<br>4. Otherwise, treat as a system font name (or None for default).<br><br>Args:<br> &nbsp; &nbsp;font_name (Optional[str]): <br> &nbsp; &nbsp; &nbsp; &nbsp;- If None, uses the default system font.<br> &nbsp; &nbsp; &nbsp; &nbsp;- If it&#x27;s a path to a font file (e.g., &quot;path/to/font.ttf&quot;), loads it.<br> &nbsp; &nbsp; &nbsp; &nbsp;- Otherwise, treats it as a system font name (e.g., &quot;Arial&quot;, &quot;Times New Roman&quot;).<br> &nbsp; &nbsp;font_size (int): Size of the font in pixels.<br> &nbsp; &nbsp;bold (bool): Whether the font should be bold.<br> &nbsp; &nbsp;italic (bool): Whether the font should be italic.<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;pygame.font.Font: A font object ready for text rendering.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-fontmanager-set_default_font">
+                <code class="fs-6 fw-bold text-color-title">def set_default_font(cls: Any, font_path: Union[str, Path, AtlasItem, None]) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-fontmanager-get_system_fonts">
                 <code class="fs-6 fw-bold text-color-title">def get_system_fonts(cls: Any) -> List[str]</code>
@@ -207,7 +214,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, pivot: Tuple[float, float] = (0, 0), element_id: Optional[str] = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int | float, y: int | float, width: int | float, height: int | float, pivot: Tuple[float, float] = (0, 0), element_id: Optional[str] = None) -> Any</code>
                 <div class="mt-2 text-muted small">Initialize a UI element with position and dimensions.<br><br>Args:<br> &nbsp; &nbsp;x (int): X coordinate position.<br> &nbsp; &nbsp;y (int): Y coordinate position.<br> &nbsp; &nbsp;width (int): Width of the element in pixels.<br> &nbsp; &nbsp;height (int): Height of the element in pixels.<br> &nbsp; &nbsp;pivot (Tuple[float, float]): Anchor point for positioning where (0,0) is top-left <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;and (1,1) is bottom-right.<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID. If None, generates automatic ID.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-can_focus">
@@ -299,7 +306,7 @@
                 <div class="mt-2 text-muted small">Get the collision rectangle for this element, considering parent and scroll offsets.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-add_child">
-                <code class="fs-6 fw-bold text-color-title">def add_child(self: Any, child: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def add_child(self: Any, child: 'UIElement') -> 'UIElement'</code>
                 <div class="mt-2 text-muted small">Add a child element to this UI element.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-remove_child">
@@ -320,14 +327,14 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, inputState: InputState) -> Any</code>
-                <div class="mt-2 text-muted small">Update element state based on mouse interaction and input.<br><br>Args:<br> &nbsp; &nbsp;dt (float): Delta time in seconds since last update.<br> &nbsp; &nbsp;inputState (InputState): Current input state.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-update_theme">
                 <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: ThemeType) -> Any</code>
                 <div class="mt-2 text-muted small">Update the theme for this element and all its children.<br><br>Args:<br> &nbsp; &nbsp;theme_type (ThemeType): The new theme to apply.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer | OpenGLRenderer) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> Any</code>
                 <div class="mt-2 text-muted small">Render this element using OpenGL backend. &nbsp;<br>Override this in subclasses for OpenGL-specific rendering.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-kill">
@@ -382,7 +389,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-08-17 22:16
+                        Documentation generated on 2026-09-14 16:30
                     </p>
                 </div>
             </div>
@@ -390,7 +397,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="../theme.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {

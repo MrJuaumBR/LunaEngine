@@ -9,6 +9,7 @@ Refactored for 0.2.6:
 - Cleaned up duplicated drag logic (now a mixin).
 - Improved code organization and readability.
 - Removed dependency on Tabination.get_tab_by_name() for compatibility.
+- Added "Storage" tab with sub‑tabs for Atlas, Savedata, and Encryption.
 """
 
 import json
@@ -26,7 +27,7 @@ import pygame
 
 from ..backend.opengl import OpenGLRenderer
 from ..backend.types import InputState, Color
-from .. import __version__
+from .. import __version__, __status__
 
 if TYPE_CHECKING:
     from ..core.engine import LunaEngine
@@ -36,6 +37,9 @@ if TYPE_CHECKING:
 # ----------------------------------------------------------------------
 from ..ui.elements import *
 from ..ui.themes import ThemeManager, ThemeStyle
+
+# Storage imports
+from ..storage import Atlas, AtlasCategory, AtlasItem, Savedata, MachineEncryption
 
 
 # ----------------------------------------------------------------------
@@ -263,6 +267,7 @@ class VersionOverlay(DebugOverlay):
     def __init__(self, engine: 'LunaEngine', x: int = 180, y: int = 110) -> None:
         super().__init__(engine, x, y, width=200, height=120, title="Version")
         self.luna_version = __version__
+        self.luna_status = __status__
         self.python_version = sys.version.split()[0]
         self.pygame_version = pygame.version.ver
         self.opengl_version = ""
@@ -276,11 +281,79 @@ class VersionOverlay(DebugOverlay):
 
     def render_content(self, renderer: OpenGLRenderer) -> None:
         y = self.y + self.header_height + 5 * self.scale
-        renderer.draw_text(f"Luna: {self.luna_version}", self.x + 10 * self.scale, y, self.text_color, self.font)
+        renderer.draw_text(f"Framework: {self.luna_version} - {self.luna_status}", self.x + 10 * self.scale, y, self.text_color, self.font)
         renderer.draw_text(f"Python: {self.python_version}", self.x + 10 * self.scale, y + 24 * self.scale, self.text_color, self.font)
         renderer.draw_text(f"Pygame: {self.pygame_version}", self.x + 10 * self.scale, y + 48 * self.scale, self.text_color, self.font)
         renderer.draw_text(f"OpenGL: {self.opengl_version}", self.x + 10 * self.scale, y + 72 * self.scale, self.text_color, self.font)
 
+class StorageOverlay(DebugOverlay):
+    """
+    A compact overlay showing storage system status:
+    - Atlas: root path, item count, bundle status
+    - Savedata: file path, table count, total rows
+    """
+    def __init__(self, engine: 'LunaEngine', x: int = 10, y: int = 230) -> None:
+        super().__init__(engine, x, y, width=260, height=140, title="Storage")
+        self._last_update = 0
+        self._atlas_info = ""
+        self._savedata_info = ""
+
+    def refresh(self, dt: float) -> None:
+        # Update at most every 0.5 seconds to avoid constant string re‑creation
+        self._last_update += dt
+        if self._last_update < 0.5:
+            return
+        self._last_update = 0
+
+        atlas = self.engine.atlas
+        if atlas:
+            count = len(atlas.atlas)
+            bundle = "Yes" if atlas.is_bundle_loaded() else "No"
+            root = str(atlas.root_path)
+            if len(root) > 30:
+                root = "..." + root[-27:]
+            self._atlas_info = f"Atlas: {count} items  (bundle: {bundle})  root: {root}"
+        else:
+            self._atlas_info = "Atlas: not available"
+
+        savedata = getattr(self.engine, 'savedata', None)
+        if savedata and savedata.tables:
+            table_count = len(savedata.tables)
+            total_rows = sum(len(t.rows) for t in savedata.tables.values())
+            filepath = str(savedata.filepath) if savedata.filepath else "None"
+            if len(filepath) > 25:
+                filepath = "..." + filepath[-22:]
+            self._savedata_info = f"Savedata: {table_count} tables, {total_rows} rows  (file: {filepath})"
+        else:
+            self._savedata_info = "Savedata: none"
+
+    def render_content(self, renderer: OpenGLRenderer) -> None:
+        y = self.y + self.header_height + 5 * self.scale
+        # Atlas line
+        renderer.draw_text(self._atlas_info, self.x + 10 * self.scale, y,
+                           self.text_color, self.font)
+        y += 24 * self.scale
+        # Savedata line
+        renderer.draw_text(self._savedata_info, self.x + 10 * self.scale, y,
+                           self.text_color, self.font)
+        y += 24 * self.scale
+        # Optional: show bundle size if loaded
+        if self.engine.atlas and self.engine.atlas.is_bundle_loaded():
+            try:
+                bundle_size = self.engine.atlas._bundle_path.stat().st_size
+                size_str = self._human_size(bundle_size)
+                renderer.draw_text(f"Bundle size: {size_str}", self.x + 10 * self.scale, y,
+                                   self.text_color, self.font)
+            except:
+                pass
+
+    @staticmethod
+    def _human_size(num: int) -> str:
+        for unit in ["B", "KB", "MB", "GB"]:
+            if num < 1024.0:
+                return f"{num:.1f} {unit}"
+            num /= 1024.0
+        return f"{num:.1f} TB"
 
 # ----------------------------------------------------------------------
 # Console Log Manager
@@ -337,13 +410,16 @@ class LiveInspector(UiFrame):
     - Overlays: manage debug overlays
     - Settings: theme, dark mode, utilities
     - Tasks: background task status
+    - Storage: sub‑tabs for Atlas, Savedata, Encryption
     """
 
     def __init__(self, engine: 'LunaEngine', x: int = 100, y: int = 100) -> None:
         self._perf_labels = {}
         self._last_back_time = 0
         self._last_element_click_time = 0
-        self.hierarchy_stack: List[List[UIElement]] = []
+        # Store the actual parent path instead of copied lists. This survives
+        # refreshes caused by rebuilding the hierarchy scrolling frame.
+        self.hierarchy_stack: List[UIElement] = []
         self._current_display_elements: List[UIElement] = []
 
         super().__init__(
@@ -386,6 +462,7 @@ class LiveInspector(UiFrame):
             "Overlays": (self._setup_overlays_tab, None),
             "Settings": (self._setup_settings_tab, None),
             "Tasks": (self._setup_tasks_tab, self._update_tasks_tab),
+            "Storage": (self._setup_storage_tab, self._update_storage_tab),
         }
 
         # Build all tabs
@@ -948,12 +1025,12 @@ class LiveInspector(UiFrame):
 
         # Theme dropdown
         self.themes_dropdown = Dropdown(5, 5, 150, 23, list(self.engine.get_all_themes().keys()), int(16 * scale))
-        self.themes_dropdown.set_on_selection_changed(lambda index, name: self.engine.set_global_theme(name))
+        self.themes_dropdown.set_on_selection_changed(lambda index, name: (self.engine.set_global_theme(name), self.dark_mode_toggle.__setattr__('checked', ThemeManager.get_dark_mode())))
         tab_frame.add_child(self.themes_dropdown)
 
         # Dark mode toggle
         self.dark_mode_toggle = Checkbox(
-            160, 5, 20, 20,
+            165, 5, 20, 20,
             ThemeManager.get_dark_mode(),
             label="Dark"
         )
@@ -967,19 +1044,25 @@ class LiveInspector(UiFrame):
             self.themes_dropdown.selected_index = theme_names.index(current_theme_name)
 
         # Force Kill
-        self.force_kill_btn = Button(5, 30, 120, 23, "Force Kill", int(16 * scale))
+        self.force_kill_btn = Button(5, 35, 120, 23, "Force Kill", int(16 * scale))
         self.force_kill_btn.set_on_click(self._force_kill)
         tab_frame.add_child(self.force_kill_btn)
 
         # Re-init
-        self.reinit_btn = Button(5, 55, 120, 23, "Re-init Game", int(16 * scale))
+        self.reinit_btn = Button(5, 65, 120, 23, "Re-init Game", int(16 * scale))
         self.reinit_btn.set_on_click(self._reinit_game)
         tab_frame.add_child(self.reinit_btn)
 
         # Clear cache
-        self.clear_cache_btn = Button(5, 80, 120, 23, "Clear Cache", int(16 * scale))
+        self.clear_cache_btn = Button(5, 95, 120, 23, "Clear Cache", int(16 * scale))
         self.clear_cache_btn.set_on_click(self._clear_all_caches)
         tab_frame.add_child(self.clear_cache_btn)
+        
+        # Frame Per Second Select
+        self.fps_selector = NumberSelector(
+            5, 125, 120, 23, 15, 520, self.engine.fps, label='FPS', label_position='left', label_size=int(16*scale))
+        self.fps_selector.set_on_value_changed(lambda value: self.engine.__setattr__('fps',  min(max(value, 15), 520)))
+        tab_frame.add_child(self.fps_selector)
 
     def _force_kill(self):
         self.engine.running = False
@@ -1070,6 +1153,233 @@ class LiveInspector(UiFrame):
 
         self.tasks_scrolling.content_height = max(self.tasks_scrolling.height, y + 10)
         self.tasks_scrolling.scroll_y = 0
+
+    # ==================================================================
+    # NEW TAB: Storage (with sub-tabs for Atlas, Savedata, Encryption)
+    # ==================================================================
+
+    def _setup_storage_tab(self):
+        """Create the Storage tab with sub-tabs for Atlas, Savedata, and Encryption."""
+        tab_frame = self._get_tab_frame("Storage")
+        if tab_frame is None:
+            return
+
+        scale = self.scale
+        tab_width = tab_frame.width
+        tab_height = tab_frame.height
+
+        # Create a Tabination inside this tab for the sub-tabs
+        self.storage_sub_tabs = Tabination(
+            0, 0,
+            tab_width, tab_height,
+            font_size=int(max(14 * scale, 14)),
+            orientation='vertical1',
+            tab_width=int(55 * scale),
+            tab_height=int(30 * scale),
+            pivot=(0, 0)
+        )
+        tab_frame.add_child(self.storage_sub_tabs)
+
+        # Sub-tab names
+        sub_tabs = ["Atlas", "Savedata", "Encryption"]
+
+        # We'll store the scrolling frames for each sub-tab
+        self.storage_frames = {}
+
+        for sub_name in sub_tabs:
+            self.storage_sub_tabs.add_tab(sub_name)
+
+            # Create a ScrollingFrame for the content of this sub-tab
+            frame = ScrollingFrame(
+                0, 0,
+                self.storage_sub_tabs.width - self.storage_sub_tabs.tab_width,
+                self.storage_sub_tabs.height,
+                self.storage_sub_tabs.width - self.storage_sub_tabs.tab_width,
+                2000,
+                scrollbar_size=8
+            )
+            frame.set_background_color((30, 30, 40, 180))
+            # Add the frame to the sub-tab (by adding it to the tab's frame)
+            sub_frame = self.storage_sub_tabs.get_tab_frame(sub_name)
+            if sub_frame:
+                sub_frame.add_child(frame)
+                self.storage_frames[sub_name] = frame
+
+        # Initial population
+        self._update_storage_tab()
+
+    def _update_storage_tab(self):
+        """Update the Storage tab views (called every frame when visible)."""
+        if not self.visible:
+            return
+
+        self._update_atlas_view()
+        self._update_savedata_view()
+        self._update_encryption_view()
+
+    def _update_atlas_view(self):
+        """Update the Atlas sub-tab content."""
+        frame = self.storage_frames.get("Atlas")
+        if not frame:
+            return
+
+        # Clear and rebuild content
+        frame.clear_content()
+        atlas = self.engine.atlas
+
+        if not atlas:
+            label = TextLabel(5, 5, "Atlas not available", int(14 * self.scale), color=(200, 100, 100))
+            frame.add_child(label)
+            frame.content_height = 30
+            return
+
+        y = 5
+
+        # Bundle info
+        bundle_text = f"Bundle loaded: {atlas.is_bundle_loaded()}"
+        if atlas.is_bundle_loaded():
+            bundle_text += f"  (path: {atlas._bundle_path})"
+        label = TextLabel(5, y, bundle_text, int(14 * self.scale), color=(220, 220, 220))
+        frame.add_child(label)
+        y += 25
+
+        # List all items
+        items = list(atlas.atlas.items())
+        if not items:
+            label = TextLabel(5, y, "No items in atlas", int(14 * self.scale), color=(150, 150, 150))
+            frame.add_child(label)
+            y += 25
+        else:
+            # Header
+            header = TextLabel(5, y, "Name | Category | Path", int(14 * self.scale), color=(255, 255, 255))
+            frame.add_child(header)
+            y += 25
+
+            for name, item in items:
+                cat = item.category.value if isinstance(item.category, Enum) else str(item.category)
+                path = str(item.path)
+                if len(path) > 50:
+                    path = "..." + path[-47:]
+                line_text = f"{name} | {cat} | {path}"
+                label = TextLabel(5, y, line_text, int(12 * self.scale), color=(200, 200, 200))
+                frame.add_child(label)
+                y += 22
+
+                # If bundle loaded, show size/CRC from manifest
+                if atlas.is_bundle_loaded() and atlas._bundle_manifest:
+                    res_info = atlas._bundle_manifest.get("resources", {}).get(name)
+                    if res_info:
+                        size = res_info.get("size", 0)
+                        crc = res_info.get("crc32", "")
+                        info_text = f"  size: {size} bytes, CRC: {crc}"
+                        info_label = TextLabel(10, y, info_text, int(11 * self.scale), color=(150, 150, 150))
+                        frame.add_child(info_label)
+                        y += 18
+
+        frame.content_height = max(frame.height, y + 10)
+
+    def _update_savedata_view(self):
+        """Update the Savedata sub-tab content."""
+        frame = self.storage_frames.get("Savedata")
+        if not frame:
+            return
+
+        frame.clear_content()
+        savedata = getattr(self.engine, 'savedata', None)
+
+        y = 5
+
+        if savedata is None:
+            label = TextLabel(5, y, "No Savedata instance attached to engine", int(14 * self.scale), color=(200, 100, 100))
+            frame.add_child(label)
+            frame.content_height = 30
+            return
+
+        # Show filepath
+        if savedata.filepath:
+            label = TextLabel(5, y, f"File: {savedata.filepath}", int(14 * self.scale), color=(220, 220, 220))
+            frame.add_child(label)
+            y += 25
+
+        # List tables
+        tables = savedata.tables
+        if not tables:
+            label = TextLabel(5, y, "No tables", int(14 * self.scale), color=(150, 150, 150))
+            frame.add_child(label)
+            y += 25
+        else:
+            for name, table in tables.items():
+                line = f"Table: {name}  (rows: {len(table)}, columns: {table.columns})"
+                label = TextLabel(5, y, line, int(14 * self.scale), color=(200, 200, 200))
+                frame.add_child(label)
+                y += 22
+
+                # Show first few rows
+                sample_rows = table.rows[:3]
+                if sample_rows:
+                    for i, row in enumerate(sample_rows):
+                        row_str = str(row)
+                        if len(row_str) > 60:
+                            row_str = row_str[:57] + "..."
+                        row_label = TextLabel(10, y, f"  {row_str}", int(12 * self.scale), color=(180, 180, 180))
+                        frame.add_child(row_label)
+                        y += 18
+                    if len(table.rows) > 3:
+                        more_label = TextLabel(10, y, f"  ... and {len(table.rows)-3} more rows", int(12 * self.scale), color=(150, 150, 150))
+                        frame.add_child(more_label)
+                        y += 18
+                y += 5
+
+        frame.content_height = max(frame.height, y + 10)
+
+    def _update_encryption_view(self):
+        """Update the Encryption sub-tab content."""
+        frame = self.storage_frames.get("Encryption")
+        if not frame:
+            return
+
+        frame.clear_content()
+        y = 5
+
+        # Show MachineEncryption info
+        try:
+            enc = MachineEncryption()
+            hwid = enc.get_hwid_key(16)
+            hwid_hex = hwid.hex()
+            label = TextLabel(5, y, f"HWID (16 bytes): {hwid_hex}", int(14 * self.scale), color=(220, 220, 220))
+            frame.add_child(label)
+            y += 25
+
+            # Test encryption/decryption with a sample string
+            test_data = b"LunaEngine test data"
+            encrypted = enc.xor_cipher(test_data)
+            decrypted = enc.xor_cipher(encrypted)
+            if decrypted == test_data:
+                status = "OK"
+                color = (100, 255, 100)
+            else:
+                status = "FAIL"
+                color = (255, 100, 100)
+            label = TextLabel(5, y, f"Encryption test: {status}", int(14 * self.scale), color=color)
+            frame.add_child(label)
+            y += 22
+
+            label = TextLabel(5, y, f"Original: {test_data[:20]}", int(12 * self.scale), color=(180, 180, 180))
+            frame.add_child(label)
+            y += 18
+            label = TextLabel(5, y, f"Encrypted: {encrypted[:20]}...", int(12 * self.scale), color=(180, 180, 180))
+            frame.add_child(label)
+            y += 18
+            label = TextLabel(5, y, f"Decrypted: {decrypted[:20]}", int(12 * self.scale), color=(180, 180, 180))
+            frame.add_child(label)
+            y += 25
+
+        except Exception as e:
+            label = TextLabel(5, y, f"Encryption error: {e}", int(14 * self.scale), color=(255, 100, 100))
+            frame.add_child(label)
+            y += 25
+
+        frame.content_height = max(frame.height, y + 10)
 
     # ------------------------------------------------------------------
     # Helper methods for UI elements
@@ -1231,7 +1541,17 @@ class LiveInspector(UiFrame):
         self._build_hierarchy_view(root_elements)
 
     def recharge(self):
-        self._build_root_hierarchy()
+        # UI mutation callbacks can call recharge while the inspector is open.
+        # Preserve the current path rather than silently jumping back to root.
+        if self.hierarchy_stack:
+            parent = self.hierarchy_stack[-1]
+            if parent not in self.engine.current_scene.ui_elements and not parent.parent:
+                self._build_root_hierarchy()
+                return
+            self._build_hierarchy_view(parent.children)
+        else:
+            root_elements = self.engine.current_scene.ui_elements if self.engine.current_scene else []
+            self._build_hierarchy_view(root_elements)
 
     def _build_hierarchy_view(self, elements: List[UIElement]):
         self._current_display_elements = elements.copy()
@@ -1264,8 +1584,12 @@ class LiveInspector(UiFrame):
             return
         self._last_back_time = now
         if self.hierarchy_stack:
-            previous_list = self.hierarchy_stack.pop()
-            self._build_hierarchy_view(previous_list)
+            self.hierarchy_stack.pop()
+            if self.hierarchy_stack:
+                self._build_hierarchy_view(self.hierarchy_stack[-1].children)
+            else:
+                root_elements = self.engine.current_scene.ui_elements if self.engine.current_scene else []
+                self._build_hierarchy_view(root_elements)
         else:
             self._build_root_hierarchy()
 
@@ -1279,7 +1603,7 @@ class LiveInspector(UiFrame):
     def _on_element_click(self, element: UIElement):
         self._show_element_properties(element)
         if element.children:
-            self.hierarchy_stack.append(self._current_display_elements)
+            self.hierarchy_stack.append(element)
             self._build_hierarchy_view(element.children)
 
     def _show_element_properties(self, element: UIElement):

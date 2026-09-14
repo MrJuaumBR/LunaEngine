@@ -37,7 +37,7 @@ def get_shadow_for_variant(mode: Literal["dark", "light"], base_color: Tuple[int
     }
 
 
-def compile_themes(themes_path: Path, output_path: Path, compact: bool = False):
+def compile_themes(themes_path: Path, output_path: Path, compact: bool = False, verbose: bool = False):
     """Compile all theme JSON files into a single themes.json."""
     if not themes_path.exists():
         raise FileNotFoundError(f"Themes path '{themes_path}' does not exist.")
@@ -51,7 +51,8 @@ def compile_themes(themes_path: Path, output_path: Path, compact: bool = False):
     }
 
     for theme_file in themes_path.glob("*.json"):
-        print(f"Compiling: {theme_file.name}")
+        if verbose:
+            print(f"Compiling: {theme_file.name}")
         data = json.loads(theme_file.read_text(encoding="utf-8"))
         themes_data["themes"][theme_file.name.upper()] = {
             "name": theme_file.name,
@@ -64,10 +65,10 @@ def compile_themes(themes_path: Path, output_path: Path, compact: bool = False):
     indent = None if compact else 4
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(themes_data, f, indent=indent, ensure_ascii=False, separators=(",", ":"))
-    print(f"✅ Compiled {themes_data['total_themes']} themes to '{output_path}'")
+    print(f"[S] Compiled {themes_data['total_themes']} themes to '{output_path}'")
 
 
-def uncompile_themes(input_path: Path, themes_path: Path, compact: bool = False):
+def uncompile_themes(input_path: Path, themes_path: Path, compact: bool = False, verbose: bool = False):
     """Split a themes.json into separate theme files."""
     if not input_path.exists():
         raise FileNotFoundError(f"Input '{input_path}' not found.")
@@ -79,17 +80,18 @@ def uncompile_themes(input_path: Path, themes_path: Path, compact: bool = False)
     print(f"Uncompiling {total} themes from '{input_path}'")
 
     for key, entry in data.get("themes", {}).items():
-        print(f"  Writing: {entry['name']}")
+        if verbose:
+            print(f"  Writing: {entry['name']}")
         try:
             out_file = Path(entry["path"]) if entry.get("path") else themes_path / entry["name"]
             indent = None if compact else 4
             with open(out_file, "w", encoding="utf-8") as f:
                 json.dump(entry["data"], f, indent=indent, ensure_ascii=False, separators=(",", ":"))
         except Exception as e:
-            print(f"  ⚠️ Skipping {entry['name']}: {e}")
+            print(f"  [!] Skipping {entry['name']}: {e}")
 
 
-def fix_shadows(input_path: Path, output_path: Path):
+def fix_shadows(input_path: Path, output_path: Path, overwrite: bool = False, verbose: bool = False):
     """Add shadow properties to every style entry in all themes."""
     if not input_path.exists():
         raise FileNotFoundError(f"Input '{input_path}' not found.")
@@ -104,9 +106,14 @@ def fix_shadows(input_path: Path, output_path: Path):
                 if isinstance(style_props, dict) and "color" in style_props:
                     style_props["shadow"] = get_shadow_for_variant(mode, style_props["color"])
 
-    with open(output_path, "w", encoding="utf-8") as f:
+    if overwrite:
+        out_path = input_path
+    else:
+        out_path = output_path
+
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
-    print(f"✅ Fixed shadows saved to '{output_path}'")
+    print(f"[S] Fixed shadows saved to '{out_path}'")
 
 
 def main():
@@ -120,6 +127,7 @@ def main():
     compile_parser.add_argument("-o", "--output", dest="output_path", type=Path, default=DEFAULT_OUTPUT,
                                 help="Output path for themes.json")
     compile_parser.add_argument("-c", "--compact", action="store_true", help="Compact output (no indentation)")
+    compile_parser.add_argument("-v", "--verbose", action="store_true", help="Increase output verbosity")
 
     # uncompile
     uncompile_parser = subparsers.add_parser("uncompile", help="Uncompile themes")
@@ -128,22 +136,26 @@ def main():
     uncompile_parser.add_argument("-o", "--output", dest="output_path", type=Path, default=DEFAULT_THEMES_PATH,
                                   help="Output folder for individual theme files")
     uncompile_parser.add_argument("-c", "--compact", action="store_true", help="Compact output (no indentation)")
+    uncompile_parser.add_argument("-v", "--verbose", action="store_true", help="Increase output verbosity")
 
     # fix-shadows
     fix_parser = subparsers.add_parser("fix-shadows", help="Add shadow properties to themes")
     fix_parser.add_argument("-i", "--input", dest="input_path", type=Path, default=DEFAULT_OUTPUT,
                             help="Path to themes.json")
     fix_parser.add_argument("-o", "--output", dest="output_path", type=Path, default=DEFAULT_OUTPUT,
-                            help="Output path (default: overwrite input)")
+                            help="Output path (default: same as input unless --overwrite is used)")
+    fix_parser.add_argument("--overwrite", action="store_true",
+                            help="Overwrite the input file instead of creating a new one")
+    fix_parser.add_argument("-v", "--verbose", action="store_true", help="Increase output verbosity")
 
     args = parser.parse_args()
 
     if args.command == "compile":
-        compile_themes(args.input_path, args.output_path, args.compact)
+        compile_themes(args.input_path, args.output_path, args.compact, args.verbose)
     elif args.command == "uncompile":
-        uncompile_themes(args.input_path, args.output_path, args.compact)
+        uncompile_themes(args.input_path, args.output_path, args.compact, args.verbose)
     elif args.command == "fix-shadows":
-        fix_shadows(args.input_path, args.output_path)
+        fix_shadows(args.input_path, args.output_path, args.overwrite, args.verbose)
     else:
         parser.print_help()
 

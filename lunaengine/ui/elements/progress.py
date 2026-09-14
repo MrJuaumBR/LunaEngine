@@ -3,7 +3,7 @@ import pygame
 from typing import Optional, Literal, Tuple, Dict, Any
 from .base import UIElement, FontManager
 from ..themes import ThemeManager, ThemeType
-from ...core.renderer import Renderer
+from ...backend.opengl import OpenGLRenderer
 
 class ProgressBar(UIElement):
     """
@@ -169,7 +169,7 @@ class ProgressBar(UIElement):
             b = 0
         return (r, g, b)
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         """Render the progress bar."""
         if not self.visible:
             return

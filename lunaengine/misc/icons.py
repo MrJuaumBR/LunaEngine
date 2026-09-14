@@ -189,7 +189,15 @@ class Icons:
     _ALL_ICON_NAMES = [
         'success', 'info', 'warn', 'error',
         'home', 'folder', 'plus', 'cross',
-        'search', 'settings', 'save', 'load', 'picture'
+        'search', 'settings', 'save', 'load', 'picture',
+        'unlock', 'lock', 'key', 'file', 'wrench', 'hammer', 'shield', 'engine', 'back',
+        'steam', 'discord', 'youtube', 'github', 'audio',
+        'calendar', 'clock', 'cloud', 'database', 'brain', 'link', 'location',
+        'microphone', 'mute', 'unmute', 'python', 'synchronize', 'camera', 'wifi',
+        'trash', 'undo', 'redo', 'cube', 'sphere', 'rocket', 'notification', 'dialog',
+        'controller', 'hide', 'show', 'ranking', 'icons', 'selection', 'puzzle', 'light', 'id',
+        'card', 'target', 'aim', 'click', 'debug', 'timer', 'anvil', 'browser', 'omega', 'pi', 'options',
+        'plane', 'documentation', 'fire'
     ]
 
     @classmethod
@@ -299,6 +307,187 @@ class Icons:
     @classmethod
     def GITHUB(cls, size: Optional[int] = None) -> Icon:
         return Icon('github.png', size=size)
+    
+    @classmethod
+    def AUDIO(cls, size: Optional[int] = None) -> Icon:
+        return Icon('audio.png', size=size)
+
+    @classmethod
+    def CALENDAR(cls, size: Optional[int] = None) -> Icon:
+            return Icon('calendar.png', size=size)
+    
+    @classmethod
+    def CLOCK(cls, size: Optional[int] = None) -> Icon:
+        return Icon('clock.png', size=size)
+        
+    @classmethod
+    def CLOUD(cls, size: Optional[int] = None) -> Icon:
+        return Icon('cloud.png', size=size)
+        
+    @classmethod
+    def DATABASE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('database.png', size=size)
+        
+    @classmethod
+    def BRAIN(cls, size: Optional[int] = None) -> Icon:
+        return Icon('brain.png', size=size)
+        
+    @classmethod
+    def LINK(cls, size: Optional[int] = None) -> Icon:
+        return Icon('link.png', size=size)
+        
+    @classmethod
+    def LOCATION(cls, size: Optional[int] = None) -> Icon:
+        return Icon('location.png', size=size)
+        
+    @classmethod
+    def MICROPHONE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('microphone.png', size=size)
+        
+    @classmethod
+    def MUTE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('mute.png', size=size)
+        
+    @classmethod
+    def UNMUTE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('unmute.png', size=size)
+    
+    @classmethod
+    def PYTHON(cls, size: Optional[int] = None) -> Icon:
+        return Icon('python.png', size=size)
+    
+    @classmethod
+    def SYNCHRONIZE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('synchronize.png', size=size)
+    
+    @classmethod
+    def CAMERA(cls, size: Optional[int] = None) -> Icon:
+        return Icon('camera.png', size=size)
+    
+    @classmethod
+    def WIFI(cls, size: Optional[int] = None) -> Icon:
+        return Icon('wifi.png', size=size)
+    
+    @classmethod
+    def TRASH(cls, size: Optional[int] = None) -> Icon:
+        return Icon('trash.png', size=size)
+    
+    @classmethod
+    def UNDO(cls, size: Optional[int] = None) -> Icon:
+        return Icon('undo.png', size=size)
+    
+    @classmethod
+    def REDO(cls, size: Optional[int] = None) -> Icon:
+        return Icon('redo.png', size=size)
+    
+    @classmethod
+    def CUBE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('cube.png', size=size)
+    
+    @classmethod
+    def SPHERE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('sphere.png', size=size)
+    
+    @classmethod
+    def ROCKET(cls, size: Optional[int] = None) -> Icon:
+        return Icon('rocket.png', size=size)
+
+    @classmethod
+    def NOTIFICATION(cls, size: Optional[int] = None) -> Icon:
+        return Icon('notification.png', size=size)
+    
+    @classmethod
+    def DIALOG(cls, size: Optional[int] = None) -> Icon:
+        return Icon('dialog.png', size=size)
+    
+    @classmethod
+    def CONTROLLER(cls, size: Optional[int] = None) -> Icon:
+        return Icon('controller.png', size=size)
+    
+    @classmethod
+    def HIDE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('hide.png', size=size)
+    
+    @classmethod
+    def SHOW(cls, size: Optional[int] = None) -> Icon:
+        return Icon('show.png', size=size)
+    
+    @classmethod
+    def RANKING(cls, size: Optional[int] = None) -> Icon:
+        return Icon('ranking.png', size=size)
+    
+    @classmethod
+    def ICONS(cls, size: Optional[int] = None) -> Icon:
+        return Icon('icons.png', size=size)
+    
+    @classmethod
+    def SELECTION(cls, size: Optional[int] = None) -> Icon:
+        return Icon('selection.png', size=size)
+    
+    @classmethod
+    def PUZZLE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('puzzle.png', size=size)
+    
+    @classmethod
+    def LIGHT(cls, size: Optional[int] = None) -> Icon:
+        return Icon('light.png', size=size)
+    
+    @classmethod
+    def ID(cls, size: Optional[int] = None) -> Icon:
+        return Icon('id.png', size=size)
+    
+    @classmethod
+    def CARD(cls, size: Optional[int] = None) -> Icon:
+        return Icon('card.png', size=size)
+    
+    @classmethod
+    def TARGET(cls, size: Optional[int] = None) -> Icon:
+        return Icon('target.png', size=size)
+    
+    @classmethod
+    def AIM(cls, size: Optional[int] = None) -> Icon:
+        return Icon('aim.png', size=size)
+    
+    @classmethod
+    def CLICK(cls, size: Optional[int] = None) -> Icon:
+        return Icon('click.png', size=size)
+    
+    @classmethod
+    def DEBUG(cls, size: Optional[int] = None) -> Icon:
+        return Icon('debug.png', size=size)
+
+    @classmethod
+    def ANVIL(cls, size: Optional[int] = None) -> Icon:
+        return Icon('anvil.png', size=size)
+    
+    @classmethod
+    def TIMER(cls, size: Optional[int] = None) -> Icon:
+        return Icon('timer.png', size=size)
+    
+    @classmethod
+    def TIMER(cls, size: Optional[int] = None) -> Icon:
+        return Icon('timer.png', size=size)
+    
+    @classmethod
+    def PI(cls, size: Optional[int] = None) -> Icon:
+        return Icon('pi.png', size=size)
+    
+    @classmethod
+    def OPTIONS(cls, size: Optional[int] = None) -> Icon:
+        return Icon('options.png', size=size)
+    
+    @classmethod
+    def PLANE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('plane.png', size=size)
+    
+    @classmethod
+    def DOCUMENTATION(cls, size: Optional[int] = None) -> Icon:
+        return Icon('documentation.png', size=size)
+    
+    @classmethod
+    def FIRE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('fire.png', size=size)
+    
 
     @classmethod
     def get_icon(cls, name: str, size: Optional[int] = None) -> Icon:
@@ -348,7 +537,51 @@ class Icons:
             cls.STEAM(size),
             cls.DISCORD(size),
             cls.YOUTUBE(size),
-            cls.GITHUB(size)
+            cls.GITHUB(size),
+            cls.AUDIO(size),
+            cls.CALENDAR(size),
+            cls.CLOCK(size),
+            cls.CLOUD(size),
+            cls.DATABASE(size),
+            cls.BRAIN(size),
+            cls.LINK(size),
+            cls.LOCATION(size),
+            cls.MICROPHONE(size),
+            cls.MUTE(size),
+            cls.UNMUTE(size),
+            cls.PYTHON(size),
+            cls.SYNCHRONIZE(size),
+            cls.CAMERA(size),
+            cls.WIFI(size),
+            cls.TRASH(size),
+            cls.REDO(size),
+            cls.UNDO(size),
+            cls.CUBE(size),
+            cls.SPHERE(size),
+            cls.ROCKET(size),
+            cls.NOTIFICATION(size),
+            cls.DIALOG(size),
+            cls.CONTROLLER(size),
+            cls.HIDE(size),
+            cls.SHOW(size),
+            cls.RANKING(size),
+            cls.ICONS(size),
+            cls.SELECTION(size),
+            cls.PUZZLE(size),
+            cls.LIGHT(size),
+            cls.ID(size),
+            cls.CARD(size),
+            cls.TARGET(size),
+            cls.AIM(size),
+            cls.CLICK(size),
+            cls.DEBUG(size),
+            cls.ANVIL(size),
+            cls.TIMER(size),
+            cls.PI(size),
+            cls.OPTIONS(size),
+            cls.PLANE(size),
+            cls.DOCUMENTATION(size),
+            cls.FIRE(size),
         ]
         
     @classmethod

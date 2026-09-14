@@ -414,7 +414,7 @@ class ColorKeys:
     """
     keys: Dict[float, Color] = {}
 
-    def __init__(self, colors: Union[List[Tuple[int, int, int, float]], List[Color], Dict[float, Color]], alpha_factor: float = 1.0):
+    def __init__(self, colors: Union[List[Tuple[int, int, int, float]|Tuple[int, int, int]], List[Color], Dict[float, Color]], alpha_factor: float = 1.0):
         if isinstance(colors, list) and len(colors) >= 2:
             if isinstance(colors[0], Color):
                 color_list = colors

@@ -549,6 +549,15 @@ class Query:
         self._case_sensitive = case_sensitive
         return self
 
+    def get_all(self, columns: Optional[List[str]] = None, order_by: Optional[Union[str, List[str]]] = None,
+                order_desc: Union[bool, List[bool]] = False) -> List[Dict]:
+        """
+        Shortcut to execute the query and return all matching rows.
+        """
+        if order_by:
+            self.order_by(order_by, desc=order_desc)
+        return self.execute(columns=columns)
+
     def execute(self, columns: Optional[List[str]] = None) -> List[Dict]:
         return self.table.select(
             where=self._where,
@@ -599,12 +608,22 @@ class Savedata:
         self.encryption_key = encryption_key
         if self.filepath and self.filepath.exists():
             self.load(self.filepath, encryption_key)
+        else:
+            try:
+                # Try creating
+                self.save(self.filepath, encryption_key)
+                
+                # Try loading again
+                if self.filepath and self.filepath.exists():
+                    self.load(self.filepath, encryption_key)
+            except SavedataError:
+                print("Failed to create savedata file. Using an empty one instead.")
 
     def create_table(self, name: str, columns: List[str],
                      primary_key: Optional[str] = None,
                      auto_increment: bool = False) -> Table:
         if name in self.tables:
-            raise ValueError(f"Table '{name}' already exists")
+            return self.tables[name]
         table = Table(name, columns, primary_key, auto_increment)
         self.tables[name] = table
         return table
@@ -645,11 +664,17 @@ class Savedata:
             f.write(data)
 
     def load(self, filepath: Optional[Union[str, Path]] = None,
-             encryption_key: Optional[str] = None) -> None:
+             encryption_key: Optional[str] = None, auto_create: bool = True) -> None:
+        if filepath is None:
+            filepath = self.filepath
         if filepath:
             self.filepath = Path(filepath)
-        if not self.filepath or not self.filepath.exists():
+        if self.filepath and isinstance(self.filepath, Path) and not self.filepath.exists() and not auto_create:
             raise FileNotFoundError(f"Savedata file not found: {self.filepath}")
+        elif auto_create and self.filepath and not self.filepath.exists():
+            # Create an empty savedata file
+            self.save(self.filepath, encryption_key=encryption_key, compress=True)
+            return  # nothing to load
         if encryption_key is not None:
             self.encryption_key = encryption_key
 

@@ -7,6 +7,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="theme.css" rel="stylesheet">
+    <style>
+        /* Chevron rotation animation */
+        .chevron-rotate {
+            transition: transform 0.3s ease;
+        }
+        .chevron-rotate.collapsed {
+            transform: rotate(-90deg);
+        }
+    </style>
 </head>
 <body>
     
@@ -48,16 +57,26 @@ pip install -r requirements.txt
 python examples/snake_demo.py</code></pre>
             </div>
         </div>
+        
+        <!-- SNAKE GAME EXAMPLE WITH COLLAPSE -->
         <div class="card mb-4 shadow-sm">
-            <div class="card-header bg-success text-white">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="bi bi-play-circle me-2"></i>Snake Game Example</h5>
+                <button class="btn btn-sm btn-light" type="button" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#snakeCodeCollapse" 
+                        aria-expanded="false" 
+                        aria-controls="snakeCodeCollapse">
+                    <i class="bi bi-chevron-down chevron-rotate collapsed" id="snakeToggleIcon"></i>
+                </button>
             </div>
-            <div class="card-body">
-                <p class="text-muted mb-3">
-                    <i class="bi bi-info-circle me-1"></i>
-                    This is the actual code from <code>examples/snake_demo.py</code>
-                </p>
-                <pre><code>import sys
+            <div class="collapse" id="snakeCodeCollapse">
+                <div class="card-body">
+                    <p class="text-muted mb-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        This is the actual code from <code>examples/snake_demo.py</code>
+                    </p>
+                    <pre><code>import sys
 import os
 import random
 sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
@@ -454,8 +473,10 @@ def main():
     
 if __name__ == &quot;__main__&quot;:
     main()</code></pre>
+                </div>
             </div>
         </div>
+        
         <div class="card mb-4 shadow-sm">
             <div class="card-header bg-info text-white">
                 <h5 class="mb-0"><i class="bi bi-book me-2"></i>Next Steps</h5>
@@ -493,7 +514,7 @@ if __name__ == &quot;__main__&quot;:
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-08-17 22:16
+                        Documentation generated on 2026-09-14 16:30
                     </p>
                 </div>
             </div>
@@ -501,7 +522,7 @@ if __name__ == &quot;__main__&quot;:
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="./theme.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -547,5 +568,20 @@ if __name__ == &quot;__main__&quot;:
     </script>
     
     
+    <script>
+        // Toggle chevron rotation when collapse is shown/hidden
+        document.addEventListener('DOMContentLoaded', function() {
+            const collapseElement = document.getElementById('snakeCodeCollapse');
+            const toggleIcon = document.getElementById('snakeToggleIcon');
+            if (collapseElement && toggleIcon) {
+                collapseElement.addEventListener('show.bs.collapse', function () {
+                    toggleIcon.classList.remove('collapsed');
+                });
+                collapseElement.addEventListener('hide.bs.collapse', function () {
+                    toggleIcon.classList.add('collapsed');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

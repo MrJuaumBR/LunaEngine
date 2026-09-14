@@ -18,7 +18,7 @@ if errorlevel 1 (
 REM 2. Generate code statistics
 echo.
 echo [2/3] Generating code statistics...
-python lunaengine\tools\code_stats.py
+python lunaengine\tools\code_stats.py --json --output docs\code_stats.json
 if errorlevel 1 (
     echo ERROR: code_stats.py failed
     pause

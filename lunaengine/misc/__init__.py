@@ -11,5 +11,5 @@ from .icons import Icon, Icons
 from .debug import DebugOverlay, DebugManager, SceneStatsOverlay, FPSOverlay
 
 __all__ = [
-    "Icon", "DebugOverlay", "DebugManager", "SceneStatsOverlay", "FPSOverlay",
+    "Icon", "Icons", "DebugOverlay", "DebugManager", "SceneStatsOverlay", "FPSOverlay",
 ]

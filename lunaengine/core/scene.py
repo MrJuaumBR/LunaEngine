@@ -13,17 +13,31 @@ from ..graphics.particles import ThreadedParticleSystem, ParticleSystem
 from ..graphics.shadows import SCSManager
 from ..core.audio import AudioManager
 from ..backend.opengl import OpenGLRenderer
-from ..core.renderer import Renderer
-from ..backend.types import ElementsList, ElementsListEvents
+from ..backend.types import ElementsList, ElementsListEvents, Ratio
+from ..storage.savedata import Savedata
 
 if TYPE_CHECKING:
     from ..core.engine import LunaEngine
 
 class Scene(ABC):
     name: str = ''
-    WIDTH: int = 0
-    HEIGHT: int = 0
+    WIDTH: int|float = 0
+    HEIGHT: int|float = 0
 
+    @property
+    def ratio(self) -> Ratio:
+        return self.engine.ratio
+    
+    @property
+    def renderer(self) -> OpenGLRenderer:
+        return self.engine.renderer
+    
+    @property
+    def savedata(self) -> Savedata|None:
+        if self.engine.__getattribute__('savedata') and self.engine.savedata:
+            return self.engine.savedata
+        return None
+    
     def __init__(self, engine: 'LunaEngine', *args: tuple | Any, **kwargs: dict | Any):
         self.ui_elements: ElementsList = ElementsList(on_change=self._ui_element_list)
         self._initialized = False
@@ -141,7 +155,7 @@ class Scene(ABC):
         self.shadow_system_enabled = enabled
         self.shadow_system.enabled = enabled
 
-    def render(self, renderer: Renderer | OpenGLRenderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         pass
 
     def get_scene_performance_stats(self) -> Dict[str, float]:
@@ -152,8 +166,9 @@ class Scene(ABC):
             "particle_count": self.particle_system.active_count if hasattr(self, 'particle_system') else 0
         }
 
-    def add_ui_element(self, ui_element: UIElement) -> None:
+    def add_ui_element(self, ui_element: UIElement) -> UIElement:
         self.ui_elements.append(ui_element)
+        return ui_element
 
     def remove_ui_element(self, ui_element: UIElement) -> bool:
         if ui_element in self.ui_elements:

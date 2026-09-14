@@ -49,6 +49,31 @@ def extract_theme_colors(file_path):
         print(f"      [WARNING] Error extracting theme colors: {e}")
         return {}
 
+# ========== LOAD CODE STATISTICS JSON ==========
+
+def load_code_stats() -> Dict:
+    stats_path = Path("docs/code_stats.json")
+    if stats_path.exists():
+        try:
+            with open(stats_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Error loading code_stats.json: {e}")
+    return {
+        "total_files": 0,
+        "total_lines": 0,
+        "code_lines": 0,
+        "comment_lines": 0,
+        "blank_lines": 0,
+        "files_by_extension": {},
+        "files": [],
+        "version": "unknown",
+        "version_status": "unknown",
+        "themes": {"total_themes": 0, "themes_with_both_variants": 0, "total_variants": 0},
+        "total_icons": 0,
+        "elements": {"total_elements": 0}
+    }
+
 # ========== THEMES PREVIEW SUPPORT ==========
 def load_all_themes() -> Dict[str, Dict[str, Any]]:
     themes = {}
@@ -144,33 +169,42 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
         print("No themes found, skipping themes preview page.")
         return
 
-    # Helper to safely extract color from a theme variant dict
-    def get_color(variant_data, key, default=(100,100,100)):
-        style = variant_data.get(key, {})
+    # Helper to extract color from a style dict
+    def get_color(style, default=(100,100,100)):
         color = style.get("color", default)
         if len(color) >= 3:
             return f"rgb({color[0]}, {color[1]}, {color[2]})"
         return f"rgb({default[0]}, {default[1]}, {default[2]})"
+
+    def get_style(variant_data, key, fallback_key=None):
+        style = variant_data.get(key)
+        if not style and fallback_key:
+            style = variant_data.get(fallback_key, {})
+        return style
 
     # Build theme cards HTML
     themes_html = ""
     for theme_name, variants in sorted(themes.items()):
         dark = variants.get("dark", {})
         light = variants.get("light", {})
-        # Use dark variant for default preview
-        default_variant = "dark"
+        default_variant = "dark" if dark else "light"
         default_data = dark if dark else light
 
-        bg_color = get_color(default_data, "background")
-        primary_text = get_color(default_data, "text_primary")
-        secondary_text = get_color(default_data, "text_secondary")
-        button_bg = get_color(default_data, "button_normal")
-        button_text_color = get_color(default_data, "button_text")
-        accent_color = get_color(default_data, "accent1")
-        border_color = get_color(default_data, "border")
+        # Extract initial colors with fallbacks
+        bg = get_color(get_style(default_data, "background"))
+        primary = get_color(get_style(default_data, "text_primary"))
+        secondary = get_color(get_style(default_data, "text_secondary"))
+        btn_bg = get_color(get_style(default_data, "button_normal"))
+        btn_text = get_color(get_style(default_data, "button_text"))
+        accent = get_color(get_style(default_data, "accent1"))
+        border = get_color(get_style(default_data, "border"))
+        dropdown_bg = get_color(get_style(default_data, "dropdown_normal", "background"))
+        dropdown_text = get_color(get_style(default_data, "dropdown_text", "text_primary"))
+        dropdown_border = get_color(get_style(default_data, "dropdown_border", "border"))
+        track_bg = get_color(get_style(default_data, "slider_track"))
+        fill_bg = get_color(get_style(default_data, "slider_thumb_normal", "accent1"))
 
-        # Determine contrasting text for button (for readability)
-        # Simple luminance check (if using rgb values we can extract numbers)
+        # Contrast color for button text
         def contrast_color(rgb_str):
             match = re.search(r'rgb\((\d+),\s*(\d+),\s*(\d+)\)', rgb_str)
             if match:
@@ -179,28 +213,45 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
                 return "#000" if luminance > 186 else "#fff"
             return "#fff"
 
-        button_text = contrast_color(button_bg)
+        button_text_color = contrast_color(btn_bg)
 
         # Card with variant toggles
         themes_html += f"""
         <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card theme-preview-card h-100 shadow-sm" style="border-top: 4px solid {accent_color};">
+            <div class="card theme-preview-card h-100 shadow-sm" style="border-top: 4px solid {accent};">
                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">{theme_name.replace('_', ' ').title()}</h5>
+                    <h5 class="card-title mb-0 card-header-title">{theme_name.replace('_', ' ').title()}</h5>
                     <div class="btn-group btn-group-sm" role="group">
                         <button class="btn btn-outline-secondary variant-toggle" data-theme-name="{theme_name}" data-variant="dark">Dark</button>
                         <button class="btn btn-outline-secondary variant-toggle" data-theme-name="{theme_name}" data-variant="light">Light</button>
                     </div>
                 </div>
-                <div class="card-body theme-preview-body" data-theme-name="{theme_name}" data-variant="{default_variant}" style="background-color: {bg_color};">
+                <div class="card-body theme-preview-body" data-theme-name="{theme_name}" data-variant="{default_variant}" style="background-color: {bg} !important;">
                     <div class="preview-ui">
-                        <span class="preview-label" style="color: {primary_text};">Sample Text</span>
-                        <span class="preview-label-secondary" style="color: {secondary_text};">Secondary text</span>
-                        <div class="preview-button" style="background-color: {button_bg}; color: {button_text}; padding: 0.25rem 0.75rem; border-radius: 4px; display: inline-block; margin: 0.5rem 0;">Button</div>
+                        <span class="preview-label" style="color: {primary} !important;">Sample Text</span>
+                        <span class="preview-label-secondary" style="color: {secondary} !important;">Secondary text</span>
+
+                        <!-- Button -->
+                        <div class="preview-button" style="background-color: {btn_bg} !important; color: {button_text_color} !important; padding: 0.25rem 0.75rem; border-radius: 4px; display: inline-block; margin: 0.5rem 0;">Button</div>
+
+                        <!-- Dropdown -->
+                        <div class="preview-dropdown" style="background-color: {dropdown_bg} !important; color: {dropdown_text} !important; border: 1px solid {dropdown_border} !important; border-radius: 4px; padding: 0.25rem 0.75rem; margin: 0.5rem 0; display: inline-block; cursor: default;">
+                            <span>Option 1</span> <span style="float:right;">▼</span>
+                        </div>
+
+                        <!-- Text Input -->
+                        <input type="text" class="preview-input" placeholder="Type here..." style="background-color: {dropdown_bg} !important; color: {primary} !important; border: 1px solid {border} !important; border-radius: 4px; padding: 0.25rem 0.5rem; margin: 0.5rem 0; width: 100%; display: block; box-sizing: border-box;">
+
+                        <!-- Progress Bar -->
+                        <div class="preview-progress" style="background-color: {track_bg} !important; border-radius: 4px; height: 8px; margin: 0.5rem 0; overflow: hidden;">
+                            <div class="preview-progress-fill" style="width: 60%; height: 100%; background-color: {fill_bg} !important; border-radius: 4px;"></div>
+                        </div>
+
+                        <!-- Color Swatches -->
                         <div class="preview-swatch d-flex gap-2 mt-2">
-                            <div style="background-color: {accent_color}; width: 30px; height: 30px; border-radius: 4px;"></div>
-                            <div style="background-color: {button_bg}; width: 30px; height: 30px; border-radius: 4px;"></div>
-                            <div style="background-color: {border_color}; width: 30px; height: 30px; border-radius: 4px;"></div>
+                            <div style="background-color: {accent} !important; width: 30px; height: 30px; border-radius: 4px;"></div>
+                            <div style="background-color: {btn_bg} !important; width: 30px; height: 30px; border-radius: 4px;"></div>
+                            <div style="background-color: {border} !important; width: 30px; height: 30px; border-radius: 4px;"></div>
                         </div>
                     </div>
                 </div>
@@ -212,7 +263,7 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
         </div>
         """
 
-    # HTML page with modal and interactive JavaScript
+    # ==================== Full HTML page ====================
     html_content = f"""<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -223,6 +274,9 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="theme.css" rel="stylesheet">
     <style>
+        [data-theme="dark"] .card-header-title {{
+            color: #000 !important;
+        }}
         .theme-preview-card {{
             transition: transform 0.2s;
         }}
@@ -243,11 +297,19 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
             font-size: 0.85rem;
             margin-bottom: 0.5rem;
         }}
-        .preview-button {{
+        .preview-button, .preview-dropdown, .preview-input {{
             cursor: default;
         }}
         .theme-preview-modal .modal-body {{
             transition: all 0.2s;
+        }}
+        /* Override any !important from theme.css for preview elements */
+        .theme-preview-body .preview-label,
+        .theme-preview-body .preview-label-secondary,
+        .theme-preview-body .preview-button,
+        .theme-preview-body .preview-dropdown,
+        .theme-preview-body .preview-input {{
+            color: inherit !important; /* will be overridden by inline styles with !important */
         }}
     </style>
 </head>
@@ -291,10 +353,51 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
     document.addEventListener('DOMContentLoaded', function() {{
         // Theme data injected from Python
         const themeData = {json.dumps(themes, default=str)};
-        const modal = new bootstrap.Modal(document.getElementById('themePreviewModal'));
-        const modalBody = document.getElementById('modalPreviewBody');
-        const modalTitle = document.getElementById('modalThemeName');
-        const modalVariant = document.getElementById('modalVariantLabel');
+
+        // Helper: build box-shadow from shadow object
+        function buildShadow(shadow) {{
+            if (!shadow) return 'none';
+            const color = shadow.color || [0,0,0];
+            const alpha = shadow.alpha || 0.1;
+            const dir = shadow.direction || [0, 2, 4, 0];
+            const dx = dir[0] || 0;
+            const dy = dir[1] || 2;
+            const blur = dir[2] || 4;
+            const spread = dir[3] || 0;
+            return `${{dx}}px ${{dy}}px ${{blur}}px ${{spread}}px rgba(${{color[0]}},${{color[1]}},${{color[2]}},${{alpha}})`;
+        }}
+
+        // Helper: apply a style object to an element with !important
+        function applyStyle(el, styleObj) {{
+            if (!styleObj || !el) return;
+            const color = styleObj.color;
+            if (color) {{
+                el.style.setProperty('background-color', `rgb(${{color[0]}},${{color[1]}},${{color[2]}})`, 'important');
+            }}
+            if (styleObj.cornerRadius !== undefined) {{
+                el.style.setProperty('border-radius', styleObj.cornerRadius + 'px', 'important');
+            }}
+            if (styleObj.borderWidth !== undefined) {{
+                el.style.setProperty('border-width', styleObj.borderWidth + 'px', 'important');
+            }}
+            if (styleObj.shadow) {{
+                el.style.setProperty('box-shadow', buildShadow(styleObj.shadow), 'important');
+            }}
+        }}
+
+        // Helper: set text color with !important
+        function setTextColor(el, colorObj) {{
+            if (el && colorObj && colorObj.color) {{
+                el.style.setProperty('color', `rgb(${{colorObj.color[0]}},${{colorObj.color[1]}},${{colorObj.color[2]}})`, 'important');
+            }}
+        }}
+
+        // Helper: set border color with !important
+        function setBorderColor(el, colorObj) {{
+            if (el && colorObj && colorObj.color) {{
+                el.style.setProperty('border-color', `rgb(${{colorObj.color[0]}},${{colorObj.color[1]}},${{colorObj.color[2]}})`, 'important');
+            }}
+        }}
 
         // ---- Variant toggle on cards ----
         document.querySelectorAll('.variant-toggle').forEach(btn => {{
@@ -303,36 +406,71 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
                 const themeName = this.getAttribute('data-theme-name');
                 const variant = this.getAttribute('data-variant');
                 const cardBody = this.closest('.card').querySelector('.theme-preview-body');
-                cardBody.setAttribute('data-variant', variant);
-                // Update preview colors
                 const variantData = themeData[themeName]?.[variant];
-                if (variantData) {{
-                    const bg = variantData.background?.color || [100,100,100];
-                    const primary = variantData.text_primary?.color || [255,255,255];
-                    const secondary = variantData.text_secondary?.color || [200,200,200];
-                    const btnBg = variantData.button_normal?.color || [0,120,215];
-                    const btnText = variantData.button_text?.color || [255,255,255];
-                    const accent = variantData.accent1?.color || [100,100,100];
-                    const border = variantData.border?.color || [200,200,200];
-                    const rgb = (c) => `rgb(${{c[0]}}, ${{c[1]}}, ${{c[2]}})`;
-                    cardBody.style.backgroundColor = rgb(bg);
-                    cardBody.querySelector('.preview-label').style.color = rgb(primary);
-                    cardBody.querySelector('.preview-label-secondary').style.color = rgb(secondary);
-                    const btnEl = cardBody.querySelector('.preview-button');
-                    btnEl.style.backgroundColor = rgb(btnBg);
-                    // Compute contrasting text color
-                    const lum = (0.299*btnBg[0] + 0.587*btnBg[1] + 0.114*btnBg[2]);
-                    btnEl.style.color = lum > 186 ? '#000' : '#fff';
-                    const swatches = cardBody.querySelectorAll('.preview-swatch div');
-                    if (swatches.length >= 3) {{
-                        swatches[0].style.backgroundColor = rgb(accent);
-                        swatches[1].style.backgroundColor = rgb(btnBg);
-                        swatches[2].style.backgroundColor = rgb(border);
-                    }}
-                    // Update button data attributes for modal
-                    const applyBtns = this.closest('.card').querySelectorAll('.apply-theme-preview');
-                    applyBtns.forEach(b => b.setAttribute('data-variant', variant));
+                if (!variantData) return;
+
+                // 1. Background
+                const bgStyle = variantData.background;
+                if (bgStyle) {{
+                    cardBody.style.setProperty('background-color', `rgb(${{bgStyle.color[0]}},${{bgStyle.color[1]}},${{bgStyle.color[2]}})`, 'important');
+                    applyStyle(cardBody, bgStyle);
                 }}
+
+                // 2. Labels
+                const primary = variantData.text_primary;
+                const secondary = variantData.text_secondary;
+                const label = cardBody.querySelector('.preview-label');
+                const labelSec = cardBody.querySelector('.preview-label-secondary');
+                setTextColor(label, primary);
+                setTextColor(labelSec, secondary);
+
+                // 3. Button
+                const btnEl = cardBody.querySelector('.preview-button');
+                const btnStyle = variantData.button_normal;
+                const btnTextStyle = variantData.button_text;
+                if (btnStyle) applyStyle(btnEl, btnStyle);
+                setTextColor(btnEl, btnTextStyle);
+
+                // 4. Dropdown
+                const dropdown = cardBody.querySelector('.preview-dropdown');
+                const dropBg = variantData.dropdown_normal || variantData.background;
+                const dropText = variantData.dropdown_text || variantData.text_primary;
+                const dropBorder = variantData.dropdown_border || variantData.border;
+                if (dropBg) applyStyle(dropdown, dropBg);
+                setTextColor(dropdown, dropText);
+                setBorderColor(dropdown, dropBorder);
+
+                // 5. Text input
+                const input = cardBody.querySelector('.preview-input');
+                const inputBg = variantData.dropdown_normal || variantData.background;
+                const inputText = variantData.text_primary;
+                const inputBorder = variantData.border;
+                if (inputBg) applyStyle(input, inputBg);
+                setTextColor(input, inputText);
+                setBorderColor(input, inputBorder);
+
+                // 6. Progress bar
+                const track = cardBody.querySelector('.preview-progress');
+                const fill = cardBody.querySelector('.preview-progress-fill');
+                const trackStyle = variantData.slider_track;
+                const fillStyle = variantData.slider_thumb_normal || variantData.accent1;
+                if (trackStyle) applyStyle(track, trackStyle);
+                if (fillStyle) applyStyle(fill, fillStyle);
+
+                // 7. Swatches
+                const swatches = cardBody.querySelectorAll('.preview-swatch div');
+                const accent = variantData.accent1;
+                const btnBg = variantData.button_normal;
+                const border = variantData.border;
+                if (swatches.length >= 3) {{
+                    if (accent) swatches[0].style.setProperty('background-color', `rgb(${{accent.color[0]}},${{accent.color[1]}},${{accent.color[2]}})`, 'important');
+                    if (btnBg) swatches[1].style.setProperty('background-color', `rgb(${{btnBg.color[0]}},${{btnBg.color[1]}},${{btnBg.color[2]}})`, 'important');
+                    if (border) swatches[2].style.setProperty('background-color', `rgb(${{border.color[0]}},${{border.color[1]}},${{border.color[2]}})`, 'important');
+                }}
+
+                // Update the "apply" buttons' data-variant
+                const applyBtns = this.closest('.card').querySelectorAll('.apply-theme-preview');
+                applyBtns.forEach(b => b.setAttribute('data-variant', variant));
             }});
         }});
 
@@ -345,10 +483,15 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
                 const variantData = themeData[themeName]?.[variant];
                 if (!variantData) return;
 
+                const modal = new bootstrap.Modal(document.getElementById('themePreviewModal'));
+                const modalBody = document.getElementById('modalPreviewBody');
+                const modalTitle = document.getElementById('modalThemeName');
+                const modalVariant = document.getElementById('modalVariantLabel');
+
                 modalTitle.textContent = themeName.replace(/_/g, ' ').replace(/\\b\\w/g, l => l.toUpperCase());
                 modalVariant.textContent = variant.charAt(0).toUpperCase() + variant.slice(1);
 
-                // Build CSS variables
+                // Build CSS variables for live preview
                 let cssVars = '';
                 const colorMap = {{
                     'button_normal': '--btn-bg',
@@ -358,7 +501,12 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
                     'text_primary': '--text-primary',
                     'text_secondary': '--text-secondary',
                     'accent1': '--accent',
-                    'border': '--border-color'
+                    'border': '--border-color',
+                    'dropdown_normal': '--drop-bg',
+                    'dropdown_text': '--drop-text',
+                    'dropdown_border': '--drop-border',
+                    'slider_track': '--track-bg',
+                    'slider_thumb_normal': '--fill-bg'
                 }};
                 for (const [key, varName] of Object.entries(colorMap)) {{
                     const style = variantData[key];
@@ -366,52 +514,100 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
                         const rgb = style.color;
                         if (rgb.length >= 3) {{
                             cssVars += `${{varName}}: rgb(${{rgb[0]}}, ${{rgb[1]}}, ${{rgb[2]}});`;
+                            if (style.cornerRadius !== undefined) {{
+                                cssVars += `--${{varName}}-radius: ${{style.cornerRadius}}px;`;
+                            }}
+                            if (style.shadow) {{
+                                const shadow = buildShadow(style.shadow);
+                                cssVars += `--${{varName}}-shadow: ${{shadow}};`;
+                            }}
                         }}
                     }}
                 }}
+
                 modalBody.innerHTML = `
                     <style>
                         .live-preview {{
-                            background-color: var(--bg, #f8f9fa);
+                            background-color: var(--bg, #f8f9fa) !important;
                             padding: 2rem;
                             border-radius: 12px;
                             transition: all 0.2s;
+                            box-shadow: var(--bg-shadow, none);
                         }}
                         .live-preview .sample-button {{
-                            background-color: var(--btn-bg, #007bff);
-                            color: var(--btn-text, white);
+                            background-color: var(--btn-bg, #007bff) !important;
+                            color: var(--btn-text, white) !important;
                             border: none;
                             padding: 0.5rem 1rem;
-                            border-radius: 4px;
+                            border-radius: var(--btn-bg-radius, 4px);
+                            box-shadow: var(--btn-bg-shadow, none);
                             cursor: pointer;
                         }}
                         .live-preview .sample-button:hover {{
-                            background-color: var(--btn-hover, #0056b3);
+                            background-color: var(--btn-hover, #0056b3) !important;
                         }}
                         .live-preview p {{
-                            color: var(--text-primary, #212529);
+                            color: var(--text-primary, #212529) !important;
                         }}
                         .live-preview small {{
-                            color: var(--text-secondary, #6c757d);
+                            color: var(--text-secondary, #6c757d) !important;
                         }}
                         .live-preview .accent-box {{
-                            background-color: var(--accent, #6f42c1);
+                            background-color: var(--accent, #6f42c1) !important;
                             width: 50px;
                             height: 50px;
-                            border-radius: 8px;
+                            border-radius: var(--accent-radius, 8px);
+                            box-shadow: var(--accent-shadow, none);
                             margin-top: 1rem;
                         }}
                         .live-preview .border-demo {{
-                            border: 1px solid var(--border-color, #dee2e6);
+                            border: 1px solid var(--border-color, #dee2e6) !important;
                             padding: 0.5rem;
                             margin-top: 0.5rem;
-                            border-radius: 4px;
+                            border-radius: var(--border-radius, 4px);
+                        }}
+                        .live-preview .dropdown-demo {{
+                            background-color: var(--drop-bg, #fff) !important;
+                            color: var(--drop-text, #333) !important;
+                            border: 1px solid var(--drop-border, #ccc) !important;
+                            border-radius: var(--drop-bg-radius, 4px);
+                            box-shadow: var(--drop-bg-shadow, none);
+                            padding: 0.25rem 0.75rem;
+                            display: inline-block;
+                            margin-top: 0.5rem;
+                        }}
+                        .live-preview .input-demo {{
+                            background-color: var(--drop-bg, #fff) !important;
+                            color: var(--text-primary, #333) !important;
+                            border: 1px solid var(--border-color, #ccc) !important;
+                            border-radius: var(--drop-bg-radius, 4px);
+                            box-shadow: var(--drop-bg-shadow, none);
+                            padding: 0.25rem 0.5rem;
+                            width: 100%;
+                            box-sizing: border-box;
+                            margin-top: 0.5rem;
+                        }}
+                        .live-preview .progress-demo {{
+                            background-color: var(--track-bg, #e9ecef) !important;
+                            border-radius: var(--track-bg-radius, 4px);
+                            height: 8px;
+                            margin-top: 0.5rem;
+                            overflow: hidden;
+                        }}
+                        .live-preview .progress-demo .fill {{
+                            width: 60%;
+                            height: 100%;
+                            background-color: var(--fill-bg, #007bff) !important;
+                            border-radius: var(--fill-bg-radius, 4px);
                         }}
                     </style>
                     <div class="live-preview" style="${{cssVars}}">
                         <p>This is a live preview using the theme's colors.</p>
                         <small>Secondary text example</small>
                         <div><button class="sample-button mt-2">Sample Button</button></div>
+                        <div class="dropdown-demo">Option 1 ▼</div>
+                        <input class="input-demo" placeholder="Type here...">
+                        <div class="progress-demo"><div class="fill"></div></div>
                         <div class="accent-box"></div>
                         <div class="border-demo">Bordered element</div>
                     </div>
@@ -421,9 +617,11 @@ def generate_themes_preview_page(themes: Dict[str, Dict[str, Any]]):
         }});
     }});
     </script>
+    {get_search_script()}
 </body>
 </html>"""
 
+    # Write the file
     with open("docs/themes.html", "w", encoding="utf-8") as f:
         f.write(html_content)
     print("[OK] Themes preview page generated: docs/themes.html")
@@ -527,7 +725,7 @@ def generate_lessons():
             <a href="../index.html" class="btn btn-primary">Back to Home</a>
         </div>
     </div>
-    {get_footer_html()}
+    {get_footer_html("../")}
 </body>
 </html>"""
     with open(docs_lessons / "index.html", "w", encoding="utf-8") as f:
@@ -604,7 +802,7 @@ def generate_lessons():
             </div>
         </div>
     </div>
-    {get_footer_html()}
+    {get_footer_html("../")}
     <script src="../../theme.js"></script>
     <script>document.addEventListener('DOMContentLoaded', function() {{
         if (typeof initSimpleMarkdownParser === 'function') initSimpleMarkdownParser();
@@ -701,7 +899,7 @@ def get_search_script():
     </script>
     """
     
-def get_footer_html():
+def get_footer_html(prefix="./"):
     return f"""
     <footer class="footer-section">
         <div class="container">
@@ -721,7 +919,7 @@ def get_footer_html():
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="{prefix}theme.js"></script>
     {get_search_script()}
     """
 
@@ -847,7 +1045,7 @@ def generate_file_page(module_name, file_info, module_docs_path):
             </a>
         </div>
     </div>
-    {get_footer_html()}
+    {get_footer_html("../")}
 </body>
 </html>"""
     with open(out_file, "w", encoding="utf-8") as f:
@@ -906,7 +1104,7 @@ def generate_module_index(module_name, module_info):
             </a>
         </div>
     </div>
-    {get_footer_html()}
+    {get_footer_html("../")}
 </body>
 </html>"""
     with open(f"docs/{module_name}/index.html", "w", encoding="utf-8") as f:
@@ -928,6 +1126,7 @@ def generate_quick_start():
         snake_code = f"# Error reading snake game: {e}"
         print(f"   [WARNING] Error reading snake game: {e}")
     snake_code = html.escape(snake_code)
+    
     html_content = f"""<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -937,6 +1136,15 @@ def generate_quick_start():
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="theme.css" rel="stylesheet">
+    <style>
+        /* Chevron rotation animation */
+        .chevron-rotate {{
+            transition: transform 0.3s ease;
+        }}
+        .chevron-rotate.collapsed {{
+            transform: rotate(-90deg);
+        }}
+    </style>
 </head>
 <body>
     {get_navbar_html()}
@@ -962,18 +1170,30 @@ pip install -r requirements.txt
 python examples/snake_demo.py</code></pre>
             </div>
         </div>
+        
+        <!-- SNAKE GAME EXAMPLE WITH COLLAPSE -->
         <div class="card mb-4 shadow-sm">
-            <div class="card-header bg-success text-white">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="bi bi-play-circle me-2"></i>Snake Game Example</h5>
+                <button class="btn btn-sm btn-light" type="button" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#snakeCodeCollapse" 
+                        aria-expanded="false" 
+                        aria-controls="snakeCodeCollapse">
+                    <i class="bi bi-chevron-down chevron-rotate collapsed" id="snakeToggleIcon"></i>
+                </button>
             </div>
-            <div class="card-body">
-                <p class="text-muted mb-3">
-                    <i class="bi bi-info-circle me-1"></i>
-                    This is the actual code from <code>examples/snake_demo.py</code>
-                </p>
-                <pre><code>{snake_code}</code></pre>
+            <div class="collapse" id="snakeCodeCollapse">
+                <div class="card-body">
+                    <p class="text-muted mb-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        This is the actual code from <code>examples/snake_demo.py</code>
+                    </p>
+                    <pre><code>{snake_code}</code></pre>
+                </div>
             </div>
         </div>
+        
         <div class="card mb-4 shadow-sm">
             <div class="card-header bg-info text-white">
                 <h5 class="mb-0"><i class="bi bi-book me-2"></i>Next Steps</h5>
@@ -1001,59 +1221,125 @@ python examples/snake_demo.py</code></pre>
         </div>
     </div>
     {get_footer_html()}
+    <script>
+        // Toggle chevron rotation when collapse is shown/hidden
+        document.addEventListener('DOMContentLoaded', function() {{
+            const collapseElement = document.getElementById('snakeCodeCollapse');
+            const toggleIcon = document.getElementById('snakeToggleIcon');
+            if (collapseElement && toggleIcon) {{
+                collapseElement.addEventListener('show.bs.collapse', function () {{
+                    toggleIcon.classList.remove('collapsed');
+                }});
+                collapseElement.addEventListener('hide.bs.collapse', function () {{
+                    toggleIcon.classList.add('collapsed');
+                }});
+            }}
+        }});
+    </script>
 </body>
 </html>"""
     with open("docs/quick-start.html", "w", encoding="utf-8") as f:
         f.write(html_content)
 
 def generate_examples_hub():
-    print("Generating examples hub...")
-    examples_dir = "examples"
-    docs_examples_dir = "docs/examples"
-    os.makedirs(docs_examples_dir, exist_ok=True)
-    examples = []
-    if os.path.exists(examples_dir):
-        for file in os.listdir(examples_dir):
-            if file.endswith('.py'):
-                example_path = os.path.join(examples_dir, file)
-                try:
-                    with open(example_path, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                        docstring_match = re.search(r'\"\"\"(.*?)\"\"\"', content, re.DOTALL)
-                        description = docstring_match.group(1).strip() if docstring_match else "No description provided"
-                        description = description.split('\n')[0] if '\n' in description else description
-                    examples.append({
-                        'name': file,
-                        'title': file.replace('.py', '').replace('_', ' ').title(),
-                        'description': description[:150] + "..." if len(description) > 150 else description,
-                        'path': example_path,
-                        'content': content
-                    })
-                    print(f"   [OK] Found example: {file}")
-                except Exception as e:
-                    print(f"   [WARNING] Error reading example {file}: {e}")
-    else:
-        print(f"   [WARNING] Examples directory not found: {examples_dir}")
-    examples_html = ""
-    for example in examples:
-        examples_html += f"""
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-code-slash me-2"></i>{example['title']}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">{example['name']}</h6>
-                    <p class="card-text">{example['description']}</p>
-                </div>
-                <div class="card-footer bg-transparent">
-                    <a href="{example['name'].replace('.py', '.html')}" class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-eye me-1"></i>View Example
-                    </a>
-                    <a href="{example['name'].replace('.py', '.py')}" download class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-download me-1"></i>Download
-                    </a>
+    print("Generating examples hub with subdirectories...")
+    examples_dir = Path("examples")
+    docs_examples_dir = Path("docs/examples")
+    docs_examples_dir.mkdir(parents=True, exist_ok=True)
+
+    # Walk all .py files
+    examples_by_category = {}
+    for py_file in examples_dir.rglob("*.py"):
+        rel_path = py_file.relative_to(examples_dir)
+        # Determine category: root files go to "General"
+        if rel_path.parent == Path("."):
+            category = "General"
+        else:
+            category = rel_path.parent.name.title()
+        examples_by_category.setdefault(category, []).append(py_file)
+
+    # Generate individual HTML pages for each example
+    for category, files in examples_by_category.items():
+        for py_file in files:
+            rel_path = py_file.relative_to(examples_dir)
+            # Output directory = docs/examples/ + relative parent
+            out_dir = docs_examples_dir / rel_path.parent
+            out_dir.mkdir(parents=True, exist_ok=True)
+            out_file = out_dir / f"{py_file.stem}.html"
+
+            # Compute prefix for CSS/JS
+            depth = len(out_dir.relative_to(Path("docs")).parts)  # e.g. ('examples','audio') -> 2
+            prefix = "../" * depth
+
+            # Read content and docstring
+            with open(py_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+                docstring_match = re.search(r'\"\"\"(.*?)\"\"\"', content, re.DOTALL)
+                description = docstring_match.group(1).strip() if docstring_match else "No description"
+                description = description.split('\n')[0] if '\n' in description else description
+
+            html_content = f"""<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{py_file.stem.replace('_', ' ').title()} - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{prefix}theme.css" rel="stylesheet">
+</head>
+<body>
+    {get_navbar_html(prefix)}
+    <div class="container mt-5">
+        {get_breadcrumbs([
+            ("Home", f"{prefix}index.html"),
+            ("Examples Hub", f"{prefix}examples/index.html"),
+            (category, None),
+            (py_file.stem.replace('_', ' ').title(), None)
+        ])}
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>{py_file.stem.replace('_', ' ').title()}</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>{py_file.name}</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">{html.escape(content)}</code></pre>
+                    </div>
                 </div>
             </div>
-        </div>"""
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>{description}</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="{py_file.name}" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {get_footer_html(prefix)}
+</body>
+</html>"""
+            with open(out_file, "w", encoding="utf-8") as f:
+                f.write(html_content)
+            # Copy the .py file to the same location (preserving subdirs)
+            shutil.copy2(py_file, out_dir / py_file.name)
+            print(f"   [OK] Example: {rel_path}")
+
+    # Generate the hub index with categories
     hub_html = f"""<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -1072,87 +1358,51 @@ def generate_examples_hub():
             ("Examples Hub", None)
         ])}
         <h1 class="mb-4"><i class="bi bi-code-slash me-2"></i>Examples Hub</h1>
-        <p class="lead mb-4">Explore practical examples of LunaEngine in action. Click on any example to view the source code and description.</p>
-        <div class="row">
-            {examples_html if examples else '<div class="col-12"><div class="alert alert-info">No examples found in the examples/ directory.</div></div>'}
+        <p class="lead mb-4">Explore practical examples of LunaEngine in action.</p>
+"""
+    for category, files in sorted(examples_by_category.items()):
+        hub_html += f"""
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="bi bi-folder-fill me-2"></i>{category}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+        """
+        for py_file in files:
+            rel_path = py_file.relative_to(examples_dir)
+            # Build link to the HTML page (preserving subdir)
+            link = f"{rel_path.parent / py_file.stem}.html" if rel_path.parent != Path(".") else f"{py_file.stem}.html"
+            hub_html += f"""
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title">{py_file.stem.replace('_', ' ').title()}</h6>
+                                <p class="card-text small text-muted">{description[:100]}...</p>
+                                <a href="{link}" class="btn btn-sm btn-outline-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+            """
+        hub_html += """
+                </div>
+            </div>
         </div>
+        """
+
+    hub_html += f"""
         <div class="mt-4 text-center">
             <a href="../index.html" class="btn btn-primary">
                 <i class="bi bi-arrow-left me-2"></i>Back to Home
             </a>
         </div>
     </div>
-    {get_footer_html()}
+    {get_footer_html("../")}
 </body>
 </html>"""
-    with open(f"{docs_examples_dir}/index.html", "w", encoding="utf-8") as f:
+    with open(docs_examples_dir / "index.html", "w", encoding="utf-8") as f:
         f.write(hub_html)
-    for example in examples:
-        print(f"   Creating page for: {example['name']}")
-        example_content = html.escape(example['content'])
-        example_html = f"""<!DOCTYPE html>
-<html lang="en" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{example['title']} - LunaEngine Examples</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="../theme.css" rel="stylesheet">
-</head>
-<body>
-    {get_navbar_html("../")}
-    <div class="container mt-5">
-        {get_breadcrumbs([
-            ("Home", "../index.html"),
-            ("Examples Hub", "index.html"),
-            (example['title'], None)
-        ])}
-        <div class="row">
-            <div class="col-lg-8">
-                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>{example['title']}</h1>
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>{example['name']}</h5>
-                    </div>
-                    <div class="card-body">
-                        <pre><code class="language-python">{example_content}</code></pre>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card shadow-sm sticky-top" style="top: 20px;">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About This Example</h5>
-                    </div>
-                    <div class="card-body">
-                        <p>{example['description']}</p>
-                        <hr>
-                        <div class="d-grid gap-2">
-                            <a href="{example['name']}" download class="btn btn-outline-primary">
-                                <i class="bi bi-download me-2"></i>Download Python File
-                            </a>
-                            <a href="index.html" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-2"></i>Back to Examples Hub
-                            </a>
-                            <a href="../quick-start.html" class="btn btn-outline-success">
-                                <i class="bi bi-play-circle me-2"></i>Quick Start Guide
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {get_footer_html()}
-</body>
-</html>"""
-        with open(f"{docs_examples_dir}/{example['name'].replace('.py', '.html')}", "w", encoding="utf-8") as f:
-            f.write(example_html)
-        try:
-            shutil.copy2(example['path'], f"{docs_examples_dir}/{example['name']}")
-        except Exception as e:
-            print(f"   [WARNING] Failed to copy example file {example['name']}: {e}")
+    print("[OK] Examples hub generated with categories")
 
 def generate_search_data(project):
     print("Generating global search data...")
@@ -2379,7 +2629,7 @@ def generate_contact_page():
             </a>
         </div>
     </div>
-    {get_footer_html()}
+    {get_footer_html("./")}
 </body>
 </html>"""
     with open("docs/contact.html", "w", encoding="utf-8") as f:
@@ -2552,8 +2802,54 @@ def extract_class_attributes(class_node):
     return attributes
 
 def generate_main_page(project):
-    print("Creating main page...")
-    stats_content = get_code_statistics()
+    print("Creating main page with code statistics dashboard...")
+    stats = load_code_stats()
+    
+    # Top 10 files with relative size for progress bars
+    top_files = sorted(stats.get('files', []), key=lambda x: x['total_lines'], reverse=True)[:10]
+    max_lines = top_files[0]['total_lines'] if top_files else 1
+    
+    # Extensions data for simple bar list
+    ext_data = stats.get('files_by_extension', {})
+    ext_items = sorted(ext_data.items(), key=lambda x: x[1], reverse=True)
+    max_ext_count = ext_items[0][1] if ext_items else 1
+    
+    # Theme and element stats
+    theme_stats = stats.get('themes', {})
+    total_themes = theme_stats.get('total_themes', 0)
+    total_variants = theme_stats.get('total_variants', 0)
+    total_icons = stats.get('total_icons', 0)
+    total_elements = stats.get('elements', {}).get('total_elements', 0)
+    
+    # Build the HTML with embedded JSON for JavaScript
+    stats_json = json.dumps(stats, default=str)
+    
+    # Generate file ranking HTML
+    file_ranking_html = ""
+    for idx, f in enumerate(top_files, 1):
+        pct = (f['total_lines'] / max_lines) * 100
+        file_ranking_html += f"""
+        <div class="file-rank-item">
+            <span class="rank-num">{idx}.</span>
+            <span class="rank-name">{f['path'][:45]}</span>
+            <span class="rank-lines">{f['total_lines']}</span>
+            <div class="rank-bar"><div style="width: {pct:.1f}%;"></div></div>
+        </div>
+        """
+    
+    # Extension bars
+    ext_bars_html = ""
+    for ext, count in ext_items:
+        pct = (count / max_ext_count) * 100
+        ext_bars_html += f"""
+        <div class="ext-bar-item">
+            <span class="ext-name">{ext or 'no ext'}</span>
+            <span class="ext-count">{count}</span>
+            <div class="ext-bar"><div style="width: {pct:.1f}%;"></div></div>
+        </div>
+        """
+    
+    # Build the main HTML – escape double braces for JavaScript
     html = f"""<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -2563,9 +2859,14 @@ def generate_main_page(project):
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="theme.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Dashboard specific styles are now in theme.css */
+    </style>
 </head>
 <body>
     {get_navbar_html()}
+    <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
             <div class="row align-items-center">
@@ -2595,6 +2896,8 @@ def generate_main_page(project):
             </div>
         </div>
     </section>
+
+    <!-- Quick links bar -->
     <div class="container mt-4">
         <div class="row">
             <div class="col-12">
@@ -2604,7 +2907,7 @@ def generate_main_page(project):
                             <div class="col-md-7">
                                 <h6 class="mb-0"><i class="bi bi-rocket me-2"></i>Get started quickly with LunaEngine</h6>
                             </div>
-                            <div class="col-md-5.5 text-end">
+                            <div class="col-md-5 text-end">
                                 <a href="quick-start.html" class="btn btn-light btn-sm me-2"><i class="bi bi-play-circle me-1"></i>Quick Guide</a>
                                 <a href="lessons/" class="btn btn-light btn-sm me-2"><i class="bi bi-journal-bookmark me-1"></i>Lessons</a>
                                 <a href="contact.html" class="btn btn-outline-light btn-sm me-2"><i class="bi bi-people me-1"></i>Community</a>
@@ -2618,6 +2921,8 @@ def generate_main_page(project):
             </div>
         </div>
     </div>
+
+    <!-- Install card -->
     <div class="container mt-4">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-primary text-white">
@@ -2646,32 +2951,142 @@ def generate_main_page(project):
             </div>
         </div>
     </div>
+
+    <!-- ========== CODE STATISTICS DASHBOARD ========== -->
     <div class="container mt-5">
         <div class="row">
             <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Code Statistics</h5>
-                        <button class="btn btn-sm btn-light" type="button" id="toggleStatsBtn">
-                            <i class="bi bi-chevron-down" id="statsToggleIcon"></i>
-                        </button>
+                <div class="glass-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0"><i class="bi bi-graph-up me-2"></i>Code Statistics Dashboard</h4>
+                        <span class="badge bg-secondary">{stats.get('version', 'unknown')} - {stats.get('version_status', '')}</span>
                     </div>
-                    <div class="card-body p-2">
-                        <div id="codeStatsContent" class="code-stats-content markdown-content preview">
-{stats_content}
+                    <div class="row g-4">
+                        <!-- Pie Chart -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="chart-container">
+                                <canvas id="codePieChart"></canvas>
+                            </div>
+                            <p class="text-center text-muted small mt-2">Distribution of lines</p>
+                        </div>
+                        <!-- Summary Stats -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="stats-grid">
+                                <div class="stat-item"><div class="stat-number">{stats.get('total_files', 0)}</div><div class="stat-label">Files</div></div>
+                                <div class="stat-item"><div class="stat-number">{stats.get('total_lines', 0):,}</div><div class="stat-label">Total Lines</div></div>
+                                <div class="stat-item"><div class="stat-number">{stats.get('code_lines', 0):,}</div><div class="stat-label">Code</div></div>
+                                <div class="stat-item"><div class="stat-number">{stats.get('comment_lines', 0):,}</div><div class="stat-label">Comments</div></div>
+                                <div class="stat-item"><div class="stat-number">{stats.get('blank_lines', 0):,}</div><div class="stat-label">Blank</div></div>
+                                <div class="stat-item"><div class="stat-number">{total_themes}</div><div class="stat-label">Themes</div></div>
+                                <div class="stat-item"><div class="stat-number">{total_variants}</div><div class="stat-label">Variants</div></div>
+                                <div class="stat-item"><div class="stat-number">{total_icons}</div><div class="stat-label">Icons</div></div>
+                                <div class="stat-item"><div class="stat-number">{total_elements}</div><div class="stat-label">UI Elements</div></div>
+                            </div>
+                        </div>
+                        <!-- Top Files Ranking -->
+                        <div class="col-lg-5 col-md-12">
+                            <h6 class="mb-2"><i class="bi bi-trophy me-1"></i>Top Files (by lines)</h6>
+                            <div class="file-rank-list">
+                                {file_ranking_html}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Extensions bars -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6 class="mb-2"><i class="bi bi-tags me-1"></i>Files by Extension</h6>
+                            <div class="ext-bar-list">
+                                {ext_bars_html}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- ========== MODULES ========== -->
     <div class="container mt-5">
         <h2 class="mb-4">LunaEngine Modules</h2>
         <div class="row g-4" style="margin-bottom: 1vw;">
     <script>
-    document.addEventListener('DOMContentLoaded', function()"""+"""{{const installRadios=document.querySelectorAll('input[name="installOption"]');const installCommandSpan=document.getElementById('installCommand');const copyBtn=document.querySelector('.copy-install-btn');const toggleBtn=document.getElementById('toggleStatsBtn');const contentDiv=document.getElementById('codeStatsContent');const icon=document.getElementById('statsToggleIcon');if(toggleBtn&&contentDiv&&icon){toggleBtn.addEventListener('click',function(){const isPreview=contentDiv.classList.contains('preview');if(isPreview){contentDiv.classList.remove('preview');icon.classList.replace('bi-chevron-down','bi-chevron-up');}else{contentDiv.classList.add('preview');icon.classList.replace('bi-chevron-up','bi-chevron-down');}});}function updateCommand(){const selected=document.querySelector('input[name="installOption"]:checked').value;switch(selected){case'windows':installCommandSpan.textContent='pip install lunaengine';break;case'linux':installCommandSpan.textContent='pip3 install lunaengine';break;case'testpypi':installCommandSpan.textContent='pip install -i https://test.pypi.org/simple/ lunaengine';break;}}installRadios.forEach(radio=>radio.addEventListener('change',updateCommand));copyBtn.addEventListener('click',function(){const textToCopy=installCommandSpan.textContent;navigator.clipboard.writeText(textToCopy).then(()=>{const originalIcon=copyBtn.innerHTML;copyBtn.innerHTML='<i class="bi bi-check"></i>';copyBtn.classList.add('btn-success');copyBtn.classList.remove('btn-outline-secondary');setTimeout(()=>{copyBtn.innerHTML=originalIcon;copyBtn.classList.remove('btn-success');copyBtn.classList.add('btn-outline-secondary');},2000);});});}});
+        document.addEventListener('DOMContentLoaded', function() {{
+        const installRadios = document.querySelectorAll('input[name="installOption"]');
+        const installCommandSpan = document.getElementById('installCommand');
+        const copyBtn = document.querySelector('.copy-install-btn');
+        
+        function updateCommand() {{
+            const selected = document.querySelector('input[name="installOption"]:checked').value;
+            switch(selected) {{
+                case 'windows': installCommandSpan.textContent = 'pip install lunaengine'; break;
+                case 'linux': installCommandSpan.textContent = 'pip3 install lunaengine'; break;
+                case 'testpypi': installCommandSpan.textContent = 'pip install -i https://test.pypi.org/simple/ lunaengine'; break;
+            }}
+        }}
+        installRadios.forEach(radio => radio.addEventListener('change', updateCommand));
+        copyBtn.addEventListener('click', function() {{
+            const textToCopy = installCommandSpan.textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {{
+                const originalIcon = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="bi bi-check"></i>';
+                copyBtn.classList.add('btn-success');
+                copyBtn.classList.remove('btn-outline-secondary');
+                setTimeout(() => {{
+                    copyBtn.innerHTML = originalIcon;
+                    copyBtn.classList.remove('btn-success');
+                    copyBtn.classList.add('btn-outline-secondary');
+                }}, 2000);
+            }});
+        }});
+        
+        // --- Pie Chart ---
+        const stats = {stats_json};
+        const pieCtx = document.getElementById('codePieChart').getContext('2d');
+        const pieChart = new Chart(pieCtx, {{
+            type: 'pie',
+            data: {{
+                labels: ['Code', 'Comments', 'Blank'],
+                datasets: [{{
+                    data: [stats.code_lines, stats.comment_lines, stats.blank_lines],
+                    backgroundColor: ['#4caf50', '#ff9800', '#2196f3'],
+                    borderWidth: 1
+                }}]
+            }},
+            options: {{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {{
+                    legend: {{
+                        position: 'bottom',
+                        labels: {{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#333',
+                            font: {{ size: 10 }}
+                        }}
+                    }}
+                }}
+            }}
+        }});
+        window.lunaPieChart = pieChart;
+
+        // Watch for theme changes and update legend color
+        const observer = new MutationObserver(function(mutations) {{
+            mutations.forEach(function(mutation) {{
+                if (mutation.attributeName === 'data-theme') {{
+                    const theme = document.documentElement.getAttribute('data-theme');
+                    const color = theme === 'dark' ? '#e9ecef' : '#333';
+                    if (window.lunaPieChart) {{
+                        window.lunaPieChart.options.plugins.legend.labels.color = color;
+                        window.lunaPieChart.update();
+                    }}
+                }}
+            }});
+        }});
+        observer.observe(document.documentElement, {{ attributes: true }});
+    }});
     </script>
     """
+    
+    # Add modules (unchanged – keep your existing module loop)
     module_styles = {
         "core": {"icon": "bi-cpu", "color": "primary", "name": "Core Systems"},
         "ui": {"icon": "bi-ui-radios", "color": "success", "name": "User Interface"},
@@ -2710,15 +3125,71 @@ def generate_main_page(project):
                     </div>
                 </div>
             </div>
-"""
+    """
     html += f"""
         </div>
     </div>
-    {get_footer_html()}
+    {get_footer_html("./")}
 </body>
 </html>"""
     with open("docs/index.html", "w", encoding="utf-8") as f:
         f.write(html)
+
+def generate_sitemap():
+    """
+    Generate sitemap.xml for the documentation site.
+    Crawls all .html files in docs/ and creates a sitemap.
+    """
+    base_url = "https://mrjuaumbr.github.io/LunaEngine/"
+    docs_dir = Path("docs")
+    sitemap_path = docs_dir / "sitemap.xml"
+
+    if not docs_dir.exists():
+        print("docs folder not found, skipping sitemap generation.")
+        return
+
+    urls = []
+    for html_file in docs_dir.rglob("*.html"):
+        # Skip the search page if you want, or include it – it's fine to include
+        rel_path = html_file.relative_to(docs_dir)
+        loc = base_url + str(rel_path).replace("\\", "/")
+        lastmod = datetime.now().date().isoformat()
+        urls.append((loc, lastmod, rel_path))
+
+    # Build XML
+    xml_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+    ]
+
+    for loc, lastmod, rel_path in urls:
+        # Determine priority based on location
+        if str(rel_path) == "index.html":
+            priority = "1.0"
+        elif str(rel_path).startswith("lessons") or str(rel_path).startswith("examples"):
+            priority = "0.8"
+        elif str(rel_path) in ["search.html", "themes.html", "quick-start.html", "contact.html", "about.html"]:
+            priority = "0.7"
+        else:
+            # Module index or file pages
+            if str(rel_path).endswith("index.html"):
+                priority = "0.6"
+            else:
+                priority = "0.5"
+
+        xml_lines.append("  <url>")
+        xml_lines.append(f"    <loc>{loc}</loc>")
+        xml_lines.append(f"    <lastmod>{lastmod}</lastmod>")
+        xml_lines.append("    <changefreq>monthly</changefreq>")
+        xml_lines.append(f"    <priority>{priority}</priority>")
+        xml_lines.append("  </url>")
+
+    xml_lines.append("</urlset>")
+
+    with open(sitemap_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(xml_lines))
+
+    print(f"[OK] Sitemap generated with {len(urls)} URLs: {sitemap_path}")
 
 def generate_documentation():
     print("\nGenerating professional documentation...")
@@ -2736,6 +3207,9 @@ def generate_documentation():
     # Generate themes preview page
     themes = load_all_themes()
     generate_themes_preview_page(themes)
+    
+    generate_sitemap()
+    
     for module_name, module_info in project['modules'].items():
         print(f"   Processing module: {module_name}...")
         module_docs_path = Path(f"docs/{module_name}")
@@ -2744,6 +3218,7 @@ def generate_documentation():
         shutil.copy("docs/theme.js", module_docs_path / "theme.js")
         for file_info in module_info['files']:
             generate_file_page(module_name, file_info, module_docs_path)
+            
     print(f"\n[DONE] Files generated in: {os.path.abspath('docs')}")
 
 if __name__ == "__main__":

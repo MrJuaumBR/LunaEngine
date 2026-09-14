@@ -34,10 +34,10 @@ from typing import Optional, List, Tuple, Any, Dict, TYPE_CHECKING, Union
 from enum import Enum
 from abc import ABC
 
-from ..themes import ThemeManager, ThemeType
-from ...core.renderer import Renderer
+from ..themes import ThemeManager, ThemeType, ThemeKey
 from ...backend.types import InputState, ElementsList, LayerType, Color, ColorKeys
 from ...backend.opengl import OpenGLRenderer
+from ...storage.atlas import AtlasItem, Path
 
 
 if TYPE_CHECKING:
@@ -101,7 +101,7 @@ class ElementStyle:
     blur: int = 0
     
     @staticmethod
-    def loadFromTheme(theme_type: ThemeType) -> 'ElementStyle':
+    def loadFromTheme(theme_type: ThemeType|ThemeKey) -> 'ElementStyle':
         """
         Load complete element style from the theme system.
         Uses button_* properties as base, but can be overridden for specific elements.
@@ -152,8 +152,9 @@ class FontManager:
     """
     
     _initialized = False
-    _font_cache: Dict[Tuple[str, int, bool, bool], pygame.font.Font] = {}
+    _font_cache: Dict[Tuple[str|None, int, bool, bool], pygame.font.Font] = {}
     _atlas = None   # Atlas instance for font resolution
+    _df_font:str|None = None
     
     @classmethod
     def initialize(cls):
@@ -173,7 +174,7 @@ class FontManager:
         cls._atlas = atlas
     
     @classmethod
-    def get_font(cls, font_name: Optional[str] = None, font_size: int = 24,
+    def get_font(cls, font_name: Optional[Union[str, Path, AtlasItem]] = None, font_size: int|float = 24,
                  bold: bool = False, italic: bool = False) -> pygame.font.Font:
         """
         Get a font object with the given name, size, and style.
@@ -200,16 +201,25 @@ class FontManager:
         """
         if not cls._initialized:
             cls.initialize()
-            
+        if isinstance(font_name, AtlasItem):
+            font_name = font_name.name
+        if isinstance(font_name, (str, Path)):
+            font_name = str(font_name)
+        if font_name is None and cls._df_font is not None:
+            font_name = cls._df_font
         from ...storage.atlas import AtlasCategory
         
         name_key = font_name if font_name is not None else None
         font_size = int(font_size)
         cache_key = (name_key, font_size, bold, italic)
+        # print(cls._font_cache)
+        # Check cache
         if cache_key in cls._font_cache:
+            
+            # print('cached: ', cache_key)
             return cls._font_cache[cache_key]
         
-        # --- Try atlas resolution (both bundle and file) ---
+        # Try finding in Atlas
         if cls._atlas is not None and font_name is not None:
             item = cls._atlas.get_item(font_name)
             if item and item.category == AtlasCategory.FONT:
@@ -220,8 +230,7 @@ class FontManager:
                         font = pygame.font.Font(io.BytesIO(data), font_size)
                         cls._font_cache[cache_key] = font
                         return font
-                    except Exception as e:
-                        print(f"Error loading font from bundle: {e}")
+                    except Exception: pass
                 # Fallback to file path
                 font_path = str(item.path)
                 if os.path.exists(font_path):
@@ -232,7 +241,7 @@ class FontManager:
                     except Exception:
                         pass  # fall through to system font
         
-        # --- Fallback to direct file path ---
+        # Direct file path check
         if font_name is not None and os.path.exists(font_name):
             try:
                 font = pygame.font.Font(font_name, font_size)
@@ -243,11 +252,34 @@ class FontManager:
                 font = pygame.font.SysFont(None, font_size, bold=bold, italic=italic)
                 cls._font_cache[cache_key] = font
                 return font
+        elif font_name is None and cls._df_font is not None:
+            print(f'Default Font: {cls._df_font}')
+            font = pygame.font.SysFont(cls._atlas.get_item(cls._df_font), font_size, bold=bold, italic=italic)
+            cls._font_cache[cache_key] = font
+            return font
         else:
             # System font name or None
             font = pygame.font.SysFont(font_name, font_size, bold=bold, italic=italic)
             cls._font_cache[cache_key] = font
             return font
+
+    @classmethod
+    def set_default_font(cls, font_path:Union[str, Path, AtlasItem, None]) -> None:
+        if isinstance(font_path, AtlasItem):
+            font_path = font_path.path
+        if isinstance(font_path, (str, Path)):
+            font_path = str(font_path)
+        if font_path is None: cls._df_font = None
+            
+        if not cls._initialized:
+            cls.initialize()
+            
+        # Add to atlas
+        if cls._atlas:
+            cls._atlas.add_font("default_font", font_path) 
+            cls._df_font = "default_font"
+        else:
+            raise ValueError("Atlas is not set. Cannot set default font without an atlas.")
 
     @classmethod
     def get_system_fonts(cls) -> List[str]:
@@ -287,7 +319,7 @@ class UIElement(ABC):
     }
     category: str = 'None'
     
-    def __init__(self, x: int, y: int, width: int, height: int, pivot: Tuple[float, float] = (0, 0),
+    def __init__(self, x: int|float, y: int|float, width: int|float, height: int|float, pivot: Tuple[float, float] = (0, 0),
                  element_id: Optional[str] = None):
         """
         Initialize a UI element with position and dimensions.
@@ -500,11 +532,12 @@ class UIElement(ABC):
             h = rect.height
         return pygame.Rect(x, y, w, h)
         
-    def add_child(self, child):
+    def add_child(self, child: 'UIElement') -> 'UIElement':
         """Add a child element to this UI element."""
         child.parent = self
         self.children.append(child)
-        
+        return child
+    
     def remove_child(self, child: 'UIElement'):
         """Remove a child element from this UI element."""
         self.children.remove(child)
@@ -540,32 +573,41 @@ class UIElement(ABC):
         UITooltipManager.unregister_tooltip(self)
     
     def update(self, dt: float, inputState: InputState):
-        """
-        Update element state based on mouse interaction and input.
-        
-        Args:
-            dt (float): Delta time in seconds since last update.
-            inputState (InputState): Current input state.
-        """
-        if not self.visible or not self.enabled:
+        if not self.visible:
             self.state = UIState.DISABLED
+            # still update children
+            for child in self.children:
+                child.update(dt, inputState)
             return
-        # If a global mouse event has been consumed this frame, skip all mouse logic.
+
+        if not self.enabled:
+            self.state = UIState.DISABLED
+            for child in self.children:
+                child.update(dt, inputState)
+            return
+
+        # If the global mouse event was already consumed by a higher‑priority element,
+        # we skip all mouse logic but still update children.
         if inputState.is_global_mouse_consumed():
             self.state = UIState.NORMAL
             for child in self.children:
                 child.update(dt, inputState)
             return
-            
-        # Check if event was already consumed by another element
+
+        # Check if event was already consumed by a specific element ID (legacy)
         if inputState.is_event_consumed(self.element_id):
             self.state = UIState.NORMAL
+            for child in self.children:
+                child.update(dt, inputState)
             return
-        
-        if self.mouse_over(inputState):
+
+        # --- Mouse interaction ---
+        mouse_over = self.mouse_over(inputState)
+        if mouse_over:
             if inputState.mouse_just_pressed:
                 self.state = UIState.PRESSED
                 inputState.consume_event(self.element_id)
+                inputState.consume_global_mouse()   # <-- THIS IS NEW
                 self.on_click()
             elif inputState.mouse_buttons_pressed.left and self.state == UIState.PRESSED:
                 self.state = UIState.PRESSED
@@ -574,10 +616,10 @@ class UIElement(ABC):
                 self.on_hover()
         else:
             self.state = UIState.NORMAL
-        
+
+        # Update children (they will see the global flag if set)
         for child in self.children:
-            if hasattr(child, 'update'):
-                child.update(dt, inputState)
+            child.update(dt, inputState)
     
     def update_theme(self, theme_type: ThemeType):
         """
@@ -591,7 +633,7 @@ class UIElement(ABC):
             if hasattr(child, 'update_theme'):
                 child.update_theme(theme_type)    
     
-    def render(self, renderer: Renderer | OpenGLRenderer):
+    def render(self, renderer: OpenGLRenderer):
         """
         Render this element using OpenGL backend.  
         Override this in subclasses for OpenGL-specific rendering.

@@ -3,14 +3,15 @@ import pygame
 import os
 import re
 from typing import Optional, Tuple, Dict, Any, Union, List
+from ...backend.opengl import FilterType, OpenGLRenderer
 from .base import UIElement, FontManager, Color, ColorKeys
 from ..themes import ThemeManager, ThemeType, ThemeStyle, UiShadow
-from ...core.renderer import Renderer
 from pathlib import Path
 from ...storage.atlas import AtlasItem
+from OpenGL import GL as gl
 
 # ============================================================================
-# Rich Text Parser (unchanged)
+# Rich Text Parser
 # ============================================================================
 
 class RichTextSegment:
@@ -393,7 +394,7 @@ class TextLabel(UIElement):
         x: Union[int, float],
         y: Union[int, float],
         text: str,
-        font_size: int = 24,
+        font_size: int|float = 24,
         color: Optional[Union[Tuple[int, int, int], Color, ThemeStyle]] = None,
         font_name: Optional[str] = None,
         rich_text: bool = False,
@@ -405,7 +406,7 @@ class TextLabel(UIElement):
         **kwargs
     ) -> None:
         FontManager.initialize()
-        self._font = FontManager.get_font(font_name, font_size)
+        self._font = FontManager.get_font(font_name, int(font_size))
         self.rich_text = rich_text
         self.use_theme_color = use_theme_color
         self.shadow = shadow or ThemeManager.get_shadow('text_primary')
@@ -430,7 +431,7 @@ class TextLabel(UIElement):
         super().__init__(x, y, width, height, pivot, element_id)
 
         self.text = text
-        self.font_size = font_size
+        self.font_size = int(font_size)
         self.custom_color: Optional[Color] = None
         if color is not None:
             self.set_text_color(color)
@@ -518,7 +519,7 @@ class TextLabel(UIElement):
         theme = ThemeManager.get_theme(self.theme_type)
         return theme.label_text
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 
@@ -546,6 +547,7 @@ class TextLabel(UIElement):
                 color_tuple = (text_color.r, text_color.g, text_color.b)
             else:
                 color_tuple = text_color
+        
             renderer.draw_text(self.text, actual_x, actual_y, color_tuple, self.font, style=style)
 
         super().render(renderer)
@@ -769,7 +771,7 @@ class LongTextLabel(UIElement):
         theme = ThemeManager.get_theme(self.theme_type)
         return theme.label_text
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 
@@ -826,13 +828,17 @@ class ImageLabel(UIElement):
         self,
         x: int,
         y: int,
-        image_path: Union[str, pygame.Surface, 'Icon'],
+        image_path: Union[str, pygame.Surface, Path, AtlasItem, 'Icon'],
         width: Optional[int] = None,
         height: Optional[int] = None,
         pivot: Tuple[float, float] = (0, 0),
         element_id: Optional[str] = None,
         **kwargs
     ) -> None:
+        if isinstance(image_path, Path):
+            image_path = str(image_path)
+        if isinstance(image_path, AtlasItem):
+            image_path = str(image_path.path)
         self.image_path = image_path
         self.image_color = kwargs.get('image_color', None)  # optional color for Icon
         self._image: Optional[pygame.Surface] = None
@@ -842,6 +848,11 @@ class ImageLabel(UIElement):
             width = self._image.get_width()
         if height is None:
             height = self._image.get_height()
+
+        self._effect: Optional[FilterType] = None
+        self._effect_intensity: float = 1.0
+        self._filtered_image: Optional[pygame.Surface] = None
+        self._effect_dirty: bool = True
 
         super().__init__(x, y, width, height, pivot, element_id)
 
@@ -866,24 +877,69 @@ class ImageLabel(UIElement):
         return hasattr(obj, 'get_surface') and callable(getattr(obj, 'get_surface'))
 
     def _load_image(self) -> None:
+        """
+        Load or reload the image from the current image_path and image_color.
+        Supports:
+        - str (file path)
+        - Path
+        - pygame.Surface
+        - Icon instance (has get_surface() method)
+        - AtlasItem
+        - Callable returning any of the above
+        """
         if self.image_path is None:
             self._image = pygame.Surface((100, 100))
             self._image.fill((255, 0, 255))
             return
-        if isinstance(self.image_path, pygame.Surface):
-            self._image = self.image_path
-        elif self._is_icon_like(self.image_path):
+
+        # Resolve callable sources first
+        source = self.image_path
+        if callable(source):
+            try:
+                source = source()
+            except Exception as e:
+                raise TypeError(f"Callable image_path failed: {e}") from e
+
+        # Now handle the resolved source
+        if isinstance(source, pygame.Surface):
+            self._image = source
+
+        elif self._is_icon_like(source):
             # It's an Icon-like object; call get_surface with the stored color
             color = self.image_color if self.image_color is not None else (255, 255, 255)
-            self._image = self.image_path.get_surface(color=color)
-        elif isinstance(self.image_path, str):
-            if not os.path.exists(self.image_path):
+            self._image = source.get_surface(color=color)
+
+        elif isinstance(source, str):
+            if not os.path.exists(source):
                 self._image = pygame.Surface((100, 100))
                 self._image.fill((255, 0, 255))
-                return
-            self._image = pygame.image.load(self.image_path).convert_alpha()
+            else:
+                self._image = pygame.image.load(source).convert_alpha()
+
+        elif isinstance(source, Path):
+            source_str = str(source)
+            if not os.path.exists(source_str):
+                self._image = pygame.Surface((100, 100))
+                self._image.fill((255, 0, 255))
+            else:
+                self._image = pygame.image.load(source_str).convert_alpha()
+
+        elif isinstance(source, AtlasItem):
+            path_str = str(source.path)
+            if not os.path.exists(path_str):
+                self._image = pygame.Surface((100, 100))
+                self._image.fill((255, 0, 255))
+            else:
+                self._image = pygame.image.load(path_str).convert_alpha()
+
         else:
-            raise TypeError(f"image_path must be str, pygame.Surface, or Icon-like object, got {type(self.image_path)}")
+            raise TypeError(
+                f"image_path must be str, Path, pygame.Surface, Icon-like, AtlasItem, "
+                f"or callable returning such; got {type(source)}"
+            )
+
+        # Mark effect dirty so any active filter (blur, etc.) is reapplied
+        self._effect_dirty = True
 
     def set_image(self, image_path: Union[str, pygame.Surface, Path, AtlasItem, 'Icon']) -> None:
         if isinstance(image_path, str):
@@ -918,16 +974,87 @@ class ImageLabel(UIElement):
     def set_size(self, width: int, height: int) -> None:
         self.width = width
         self.height = height
+        
+    def set_effect(self, filter_type: FilterType, intensity: float = 1.0) -> None:
+        """
+        Apply a visual effect (filter) to the image.
 
-    def render(self, renderer: Renderer) -> None:
+        Args:
+            filter_type: A FilterType enum (e.g., FilterType.BLUR).
+            intensity: Strength of the effect (0.0 - 1.0).
+        """
+        self._effect = filter_type
+        self._effect_intensity = max(0.0, min(1.0, intensity))
+        self._effect_dirty = True
+
+    def clear_effect(self) -> None:
+        """Remove any applied effect."""
+        self._effect = None
+        self._effect_intensity = 1.0
+        self._effect_dirty = True
+        if self._filtered_image:
+            self._filtered_image = None
+
+    def _apply_effect(self, renderer: OpenGLRenderer) -> pygame.Surface:
+        """
+        Apply the current effect to the original image and return a filtered surface.
+        This uses the renderer's OpenGL filter capabilities.
+        """
+        if not self._effect or self._image is None:
+            return self._image
+
+        # Convert the image to a texture
+        tex_id = renderer._surface_to_texture(self._image)
+        if tex_id == 0:
+            return self._image
+
+        # Apply filter and get a new texture
+        w, h = self._image.get_size()
+        filtered_tex = renderer.apply_filter_to_texture(
+            tex_id, w, h, self._effect, self._effect_intensity
+        )
+
+        # Clean up the original texture (we no longer need it)
+        gl.glDeleteTextures(1, [tex_id])
+
+        # Convert the filtered texture back to a pygame surface
+        # We need to read pixels from the filtered texture.
+        fbo = gl.glGenFramebuffers(1)
+        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, fbo)
+        gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_COLOR_ATTACHMENT0,
+                                  gl.GL_TEXTURE_2D, filtered_tex, 0)
+        pixel_data = gl.glReadPixels(0, 0, w, h, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE)
+        gl.glDeleteFramebuffers(1, [fbo])
+        gl.glDeleteTextures(1, [filtered_tex])
+
+        # Create a pygame surface from the pixel data (note: OpenGL reads from bottom-left)
+        surf = pygame.image.fromstring(pixel_data, (w, h), 'RGBA')
+        surf = pygame.transform.flip(surf, False, True)  # flip vertically
+        return surf
+
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 
         actual_x, actual_y = self.get_actual_position()
-        if self._image.get_width() != self.width or self._image.get_height() != self.height:
-            scaled_image = pygame.transform.scale(self._image, (self.width, self.height))
+
+        # If effect is active and dirty, reapply
+        if self._effect is not None and self._effect_dirty:
+            if isinstance(renderer, OpenGLRenderer):
+                self._filtered_image = self._apply_effect(renderer)
+                self._effect_dirty = False
+            else:
+                # Fallback: no effect for software renderer
+                self._filtered_image = self._image
+                self._effect_dirty = False
+
+        # Choose which image to draw
+        image_to_draw = self._filtered_image if self._filtered_image is not None else self._image
+
+        if image_to_draw.get_width() != self.width or image_to_draw.get_height() != self.height:
+            scaled_image = pygame.transform.scale(image_to_draw, (self.width, self.height))
             renderer.draw_surface(scaled_image, actual_x, actual_y)
         else:
-            renderer.draw_surface(self._image, actual_x, actual_y)
+            renderer.draw_surface(image_to_draw, actual_x, actual_y)
 
         super().render(renderer)

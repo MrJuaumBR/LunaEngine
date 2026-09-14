@@ -557,6 +557,9 @@
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>VIKINGS: Any = 'vikings'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>ITTF: Any = 'ittf'</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
@@ -575,10 +578,10 @@
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>_themes: Dict[ThemeType, Union[UITheme, CombinedTheme]] = {}</code>
+                    <code>_themes: Dict[ThemeKey, Union[UITheme, CombinedTheme]] = {}</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>_current_theme: ThemeType = ThemeType.DEFAULT</code>
+                    <code>_current_theme: ThemeKey = ThemeType.DEFAULT</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>_themes_loaded: bool = False</code>
@@ -616,6 +619,38 @@
                 <code class="fs-6 fw-bold text-color-title">def _build_ui_theme_from_dict(cls: Any, data: dict) -> UITheme</code>
                 <div class="mt-2 text-muted small">Build a UITheme from a dictionary of style entries.</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_normalize_theme_name">
+                <code class="fs-6 fw-bold text-color-title">def _normalize_theme_name(cls: Any, name: str) -> str</code>
+                <div class="mt-2 text-muted small">Normalize and validate a runtime custom-theme identifier.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_resolve_theme_key">
+                <code class="fs-6 fw-bold text-color-title">def _resolve_theme_key(cls: Any, theme: ThemeKey) -> ThemeKey</code>
+                <div class="mt-2 text-muted small">Resolve an enum or string theme identifier to a registered key.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_build_theme_from_data">
+                <code class="fs-6 fw-bold text-color-title">def _build_theme_from_data(cls: Any, data: dict) -> Union[UITheme, CombinedTheme]</code>
+                <div class="mt-2 text-muted small">Build a theme from either a combined or legacy JSON dictionary.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_read_theme_source">
+                <code class="fs-6 fw-bold text-color-title">def _read_theme_source(cls: Any, source: Union[str, Path, 'AtlasItem']) -> tuple[dict, str]</code>
+                <div class="mt-2 text-muted small">Read a theme from a filesystem path or an AtlasItem.<br><br>AtlasItem normally points to a filesystem resource. If an AtlasItem has<br>cached bytes in its private `_data` field, those bytes are preferred;<br>this also supports applications that populate AtlasItem data themselves.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-load_custom_theme">
+                <code class="fs-6 fw-bold text-color-title">def load_custom_theme(cls: Any, source: Union[str, Path, 'AtlasItem'], name: str, overwrite: bool = False) -> str</code>
+                <div class="mt-2 text-muted small">Load and register a custom theme under a caller-provided name.<br><br>`source` may be a JSON filesystem path or an AtlasItem. The returned<br>string is the normalized identifier used by `set_global_theme()`.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-load_custom_theme_from_atlas_item">
+                <code class="fs-6 fw-bold text-color-title">def load_custom_theme_from_atlas_item(cls: Any, item: 'AtlasItem', name: str, overwrite: bool = False) -> str</code>
+                <div class="mt-2 text-muted small">Explicit AtlasItem convenience wrapper for load_custom_theme().</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-unload_custom_theme">
+                <code class="fs-6 fw-bold text-color-title">def unload_custom_theme(cls: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Remove a custom theme. Built-in themes cannot be removed.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-has_theme">
+                <code class="fs-6 fw-bold text-color-title">def has_theme(cls: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Return whether a built-in or custom theme is registered.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_load_theme_from_json_file">
                 <code class="fs-6 fw-bold text-color-title">def _load_theme_from_json_file(cls: Any, filepath: str) -> Optional[Tuple[ThemeType, Union[UITheme, CombinedTheme]]]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -641,15 +676,15 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme">
-                <code class="fs-6 fw-bold text-color-title">def get_theme(cls: Any, theme_type: Optional[ThemeType] = None) -> UITheme</code>
+                <code class="fs-6 fw-bold text-color-title">def get_theme(cls: Any, theme_type: Optional[ThemeKey] = None) -> UITheme</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-set_current_theme">
-                <code class="fs-6 fw-bold text-color-title">def set_current_theme(cls: Any, theme_type: ThemeType) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_current_theme(cls: Any, theme_type: ThemeKey) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_current_theme">
-                <code class="fs-6 fw-bold text-color-title">def get_current_theme(cls: Any) -> ThemeType</code>
+                <code class="fs-6 fw-bold text-color-title">def get_current_theme(cls: Any) -> ThemeKey</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-set_dark_mode">
@@ -665,11 +700,11 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_type_by_name">
-                <code class="fs-6 fw-bold text-color-title">def get_theme_type_by_name(cls: Any, name: str) -> ThemeType</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def get_theme_type_by_name(cls: Any, name: str) -> ThemeKey</code>
+                <div class="mt-2 text-muted small">Return a built-in ThemeType or a custom string key by name.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-_get_style_property">
-                <code class="fs-6 fw-bold text-color-title">def _get_style_property(cls: Any, color_name: color_name_type | str, property_name: str, theme_type: Optional[ThemeType] = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _get_style_property(cls: Any, color_name: color_name_type | str, property_name: str, theme_type: Optional[ThemeKey] = None) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_color">
@@ -705,7 +740,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_types">
-                <code class="fs-6 fw-bold text-color-title">def get_theme_types(cls: Any) -> List[ThemeType]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_theme_types(cls: Any) -> List[ThemeKey]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-thememanager-get_theme_names">
@@ -744,7 +779,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-08-17 22:16
+                        Documentation generated on 2026-09-14 16:30
                     </p>
                 </div>
             </div>
@@ -752,7 +787,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="../theme.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {

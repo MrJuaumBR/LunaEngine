@@ -198,6 +198,10 @@
                 <code class="fs-6 fw-bold text-color-title">def search(self: Any, term: str, columns: Optional[List[str]] = None, mode: str = 'contains', case_sensitive: bool = False) -> 'Query'</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-query-get_all">
+                <code class="fs-6 fw-bold text-color-title">def get_all(self: Any, columns: Optional[List[str]] = None, order_by: Optional[Union[str, List[str]]] = None, order_desc: Union[bool, List[bool]] = False) -> List[Dict]</code>
+                <div class="mt-2 text-muted small">Shortcut to execute the query and return all matching rows.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-query-execute">
                 <code class="fs-6 fw-bold text-color-title">def execute(self: Any, columns: Optional[List[str]] = None) -> List[Dict]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -249,7 +253,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-load">
-                <code class="fs-6 fw-bold text-color-title">def load(self: Any, filepath: Optional[Union[str, Path]] = None, encryption_key: Optional[str] = None) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def load(self: Any, filepath: Optional[Union[str, Path]] = None, encryption_key: Optional[str] = None, auto_create: bool = True) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-savedata-_serialize">
@@ -336,7 +340,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-08-17 22:16
+                        Documentation generated on 2026-09-14 16:30
                     </p>
                 </div>
             </div>
@@ -344,7 +348,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="../theme.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {

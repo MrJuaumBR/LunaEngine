@@ -1,4 +1,4 @@
-# About LunaEngine ✨
+# About LunaEngine 
 
 Welcome, fellow adventurer! Ever wondered about the heart and soul behind LunaEngine? You've come to the right place. This isn't just a technical document; it's a peek behind the curtain, a story of passion, Python, and pixels. So, grab a coffee (or your beverage of choice), and let's chat.
 
@@ -123,7 +123,7 @@ A: Developing for multiple platforms is a significant undertaking. To ensure a s
 
 **Q: Can I make commercial games with LunaEngine?**
 
-A: Absolutely, go for it! LunaEngine is released under a permissive license, meaning you’re free to use it for personal projects, commercial ventures, or anything in between. Build your dream game, sell it, and make a fortune – just remember who helped you get there! 😉
+A: Absolutely, go for it! LunaEngine is released under a permissive license, meaning you’re free to use it for personal projects, commercial ventures, or anything in between. Build your dream game, sell it, and make a fortune – just remember who helped you get there! 
 
 **Q: How can I contribute to the LunaEngine project?**
 
@@ -131,7 +131,7 @@ A: Your contributions are incredibly welcome! Whether you’re a seasoned develo
 
 ## Final Message: From My Heart to Yours
 
-And so, we reach the end of our little chat. Building LunaEngine has been an absolute labor of love, a journey filled with late nights, countless lines of code, and an unwavering belief in the magic of game development. This isn’t just a framework; it’s a piece of my passion, designed to empower you to bring your wildest 2D game ideas to life. I hope you feel the enthusiasm, the honesty, and maybe even a little bit of the humor that went into creating it. Go forth, create, innovate, and most importantly, have an absolute blast making games. The world is waiting for your next masterpiece! ✨
+And so, we reach the end of our little chat. Building LunaEngine has been an absolute labor of love, a journey filled with late nights, countless lines of code, and an unwavering belief in the magic of game development. This isn’t just a framework; it’s a piece of my passion, designed to empower you to bring your wildest 2D game ideas to life. I hope you feel the enthusiasm, the honesty, and maybe even a little bit of the humor that went into creating it. Go forth, create, innovate, and most importantly, have an absolute blast making games. The world is waiting for your next masterpiece! 
 
 ---
 

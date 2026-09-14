@@ -64,12 +64,12 @@ class ComprehensiveUIDemo(Scene):
         import random
         return random.randint(0, 100)
         
-    def on_enter(self, previous_scene: str = None):
+    def on_enter(self, previous_scene: str|None = None):
         print("=== LunaEngine UI Demo ===")
         print("Explore all UI elements organized by section!")
         print("Use the tabs to navigate between different UI element categories.")
         
-    def on_exit(self, next_scene: str = None):
+    def on_exit(self, next_scene: str|None = None):
         print("Exiting UI Demo scene")
         # Clean up animations
         self.animation_handler.cancel_all()
@@ -86,39 +86,39 @@ class ComprehensiveUIDemo(Scene):
         self.main_tabs = Tabination(25, 90, 980, 650, 20)
         
         # --- SECTION 1: Interactive Elements ---
-        self.main_tabs.add_tab('Interactive')
+        self.main_tabs.add_tab('Interactive', Icons.ENGINE)
         self.setup_interactive_tab()
         
         # --- SECTION 2: Selection Elements ---
-        self.main_tabs.add_tab('Selection')
+        self.main_tabs.add_tab('Selection', Icons.SELECTION)
         self.setup_selection_tab()
         
         # --- SECTION 3: Visual Elements ---
-        self.main_tabs.add_tab('Visual')
+        self.main_tabs.add_tab('Visual', Icons.SHOW)
         self.setup_visual_tab()
         
         # --- SECTION 4: Advanced Elements ---
-        self.main_tabs.add_tab('Advanced')
+        self.main_tabs.add_tab('Advanced', Icons.BRAIN)
         self.setup_advanced_tab()
         
         # --- SECTION 5: Animation Examples ---
-        self.main_tabs.add_tab('Animation')
+        self.main_tabs.add_tab('Animation', Icons.CAMERA)
         self.setup_animation_tab()
         
         # --- SECTION 6: Icons Gallery ---
-        self.main_tabs.add_tab('Icons')
+        self.main_tabs.add_tab('Icons', Icons.ICONS)
         self.setup_icons_tab()
         
         # --- SECTION 7: Notifications ---
-        self.main_tabs.add_tab('Notifications')
+        self.main_tabs.add_tab('Notifications', Icons.NOTIFICATION)
         self.setup_notification_tab()
         
         # --- SECTION 8: Charts ---
-        self.main_tabs.add_tab('Charts')
+        self.main_tabs.add_tab('Charts', Icons.RANKING)
         self.setup_charts_tab()
         
         # --- SECTION 9: Controller ---
-        self.main_tabs.add_tab('Controller')
+        self.main_tabs.add_tab('Controller', Icons.CONTROLLER)
         self.setup_controller_tab()
 
         
@@ -411,9 +411,9 @@ class ComprehensiveUIDemo(Scene):
         self.main_tabs.add_to_tab('Charts', table_label)
 
         # Create the table with columns: id, name, age, money
-        self.table = Table(
+        self.table = self.table = Table(
             470, 320, 300, 200,
-            columns=["ID", "Name", "Age", "Money"],
+            columns=["ID", "Name", "Age", "Money", "Icon"],   # added "Icon"
             rows=[],
             header_height=22,
             row_height=22,
@@ -446,26 +446,29 @@ class ComprehensiveUIDemo(Scene):
         self.main_tabs.add_to_tab('Charts', randomize_btn)
      
     def randomize_table(self):
-        """Fill the table with random data."""
+        """Fill the table with random data and a random icon for each row."""
         import random
 
-        # List of sample names
         first_names = ["Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace", "Henry", "Ivy", "Jack",
                     "Karen", "Leo", "Mia", "Noah", "Olivia", "Peter", "Quinn", "Ruby", "Sam", "Tina",
-                    "Ulysses", "Vera", "Will", "Xena", "Yves", "Zara", "Liam", "Emma", "Lucas", "Mason"]
+                    "Ulysses", "Vera", "Will", "Xena", "Yves", "Zara", "Liam", "Emma", "Lucas", "Mason", "Dan", "Vector"]
         last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez",
                     "Martinez", "Hernandez", "Lopez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson",
-                    "Martin", "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis"]
+                    "Martin", "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Hamilton", "Carter", "Kent", "Reeves"]
 
-        # Generate 6 random rows
+        # Get all available icon names
+        icon_names = Icons.get_all_names()
+
         rows = []
         for i in range(1, 7):
             name = f"{random.choice(first_names)} {random.choice(last_names)}"
             age = random.randint(18, 65)
             money = random.randint(100, 9999)
-            rows.append([str(i), name, str(age), f"${money:.2f}"])
+            # Pick a random icon and create an Icon instance with size 16 (fits row height)
+            icon_name = random.choice(icon_names)
+            icon = Icons.get_icon(icon_name, size=16)
+            rows.append([str(i), name, str(age), f"${money:.2f}", icon])
 
-        # Clear table and add rows
         self.table.clear()
         for row in rows:
             self.table.add_row(row)
@@ -735,8 +738,8 @@ class ComprehensiveUIDemo(Scene):
         self.main_tabs.add_to_tab('Interactive', TextLabel(10, 10, "Interactive Elements", 24, (255, 255, 0)))
         
         # Button Example
-        button1 = Button(x=20, y=50, width=150, height=40, text="Click Me")
-        button1.set_on_click(self.update_state, 'button_clicks', self.demo_state['button_clicks'] + 1)
+        button1 = Button(x=20, y=50, width=150, height=40, text="Click Me", icon=Icons.CLICK)
+        button1.set_on_click(lambda: self.demo_state.update({'button_clicks':self.demo_state['button_clicks'] + 1}))
         button1.set_simple_tooltip("This button counts your clicks!")
         self.main_tabs.add_to_tab('Interactive', button1)
         
@@ -939,6 +942,11 @@ class ComprehensiveUIDemo(Scene):
         label3 = TextLabel(40, 255, "Large Label", 28, (255, 200, 50))
         self.main_tabs.add_to_tab('Visual', label3)
         
+        # Image
+        image = ImageLabel(300, 195, Icons.ANVIL, 64, 64)
+        image.set_effect(FilterType.CRT, 1.0)
+        self.main_tabs.add_to_tab('Visual', image)
+        
         # Frame Example
         frame_label = TextLabel(20, 280, "UI Frame:", 16, (200, 200, 255))
         self.main_tabs.add_to_tab('Visual', frame_label)
@@ -1032,15 +1040,15 @@ class ComprehensiveUIDemo(Scene):
         
         # TextArea controls
         textarea_controls_y = 340
-        textarea_clear_btn = Button(20, textarea_controls_y, 80, 25, "Clear")
+        textarea_clear_btn = Button(20, textarea_controls_y, 80, 25, "Clear", icon=Icons.TRASH)
         textarea_clear_btn.set_on_click(lambda: self.clear_text_area())
         self.main_tabs.add_to_tab('Advanced', textarea_clear_btn)
         
-        textarea_undo_btn = Button(110, textarea_controls_y, 80, 25, "Undo")
+        textarea_undo_btn = Button(110, textarea_controls_y, 80, 25, "Undo", icon=Icons.UNDO)
         textarea_undo_btn.set_on_click(lambda: self.text_area.undo())
         self.main_tabs.add_to_tab('Advanced', textarea_undo_btn)
         
-        textarea_redo_btn = Button(200, textarea_controls_y, 80, 25, "Redo")
+        textarea_redo_btn = Button(200, textarea_controls_y, 80, 25, "Redo", icon=Icons.REDO)
         textarea_redo_btn.set_on_click(lambda: self.text_area.redo())
         self.main_tabs.add_to_tab('Advanced', textarea_redo_btn)
         
@@ -1484,10 +1492,9 @@ class ComprehensiveUIDemo(Scene):
 
 def main():
     # Create engine
-    engine = LunaEngine("LunaEngine - UI Demo", 1024, 768, debug=True)
+    engine = LunaEngine("LunaEngine - UI Demo", 1024, 768, icon=Icons.BRAIN, debug=True)
     
     engine.update_ratio(800, 600)
-    print(engine.ratio)
     
     # Configure the max FPS
     engine.fps = 60

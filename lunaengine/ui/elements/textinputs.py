@@ -4,8 +4,8 @@ import time
 from typing import Optional, Callable, Tuple, List, Dict, Any, Literal
 from .base import UIElement, UIState, FontManager
 from ..themes import ThemeManager, ThemeType
-from ...core.renderer import Renderer
 from ...backend.types import InputState
+from ...backend.opengl import OpenGLRenderer
 
 class TextBox(UIElement):
     """
@@ -312,7 +312,7 @@ class TextBox(UIElement):
     # ------------------------------------------------------------------
     # Render
     # ------------------------------------------------------------------
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 
@@ -393,7 +393,7 @@ class TextBox(UIElement):
     # ------------------------------------------------------------------
     # Helper rendering methods
     # ------------------------------------------------------------------
-    def _render_text_content(self, renderer: Renderer, input_abs_x: int, input_abs_y: int, theme) -> None:
+    def _render_text_content(self, renderer: OpenGLRenderer, input_abs_x: int, input_abs_y: int, theme) -> None:
         """Render actual text or placeholder inside the input area."""
         if self.text and self._text_surface is not None:
             text_y = input_abs_y + (self._input_rect.height - self._text_rect.height) // 2
@@ -993,7 +993,7 @@ class TextArea(UIElement):
         elif event.unicode and event.unicode.isprintable() and not self.read_only:
             self._insert_text(event.unicode)
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
         ax, ay = self.get_actual_position()
@@ -1040,7 +1040,7 @@ class TextArea(UIElement):
         if hasattr(renderer, 'disable_scissor'):
             renderer.disable_scissor()
 
-    def _draw_selection_highlight(self, renderer: Renderer, ax: int, ay: int, line_num: int, line_y: int) -> None:
+    def _draw_selection_highlight(self, renderer: OpenGLRenderer, ax: int, ay: int, line_num: int, line_y: int) -> None:
         sl, sc = self.selection_start
         el, ec = self.selection_end
         if (el < sl) or (el == sl and ec < sc):

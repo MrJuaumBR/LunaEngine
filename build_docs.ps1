@@ -19,7 +19,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # 2. Generate code statistics
 Write-Host "`n[2/3] Generating code statistics..." -ForegroundColor Yellow
-python lunaengine/tools/code_stats.py
+python lunaengine/tools/code_stats.py --json --output docs/code_stats.json
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: code_stats.py failed" -ForegroundColor Red
     exit $LASTEXITCODE

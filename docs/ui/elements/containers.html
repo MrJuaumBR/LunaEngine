@@ -101,19 +101,31 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, header_enabled: bool = False, header_title: str = '', header_icon: Optional[Union[str, pygame.Surface]] = None, header_height: int = 30, draggable: bool = False, **kwargs: dict) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int | float, y: int | float, width: int | float, height: int | float, pivot: Tuple[int | float, int | float] = (0, 0), theme: Optional[ThemeType | ThemeKey] = None, element_id: Optional[str] = None, header_enabled: bool = False, header_title: str = '', header_icon: Optional[Union[str, pygame.Surface, Path, AtlasItem, Any]] = None, header_height: int = 30, draggable: bool = False, **kwargs: dict) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-header_font">
                 <code class="fs-6 fw-bold text-color-title">def header_font(self: Any) -> Optional[pygame.font.Font]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-_refresh_header_icon">
+                <code class="fs-6 fw-bold text-color-title">def _refresh_header_icon(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-_resolve_icon_to_surface">
+                <code class="fs-6 fw-bold text-color-title">def _resolve_icon_to_surface(self: Any, icon_input: Any, max_size: int, color: Optional[Tuple[int, int, int]] = None) -> Optional[pygame.Surface]</code>
+                <div class="mt-2 text-muted small">Convert various icon inputs to a pygame.Surface scaled to fit within max_size (square).<br>Supports:<br> &nbsp; &nbsp;- callables returning any supported type (e.g., Icons.BRAIN)<br> &nbsp; &nbsp;- objects with get_surface(color) (duck‑typed Icon)<br> &nbsp; &nbsp;- pygame.Surface<br> &nbsp; &nbsp;- str or Path (file path)<br> &nbsp; &nbsp;- AtlasItem (loads from bundle or disk)</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-_get_header_text_color">
+                <code class="fs-6 fw-bold text-color-title">def _get_header_text_color(self: Any) -> Tuple[int, int, int]</code>
+                <div class="mt-2 text-muted small">Return the text color for the header (from the current theme).</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-_get_init_args">
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-usable_space">
-                <code class="fs-6 fw-bold text-color-title">def usable_space(self: Any) -> Tuple[int, int]</code>
+                <code class="fs-6 fw-bold text-color-title">def usable_space(self: Any) -> Tuple[int | float, int | float]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-get_header_rect">
@@ -121,7 +133,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-set_background_color">
-                <code class="fs-6 fw-bold text-color-title">def set_background_color(self: Any, color: Optional[Union[Tuple[int, int, int], Tuple[int, int, int, int | float]]]) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def set_background_color(self: Any, color: Optional[Union[Tuple[int, int, int], Tuple[int, int, int, int | float], Color, ColorKeys]]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-set_border_color">
@@ -141,11 +153,11 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-get_content_rect">
-                <code class="fs-6 fw-bold text-color-title">def get_content_rect(self: Any) -> Tuple[int, int, int, int]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_content_rect(self: Any) -> Tuple[int | float, int | float, int | float, int | float]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-add_child">
-                <code class="fs-6 fw-bold text-color-title">def add_child(self: Any, child: UIElement) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def add_child(self: Any, child: UIElement) -> UIElement</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-remove_child">
@@ -235,6 +247,10 @@
                 <code class="fs-6 fw-bold text-color-title">def set_scroll(self: Any, x: int, y: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-update_content_area">
+                <code class="fs-6 fw-bold text-color-title">def update_content_area(self: Any, width: Optional[int] = None, height: Optional[int] = None) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-clear_content">
                 <code class="fs-6 fw-bold text-color-title">def clear_content(self: Any, reset_scroll: bool = True) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -285,7 +301,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Tabbed container. Fully optimized with cached metrics for vertical mode.</p>
+                    <p class="lead fs-6">Tabbed container. Fully optimized with cached metrics for vertical mode.<br>Supports icons on tabs with left/right positioning for horizontal orientation.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -303,7 +319,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_recompute_tab_metrics">
-                <code class="fs-6 fw-bold text-color-title">def _recompute_tab_metrics(self: Any) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _recompute_tab_metrics(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">Recalculate cached text sizes and scaled icons for all tabs.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_calculate_tab_colors">
@@ -319,11 +335,11 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-add_tab">
-                <code class="fs-6 fw-bold text-color-title">def add_tab(self: Any, tab_name: str, icon: Optional[Union[str, pygame.Surface]] = None) -> bool</code>
-                <div class="mt-2 text-muted small">No documentation</div>
+                <code class="fs-6 fw-bold text-color-title">def add_tab(self: Any, tab_name: str, icon: Optional[Union[str, pygame.Surface, Path, AtlasItem, Any]] = None, icon_position: Literal['left', 'right'] = 'left') -> UIElement | None</code>
+                <div class="mt-2 text-muted small">Add a new tab.<br><br>Args:<br> &nbsp; &nbsp;tab_name: Display name of the tab.<br> &nbsp; &nbsp;icon: Icon input (supports Icon, AtlasItem, str/Path, Surface, callable).<br> &nbsp; &nbsp;icon_position: For horizontal tabs, place icon left or right of text.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-add_to_tab">
-                <code class="fs-6 fw-bold text-color-title">def add_to_tab(self: Any, tab_name: str, ui_element: UIElement) -> bool</code>
+                <code class="fs-6 fw-bold text-color-title">def add_to_tab(self: Any, tab_name: str, ui_element: UIElement) -> UIElement | None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-switch_tab">
@@ -379,7 +395,7 @@
                 <div class="mt-2 text-muted small">Rename a tab. Returns True if successful.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-set_tab_icon">
-                <code class="fs-6 fw-bold text-color-title">def set_tab_icon(self: Any, tab_name: str, icon: Optional[Union[str, pygame.Surface]]) -> bool</code>
+                <code class="fs-6 fw-bold text-color-title">def set_tab_icon(self: Any, tab_name: str, icon: Optional[Union[str, pygame.Surface, Path, AtlasItem, Any]], icon_position: Literal['left', 'right'] = 'left') -> bool</code>
                 <div class="mt-2 text-muted small">Set or clear an icon for a tab. Returns True if successful.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_update_tab_offsets">
@@ -407,11 +423,11 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_visible_size">
-                <code class="fs-6 fw-bold text-color-title">def _get_visible_size(self: Any) -> int</code>
+                <code class="fs-6 fw-bold text-color-title">def _get_visible_size(self: Any) -> int | float</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_draw_arrow">
-                <code class="fs-6 fw-bold text-color-title">def _draw_arrow(self: Any, renderer: OpenGLRenderer, x: int, y: int, direction: str, hover: bool) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def _draw_arrow(self: Any, renderer: OpenGLRenderer, x: int | float, y: int | float, direction: str, hover: bool) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-update">
@@ -499,7 +515,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
@@ -695,6 +711,49 @@
                 </div>
             </div>
         </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-canvas">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Canvas</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">A custom drawable area with an internal surface.<br>Supports border and child positioning modes.</p>
+                </div>
+                <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>category: str = 'canvas'</code>
+                </div></div>
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-canvas-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, logical_width: Optional[int] = None, logical_height: Optional[int] = None, scale_mode: Literal['none', 'fit', 'stretch'] = 'fit', background_color: Optional[Tuple[int, int, int]] = None, alpha: float = 1.0, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, position_mode: Literal['scaled', 'pixel'] = 'pixel', border_color: Optional[Tuple[int, int, int]] = None, border_width: int = 0, corner_radius: Union[int, Tuple[int, int, int, int]] = 0) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-canvas-set_draw_callback">
+                <code class="fs-6 fw-bold text-color-title">def set_draw_callback(self: Any, callback: Callable[['Canvas', OpenGLRenderer], None]) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-canvas-set_border">
+                <code class="fs-6 fw-bold text-color-title">def set_border(self: Any, color: Optional[Tuple[int, int, int]], width: int = 1, corner_radius: Union[int, Tuple[int, int, int, int]] = 0) -> None</code>
+                <div class="mt-2 text-muted small">Set the border appearance.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-canvas-set_position_mode">
+                <code class="fs-6 fw-bold text-color-title">def set_position_mode(self: Any, mode: Literal['scaled', 'pixel']) -> None</code>
+                <div class="mt-2 text-muted small">Set how child elements are positioned inside the canvas.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-canvas-_map_child_coordinates">
+                <code class="fs-6 fw-bold text-color-title">def _map_child_coordinates(self: Any, child: UIElement) -> Tuple[int, int, int, int]</code>
+                <div class="mt-2 text-muted small">Convert child&#x27;s x, y, width, height from the current position_mode<br>to logical pixel coordinates (0..logical_width, 0..logical_height).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-canvas-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
                 
                 
             </div>
@@ -716,7 +775,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-08-17 22:16
+                        Documentation generated on 2026-09-14 16:30
                     </p>
                 </div>
             </div>
@@ -724,7 +783,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="../theme.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {

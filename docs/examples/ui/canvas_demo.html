@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Demo - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (Ctrl+K)">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../../examples/index.html">Examples Hub</a></li><li class="breadcrumb-item active">Ui</li><li class="breadcrumb-item active">Canvas Demo</li></ol></nav>
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Canvas Demo</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>canvas_demo.py</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">import math
+import pygame
+from lunaengine.core import LunaEngine, Scene
+from lunaengine.ui import *
+from lunaengine.backend import OpenGLRenderer
+import pygame
+
+class CanvasDemo(Scene):
+    def __init__(self, engine: LunaEngine):
+        super().__init__(engine)
+
+        # Canvas with a background
+        self.canvas = Canvas(
+            50, 50, 400, 300,
+            logical_width=600, logical_height=400,
+            scale_mode=&#x27;fit&#x27;,
+            background_color=(30, 30, 50),
+            alpha=0.9
+        )
+        self.canvas.set_draw_callback(self.draw_canvas_content)
+        self.add_ui_element(self.canvas)
+
+        # Control button
+        btn = Button(500, 50, 120, 30, &quot;Toggle BG&quot;)
+        btn.set_on_click(self.toggle_bg)
+        self.add_ui_element(btn)
+
+        self.angle = 0.0
+
+    def draw_canvas_content(self, canvas: Canvas, renderer: OpenGLRenderer):
+        w, h = canvas.logical_width, canvas.logical_height
+
+        # Grid (background)
+        for x in range(0, w, 40):
+            renderer.draw_line(x, 0, x, h, (60, 60, 80), 1)
+        for y in range(0, h, 40):
+            renderer.draw_line(0, y, w, y, (60, 60, 80), 1)
+
+        # Rect with gradient
+        renderer.draw_rect(
+            50, 50, 150, 100,
+            style={
+                &#x27;gradient&#x27;: [(255, 0, 0), (0, 255, 0), (0, 0, 255)],
+                &#x27;border_color&#x27;: (255, 255, 255),
+                &#x27;border_width&#x27;: 2
+            }
+        )
+
+        # Circle with border via style
+        renderer.draw_circle(
+            300, 150, 60, (100, 200, 255), fill=True,
+            style={&#x27;border_color&#x27;: (0, 0, 255), &#x27;border_width&#x27;: 3}
+        )
+
+        # Moving circle
+        self.angle += 0.02
+        cx = 300 + 120 * math.cos(self.angle)
+        cy = 250 + 80 * math.sin(self.angle * 1.5)
+        renderer.draw_circle(cx, cy, 25, (255, 100, 100), fill=True)
+
+        # Text
+        font = FontManager.get_font(None, 20)
+        renderer.draw_text(&quot;Hello Canvas!&quot;, 50, 200, (255, 255, 200), font)
+
+    def toggle_bg(self):
+        if self.canvas.background_color:
+            self.canvas.background_color = None
+            self.canvas._surface = pygame.Surface(
+                (self.canvas.logical_width, self.canvas.logical_height),
+                pygame.SRCALPHA, 32
+            )
+        else:
+            self.canvas.background_color = (30, 30, 50)
+            self.canvas._surface = pygame.Surface(
+                (self.canvas.logical_width, self.canvas.logical_height),
+                0, 32
+            )
+            self.canvas._surface.fill((30, 30, 50))
+
+def main():
+    engine = LunaEngine(&quot;Canvas Fixed Demo&quot;, 700, 500, debug=True)
+    engine.add_scene(&quot;demo&quot;, CanvasDemo)
+    engine.set_scene(&quot;demo&quot;)
+    engine.run()
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>No description</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="canvas_demo.py" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-09-14 16:30
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../../theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // Compute relative path to root search.html
+                    const path = window.location.pathname;
+                    const parts = path.split('/').filter(p => p && p !== '');
+                    // Remove file part if present
+                    let dirParts = parts;
+                    if (dirParts.length > 0 && dirParts[dirParts.length - 1].includes('.')) {
+                        dirParts = dirParts.slice(0, -1);
+                    }
+                    // Number of levels to go up to reach the directory containing search.html
+                    const levels = Math.max(0, dirParts.length - 1);
+                    const searchPath = '../'.repeat(levels) + 'search.html';
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

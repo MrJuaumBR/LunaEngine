@@ -115,8 +115,32 @@
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, root_path: Optional[Union[str, Path]] = None) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-atlas-set_root">
+                <code class="fs-6 fw-bold text-color-title">def set_root(self: Any, root: Union[str, Path, AtlasItem]) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-atlas-add_alias">
+                <code class="fs-6 fw-bold text-color-title">def add_alias(self: Any, alias: str, path: Union[str, Path, AtlasItem]) -> Path</code>
+                <div class="mt-2 text-muted small">Register a virtual path prefix, e.g. ``assets/player.png``.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-atlas-remove_alias">
+                <code class="fs-6 fw-bold text-color-title">def remove_alias(self: Any, alias: str) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-atlas-get_alias_path">
+                <code class="fs-6 fw-bold text-color-title">def get_alias_path(self: Any, alias: str = 'root') -> Optional[Path]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-atlas-list_aliases">
+                <code class="fs-6 fw-bold text-color-title">def list_aliases(self: Any) -> Dict[str, Path]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-atlas-guess_category_from_path">
                 <code class="fs-6 fw-bold text-color-title">def guess_category_from_path(path: Union[Path, str]) -> AtlasCategory</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-atlas-_resolve_resource_path">
+                <code class="fs-6 fw-bold text-color-title">def _resolve_resource_path(self: Any, path: Path) -> Path</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-atlas-add_to_atlas">
@@ -191,7 +215,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-08-17 22:16
+                        Documentation generated on 2026-09-14 16:30
                     </p>
                 </div>
             </div>
@@ -199,7 +223,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="../theme.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {

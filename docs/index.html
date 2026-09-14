@@ -7,6 +7,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="theme.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Dashboard specific styles are now in theme.css */
+    </style>
 </head>
 <body>
     
@@ -29,6 +33,7 @@
         </div>
     </nav>
     
+    <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
             <div class="row align-items-center">
@@ -48,16 +53,18 @@
                         <h3 class="text-white mb-2">8</h3>
                         <p class="text-white-50 mb-1">Modules</p>
                         <div class="d-flex justify-content-center gap-3 flex-wrap">
-                            <small class="text-white-50">48 files</small>
-                            <small class="text-white-50">184 classes</small>
-                            <small class="text-white-50">81 functions</small>
-                            <small class="text-white-50">1686 methods</small>
+                            <small class="text-white-50">49 files</small>
+                            <small class="text-white-50">187 classes</small>
+                            <small class="text-white-50">85 functions</small>
+                            <small class="text-white-50">1754 methods</small>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Quick links bar -->
     <div class="container mt-4">
         <div class="row">
             <div class="col-12">
@@ -67,7 +74,7 @@
                             <div class="col-md-7">
                                 <h6 class="mb-0"><i class="bi bi-rocket me-2"></i>Get started quickly with LunaEngine</h6>
                             </div>
-                            <div class="col-md-5.5 text-end">
+                            <div class="col-md-5 text-end">
                                 <a href="quick-start.html" class="btn btn-light btn-sm me-2"><i class="bi bi-play-circle me-1"></i>Quick Guide</a>
                                 <a href="lessons/" class="btn btn-light btn-sm me-2"><i class="bi bi-journal-bookmark me-1"></i>Lessons</a>
                                 <a href="contact.html" class="btn btn-outline-light btn-sm me-2"><i class="bi bi-people me-1"></i>Community</a>
@@ -81,6 +88,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Install card -->
     <div class="container mt-4">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-primary text-white">
@@ -109,227 +118,238 @@
             </div>
         </div>
     </div>
+
+    <!-- ========== CODE STATISTICS DASHBOARD ========== -->
     <div class="container mt-5">
         <div class="row">
             <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Code Statistics</h5>
-                        <button class="btn btn-sm btn-light" type="button" id="toggleStatsBtn">
-                            <i class="bi bi-chevron-down" id="statsToggleIcon"></i>
-                        </button>
+                <div class="glass-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0"><i class="bi bi-graph-up me-2"></i>Code Statistics Dashboard</h4>
+                        <span class="badge bg-secondary">0.2.6 - Alpha</span>
                     </div>
-                    <div class="card-body p-2">
-                        <div id="codeStatsContent" class="code-stats-content markdown-content preview">
-# LunaEngine Code Statistics
-
-## Overview
-
-- **Total Files**: 62
-- **Total Lines**: 32862
-- **Code Lines**: 22637
-- **Comment Lines**: 5530
-- **Blank Lines**: 4695
-
-## Theme Statistics
-
-- **Total Themes (base names)**: 62
-- **Themes with both dark and light variants**: 62
-- **Total variants (dark + light)**: 124
-
-## UI Elements
-
-- **Total UI Elements**: 29
-
-## Code Density
-
-- **Code Density**: 68.9%
-- Balanced code and comments
-
-## Project Structure
-
-```bash
-[ROT] lunaengine/
-├── [PYT] __init__.py
-├── [DIR] assets/
-│   ├── [DIR] icons/
-│   └── [DIR] shaders/
-│       ├── [SHD] shaders.frag
-│       ├── [SHD] shaders.geom
-│       └── [SHD] shaders.vert
-├── [DIR] backend/
-│   ├── [PYT] __init__.py
-│   ├── [PYT] controller.py
-│   ├── [PYT] exceptions.py
-│   ├── [PYT] network.py
-│   ├── [PYT] openal.py
-│   ├── [PYT] opengl.py
-│   └── [PYT] types.py
-├── [MDN] CODE_STATISTICS.md
-├── [DIR] core/
-│   ├── [PYT] __init__.py
-│   ├── [PYT] audio.py
-│   ├── [PYT] engine.py
-│   ├── [PYT] renderer.py
-│   ├── [PYT] scene.py
-│   └── [PYT] window.py
-├── [DIR] graphics/
-│   ├── [PYT] __init__.py
-│   ├── [PYT] camera.py
-│   ├── [PYT] paperdoll.py
-│   ├── [PYT] particles.py
-│   ├── [PYT] shadows.py
-│   └── [PYT] spritesheet.py
-├── [DIR] misc/
-│   ├── [PYT] __init__.py
-│   ├── [PYT] debug.py
-│   └── [PYT] icons.py
-├── [DIR] storage/
-│   ├── [PYT] __init__.py
-│   ├── [PYT] atlas.py
-│   ├── [PYT] encrypter.py
-│   └── [PYT] savedata.py
-├── [DIR] tools/
-│   ├── [PYT] __init__.py
-│   ├── [PYT] clear_pycache.py
-│   ├── [PYT] code_stats.py
-│   ├── [PYT] database_editor.py
-│   └── [PYT] theme_tool.py
-├── [DIR] ui/
-│   ├── [PYT] __init__.py
-│   ├── [DIR] elements/
-│   │   ├── [PYT] __init__.py
-│   │   ├── [PYT] base.py
-│   │   ├── [PYT] buttons.py
-│   │   ├── [PYT] clock.py
-│   │   ├── [PYT] containers.py
-│   │   ├── [PYT] dialogs.py
-│   │   ├── [PYT] labels.py
-│   │   ├── [PYT] misc.py
-│   │   ├── [PYT] progress.py
-│   │   ├── [PYT] selectors.py
-│   │   ├── [PYT] textinputs.py
-│   │   └── [PYT] visualizers.py
-│   ├── [PYT] layer_manager.py
-│   ├── [PYT] layout.py
-│   ├── [PYT] notifications.py
-│   ├── [PYT] styles.py
-│   ├── [PYT] themes.py
-│   ├── [PYT] tooltips.py
-│   └── [PYT] tween.py
-└── [DIR] utils/
-    ├── [PYT] __init__.py
-    ├── [PYT] image_converter.py
-    ├── [PYT] math_utils.py
-    ├── [PYT] performance.py
-    ├── [PYT] threading.py
-    └── [PYT] timer.py
-```
-
-## Files by Extension
-
-| Extension | Count | Percentage |
-|-----------|-------|------------|
-| `.frag` | 1 | 1.6% |
-| `.geom` | 1 | 1.6% |
-| `.md` | 1 | 1.6% |
-| `.py` | 58 | 93.5% |
-| `.vert` | 1 | 1.6% |
-
-## Files by Directory
-
-| Directory | File Count |
-|-----------|------------|
-| `assets\shaders` | 3 |
-| `backend` | 7 |
-| `core` | 6 |
-| `graphics` | 6 |
-| `misc` | 3 |
-| `root` | 2 |
-| `storage` | 4 |
-| `tools` | 5 |
-| `ui` | 8 |
-| `ui\elements` | 12 |
-| `utils` | 6 |
-
-## File Details
-
-| File | Total Lines | Code | Comments | Blank | Size (KB) |
-|------|------------|------|----------|-------|-----------|
-| `backend\opengl.py` | 2207 | 1765 | 211 | 231 | 96.9 |
-| `ui\elements\containers.py` | 2197 | 1847 | 74 | 276 | 92.5 |
-| `ui\elements\selectors.py` | 1855 | 1521 | 71 | 263 | 77.6 |
-| `misc\debug.py` | 1521 | 1150 | 137 | 234 | 66.3 |
-| `core\engine.py` | 1485 | 897 | 330 | 258 | 60.4 |
-| `ui\elements\visualizers.py` | 1306 | 1040 | 100 | 166 | 59.1 |
-| `ui\tween.py` | 1202 | 550 | 423 | 229 | 36.7 |
-| `graphics\camera.py` | 1105 | 643 | 266 | 196 | 43.4 |
-| `backend\network.py` | 1092 | 770 | 140 | 182 | 40.1 |
-| `ui\elements\textinputs.py` | 1064 | 879 | 71 | 114 | 45.3 |
-| `ui\elements\labels.py` | 933 | 710 | 105 | 118 | 36.0 |
-| `ui\notifications.py` | 931 | 576 | 199 | 156 | 37.9 |
-| `graphics\spritesheet.py` | 930 | 469 | 309 | 152 | 33.3 |
-| `storage\savedata.py` | 880 | 583 | 204 | 93 | 35.1 |
-| `core\renderer.py` | 819 | 412 | 303 | 104 | 24.5 |
-| `graphics\particles.py` | 742 | 580 | 78 | 84 | 23.9 |
-| `ui\themes.py` | 716 | 554 | 65 | 97 | 26.3 |
-| `ui\elements\base.py` | 682 | 359 | 211 | 112 | 26.7 |
-| `backend\controller.py` | 652 | 503 | 63 | 86 | 23.5 |
-| `core\audio.py` | 611 | 471 | 69 | 71 | 23.0 |
-| `backend\openal.py` | 589 | 481 | 55 | 53 | 22.1 |
-| `tools\database_editor.py` | 569 | 211 | 304 | 54 | 21.2 |
-| `backend\types.py` | 485 | 353 | 51 | 81 | 17.2 |
-| `assets\shaders\shaders.frag` | 440 | 368 | 15 | 57 | 14.4 |
-| `utils\timer.py` | 427 | 164 | 179 | 84 | 13.8 |
-| `tools\code_stats.py` | 423 | 296 | 56 | 71 | 17.3 |
-| `utils\performance.py` | 422 | 304 | 44 | 74 | 14.9 |
-| `graphics\paperdoll.py` | 411 | 213 | 130 | 68 | 15.7 |
-| `graphics\shadows.py` | 411 | 278 | 74 | 59 | 16.2 |
-| `ui\elements\clock.py` | 403 | 274 | 71 | 58 | 17.4 |
-| `misc\icons.py` | 384 | 240 | 76 | 68 | 13.4 |
-| `utils\math_utils.py` | 384 | 214 | 118 | 52 | 12.1 |
-| `ui\elements\buttons.py` | 380 | 309 | 17 | 54 | 14.2 |
-| `ui\tooltips.py` | 364 | 179 | 118 | 67 | 12.9 |
-| `core\window.py` | 358 | 138 | 158 | 62 | 12.0 |
-| `ui\elements\dialogs.py` | 303 | 210 | 47 | 46 | 12.4 |
-| `ui\elements\progress.py` | 294 | 219 | 42 | 33 | 12.8 |
-| `ui\elements\misc.py` | 280 | 207 | 29 | 44 | 10.7 |
-| `utils\threading.py` | 263 | 155 | 77 | 31 | 10.0 |
-| `storage\atlas.py` | 252 | 199 | 24 | 29 | 10.6 |
-| `utils\image_converter.py` | 251 | 177 | 25 | 49 | 9.2 |
-| `ui\layout.py` | 231 | 97 | 91 | 43 | 7.3 |
-| `core\scene.py` | 214 | 150 | 20 | 44 | 7.9 |
-| `CODE_STATISTICS.md` | 197 | 172 | 9 | 16 | 7.0 |
-| `ui\layer_manager.py` | 165 | 110 | 31 | 24 | 6.3 |
-| `tools\theme_tool.py` | 152 | 108 | 15 | 29 | 6.3 |
-| `assets\shaders\shaders.vert` | 144 | 103 | 15 | 26 | 4.1 |
-| `backend\__init__.py` | 135 | 100 | 28 | 7 | 2.9 |
-| `graphics\__init__.py` | 100 | 72 | 21 | 7 | 2.0 |
-| `ui\styles.py` | 91 | 35 | 38 | 18 | 2.7 |
-| `utils\__init__.py` | 76 | 47 | 22 | 7 | 2.7 |
-| `ui\__init__.py` | 73 | 26 | 30 | 17 | 2.7 |
-| `core\__init__.py` | 52 | 26 | 20 | 6 | 1.2 |
-| `ui\elements\__init__.py` | 48 | 24 | 22 | 2 | 2.1 |
-| `storage\encrypter.py` | 45 | 35 | 0 | 10 | 1.3 |
-| `assets\shaders\shaders.geom` | 27 | 20 | 3 | 4 | 0.7 |
-| `tools\clear_pycache.py` | 24 | 20 | 0 | 4 | 0.8 |
-| `backend\exceptions.py` | 21 | 5 | 11 | 5 | 0.6 |
-| `misc\__init__.py` | 15 | 5 | 7 | 3 | 0.5 |
-| `storage\__init__.py` | 15 | 9 | 4 | 2 | 0.5 |
-| `__init__.py` | 11 | 4 | 3 | 4 | 0.3 |
-| `tools\__init__.py` | 3 | 1 | 1 | 1 | 0.0 |
-
+                    <div class="row g-4">
+                        <!-- Pie Chart -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="chart-container">
+                                <canvas id="codePieChart"></canvas>
+                            </div>
+                            <p class="text-center text-muted small mt-2">Distribution of lines</p>
+                        </div>
+                        <!-- Summary Stats -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="stats-grid">
+                                <div class="stat-item"><div class="stat-number">63</div><div class="stat-label">Files</div></div>
+                                <div class="stat-item"><div class="stat-number">35,319</div><div class="stat-label">Total Lines</div></div>
+                                <div class="stat-item"><div class="stat-number">24,834</div><div class="stat-label">Code</div></div>
+                                <div class="stat-item"><div class="stat-number">5,516</div><div class="stat-label">Comments</div></div>
+                                <div class="stat-item"><div class="stat-number">4,969</div><div class="stat-label">Blank</div></div>
+                                <div class="stat-item"><div class="stat-number">72</div><div class="stat-label">Themes</div></div>
+                                <div class="stat-item"><div class="stat-number">144</div><div class="stat-label">Variants</div></div>
+                                <div class="stat-item"><div class="stat-number">70</div><div class="stat-label">Icons</div></div>
+                                <div class="stat-item"><div class="stat-number">30</div><div class="stat-label">UI Elements</div></div>
+                            </div>
+                        </div>
+                        <!-- Top Files Ranking -->
+                        <div class="col-lg-5 col-md-12">
+                            <h6 class="mb-2"><i class="bi bi-trophy me-1"></i>Top Files (by lines)</h6>
+                            <div class="file-rank-list">
+                                
+        <div class="file-rank-item">
+            <span class="rank-num">1.</span>
+            <span class="rank-name">backend\opengl.py</span>
+            <span class="rank-lines">3145</span>
+            <div class="rank-bar"><div style="width: 100.0%;"></div></div>
+        </div>
+        
+        <div class="file-rank-item">
+            <span class="rank-num">2.</span>
+            <span class="rank-name">ui\elements\containers.py</span>
+            <span class="rank-lines">2498</span>
+            <div class="rank-bar"><div style="width: 79.4%;"></div></div>
+        </div>
+        
+        <div class="file-rank-item">
+            <span class="rank-num">3.</span>
+            <span class="rank-name">core\engine.py</span>
+            <span class="rank-lines">1946</span>
+            <div class="rank-bar"><div style="width: 61.9%;"></div></div>
+        </div>
+        
+        <div class="file-rank-item">
+            <span class="rank-num">4.</span>
+            <span class="rank-name">ui\elements\selectors.py</span>
+            <span class="rank-lines">1854</span>
+            <div class="rank-bar"><div style="width: 59.0%;"></div></div>
+        </div>
+        
+        <div class="file-rank-item">
+            <span class="rank-num">5.</span>
+            <span class="rank-name">misc\debug.py</span>
+            <span class="rank-lines">1845</span>
+            <div class="rank-bar"><div style="width: 58.7%;"></div></div>
+        </div>
+        
+        <div class="file-rank-item">
+            <span class="rank-num">6.</span>
+            <span class="rank-name">ui\elements\visualizers.py</span>
+            <span class="rank-lines">1407</span>
+            <div class="rank-bar"><div style="width: 44.7%;"></div></div>
+        </div>
+        
+        <div class="file-rank-item">
+            <span class="rank-num">7.</span>
+            <span class="rank-name">ui\tween.py</span>
+            <span class="rank-lines">1202</span>
+            <div class="rank-bar"><div style="width: 38.2%;"></div></div>
+        </div>
+        
+        <div class="file-rank-item">
+            <span class="rank-num">8.</span>
+            <span class="rank-name">graphics\camera.py</span>
+            <span class="rank-lines">1105</span>
+            <div class="rank-bar"><div style="width: 35.1%;"></div></div>
+        </div>
+        
+        <div class="file-rank-item">
+            <span class="rank-num">9.</span>
+            <span class="rank-name">backend\network.py</span>
+            <span class="rank-lines">1092</span>
+            <div class="rank-bar"><div style="width: 34.7%;"></div></div>
+        </div>
+        
+        <div class="file-rank-item">
+            <span class="rank-num">10.</span>
+            <span class="rank-name">ui\elements\textinputs.py</span>
+            <span class="rank-lines">1064</span>
+            <div class="rank-bar"><div style="width: 33.8%;"></div></div>
+        </div>
+        
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Extensions bars -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6 class="mb-2"><i class="bi bi-tags me-1"></i>Files by Extension</h6>
+                            <div class="ext-bar-list">
+                                
+        <div class="ext-bar-item">
+            <span class="ext-name">.py</span>
+            <span class="ext-count">59</span>
+            <div class="ext-bar"><div style="width: 100.0%;"></div></div>
+        </div>
+        
+        <div class="ext-bar-item">
+            <span class="ext-name">.md</span>
+            <span class="ext-count">1</span>
+            <div class="ext-bar"><div style="width: 1.7%;"></div></div>
+        </div>
+        
+        <div class="ext-bar-item">
+            <span class="ext-name">.frag</span>
+            <span class="ext-count">1</span>
+            <div class="ext-bar"><div style="width: 1.7%;"></div></div>
+        </div>
+        
+        <div class="ext-bar-item">
+            <span class="ext-name">.geom</span>
+            <span class="ext-count">1</span>
+            <div class="ext-bar"><div style="width: 1.7%;"></div></div>
+        </div>
+        
+        <div class="ext-bar-item">
+            <span class="ext-name">.vert</span>
+            <span class="ext-count">1</span>
+            <div class="ext-bar"><div style="width: 1.7%;"></div></div>
+        </div>
+        
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- ========== MODULES ========== -->
     <div class="container mt-5">
         <h2 class="mb-4">LunaEngine Modules</h2>
         <div class="row g-4" style="margin-bottom: 1vw;">
     <script>
-    document.addEventListener('DOMContentLoaded', function(){{const installRadios=document.querySelectorAll('input[name="installOption"]');const installCommandSpan=document.getElementById('installCommand');const copyBtn=document.querySelector('.copy-install-btn');const toggleBtn=document.getElementById('toggleStatsBtn');const contentDiv=document.getElementById('codeStatsContent');const icon=document.getElementById('statsToggleIcon');if(toggleBtn&&contentDiv&&icon){toggleBtn.addEventListener('click',function(){const isPreview=contentDiv.classList.contains('preview');if(isPreview){contentDiv.classList.remove('preview');icon.classList.replace('bi-chevron-down','bi-chevron-up');}else{contentDiv.classList.add('preview');icon.classList.replace('bi-chevron-up','bi-chevron-down');}});}function updateCommand(){const selected=document.querySelector('input[name="installOption"]:checked').value;switch(selected){case'windows':installCommandSpan.textContent='pip install lunaengine';break;case'linux':installCommandSpan.textContent='pip3 install lunaengine';break;case'testpypi':installCommandSpan.textContent='pip install -i https://test.pypi.org/simple/ lunaengine';break;}}installRadios.forEach(radio=>radio.addEventListener('change',updateCommand));copyBtn.addEventListener('click',function(){const textToCopy=installCommandSpan.textContent;navigator.clipboard.writeText(textToCopy).then(()=>{const originalIcon=copyBtn.innerHTML;copyBtn.innerHTML='<i class="bi bi-check"></i>';copyBtn.classList.add('btn-success');copyBtn.classList.remove('btn-outline-secondary');setTimeout(()=>{copyBtn.innerHTML=originalIcon;copyBtn.classList.remove('btn-success');copyBtn.classList.add('btn-outline-secondary');},2000);});});}});
+        document.addEventListener('DOMContentLoaded', function() {
+        const installRadios = document.querySelectorAll('input[name="installOption"]');
+        const installCommandSpan = document.getElementById('installCommand');
+        const copyBtn = document.querySelector('.copy-install-btn');
+        
+        function updateCommand() {
+            const selected = document.querySelector('input[name="installOption"]:checked').value;
+            switch(selected) {
+                case 'windows': installCommandSpan.textContent = 'pip install lunaengine'; break;
+                case 'linux': installCommandSpan.textContent = 'pip3 install lunaengine'; break;
+                case 'testpypi': installCommandSpan.textContent = 'pip install -i https://test.pypi.org/simple/ lunaengine'; break;
+            }
+        }
+        installRadios.forEach(radio => radio.addEventListener('change', updateCommand));
+        copyBtn.addEventListener('click', function() {
+            const textToCopy = installCommandSpan.textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalIcon = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="bi bi-check"></i>';
+                copyBtn.classList.add('btn-success');
+                copyBtn.classList.remove('btn-outline-secondary');
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalIcon;
+                    copyBtn.classList.remove('btn-success');
+                    copyBtn.classList.add('btn-outline-secondary');
+                }, 2000);
+            });
+        });
+        
+        // --- Pie Chart ---
+        const stats = {"version": "0.2.6", "version_status": "Alpha", "total_files": 63, "files_by_extension": {".md": 1, ".py": 59, ".frag": 1, ".geom": 1, ".vert": 1}, "files_by_directory": {"root": 2, "assets\\shaders": 3, "backend": 8, "core": 5, "graphics": 6, "misc": 3, "storage": 4, "tools": 6, "ui": 8, "ui\\elements": 12, "utils": 6}, "total_lines": 35319, "code_lines": 24834, "comment_lines": 5516, "blank_lines": 4969, "files": [{"path": "CODE_STATISTICS.md", "total_lines": 198, "code_lines": 173, "comment_lines": 9, "blank_lines": 16, "size_kb": 7.0166015625}, {"path": "__init__.py", "total_lines": 12, "code_lines": 5, "comment_lines": 3, "blank_lines": 4, "size_kb": 0.296875}, {"path": "assets\\shaders\\shaders.frag", "total_lines": 440, "code_lines": 368, "comment_lines": 15, "blank_lines": 57, "size_kb": 14.4052734375}, {"path": "assets\\shaders\\shaders.geom", "total_lines": 27, "code_lines": 20, "comment_lines": 3, "blank_lines": 4, "size_kb": 0.6845703125}, {"path": "assets\\shaders\\shaders.vert", "total_lines": 144, "code_lines": 103, "comment_lines": 15, "blank_lines": 26, "size_kb": 4.0732421875}, {"path": "backend\\controller.py", "total_lines": 652, "code_lines": 503, "comment_lines": 63, "blank_lines": 86, "size_kb": 23.4814453125}, {"path": "backend\\exceptions.py", "total_lines": 21, "code_lines": 5, "comment_lines": 11, "blank_lines": 5, "size_kb": 0.6201171875}, {"path": "backend\\network.py", "total_lines": 1092, "code_lines": 770, "comment_lines": 140, "blank_lines": 182, "size_kb": 40.12890625}, {"path": "backend\\openal.py", "total_lines": 589, "code_lines": 481, "comment_lines": 55, "blank_lines": 53, "size_kb": 22.091796875}, {"path": "backend\\opengl.py", "total_lines": 3145, "code_lines": 2691, "comment_lines": 151, "blank_lines": 303, "size_kb": 114.3671875}, {"path": "backend\\transition.py", "total_lines": 45, "code_lines": 37, "comment_lines": 2, "blank_lines": 6, "size_kb": 1.115234375}, {"path": "backend\\types.py", "total_lines": 485, "code_lines": 353, "comment_lines": 51, "blank_lines": 81, "size_kb": 17.224609375}, {"path": "backend\\__init__.py", "total_lines": 140, "code_lines": 103, "comment_lines": 30, "blank_lines": 7, "size_kb": 3.0087890625}, {"path": "core\\audio.py", "total_lines": 611, "code_lines": 471, "comment_lines": 69, "blank_lines": 71, "size_kb": 22.9833984375}, {"path": "core\\engine.py", "total_lines": 1946, "code_lines": 1221, "comment_lines": 411, "blank_lines": 314, "size_kb": 80.6064453125}, {"path": "core\\scene.py", "total_lines": 229, "code_lines": 162, "comment_lines": 20, "blank_lines": 47, "size_kb": 8.27734375}, {"path": "core\\window.py", "total_lines": 358, "code_lines": 138, "comment_lines": 158, "blank_lines": 62, "size_kb": 11.98828125}, {"path": "core\\__init__.py", "total_lines": 51, "code_lines": 25, "comment_lines": 20, "blank_lines": 6, "size_kb": 1.193359375}, {"path": "graphics\\camera.py", "total_lines": 1105, "code_lines": 643, "comment_lines": 266, "blank_lines": 196, "size_kb": 43.4375}, {"path": "graphics\\paperdoll.py", "total_lines": 411, "code_lines": 213, "comment_lines": 130, "blank_lines": 68, "size_kb": 15.685546875}, {"path": "graphics\\particles.py", "total_lines": 742, "code_lines": 580, "comment_lines": 78, "blank_lines": 84, "size_kb": 23.9111328125}, {"path": "graphics\\shadows.py", "total_lines": 411, "code_lines": 278, "comment_lines": 74, "blank_lines": 59, "size_kb": 16.1640625}, {"path": "graphics\\spritesheet.py", "total_lines": 930, "code_lines": 469, "comment_lines": 309, "blank_lines": 152, "size_kb": 33.302734375}, {"path": "graphics\\__init__.py", "total_lines": 100, "code_lines": 72, "comment_lines": 21, "blank_lines": 7, "size_kb": 1.994140625}, {"path": "misc\\debug.py", "total_lines": 1845, "code_lines": 1391, "comment_lines": 178, "blank_lines": 276, "size_kb": 79.6962890625}, {"path": "misc\\icons.py", "total_lines": 617, "code_lines": 427, "comment_lines": 76, "blank_lines": 114, "size_kb": 21.0126953125}, {"path": "misc\\__init__.py", "total_lines": 15, "code_lines": 5, "comment_lines": 7, "blank_lines": 3, "size_kb": 0.46484375}, {"path": "storage\\atlas.py", "total_lines": 319, "code_lines": 255, "comment_lines": 28, "blank_lines": 36, "size_kb": 13.2890625}, {"path": "storage\\encrypter.py", "total_lines": 45, "code_lines": 35, "comment_lines": 0, "blank_lines": 10, "size_kb": 1.2841796875}, {"path": "storage\\savedata.py", "total_lines": 905, "code_lines": 600, "comment_lines": 210, "blank_lines": 95, "size_kb": 36.259765625}, {"path": "storage\\__init__.py", "total_lines": 15, "code_lines": 9, "comment_lines": 4, "blank_lines": 2, "size_kb": 0.4775390625}, {"path": "tools\\clear_pycache.py", "total_lines": 64, "code_lines": 48, "comment_lines": 10, "blank_lines": 6, "size_kb": 2.013671875}, {"path": "tools\\code_stats.py", "total_lines": 490, "code_lines": 359, "comment_lines": 54, "blank_lines": 77, "size_kb": 20.021484375}, {"path": "tools\\database_editor.py", "total_lines": 579, "code_lines": 212, "comment_lines": 313, "blank_lines": 54, "size_kb": 21.6513671875}, {"path": "tools\\file_tree.py", "total_lines": 184, "code_lines": 144, "comment_lines": 20, "blank_lines": 20, "size_kb": 5.09765625}, {"path": "tools\\theme_tool.py", "total_lines": 164, "code_lines": 119, "comment_lines": 15, "blank_lines": 30, "size_kb": 7.0791015625}, {"path": "tools\\__init__.py", "total_lines": 3, "code_lines": 1, "comment_lines": 1, "blank_lines": 1, "size_kb": 0.046875}, {"path": "ui\\layer_manager.py", "total_lines": 165, "code_lines": 110, "comment_lines": 31, "blank_lines": 24, "size_kb": 6.2802734375}, {"path": "ui\\layout.py", "total_lines": 231, "code_lines": 97, "comment_lines": 91, "blank_lines": 43, "size_kb": 7.3466796875}, {"path": "ui\\notifications.py", "total_lines": 931, "code_lines": 576, "comment_lines": 199, "blank_lines": 156, "size_kb": 37.919921875}, {"path": "ui\\styles.py", "total_lines": 91, "code_lines": 35, "comment_lines": 38, "blank_lines": 18, "size_kb": 2.6826171875}, {"path": "ui\\themes.py", "total_lines": 863, "code_lines": 666, "comment_lines": 82, "blank_lines": 115, "size_kb": 32.189453125}, {"path": "ui\\tooltips.py", "total_lines": 369, "code_lines": 182, "comment_lines": 119, "blank_lines": 68, "size_kb": 13.099609375}, {"path": "ui\\tween.py", "total_lines": 1202, "code_lines": 550, "comment_lines": 423, "blank_lines": 229, "size_kb": 36.689453125}, {"path": "ui\\__init__.py", "total_lines": 73, "code_lines": 26, "comment_lines": 30, "blank_lines": 17, "size_kb": 2.7119140625}, {"path": "ui\\elements\\base.py", "total_lines": 724, "code_lines": 395, "comment_lines": 213, "blank_lines": 116, "size_kb": 28.4287109375}, {"path": "ui\\elements\\buttons.py", "total_lines": 507, "code_lines": 398, "comment_lines": 38, "blank_lines": 71, "size_kb": 19.7783203125}, {"path": "ui\\elements\\clock.py", "total_lines": 403, "code_lines": 274, "comment_lines": 71, "blank_lines": 58, "size_kb": 17.439453125}, {"path": "ui\\elements\\containers.py", "total_lines": 2498, "code_lines": 2033, "comment_lines": 145, "blank_lines": 320, "size_kb": 104.8828125}, {"path": "ui\\elements\\dialogs.py", "total_lines": 303, "code_lines": 210, "comment_lines": 47, "blank_lines": 46, "size_kb": 12.4033203125}, {"path": "ui\\elements\\labels.py", "total_lines": 1060, "code_lines": 782, "comment_lines": 138, "blank_lines": 140, "size_kb": 40.69921875}, {"path": "ui\\elements\\misc.py", "total_lines": 280, "code_lines": 207, "comment_lines": 29, "blank_lines": 44, "size_kb": 10.751953125}, {"path": "ui\\elements\\progress.py", "total_lines": 294, "code_lines": 219, "comment_lines": 42, "blank_lines": 33, "size_kb": 12.8154296875}, {"path": "ui\\elements\\selectors.py", "total_lines": 1854, "code_lines": 1520, "comment_lines": 71, "blank_lines": 263, "size_kb": 77.6279296875}, {"path": "ui\\elements\\textinputs.py", "total_lines": 1064, "code_lines": 879, "comment_lines": 71, "blank_lines": 114, "size_kb": 45.326171875}, {"path": "ui\\elements\\visualizers.py", "total_lines": 1407, "code_lines": 1101, "comment_lines": 131, "blank_lines": 175, "size_kb": 63.322265625}, {"path": "ui\\elements\\__init__.py", "total_lines": 48, "code_lines": 24, "comment_lines": 22, "blank_lines": 2, "size_kb": 2.1494140625}, {"path": "utils\\image_converter.py", "total_lines": 251, "code_lines": 177, "comment_lines": 25, "blank_lines": 49, "size_kb": 9.1708984375}, {"path": "utils\\math_utils.py", "total_lines": 384, "code_lines": 214, "comment_lines": 118, "blank_lines": 52, "size_kb": 12.080078125}, {"path": "utils\\performance.py", "total_lines": 422, "code_lines": 304, "comment_lines": 44, "blank_lines": 74, "size_kb": 14.8583984375}, {"path": "utils\\threading.py", "total_lines": 263, "code_lines": 155, "comment_lines": 77, "blank_lines": 31, "size_kb": 9.9638671875}, {"path": "utils\\timer.py", "total_lines": 427, "code_lines": 164, "comment_lines": 179, "blank_lines": 84, "size_kb": 13.7841796875}, {"path": "utils\\__init__.py", "total_lines": 76, "code_lines": 47, "comment_lines": 22, "blank_lines": 7, "size_kb": 2.669921875}], "themes": {"total_themes": 72, "themes_with_both_variants": 72, "total_variants": 144, "error": null}, "total_icons": 70, "elements": {"total_elements": 30, "error": null}, "project_structure": ["[ROT] lunaengine/", "\u251c\u2500\u2500 [PYT] __init__.py", "\u251c\u2500\u2500 [DIR] assets/", "\u2502   \u251c\u2500\u2500 [DIR] icons/", "\u2502   \u2514\u2500\u2500 [DIR] shaders/", "\u2502       \u251c\u2500\u2500 [SHD] shaders.frag", "\u2502       \u251c\u2500\u2500 [SHD] shaders.geom", "\u2502       \u2514\u2500\u2500 [SHD] shaders.vert", "\u251c\u2500\u2500 [DIR] backend/", "\u2502   \u251c\u2500\u2500 [PYT] __init__.py", "\u2502   \u251c\u2500\u2500 [PYT] controller.py", "\u2502   \u251c\u2500\u2500 [PYT] exceptions.py", "\u2502   \u251c\u2500\u2500 [PYT] network.py", "\u2502   \u251c\u2500\u2500 [PYT] openal.py", "\u2502   \u251c\u2500\u2500 [PYT] opengl.py", "\u2502   \u251c\u2500\u2500 [PYT] transition.py", "\u2502   \u2514\u2500\u2500 [PYT] types.py", "\u251c\u2500\u2500 [MDN] CODE_STATISTICS.md", "\u251c\u2500\u2500 [DIR] core/", "\u2502   \u251c\u2500\u2500 [PYT] __init__.py", "\u2502   \u251c\u2500\u2500 [PYT] audio.py", "\u2502   \u251c\u2500\u2500 [PYT] engine.py", "\u2502   \u251c\u2500\u2500 [PYT] scene.py", "\u2502   \u2514\u2500\u2500 [PYT] window.py", "\u251c\u2500\u2500 [DIR] graphics/", "\u2502   \u251c\u2500\u2500 [PYT] __init__.py", "\u2502   \u251c\u2500\u2500 [PYT] camera.py", "\u2502   \u251c\u2500\u2500 [PYT] paperdoll.py", "\u2502   \u251c\u2500\u2500 [PYT] particles.py", "\u2502   \u251c\u2500\u2500 [PYT] shadows.py", "\u2502   \u2514\u2500\u2500 [PYT] spritesheet.py", "\u251c\u2500\u2500 [DIR] misc/", "\u2502   \u251c\u2500\u2500 [PYT] __init__.py", "\u2502   \u251c\u2500\u2500 [PYT] debug.py", "\u2502   \u2514\u2500\u2500 [PYT] icons.py", "\u251c\u2500\u2500 [DIR] storage/", "\u2502   \u251c\u2500\u2500 [PYT] __init__.py", "\u2502   \u251c\u2500\u2500 [PYT] atlas.py", "\u2502   \u251c\u2500\u2500 [PYT] encrypter.py", "\u2502   \u2514\u2500\u2500 [PYT] savedata.py", "\u251c\u2500\u2500 [DIR] tools/", "\u2502   \u251c\u2500\u2500 [PYT] __init__.py", "\u2502   \u251c\u2500\u2500 [PYT] clear_pycache.py", "\u2502   \u251c\u2500\u2500 [PYT] code_stats.py", "\u2502   \u251c\u2500\u2500 [PYT] database_editor.py", "\u2502   \u251c\u2500\u2500 [PYT] file_tree.py", "\u2502   \u2514\u2500\u2500 [PYT] theme_tool.py", "\u251c\u2500\u2500 [DIR] ui/", "\u2502   \u251c\u2500\u2500 [PYT] __init__.py", "\u2502   \u251c\u2500\u2500 [DIR] elements/", "\u2502   \u2502   \u251c\u2500\u2500 [PYT] __init__.py", "\u2502   \u2502   \u251c\u2500\u2500 [PYT] base.py", "\u2502   \u2502   \u251c\u2500\u2500 [PYT] buttons.py", "\u2502   \u2502   \u251c\u2500\u2500 [PYT] clock.py", "\u2502   \u2502   \u251c\u2500\u2500 [PYT] containers.py", "\u2502   \u2502   \u251c\u2500\u2500 [PYT] dialogs.py", "\u2502   \u2502   \u251c\u2500\u2500 [PYT] labels.py", "\u2502   \u2502   \u251c\u2500\u2500 [PYT] misc.py", "\u2502   \u2502   \u251c\u2500\u2500 [PYT] progress.py", "\u2502   \u2502   \u251c\u2500\u2500 [PYT] selectors.py", "\u2502   \u2502   \u251c\u2500\u2500 [PYT] textinputs.py", "\u2502   \u2502   \u2514\u2500\u2500 [PYT] visualizers.py", "\u2502   \u251c\u2500\u2500 [PYT] layer_manager.py", "\u2502   \u251c\u2500\u2500 [PYT] layout.py", "\u2502   \u251c\u2500\u2500 [PYT] notifications.py", "\u2502   \u251c\u2500\u2500 [PYT] styles.py", "\u2502   \u251c\u2500\u2500 [PYT] themes.py", "\u2502   \u251c\u2500\u2500 [PYT] tooltips.py", "\u2502   \u2514\u2500\u2500 [PYT] tween.py", "\u2514\u2500\u2500 [DIR] utils/", "    \u251c\u2500\u2500 [PYT] __init__.py", "    \u251c\u2500\u2500 [PYT] image_converter.py", "    \u251c\u2500\u2500 [PYT] math_utils.py", "    \u251c\u2500\u2500 [PYT] performance.py", "    \u251c\u2500\u2500 [PYT] threading.py", "    \u2514\u2500\u2500 [PYT] timer.py"]};
+        const pieCtx = document.getElementById('codePieChart').getContext('2d');
+        const pieChart = new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Code', 'Comments', 'Blank'],
+                datasets: [{
+                    data: [stats.code_lines, stats.comment_lines, stats.blank_lines],
+                    backgroundColor: ['#4caf50', '#ff9800', '#2196f3'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#333',
+                            font: { size: 10 }
+                        }
+                    }
+                }
+            }
+        });
+        window.lunaPieChart = pieChart;
+
+        // Watch for theme changes and update legend color
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'data-theme') {
+                    const theme = document.documentElement.getAttribute('data-theme');
+                    const color = theme === 'dark' ? '#e9ecef' : '#333';
+                    if (window.lunaPieChart) {
+                        window.lunaPieChart.options.plugins.legend.labels.color = color;
+                        window.lunaPieChart.update();
+                    }
+                }
+            });
+        });
+        observer.observe(document.documentElement, { attributes: true });
+    });
     </script>
     
             <div class="col-lg-4 col-md-6">
@@ -346,10 +366,10 @@
                     <div class="card-body">
                         <p class="text-muted">Core framework systems - Engine/LunaEngine, Window, Renderer</p>
                         <div class="module-stats d-flex flex-wrap gap-2">
-                            <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>5 files</span>
-                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>10 classes</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>4 files</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>9 classes</span>
                             <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>0 functions</span>
-                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>255 methods</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>230 methods</span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
@@ -357,7 +377,7 @@
                     </div>
                 </div>
             </div>
-
+    
             <div class="col-lg-4 col-md-6">
                 <div class="card module-card h-100 shadow-sm">
                     <div class="card-header bg-success text-white">
@@ -373,9 +393,9 @@
                         <p class="text-muted">User interface components - Buttons, Layouts, Themes</p>
                         <div class="module-stats d-flex flex-wrap gap-2">
                             <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>18 files</span>
-                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>66 classes</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>67 classes</span>
                             <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>13 functions</span>
-                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>688 methods</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>718 methods</span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
@@ -383,7 +403,7 @@
                     </div>
                 </div>
             </div>
-
+    
             <div class="col-lg-4 col-md-6">
                 <div class="card module-card h-100 shadow-sm">
                     <div class="card-header bg-warning text-white">
@@ -409,7 +429,7 @@
                     </div>
                 </div>
             </div>
-
+    
             <div class="col-lg-4 col-md-6">
                 <div class="card module-card h-100 shadow-sm">
                     <div class="card-header bg-info text-white">
@@ -435,7 +455,7 @@
                     </div>
                 </div>
             </div>
-
+    
             <div class="col-lg-4 col-md-6">
                 <div class="card module-card h-100 shadow-sm">
                     <div class="card-header bg-secondary text-white">
@@ -450,10 +470,10 @@
                     <div class="card-body">
                         <p class="text-muted">Renderer backends - OpenGL, Pygame</p>
                         <div class="module-stats d-flex flex-wrap gap-2">
-                            <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>6 files</span>
-                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>44 classes</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>7 files</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>46 classes</span>
                             <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>7 functions</span>
-                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>290 methods</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>292 methods</span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
@@ -461,7 +481,7 @@
                     </div>
                 </div>
             </div>
-
+    
             <div class="col-lg-4 col-md-6">
                 <div class="card module-card h-100 shadow-sm">
                     <div class="card-header bg-dark text-white">
@@ -477,9 +497,9 @@
                         <p class="text-muted">Miscellaneous functions - Bones, Icons</p>
                         <div class="module-stats d-flex flex-wrap gap-2">
                             <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>2 files</span>
-                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>14 classes</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>15 classes</span>
                             <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>0 functions</span>
-                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>123 methods</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>177 methods</span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
@@ -487,7 +507,7 @@
                     </div>
                 </div>
             </div>
-
+    
             <div class="col-lg-4 col-md-6">
                 <div class="card module-card h-100 shadow-sm">
                     <div class="card-header bg-danger text-white">
@@ -502,9 +522,9 @@
                     <div class="card-body">
                         <p class="text-muted">Development tools - Documentation, Analysis</p>
                         <div class="module-stats d-flex flex-wrap gap-2">
-                            <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>4 files</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>5 files</span>
                             <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>1 classes</span>
-                            <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>19 functions</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>23 functions</span>
                             <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>10 methods</span>
                         </div>
                     </div>
@@ -513,7 +533,7 @@
                     </div>
                 </div>
             </div>
-
+    
             <div class="col-lg-4 col-md-6">
                 <div class="card module-card h-100 shadow-sm">
                     <div class="card-header bg-info text-white">
@@ -531,7 +551,7 @@
                             <span class="badge bg-light text-dark"><i class="bi bi-file-text me-1"></i>3 files</span>
                             <span class="badge bg-light text-dark"><i class="bi bi-box me-1"></i>8 classes</span>
                             <span class="badge bg-light text-dark"><i class="bi bi-gear me-1"></i>2 functions</span>
-                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>67 methods</span>
+                            <span class="badge bg-light text-dark"><i class="bi bi-hammer me-1"></i>74 methods</span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
@@ -539,7 +559,7 @@
                     </div>
                 </div>
             </div>
-
+    
         </div>
     </div>
     
@@ -553,7 +573,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-08-17 22:16
+                        Documentation generated on 2026-09-14 16:30
                     </p>
                 </div>
             </div>
@@ -561,7 +581,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="./theme.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {

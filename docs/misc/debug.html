@@ -35,7 +35,7 @@
             <h1 class="display-5 fw-bold"><i class="bi bi-file-earmark-code text-primary me-3"></i>debug.py</h1>
             <div class="p-4 bg-light rounded-3 border-start border-2 border-primary mt-3">
                 <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                <span class="text-muted">debug.py – Debug overlay system with draggable panels, Live Inspector, and performance monitoring.<br><br>Refactored for 0.2.6:<br>- Vertical sidebar (tabs on the left) with reduced width (80px).<br>- Merged Performance and Console into a single &quot;System&quot; tab with two scrolling frames side‑by‑side.<br>- Console now properly scrolls and doesn&#x27;t overflow.<br>- Added &quot;Tasks&quot; tab for background task monitoring.<br>- Cleaned up duplicated drag logic (now a mixin).<br>- Improved code organization and readability.<br>- Removed dependency on Tabination.get_tab_by_name() for compatibility.</span>
+                <span class="text-muted">debug.py – Debug overlay system with draggable panels, Live Inspector, and performance monitoring.<br><br>Refactored for 0.2.6:<br>- Vertical sidebar (tabs on the left) with reduced width (80px).<br>- Merged Performance and Console into a single &quot;System&quot; tab with two scrolling frames side‑by‑side.<br>- Console now properly scrolls and doesn&#x27;t overflow.<br>- Added &quot;Tasks&quot; tab for background task monitoring.<br>- Cleaned up duplicated drag logic (now a mixin).<br>- Improved code organization and readability.<br>- Removed dependency on Tabination.get_tab_by_name() for compatibility.<br>- Added &quot;Storage&quot; tab with sub‑tabs for Atlas, Savedata, and Encryption.</span>
             </div>
         </div>
         <div class="row">
@@ -249,6 +249,38 @@
                 </div>
             </div>
         </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-storageoverlay">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class StorageOverlay</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">A compact overlay showing storage system status:<br>- Atlas: root path, item count, bundle status<br>- Savedata: file path, table count, total rows</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-storageoverlay-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, engine: 'LunaEngine', x: int = 10, y: int = 230) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-storageoverlay-refresh">
+                <code class="fs-6 fw-bold text-color-title">def refresh(self: Any, dt: float) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-storageoverlay-render_content">
+                <code class="fs-6 fw-bold text-color-title">def render_content(self: Any, renderer: OpenGLRenderer) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-storageoverlay-_human_size">
+                <code class="fs-6 fw-bold text-color-title">def _human_size(num: int) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
         <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-loglevel">
             <div class="card-header bg-success text-white py-3">
                 <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class LogLevel</h3>
@@ -341,7 +373,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Main debugging panel. Organised into tabs on the left side:<br>- Elements: hierarchy + properties<br>- Custom Function: user‑defined test functions<br>- System: performance + console (merged)<br>- Audio: master volume, effects, source list<br>- Overlays: manage debug overlays<br>- Settings: theme, dark mode, utilities<br>- Tasks: background task status</p>
+                    <p class="lead fs-6">Main debugging panel. Organised into tabs on the left side:<br>- Elements: hierarchy + properties<br>- Custom Function: user‑defined test functions<br>- System: performance + console (merged)<br>- Audio: master volume, effects, source list<br>- Overlays: manage debug overlays<br>- Settings: theme, dark mode, utilities<br>- Tasks: background task status<br>- Storage: sub‑tabs for Atlas, Savedata, Encryption</p>
                 </div>
                 
                 <div class="methods-section">
@@ -466,6 +498,26 @@
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_update_tasks_view">
                 <code class="fs-6 fw-bold text-color-title">def _update_tasks_view(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_setup_storage_tab">
+                <code class="fs-6 fw-bold text-color-title">def _setup_storage_tab(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Create the Storage tab with sub-tabs for Atlas, Savedata, and Encryption.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_update_storage_tab">
+                <code class="fs-6 fw-bold text-color-title">def _update_storage_tab(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Update the Storage tab views (called every frame when visible).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_update_atlas_view">
+                <code class="fs-6 fw-bold text-color-title">def _update_atlas_view(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Update the Atlas sub-tab content.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_update_savedata_view">
+                <code class="fs-6 fw-bold text-color-title">def _update_savedata_view(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Update the Savedata sub-tab content.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_update_encryption_view">
+                <code class="fs-6 fw-bold text-color-title">def _update_encryption_view(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Update the Encryption sub-tab content.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_add_label">
                 <code class="fs-6 fw-bold text-color-title">def _add_label(self: Any, text: Any, x: Any, y: Any, tab_frame: Any, font_size: Any = None) -> Any</code>
@@ -623,7 +675,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-08-17 22:16
+                        Documentation generated on 2026-09-14 16:30
                     </p>
                 </div>
             </div>
@@ -631,7 +683,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="../theme.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {

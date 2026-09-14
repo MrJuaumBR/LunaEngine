@@ -20,12 +20,16 @@ MAIN FEATURES:
 """
 
 from enum import Enum
-from typing import Dict, Tuple, Optional, List, Literal, Union
+from typing import Dict, Tuple, Optional, List, Literal, Union, Any, TYPE_CHECKING
 from dataclasses import dataclass, field
 import os
 import json
 import urllib.request
 import urllib.error
+from pathlib import Path
+
+if TYPE_CHECKING:
+    from ..storage.atlas import AtlasItem
 
 # color_name_type for typing in the get_color function
 color_name_type = Literal[
@@ -308,13 +312,17 @@ class ThemeType(Enum):
     # Historical themes
     DYNASTY = "dynasty"
     VIKINGS = "vikings"
+    ITTF = "ittf"
+
+
+ThemeKey = Union[ThemeType, str]
 
 
 class ThemeManager:
     """Manages complete UI themes with local/remote loading."""
     
-    _themes: Dict[ThemeType, Union[UITheme, CombinedTheme]] = {}
-    _current_theme: ThemeType = ThemeType.DEFAULT
+    _themes: Dict[ThemeKey, Union[UITheme, CombinedTheme]] = {}
+    _current_theme: ThemeKey = ThemeType.DEFAULT
     _themes_loaded: bool = False
     _dark_mode: bool = True   # True = dark, False = light
     
@@ -399,6 +407,144 @@ class ThemeManager:
                 theme_params[field_name] = None
         return UITheme(**theme_params)
     
+    @classmethod
+    def _normalize_theme_name(cls, name: str) -> str:
+        """Normalize and validate a runtime custom-theme identifier."""
+        if not isinstance(name, str):
+            raise TypeError("Theme name must be a string")
+        normalized = name.strip().lower()
+        if not normalized:
+            raise ValueError("Theme name cannot be empty")
+        allowed = set("abcdefghijklmnopqrstuvwxyz0123456789_-." )
+        if any(character not in allowed for character in normalized):
+            raise ValueError(
+                "Theme name may contain only letters, numbers, '_', '-' and '.'"
+            )
+        return normalized
+
+    @classmethod
+    def _resolve_theme_key(cls, theme: ThemeKey) -> ThemeKey:
+        """Resolve an enum or string theme identifier to a registered key."""
+        cls.ensure_themes_loaded()
+        if isinstance(theme, ThemeType):
+            return theme
+        normalized = cls._normalize_theme_name(theme)
+        for theme_key in cls._themes:
+            candidate = theme_key.value if isinstance(theme_key, ThemeType) else theme_key
+            if candidate.lower() == normalized:
+                return theme_key
+        raise KeyError(f"Unknown theme: {theme}")
+
+    @classmethod
+    def _build_theme_from_data(cls, data: dict) -> Union[UITheme, CombinedTheme]:
+        """Build a theme from either a combined or legacy JSON dictionary."""
+        if not isinstance(data, dict):
+            raise ValueError("Theme root must be a JSON object")
+
+        variants = data.get("variants")
+        if isinstance(variants, dict):
+            dark = cls._build_ui_theme_from_dict(variants["dark"]) \
+                if isinstance(variants.get("dark"), dict) else None
+            light = cls._build_ui_theme_from_dict(variants["light"]) \
+                if isinstance(variants.get("light"), dict) else None
+            if dark is None and light is None:
+                raise ValueError("Theme must contain a 'dark' or 'light' variant")
+            if dark is None:
+                dark = light
+            if light is None:
+                light = dark
+            return CombinedTheme(dark=dark, light=light)
+
+        return cls._build_ui_theme_from_dict(data)
+
+    @classmethod
+    def _read_theme_source(cls, source: Union[str, Path, 'AtlasItem']) -> tuple[dict, str]:
+        """Read a theme from a filesystem path or an AtlasItem.
+
+        AtlasItem normally points to a filesystem resource. If an AtlasItem has
+        cached bytes in its private `_data` field, those bytes are preferred;
+        this also supports applications that populate AtlasItem data themselves.
+        """
+        if hasattr(source, "path") and hasattr(source, "name"):
+            cached_data = getattr(source, "_data", None)
+            source_name = str(getattr(source, "name", "<atlas-item>"))
+            if isinstance(cached_data, (bytes, bytearray)):
+                return json.loads(bytes(cached_data).decode("utf-8")), source_name
+            source_path = Path(getattr(source, "path"))
+        else:
+            source_path = Path(source)
+            source_name = str(source_path)
+
+        if not source_path.is_file():
+            raise FileNotFoundError(f"Theme file not found: {source_path}")
+        with source_path.open("r", encoding="utf-8") as file:
+            return json.load(file), source_name
+
+    @classmethod
+    def load_custom_theme(
+        cls,
+        source: Union[str, Path, 'AtlasItem'],
+        name: str,
+        overwrite: bool = False,
+    ) -> str:
+        """Load and register a custom theme under a caller-provided name.
+
+        `source` may be a JSON filesystem path or an AtlasItem. The returned
+        string is the normalized identifier used by `set_global_theme()`.
+        """
+        cls.ensure_themes_loaded()
+        theme_name = cls._normalize_theme_name(name)
+
+        # Never allow a custom theme to replace a built-in theme implicitly or
+        # explicitly. This keeps built-in behavior deterministic.
+        if any(
+            isinstance(key, ThemeType) and key.value.lower() == theme_name
+            for key in cls._themes
+        ):
+            raise ValueError(f"'{theme_name}' is reserved by a built-in theme")
+        if theme_name in cls._themes and not overwrite:
+            raise ValueError(f"A theme named '{theme_name}' is already registered")
+
+        data, source_name = cls._read_theme_source(source)
+        theme = cls._build_theme_from_data(data)
+        cls._themes[theme_name] = theme
+        return theme_name
+
+    @classmethod
+    def load_custom_theme_from_atlas_item(
+        cls,
+        item: 'AtlasItem',
+        name: str,
+        overwrite: bool = False,
+    ) -> str:
+        """Explicit AtlasItem convenience wrapper for load_custom_theme()."""
+        return cls.load_custom_theme(item, name, overwrite=overwrite)
+
+    @classmethod
+    def unload_custom_theme(cls, name: str) -> bool:
+        """Remove a custom theme. Built-in themes cannot be removed."""
+        cls.ensure_themes_loaded()
+        theme_name = cls._normalize_theme_name(name)
+        if theme_name not in cls._themes:
+            return False
+        if isinstance(next(key for key in cls._themes if (
+            key.value.lower() == theme_name if isinstance(key, ThemeType) else key == theme_name
+        )), ThemeType):
+            return False
+        del cls._themes[theme_name]
+        if cls._current_theme == theme_name:
+            cls._current_theme = ThemeType.DEFAULT
+        return True
+
+    @classmethod
+    def has_theme(cls, name: str) -> bool:
+        """Return whether a built-in or custom theme is registered."""
+        try:
+            cls._resolve_theme_key(name)
+            return True
+        except (TypeError, ValueError, KeyError):
+            return False
+
     @classmethod
     def _load_theme_from_json_file(cls, filepath: str) -> Optional[Tuple[ThemeType, Union[UITheme, CombinedTheme]]]:
         try:
@@ -593,29 +739,30 @@ class ThemeManager:
         cls._load_legacy_single_file()
     
     @classmethod
-    def get_theme(cls, theme_type: Optional[ThemeType] = None) -> UITheme:
+    def get_theme(cls, theme_type: Optional[ThemeKey] = None) -> UITheme:
         cls.ensure_themes_loaded()
-        if theme_type is None:
-            theme_type = cls._current_theme
-        theme = cls._themes.get(theme_type, cls._themes[ThemeType.DEFAULT])
+        requested = theme_type if theme_type is not None else cls._current_theme
+        try:
+            resolved = cls._resolve_theme_key(requested)
+        except (TypeError, ValueError, KeyError):
+            resolved = ThemeType.DEFAULT
+        theme = cls._themes.get(resolved, cls._themes[ThemeType.DEFAULT])
         if isinstance(theme, CombinedTheme):
-            # Return the appropriate variant based on dark_mode
             return theme.dark if cls._dark_mode else theme.light
-        return theme  # it's a UITheme
+        return theme
     
     @classmethod
-    def set_current_theme(cls, theme_type: ThemeType):
-        cls._current_theme = theme_type
+    def set_current_theme(cls, theme_type: ThemeKey):
+        cls._current_theme = cls._resolve_theme_key(theme_type)
     
     @classmethod
-    def get_current_theme(cls) -> ThemeType:
+    def get_current_theme(cls) -> ThemeKey:
         return cls._current_theme
     
     @classmethod
     def set_dark_mode(cls, dark: bool):
         """Set global dark mode. True = dark, False = light."""
         cls._dark_mode = dark
-        print(f"Dark mode set to {dark}")
     
     @classmethod
     def get_dark_mode(cls) -> bool:
@@ -628,17 +775,17 @@ class ThemeManager:
         return cls.get_theme(theme_type)
     
     @classmethod
-    def get_theme_type_by_name(cls, name: str) -> ThemeType:
-        cls.ensure_themes_loaded()
-        for theme_type in ThemeType:
-            if theme_type.value.lower() == name.lower():
-                return theme_type
-        return ThemeType.DEFAULT
+    def get_theme_type_by_name(cls, name: str) -> ThemeKey:
+        """Return a built-in ThemeType or a custom string key by name."""
+        try:
+            return cls._resolve_theme_key(name)
+        except (TypeError, ValueError, KeyError):
+            return ThemeType.DEFAULT
     
     # --- Property accessors (return raw values) ---
     @classmethod
     def _get_style_property(cls, color_name: color_name_type | str, property_name: str,
-                            theme_type: Optional[ThemeType] = None):
+                            theme_type: Optional[ThemeKey] = None):
         cls.ensure_themes_loaded()
         theme = cls.get_theme(theme_type)  # returns UITheme (variant already selected)
         style = getattr(theme, color_name, None)
@@ -690,14 +837,14 @@ class ThemeManager:
         return cls._themes
     
     @classmethod
-    def get_theme_types(cls) -> List[ThemeType]:
+    def get_theme_types(cls) -> List[ThemeKey]:
         cls.ensure_themes_loaded()
         return list(cls._themes.keys())
     
     @classmethod
     def get_theme_names(cls) -> List[str]:
         cls.ensure_themes_loaded()
-        return [theme.value for theme in cls._themes.keys()]
+        return [theme.value if isinstance(theme, ThemeType) else theme for theme in cls._themes.keys()]
     
     @classmethod
     def reload_themes(cls):

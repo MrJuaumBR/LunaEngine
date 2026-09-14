@@ -85,7 +85,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, title: str = 'LunaEngine Game', width: int = 800, height: int = 600, fullscreen: bool = False, icon: Optional[Union[str, pygame.Surface, None]] = None, **kwargs: dict) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, title: str = 'LunaEngine Game', width: int = 800, height: int = 600, fullscreen: bool = False, icon: Optional[Union[str, Path, pygame.Surface, Icon, AtlasItem, Callable[[], Icon], None]] = None, **kwargs: dict) -> Any</code>
                 <div class="mt-2 text-muted small">Initialize the LunaEngine.<br><br>Args:<br> &nbsp; &nbsp;title (str): The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int): The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int): The height of the game window (default: 600)<br> &nbsp; &nbsp;fullscreen (bool): Start in fullscreen mode (default: False)<br> &nbsp; &nbsp;icon (str|pygame.Surface): Window icon<br> &nbsp; &nbsp;**kwargs: Additional options:<br> &nbsp; &nbsp; &nbsp; &nbsp;- show_splash (bool): Show splash screen (default: True)<br> &nbsp; &nbsp; &nbsp; &nbsp;- splash_logo (pygame.Surface): Custom logo surface<br> &nbsp; &nbsp; &nbsp; &nbsp;- splash_logo_size (int): Logo size for splash (default: 64)<br> &nbsp; &nbsp; &nbsp; &nbsp;- debug (bool): Enable debug mode (default: False)<br> &nbsp; &nbsp; &nbsp; &nbsp;- enable_performance_profiling (bool): Enable profiling (default: True)<br> &nbsp; &nbsp; &nbsp; &nbsp;- atlas_root (str|Path): Root path for the atlas (default: current directory)<br> &nbsp; &nbsp; &nbsp; &nbsp;- bundle_path (str|Path): Path to resource bundle (.res file) (default: auto-detect &quot;game.res&quot;)<br> &nbsp; &nbsp; &nbsp; &nbsp;- bundle_key (str): Obfuscation key for the bundle (if encrypted)</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_auto_discover_assets">
@@ -117,8 +117,8 @@
                 <div class="mt-2 text-muted small">Set the window title.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-set_icon">
-                <code class="fs-6 fw-bold text-color-title">def set_icon(self: Any, icon: Optional[Union[str, pygame.Surface, None]]) -> Any</code>
-                <div class="mt-2 text-muted small">Set the window icon.</div>
+                <code class="fs-6 fw-bold text-color-title">def set_icon(self: Any, icon: Optional[Union[str, Path, pygame.Surface, Icon, AtlasItem, Callable[[], Icon], None]]) -> Any</code>
+                <div class="mt-2 text-muted small">Set the window icon.<br><br>Supports:<br> &nbsp; &nbsp;- file path (str or Path)<br> &nbsp; &nbsp;- pygame.Surface<br> &nbsp; &nbsp;- Icon (from icons.py)<br> &nbsp; &nbsp;- AtlasItem (from the resource atlas)<br> &nbsp; &nbsp;- callable returning an Icon (e.g. Icons.BRAIN)<br><br>The icon is automatically scaled to 64×64 for best window compatibility.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-update_camera_renderer">
                 <code class="fs-6 fw-bold text-color-title">def update_camera_renderer(self: Any) -> Any</code>
@@ -131,6 +131,18 @@
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-move_focus">
                 <code class="fs-6 fw-bold text-color-title">def move_focus(self: Any, direction: str) -> bool</code>
                 <div class="mt-2 text-muted small">Move focus to the next/previous element in the focusable list.<br>Direction: &#x27;up&#x27;, &#x27;down&#x27;, &#x27;left&#x27;, &#x27;right&#x27; (uses spatial logic) or &#x27;next&#x27;, &#x27;prev&#x27;.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-move_focus_vector">
+                <code class="fs-6 fw-bold text-color-title">def move_focus_vector(self: Any, dx: float, dy: float, _elements: Any = None) -> bool</code>
+                <div class="mt-2 text-muted small">Focus the nearest visible element in an arbitrary screen-space direction.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-handle_controller_vector">
+                <code class="fs-6 fw-bold text-color-title">def handle_controller_vector(self: Any, dx: float, dy: float) -> bool</code>
+                <div class="mt-2 text-muted small">Dispatch an arbitrary analog-stick vector to the focused widget.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_ensure_focus_visible">
+                <code class="fs-6 fw-bold text-color-title">def _ensure_focus_visible(self: Any, element: Optional['ui.UIElement']) -> None</code>
+                <div class="mt-2 text-muted small">Scroll every ancestor until a newly focused element is visible.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-update_controller_ui_navigation">
                 <code class="fs-6 fw-bold text-color-title">def update_controller_ui_navigation(self: Any, dt: float) -> Any</code>
@@ -148,13 +160,29 @@
                 <code class="fs-6 fw-bold text-color-title">def activate_focused_element(self: Any) -> bool</code>
                 <div class="mt-2 text-muted small">Activate (click/toggle) the currently focused UI element.<br>Returns True if something was activated.</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-handle_controller_direction">
+                <code class="fs-6 fw-bold text-color-title">def handle_controller_direction(self: Any, direction: str) -> bool</code>
+                <div class="mt-2 text-muted small">Let the focused widget consume direction before moving focus.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_clipboard">
+                <code class="fs-6 fw-bold text-color-title">def get_clipboard(self: Any, default: str = '') -> str</code>
+                <div class="mt-2 text-muted small">Return text from the system clipboard, or ``default`` if unavailable.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-set_clipboard">
+                <code class="fs-6 fw-bold text-color-title">def set_clipboard(self: Any, text: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Set text in the system clipboard; return False if unavailable.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-add_scene">
                 <code class="fs-6 fw-bold text-color-title">def add_scene(self: Any, name: str, scene_class: Type[Scene], *args: tuple, **kwargs: dict) -> Any</code>
                 <div class="mt-2 text-muted small">Add a scene to the engine by class (the engine will instantiate it).<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene<br> &nbsp; &nbsp;scene_class (Type[Scene]): The scene class to instantiate<br> &nbsp; &nbsp;*args: Arguments to pass to scene constructor<br> &nbsp; &nbsp;**kwargs: Keyword arguments to pass to scene constructor</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_switch_scene_immediate">
+                <code class="fs-6 fw-bold text-color-title">def _switch_scene_immediate(self: Any, name: str) -> Any</code>
+                <div class="mt-2 text-muted small">Immediately switch to a scene without any transition effect.<br>This is the core logic extracted from the old set_scene.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-set_scene">
-                <code class="fs-6 fw-bold text-color-title">def set_scene(self: Any, name: str) -> Any</code>
-                <div class="mt-2 text-muted small">Set the current active scene.<br><br>Calls on_exit on the current scene and on_enter on the new scene.<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene to set as current</div>
+                <code class="fs-6 fw-bold text-color-title">def set_scene(self: Any, name: str, effect: Optional[TransitionType] = None, duration: float = 0.5) -> Any</code>
+                <div class="mt-2 text-muted small">Set the current active scene, optionally with a transition effect.<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene to set as current.<br> &nbsp; &nbsp;effect (TransitionType, optional): Type of transition effect.<br> &nbsp; &nbsp; &nbsp; &nbsp;If None or TransitionType.NONE, switch immediately.<br> &nbsp; &nbsp;duration (float): Duration of the transition in seconds (default 0.5).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-find_event_handlers">
                 <code class="fs-6 fw-bold text-color-title">def find_event_handlers(self: Any, event: int, rep_id: str) -> bool</code>
@@ -221,7 +249,7 @@
                 <div class="mt-2 text-muted small">Set the global theme for the entire engine and update all UI elements<br><br>Args:<br> &nbsp; &nbsp;theme_name (str): Name of the theme to set<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if theme was set successfully, False otherwise</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-set_dark_mode">
-                <code class="fs-6 fw-bold text-color-title">def set_dark_mode(self: Any, dark: bool) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_dark_mode(self: Any, dark: bool | None) -> Any</code>
                 <div class="mt-2 text-muted small">Set the global dark mode for the engine and update all UI elements<br><br>Args:<br> &nbsp; &nbsp;dark (bool): True</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_dark_mode">
@@ -263,6 +291,86 @@
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-run">
                 <code class="fs-6 fw-bold text-color-title">def run(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Main game loop.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-transition_to">
+                <code class="fs-6 fw-bold text-color-title">def transition_to(self: Any, scene_name: str, effect: TransitionType = TransitionType.NONE, duration: float = 0.5) -> Any</code>
+                <div class="mt-2 text-muted small">Start a transition using immutable snapshots of both scenes.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_capture_scene_surface">
+                <code class="fs-6 fw-bold text-color-title">def _capture_scene_surface(self: Any, scene: 'Scene') -> pygame.Surface</code>
+                <div class="mt-2 text-muted small">Render the given scene (including UI and particles) to a pygame.Surface.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_render_ui_elements_for_scene">
+                <code class="fs-6 fw-bold text-color-title">def _render_ui_elements_for_scene(self: Any, scene: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Render all UI elements of a given scene (sorted by z_index).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_update_transition">
+                <code class="fs-6 fw-bold text-color-title">def _update_transition(self: Any, dt: float) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_render_transition">
+                <code class="fs-6 fw-bold text-color-title">def _render_transition(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-add_timer">
+                <code class="fs-6 fw-bold text-color-title">def add_timer(self: Any, name: str, duration: float, callback: Optional[Callable] = None, callback_args: tuple = (), callback_kwargs: dict = None, repeats: bool = False) -> bool</code>
+                <div class="mt-2 text-muted small">Add a timer. Returns True if added successfully.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-add_anonymous_timer">
+                <code class="fs-6 fw-bold text-color-title">def add_anonymous_timer(self: Any, duration: float, callback: Callable, callback_args: tuple = (), callback_kwargs: dict = None, repeats: bool = False) -> str</code>
+                <div class="mt-2 text-muted small">Add a timer with an auto‑generated name and return its name.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-remove_timer">
+                <code class="fs-6 fw-bold text-color-title">def remove_timer(self: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Remove a timer immediately.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-destroy_timer">
+                <code class="fs-6 fw-bold text-color-title">def destroy_timer(self: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Mark a timer for destruction (removed on next update).</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-pause_timer">
+                <code class="fs-6 fw-bold text-color-title">def pause_timer(self: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Pause a timer.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-resume_timer">
+                <code class="fs-6 fw-bold text-color-title">def resume_timer(self: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Resume a paused timer.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-reset_timer">
+                <code class="fs-6 fw-bold text-color-title">def reset_timer(self: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Reset a timer to start counting from now.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-timer_elapsed">
+                <code class="fs-6 fw-bold text-color-title">def timer_elapsed(self: Any, name: str) -> Optional[float]</code>
+                <div class="mt-2 text-muted small">Get elapsed time for a timer.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-timer_remaining">
+                <code class="fs-6 fw-bold text-color-title">def timer_remaining(self: Any, name: str) -> Optional[float]</code>
+                <div class="mt-2 text-muted small">Get remaining time for a timer.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-timer_done">
+                <code class="fs-6 fw-bold text-color-title">def timer_done(self: Any, name: str) -> Optional[bool]</code>
+                <div class="mt-2 text-muted small">Check if a timer has completed.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-timer_exists">
+                <code class="fs-6 fw-bold text-color-title">def timer_exists(self: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Check if a timer exists.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-timer_paused">
+                <code class="fs-6 fw-bold text-color-title">def timer_paused(self: Any, name: str) -> Optional[bool]</code>
+                <div class="mt-2 text-muted small">Check if a timer is paused.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-clear_timers">
+                <code class="fs-6 fw-bold text-color-title">def clear_timers(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Remove all timers.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_all_timers">
+                <code class="fs-6 fw-bold text-color-title">def get_all_timers(self: Any) -> List[str]</code>
+                <div class="mt-2 text-muted small">Get names of all active timers.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-get_timer_count">
+                <code class="fs-6 fw-bold text-color-title">def get_timer_count(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">Get the number of active timers.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_window_resize">
                 <code class="fs-6 fw-bold text-color-title">def on_window_resize(self: Any, func: Callable) -> Any</code>
@@ -386,7 +494,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_update_ui_elements">
                 <code class="fs-6 fw-bold text-color-title">def _update_ui_elements(self: Any, dt: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Update UI elements with individual profiling and proper click propagation.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_process_ui_element_tree">
                 <code class="fs-6 fw-bold text-color-title">def _process_ui_element_tree(self: Any, root_element: Any, dt: Any) -> Any</code>
@@ -492,7 +600,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-08-17 22:16
+                        Documentation generated on 2026-09-14 16:30
                     </p>
                 </div>
             </div>
@@ -500,7 +608,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="../theme.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {

@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """
 LunaEngine Code Statistics Script
-Counts lines of code, files, and provides detailed statistics
+Counts lines of code, files, and provides detailed statistics.
 """
 
 import os
 import sys
+import json
+import argparse
 from pathlib import Path
 from typing import Dict, List, Tuple
+import pygame
 
 class CodeStatistics:
-    def __init__(self, root_dir: str):
+    def __init__(self, root_dir: str|Path):
         self.root_dir = Path(root_dir)
         self.exclude_dirs = {'__pycache__', '.git', 'build', 'dist', 'venv', 'env', '.vscode', '.idea', 'themes'}
         self.exclude_files = {'*.pyc', '*.pyo', '*.pyd', '*.so', '*.dll'}
@@ -27,18 +30,40 @@ class CodeStatistics:
             'total_variants': 0,
             'total_elements': 0,
             'themes_error': None,
-            'elements_error': None
+            'elements_error': None,
+            'version': None,
+            'version_status': None
         }
         
         try:
             sys.path.append(str(self.root_dir))
             
+            pygame.display.init()
+            pygame.display.set_mode((100, 100))
+            
             # Import the ThemeManager and CombinedTheme
             from lunaengine.ui.themes import ThemeManager, CombinedTheme
+            try:
+                from lunaengine.misc.icons import Icons, Icon
+                stats['total_icons'] = len(Icons.get_all(1))
+            except ImportError:
+                print('Warning: Could not import Icons. Skipping icon count.')
+                stats['total_icons'] = 0
+            
+            try:
+                from lunaengine import __version__ as lunaengine_version
+                from lunaengine import __status__ as lunaengine_status
+                stats['version_status'] = lunaengine_status
+                stats['version'] = lunaengine_version
+            except ImportError:
+                print('Warning: Could not import LunaEngine version info.')
+                stats['version_status'] = 'unknown'
+                stats['version'] = 'unknown'
             
             # Get all themes
             themes = ThemeManager.get_themes()
             stats['total_themes'] = len(themes)
+            
             
             both = 0
             variants = 0
@@ -78,6 +103,7 @@ class CodeStatistics:
             if str(self.root_dir) in sys.path:
                 sys.path.remove(str(self.root_dir))
         
+        pygame.display.quit()
         return stats
     
     def count_lines_in_file(self, file_path: Path) -> Tuple[int, int, int]:
@@ -212,6 +238,8 @@ class CodeStatistics:
         files = self.get_all_files()
         _stats = self.get_some_stats()
         stats = {
+            'version': _stats['version'],
+            'version_status': _stats['version_status'],
             'total_files': len(files),
             'files_by_extension': {},
             'files_by_directory': {},
@@ -226,6 +254,7 @@ class CodeStatistics:
                 'total_variants': _stats['total_variants'],
                 'error': _stats['themes_error']
             },
+            'total_icons': _stats.get('total_icons', 0),
             'elements': {'total_elements': _stats['total_elements'], 'error': _stats['elements_error']},
             'project_structure': self.get_project_structure()  # Now returns list of lines
         }
@@ -270,7 +299,7 @@ class CodeStatistics:
     def print_statistics(self, stats: Dict):
         """Print formatted statistics"""
         print("=" * 60)
-        print("LUNAENGINE CODE STATISTICS")
+        print(f"LUNAENGINE CODE STATISTICS | {stats['version']} - {stats['version_status']}")
         print("=" * 60)
         
         # Overall statistics
@@ -289,6 +318,8 @@ class CodeStatistics:
             print(f"   Total Themes (base):  {stats['themes']['total_themes']:>6}")
             print(f"   Themes with both variants: {stats['themes']['themes_with_both_variants']:>6}")
             print(f"   Total variants (dark+light): {stats['themes']['total_variants']:>6}")
+            print(f"   Total Icons: {stats['total_icons']:>6}")
+            
         
         # Files by extension
         print(f"\n📁 FILES BY EXTENSION:")
@@ -335,33 +366,10 @@ class CodeStatistics:
         
         print("=" * 60)
 
-def main():
-    # Get the project root directory (parent of tools directory)
-    script_dir = Path(__file__).parent
-    project_root = script_dir.parent
-    
-    if not project_root.exists():
-        print(f"Error: Project root not found at {project_root}")
-        sys.exit(1)
-    
-    print(f"Analyzing LunaEngine project at: {project_root}")
-    
-    # Analyze the project
-    analyzer = CodeStatistics(project_root)
-    stats = analyzer.analyze_project()
-    
-    # Print statistics
-    analyzer.print_statistics(stats)
-    
-    # Save detailed report to file
-    report_file = project_root / "CODE_STATISTICS.md"
-    save_detailed_report(stats, report_file, analyzer)
-    print(f"\n📄 Detailed report saved to: {report_file}")
-
 def save_detailed_report(stats: Dict, report_file: Path, analyzer: CodeStatistics):
     """Save a detailed markdown report"""
     with open(report_file, 'w', encoding='utf-8') as f:
-        f.write("# LunaEngine Code Statistics\n\n")
+        f.write(f"# LunaEngine ({stats['version']} - {stats['version_status']}) Code Statistics\n\n")
         
         f.write("## Overview\n\n")
         f.write(f"- **Total Files**: {stats['total_files']}\n")
@@ -378,6 +386,8 @@ def save_detailed_report(stats: Dict, report_file: Path, analyzer: CodeStatistic
             f.write(f"- **Total Themes (base names)**: {stats['themes']['total_themes']}\n")
             f.write(f"- **Themes with both dark and light variants**: {stats['themes']['themes_with_both_variants']}\n")
             f.write(f"- **Total variants (dark + light)**: {stats['themes']['total_variants']}\n")
+            
+        f.write(f"- **Total Icons**: {stats['total_icons']}\n")
         
         f.write("\n## UI Elements\n\n")
         if stats['elements']['error']:
@@ -418,6 +428,63 @@ def save_detailed_report(stats: Dict, report_file: Path, analyzer: CodeStatistic
         
         for file_info in sorted(stats['files'], key=lambda x: x['total_lines'], reverse=True):
             f.write(f"| `{file_info['path']}` | {file_info['total_lines']} | {file_info['code_lines']} | {file_info['comment_lines']} | {file_info['blank_lines']} | {file_info['size_kb']:.1f} |\n")
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="LunaEngine Code Statistics",
+        epilog="Example: %(prog)s --json --output stats.json --no-structure"
+    )
+    parser.add_argument(
+        "--json", action="store_true",
+        help="Output statistics as JSON instead of formatted report"
+    )
+    parser.add_argument(
+        "--output", "-o", type=Path,
+        help="Write JSON output to a file (if --json is used)"
+    )
+    parser.add_argument(
+        "--no-structure", action="store_true",
+        help="Exclude project structure tree from output (works with --json)"
+    )
+    parser.add_argument(
+        "--no-markdown", action="store_true",
+        help="Do not generate the CODE_STATISTICS.md report (default: generate)"
+    )
+    args = parser.parse_args()
+
+    # Determine paths
+    script_dir = Path(__file__).parent          # .../lunaengine/tools
+    package_root = script_dir.parent            # .../lunaengine
+    project_root = package_root.parent          # .../LunaEngine (project root)
+
+    # Add project root to sys.path so 'lunaengine' is importable
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
+
+    if not package_root.exists():
+        print(f"Error: Package root not found at {package_root}")
+        sys.exit(1)
+
+    print(f"Analyzing LunaEngine project at: {package_root}")
+
+    analyzer = CodeStatistics(package_root)
+    stats = analyzer.analyze_project()
+
+    if args.json:
+        if args.no_structure:
+            stats.pop("project_structure", None)
+        json_output = json.dumps(stats, indent=2, default=str)
+        if args.output:
+            args.output.write_text(json_output, encoding="utf-8")
+            print(f"JSON statistics written to {args.output}")
+        else:
+            print(json_output)
+    else:
+        analyzer.print_statistics(stats)
+        if not args.no_markdown:
+            report_file = project_root / "CODE_STATISTICS.md"
+            save_detailed_report(stats, report_file, analyzer)
+            print(f"\n📄 Detailed report saved to: {report_file}")
 
 if __name__ == "__main__":
     main()

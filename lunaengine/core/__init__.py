@@ -23,7 +23,6 @@ Imports:
 
 from .engine import LunaEngine
 from .scene import Scene
-from .renderer import Renderer
 from .window import Window
 from .audio import (
     AudioManager,

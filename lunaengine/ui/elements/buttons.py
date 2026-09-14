@@ -1,9 +1,9 @@
 # buttons.py
 import pygame
-from typing import Optional, Callable, Tuple, Dict, Any, Union
+from typing import Optional, Callable, Tuple, Dict, Any, Union, Literal
 from .base import *
-from ..themes import ThemeManager, ThemeType, UITheme
-from ...core.renderer import Renderer
+from ..themes import ThemeManager, ThemeType, UITheme, ThemeStyle
+from ...backend.opengl import OpenGLRenderer
 from pathlib import Path
 
 class Button(UIElement):
@@ -24,23 +24,30 @@ class Button(UIElement):
                              'description': 'Custom RGB background color (overrides theme).'},
         'text_color': {'name': 'text color', 'key': 'text_color', 'type': Tuple[int, int, int], 'editable': True,
                        'description': 'Custom RGB text color (overrides theme).'},
+        'icon': {'name': 'icon', 'key': 'icon', 'type': Optional[Union[str, pygame.Surface, Path, 'Icon']], 'editable': True,
+                 'description': 'Path to image file, Surface, or Icon object.'},
+        'icon_position': {'name': 'icon position', 'key': 'icon_position', 'type': Optional[Literal['left', 'right']], 'editable': True,
+                          'description': 'Position of the icon relative to the text.'},
     }
 
     def __init__(
         self,
-        x: int,
-        y: int,
-        width: int,
-        height: int,
+        x: int|float,
+        y: int|float,
+        width: int|float,
+        height: int|float,
         text: str = "",
-        font_size: int = 20,
+        font_size: int|float = 20,
         font_name: Optional[str] = None,
         pivot: Tuple[float, float] = (0, 0),
-        theme: ThemeType = None,
-        element_id: Optional[str] = None
+        theme: ThemeType|None = None,
+        element_id: Optional[str] = None,
+        icon: Optional[Union[str, pygame.Surface, Path, 'Icon']] = None,
+        icon_position: Optional[Literal['left', 'right']] = 'left',
+        icon_padding: int|float = 10
     ) -> None:
         super().__init__(x, y, width, height, pivot, element_id)
-        self.text = text
+        self.text = str(text)
         self.font_size = font_size
         self.font_name = font_name
         self.on_click_callback: Optional[Callable] = None
@@ -48,11 +55,76 @@ class Button(UIElement):
         self.on_click_kwargs: Dict = {}
         self._font: Optional[pygame.font.Font] = None
         self._was_pressed: bool = False
+        
+        # Icon storage
+        self.icon = icon                 # raw: Icon, Surface, str, Path, or callable
+        self.icon_position = icon_position if icon_position is not None else 'left'
+        self._icon_surface: Optional[pygame.Surface] = None
+        self._icon_padding = icon_padding
 
+
+        # Theme
         self.theme_type = theme or ThemeManager.get_current_theme()
         theme_obj = ThemeManager.get_theme(self.theme_type)
         self.background_color: Tuple[int, int, int] = theme_obj.button_normal.color
         self.text_color: Tuple[int, int, int] = theme_obj.button_text.color
+        
+        # Generate the initial icon surface
+        self._refresh_icon_surface()
+        
+    @property
+    def icon_padding(self):
+        return self._icon_padding
+
+    @icon_padding.setter
+    def icon_padding(self, value):
+        self._icon_padding = value
+        self._refresh_icon_surface()
+        
+    def _refresh_icon_surface(self) -> None:
+        """Create or update the cached icon surface based on current size and color."""
+        if self.icon is None:
+            self._icon_surface = None
+            return
+
+        from ...misc.icons import Icon, Icons
+
+        # Resolve icon
+        icon_obj = self.icon() if callable(self.icon) else self.icon
+        raw_surf = None
+        if isinstance(icon_obj, Icon):
+            raw_surf = icon_obj.get_surface(color=self.text_color)
+        elif isinstance(icon_obj, pygame.Surface):
+            raw_surf = icon_obj
+        else:
+            self._icon_surface = None
+            return
+
+        # Compute safe margins
+        margin = max(4, self.border_width + 2)  # keep inside border
+        available_w = self.width - 2 * margin
+        available_h = self.height - 2 * margin
+        max_icon_size = min(available_w, available_h, self.font_size * 1.5)
+        icon_size = max(8, int(max_icon_size))
+
+        # If there's text, we may need to reduce icon size further if combined width exceeds button width
+        if self.text:
+            # We'll get text width later, but we can pre-check roughly
+            dummy_surf = self.font.render(self.text, True, (255,255,255))
+            text_w = dummy_surf.get_width()
+            # Estimate total width with current icon_size and padding
+            total_w = icon_size + self.icon_padding + text_w
+            if total_w > self.width - 2*margin:
+                # Shrink icon to fit
+                new_icon_size = max(8, int((self.width - 2*margin - self.icon_padding - text_w) * 0.9))
+                if new_icon_size < icon_size:
+                    icon_size = max(8, new_icon_size)
+
+        # Scale surface
+        if raw_surf.get_width() != icon_size or raw_surf.get_height() != icon_size:
+            self._icon_surface = pygame.transform.smoothscale(raw_surf, (icon_size, icon_size))
+        else:
+            self._icon_surface = raw_surf
 
     @property
     def can_focus(self) -> bool:
@@ -73,10 +145,18 @@ class Button(UIElement):
         }
 
     def set_background_color(self, color: Optional[Tuple[int, int, int]]) -> None:
+        """Override if needed (no icon change, but keep for consistency)."""
         self.background_color = color or ThemeManager.get_theme(self.theme_type).button_normal.color
 
     def set_text_color(self, color: Optional[Tuple[int, int, int]]) -> None:
+        """Override to refresh icon colour."""
         self.text_color = color or ThemeManager.get_theme(self.theme_type).button_text.color
+        self._refresh_icon_surface()   # icon may use text_color
+
+    def set_icon(self, icon: Union[str, pygame.Surface, Path, 'Icon', Callable[[], 'Icon']]) -> None:
+        """Change the icon and refresh."""
+        self.icon = icon
+        self._refresh_icon_surface()
 
     def set_text(self, text: str) -> None:
         self.text = text
@@ -108,7 +188,7 @@ class Button(UIElement):
     def _get_colors(self) -> UITheme:
         return ThemeManager.get_theme(self.theme_type)
 
-    def _get_state_style(self):
+    def _get_state_style(self) -> ThemeStyle:
         """Return the theme style for the current state."""
         theme = self._get_colors()
         if self.state == UIState.NORMAL:
@@ -161,7 +241,7 @@ class Button(UIElement):
     def _get_text_color(self) -> Tuple[int, int, int]:
         return self.text_color
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 
@@ -174,7 +254,7 @@ class Button(UIElement):
         if state_style.shadow and state_style.shadow.distance > 0:
             style['shadow'] = state_style.shadow
 
-        # Border from theme (could also be state-specific, but we use button_border)
+        # Border from theme
         border_color = None
         border_width = 0
         if theme.button_border and theme.button_border.border_width > 0:
@@ -191,17 +271,64 @@ class Button(UIElement):
             style=style
         )
 
+        # ------------------------------------------------------------
+        # Icon + text layout (using cached surfaces)
+        # ------------------------------------------------------------
+        icon_surf = self._icon_surface
+        icon_size = icon_surf.get_width() if icon_surf else 0
+
+        # 2. Text dimensions (if any)
+        text_width = text_height = 0
         if self.text:
+            dummy_surf = self.font.render(self.text, True, (255, 255, 255))
+            text_width, text_height = dummy_surf.get_size()
+
+        # 3. Calculate positions
+        padding = self.icon_padding
+        has_icon = icon_surf is not None and self.icon_position is not None
+        has_text = bool(self.text)
+
+        if has_icon and has_text:
+            total_width = icon_size + padding + text_width
+            start_x = actual_x + (self.width - total_width) // 2
+            if self.icon_position == 'left':
+                icon_x, text_x = start_x, start_x + icon_size + padding
+            else:  # 'right'
+                text_x, icon_x = start_x, start_x + text_width + padding
+        elif has_icon:
+            icon_x = actual_x + (self.width - icon_size) // 2
+            text_x = None
+        elif has_text:
+            text_x = actual_x + (self.width - text_width) // 2
+            icon_x = None
+        else:
+            super().render(renderer)
+            return
+
+        # 4. Draw icon
+        if has_icon and icon_surf is not None:
+            icon_y = actual_y + (self.height - icon_size) // 2
+            renderer.draw_surface(icon_surf, icon_x, icon_y)
+
+        # 5. Draw text
+        if has_text:
             text_color = self._get_text_color()
-            center_x = actual_x + self.width // 2
-            center_y = actual_y + self.height // 2
-            renderer.draw_text(
-                self.text, center_x, center_y, text_color, self.font,
-                pivot=(0.5, 0.5)
-            )
+            if text_x is not None:
+                text_y = actual_y + (self.height - text_height) // 2
+                renderer.draw_text(
+                    self.text, text_x, text_y, text_color, self.font,
+                    pivot=(0.0, 0.0)
+                )
+            else:
+                center_x = actual_x + self.width // 2
+                center_y = actual_y + self.height // 2
+                renderer.draw_text(
+                    self.text, center_x, center_y, text_color, self.font,
+                    pivot=(0.5, 0.5)
+                )
 
         super().render(renderer)
-
+    
 
 class ImageButton(UIElement):
     """
@@ -224,7 +351,7 @@ class ImageButton(UIElement):
         width: Optional[int] = None,
         height: Optional[int] = None,
         pivot: Tuple[float, float] = (0, 0),
-        theme: ThemeType = None,
+        theme: ThemeType|None = None,
         element_id: Optional[str] = None
     ) -> None:
         super().__init__(x, y, width or 0, height or 0, pivot, element_id)
@@ -232,9 +359,9 @@ class ImageButton(UIElement):
         self._image: Optional[pygame.Surface] = None
         self._load_image()
 
-        if width is None:
+        if width is None and self._image:
             self.width = self._image.get_width()
-        if height is None:
+        if height is None and self._image:
             self.height = self._image.get_height()
 
         self.on_click_callback: Optional[Callable] = None
@@ -341,7 +468,7 @@ class ImageButton(UIElement):
             return (0, 0, 0, 50)
         return None
 
-    def render(self, renderer: Renderer) -> None:
+    def render(self, renderer: OpenGLRenderer) -> None:
         if not self.visible:
             return
 

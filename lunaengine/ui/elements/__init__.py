@@ -28,7 +28,7 @@ from .textinputs import TextBox, TextArea
 from .dialogs import DialogBox
 from .progress import ProgressBar
 from .selectors import Select, Switch, Slider, Dropdown, NumberSelector, Checkbox
-from .containers import UiFrame, ScrollingFrame, Tabination, Expandable, Pagination, ColorPicker
+from .containers import UiFrame, ScrollingFrame, Tabination, Expandable, Pagination, ColorPicker, Canvas
 from .clock import Clock
 from .visualizers import AudioVisualizer, ChartVisualizer, Table
 from .misc import FileFinder
@@ -40,8 +40,8 @@ __all__ = [
     "TextBox", "TextArea",
     "DialogBox",
     "ProgressBar",
-    "Select", "Switch", "Slider", "Dropdown", "NumberSelector", "Checkbox", "ColorPicker",
-    "UiFrame", "ScrollingFrame", "Tabination", "Expandable", "Pagination",
+    "Select", "Switch", "Slider", "Dropdown", "NumberSelector", "Checkbox",
+    "UiFrame", "ScrollingFrame", "Tabination", "Expandable", "Pagination", "ColorPicker", "Canvas",
     "Clock",
     "AudioVisualizer", "ChartVisualizer", "Table",
     "FileFinder",

@@ -106,11 +106,11 @@
                 <div class="mt-2 text-muted small">Return a shadow version of the color (darker, with alpha).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_draw_element_shadow">
-                <code class="fs-6 fw-bold text-color-title">def _draw_element_shadow(self: Any, renderer: Renderer, draw_func: Any, *args: tuple, **kwargs: dict) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _draw_element_shadow(self: Any, renderer: OpenGLRenderer, draw_func: Any, *args: tuple, **kwargs: dict) -> Any</code>
                 <div class="mt-2 text-muted small">Draws a shadow version of an element by shifting it and using a shadow color.<br>The draw_func is called with offset coordinates and a shadow color.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_render_bar">
@@ -209,27 +209,27 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_bars">
-                <code class="fs-6 fw-bold text-color-title">def _render_bars(self: Any, renderer: Renderer, x: int, y: int) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_bars(self: Any, renderer: OpenGLRenderer, x: int, y: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_waveform">
-                <code class="fs-6 fw-bold text-color-title">def _render_waveform(self: Any, renderer: Renderer, x: int, y: int) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_waveform(self: Any, renderer: OpenGLRenderer, x: int, y: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_circle">
-                <code class="fs-6 fw-bold text-color-title">def _render_circle(self: Any, renderer: Renderer, x: int, y: int) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_circle(self: Any, renderer: OpenGLRenderer, x: int, y: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_particles">
-                <code class="fs-6 fw-bold text-color-title">def _render_particles(self: Any, renderer: Renderer, x: int, y: int) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_particles(self: Any, renderer: OpenGLRenderer, x: int, y: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_render_spectrum">
-                <code class="fs-6 fw-bold text-color-title">def _render_spectrum(self: Any, renderer: Renderer, x: int, y: int) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def _render_spectrum(self: Any, renderer: OpenGLRenderer, x: int, y: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_get_bar_color">
@@ -262,7 +262,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">A tabular data display element with column headers, row styling, selection.<br>Fixed size and position; rows exceeding the height are clipped.</p>
+                    <p class="lead fs-6">A tabular data display element with column headers, row styling, selection.<br>Fixed size and position; rows exceeding the height are clipped.<br>Supports images in cells (Path, AtlasItem, Icon, pygame.Surface).</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -272,7 +272,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, columns: Optional[List[str]] = None, rows: Optional[List[List[str]]] = None, header_height: int = 25, row_height: int = 25, cell_padding: int = 5, show_headers: bool = True, selection_enabled: bool = False, on_row_select: Optional[Callable[[int, List[str]], None]] = None, odd_row_color: Optional[Tuple[int, int, int]] = None, even_row_color: Optional[Tuple[int, int, int]] = None, header_color: Optional[Tuple[int, int, int]] = None, header_text_color: Optional[Tuple[int, int, int]] = None, border_color: Optional[Tuple[int, int, int]] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int | float, y: int | float, width: int | float, height: int | float, columns: Optional[List[str]] = None, rows: Optional[List[List[Any]]] = None, header_height: int | float = 25, row_height: int | float = 25, cell_padding: int | float = 5, show_headers: bool = True, selection_enabled: bool = False, on_row_select: Optional[Callable[[int, List[Any]], None]] = None, odd_row_color: Optional[Tuple[int, int, int]] = None, even_row_color: Optional[Tuple[int, int, int]] = None, header_color: Optional[Tuple[int, int, int]] = None, header_text_color: Optional[Tuple[int, int, int]] = None, border_color: Optional[Tuple[int, int, int]] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_get_init_args">
@@ -291,6 +291,14 @@
                 <code class="fs-6 fw-bold text-color-title">def _recalc(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_get_image_surface">
+                <code class="fs-6 fw-bold text-color-title">def _get_image_surface(self: Any, data: Any) -> Optional[pygame.Surface]</code>
+                <div class="mt-2 text-muted small">Convert various image-like objects into a pygame.Surface.<br>Returns None if the data is not an image or loading fails.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_draw_cell_image">
+                <code class="fs-6 fw-bold text-color-title">def _draw_cell_image(self: Any, renderer: OpenGLRenderer, surf: pygame.Surface, cell_x: int, cell_y: int, cell_w: int, cell_h: int) -> None</code>
+                <div class="mt-2 text-muted small">Draw the image centered and scaled to fit inside the cell,<br>respecting cell_padding.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-add_column">
                 <code class="fs-6 fw-bold text-color-title">def add_column(self: Any, name: str) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -304,11 +312,11 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-add_row">
-                <code class="fs-6 fw-bold text-color-title">def add_row(self: Any, data: List[str]) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def add_row(self: Any, data: List[Any]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-insert_row">
-                <code class="fs-6 fw-bold text-color-title">def insert_row(self: Any, index: int, data: List[str]) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def insert_row(self: Any, index: int, data: List[Any]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-remove_row">
@@ -316,11 +324,11 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-set_cell">
-                <code class="fs-6 fw-bold text-color-title">def set_cell(self: Any, row: int, col: int, value: str) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def set_cell(self: Any, row: int, col: int, value: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-get_cell">
-                <code class="fs-6 fw-bold text-color-title">def get_cell(self: Any, row: int, col: int) -> str</code>
+                <code class="fs-6 fw-bold text-color-title">def get_cell(self: Any, row: int, col: int) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-clear">
@@ -336,7 +344,7 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-render">
-                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: Renderer) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-on_click">
@@ -367,7 +375,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-08-17 22:16
+                        Documentation generated on 2026-09-14 16:30
                     </p>
                 </div>
             </div>
@@ -375,7 +383,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="theme.js"></script>
+    <script src="../theme.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
