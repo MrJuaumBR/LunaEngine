@@ -98,3 +98,29 @@ class Player:
 ```
 
 *(Note: The `Animation` class also supports fade-in and fade-out effects automatically if you pass `fade_in_duration` or `fade_out_duration` during initialization!)*
+
+## Image-backed frames in 0.2.6.2
+
+Legacy extraction methods continue to return `pygame.Surface` objects. When a frame needs normalized scale, alpha, filters, or masks, use the Image-returning methods:
+
+```python
+from lunaengine.graphics.spritesheet import SpriteSheet
+
+sheet = SpriteSheet("assets/hero.png")
+hero = sheet.get_image_at_rect((0, 0, 64, 64))
+hero.set_scale(0.5)                 # 50%; 1.0 means 100%
+hero.set_alpha(0.8)                 # 80% opacity
+hero.set_filter("tint", color=(100, 150, 255), intensity=0.4)
+renderer.draw_surface(hero.get_surface(), 100, 100)
+```
+
+`get_image_grid(cell_size, grid_pos)` is the Image equivalent of `get_sprite_grid()`. Image variants are cached and the spritesheet source is not modified. Explicit `size=(width, height)` takes precedence over scale.
+
+Animation retains its Surface-compatible `frames` list and timing behavior. For stable transformations, wrap a selected frame once and reuse it:
+
+```python
+from lunaengine.graphics import Image
+
+frame_image = Image(animation.get_current_frame()).set_scale(2.0)
+renderer.draw_surface(frame_image.get_surface(), 320, 200)
+```

@@ -9,6 +9,7 @@ enums, and utilities for rendering, camera, particles, shadows, and sprites.
 
 """
 
+from .image import Image
 from .spritesheet import SpriteSheet, Animation
 from .particles import (
     ParticleSystem,
@@ -59,6 +60,7 @@ from .paperdoll import Animation as PaperDollAnimation
 
 __all__ = [
     # Sprite
+    "Image",
     "SpriteSheet",
     "Animation",
     # Particles

@@ -62,6 +62,7 @@ from pathlib import Path
 from typing import List, Tuple, Optional, Union, Callable
 
 from ..storage import Atlas, AtlasCategory, AtlasItem
+from .image import Image
 
 
 class SpriteSheet:
@@ -166,6 +167,10 @@ class SpriteSheet:
 
         return self.sheet.subsurface(rect)
 
+    def get_image_at_rect(self, rect: Union[pygame.Rect, Tuple[int, int, int, int]]) -> Image:
+        """Return an Image view of a sprite region; the legacy method returns a Surface."""
+        return Image(self.get_sprite_at_rect(rect))
+
     def get_sprites_at_regions(
         self, regions: List[Union[pygame.Rect, Tuple[int, int, int, int]]]
     ) -> List[pygame.Surface]:
@@ -207,6 +212,10 @@ class SpriteSheet:
         rect = pygame.Rect(col * cell_width, row * cell_height, cell_width, cell_height)
 
         return self.get_sprite_at_rect(rect)
+
+    def get_image_grid(self, cell_size: Tuple[int, int], grid_pos: Tuple[int, int]) -> Image:
+        """Return a grid frame as an Image without changing legacy return types."""
+        return Image(self.get_sprite_grid(cell_size, grid_pos))
 
     def get_surface_drawn_area(
         self, surface: pygame.Surface, threshold: int = 1

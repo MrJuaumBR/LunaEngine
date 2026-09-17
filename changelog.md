@@ -20,7 +20,28 @@
 
 <i>To be fair regarding the tools, they’ve been part of the framework for I don’t know how long, but I’ve never talked about them.</i>
 
+### 0.2.6.2
+<i>Formerly 0.2.6 - Beta</i>
+
+- **Change:** Python Supported Version: ``>=3.11``;
+- **Added:** New 17 Icons;
+- **Added:** Common ``graphics.Image`` abstraction with normalized scale/alpha, explicit size, filters, masks, lazy variant caching, and Surface compatibility;
+- **Enhancement:** ``SpriteSheet.get_image_at_rect`` and ``get_image_grid`` provide Image-backed extraction without removing legacy Surface APIs;
+- **Enhancement:** ``ImageLabel`` and ``ImageButton`` accept Image-like sources, including spritesheet-derived Images;
+- **Added:** Hierarchical ``AudioChannelGroup`` volume/mute/effect controls with master-volume inheritance;
+- **Fixes:** OpenAL effect replacement now cleans effect slots and effects, reports unavailable EFX, and only marks successful attachments as active;
+- **Enhancement:** Relative mono OpenAL sources retain compatible pan/balance controls for left/center/right testing;
+- **Enhancement:** ``Pagination`` supports explicit areas, alignment, spacing, resizing, and bounded large-page windows;
+- **Tests:** Added coverage for Image variants, masks, spritesheet integration, audio group math, and large-page pagination;
+- **Examples:** Updated the audio demo for valid repository-relative assets, master volume, and channel groups;
+- **Examples:** Updated the spritesheet demo to show Image-backed extraction and cached variants;
+- **Examples:** Added an external JSON theme demo and refreshed the scene-transition demo metadata;
+- **Lessons:** Added scene-transition guidance, expanded spritesheet/Image guidance, and documented external theme loading;
+- **Docs:** Added ``CONTRIBUTING.md`` and ``AI_GUIDE.md`` for contributors and coding agents;
+
 ### 0.2.6.1
+<i>Formerly 0.2.6 - Alpha</i>
+
 - **Added:** New 46 Icons;
 - **Fix:**
   - Fixed some problems with ``theme_tool.py``;

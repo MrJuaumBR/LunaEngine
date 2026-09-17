@@ -175,3 +175,23 @@ ThemeManager.set_dark_mode(False)  # Use "light" variant
 ```
 
 This is perfect for a settings screen where the player can choose their preferred display mode!
+
+---
+
+## Loading an external theme file in 0.2.6.2
+
+Themes do not need to be copied into LunaEngine's built-in asset directory. Load a complete theme JSON from an application asset folder and register it under an application-owned name:
+
+```python
+from pathlib import Path
+from lunaengine.ui.themes import ThemeManager
+
+theme_name = ThemeManager.load_custom_theme(
+    Path("my_game/assets/themes/space_station.json"),
+    name="space_station",
+    overwrite=True,
+)
+engine.set_global_theme(theme_name)
+```
+
+The loader accepts filesystem paths and `AtlasItem` sources. Built-in theme names are protected from accidental replacement. Use `ThemeManager.unload_custom_theme("space_station")` when a dynamically loaded theme is no longer needed. See `examples/ui/external_theme_demo.py` and its adjacent `external_theme.json` for a runnable example.

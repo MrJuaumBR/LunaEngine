@@ -903,6 +903,11 @@ class ImageLabel(UIElement):
         # Now handle the resolved source
         if isinstance(source, pygame.Surface):
             self._image = source
+        elif hasattr(source, 'get_surface') and callable(source.get_surface):
+            try:
+                self._image = source.get_surface()
+            except TypeError:
+                self._image = source.get_surface(color=self.image_color if self.image_color is not None else (255, 255, 255))
 
         elif self._is_icon_like(source):
             # It's an Icon-like object; call get_surface with the stored color

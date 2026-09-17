@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="lunaengine",
-    version="0.2.6.1",
+    version="0.2.6.2",
     description="A modern 2D game framework with advanced UI and graphics",
     author="MrJuaumBR",
     url="https://github.com/MrJuaumBR/LunaEngine",
@@ -15,7 +15,7 @@ setup(
         "PyOpenAL",
         "psutil"
     ],
-    python_requires=">=3.9",
+    python_requires=">=3.11",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

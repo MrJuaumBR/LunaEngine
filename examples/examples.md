@@ -5,13 +5,14 @@
 | ---------------- | ------------------------------------ | ----------------------------------------------------------- |
 | Ui comprehensive |                                      | [ui_comprehensive_demo.py](./ui/ui_comprehensive_demo.py)   |
 | New Frame        |                                      | [new_frame.py](./ui/new_frame.py)                           |
-| Convert Themes   |                                      | [convert_themes.py](./ui/convert_themes.py)                 |
+| Convert Themes   | Convert theme data to JSON          | [convert_themes.py](./ui/convert_themes.py)                 |
+| External Theme   | Load a theme JSON from any path     | [external_theme_demo.py](./ui/external_theme_demo.py)       |
 | Window Events    |                                      | [windows_events_demo.py](./ui/windows_events_demo.py)       |
 
 ## Audio
 | Name             | Description                          | File                                                        |
 | ---------------- | ------------------------------------ | ----------------------------------------------------------- |
-| Audio            |                                      | [audio_demo.py](./audio/audio_demo.py)                      |
+| Audio            | Channels, groups, curves, pan, EFX  | [audio_demo.py](./audio/audio_demo.py)                      |
 
 ## Storage
 | Name             | Description                          | File                                                        |
@@ -27,5 +28,19 @@
 | Particle         |                                      | [particle_demo.py](./graphics/particle_demo.py)             |
 | Shadow           |                                      | [shadow_demo.py](./graphics/shadow_demo.py)                 |
 | Shapes Styling   |                                      | [shapes_styling_demo.py](./graphics/shapes_styling_demo.py) |
-| Spritesheets     |                                      | [spritesheets.py](./graphics/spritesheets.py)               |
+| Spritesheets     | SpriteSheet, Animation, and Image   | [spritesheets.py](./graphics/spritesheets.py)               |
 | Paperdoll        |                                      | [paperdoll_demo.py](./graphics/paperdoll_demo.py)           |
+
+## Scenes
+| Name             | Description                          | File                                                        |
+| ---------------- | ------------------------------------ | ----------------------------------------------------------- |
+| Scene Transitions| Fade, slide, zoom, and other effects | [scenes_transitions_demo.py](./scenes_transitions_demo.py)  |
+
+All examples target LunaEngine **0.2.6.2**. Run them from the repository root so
+relative assets resolve correctly, for example:
+
+```bash
+python examples/graphics/spritesheets.py
+python examples/audio/audio_demo.py
+python examples/ui/external_theme_demo.py examples/ui/external_theme.json
+```

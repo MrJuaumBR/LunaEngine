@@ -4,21 +4,21 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lunaengine"
-version = "0.2.6.1"
+version = "0.2.6.2"
 description = "A modern 2D game framework with advanced UI and graphics"
 authors = [
     {name = "MrJuaum"},
 ]
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 keywords = ["game", "engine", "2d", "graphics", "pygame", "framework"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9", # Linux Mint
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
@@ -34,7 +34,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.0"
+    "pytest>=9.1.1"
 ]
 
 [project.urls]

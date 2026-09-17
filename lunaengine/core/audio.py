@@ -133,6 +133,42 @@ class AudioCurve:
         self._finished_callback = callback
 
 
+class AudioChannelGroup:
+    """Hierarchical logical bus for channel volume, mute, and effects."""
+    def __init__(self, name: str, manager: 'AudioManager', parent: Optional['AudioChannelGroup'] = None, volume: float = 1.0):
+        self.name, self.manager, self.parent = name, manager, parent
+        self.volume = max(0.0, min(1.0, float(volume)))
+        self.muted = False
+        self.channels: List['AudioChannel'] = []
+        self.children: Dict[str, 'AudioChannelGroup'] = {}
+        self.effects: Dict[str, float] = {}
+        if parent is not None: parent.children[name] = self
+
+    @property
+    def effective_volume(self) -> float:
+        own = 0.0 if self.muted else self.volume
+        return own * self.parent.effective_volume if self.parent else own
+
+    def set_volume(self, volume: float):
+        self.volume = max(0.0, min(1.0, float(volume))); self._refresh(); return self
+    def set_mute(self, muted: bool = True):
+        self.muted = bool(muted); self._refresh(); return self
+    def add_channel(self, channel: 'AudioChannel'):
+        if channel not in self.channels: self.channels.append(channel)
+        channel.group = self; self._refresh_channel(channel)
+    def set_effect(self, effect: str, amount: float):
+        self.effects[effect] = max(0.0, min(1.0, float(amount)))
+        for ch in self.channels: getattr(ch, 'set_' + effect)(amount)
+        return self
+    def _refresh_channel(self, channel):
+        if channel.source: channel.source.set_volume_immediate(channel.volume * self.effective_volume * self.manager.master_volume)
+    def _refresh(self):
+        for ch in self.channels: self._refresh_channel(ch)
+        for child in self.children.values(): child._refresh()
+
+    def get_effective_volume(self): return self.effective_volume
+
+
 class AudioChannel:
     """
     Named audio channel with individual volume, pitch, pan, balance, and curves.
@@ -162,6 +198,10 @@ class AudioChannel:
         self.distortion_amount = 0.0
         self.pitch_shift = 0.0  # semitones? We'll use a multiplier later
         self._effect_applied = False
+        self.group: Optional[AudioChannelGroup] = None
+
+    def get_effective_volume(self) -> float:
+        return self.volume * (self.group.effective_volume if self.group else 1.0) * self.manager.master_volume
 
     def _get_source(self) -> Optional[OpenALSource]:
         """Get a free OpenAL source, reusing the current one if still playing."""
@@ -194,9 +234,10 @@ class AudioChannel:
         if self.reverb_amount > 0.01:
             effect_type = al.AL_EFFECT_REVERB
             params = {
-                al.AL_REVERB_GAIN: 0.1 + self.reverb_amount * 0.9,
+                al.AL_REVERB_GAIN: 0.2 + self.reverb_amount * 0.8,
                 al.AL_REVERB_DECAY_TIME: 0.5 + self.reverb_amount * 2.0,
                 al.AL_REVERB_DENSITY: 0.3 + self.reverb_amount * 0.6,
+                "send_gain": 1.0,
             }
         elif self.echo_amount > 0.01:
             effect_type = al.AL_EFFECT_ECHO
@@ -222,8 +263,7 @@ class AudioChannel:
             }
 
         if effect_type is not None:
-            self.source.set_effect(effect_type, params)
-            self._effect_applied = True
+            self._effect_applied = self.source.set_effect(effect_type, params)
         else:
             if self._effect_applied:
                 self.source.remove_effect()
@@ -280,8 +320,7 @@ class AudioChannel:
 
             source.set_buffer(buf)
             # Apply master volume
-            master_vol = self.manager.master_volume
-            initial_vol = 0.0 if fade_in > 0 else self.volume * master_vol
+            initial_vol = 0.0 if fade_in > 0 else self.get_effective_volume()
             source.set_volume_immediate(initial_vol)
             # Apply pitch shift if any
             if self.pitch_shift != 0.0:
@@ -301,7 +340,7 @@ class AudioChannel:
 
             if fade_in > 0:
                 # Create a curve from 0 to self.volume * master_vol
-                target_vol = self.volume * master_vol
+                target_vol = self.get_effective_volume()
                 curve_vol = AudioCurve('volume', [(0.0, 0.0), (fade_in, target_vol)], 'smoothstep')
                 self.apply_curve(curve_vol)
 
@@ -344,8 +383,7 @@ class AudioChannel:
     def set_volume(self, volume: float, duration: float = 0.0, curve_type: str = 'linear'):
         """Set target volume, optionally with a smooth transition."""
         self.volume = max(0.0, min(1.0, volume))
-        master_vol = self.manager.master_volume
-        target = self.volume * master_vol
+        target = self.get_effective_volume()
         if duration > 0:
             current = self.source.volume if self.source else target
             curve = AudioCurve('volume', [(0.0, current), (duration, target)], curve_type)
@@ -447,8 +485,12 @@ class AudioManager:
         self.backend = OpenALBackend(max_sources, device_name)
         self.sounds: Dict[str, SoundData] = {}
         self.channels: Dict[str, AudioChannel] = {}
+        self.groups: Dict[str, AudioChannelGroup] = {}
         self.default_channel = 'default'
         self.master_volume = 1.0  # master volume multiplier
+        self.create_group('master')
+        self.create_group('default', parent='master')
+        self.create_group('music', parent='master')
         # Create default channel and music channel
         self.create_channel('default')
         self.create_channel('music', volume=0.8, loop=True)
@@ -472,8 +514,27 @@ class AudioManager:
         for ch in self.channels.values():
             if ch.source and ch.state == AudioState.PLAYING:
                 # Adjust to new master volume
-                target = ch.volume * self.master_volume
+                target = ch.get_effective_volume()
                 ch.source.set_volume_immediate(target)
+
+    def create_group(self, name: str, parent: Optional[Union[str, AudioChannelGroup]] = None, volume: float = 1.0) -> AudioChannelGroup:
+        if name in self.groups: return self.groups[name]
+        parent_obj = self.groups.get(parent) if isinstance(parent, str) else parent
+        group = AudioChannelGroup(name, self, parent_obj, volume)
+        self.groups[name] = group
+        return group
+
+    def get_group(self, name: str) -> Optional[AudioChannelGroup]:
+        return self.groups.get(name)
+
+    def set_group_volume(self, name: str, volume: float):
+        return self.groups[name].set_volume(volume)
+
+    def set_group_mute(self, name: str, muted: bool = True):
+        return self.groups[name].set_mute(muted)
+
+    def set_group_effect(self, name: str, effect: str, amount: float):
+        return self.groups[name].set_effect(effect, amount)
 
     # ---- Global effect setters ----
     def set_global_reverb(self, amount: float):
@@ -525,6 +586,8 @@ class AudioManager:
             raise ValueError(f"Channel '{name}' already exists")
         channel = AudioChannel(name, self, **kwargs)
         self.channels[name] = channel
+        group_name = 'music' if name == 'music' else 'default'
+        self.groups[group_name].add_channel(channel)
         return channel
 
     def get_channel(self, name: str) -> Optional[AudioChannel]:

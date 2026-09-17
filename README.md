@@ -1,4 +1,6 @@
-# LunaEngine 🚀
+![example workflow](https://github.com/MrJuaumBR/LunaEngine/actions/workflows/ci.yml/badge.svg) ![GitHub Repo stars](https://img.shields.io/github/stars/MrJuaumBR/LunaEngine)
+
+# LunaEngine
 
 > "The only way to do great work is to love what you do." — Steve Jobs
 
@@ -72,11 +74,11 @@ LunaEngine in action! Here are some glimpses of what you can create:
 
 <img src="https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/showcase/ui-demo.png" alt="User Interface" title="User Interface" style="width: auto; max-width: 50%; max-height: 720px; min-width: 25%; min-height: 480px; height: auto;"> - *A demonstration of LunaEngine's versatile UI system.*
 
-<img src="https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/showcase/live-inspector.png" alt="Live Inspector & Debug" title="Live Inspector & Debug" style="width: auto; max-width: 50%; max-height: 720px; min-width: 25%; min-height: 480px; height: auto;"> - *Inspecting game objects in real-time with the LiveInspector.*
+<img src="https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/showcase/liveinspector-showcase.gif" alt="Live Inspector & Debug" title="Live Inspector & Debug" style="width: auto; max-width: 50%; max-height: 720px; min-width: 25%; min-height: 480px; height: auto;"> - *Inspecting game objects in real-time with the LiveInspector.*
 
-<img src="https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/showcase/particle-demo.png" alt="Particles" title="Particles" style="width: auto; max-width: 50%; max-height: 720px; min-width: 25%; min-height: 480px; height: auto;"> - *Dynamic particle effects adding visual flair to a scene.*
+<img src="https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/showcase/particle-showcase.gif" alt="Particles" title="Particles" style="width: auto; max-width: 50%; max-height: 720px; min-width: 25%; min-height: 480px; height: auto;"> - *Dynamic particle effects adding visual flair to a scene.*
 
-<img src="https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/showcase/lightning-demo.png" alt="Lightning & Shadow" title="Lightning & Shadow" style="width: auto; max-width: 50%; max-height: 720px; min-width: 25%; min-height: 480px; height: auto;"> - *A scene illuminated with LunaEngine's dynamic lighting system.*
+<img src="https://raw.githubusercontent.com/MrJuaumBR/LunaEngine/refs/heads/main/showcase/shadow-showcase.gif" alt="Lightning & Shadow" title="Lightning & Shadow" style="width: auto; max-width: 50%; max-height: 720px; min-width: 25%; min-height: 480px; height: auto;"> - *A scene illuminated with LunaEngine's dynamic lighting system.*
 
 ## Installation
 

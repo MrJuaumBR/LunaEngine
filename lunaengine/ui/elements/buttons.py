@@ -399,6 +399,8 @@ class ImageButton(UIElement):
         elif isinstance(self.image_path, Icon):
             # Use Icon's get_surface with a default color (white) or we can later allow custom color
             self._image = self.image_path.get_surface(color=(255, 255, 255))
+        elif hasattr(self.image_path, 'get_surface') and callable(self.image_path.get_surface):
+            self._image = self.image_path.get_surface()
         elif isinstance(self.image_path, str):
             self._image = pygame.image.load(self.image_path).convert_alpha()
         else:

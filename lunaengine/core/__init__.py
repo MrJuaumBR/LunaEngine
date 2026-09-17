@@ -27,6 +27,7 @@ from .window import Window
 from .audio import (
     AudioManager,
     AudioChannel,
+    AudioChannelGroup,
     AudioCurve,
     SoundData,
     AudioState,
@@ -44,6 +45,7 @@ __all__ = [
     "Window",
     "AudioManager",
     "AudioChannel",
+    "AudioChannelGroup",
     "AudioCurve",
     "SoundData",
     "AudioState",

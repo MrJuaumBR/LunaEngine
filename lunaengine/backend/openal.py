@@ -439,6 +439,8 @@ class OpenALSource:
         self.loop = False
         # Effect slot for reverb/echo (if EFX available)
         self.effect_slot = None
+        self.effect = None
+        self.last_error = None
         if OPENAL_AVAILABLE:
             al.alSourcei(source_id, al.AL_SOURCE_RELATIVE, al.AL_TRUE)
             al.alSource3f(source_id, al.AL_POSITION, 0.0, 0.0, 0.0)
@@ -475,8 +477,10 @@ class OpenALSource:
         Requires EFX_AVAILABLE.
         """
         if not EFX_AVAILABLE or not OPENAL_AVAILABLE:
+            self.last_error = "OpenAL EFX is unavailable"
             return False
         try:
+            self.remove_effect()
             # Create effect
             effect = ALuint(0)
             al.alGenEffects(1, ctypes.byref(effect))
@@ -487,7 +491,8 @@ class OpenALSource:
             # Apply parameters (if any)
             if params:
                 for key, val in params.items():
-                    al.alEffectf(effect, key, val)
+                    if key != "send_gain":
+                        al.alEffectf(effect, key, val)
             # Create effect slot
             slot = ALuint(0)
             al.alGenAuxiliaryEffectSlots(1, ctypes.byref(slot))
@@ -498,8 +503,11 @@ class OpenALSource:
             # Attach to source
             al.alSource3i(self.source_id, al.AL_AUXILIARY_SEND_FILTER, slot, 0, 0)
             self.effect_slot = slot
+            self.effect = effect
+            self.last_error = None
             return True
-        except Exception:
+        except Exception as exc:
+            self.last_error = str(exc)
             return False
 
     def remove_effect(self):
@@ -507,10 +515,15 @@ class OpenALSource:
         if self.effect_slot and OPENAL_AVAILABLE:
             try:
                 al.alSource3i(self.source_id, al.AL_AUXILIARY_SEND_FILTER, 0, 0, 0)
-                al.alDeleteAuxiliaryEffectSlots(1, ctypes.byref(ALuint(self.effect_slot)))
+                slot = self.effect_slot if hasattr(self.effect_slot, 'value') else ALuint(self.effect_slot)
+                al.alDeleteAuxiliaryEffectSlots(1, ctypes.byref(slot))
+                if self.effect is not None:
+                    effect = self.effect if hasattr(self.effect, 'value') else ALuint(self.effect)
+                    al.alDeleteEffects(1, ctypes.byref(effect))
             except:
                 pass
             self.effect_slot = None
+            self.effect = None
 
     def play(self, loop: bool = False):
         self.loop = loop

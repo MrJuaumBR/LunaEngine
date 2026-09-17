@@ -176,6 +176,11 @@ class Icon:
         """Clear the internal cache, forcing fresh recolouring on next get_surface()."""
         self._cache.clear()
 
+    def as_image(self, color=None):
+        """Return this icon as a common Image while retaining get_surface compatibility."""
+        from ..graphics.image import Image
+        return Image(self.get_surface(color if color is not None else (255, 255, 255)))
+
 
 class Icons:
     """
@@ -197,7 +202,8 @@ class Icons:
         'trash', 'undo', 'redo', 'cube', 'sphere', 'rocket', 'notification', 'dialog',
         'controller', 'hide', 'show', 'ranking', 'icons', 'selection', 'puzzle', 'light', 'id',
         'card', 'target', 'aim', 'click', 'debug', 'timer', 'anvil', 'browser', 'omega', 'pi', 'options',
-        'plane', 'documentation', 'fire'
+        'plane', 'documentation', 'fire', 'stop', 'video', 'wall', 'worldmap', 'build', 'circuit', 'cpu', 'document',
+        'image', 'maintenance', 'music', 'pause', 'play', 'mouse', 'network', 'keyboard', 'lightbulb'
     ]
 
     @classmethod
@@ -488,6 +494,73 @@ class Icons:
     def FIRE(cls, size: Optional[int] = None) -> Icon:
         return Icon('fire.png', size=size)
     
+    @classmethod
+    def STOP(cls, size: Optional[int] = None) -> Icon:
+        return Icon('stop.png', size=size)
+    
+    @classmethod
+    def VIDEO(cls, size: Optional[int] = None) -> Icon:
+        return Icon('video.png', size=size)
+    
+    @classmethod
+    def WALL(cls, size: Optional[int] = None) -> Icon:
+        return Icon('wall.png', size=size)
+    
+    @classmethod
+    def WORLDMAP(cls, size: Optional[int] = None) -> Icon:
+        return Icon('worldmap.png', size=size)
+    
+    @classmethod
+    def BUILD(cls, size: Optional[int] = None) -> Icon:
+        return Icon('build.png', size=size)
+    
+    @classmethod
+    def CIRCUIT(cls, size: Optional[int] = None) -> Icon:
+        return Icon('circuit.png', size=size)
+    
+    @classmethod
+    def CPU(cls, size: Optional[int] = None) -> Icon:
+        return Icon('cpu.png', size=size)
+    
+    @classmethod
+    def DOCUMENT(cls, size: Optional[int] = None) -> Icon:
+        return Icon('document.png', size=size)
+    
+    @classmethod
+    def IMAGE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('image.png', size=size)
+    
+    @classmethod
+    def MAINTENANCE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('maintenance.png', size=size)
+    
+    @classmethod
+    def MUSIC(cls, size: Optional[int] = None) -> Icon:
+        return Icon('music.png', size=size)
+    
+    @classmethod
+    def PAUSE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('pause.png', size=size)
+    
+    @classmethod
+    def PLAY(cls, size: Optional[int] = None) -> Icon:
+        return Icon('play.png', size=size)
+    
+    @classmethod
+    def MOUSE(cls, size: Optional[int] = None) -> Icon:
+        return Icon('mouse.png', size=size)
+    
+    @classmethod
+    def NETWORK(cls, size: Optional[int] = None) -> Icon:
+        return Icon('network.png', size=size)
+    
+    @classmethod
+    def KEYBOARD(cls, size: Optional[int] = None) -> Icon:
+        return Icon('keyboard.png', size=size)
+    
+    @classmethod
+    def LIGHTBULB(cls, size: Optional[int] = None) -> Icon:
+        return Icon('lightbulb.png', size=size)
 
     @classmethod
     def get_icon(cls, name: str, size: Optional[int] = None) -> Icon:
@@ -582,6 +655,23 @@ class Icons:
             cls.PLANE(size),
             cls.DOCUMENTATION(size),
             cls.FIRE(size),
+            cls.STOP(size),
+            cls.VIDEO(size),
+            cls.WALL(size),
+            cls.WORLDMAP(size),
+            cls.BUILD(size),
+            cls.CIRCUIT(size),
+            cls.CPU(size),
+            cls.DOCUMENT(size),
+            cls.IMAGE(size),
+            cls.MAINTENANCE(size),
+            cls.MUSIC(size),
+            cls.PAUSE(size),
+            cls.PLAY(size),
+            cls.MOUSE(size),
+            cls.NETWORK(size),
+            cls.KEYBOARD(size),
+            cls.LIGHTBULB(size),
         ]
         
     @classmethod

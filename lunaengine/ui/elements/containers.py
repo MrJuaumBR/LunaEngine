@@ -1434,8 +1434,13 @@ class Pagination(UiFrame):
         button_style: Literal['numbers', 'dots', 'compact'] = 'numbers',
         pivot: Tuple[float, float] = (0, 0),
         theme: Optional[ThemeType] = None,
-        element_id: Optional[str] = None
+        element_id: Optional[str] = None,
+        area: Optional[Tuple[int, int, int, int]] = None,
+        alignment: Literal['left', 'center', 'right'] = 'center',
+        spacing: int = 5
     ) -> None:
+        if area is not None:
+            x, y, width, height = area
         super().__init__(x, y, width, height, pivot, theme, element_id)
 
         self.total_pages = max(1, total_pages)
@@ -1446,7 +1451,8 @@ class Pagination(UiFrame):
         self.button_style = button_style
 
         self.button_size = (30, 30)
-        self.button_margin = 5
+        self.button_margin = max(0, int(spacing))
+        self.alignment = alignment if alignment in ('left', 'center', 'right') else 'center'
         self.ellipsis_text = "..."
 
         self.on_page_change = None
@@ -1459,6 +1465,20 @@ class Pagination(UiFrame):
 
         self._create_buttons()
 
+    @property
+    def area(self) -> Tuple[int, int, int, int]:
+        return (self.x, self.y, self.width, self.height)
+
+    def set_area(self, area: Tuple[int, int, int, int]) -> None:
+        self.x, self.y, self.width, self.height = map(int, area)
+        self._create_buttons()
+
+    def set_alignment(self, alignment: Literal['left', 'center', 'right']) -> None:
+        if alignment not in ('left', 'center', 'right'):
+            raise ValueError("alignment must be left, center, or right")
+        self.alignment = alignment
+        self._create_buttons()
+
     def _get_init_args(self) -> Dict[str, Any]:
         args = super()._get_init_args()
         args.update({
@@ -1468,6 +1488,9 @@ class Pagination(UiFrame):
             'show_prev_next': self.show_prev_next,
             'show_first_last': self.show_first_last,
             'button_style': self.button_style,
+            'area': self.area,
+            'alignment': self.alignment,
+            'spacing': self.button_margin,
         })
         return args
 
@@ -1513,17 +1536,22 @@ class Pagination(UiFrame):
             self.on_page_change(self.current_page, old_page)
 
     def _calculate_visible_pages(self) -> List[int]:
-        if self.total_pages <= self.max_visible_pages:
+        max_links = max(1, int(self.max_visible_pages))
+        if self.total_pages <= max_links:
             return list(range(1, self.total_pages + 1))
 
-        half_visible = self.max_visible_pages // 2
+        # max_visible_pages is the number of ordinary numeric links; first/last
+        # and ellipses are bounded additions, never one button per page.
+        window = max(1, max_links - 2)
+        half_visible = window // 2
         start_page = max(1, self.current_page - half_visible)
-        end_page = min(self.total_pages, self.current_page + half_visible)
+        end_page = min(self.total_pages, start_page + window - 1)
+        start_page = max(1, end_page - window + 1)
 
         if start_page == 1:
-            end_page = min(self.total_pages, self.max_visible_pages)
+            end_page = min(self.total_pages, window)
         elif end_page == self.total_pages:
-            start_page = max(1, self.total_pages - self.max_visible_pages + 1)
+            start_page = max(1, self.total_pages - window + 1)
 
         pages = list(range(start_page, end_page + 1))
 
@@ -1570,7 +1598,13 @@ class Pagination(UiFrame):
             button_width = max(20, available_width // total_buttons)
             self.button_size = (button_width, self.button_size[1])
 
-        current_x = 10
+        content_width = total_buttons * button_width + (total_buttons - 1) * self.button_margin
+        if self.alignment == 'left':
+            current_x = 0
+        elif self.alignment == 'right':
+            current_x = max(0, self.width - content_width)
+        else:
+            current_x = max(0, (self.width - content_width) // 2)
         button_y = (self.height - button_height) // 2
 
         if self.show_first_last:
