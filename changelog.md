@@ -20,6 +20,28 @@
 
 <i>To be fair regarding the tools, they’ve been part of the framework for I don’t know how long, but I’ve never talked about them.</i>
 
+### 0.2.6.3
+<i>Formerly 0.2.6 - Stable</i>
+
+- **Added:** Atlas Item support to ``Image``;
+- **Added:** ``get_size``, ``rotate``, ``scale``, ``tostring`` and ``fromstring`` to ``Image``;
+- **Added:** ``Ratio`` to ThemeManager;
+- **Enhancement:** General changes to ``UIElements`` about ``Ratio``/``Screen Scale``;
+- **Refactor:** Complete rewrite of the mouse input system around **Pointer Capture**;
+  - **Change:** ``InputState`` now tracks a single ``captured_element`` per press — all mouse events route to it until release;
+  - **Removed:** ``consumed_events``, ``_global_mouse_consumed`` and their whole API(``consume_event``, ``is_event_consumed``, ``consume_global_mouse``, ``is_global_mouse_consumed``, ``clear_consumed``);
+  - **Removed:** Local drag flags across elements: ``UiFrame._dragging``, ``ScrollingFrame.dragging_vertical``/``dragging_horizontal``, ``Slider.dragging``, ``TextArea._dragging``, ``Dropdown.is_scrolling``;
+- **New System:** Centralized hit-test ``ui_hit_test_topmost`` — walks reverse render order(layers top-down, per-layer descending ``z_index``, children first) so the deepest interactive element wins;
+- **Added:** ``is_interactive`` class attribute on ``UIElement`` — plain containers are no longer capture targets;
+- **Added:** Region-based interactivity to containers: ``UiFrame`` captures on its header only, ``ScrollingFrame`` on scrollbar thumbs only, ``Tabination`` on its tab area only;
+- **Added:** ``InputState.pointer_is_blocked_for(element)`` as the replacement gate for the old global consumption checks;
+- **Change:** Click semantics moved to press-and-release-on-same-target — pressing ``A`` and releasing over ``B`` no longer fires a click;
+- **Fixes:** Click-through on popups — clicking a ``Dropdown`` option no longer also triggers the element behind it;
+- **Fixes:** Elements inside ``UiFrame``, ``ScrollingFrame``, ``Tabination`` and expanded ``ColorPicker`` not receiving clicks(hit-test recursed ancestors-first instead of children-first);
+- **Fixes:** Drag conflicts between draggable frames, sliders, scrollbar thumbs and text selection — once capture is taken, no other element sees mouse events for the duration of the press;
+- **Fixes:** ``ScrollingFrame`` double child update — children were updated once through ``super().update()`` and again in the derived class;
+- **Fixes:** ``Dropdown``/``ColorPicker`` one-frame layer lag on expand — layer promotion now takes effect in the same frame;
+
 ### 0.2.6.2
 <i>Formerly 0.2.6 - Beta</i>
 
