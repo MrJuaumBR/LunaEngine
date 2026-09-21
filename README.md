@@ -1,4 +1,4 @@
-![example workflow](https://github.com/MrJuaumBR/LunaEngine/actions/workflows/ci.yml/badge.svg) ![GitHub Repo stars](https://img.shields.io/github/stars/MrJuaumBR/LunaEngine)
+![example workflow](https://github.com/MrJuaumBR/LunaEngine/actions/workflows/ci.yml/badge.svg) ![GitHub Repo stars](https://img.shields.io/github/stars/MrJuaumBR/LunaEngine) [![wakatime](https://wakatime.com/badge/user/018eca80-ac13-42a8-8a9f-b2a68ca8c194/project/b0965448-ff71-49ab-8c43-d8c453e9ff21.svg)](https://wakatime.com/badge/user/018eca80-ac13-42a8-8a9f-b2a68ca8c194/project/b0965448-ff71-49ab-8c43-d8c453e9ff21)
 
 # LunaEngine
 
@@ -51,7 +51,7 @@ LunaEngine boasts a rich set of features designed to cover every aspect of 2D ga
 | **Advanced UI System** | Create complex and interactive user interfaces with ease, inspired by Roblox Studio. |  Functional | Highly customizable and extensible. |
 | **OpenGL Rendering** | Hardware-accelerated graphics pipeline for smooth and efficient 2D rendering. |  Functional | Requires OpenGL 3.3+ for optimal performance. |
 | **OpenAL Audio** | Immersive spatial audio capabilities for realistic soundscapes and effects. |  Functional | Supports WAV, OGG, and MP3 formats. |
-| **Dynamic Theming** | Apply pre-built or custom themes to your UI elements for a consistent look. |  Functional | 58+ themes available out-of-the-box. |
+| **Dynamic Theming** | Apply pre-built or custom themes to your UI elements for a consistent look. |  Functional | 72+ themes available out-of-the-box. |
 | **Persistent Storage** | Save and load game data effortlessly, managing player progress and configurations. |  Functional | Simple API for data serialization. |
 | **LiveInspector** | Real-time debugging tool to inspect and modify game state during runtime. |  Functional | Accelerates debugging and iteration. |
 | **RichText Rendering** | Advanced text rendering with support for various fonts, styles, and formatting. |  Functional | Enhances in-game text presentation. |
@@ -86,7 +86,7 @@ Getting started with LunaEngine is straightforward. Follow these steps to set up
 
 ### Prerequisites
 
-- **Python**: Version 3.9 or newer is recommended. (Not tested on older versions).
+- **Python**: Version 3.11 or newer is recommended. (Not tested on older versions).
 
 - **OpenGL**: Requires OpenGL 3.3+ compatible hardware and drivers. OpenGL is activated by default.
 
@@ -114,19 +114,20 @@ LunaEngine relies on the following core Python packages:
 
 ```bash
 pygame>=2.5.0
-numpy>=1.21.0
+numpy>=2.4.6
 PyOpenGL>=3.1.0
 PyOpenGL-accelerate>=3.1.0
 PyOpenAL
+psutil
 ```
 
-### Development Tools (Optional )
+### Development Tools (Optional)
 
 For contributing to LunaEngine or for advanced development workflows, these tools are recommended:
 
 ```bash
 black>=22.0.0
-flake8>=4.0.0
+flake8>=4.0.0  
 pytest>=7.0.0
 setuptools>=65.0.0
 wheel>=0.37.0
@@ -147,24 +148,22 @@ class MyGame(Scene):
 
         # Create a button
         self.my_button = Button(
-            text="Click Me!",
             x=350,
             y=250,
             width=100,
             height=50,
-            on_click=self.on_button_click
+            text="Button",
         )
+        self.my_button.set_on_click(self.on_button_click)
         self.add_ui_element(self.my_button)
 
         # Create a label to display messages
-        self.message_label = Label(
-            text="",
+        self.message_label = TextLabel(
             x=300,
             y=350,
-            width=200,
-            height=30,
+            text="My Label",
             font_size=24,
-            color=Color.WHITE
+            pivot=(0.0, 0.0)
         )
         self.add_ui_element(self.message_label)
 
@@ -181,7 +180,7 @@ class MyGame(Scene):
         pass
 
 if __name__ == "__main__":
-    engine = LunaEngine("My Demo", 1024, 720)
+    engine = LunaEngine("My Demo", 1024, 720, fullscreen=False, debug=False) # Fullscreen and Debug are both optionals
 
     engine.add_scene('scene_name', MyGame)
     engine.set_scene('scene_name')
@@ -218,13 +217,13 @@ This clear separation of concerns allows developers to focus on specific aspects
 
 LunaEngine is a continuously evolving project, and its growth is reflected in its codebase and feature set:
 
-- **Files**: Approximately 149 files
+- **Files**: Approximately 64 files
 
-- **Lines of Code (LOC)**: Over 16,000 lines of Python code
+- **Lines of Code (LOC)**: Over 25,000 lines of Python code
 
-- **Themes**: 64+ built-in themes for UI customization
+- **Themes**: 72+ built-in themes for UI customization
 
-- **UI Elements**: 27 distinct UI elements ready for use
+- **UI Elements**: 30 distinct UI elements ready for use
 
 - **Post-processing Filters**: A growing collection of visual filters (e.g., Blur, Neon, Pixelate)
 
@@ -276,10 +275,6 @@ Adding depth and atmosphere to 2D scenes is made possible with LunaEngine's dyna
 
 The theming system provides a powerful way to control the aesthetic of your game's UI. With over 58 built-in themes and the ability to create custom ones, developers can easily change the entire look and feel of their application. This promotes consistency in design and allows for rapid prototyping of different visual styles.
 
-### Networking
-
-While still under development, the networking system aims to provide robust and easy-to-use functionalities for implementing multiplayer features, online leaderboards, or other network-dependent game mechanics. This will enable developers to create connected experiences within their LunaEngine games.
-
 ### Performance Monitor
 
 Optimizing game performance is a continuous process. The built-in performance monitor provides real-time insights into FPS, CPU/GPU usage, memory consumption, and other critical metrics. This data is invaluable for identifying bottlenecks and ensuring that games run smoothly across target hardware.
@@ -288,7 +283,7 @@ Optimizing game performance is a continuous process. The built-in performance mo
 
 For developers who need to visualize data within their games or debugging tools, LunaEngine offers integrated charting capabilities. This can be used to display anything from player statistics to complex physics simulations, providing clear and concise visual representations of information.
 
-### Controller Support
+### Controller Support - In Progress
 
 Ensuring a broad and accessible gaming experience, LunaEngine includes comprehensive controller support. This allows players to use their preferred gamepads and joysticks, providing a more intuitive and engaging way to interact with your games.
 
@@ -346,8 +341,6 @@ A: We welcome contributions from the community! Whether it's reporting bugs, sug
 
 LunaEngine is a project with a clear vision for continuous improvement and expansion. Here's a glimpse into our future plans and ongoing developments:
 
-- **Networking System**: Implement a robust and easy-to-use networking module for multiplayer games and online features.
-
 - **Advanced Physics Engine**: Integrate a more sophisticated 2D physics engine for realistic interactions.
 
 - **Enhanced Tooling**: Develop more integrated development tools to streamline workflows.
@@ -374,13 +367,13 @@ We believe in the power of community and welcome contributions to LunaEngine! Yo
 
 1. **Join the Community**: Engage with other developers on our [Discord server](https://discord.com/invite/fb84sHDX7R) to discuss ideas and get support.
 
-Before contributing code, please review our `CONTRIBUTING.md` (if available) for detailed guidelines. We appreciate your efforts in making LunaEngine a fantastic resource for 2D game development!
+Before contributing code, please review our [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines. We appreciate your efforts in making LunaEngine a fantastic resource for 2D game development!
 
 ## License
 
 LunaEngine is released under the [MIT License](https://opensource.org/licenses/MIT). This means you are free to use, modify, and distribute the engine for both commercial and non-commercial purposes, provided that the original copyright notice and license are included in all copies or substantial portions of the software.
 
-All the icons from the [assets/icons](./lunaengine/assets/icons/) are from [icons8](https://icons8.com/)
+All the icons from the [``assets/icons``](./lunaengine/assets/icons/) are from [icons8](https://icons8.com/)
 
 ## Final Message
 

@@ -41,6 +41,28 @@
 - **Fixes:** Drag conflicts between draggable frames, sliders, scrollbar thumbs and text selection — once capture is taken, no other element sees mouse events for the duration of the press;
 - **Fixes:** ``ScrollingFrame`` double child update — children were updated once through ``super().update()`` and again in the derived class;
 - **Fixes:** ``Dropdown``/``ColorPicker`` one-frame layer lag on expand — layer promotion now takes effect in the same frame;
+- **New System:** Console **REPL** on ``LiveInspector``:
+  - **Feature:** Multi-line command bar below the console log — ``Enter`` inserts a newline, ``Ctrl+Enter`` executes;
+  - **Feature:** Preloaded namespace, no ``import`` required: ``engine``, ``scene``, ``ui``, ``sel``, ``LayerType``, all public ``UIElement`` subclasses, ``json``, ``os``, ``sys``, ``math``, ``random``, ``time``, ``pathlib.Path``;
+  - **Feature:** Custom functions registered in ``LiveInspector`` are callable by name from the REPL;
+  - **Feature:** ``import`` is blocked through a restricted ``__builtins__`` dictionary — no ``__import__``;
+  - **Feature:** Expressions print via ``repr``, statements execute silently, exceptions are logged to the console pane at ``ERROR`` level and never crash the game;
+  - **Feature:** Existing ``stdout``/``stderr`` redirect is preserved — ``print()`` still lands in the log pane;
+- **Added:** ``LayerType.DEBUG_OVERLAY = 6``, above ``LayerType.TOP``, registered in ``layer_manager`` for debug-only rendering;
+- **UI:** ``LiveInspector`` selection highlight — solid 1px outline on the selected element's screen bounds using the ``ThemeManager`` accent color; a dimmer outline is drawn on tree hover;
+- **UI:** Icons in the ``LiveInspector`` Elements hierarchy — mapped by class name with a ``cube`` fallback;
+- **Added:** ``engine.remove_scene(ref)`` — removes by ``str`` name or ``Scene`` subclass type, returns ``bool``; if the removed scene was active, ``current_scene`` becomes ``None``(no auto-switch);
+- **Enhancement:** ``LiveInspector`` now registers as a real UI-layer element with a ``_debug_only`` flag — fixes click-through to game UI behind it and gives the REPL ``TextBox``, tab ``ScrollingFrames`` and property lists proper scroll and keyboard input;
+- **Enhancement:** Container culling extended to ``UiFrame``-derived containers via an opt-in ``cull_children`` property(default ``False``); ``ScrollingFrame`` retains its existing ``cull_updates``/``cull_rendering`` controls;
+- **Enhancement:** Shared ``_container_clip_rect`` and ``_child_intersects_container`` helpers — read-only, live(never cached), and ancestor-aware, intersecting against every parent clip rect, not just the immediate one;
+- **Fixes:** Culling no longer mutates state during render — removed the ``child.x``/``child.y`` writes in ``ScrollingFrame.render`` and ``UiFrame.render`` that caused icon/text offset drift and disappearing content;
+- **Fixes:** Culling uses intersection, not containment, so partially-visible children still render; focused, dragged and actively animated children are never culled;
+- **Fixes:** Culling no longer affects hit-test, keyboard focus, pointer capture, layout or ``TextBox`` editing;
+- **Fixes:** ``get_actual_position()`` resolves live parent scroll and auto-arranged positions without mutating coordinates; ``getCollideRect()`` no longer double-applies parent scroll;
+- **Added:** Icon system now accepts ``float`` sizes;
+- **UI:** Reworked icon art with thicker strokes for better readability at small sizes;
+- **Fixes:** ``TextArea`` now handles floating/partial lines correctly;
+- **Fixes:** ``TextBox`` no longer breaks when ``None`` is passed as text;
 
 ### 0.2.6.2
 <i>Formerly 0.2.6 - Beta</i>
