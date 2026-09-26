@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hot Reload Scenes - LunaEngine Examples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (Ctrl+K)">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../../examples/index.html">Examples Hub</a></li><li class="breadcrumb-item active">Hot-Reload</li><li class="breadcrumb-item active">Hot Reload Scenes</li></ol></nav>
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="mb-3"><i class="bi bi-code-slash me-2"></i>Hot Reload Scenes</h1>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>hot_reload_scenes.py</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-python">&quot;&quot;&quot;Scenes used by hot_reload_demo.py.
+
+Edit this file while the demo is running to exercise scene reconstruction.
+The engine calls the old scene&#x27;s on_exit(), creates a fresh scene instance,
+and calls the new scene&#x27;s on_enter() without preserving scene state.
+&quot;&quot;&quot;
+from lunaengine.core import Scene
+from lunaengine.ui import Button, TextLabel, UiFrame
+import stats
+
+
+class MenuScene(Scene):
+    def __init__(self, engine):
+        super().__init__(engine)
+        self.add_ui_element(TextLabel(512, 120, &quot;Hot Reload Demo&quot;, 42, pivot=(0.5, 0)))
+        self.add_ui_element(TextLabel(
+            512, 185,
+            &quot;Edit hot_reload_scenes.py to rebuild this scene while running.&quot;,
+            18, pivot=(0.5, 0), color=(190, 200, 220),
+        ))
+        button = Button(412, 250, 200, 48, &quot;Open Game&quot;, 20)
+        button.set_on_click(lambda: self.engine.set_scene(&quot;game&quot;))
+        self.add_ui_element(button)
+
+
+class GameScene(Scene):
+    def __init__(self, engine):
+        super().__init__(engine)
+        self._build_ui()
+
+    def _build_ui(self):
+        self.add_ui_element(TextLabel(512, 70, &quot;Game Scene&quot;, 34, pivot=(0.5, 0)))
+        self.stats_label = TextLabel(512, 150, &quot;&quot;, 24, pivot=(0.5, 0))
+        self.add_ui_element(self.stats_label)
+        self.help_label = TextLabel(
+            512, 215,
+            &quot;Edit examples/stats.py and watch these values update.&quot;,
+            18, pivot=(0.5, 0), color=(190, 200, 220),
+        )
+        self.add_ui_element(self.help_label)
+        back = Button(412, 290, 200, 44, &quot;Back to Menu&quot;, 18)
+        back.set_on_click(lambda: self.engine.set_scene(&quot;menu&quot;))
+        self.add_ui_element(back)
+        self.refresh_stats(stats)
+
+    def refresh_stats(self, module):
+        &quot;&quot;&quot;Refresh the visible constants after stats.py is reloaded.&quot;&quot;&quot;
+        self.stats_label.set_text(
+            f&quot;PLAYER_SPEED = {module.PLAYER_SPEED}    &quot;
+            f&quot;MAX_HEALTH = {module.MAX_HEALTH}    &quot;
+            f&quot;STARTING_GOLD = {module.STARTING_GOLD}&quot;
+        )
+
+    def on_enter(self, previous_scene=None):
+        super().on_enter(previous_scene)
+        self.refresh_stats(stats)
+</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Scenes used by hot_reload_demo.py.</p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <a href="hot_reload_scenes.py" download class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Python File
+                            </a>
+                            <a href="index.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Examples
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-09-26 12:41
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../../theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // Compute relative path to root search.html
+                    const path = window.location.pathname;
+                    const parts = path.split('/').filter(p => p && p !== '');
+                    // Remove file part if present
+                    let dirParts = parts;
+                    if (dirParts.length > 0 && dirParts[dirParts.length - 1].includes('.')) {
+                        dirParts = dirParts.slice(0, -1);
+                    }
+                    // Number of levels to go up to reach the directory containing search.html
+                    const levels = Math.max(0, dirParts.length - 1);
+                    const searchPath = '../'.repeat(levels) + 'search.html';
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+</body>
+</html>

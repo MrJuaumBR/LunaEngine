@@ -10,6 +10,7 @@ It shows:
 - Anonymous timers
 - Live display of timer status (elapsed, remaining, done)
 - Global timer controls (pause all, resume all, clear all)
+- Named nonblocking cooldown checks with ``engine.timer.ready(name, seconds)``
 - Notifications on timer completion
 """
 
@@ -50,6 +51,7 @@ class TimerDemoScene(Scene):
         print("=== Timer Demo ===")
         print("Use the controls to add, manage, and monitor timers.")
         print("Timers fire notifications upon completion.")
+        print("For gameplay cooldowns, poll engine.timer.ready('name', seconds) each frame.")
 
     def on_exit(self, next_scene: str | None = None):
         # Clean up all timers

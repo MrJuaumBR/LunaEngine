@@ -48,9 +48,12 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Single-line text input field with optional label.<br>Supports placeholder text, max length, and focus management.</p>
+                    <p class="lead fs-6">No documentation</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>is_interactive: Any = True</code>
+                </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'text': {'name': 'text', 'key': 'text', 'type': str, 'editable': True, 'description': 'Current text content.'}, 'placeholder_text': {'name': 'placeholder', 'key': 'placeholder_text', 'type': str, 'editable': True, 'description': 'Text shown when empty.'}, 'font_size': {'name': 'font size', 'key': 'font_size', 'type': int, 'editable': True, 'description': 'Font size in pixels.'}, 'max_length': {'name': 'max length', 'key': 'max_length', 'type': int, 'editable': True, 'description': 'Maximum characters allowed (0 = unlimited).'}, 'focused': {'name': 'focused', 'key': 'focused', 'type': bool, 'editable': False, 'description': 'Whether the text box has keyboard focus.'}, 'label': {'name': 'label', 'key': 'label', 'type': str, 'editable': True, 'description': 'Label text displayed next to or above the input.'}, 'label_position': {'name': 'label position', 'key': 'label_position', 'type': str, 'editable': True, 'description': '"left" or "top".', 'options': ['left', 'top']}, 'label_size': {'name': 'label size', 'key': 'label_size', 'type': int, 'editable': True, 'description': 'Font size of the label (0 = auto).'}}</code>
                 </div></div>
@@ -61,13 +64,17 @@
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, text: str = '', font_size: int = 20, font_name: Optional[str] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, max_length: int = 0, element_id: Optional[str] = None, label: Optional[str] = None, label_position: Literal['left', 'top'] = 'left', label_size: Optional[int] = None, **kwargs: dict) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-_sm">
+                <code class="fs-6 fw-bold text-color-title">def _sm(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-_get_init_args">
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-set_on_text_changed">
                 <code class="fs-6 fw-bold text-color-title">def set_on_text_changed(self: Any, callback: Callable[[str], None]) -> None</code>
-                <div class="mt-2 text-muted small">Set a callback to be invoked when the text changes.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-font">
                 <code class="fs-6 fw-bold text-color-title">def font(self: Any) -> pygame.font.Font</code>
@@ -83,7 +90,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-_update_layout">
                 <code class="fs-6 fw-bold text-color-title">def _update_layout(self: Any) -> None</code>
-                <div class="mt-2 text-muted small">Recalculate label and input rectangles based on current settings.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-get_text">
                 <code class="fs-6 fw-bold text-color-title">def get_text(self: Any) -> str</code>
@@ -113,6 +120,38 @@
                 <code class="fs-6 fw-bold text-color-title">def _get_background_color(self: Any) -> Tuple[int, int, int]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-_selection_bounds">
+                <code class="fs-6 fw-bold text-color-title">def _selection_bounds(self: Any) -> Optional[Tuple[int, int]]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-_selected_text">
+                <code class="fs-6 fw-bold text-color-title">def _selected_text(self: Any) -> str</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-_clear_selection">
+                <code class="fs-6 fw-bold text-color-title">def _clear_selection(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-_delete_selection">
+                <code class="fs-6 fw-bold text-color-title">def _delete_selection(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-copy">
+                <code class="fs-6 fw-bold text-color-title">def copy(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-cut">
+                <code class="fs-6 fw-bold text-color-title">def cut(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-paste">
+                <code class="fs-6 fw-bold text-color-title">def paste(self: Any) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-select_all">
+                <code class="fs-6 fw-bold text-color-title">def select_all(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-on_key_down">
                 <code class="fs-6 fw-bold text-color-title">def on_key_down(self: Any, event: pygame.event.Event) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -138,12 +177,12 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-_render_text_content">
-                <code class="fs-6 fw-bold text-color-title">def _render_text_content(self: Any, renderer: OpenGLRenderer, input_abs_x: int, input_abs_y: int, theme: Any) -> None</code>
-                <div class="mt-2 text-muted small">Render actual text or placeholder inside the input area.</div>
+                <code class="fs-6 fw-bold text-color-title">def _render_text_content(self: Any, renderer: OpenGLRenderer, input_abs_x: int, input_abs_y: int, theme: Any, sm: float = 1.0) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-_get_cursor_position">
-                <code class="fs-6 fw-bold text-color-title">def _get_cursor_position(self: Any, input_abs_x: int, input_abs_y: int) -> Tuple[int, int]</code>
-                <div class="mt-2 text-muted small">Compute screen position of the cursor.</div>
+                <code class="fs-6 fw-bold text-color-title">def _get_cursor_position(self: Any, input_abs_x: int, input_abs_y: int, sm: float = 1.0) -> Tuple[int, int]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textbox-update_theme">
                 <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: ThemeType) -> None</code>
@@ -159,9 +198,12 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Multi-line text input area with word wrapping and scrollbars.<br>Supports text editing, selection, copy/paste, and line numbers.</p>
+                    <p class="lead fs-6">No documentation</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>is_interactive: Any = True</code>
+                </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>_properties: Dict[str, Dict[str, Any]] = {**UIElement._properties, 'text': {'name': 'text', 'key': 'text', 'type': str, 'editable': True, 'description': 'The text content.'}, 'line_numbers': {'name': 'line numbers', 'key': 'line_numbers', 'type': bool, 'editable': True, 'description': 'Show line numbers on the left.'}, 'word_wrap': {'name': 'word wrap', 'key': 'word_wrap', 'type': bool, 'editable': True, 'description': 'Automatically wrap long lines.'}, 'read_only': {'name': 'read only', 'key': 'read_only', 'type': bool, 'editable': True, 'description': 'If True, text cannot be edited.'}, 'tab_size': {'name': 'tab size', 'key': 'tab_size', 'type': int, 'editable': True, 'description': 'Number of spaces per tab.'}}</code>
                 </div></div>
@@ -170,6 +212,10 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textarea-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, text: str = '', font_size: int = 16, font_name: Optional[str] = None, line_numbers: bool = True, word_wrap: bool = True, read_only: bool = False, tab_size: int = 4, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textarea-_sm">
+                <code class="fs-6 fw-bold text-color-title">def _sm(self: Any) -> float</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textarea-line_height">
@@ -218,11 +264,11 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textarea-_get_text_width">
                 <code class="fs-6 fw-bold text-color-title">def _get_text_width(self: Any, text: str) -> int</code>
-                <div class="mt-2 text-muted small">Return the exact pixel width of a string using the current font.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textarea-_get_char_width_at_position">
                 <code class="fs-6 fw-bold text-color-title">def _get_char_width_at_position(self: Any, line: str, col: int) -> int</code>
-                <div class="mt-2 text-muted small">Return the pixel width of the character at the given column.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textarea-_get_cursor_screen_pos">
                 <code class="fs-6 fw-bold text-color-title">def _get_cursor_screen_pos(self: Any) -> Tuple[int, int]</code>
@@ -245,15 +291,15 @@
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textarea-copy">
-                <code class="fs-6 fw-bold text-color-title">def copy(self: Any) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def copy(self: Any) -> bool</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textarea-cut">
-                <code class="fs-6 fw-bold text-color-title">def cut(self: Any) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def cut(self: Any) -> bool</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textarea-paste">
-                <code class="fs-6 fw-bold text-color-title">def paste(self: Any) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def paste(self: Any) -> bool</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-textarea-select_all">
@@ -316,7 +362,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>

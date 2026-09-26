@@ -1,5 +1,5 @@
 """
-scenes_transitions_demo.py - Scene Transition System Demo
+scenes_transitions_demo.py - LunaEngine 0.2.6.2 Scene Transition Demo
 
 This demo demonstrates LunaEngine's new scene transition system.
 It features:
@@ -8,6 +8,8 @@ It features:
 - Dropdown to select transition effect (Fade, Slide, Zoom, etc.)
 - Button to trigger the transition
 - Title centered at the top of each scene
+- Uses ``engine.transition_to(name, effect=..., duration=...)`` with one-based
+  scene registration names and the public ``TransitionType`` enum.
 """
 
 import sys

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Manipulation - LunaEngine Lessons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (Ctrl+K)">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Lessons</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../index.html">Lessons</a></li><li class="breadcrumb-item active">Advanced</li><li class="breadcrumb-item active">Image Manipulation</li></ol></nav>
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 d-none d-md-block">
+                <div class="card shadow-sm sticky-top" style="top: 6rem; max-height: 80vh; overflow-y: auto;">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="bi bi-map me-2"></i>Course Track</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><a href="../basics/07-atlas-system.html" class="list-group-item list-group-item-action">7. Atlas System</a><a href="../basics/08-game-development-plan.html" class="list-group-item list-group-item-action">8. Game Development Plan</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/09-ui-layouts.html" class="list-group-item list-group-item-action">9. Ui Layouts</a><a href="../intermediate/10-tween-animations.html" class="list-group-item list-group-item-action">10. Tween Animations</a><a href="../intermediate/11-camera-movement.html" class="list-group-item list-group-item-action">11. Camera Movement</a><a href="../intermediate/12-particles-basics.html" class="list-group-item list-group-item-action">12. Particles Basics</a><a href="../intermediate/13-parallax-backgrounds.html" class="list-group-item list-group-item-action">13. Parallax Backgrounds</a><a href="../intermediate/14-audio-system.html" class="list-group-item list-group-item-action">14. Audio System</a><a href="../intermediate/15-custom-themes.html" class="list-group-item list-group-item-action">15. Custom Themes</a><a href="../intermediate/16-lunaengine-tools.html" class="list-group-item list-group-item-action">16. Lunaengine Tools</a><a href="../intermediate/17-scene-transitions.html" class="list-group-item list-group-item-action">17. Scene Transitions</a><a href="../intermediate/18-url-opening.html" class="list-group-item list-group-item-action">18. Url Opening</a><a href="../intermediate/19-clipboard.html" class="list-group-item list-group-item-action">19. Clipboard</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/17-advanced-ui.html" class="list-group-item list-group-item-action">17. Advanced Ui</a><a href="../advanced/18-camera-effects.html" class="list-group-item list-group-item-action">18. Camera Effects</a><a href="../advanced/19-opengl-effects.html" class="list-group-item list-group-item-action">19. Opengl Effects</a><a href="../advanced/20-advanced-ui.html" class="list-group-item list-group-item-action">20. Advanced Ui</a><a href="../advanced/20-particle-effects.html" class="list-group-item list-group-item-action">20. Particle Effects</a><a href="../advanced/21-camera-effects.html" class="list-group-item list-group-item-action">21. Camera Effects</a><a href="../advanced/21-sprite-animations.html" class="list-group-item list-group-item-action">21. Sprite Animations</a><a href="../advanced/22-combining-systems.html" class="list-group-item list-group-item-action">22. Combining Systems</a><a href="../advanced/22-opengl-effects.html" class="list-group-item list-group-item-action">22. Opengl Effects</a><a href="../advanced/23-particle-effects.html" class="list-group-item list-group-item-action">23. Particle Effects</a><a href="../advanced/23-ui-transitions.html" class="list-group-item list-group-item-action">23. Ui Transitions</a><a href="../advanced/24-image-manipulation.html" class="list-group-item list-group-item-action">24. Image Manipulation</a><a href="../advanced/24-sprite-animations.html" class="list-group-item list-group-item-action">24. Sprite Animations</a><a href="../advanced/25-audio-groups.html" class="list-group-item list-group-item-action">25. Audio Groups</a><a href="../advanced/25-combining-systems.html" class="list-group-item list-group-item-action">25. Combining Systems</a><a href="../advanced/26-hot-reload.html" class="list-group-item list-group-item-action">26. Hot Reload</a><a href="../advanced/26-ui-transitions.html" class="list-group-item list-group-item-action">26. Ui Transitions</a><a href="../advanced/27-image-manipulation.html" class="list-group-item list-group-item-action active">27. Image Manipulation</a><a href="../advanced/28-audio-groups.html" class="list-group-item list-group-item-action">28. Audio Groups</a><div class="mb-2"></div></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main content -->
+            <div class="col-md-9">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h3 mb-0">27. Image Manipulation</h1>
+                    </div>
+                    <div class="card-body markdown-content">
+                        # 24 - Image Manipulation
+
+LunaEngine v0.2.6.2 introduced `graphics.Image`, a surface-backed abstraction that handles scaling, alpha, filters, masks, and geometry transforms with lazy cached variants. If you're still calling `pygame.transform.*` in your render loop, this class replaces all of it.
+
+## Why Image exists
+
+A `pygame.Surface` is a raw pixel buffer. Every time you want it at a different size, tinted, or flipped, you call a transform and hope the result isn't recomputed next frame. `Image` wraps a Surface and:
+
+- Caches every variant by (revision, scale, size, alpha, flip, rotation, filters, mask)
+- Invalidates the cache when you change a property
+- Lazily computes — nothing is generated until `get_surface()` is called
+- Accepts `pygame.Surface`, a file path, another `Image`, or an `AtlasItem` as source
+
+```python
+from lunaengine.graphics import Image
+
+image = Image("assets/hero.png")
+# Nothing has been scaled, tinted, or transformed yet.
+surface = image.get_surface()  # first call generates and caches
+surface = image.get_surface()  # second call is a dict lookup
+```
+
+## Source types
+```python
+from lunaengine.graphics import Image
+from lunaengine.storage import AtlasItem
+
+img1 = Image(pygame_surface)                    # from a live Surface
+img2 = Image("assets/hero.png")                 # from a path
+img3 = Image(Path("assets/hero.png"))           # pathlib works too
+img4 = Image(atlas_item)                        # resolved via item.path
+img5 = Image(other_image)                       # copies the source Surface
+```
+``Image`` does not hold a reference to the file, only to the loaded Surface. If you need to reload from disk, create a new ``Image``.
+
+## Scale and size
+Two ways to size an image. **Explicit size wins** if both are set.
+```python
+# Normalized scale: 0.5 = half, 1.0 = 100%, 2.0 = double
+img = Image("hero.png").set_scale(0.5)
+
+# Non-uniform scale
+img.set_scale((2.0, 1.5))
+
+# Exact pixels (overrides scale)
+img.set_size((128, 128))
+
+# Remove the size override, fall back to scale
+img.set_size(None)
+```
+For UI elements this maps directly to the ``Ratio`` system - ``set_scale(ratio.x)`` gives you resolution-independent scaling without touching pixel values.
+
+## Alpha
+```python
+img.set_alpha(0.8)   # 80% opacity, 0.0 to 1.0
+```
+Alpha is stored as a float and applied at surface-generation time. The source Surface is never mutated.
+
+## Filters
+Filters stack. Each ``set_filter`` call appends to a list; the list is applied in order every time the surface is regenerated.
+```python
+img.set_filter("tint", color=(100, 150, 255), intensity=0.6)
+img.set_filter("grayscale")
+img.set_filter("brightness", amount=1.2)
+img.set_filter("contrast", factor=1.5)
+img.set_filter("replace_color", old=(255, 0, 0), new=(0, 255, 0), tolerance=20)
+img.set_filter("silhouette", color=(255, 255, 255))
+img.set_filter("paint", color=(200, 100, 50))
+```
+Supported filter names: ``tint``, ``replace``, ``replace_color``, ``paint``, ``silhouette``, ``grayscale``, ``brightness``, ``contrast``.
+To reset:
+
+```python
+img.clear_filters()
+```
+Filters are applied before geometry transforms (flip, rotate) and before scaling, so a tinted, flipped, scaled image is generated in the correct order.
+
+## Masks
+A mask is a second image whose alpha multiplies the source alpha, pixel by pixel.
+```python
+mask = Image("assets/vignette_mask.png")
+img.set_mask(mask)
+img.set_mask(None)  # remove
+```
+Masks are rescaled to match the source if their sizes differ. Use them for soft edges, spotlight effects, and shaped fades.
+
+## Flip and rotate
+```python
+img.set_flip(flip_x=True, flip_y=False)
+img.set_rotation(45, "Degree")   # counter-clockwise, "Degree" or "Radian"
+img.clear_transform()            # resets both
+```
+Rotation is applied after flip and before scaling. This means ``set_size((128, 128))`` always produces exactly 128×128, even if the rotation would have changed the bounding box.
+
+## Spritesheet integration
+``SpriteSheet.get_image_at_rect()`` and ``get_image_grid()`` return ``Image`` objects. The legacy ``get_sprite_at_rect()`` and ``get_sprite_grid()`` are unchanged and still return Surfaces.
+```python
+from lunaengine.graphics.spritesheet import SpriteSheet
+
+sheet = SpriteSheet("assets/hero.png")
+
+# Image-backed extraction
+hero = sheet.get_image_at_rect((0, 0, 64, 64))
+hero.set_scale(0.5)
+hero.set_filter("tint", color=(100, 150, 255), intensity=0.4)
+
+# Image grid
+walk_frame = sheet.get_image_grid(cell_size=(64, 64), grid_pos=(3, 0))
+
+# Legacy Surface API — still works
+surface = sheet.get_sprite_grid(cell_size=(64, 64), grid_pos=(3, 0))
+```
+Image variants from a spritesheet are cached. The source sheet is never modified. Wrapping a selected frame once and reusing it is the recommended pattern:
+```python
+frame_image = Image(animation.get_current_frame()).set_scale(2.0)
+renderer.draw_surface(frame_image.get_surface(), 320, 200)
+```
+Doing this every frame is fine because the variant is cached — the second call is a dict lookup, not a pixel transform.
+
+## Serialization
+``tostring()`` and ``fromstring()`` let you move an ``Image`` across process boundaries or store it inside a save file.
+```python
+data, size = img.tostring("RGBA")     # (str, (width, height))
+restored = Image.fromstring(data, size, "RGBA")
+```
+Accepted formats: ``P``, ``RGB``, ``RGBX``, ``RGBA``, ``ARGB``, ``BGRA``, ``RGBA_PREMULT``, ``ARGB_PREMULT``.
+
+## Rendering
+```python
+renderer.draw_surface(img.get_surface(), 100, 100)
+```
+
+Or via a UI element:
+```python
+from lunaengine.ui import ImageLabel
+
+label = ImageLabel(x=100, y=100, width=64, height=64)
+label.set_image(Image("assets/hero.png").set_scale(0.5))
+```
+
+``ImageLabel`` and ``ImageButton`` accept ``Image``, ``Surface``, paths, and ``AtlasItem`` uniformly.
+
+## Caching rules - what to watch for
+The cache key includes the current revision, scale, size, alpha, flip, rotation, filters, mask identity, and mask revision. Any ``set_*`` method bumps the revision and clears the cache. So:
+```python
+img = Image("hero.png").set_scale(0.5)
+a = img.get_surface()      # generates
+b = img.get_surface()      # cache hit
+img.set_alpha(0.7)         # cache cleared
+c = img.get_surface()      # regenerates at new alpha
+```
+Changing properties every frame re-generates the surface every frame. Set once, render many.
+
+## Common patterns
+
+**Damage flash without new assets:**
+```python
+flash = Image("hero.png").set_filter("silhouette", color=(255, 100, 100))
+# toggle visibility between flash and normal for 0.1s
+```
+
+**Poison tint**
+```python
+poisoned = Image("hero.png").set_filter("tint", color=(100, 255, 100), intensity=0.5)
+```
+
+**Frozen sprite (desaturated + blue):**
+```python
+frozen = (
+    Image("hero.png")
+    .set_filter("grayscale")
+    .set_filter("tint", color=(100, 150, 255), intensity=0.7)
+)
+```
+
+**Reuse across many entities** - build the ``Image`` once, share the reference. The cached variant is shared too:
+```python
+ENEMY_IMAGE = Image("enemy.png").set_scale(0.75)
+
+for enemy in enemies:
+    renderer.draw_surface(ENEMY_IMAGE.get_surface(), enemy.x, enemy.y)
+```
+
+## Surface vs Image - when to use which
+- **Surface** - direct ``pygame`` interop, custom pixel loops, anything the renderer expects as raw input.
+- **Image** - everything user-facing: sprites in a scene, UI elements, anything you scale/tint/flip.
+
+``Image`` forwards unknown attributes to its surface (``__getattr__``), so ``image.get_width()`` works. Use ``.source`` to reach the unmodified Surface if you need it.
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between">
+                            <a href='26-ui-transitions.html' class='btn btn-outline-primary'><i class='bi bi-arrow-left me-2'></i>Previous: Ui Transitions</a>
+                            <a href='28-audio-groups.html' class='btn btn-outline-primary'>Next: Audio Groups <i class='bi bi-arrow-right ms-2'></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="../index.html" class="btn btn-secondary"><i class="bi bi-journal-bookmark me-2"></i>All Lessons</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-09-26 12:41
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // Compute relative path to root search.html
+                    const path = window.location.pathname;
+                    const parts = path.split('/').filter(p => p && p !== '');
+                    // Remove file part if present
+                    let dirParts = parts;
+                    if (dirParts.length > 0 && dirParts[dirParts.length - 1].includes('.')) {
+                        dirParts = dirParts.slice(0, -1);
+                    }
+                    // Number of levels to go up to reach the directory containing search.html
+                    const levels = Math.max(0, dirParts.length - 1);
+                    const searchPath = '../'.repeat(levels) + 'search.html';
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+    <script src="../../theme.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+        if (typeof initSimpleMarkdownParser === 'function') initSimpleMarkdownParser();
+        else setTimeout(function() {
+            if (window.initSimpleMarkdownParser) window.initSimpleMarkdownParser();
+        }, 100);
+    });</script>
+</body>
+</html>

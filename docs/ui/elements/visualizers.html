@@ -48,7 +48,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">A versatile data visualization component: bar, pie, line, scatter, radar charts.<br>Supports gradients, animations, legend, and per‑element shadows.</p>
+                    <p class="lead fs-6">A versatile data visualization component: bar, pie, line, scatter, radar charts.<br>Supports gradients, animations, legend, and per-element shadows.<br><br>All hard-coded internal metrics (padding, spacing, line widths, point radii,<br>font sizes, shadow offsets) scale with the current ratio.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -59,6 +59,34 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, data: Optional[List[float]] = None, labels: Optional[List[str]] = None, colors: Optional[List[Tuple[int, int, int]]] = None, chart_type: Literal['bar', 'pie', 'line', 'scatter', 'radar'] = 'bar', orientation: Literal['vertical', 'horizontal'] = 'vertical', title: str = '', show_labels: bool = True, show_legend: bool = False, min_value: Optional[float] = None, max_value: Optional[float] = None, radar_max_value: float = 1.0, radar_axis_labels: Optional[List[str]] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_sm">
+                <code class="fs-6 fw-bold text-color-title">def _sm(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-padding">
+                <code class="fs-6 fw-bold text-color-title">def padding(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-bar_spacing">
+                <code class="fs-6 fw-bold text-color-title">def bar_spacing(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-line_width">
+                <code class="fs-6 fw-bold text-color-title">def line_width(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-point_radius">
+                <code class="fs-6 fw-bold text-color-title">def point_radius(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-shadow_offset">
+                <code class="fs-6 fw-bold text-color-title">def shadow_offset(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-shadow_offset">
+                <code class="fs-6 fw-bold text-color-title">def shadow_offset(self: Any, value: int) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_get_init_args">
@@ -103,11 +131,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_shadow_color">
                 <code class="fs-6 fw-bold text-color-title">def _shadow_color(self: Any, color: Tuple[int, int, int]) -> Tuple[int, int, int, int]</code>
-                <div class="mt-2 text-muted small">Return a shadow version of the color (darker, with alpha).</div>
-            </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-_draw_element_shadow">
-                <code class="fs-6 fw-bold text-color-title">def _draw_element_shadow(self: Any, renderer: OpenGLRenderer, draw_func: Any, *args: tuple, **kwargs: dict) -> Any</code>
-                <div class="mt-2 text-muted small">Draws a shadow version of an element by shifting it and using a shadow color.<br>The draw_func is called with offset coordinates and a shadow color.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-chartvisualizer-render">
                 <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
@@ -147,7 +171,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Real-time audio visualization element: bars, waveform, circle, particles, spectrum.<br>Connects to an OpenAL audio source.<br>Shadows are not applied to audio visualizers for performance and clarity.</p>
+                    <p class="lead fs-6">Real-time audio visualization element: bars, waveform, circle, particles, spectrum.<br>Internal spacing and stroke widths scale with the current ratio.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -158,6 +182,18 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, style: Literal['bars', 'waveform', 'circle', 'particles', 'spectrum'] = 'bars', source: Any = None, color_gradient: Optional[List[Tuple[int, int, int]]] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_sm">
+                <code class="fs-6 fw-bold text-color-title">def _sm(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-bar_spacing">
+                <code class="fs-6 fw-bold text-color-title">def bar_spacing(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-circle_thickness">
+                <code class="fs-6 fw-bold text-color-title">def circle_thickness(self: Any) -> int</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiovisualizer-_get_init_args">
@@ -262,7 +298,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">A tabular data display element with column headers, row styling, selection.<br>Fixed size and position; rows exceeding the height are clipped.<br>Supports images in cells (Path, AtlasItem, Icon, pygame.Surface).</p>
+                    <p class="lead fs-6">A tabular data display element with column headers, row styling, selection.<br>Fixed size and position; rows exceeding the height are clipped.<br>Supports images in cells (Path, AtlasItem, Icon, pygame.Surface).<br><br>Cell padding, image padding, grid line width, and the hard-coded font<br>size scale with the current ratio.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -273,6 +309,10 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int | float, y: int | float, width: int | float, height: int | float, columns: Optional[List[str]] = None, rows: Optional[List[List[Any]]] = None, header_height: int | float = 25, row_height: int | float = 25, cell_padding: int | float = 5, show_headers: bool = True, selection_enabled: bool = False, on_row_select: Optional[Callable[[int, List[Any]], None]] = None, odd_row_color: Optional[Tuple[int, int, int]] = None, even_row_color: Optional[Tuple[int, int, int]] = None, header_color: Optional[Tuple[int, int, int]] = None, header_text_color: Optional[Tuple[int, int, int]] = None, border_color: Optional[Tuple[int, int, int]] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_sm">
+                <code class="fs-6 fw-bold text-color-title">def _sm(self: Any) -> float</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_get_init_args">
@@ -293,11 +333,11 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_get_image_surface">
                 <code class="fs-6 fw-bold text-color-title">def _get_image_surface(self: Any, data: Any) -> Optional[pygame.Surface]</code>
-                <div class="mt-2 text-muted small">Convert various image-like objects into a pygame.Surface.<br>Returns None if the data is not an image or loading fails.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-_draw_cell_image">
                 <code class="fs-6 fw-bold text-color-title">def _draw_cell_image(self: Any, renderer: OpenGLRenderer, surf: pygame.Surface, cell_x: int, cell_y: int, cell_w: int, cell_h: int) -> None</code>
-                <div class="mt-2 text-muted small">Draw the image centered and scaled to fit inside the cell,<br>respecting cell_padding.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-table-add_column">
                 <code class="fs-6 fw-bold text-color-title">def add_column(self: Any, name: str) -> None</code>
@@ -375,7 +415,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>

@@ -55,7 +55,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icon-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, icon_filename: str, size: Optional[int] = None) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, icon_filename: str, size: Optional[int | float] = None) -> Any</code>
                 <div class="mt-2 text-muted small">Args:<br> &nbsp; &nbsp;icon_filename: name of the PNG file inside the icons folder.<br> &nbsp; &nbsp;size: if given, the icon will be scaled to a square of this size.<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If None, the original dimensions are kept.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icon-get_surface">
@@ -74,6 +74,10 @@
                 <code class="fs-6 fw-bold text-color-title">def clear_cache(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">Clear the internal cache, forcing fresh recolouring on next get_surface().</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icon-as_image">
+                <code class="fs-6 fw-bold text-color-title">def as_image(self: Any, color: Any = None) -> Any</code>
+                <div class="mt-2 text-muted small">Return this icon as a common Image while retaining get_surface compatibility.</div>
+            </div>
                 </div>
             </div>
         </div>
@@ -88,309 +92,385 @@
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>_ALL_ICON_NAMES: Any = ['success', 'info', 'warn', 'error', 'home', 'folder', 'plus', 'cross', 'search', 'settings', 'save', 'load', 'picture', 'unlock', 'lock', 'key', 'file', 'wrench', 'hammer', 'shield', 'engine', 'back', 'steam', 'discord', 'youtube', 'github', 'audio', 'calendar', 'clock', 'cloud', 'database', 'brain', 'link', 'location', 'microphone', 'mute', 'unmute', 'python', 'synchronize', 'camera', 'wifi', 'trash', 'undo', 'redo', 'cube', 'sphere', 'rocket', 'notification', 'dialog', 'controller', 'hide', 'show', 'ranking', 'icons', 'selection', 'puzzle', 'light', 'id', 'card', 'target', 'aim', 'click', 'debug', 'timer', 'anvil', 'browser', 'omega', 'pi', 'options', 'plane', 'documentation', 'fire']</code>
+                    <code>_ALL_ICON_NAMES: Any = ['success', 'info', 'warn', 'error', 'home', 'folder', 'plus', 'cross', 'search', 'settings', 'save', 'load', 'picture', 'unlock', 'lock', 'key', 'file', 'wrench', 'hammer', 'shield', 'engine', 'back', 'steam', 'discord', 'youtube', 'github', 'audio', 'calendar', 'clock', 'cloud', 'database', 'brain', 'link', 'location', 'microphone', 'mute', 'unmute', 'python', 'synchronize', 'camera', 'wifi', 'trash', 'undo', 'redo', 'cube', 'sphere', 'rocket', 'notification', 'dialog', 'controller', 'hide', 'show', 'ranking', 'icons', 'selection', 'puzzle', 'light', 'id', 'card', 'target', 'aim', 'click', 'debug', 'timer', 'anvil', 'browser', 'omega', 'pi', 'options', 'plane', 'documentation', 'fire', 'stop', 'video', 'wall', 'worldmap', 'build', 'circuit', 'cpu', 'document', 'image', 'maintenance', 'music', 'pause', 'play', 'mouse', 'network', 'keyboard', 'lightbulb']</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-success">
-                <code class="fs-6 fw-bold text-color-title">def SUCCESS(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def SUCCESS(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-info">
-                <code class="fs-6 fw-bold text-color-title">def INFO(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def INFO(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-warn">
-                <code class="fs-6 fw-bold text-color-title">def WARN(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def WARN(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-error">
-                <code class="fs-6 fw-bold text-color-title">def ERROR(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def ERROR(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-home">
-                <code class="fs-6 fw-bold text-color-title">def HOME(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def HOME(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-house">
-                <code class="fs-6 fw-bold text-color-title">def HOUSE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def HOUSE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-folder">
-                <code class="fs-6 fw-bold text-color-title">def FOLDER(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def FOLDER(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-plus">
-                <code class="fs-6 fw-bold text-color-title">def PLUS(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def PLUS(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-cross">
-                <code class="fs-6 fw-bold text-color-title">def CROSS(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def CROSS(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-search">
-                <code class="fs-6 fw-bold text-color-title">def SEARCH(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def SEARCH(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-settings">
-                <code class="fs-6 fw-bold text-color-title">def SETTINGS(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def SETTINGS(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-save">
-                <code class="fs-6 fw-bold text-color-title">def SAVE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def SAVE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-load">
-                <code class="fs-6 fw-bold text-color-title">def LOAD(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def LOAD(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-picture">
-                <code class="fs-6 fw-bold text-color-title">def PICTURE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def PICTURE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-unlock">
-                <code class="fs-6 fw-bold text-color-title">def UNLOCK(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def UNLOCK(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-lock">
-                <code class="fs-6 fw-bold text-color-title">def LOCK(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def LOCK(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-key">
-                <code class="fs-6 fw-bold text-color-title">def KEY(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def KEY(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-file">
-                <code class="fs-6 fw-bold text-color-title">def FILE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def FILE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-wrench">
-                <code class="fs-6 fw-bold text-color-title">def WRENCH(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def WRENCH(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-hammer">
-                <code class="fs-6 fw-bold text-color-title">def HAMMER(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def HAMMER(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-shield">
-                <code class="fs-6 fw-bold text-color-title">def SHIELD(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def SHIELD(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-engine">
-                <code class="fs-6 fw-bold text-color-title">def ENGINE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def ENGINE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-back">
-                <code class="fs-6 fw-bold text-color-title">def BACK(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def BACK(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-steam">
-                <code class="fs-6 fw-bold text-color-title">def STEAM(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def STEAM(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-discord">
-                <code class="fs-6 fw-bold text-color-title">def DISCORD(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def DISCORD(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-youtube">
-                <code class="fs-6 fw-bold text-color-title">def YOUTUBE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def YOUTUBE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-github">
-                <code class="fs-6 fw-bold text-color-title">def GITHUB(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def GITHUB(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-audio">
-                <code class="fs-6 fw-bold text-color-title">def AUDIO(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def AUDIO(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-calendar">
-                <code class="fs-6 fw-bold text-color-title">def CALENDAR(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def CALENDAR(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-clock">
-                <code class="fs-6 fw-bold text-color-title">def CLOCK(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def CLOCK(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-cloud">
-                <code class="fs-6 fw-bold text-color-title">def CLOUD(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def CLOUD(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-database">
-                <code class="fs-6 fw-bold text-color-title">def DATABASE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def DATABASE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-brain">
-                <code class="fs-6 fw-bold text-color-title">def BRAIN(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def BRAIN(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-link">
-                <code class="fs-6 fw-bold text-color-title">def LINK(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def LINK(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-location">
-                <code class="fs-6 fw-bold text-color-title">def LOCATION(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def LOCATION(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-microphone">
-                <code class="fs-6 fw-bold text-color-title">def MICROPHONE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def MICROPHONE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-mute">
-                <code class="fs-6 fw-bold text-color-title">def MUTE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def MUTE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-unmute">
-                <code class="fs-6 fw-bold text-color-title">def UNMUTE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def UNMUTE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-python">
-                <code class="fs-6 fw-bold text-color-title">def PYTHON(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def PYTHON(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-synchronize">
-                <code class="fs-6 fw-bold text-color-title">def SYNCHRONIZE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def SYNCHRONIZE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-camera">
-                <code class="fs-6 fw-bold text-color-title">def CAMERA(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def CAMERA(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-wifi">
-                <code class="fs-6 fw-bold text-color-title">def WIFI(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def WIFI(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-trash">
-                <code class="fs-6 fw-bold text-color-title">def TRASH(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def TRASH(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-undo">
-                <code class="fs-6 fw-bold text-color-title">def UNDO(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def UNDO(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-redo">
-                <code class="fs-6 fw-bold text-color-title">def REDO(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def REDO(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-cube">
-                <code class="fs-6 fw-bold text-color-title">def CUBE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def CUBE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-sphere">
-                <code class="fs-6 fw-bold text-color-title">def SPHERE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def SPHERE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-rocket">
-                <code class="fs-6 fw-bold text-color-title">def ROCKET(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def ROCKET(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-notification">
-                <code class="fs-6 fw-bold text-color-title">def NOTIFICATION(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def NOTIFICATION(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-dialog">
-                <code class="fs-6 fw-bold text-color-title">def DIALOG(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def DIALOG(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-controller">
-                <code class="fs-6 fw-bold text-color-title">def CONTROLLER(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def CONTROLLER(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-hide">
-                <code class="fs-6 fw-bold text-color-title">def HIDE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def HIDE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-show">
-                <code class="fs-6 fw-bold text-color-title">def SHOW(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def SHOW(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-ranking">
-                <code class="fs-6 fw-bold text-color-title">def RANKING(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def RANKING(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-icons">
-                <code class="fs-6 fw-bold text-color-title">def ICONS(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def ICONS(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-selection">
-                <code class="fs-6 fw-bold text-color-title">def SELECTION(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def SELECTION(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-puzzle">
-                <code class="fs-6 fw-bold text-color-title">def PUZZLE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def PUZZLE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-light">
-                <code class="fs-6 fw-bold text-color-title">def LIGHT(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def LIGHT(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-id">
-                <code class="fs-6 fw-bold text-color-title">def ID(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def ID(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-card">
-                <code class="fs-6 fw-bold text-color-title">def CARD(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def CARD(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-target">
-                <code class="fs-6 fw-bold text-color-title">def TARGET(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def TARGET(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-aim">
-                <code class="fs-6 fw-bold text-color-title">def AIM(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def AIM(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-click">
-                <code class="fs-6 fw-bold text-color-title">def CLICK(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def CLICK(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-debug">
-                <code class="fs-6 fw-bold text-color-title">def DEBUG(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def DEBUG(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-anvil">
-                <code class="fs-6 fw-bold text-color-title">def ANVIL(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def ANVIL(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-timer">
-                <code class="fs-6 fw-bold text-color-title">def TIMER(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def TIMER(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-timer">
-                <code class="fs-6 fw-bold text-color-title">def TIMER(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def TIMER(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-pi">
-                <code class="fs-6 fw-bold text-color-title">def PI(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def PI(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-options">
-                <code class="fs-6 fw-bold text-color-title">def OPTIONS(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def OPTIONS(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-plane">
-                <code class="fs-6 fw-bold text-color-title">def PLANE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def PLANE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-documentation">
-                <code class="fs-6 fw-bold text-color-title">def DOCUMENTATION(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def DOCUMENTATION(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-fire">
-                <code class="fs-6 fw-bold text-color-title">def FIRE(cls: Any, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def FIRE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-stop">
+                <code class="fs-6 fw-bold text-color-title">def STOP(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-video">
+                <code class="fs-6 fw-bold text-color-title">def VIDEO(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-wall">
+                <code class="fs-6 fw-bold text-color-title">def WALL(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-worldmap">
+                <code class="fs-6 fw-bold text-color-title">def WORLDMAP(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-build">
+                <code class="fs-6 fw-bold text-color-title">def BUILD(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-circuit">
+                <code class="fs-6 fw-bold text-color-title">def CIRCUIT(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-cpu">
+                <code class="fs-6 fw-bold text-color-title">def CPU(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-document">
+                <code class="fs-6 fw-bold text-color-title">def DOCUMENT(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-image">
+                <code class="fs-6 fw-bold text-color-title">def IMAGE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-maintenance">
+                <code class="fs-6 fw-bold text-color-title">def MAINTENANCE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-music">
+                <code class="fs-6 fw-bold text-color-title">def MUSIC(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-pause">
+                <code class="fs-6 fw-bold text-color-title">def PAUSE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-play">
+                <code class="fs-6 fw-bold text-color-title">def PLAY(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-mouse">
+                <code class="fs-6 fw-bold text-color-title">def MOUSE(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-network">
+                <code class="fs-6 fw-bold text-color-title">def NETWORK(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-keyboard">
+                <code class="fs-6 fw-bold text-color-title">def KEYBOARD(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-browser">
+                <code class="fs-6 fw-bold text-color-title">def BROWSER(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-lightbulb">
+                <code class="fs-6 fw-bold text-color-title">def LIGHTBULB(cls: Any, size: Optional[int | float] = None) -> Icon</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-omega">
+                <code class="fs-6 fw-bold text-color-title">def OMEGA(cls: Any, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-get_icon">
-                <code class="fs-6 fw-bold text-color-title">def get_icon(cls: Any, name: str, size: Optional[int] = None) -> Icon</code>
+                <code class="fs-6 fw-bold text-color-title">def get_icon(cls: Any, name: str, size: Optional[int | float] = None) -> Icon</code>
                 <div class="mt-2 text-muted small">Get an icon by its name (case‑insensitive).<br><br>Example:<br> &nbsp; &nbsp;icon = Icons.get_icon(&#x27;home&#x27;, size=32)</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-get_all">
-                <code class="fs-6 fw-bold text-color-title">def get_all(cls: Any, size: Optional[int] = None) -> List[Icon]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_all(cls: Any, size: Optional[int | float] = None) -> List[Icon]</code>
                 <div class="mt-2 text-muted small">Return a list of Icon instances for all built‑in icons, all at the given size.<br>Order is: success, info, warn, error, home, folder, plus, cross,<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;search, settings, save, load, picture.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-get_all_dict">
-                <code class="fs-6 fw-bold text-color-title">def get_all_dict(cls: Any, size: Optional[int] = None) -> Dict[str, Icon]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_all_dict(cls: Any, size: Optional[int | float] = None) -> Dict[str, Icon]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-icons-get_all_names">
@@ -421,7 +501,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>

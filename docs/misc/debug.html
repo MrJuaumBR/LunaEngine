@@ -366,6 +366,42 @@
                 </div>
             </div>
         </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-_consolecommandtextarea">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class _ConsoleCommandTextArea</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">TextArea command bar: Enter inserts a newline; Ctrl+Enter executes.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-_consolecommandtextarea-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, *args: tuple, **kwargs: dict) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-_consolecommandtextarea-on_text_input">
+                <code class="fs-6 fw-bold text-color-title">def on_text_input(self: Any, event: pygame.event.Event) -> None</code>
+                <div class="mt-2 text-muted small">Ignore TEXTINPUT; console insertion is owned by ``on_key_down``.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-_consolecommandtextarea-on_key_down">
+                <code class="fs-6 fw-bold text-color-title">def on_key_down(self: Any, event: pygame.event.Event) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-_consolecommandtextarea-on_key_up">
+                <code class="fs-6 fw-bold text-color-title">def on_key_up(self: Any, event: pygame.event.Event) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-_consolecommandtextarea-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, input_state: InputState) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
         <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-liveinspector">
             <div class="card-header bg-success text-white py-3">
                 <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class LiveInspector</h3>
@@ -399,6 +435,22 @@
                 <code class="fs-6 fw-bold text-color-title">def close(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_update_titlebar_rects">
+                <code class="fs-6 fw-bold text-color-title">def _update_titlebar_rects(self: Any) -> pygame.Rect</code>
+                <div class="mt-2 text-muted small">Position titlebar controls and return the absolute header rect.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_handle_titlebar_input">
+                <code class="fs-6 fw-bold text-color-title">def _handle_titlebar_input(self: Any, input_state: InputState, header: pygame.Rect) -> bool</code>
+                <div class="mt-2 text-muted small">Handle inspector controls before UiFrame can start a drag.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-update">
+                <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, input_state: InputState) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-toggle_fixed">
                 <code class="fs-6 fw-bold text-color-title">def toggle_fixed(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -421,6 +473,14 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_setup_custom_tab">
                 <code class="fs-6 fw-bold text-color-title">def _setup_custom_tab(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_console_namespace">
+                <code class="fs-6 fw-bold text-color-title">def _console_namespace(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Build the intentionally small, import-free console namespace.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_execute_console_command">
+                <code class="fs-6 fw-bold text-color-title">def _execute_console_command(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_setup_system_tab">
@@ -473,6 +533,10 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_setup_settings_tab">
                 <code class="fs-6 fw-bold text-color-title">def _setup_settings_tab(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_set_hot_reload">
+                <code class="fs-6 fw-bold text-color-title">def _set_hot_reload(self: Any, enabled: bool) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_force_kill">
@@ -599,6 +663,14 @@
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, input_state: InputState) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_render_outline">
+                <code class="fs-6 fw-bold text-color-title">def _render_outline(self: Any, renderer: Any, element: Any, color: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-render">
+                <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-liveinspector-_redirect_console_output">
                 <code class="fs-6 fw-bold text-color-title">def _redirect_console_output(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -675,7 +747,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>

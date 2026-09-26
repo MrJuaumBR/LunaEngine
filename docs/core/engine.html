@@ -92,13 +92,17 @@
                 <code class="fs-6 fw-bold text-color-title">def _auto_discover_assets(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">Scan the atlas root for common asset folders and add them automatically.</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-update_ratio">
-                <code class="fs-6 fw-bold text-color-title">def update_ratio(self: Any, base_width: int | float, base_height: int | float) -> Any</code>
-                <div class="mt-2 text-muted small">Update the aspect ratio scaling factor.</div>
-            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-ratio">
                 <code class="fs-6 fw-bold text-color-title">def ratio(self: Any) -> Ratio</code>
                 <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-ratio">
+                <code class="fs-6 fw-bold text-color-title">def ratio(self: Any, value: Ratio) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-update_ratio">
+                <code class="fs-6 fw-bold text-color-title">def update_ratio(self: Any, base_width: int | float, base_height: int | float) -> Any</code>
+                <div class="mt-2 text-muted small">Update the aspect ratio scaling factor.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-initialize">
                 <code class="fs-6 fw-bold text-color-title">def initialize(self: Any) -> Any</code>
@@ -172,16 +176,60 @@
                 <code class="fs-6 fw-bold text-color-title">def set_clipboard(self: Any, text: Any) -> bool</code>
                 <div class="mt-2 text-muted small">Set text in the system clipboard; return False if unavailable.</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_module_path">
+                <code class="fs-6 fw-bold text-color-title">def _module_path(self: Any, module: types.ModuleType) -> Optional[Path]</code>
+                <div class="mt-2 text-muted small">Return a reloadable source path for an imported module.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_resolve_watch_module">
+                <code class="fs-6 fw-bold text-color-title">def _resolve_watch_module(self: Any, ref: Any) -> Tuple[types.ModuleType, Path]</code>
+                <div class="mt-2 text-muted small">Resolve a module, import name, source path, or path-backed AtlasItem.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-watch_module">
+                <code class="fs-6 fw-bold text-color-title">def watch_module(self: Any, ref: Any) -> str</code>
+                <div class="mt-2 text-muted small">Watch a Python module for stable source changes and reload it.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-watch_scene">
+                <code class="fs-6 fw-bold text-color-title">def watch_scene(self: Any, scene_ref: Any) -> str</code>
+                <div class="mt-2 text-muted small">Watch a registered scene name or Scene subclass for source changes.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_scene_reload">
+                <code class="fs-6 fw-bold text-color-title">def on_scene_reload(self: Any, name: str, callback: Callable[[Scene], None]) -> None</code>
+                <div class="mt-2 text-muted small">Register a callback receiving the newly constructed scene instance.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-on_module_reload">
+                <code class="fs-6 fw-bold text-color-title">def on_module_reload(self: Any, name: str, callback: Callable[[types.ModuleType], None]) -> None</code>
+                <div class="mt-2 text-muted small">Register a callback receiving a reloaded module.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_log_hot_reload_error">
+                <code class="fs-6 fw-bold text-color-title">def _log_hot_reload_error(self: Any, message: str) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_reload_module">
+                <code class="fs-6 fw-bold text-color-title">def _reload_module(self: Any, name: str, record: Dict[str, Any]) -> Optional[types.ModuleType]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_reload_scene">
+                <code class="fs-6 fw-bold text-color-title">def _reload_scene(self: Any, scene_name: str, record: Dict[str, Any], module: types.ModuleType, *args: tuple, **kwargs: dict) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_poll_hot_reload">
+                <code class="fs-6 fw-bold text-color-title">def _poll_hot_reload(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Timer callback: reload only after a changed mtime is stable once.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-add_scene">
                 <code class="fs-6 fw-bold text-color-title">def add_scene(self: Any, name: str, scene_class: Type[Scene], *args: tuple, **kwargs: dict) -> Any</code>
                 <div class="mt-2 text-muted small">Add a scene to the engine by class (the engine will instantiate it).<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene<br> &nbsp; &nbsp;scene_class (Type[Scene]): The scene class to instantiate<br> &nbsp; &nbsp;*args: Arguments to pass to scene constructor<br> &nbsp; &nbsp;**kwargs: Keyword arguments to pass to scene constructor</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-remove_scene">
+                <code class="fs-6 fw-bold text-color-title">def remove_scene(self: Any, ref: Any) -> bool</code>
+                <div class="mt-2 text-muted small">Remove a registered scene by name or by scene subclass.<br><br>``ref`` may be a scene name (``str``), or a ``Scene`` subclass; in the<br>latter case the first registered ``isinstance`` match is removed. &nbsp;If<br>the removed scene is active, ``current_scene`` is set to ``None`` and<br>the engine does not automatically switch to another scene.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_switch_scene_immediate">
-                <code class="fs-6 fw-bold text-color-title">def _switch_scene_immediate(self: Any, name: str) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def _switch_scene_immediate(self: Any, name: str, *args: tuple, **kwargs: dict) -> Any</code>
                 <div class="mt-2 text-muted small">Immediately switch to a scene without any transition effect.<br>This is the core logic extracted from the old set_scene.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-set_scene">
-                <code class="fs-6 fw-bold text-color-title">def set_scene(self: Any, name: str, effect: Optional[TransitionType] = None, duration: float = 0.5) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def set_scene(self: Any, name: str, effect: Optional[TransitionType] = None, duration: float = 0.5, *args: tuple, **kwargs: dict) -> Any</code>
                 <div class="mt-2 text-muted small">Set the current active scene, optionally with a transition effect.<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene to set as current.<br> &nbsp; &nbsp;effect (TransitionType, optional): Type of transition effect.<br> &nbsp; &nbsp; &nbsp; &nbsp;If None or TransitionType.NONE, switch immediately.<br> &nbsp; &nbsp;duration (float): Duration of the transition in seconds (default 0.5).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-find_event_handlers">
@@ -280,6 +328,14 @@
                 <code class="fs-6 fw-bold text-color-title">def _rebuild_ui_layers(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Rebuild the UI layer manager from the current scene&#x27;s UI elements.</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_update_cursor">
+                <code class="fs-6 fw-bold text-color-title">def _update_cursor(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">Apply the topmost UI element&#x27;s pressed/hover/default cursor.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-set_cursor_state">
+                <code class="fs-6 fw-bold text-color-title">def set_cursor_state(self: Any, name: str = 'arrow') -> bool</code>
+                <div class="mt-2 text-muted small">Set the cursor directly through the engine&#x27;s CursorManager.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_find_scrollable_under_mouse">
                 <code class="fs-6 fw-bold text-color-title">def _find_scrollable_under_mouse(self: Any, elements: Any, mouse_pos: Any) -> Any</code>
                 <div class="mt-2 text-muted small">Recursively search UI elements (and their children) for the topmost<br>visible, enabled element that has an &#x27;on_scroll&#x27; method and contains the mouse.</div>
@@ -293,7 +349,7 @@
                 <div class="mt-2 text-muted small">Main game loop.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-transition_to">
-                <code class="fs-6 fw-bold text-color-title">def transition_to(self: Any, scene_name: str, effect: TransitionType = TransitionType.NONE, duration: float = 0.5) -> Any</code>
+                <code class="fs-6 fw-bold text-color-title">def transition_to(self: Any, scene_name: str, effect: TransitionType = TransitionType.NONE, duration: float = 0.5, *args: tuple, **kwargs: dict) -> Any</code>
                 <div class="mt-2 text-muted small">Start a transition using immutable snapshots of both scenes.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-lunaengine-_capture_scene_surface">
@@ -600,7 +656,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>

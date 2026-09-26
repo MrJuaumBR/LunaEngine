@@ -5,8 +5,8 @@
       "title": "Core",
       "description": "Core framework systems - Engine/LunaEngine, Window, Renderer",
       "link": "core/index.html",
-      "files_count": 4,
-      "classes_count": 9,
+      "files_count": 5,
+      "classes_count": 11,
       "functions_count": 0
     },
     {
@@ -14,17 +14,17 @@
       "title": "Ui",
       "description": "User interface components - Buttons, Layouts, Themes",
       "link": "ui/index.html",
-      "files_count": 18,
-      "classes_count": 67,
-      "functions_count": 13
+      "files_count": 19,
+      "classes_count": 83,
+      "functions_count": 25
     },
     {
       "name": "graphics",
       "title": "Graphics",
       "description": "Graphics and rendering - Sprites, Lighting, Particles",
       "link": "graphics/index.html",
-      "files_count": 5,
-      "classes_count": 30,
+      "files_count": 6,
+      "classes_count": 31,
       "functions_count": 14
     },
     {
@@ -32,18 +32,18 @@
       "title": "Utils",
       "description": "Utility functions - Performance, Math, Threading",
       "link": "utils/index.html",
-      "files_count": 5,
+      "files_count": 7,
       "classes_count": 11,
-      "functions_count": 26
+      "functions_count": 32
     },
     {
       "name": "backend",
       "title": "Backend",
       "description": "Renderer backends - OpenGL, Pygame",
       "link": "backend/index.html",
-      "files_count": 7,
-      "classes_count": 46,
-      "functions_count": 7
+      "files_count": 6,
+      "classes_count": 40,
+      "functions_count": 3
     },
     {
       "name": "misc",
@@ -51,7 +51,7 @@
       "description": "Miscellaneous functions - Bones, Icons",
       "link": "misc/index.html",
       "files_count": 2,
-      "classes_count": 15,
+      "classes_count": 16,
       "functions_count": 0
     },
     {
@@ -107,12 +107,20 @@
       "methods_count": 4
     },
     {
+      "name": "AudioChannelGroup",
+      "module": "core",
+      "file": "audio.py",
+      "description": "Hierarchical logical bus for channel volume, mute, and effects.",
+      "link": "core/audio.html#class-audiochannelgroup",
+      "methods_count": 9
+    },
+    {
       "name": "AudioChannel",
       "module": "core",
       "file": "audio.py",
       "description": "Named audio channel with individual volume, pitch, pan, balance, and curves.<br>Now supports effects: reverb, echo (via effect slot if EFX available).",
       "link": "core/audio.html#class-audiochannel",
-      "methods_count": 24
+      "methods_count": 25
     },
     {
       "name": "AudioManager",
@@ -120,7 +128,15 @@
       "file": "audio.py",
       "description": "Main audio manager with named channels, curves, device selection, and event system.<br>Now includes master volume control and global effect toggles.",
       "link": "core/audio.html#class-audiomanager",
-      "methods_count": 20
+      "methods_count": 25
+    },
+    {
+      "name": "CursorManager",
+      "module": "core",
+      "file": "cursor.py",
+      "description": "Resolve named UI cursor states and image-backed custom cursors.",
+      "link": "core/cursor.html#class-cursormanager",
+      "methods_count": 6
     },
     {
       "name": "LunaEngine",
@@ -128,7 +144,7 @@
       "file": "engine.py",
       "description": "Main game engine class for LunaEngine.<br><br>This class manages the entire game lifecycle including initialization,<br>scene management, event handling, rendering, and shutdown.<br><br>Attributes:<br> &nbsp; &nbsp;title (str): Window title<br> &nbsp; &nbsp;width (int): Window width<br> &nbsp; &nbsp;height (int): Window height<br> &nbsp; &nbsp;fullscreen (bool): Whether to start in fullscreen mode<br> &nbsp; &nbsp;running (bool): Whether the engine is running<br> &nbsp; &nbsp;clock (pygame.time.Clock): Game clock for FPS control<br> &nbsp; &nbsp;scenes (Dict[str, Scene]): Registered scenes<br> &nbsp; &nbsp;current_scene (Scene): Currently active scene<br> &nbsp; &nbsp;atlas (Atlas): Resource catalog for all assets<br> &nbsp; &nbsp;bundle_path (Optional[Path]): Path to resource bundle (.res) if any",
       "link": "core/engine.html#class-lunaengine",
-      "methods_count": 123
+      "methods_count": 137
     },
     {
       "name": "Scene",
@@ -136,7 +152,7 @@
       "file": "scene.py",
       "description": "No documentation",
       "link": "core/scene.html#class-scene",
-      "methods_count": 32
+      "methods_count": 33
     },
     {
       "name": "Window",
@@ -152,7 +168,7 @@
       "file": "layer_manager.py",
       "description": "Manages UI elements across different render layers to ensure proper<br>visual hierarchy and interaction.",
       "link": "ui/layer_manager.html#class-uilayermanager",
-      "methods_count": 11
+      "methods_count": 17
     },
     {
       "name": "AnimationTypes",
@@ -209,6 +225,94 @@
       "description": "No documentation",
       "link": "ui/layout.html#class-animation",
       "methods_count": 0
+    },
+    {
+      "name": "Overlay",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Base class for UI overlays with lifecycle, fade, positioning, and cleanup.",
+      "link": "ui/modals.html#class-overlay",
+      "methods_count": 8
+    },
+    {
+      "name": "TooltipConfig",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Configuration class for tooltip appearance and behavior.<br>Allows easy customization of tooltips without passing multiple parameters.",
+      "link": "ui/modals.html#class-tooltipconfig",
+      "methods_count": 1
+    },
+    {
+      "name": "Tooltip",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Tooltip element that displays helpful information when hovering over UI elements.<br>Automatically adjusts position to stay within screen boundaries.",
+      "link": "ui/modals.html#class-tooltip",
+      "methods_count": 11
+    },
+    {
+      "name": "UITooltipManager",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Manages tooltips globally to ensure proper display and positioning.<br>Supports multiple tooltips for different UI elements.",
+      "link": "ui/modals.html#class-uitooltipmanager",
+      "methods_count": 8
+    },
+    {
+      "name": "NotificationType",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Types of notifications with different visual styles.",
+      "link": "ui/modals.html#class-notificationtype",
+      "methods_count": 0
+    },
+    {
+      "name": "NotificationPosition",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Pre-defined notification positions.",
+      "link": "ui/modals.html#class-notificationposition",
+      "methods_count": 0
+    },
+    {
+      "name": "NotificationStyle",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Style configuration for different notification types.",
+      "link": "ui/modals.html#class-notificationstyle",
+      "methods_count": 1
+    },
+    {
+      "name": "NotificationConfig",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "No documentation",
+      "link": "ui/modals.html#class-notificationconfig",
+      "methods_count": 1
+    },
+    {
+      "name": "Notification",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Single notification element with advanced positioning and animations.",
+      "link": "ui/modals.html#class-notification",
+      "methods_count": 15
+    },
+    {
+      "name": "NotificationManager",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Manages all notifications globally with queue support.<br>Handles positioning, stacking, and lifecycle of notifications.",
+      "link": "ui/modals.html#class-notificationmanager",
+      "methods_count": 20
+    },
+    {
+      "name": "DialogBox",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "RPG-style dialog box with multiple display styles and text animations.<br>Supports typewriter effect, fade-in, and character-by-character display.<br><br>Internal metrics (padding, name_padding, corner radius, indicator size,<br>shadow distance, and the hard-coded font sizes) scale with the current<br>ratio because the user cannot change them.",
+      "link": "ui/modals.html#class-dialogbox",
+      "methods_count": 20
     },
     {
       "name": "NotificationType",
@@ -328,7 +432,7 @@
       "file": "themes.py",
       "description": "Manages complete UI themes with local/remote loading.",
       "link": "ui/themes.html#class-thememanager",
-      "methods_count": 40
+      "methods_count": 41
     },
     {
       "name": "TooltipConfig",
@@ -454,7 +558,7 @@
       "name": "Button",
       "module": "ui",
       "file": "buttons.py",
-      "description": "A clickable button with text and theming support.",
+      "description": "No documentation",
       "link": "ui/elements/buttons.html#class-button",
       "methods_count": 21
     },
@@ -462,7 +566,7 @@
       "name": "ImageButton",
       "module": "ui",
       "file": "buttons.py",
-      "description": "A clickable button that displays an image instead of text.<br>Supports Icon objects and theme shadows.",
+      "description": "No documentation",
       "link": "ui/elements/buttons.html#class-imagebutton",
       "methods_count": 11
     },
@@ -488,7 +592,7 @@
       "file": "containers.py",
       "description": "A container frame that can have an optional draggable header with title and icon.<br>Supports automatic vertical arrangement of children when their sizes change.",
       "link": "ui/elements/containers.html#class-uiframe",
-      "methods_count": 23
+      "methods_count": 29
     },
     {
       "name": "ScrollingFrame",
@@ -496,15 +600,15 @@
       "file": "containers.py",
       "description": "No documentation",
       "link": "ui/elements/containers.html#class-scrollingframe",
-      "methods_count": 20
+      "methods_count": 21
     },
     {
       "name": "Tabination",
       "module": "ui",
       "file": "containers.py",
-      "description": "Tabbed container. Fully optimized with cached metrics for vertical mode.<br>Supports icons on tabs with left/right positioning for horizontal orientation.",
+      "description": "Tabbed container. Fully optimized with cached metrics for vertical mode.<br>Supports icons on tabs with left/right positioning for horizontal orientation.<br><br>Ratio behavior:<br> &nbsp; &nbsp;tab_height / tab_width: if the caller does not pass an explicit value,<br> &nbsp; &nbsp;the defaults (30/100 for horizontal, 80/120 for vertical) are multiplied<br> &nbsp; &nbsp;by the current ratio. If the caller DOES pass a value, that value is used<br> &nbsp; &nbsp;as-is (no ratio applied).<br> &nbsp; &nbsp;Padding, spacing, arrow size and scroll speed are always scaled by the<br> &nbsp; &nbsp;ratio (dynamic \u2014 they follow the current ratio at render/update time).",
       "link": "ui/elements/containers.html#class-tabination",
-      "methods_count": 32
+      "methods_count": 40
     },
     {
       "name": "Pagination",
@@ -512,21 +616,21 @@
       "file": "containers.py",
       "description": "Page navigation container (does not use auto_arrange_y).",
       "link": "ui/elements/containers.html#class-pagination",
-      "methods_count": 16
+      "methods_count": 20
     },
     {
-      "name": "Expandable",
+      "name": "Accordion",
       "module": "ui",
       "file": "containers.py",
-      "description": "Expandable panel that toggles visibility of its content frame.<br>The content frame can have its own auto_arrange_y.",
-      "link": "ui/elements/containers.html#class-expandable",
-      "methods_count": 10
+      "description": "Accordion panel with animated height and single-open sibling behavior.<br><br>The header toggles a content panel. By default, opening one accordion<br>collapses its siblings, matching the common accordion interaction model.<br>``allow_multiple=True`` opts into independent panels.",
+      "link": "ui/elements/containers.html#class-accordion",
+      "methods_count": 12
     },
     {
       "name": "ColorPicker",
       "module": "ui",
       "file": "containers.py",
-      "description": "A color picker widget that expands/collapses to show sliders and hex input.<br>Inherits from UiFrame so that when its height changes (on expand/collapse),<br>any parent with auto_arrange_y=True will automatically reposition its children.<br><br>Attributes:<br> &nbsp; &nbsp;color (Color): Currently selected color.<br> &nbsp; &nbsp;expanded (bool): Whether the picker is expanded.<br> &nbsp; &nbsp;color_system (str): &#x27;rgb&#x27;, &#x27;hsl&#x27;, or &#x27;hsv&#x27;.<br> &nbsp; &nbsp;show_alpha (bool): If True, an alpha slider is shown.<br> &nbsp; &nbsp;on_color_changed (Callable[[Color], None]): Callback when color changes.",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#class-colorpicker",
       "methods_count": 28
     },
@@ -536,15 +640,15 @@
       "file": "containers.py",
       "description": "A custom drawable area with an internal surface.<br>Supports border and child positioning modes.",
       "link": "ui/elements/containers.html#class-canvas",
-      "methods_count": 6
+      "methods_count": 7
     },
     {
       "name": "DialogBox",
       "module": "ui",
       "file": "dialogs.py",
-      "description": "RPG-style dialog box with multiple display styles and text animations.<br>Supports typewriter effect, fade-in, and character-by-character display.",
+      "description": "RPG-style dialog box with multiple display styles and text animations.<br>Supports typewriter effect, fade-in, and character-by-character display.<br><br>Internal metrics (padding, name_padding, corner radius, indicator size,<br>shadow distance, and the hard-coded font sizes) scale with the current<br>ratio because the user cannot change them.",
       "link": "ui/elements/dialogs.html#class-dialogbox",
-      "methods_count": 11
+      "methods_count": 20
     },
     {
       "name": "RichTextSegment",
@@ -587,18 +691,58 @@
       "methods_count": 15
     },
     {
+      "name": "Clock",
+      "module": "ui",
+      "file": "misc.py",
+      "description": "A clock UI element that can display both analog and digital time.<br><br>Supports both 12-hour and 24-hour formats, real-time or custom time,<br>and various customization options.",
+      "link": "ui/elements/misc.html#class-clock",
+      "methods_count": 20
+    },
+    {
+      "name": "ProgressBar",
+      "module": "ui",
+      "file": "misc.py",
+      "description": "A progress bar widget that displays a value as a filled bar.<br>Supports horizontal/vertical orientation and a &#x27;soundpad&#x27; segmented style.<br><br>Internal metrics (segment gap, border widths, corner radii, shadow distances)<br>scale with the current ratio. User-supplied values are respected verbatim.",
+      "link": "ui/elements/misc.html#class-progressbar",
+      "methods_count": 17
+    },
+    {
+      "name": "ChartVisualizer",
+      "module": "ui",
+      "file": "misc.py",
+      "description": "A versatile data visualization component: bar, pie, line, scatter, radar charts.<br>Supports gradients, animations, legend, and per-element shadows.<br><br>All hard-coded internal metrics (padding, spacing, line widths, point radii,<br>font sizes, shadow offsets) scale with the current ratio.",
+      "link": "ui/elements/misc.html#class-chartvisualizer",
+      "methods_count": 25
+    },
+    {
+      "name": "AudioVisualizer",
+      "module": "ui",
+      "file": "misc.py",
+      "description": "Real-time audio visualization element: bars, waveform, circle, particles, spectrum.<br>Internal spacing and stroke widths scale with the current ratio.",
+      "link": "ui/elements/misc.html#class-audiovisualizer",
+      "methods_count": 27
+    },
+    {
+      "name": "Table",
+      "module": "ui",
+      "file": "misc.py",
+      "description": "A tabular data display element with column headers, row styling, selection.<br>Fixed size and position; rows exceeding the height are clipped.<br>Supports images in cells (Path, AtlasItem, Icon, pygame.Surface).<br><br>Cell padding, image padding, grid line width, and the hard-coded font<br>size scale with the current ratio.",
+      "link": "ui/elements/misc.html#class-table",
+      "methods_count": 25
+    },
+    {
       "name": "ProgressBar",
       "module": "ui",
       "file": "progress.py",
-      "description": "A progress bar widget that displays a value as a filled bar.<br>Supports horizontal/vertical orientation and a &#x27;soundpad&#x27; segmented style.",
+      "description": "A progress bar widget that displays a value as a filled bar.<br>Supports horizontal/vertical orientation and a &#x27;soundpad&#x27; segmented style.<br><br>Internal metrics (segment gap, border widths, corner radii, shadow distances)<br>scale with the current ratio. User-supplied values are respected verbatim.",
       "link": "ui/elements/progress.html#class-progressbar",
-      "methods_count": 14
+      "methods_count": 17
     },
     {
       "name": "Select",
       "module": "ui",
       "file": "selectors.py",
-      "description": "A cycle selection widget with left/right arrows to scroll through options.<br>Requires activation (A) to enter manipulation mode.",
+      "description": "No documentation",
       "link": "ui/elements/selectors.html#class-select",
       "methods_count": 15
     },
@@ -606,7 +750,7 @@
       "name": "Switch",
       "module": "ui",
       "file": "selectors.py",
-      "description": "A toggle switch with animated sliding thumb.",
+      "description": "No documentation",
       "link": "ui/elements/selectors.html#class-switch",
       "methods_count": 12
     },
@@ -614,7 +758,7 @@
       "name": "Slider",
       "module": "ui",
       "file": "selectors.py",
-      "description": "A horizontal or vertical slider with draggable thumb.<br>Requires activation (A) to enter manipulation mode.",
+      "description": "No documentation",
       "link": "ui/elements/selectors.html#class-slider",
       "methods_count": 11
     },
@@ -622,65 +766,65 @@
       "name": "Dropdown",
       "module": "ui",
       "file": "selectors.py",
-      "description": "Dropdown selection widget. When expanded, its height changes to include the<br>expanded options area. Supports an optional label, search functionality,<br>and scrollable options. Handles parent scrolling and auto-arrangement correctly.",
+      "description": "No documentation",
       "link": "ui/elements/selectors.html#class-dropdown",
-      "methods_count": 35
+      "methods_count": 42
     },
     {
       "name": "NumberSelector",
       "module": "ui",
       "file": "selectors.py",
-      "description": "A numeric spinner with optional label. Supports min/max, step, and value change callbacks.<br>Requires activation (A) to enter manipulation mode.",
+      "description": "No documentation",
       "link": "ui/elements/selectors.html#class-numberselector",
-      "methods_count": 16
+      "methods_count": 18
     },
     {
       "name": "Checkbox",
       "module": "ui",
       "file": "selectors.py",
-      "description": "A clickable checkbox with optional label.",
+      "description": "No documentation",
       "link": "ui/elements/selectors.html#class-checkbox",
-      "methods_count": 12
+      "methods_count": 13
     },
     {
       "name": "TextBox",
       "module": "ui",
       "file": "textinputs.py",
-      "description": "Single-line text input field with optional label.<br>Supports placeholder text, max length, and focus management.",
+      "description": "No documentation",
       "link": "ui/elements/textinputs.html#class-textbox",
-      "methods_count": 23
+      "methods_count": 32
     },
     {
       "name": "TextArea",
       "module": "ui",
       "file": "textinputs.py",
-      "description": "Multi-line text input area with word wrapping and scrollbars.<br>Supports text editing, selection, copy/paste, and line numbers.",
+      "description": "No documentation",
       "link": "ui/elements/textinputs.html#class-textarea",
-      "methods_count": 31
+      "methods_count": 32
     },
     {
       "name": "ChartVisualizer",
       "module": "ui",
       "file": "visualizers.py",
-      "description": "A versatile data visualization component: bar, pie, line, scatter, radar charts.<br>Supports gradients, animations, legend, and per\u2011element shadows.",
+      "description": "A versatile data visualization component: bar, pie, line, scatter, radar charts.<br>Supports gradients, animations, legend, and per-element shadows.<br><br>All hard-coded internal metrics (padding, spacing, line widths, point radii,<br>font sizes, shadow offsets) scale with the current ratio.",
       "link": "ui/elements/visualizers.html#class-chartvisualizer",
-      "methods_count": 20
+      "methods_count": 26
     },
     {
       "name": "AudioVisualizer",
       "module": "ui",
       "file": "visualizers.py",
-      "description": "Real-time audio visualization element: bars, waveform, circle, particles, spectrum.<br>Connects to an OpenAL audio source.<br>Shadows are not applied to audio visualizers for performance and clarity.",
+      "description": "Real-time audio visualization element: bars, waveform, circle, particles, spectrum.<br>Internal spacing and stroke widths scale with the current ratio.",
       "link": "ui/elements/visualizers.html#class-audiovisualizer",
-      "methods_count": 24
+      "methods_count": 27
     },
     {
       "name": "Table",
       "module": "ui",
       "file": "visualizers.py",
-      "description": "A tabular data display element with column headers, row styling, selection.<br>Fixed size and position; rows exceeding the height are clipped.<br>Supports images in cells (Path, AtlasItem, Icon, pygame.Surface).",
+      "description": "A tabular data display element with column headers, row styling, selection.<br>Fixed size and position; rows exceeding the height are clipped.<br>Supports images in cells (Path, AtlasItem, Icon, pygame.Surface).<br><br>Cell padding, image padding, grid line width, and the hard-coded font<br>size scale with the current ratio.",
       "link": "ui/elements/visualizers.html#class-table",
-      "methods_count": 20
+      "methods_count": 21
     },
     {
       "name": "CameraMode",
@@ -811,6 +955,14 @@
       "methods_count": 41
     },
     {
+      "name": "Image",
+      "module": "graphics",
+      "file": "image.py",
+      "description": "Lazy, cacheable pygame image. Explicit pixel size takes precedence over scale.",
+      "link": "graphics/image.html#class-image",
+      "methods_count": 28
+    },
+    {
       "name": "Layer",
       "module": "graphics",
       "file": "paperdoll.py",
@@ -912,7 +1064,7 @@
       "file": "spritesheet.py",
       "description": "Main sprite sheet class for managing and extracting sprites from texture atlases.<br><br>This class handles loading sprite sheets with alpha support and provides<br>multiple methods for extracting individual sprites or sprite sequences,<br>as well as various image manipulation utilities.<br><br>Attributes:<br> &nbsp; &nbsp;sheet (pygame.Surface): The loaded sprite sheet surface with alpha<br> &nbsp; &nbsp;filepath (Path): Path to the sprite sheet file (None if loaded from bytes)<br> &nbsp; &nbsp;width (int): Width of the sprite sheet<br> &nbsp; &nbsp;height (int): Height of the sprite sheet",
       "link": "graphics/spritesheet.html#class-spritesheet",
-      "methods_count": 14
+      "methods_count": 16
     },
     {
       "name": "Animation",
@@ -1008,7 +1160,7 @@
       "file": "timer.py",
       "description": "Main timer manager for LunaEngine.<br><br>Manages multiple timers, updates them, and triggers callbacks.<br>Should be updated every frame in the game loop via update() method.<br><br>Example:<br> &nbsp; &nbsp;&gt;&gt;&gt; timer = Timer()<br> &nbsp; &nbsp;&gt;&gt;&gt; timer.add(&quot;enemy_spawn&quot;, 2.0, spawn_enemy, repeats=True)<br> &nbsp; &nbsp;&gt;&gt;&gt; # In game loop:<br> &nbsp; &nbsp;&gt;&gt;&gt; while running:<br> &nbsp; &nbsp;&gt;&gt;&gt; &nbsp; &nbsp; timer.update()",
       "link": "utils/timer.html#class-timer",
-      "methods_count": 18
+      "methods_count": 21
     },
     {
       "name": "ControllerType",
@@ -1097,54 +1249,6 @@
       "description": "Exception raised when OpenGL initialization fails",
       "link": "backend/exceptions.html#class-openglinitializationerror",
       "methods_count": 1
-    },
-    {
-      "name": "MessageType",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Types of messages in the protocol",
-      "link": "backend/network.html#class-messagetype",
-      "methods_count": 0
-    },
-    {
-      "name": "UserType",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Types of network users",
-      "link": "backend/network.html#class-usertype",
-      "methods_count": 0
-    },
-    {
-      "name": "NetworkMessage",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Standard message format for network communication",
-      "link": "backend/network.html#class-networkmessage",
-      "methods_count": 2
-    },
-    {
-      "name": "NetworkClient",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Client for connecting to network server",
-      "link": "backend/network.html#class-networkclient",
-      "methods_count": 13
-    },
-    {
-      "name": "NetworkServer",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Server for handling multiple client connections",
-      "link": "backend/network.html#class-networkserver",
-      "methods_count": 20
-    },
-    {
-      "name": "NetworkHost",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Host class that runs a server in thread and connects as a client",
-      "link": "backend/network.html#class-networkhost",
-      "methods_count": 12
     },
     {
       "name": "OpenALError",
@@ -1320,7 +1424,7 @@
       "file": "types.py",
       "description": "Tracks input state with proper click detection",
       "link": "backend/types.html#class-inputstate",
-      "methods_count": 10
+      "methods_count": 14
     },
     {
       "name": "ElementsList",
@@ -1467,12 +1571,20 @@
       "methods_count": 4
     },
     {
+      "name": "_ConsoleCommandTextArea",
+      "module": "misc",
+      "file": "debug.py",
+      "description": "TextArea command bar: Enter inserts a newline; Ctrl+Enter executes.",
+      "link": "misc/debug.html#class-_consolecommandtextarea",
+      "methods_count": 5
+    },
+    {
       "name": "LiveInspector",
       "module": "misc",
       "file": "debug.py",
       "description": "Main debugging panel. Organised into tabs on the left side:<br>- Elements: hierarchy + properties<br>- Custom Function: user\u2011defined test functions<br>- System: performance + console (merged)<br>- Audio: master volume, effects, source list<br>- Overlays: manage debug overlays<br>- Settings: theme, dark mode, utilities<br>- Tasks: background task status<br>- Storage: sub\u2011tabs for Atlas, Savedata, Encryption",
       "link": "misc/debug.html#class-liveinspector",
-      "methods_count": 57
+      "methods_count": 66
     },
     {
       "name": "DebugManager",
@@ -1488,7 +1600,7 @@
       "file": "icons.py",
       "description": "A theme\u2011aware icon that can be recoloured with a flat colour or a gradient.<br><br>The original PNG must be a white shape on a transparent background.<br>Scaling is performed once per requested size.",
       "link": "misc/icons.html#class-icon",
-      "methods_count": 5
+      "methods_count": 6
     },
     {
       "name": "Icons",
@@ -1496,7 +1608,7 @@
       "file": "icons.py",
       "description": "Factory class for all built\u2011in icons.<br><br>Each static method returns an Icon instance for the corresponding PNG.<br>The optional `size` parameter sets the desired square size.",
       "link": "misc/icons.html#class-icons",
-      "methods_count": 76
+      "methods_count": 95
     },
     {
       "name": "CodeStatistics",
@@ -1575,6 +1687,70 @@
     {
       "name": "show_notification",
       "module": "ui",
+      "file": "modals.py",
+      "description": "Convenience function to show a simple notification.<br><br>Args:<br> &nbsp; &nbsp;text: Notification text<br> &nbsp; &nbsp;notification_type: Type of notification<br> &nbsp; &nbsp;duration: Optional custom duration<br> &nbsp; &nbsp;position: Position for notification<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The created Notification object",
+      "link": "ui/modals.html#func-show_notification",
+      "is_method": false
+    },
+    {
+      "name": "show_error",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Show an error notification.",
+      "link": "ui/modals.html#func-show_error",
+      "is_method": false
+    },
+    {
+      "name": "show_warning",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Show a warning notification.",
+      "link": "ui/modals.html#func-show_warning",
+      "is_method": false
+    },
+    {
+      "name": "show_success",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Show a success notification.",
+      "link": "ui/modals.html#func-show_success",
+      "is_method": false
+    },
+    {
+      "name": "show_info",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Show an info notification.",
+      "link": "ui/modals.html#func-show_info",
+      "is_method": false
+    },
+    {
+      "name": "clear_all_notifications",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Clear all notifications.",
+      "link": "ui/modals.html#func-clear_all_notifications",
+      "is_method": false
+    },
+    {
+      "name": "get_notification_count",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Get the current number of active notifications.",
+      "link": "ui/modals.html#func-get_notification_count",
+      "is_method": false
+    },
+    {
+      "name": "get_queue_length",
+      "module": "ui",
+      "file": "modals.py",
+      "description": "Get the current queue length.",
+      "link": "ui/modals.html#func-get_queue_length",
+      "is_method": false
+    },
+    {
+      "name": "show_notification",
+      "module": "ui",
       "file": "notifications.py",
       "description": "Convenience function to show a simple notification.<br><br>Args:<br> &nbsp; &nbsp;text: Notification text<br> &nbsp; &nbsp;notification_type: Type of notification<br> &nbsp; &nbsp;duration: Optional custom duration<br> &nbsp; &nbsp;position: Position for notification<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The created Notification object",
       "link": "ui/notifications.html#func-show_notification",
@@ -1634,6 +1810,38 @@
       "file": "notifications.py",
       "description": "Get the current queue length.",
       "link": "ui/notifications.html#func-get_queue_length",
+      "is_method": false
+    },
+    {
+      "name": "_get_ratio_scale",
+      "module": "ui",
+      "file": "base.py",
+      "description": "Return (scale_x, scale_y, scale_med) from ThemeManager._ratio.<br><br>These values are meant to scale *internal* metrics of UI elements<br>(spacing, padding, corner radius, border width, shadow offset, etc.).<br>They must NOT be applied to an element&#x27;s own position (x/y), size<br>(width/height), font size, or icon size.",
+      "link": "ui/elements/base.html#func-_get_ratio_scale",
+      "is_method": false
+    },
+    {
+      "name": "_scaled_shadow",
+      "module": "ui",
+      "file": "base.py",
+      "description": "Return a new UiShadow with `distance` scaled by `scale` (defaults to ratio.med).",
+      "link": "ui/elements/base.html#func-_scaled_shadow",
+      "is_method": false
+    },
+    {
+      "name": "_container_clip_rect",
+      "module": "ui",
+      "file": "containers.py",
+      "description": "Compute a live visual clip rectangle without changing UI state.",
+      "link": "ui/elements/containers.html#func-_container_clip_rect",
+      "is_method": false
+    },
+    {
+      "name": "_child_intersects_container",
+      "module": "ui",
+      "file": "containers.py",
+      "description": "Read-only optional culling check; never participates in input or layout.",
+      "link": "ui/elements/containers.html#func-_child_intersects_container",
       "is_method": false
     },
     {
@@ -1786,6 +1994,30 @@
       "file": "shadows.py",
       "description": "No documentation",
       "link": "graphics/shadows.html#func-meter_to_pixel",
+      "is_method": false
+    },
+    {
+      "name": "_ensure_scrap",
+      "module": "utils",
+      "file": "clipboard.py",
+      "description": "No documentation",
+      "link": "utils/clipboard.html#func-_ensure_scrap",
+      "is_method": false
+    },
+    {
+      "name": "copy_text",
+      "module": "utils",
+      "file": "clipboard.py",
+      "description": "Copy *text* to the platform clipboard; return False on backend failure.",
+      "link": "utils/clipboard.html#func-copy_text",
+      "is_method": false
+    },
+    {
+      "name": "paste_text",
+      "module": "utils",
+      "file": "clipboard.py",
+      "description": "Return clipboard text, or an empty string when unavailable/empty.",
+      "link": "utils/clipboard.html#func-paste_text",
       "is_method": false
     },
     {
@@ -1997,43 +2229,35 @@
       "is_method": false
     },
     {
+      "name": "_http_url",
+      "module": "utils",
+      "file": "url.py",
+      "description": "No documentation",
+      "link": "utils/url.html#func-_http_url",
+      "is_method": false
+    },
+    {
+      "name": "open_url",
+      "module": "utils",
+      "file": "url.py",
+      "description": "Open an ``http``, ``https``, or ``mailto`` URL; return False otherwise.",
+      "link": "utils/url.html#func-open_url",
+      "is_method": false
+    },
+    {
+      "name": "fetch_url",
+      "module": "utils",
+      "file": "url.py",
+      "description": "Fetch an HTTP(S) URL synchronously and return parsed content or ``None``.<br><br>This is a **blocking** network call. &nbsp;``parse`` may be ``&quot;bytes&quot;`` (raw<br>bytes), ``&quot;text&quot;`` (decoded text), ``&quot;json&quot;`` (decoded JSON), or<br>``&quot;auto&quot;`` (JSON when the content type says so, otherwise text for a<br>text content type, otherwise bytes). &nbsp;Any invalid URL, non-2xx response,<br>timeout, connection failure, decode failure, or JSON parse failure returns<br>``None`` without raising.",
+      "link": "utils/url.html#func-fetch_url",
+      "is_method": false
+    },
+    {
       "name": "sort_elements_for_focus",
       "module": "backend",
       "file": "controller.py",
       "description": "No documentation",
       "link": "backend/controller.html#func-sort_elements_for_focus",
-      "is_method": false
-    },
-    {
-      "name": "generate_id",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Generate unique ID for clients/messages",
-      "link": "backend/network.html#func-generate_id",
-      "is_method": false
-    },
-    {
-      "name": "validate_port",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Validate port number",
-      "link": "backend/network.html#func-validate_port",
-      "is_method": false
-    },
-    {
-      "name": "safe_json_dumps",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Safely serialize data to JSON bytes",
-      "link": "backend/network.html#func-safe_json_dumps",
-      "is_method": false
-    },
-    {
-      "name": "safe_json_loads",
-      "module": "backend",
-      "file": "network.py",
-      "description": "Safely deserialize JSON bytes",
-      "link": "backend/network.html#func-safe_json_loads",
       "is_method": false
     },
     {
@@ -2304,10 +2528,90 @@
     },
     {
       "name": "__init__",
+      "class": "AudioChannelGroup",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiochannelgroup-__init__",
+      "is_method": true
+    },
+    {
+      "name": "effective_volume",
+      "class": "AudioChannelGroup",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiochannelgroup-effective_volume",
+      "is_method": true
+    },
+    {
+      "name": "set_volume",
+      "class": "AudioChannelGroup",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiochannelgroup-set_volume",
+      "is_method": true
+    },
+    {
+      "name": "set_mute",
+      "class": "AudioChannelGroup",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiochannelgroup-set_mute",
+      "is_method": true
+    },
+    {
+      "name": "add_channel",
+      "class": "AudioChannelGroup",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiochannelgroup-add_channel",
+      "is_method": true
+    },
+    {
+      "name": "set_effect",
+      "class": "AudioChannelGroup",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiochannelgroup-set_effect",
+      "is_method": true
+    },
+    {
+      "name": "_refresh_channel",
+      "class": "AudioChannelGroup",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiochannelgroup-_refresh_channel",
+      "is_method": true
+    },
+    {
+      "name": "_refresh",
+      "class": "AudioChannelGroup",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiochannelgroup-_refresh",
+      "is_method": true
+    },
+    {
+      "name": "get_effective_volume",
+      "class": "AudioChannelGroup",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiochannelgroup-get_effective_volume",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
       "class": "AudioChannel",
       "module": "core",
       "description": "No documentation",
       "link": "core/audio.html#method-audiochannel-__init__",
+      "is_method": true
+    },
+    {
+      "name": "get_effective_volume",
+      "class": "AudioChannel",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiochannel-get_effective_volume",
       "is_method": true
     },
     {
@@ -2527,6 +2831,46 @@
       "is_method": true
     },
     {
+      "name": "create_group",
+      "class": "AudioManager",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiomanager-create_group",
+      "is_method": true
+    },
+    {
+      "name": "get_group",
+      "class": "AudioManager",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiomanager-get_group",
+      "is_method": true
+    },
+    {
+      "name": "set_group_volume",
+      "class": "AudioManager",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiomanager-set_group_volume",
+      "is_method": true
+    },
+    {
+      "name": "set_group_mute",
+      "class": "AudioManager",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiomanager-set_group_mute",
+      "is_method": true
+    },
+    {
+      "name": "set_group_effect",
+      "class": "AudioManager",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/audio.html#method-audiomanager-set_group_effect",
+      "is_method": true
+    },
+    {
       "name": "set_global_reverb",
       "class": "AudioManager",
       "module": "core",
@@ -2656,6 +3000,54 @@
     },
     {
       "name": "__init__",
+      "class": "CursorManager",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/cursor.html#method-cursormanager-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_warn_fallback",
+      "class": "CursorManager",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/cursor.html#method-cursormanager-_warn_fallback",
+      "is_method": true
+    },
+    {
+      "name": "_set_named",
+      "class": "CursorManager",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/cursor.html#method-cursormanager-_set_named",
+      "is_method": true
+    },
+    {
+      "name": "_surface_from_source",
+      "class": "CursorManager",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/cursor.html#method-cursormanager-_surface_from_source",
+      "is_method": true
+    },
+    {
+      "name": "_custom_cursor",
+      "class": "CursorManager",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/cursor.html#method-cursormanager-_custom_cursor",
+      "is_method": true
+    },
+    {
+      "name": "set_state",
+      "class": "CursorManager",
+      "module": "core",
+      "description": "Apply a preset or custom cursor source and return success.<br><br>Custom sources may be a ``pygame.Cursor``, ``pygame.Surface``,<br>``AtlasItem``, ``Icon``, ``pathlib.Path``, string path, or graphics<br>``Image``. Custom image cursors use a centered hotspot and are cached<br>by source identity. Invalid sources warn, fall back to the arrow, and<br>never raise.",
+      "link": "core/cursor.html#method-cursormanager-set_state",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
       "class": "LunaEngine",
       "module": "core",
       "description": "Initialize the LunaEngine.<br><br>Args:<br> &nbsp; &nbsp;title (str): The title of the game window (default: &quot;LunaEngine Game&quot;)<br> &nbsp; &nbsp;width (int): The width of the game window (default: 800)<br> &nbsp; &nbsp;height (int): The height of the game window (default: 600)<br> &nbsp; &nbsp;fullscreen (bool): Start in fullscreen mode (default: False)<br> &nbsp; &nbsp;icon (str|pygame.Surface): Window icon<br> &nbsp; &nbsp;**kwargs: Additional options:<br> &nbsp; &nbsp; &nbsp; &nbsp;- show_splash (bool): Show splash screen (default: True)<br> &nbsp; &nbsp; &nbsp; &nbsp;- splash_logo (pygame.Surface): Custom logo surface<br> &nbsp; &nbsp; &nbsp; &nbsp;- splash_logo_size (int): Logo size for splash (default: 64)<br> &nbsp; &nbsp; &nbsp; &nbsp;- debug (bool): Enable debug mode (default: False)<br> &nbsp; &nbsp; &nbsp; &nbsp;- enable_performance_profiling (bool): Enable profiling (default: True)<br> &nbsp; &nbsp; &nbsp; &nbsp;- atlas_root (str|Path): Root path for the atlas (default: current directory)<br> &nbsp; &nbsp; &nbsp; &nbsp;- bundle_path (str|Path): Path to resource bundle (.res file) (default: auto-detect &quot;game.res&quot;)<br> &nbsp; &nbsp; &nbsp; &nbsp;- bundle_key (str): Obfuscation key for the bundle (if encrypted)",
@@ -2671,11 +3063,11 @@
       "is_method": true
     },
     {
-      "name": "update_ratio",
+      "name": "ratio",
       "class": "LunaEngine",
       "module": "core",
-      "description": "Update the aspect ratio scaling factor.",
-      "link": "core/engine.html#method-lunaengine-update_ratio",
+      "description": "No documentation",
+      "link": "core/engine.html#method-lunaengine-ratio",
       "is_method": true
     },
     {
@@ -2684,6 +3076,14 @@
       "module": "core",
       "description": "No documentation",
       "link": "core/engine.html#method-lunaengine-ratio",
+      "is_method": true
+    },
+    {
+      "name": "update_ratio",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Update the aspect ratio scaling factor.",
+      "link": "core/engine.html#method-lunaengine-update_ratio",
       "is_method": true
     },
     {
@@ -2831,11 +3231,99 @@
       "is_method": true
     },
     {
+      "name": "_module_path",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Return a reloadable source path for an imported module.",
+      "link": "core/engine.html#method-lunaengine-_module_path",
+      "is_method": true
+    },
+    {
+      "name": "_resolve_watch_module",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Resolve a module, import name, source path, or path-backed AtlasItem.",
+      "link": "core/engine.html#method-lunaengine-_resolve_watch_module",
+      "is_method": true
+    },
+    {
+      "name": "watch_module",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Watch a Python module for stable source changes and reload it.",
+      "link": "core/engine.html#method-lunaengine-watch_module",
+      "is_method": true
+    },
+    {
+      "name": "watch_scene",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Watch a registered scene name or Scene subclass for source changes.",
+      "link": "core/engine.html#method-lunaengine-watch_scene",
+      "is_method": true
+    },
+    {
+      "name": "on_scene_reload",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Register a callback receiving the newly constructed scene instance.",
+      "link": "core/engine.html#method-lunaengine-on_scene_reload",
+      "is_method": true
+    },
+    {
+      "name": "on_module_reload",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Register a callback receiving a reloaded module.",
+      "link": "core/engine.html#method-lunaengine-on_module_reload",
+      "is_method": true
+    },
+    {
+      "name": "_log_hot_reload_error",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/engine.html#method-lunaengine-_log_hot_reload_error",
+      "is_method": true
+    },
+    {
+      "name": "_reload_module",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/engine.html#method-lunaengine-_reload_module",
+      "is_method": true
+    },
+    {
+      "name": "_reload_scene",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/engine.html#method-lunaengine-_reload_scene",
+      "is_method": true
+    },
+    {
+      "name": "_poll_hot_reload",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Timer callback: reload only after a changed mtime is stable once.",
+      "link": "core/engine.html#method-lunaengine-_poll_hot_reload",
+      "is_method": true
+    },
+    {
       "name": "add_scene",
       "class": "LunaEngine",
       "module": "core",
       "description": "Add a scene to the engine by class (the engine will instantiate it).<br><br>Args:<br> &nbsp; &nbsp;name (str): The name of the scene<br> &nbsp; &nbsp;scene_class (Type[Scene]): The scene class to instantiate<br> &nbsp; &nbsp;*args: Arguments to pass to scene constructor<br> &nbsp; &nbsp;**kwargs: Keyword arguments to pass to scene constructor",
       "link": "core/engine.html#method-lunaengine-add_scene",
+      "is_method": true
+    },
+    {
+      "name": "remove_scene",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Remove a registered scene by name or by scene subclass.<br><br>``ref`` may be a scene name (``str``), or a ``Scene`` subclass; in the<br>latter case the first registered ``isinstance`` match is removed. &nbsp;If<br>the removed scene is active, ``current_scene`` is set to ``None`` and<br>the engine does not automatically switch to another scene.",
+      "link": "core/engine.html#method-lunaengine-remove_scene",
       "is_method": true
     },
     {
@@ -3044,6 +3532,22 @@
       "module": "core",
       "description": "Rebuild the UI layer manager from the current scene&#x27;s UI elements.",
       "link": "core/engine.html#method-lunaengine-_rebuild_ui_layers",
+      "is_method": true
+    },
+    {
+      "name": "_update_cursor",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Apply the topmost UI element&#x27;s pressed/hover/default cursor.",
+      "link": "core/engine.html#method-lunaengine-_update_cursor",
+      "is_method": true
+    },
+    {
+      "name": "set_cursor_state",
+      "class": "LunaEngine",
+      "module": "core",
+      "description": "Set the cursor directly through the engine&#x27;s CursorManager.",
+      "link": "core/engine.html#method-lunaengine-set_cursor_state",
       "is_method": true
     },
     {
@@ -3727,6 +4231,14 @@
       "is_method": true
     },
     {
+      "name": "_on_enter",
+      "class": "Scene",
+      "module": "core",
+      "description": "No documentation",
+      "link": "core/scene.html#method-scene-_on_enter",
+      "is_method": true
+    },
+    {
       "name": "on_enter",
       "class": "Scene",
       "module": "core",
@@ -4175,6 +4687,54 @@
       "is_method": true
     },
     {
+      "name": "_children_in_render_order",
+      "class": "UILayerManager",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/layer_manager.html#method-uilayermanager-_children_in_render_order",
+      "is_method": true
+    },
+    {
+      "name": "_point_in_effective_bounds",
+      "class": "UILayerManager",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/layer_manager.html#method-uilayermanager-_point_in_effective_bounds",
+      "is_method": true
+    },
+    {
+      "name": "_is_interactive_at",
+      "class": "UILayerManager",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/layer_manager.html#method-uilayermanager-_is_interactive_at",
+      "is_method": true
+    },
+    {
+      "name": "_hit_test_element",
+      "class": "UILayerManager",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/layer_manager.html#method-uilayermanager-_hit_test_element",
+      "is_method": true
+    },
+    {
+      "name": "ui_hit_test_topmost",
+      "class": "UILayerManager",
+      "module": "ui",
+      "description": "Hit-test in reverse render order; deepest interactive hit wins.",
+      "link": "ui/layer_manager.html#method-uilayermanager-ui_hit_test_topmost",
+      "is_method": true
+    },
+    {
+      "name": "find_topmost_at",
+      "class": "UILayerManager",
+      "module": "ui",
+      "description": "Compatibility wrapper for the centralized pointer hit-test.",
+      "link": "ui/layer_manager.html#method-uilayermanager-find_topmost_at",
+      "is_method": true
+    },
+    {
       "name": "update",
       "class": "UILayerManager",
       "module": "ui",
@@ -4276,6 +4836,686 @@
       "module": "ui",
       "description": "Arrange elements with justified spacing.",
       "link": "ui/layout.html#method-justifiedlayout-_update_layout",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "Overlay",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-overlay-__init__",
+      "is_method": true
+    },
+    {
+      "name": "opacity",
+      "class": "Overlay",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-overlay-opacity",
+      "is_method": true
+    },
+    {
+      "name": "show",
+      "class": "Overlay",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-overlay-show",
+      "is_method": true
+    },
+    {
+      "name": "hide",
+      "class": "Overlay",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-overlay-hide",
+      "is_method": true
+    },
+    {
+      "name": "set_position",
+      "class": "Overlay",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-overlay-set_position",
+      "is_method": true
+    },
+    {
+      "name": "cleanup_on_hide",
+      "class": "Overlay",
+      "module": "ui",
+      "description": "Hook for subclasses to release transient overlay state.",
+      "link": "ui/modals.html#method-overlay-cleanup_on_hide",
+      "is_method": true
+    },
+    {
+      "name": "update_overlay_fade",
+      "class": "Overlay",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-overlay-update_overlay_fade",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "Overlay",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-overlay-update",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "TooltipConfig",
+      "module": "ui",
+      "description": "Initialize tooltip configuration.<br><br>Args:<br> &nbsp; &nbsp;text (str): Tooltip text content<br> &nbsp; &nbsp;font_size (int): Font size for tooltip text<br> &nbsp; &nbsp;padding (int): Padding around text<br> &nbsp; &nbsp;corner_radius (int): Border radius for rounded corners<br> &nbsp; &nbsp;offset_x (int): Horizontal offset from target element<br> &nbsp; &nbsp;offset_y (int): Vertical offset from target element<br> &nbsp; &nbsp;show_delay (float): Delay in seconds before showing tooltip<br> &nbsp; &nbsp;max_width (int): Maximum width before text wraps<br> &nbsp; &nbsp;theme (ThemeType): Custom theme for tooltip",
+      "link": "ui/modals.html#method-tooltipconfig-__init__",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Initialize a tooltip with configuration.<br><br>Args:<br> &nbsp; &nbsp;config (TooltipConfig): Configuration object for tooltip appearance<br> &nbsp; &nbsp;element_id (Optional[str]): Custom element ID",
+      "link": "ui/modals.html#method-tooltip-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_calculate_size",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Calculate tooltip size based on text and configuration.",
+      "link": "ui/modals.html#method-tooltip-_calculate_size",
+      "is_method": true
+    },
+    {
+      "name": "_wrap_text",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Wrap text to fit within max width.<br><br>Args:<br> &nbsp; &nbsp;text (str): Text to wrap<br> &nbsp; &nbsp;font: Font object for size calculation<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[str]: List of wrapped lines",
+      "link": "ui/modals.html#method-tooltip-_wrap_text",
+      "is_method": true
+    },
+    {
+      "name": "set_text",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Update tooltip text and recalculate size.<br><br>Args:<br> &nbsp; &nbsp;text (str): New tooltip text",
+      "link": "ui/modals.html#method-tooltip-set_text",
+      "is_method": true
+    },
+    {
+      "name": "set_config",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Update tooltip configuration.<br><br>Args:<br> &nbsp; &nbsp;config (TooltipConfig): New configuration",
+      "link": "ui/modals.html#method-tooltip-set_config",
+      "is_method": true
+    },
+    {
+      "name": "set_target",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Set the target element for this tooltip.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): Element to attach tooltip to",
+      "link": "ui/modals.html#method-tooltip-set_target",
+      "is_method": true
+    },
+    {
+      "name": "update_tooltip",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Update tooltip state and position.<br><br>Args:<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position<br> &nbsp; &nbsp;dt (float): Delta time in seconds<br> &nbsp; &nbsp;screen_width (int): Screen width for boundary checking<br> &nbsp; &nbsp;screen_height (int): Screen height for boundary checking<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if tooltip should be visible, False otherwise",
+      "link": "ui/modals.html#method-tooltip-update_tooltip",
+      "is_method": true
+    },
+    {
+      "name": "_update_position",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Update tooltip position to follow mouse and stay within screen bounds.<br><br>Args:<br> &nbsp; &nbsp;screen_width (int): Screen width for boundary checking<br> &nbsp; &nbsp;screen_height (int): Screen height for boundary checking<br> &nbsp; &nbsp;mouse_pos (Tuple[int, int]): Current mouse position",
+      "link": "ui/modals.html#method-tooltip-_update_position",
+      "is_method": true
+    },
+    {
+      "name": "update_theme",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Update the tooltip&#x27;s theme.",
+      "link": "ui/modals.html#method-tooltip-update_theme",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Render tooltip using OpenGL backend",
+      "link": "ui/modals.html#method-tooltip-render",
+      "is_method": true
+    },
+    {
+      "name": "_render_wrapped_text",
+      "class": "Tooltip",
+      "module": "ui",
+      "description": "Render wrapped text inside tooltip.",
+      "link": "ui/modals.html#method-tooltip-_render_wrapped_text",
+      "is_method": true
+    },
+    {
+      "name": "__new__",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-uitooltipmanager-__new__",
+      "is_method": true
+    },
+    {
+      "name": "register_tooltip",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Register a tooltip for a UI element.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element that triggers the tooltip<br> &nbsp; &nbsp;tooltip (Tooltip): The tooltip to show",
+      "link": "ui/modals.html#method-uitooltipmanager-register_tooltip",
+      "is_method": true
+    },
+    {
+      "name": "unregister_tooltip",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Unregister tooltip for a UI element.<br><br>Args:<br> &nbsp; &nbsp;element (UIElement): The UI element to remove tooltip from",
+      "link": "ui/modals.html#method-uitooltipmanager-unregister_tooltip",
+      "is_method": true
+    },
+    {
+      "name": "update_all_themes",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Update all registered tooltips to the new theme.",
+      "link": "ui/modals.html#method-uitooltipmanager-update_all_themes",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Update all tooltips and determine which one should be active.<br><br>Args:<br> &nbsp; &nbsp;engine (LunaEngine): The main engine instance<br> &nbsp; &nbsp;dt (float): Delta time in seconds",
+      "link": "ui/modals.html#method-uitooltipmanager-update",
+      "is_method": true
+    },
+    {
+      "name": "get_tooltip_to_render",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Get the currently active tooltip to render.<br><br>Args:<br> &nbsp; &nbsp;engine (LunaEngine): The main engine instance<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;List[Tooltip]: List containing the active tooltip, or empty if none",
+      "link": "ui/modals.html#method-uitooltipmanager-get_tooltip_to_render",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Render the active tooltip.",
+      "link": "ui/modals.html#method-uitooltipmanager-render",
+      "is_method": true
+    },
+    {
+      "name": "clear_all",
+      "class": "UITooltipManager",
+      "module": "ui",
+      "description": "Clear all registered tooltips.",
+      "link": "ui/modals.html#method-uitooltipmanager-clear_all",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "NotificationStyle",
+      "module": "ui",
+      "description": "Initialize notification style.<br><br>Args:<br> &nbsp; &nbsp;bg_color: Background color (RGB)<br> &nbsp; &nbsp;border_color: Border color (RGB)<br> &nbsp; &nbsp;text_color: Text color (RGB)<br> &nbsp; &nbsp;icon_type: Optional icon type from Icons enum<br> &nbsp; &nbsp;duration: Default duration in seconds<br> &nbsp; &nbsp;show_icon: Whether to show icon",
+      "link": "ui/modals.html#method-notificationstyle-__init__",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "NotificationConfig",
+      "module": "ui",
+      "description": "Initialize notification configuration.<br><br>Args:<br> &nbsp; &nbsp;text: Notification text<br> &nbsp; &nbsp;notification_type: Type of notification<br> &nbsp; &nbsp;duration: Display duration in seconds (None for default based on type)<br> &nbsp; &nbsp;position: Position (NotificationPosition enum or custom (x, y) tuple)<br> &nbsp; &nbsp;width: Width of notification<br> &nbsp; &nbsp;height: Height of notification<br> &nbsp; &nbsp;show_close_button: Whether to show close button<br> &nbsp; &nbsp;auto_close: Whether notification auto-closes after duration<br> &nbsp; &nbsp;animation_speed: Speed of slide/fade animations in seconds<br> &nbsp; &nbsp;show_progress_bar: Whether to show progress bar for remaining time<br> &nbsp; &nbsp;on_close: Callback when notification is closed<br> &nbsp; &nbsp;on_click: Callback when notification is clicked<br> &nbsp; &nbsp;metadata: Optional metadata attached to notification<br> &nbsp; &nbsp;custom_icon: Optional custom icon",
+      "link": "ui/modals.html#method-notificationconfig-__init__",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Initialize a notification.<br><br>Args:<br> &nbsp; &nbsp;config: Notification configuration<br> &nbsp; &nbsp;engine: Reference to the engine for screen size<br> &nbsp; &nbsp;theme: Theme to use<br> &nbsp; &nbsp;element_id: Custom element ID",
+      "link": "ui/modals.html#method-notification-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_get_theme_based_style",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Get notification style based on current theme.",
+      "link": "ui/modals.html#method-notification-_get_theme_based_style",
+      "is_method": true
+    },
+    {
+      "name": "_calculate_target_position",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Calculate target position based on configuration.",
+      "link": "ui/modals.html#method-notification-_calculate_target_position",
+      "is_method": true
+    },
+    {
+      "name": "_calculate_start_position",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Calculate start position for slide animation based on target position.",
+      "link": "ui/modals.html#method-notification-_calculate_start_position",
+      "is_method": true
+    },
+    {
+      "name": "_create_ui",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Create the notification UI elements.",
+      "link": "ui/modals.html#method-notification-_create_ui",
+      "is_method": true
+    },
+    {
+      "name": "_apply_custom_style",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Apply custom styling if provided in config.",
+      "link": "ui/modals.html#method-notification-_apply_custom_style",
+      "is_method": true
+    },
+    {
+      "name": "show",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Start showing the notification.",
+      "link": "ui/modals.html#method-notification-show",
+      "is_method": true
+    },
+    {
+      "name": "close",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Close the notification with animation.",
+      "link": "ui/modals.html#method-notification-close",
+      "is_method": true
+    },
+    {
+      "name": "force_close",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Force close without animation.",
+      "link": "ui/modals.html#method-notification-force_close",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Update notification state and animations.",
+      "link": "ui/modals.html#method-notification-update",
+      "is_method": true
+    },
+    {
+      "name": "_ease_out",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Ease out cubic function for smooth animation.",
+      "link": "ui/modals.html#method-notification-_ease_out",
+      "is_method": true
+    },
+    {
+      "name": "_ease_in",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Ease in cubic function for smooth animation.",
+      "link": "ui/modals.html#method-notification-_ease_in",
+      "is_method": true
+    },
+    {
+      "name": "should_remove",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Check if notification should be removed.",
+      "link": "ui/modals.html#method-notification-should_remove",
+      "is_method": true
+    },
+    {
+      "name": "get_opacity",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Get current opacity for fade animations.",
+      "link": "ui/modals.html#method-notification-get_opacity",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "Notification",
+      "module": "ui",
+      "description": "Render notification with icon.",
+      "link": "ui/modals.html#method-notification-render",
+      "is_method": true
+    },
+    {
+      "name": "__new__",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-notificationmanager-__new__",
+      "is_method": true
+    },
+    {
+      "name": "_initialize",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Initialize the notification manager.",
+      "link": "ui/modals.html#method-notificationmanager-_initialize",
+      "is_method": true
+    },
+    {
+      "name": "set_engine",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Set the engine reference for screen size calculations.",
+      "link": "ui/modals.html#method-notificationmanager-set_engine",
+      "is_method": true
+    },
+    {
+      "name": "show_notification",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Show a new notification immediately or add to queue.<br><br>Args:<br> &nbsp; &nbsp;config: Notification configuration<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The created Notification object",
+      "link": "ui/modals.html#method-notificationmanager-show_notification",
+      "is_method": true
+    },
+    {
+      "name": "_show_notification_immediate",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Show a notification immediately.",
+      "link": "ui/modals.html#method-notificationmanager-_show_notification_immediate",
+      "is_method": true
+    },
+    {
+      "name": "_update_notification_positions",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Update positions for stacked notifications in a position group.",
+      "link": "ui/modals.html#method-notificationmanager-_update_notification_positions",
+      "is_method": true
+    },
+    {
+      "name": "show_simple_notification",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Show a simple notification with minimal configuration.<br><br>Args:<br> &nbsp; &nbsp;text: Notification text<br> &nbsp; &nbsp;notification_type: Type of notification<br> &nbsp; &nbsp;duration: Optional custom duration<br> &nbsp; &nbsp;position: Position for notification<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;The created Notification object",
+      "link": "ui/modals.html#method-notificationmanager-show_simple_notification",
+      "is_method": true
+    },
+    {
+      "name": "remove_notification",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Remove a specific notification.",
+      "link": "ui/modals.html#method-notificationmanager-remove_notification",
+      "is_method": true
+    },
+    {
+      "name": "clear_all",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Clear all notifications immediately.",
+      "link": "ui/modals.html#method-notificationmanager-clear_all",
+      "is_method": true
+    },
+    {
+      "name": "clear_by_type",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Clear all notifications of a specific type.",
+      "link": "ui/modals.html#method-notificationmanager-clear_by_type",
+      "is_method": true
+    },
+    {
+      "name": "_process_queue",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Process the notification queue.",
+      "link": "ui/modals.html#method-notificationmanager-_process_queue",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Update all notifications and process queue.",
+      "link": "ui/modals.html#method-notificationmanager-update",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Render all notifications.",
+      "link": "ui/modals.html#method-notificationmanager-render",
+      "is_method": true
+    },
+    {
+      "name": "get_notification_count",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Get the current number of active notifications.",
+      "link": "ui/modals.html#method-notificationmanager-get_notification_count",
+      "is_method": true
+    },
+    {
+      "name": "get_queue_length",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Get the current queue length.",
+      "link": "ui/modals.html#method-notificationmanager-get_queue_length",
+      "is_method": true
+    },
+    {
+      "name": "has_notifications",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Check if there are any active notifications.",
+      "link": "ui/modals.html#method-notificationmanager-has_notifications",
+      "is_method": true
+    },
+    {
+      "name": "has_queued_notifications",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Check if there are any queued notifications.",
+      "link": "ui/modals.html#method-notificationmanager-has_queued_notifications",
+      "is_method": true
+    },
+    {
+      "name": "set_max_concurrent",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Set maximum concurrent notifications.",
+      "link": "ui/modals.html#method-notificationmanager-set_max_concurrent",
+      "is_method": true
+    },
+    {
+      "name": "set_default_margin",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Set default margin for notifications.",
+      "link": "ui/modals.html#method-notificationmanager-set_default_margin",
+      "is_method": true
+    },
+    {
+      "name": "set_spacing",
+      "class": "NotificationManager",
+      "module": "ui",
+      "description": "Set spacing between notifications.",
+      "link": "ui/modals.html#method-notificationmanager-set_spacing",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_sm",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-_sm",
+      "is_method": true
+    },
+    {
+      "name": "font_size",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-font_size",
+      "is_method": true
+    },
+    {
+      "name": "name_font_size",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-name_font_size",
+      "is_method": true
+    },
+    {
+      "name": "padding",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-padding",
+      "is_method": true
+    },
+    {
+      "name": "name_padding",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-name_padding",
+      "is_method": true
+    },
+    {
+      "name": "corner_radius",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-corner_radius",
+      "is_method": true
+    },
+    {
+      "name": "corner_radius",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-corner_radius",
+      "is_method": true
+    },
+    {
+      "name": "font",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-font",
+      "is_method": true
+    },
+    {
+      "name": "name_font",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-name_font",
+      "is_method": true
+    },
+    {
+      "name": "_get_init_args",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-_get_init_args",
+      "is_method": true
+    },
+    {
+      "name": "set_text",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-set_text",
+      "is_method": true
+    },
+    {
+      "name": "set_animation",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-set_animation",
+      "is_method": true
+    },
+    {
+      "name": "skip_animation",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-skip_animation",
+      "is_method": true
+    },
+    {
+      "name": "advance",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-advance",
+      "is_method": true
+    },
+    {
+      "name": "set_on_complete",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-set_on_complete",
+      "is_method": true
+    },
+    {
+      "name": "set_on_advance",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-set_on_advance",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-update",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-render",
+      "is_method": true
+    },
+    {
+      "name": "_render_wrapped_text",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/modals.html#method-dialogbox-_render_wrapped_text",
       "is_method": true
     },
     {
@@ -4708,6 +5948,14 @@
       "module": "ui",
       "description": "Build a theme from either a combined or legacy JSON dictionary.",
       "link": "ui/themes.html#method-thememanager-_build_theme_from_data",
+      "is_method": true
+    },
+    {
+      "name": "update_ratio",
+      "class": "ThemeManager",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/themes.html#method-thememanager-update_ratio",
       "is_method": true
     },
     {
@@ -5954,7 +7202,7 @@
       "name": "_refresh_icon_surface",
       "class": "Button",
       "module": "ui",
-      "description": "Create or update the cached icon surface based on current size and color.",
+      "description": "Create or update the cached icon surface.<br><br>The icon size is derived from the design-time font size and the<br>element&#x27;s own (unscaled) width/height. Ratio is NOT applied here.",
       "link": "ui/elements/buttons.html#method-button-_refresh_icon_surface",
       "is_method": true
     },
@@ -5978,7 +7226,7 @@
       "name": "set_background_color",
       "class": "Button",
       "module": "ui",
-      "description": "Override if needed (no icon change, but keep for consistency).",
+      "description": "No documentation",
       "link": "ui/elements/buttons.html#method-button-set_background_color",
       "is_method": true
     },
@@ -5986,7 +7234,7 @@
       "name": "set_text_color",
       "class": "Button",
       "module": "ui",
-      "description": "Override to refresh icon colour.",
+      "description": "No documentation",
       "link": "ui/elements/buttons.html#method-button-set_text_color",
       "is_method": true
     },
@@ -5994,7 +7242,7 @@
       "name": "set_icon",
       "class": "Button",
       "module": "ui",
-      "description": "Change the icon and refresh.",
+      "description": "No documentation",
       "link": "ui/elements/buttons.html#method-button-set_icon",
       "is_method": true
     },
@@ -6058,7 +7306,7 @@
       "name": "_get_state_style",
       "class": "Button",
       "module": "ui",
-      "description": "Return the theme style for the current state.",
+      "description": "No documentation",
       "link": "ui/elements/buttons.html#method-button-_get_state_style",
       "is_method": true
     },
@@ -6146,7 +7394,7 @@
       "name": "set_image",
       "class": "ImageButton",
       "module": "ui",
-      "description": "Update the image, accepting Icon objects.",
+      "description": "No documentation",
       "link": "ui/elements/buttons.html#method-imagebutton-set_image",
       "is_method": true
     },
@@ -6154,7 +7402,7 @@
       "name": "_get_state_style",
       "class": "ImageButton",
       "module": "ui",
-      "description": "Return the theme style for the current state.",
+      "description": "No documentation",
       "link": "ui/elements/buttons.html#method-imagebutton-_get_state_style",
       "is_method": true
     },
@@ -6375,6 +7623,54 @@
       "is_method": true
     },
     {
+      "name": "_sm",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-uiframe-_sm",
+      "is_method": true
+    },
+    {
+      "name": "_scaled_padding",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-uiframe-_scaled_padding",
+      "is_method": true
+    },
+    {
+      "name": "_scaled_header_height",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-uiframe-_scaled_header_height",
+      "is_method": true
+    },
+    {
+      "name": "_scaled_arrange_spacing",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-uiframe-_scaled_arrange_spacing",
+      "is_method": true
+    },
+    {
+      "name": "_scaled_border_width",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-uiframe-_scaled_border_width",
+      "is_method": true
+    },
+    {
+      "name": "_scaled_corner_radius",
+      "class": "UiFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-uiframe-_scaled_corner_radius",
+      "is_method": true
+    },
+    {
       "name": "header_font",
       "class": "UiFrame",
       "module": "ui",
@@ -6394,7 +7690,7 @@
       "name": "_resolve_icon_to_surface",
       "class": "UiFrame",
       "module": "ui",
-      "description": "Convert various icon inputs to a pygame.Surface scaled to fit within max_size (square).<br>Supports:<br> &nbsp; &nbsp;- callables returning any supported type (e.g., Icons.BRAIN)<br> &nbsp; &nbsp;- objects with get_surface(color) (duck\u2011typed Icon)<br> &nbsp; &nbsp;- pygame.Surface<br> &nbsp; &nbsp;- str or Path (file path)<br> &nbsp; &nbsp;- AtlasItem (loads from bundle or disk)",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-uiframe-_resolve_icon_to_surface",
       "is_method": true
     },
@@ -6402,7 +7698,7 @@
       "name": "_get_header_text_color",
       "class": "UiFrame",
       "module": "ui",
-      "description": "Return the text color for the header (from the current theme).",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-uiframe-_get_header_text_color",
       "is_method": true
     },
@@ -6559,6 +7855,14 @@
       "is_method": true
     },
     {
+      "name": "_scaled_scrollbar_size",
+      "class": "ScrollingFrame",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-scrollingframe-_scaled_scrollbar_size",
+      "is_method": true
+    },
+    {
       "name": "_get_init_args",
       "class": "ScrollingFrame",
       "module": "ui",
@@ -6586,7 +7890,7 @@
       "name": "_get_child_logical_pos",
       "class": "ScrollingFrame",
       "module": "ui",
-      "description": "Return the child&#x27;s logical (non-scrolled) position.",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-scrollingframe-_get_child_logical_pos",
       "is_method": true
     },
@@ -6594,7 +7898,7 @@
       "name": "_get_child_screen_rect",
       "class": "ScrollingFrame",
       "module": "ui",
-      "description": "Return the child&#x27;s bounding box in screen coordinates (with scroll applied).",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-scrollingframe-_get_child_screen_rect",
       "is_method": true
     },
@@ -6719,6 +8023,70 @@
       "is_method": true
     },
     {
+      "name": "tab_height",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-tab_height",
+      "is_method": true
+    },
+    {
+      "name": "tab_height",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-tab_height",
+      "is_method": true
+    },
+    {
+      "name": "tab_width",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-tab_width",
+      "is_method": true
+    },
+    {
+      "name": "tab_width",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-tab_width",
+      "is_method": true
+    },
+    {
+      "name": "tab_padding",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-tab_padding",
+      "is_method": true
+    },
+    {
+      "name": "tab_spacing",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-tab_spacing",
+      "is_method": true
+    },
+    {
+      "name": "_arrow_size",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-_arrow_size",
+      "is_method": true
+    },
+    {
+      "name": "_scroll_speed",
+      "class": "Tabination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-tabination-_scroll_speed",
+      "is_method": true
+    },
+    {
       "name": "_get_init_args",
       "class": "Tabination",
       "module": "ui",
@@ -6762,7 +8130,7 @@
       "name": "add_tab",
       "class": "Tabination",
       "module": "ui",
-      "description": "Add a new tab.<br><br>Args:<br> &nbsp; &nbsp;tab_name: Display name of the tab.<br> &nbsp; &nbsp;icon: Icon input (supports Icon, AtlasItem, str/Path, Surface, callable).<br> &nbsp; &nbsp;icon_position: For horizontal tabs, place icon left or right of text.",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-tabination-add_tab",
       "is_method": true
     },
@@ -6826,7 +8194,7 @@
       "name": "get_tab_frame",
       "class": "Tabination",
       "module": "ui",
-      "description": "Return the frame (UiFrame) of the tab with the given name.",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-tabination-get_tab_frame",
       "is_method": true
     },
@@ -6874,7 +8242,7 @@
       "name": "set_tab_title",
       "class": "Tabination",
       "module": "ui",
-      "description": "Rename a tab. Returns True if successful.",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-tabination-set_tab_title",
       "is_method": true
     },
@@ -6882,7 +8250,7 @@
       "name": "set_tab_icon",
       "class": "Tabination",
       "module": "ui",
-      "description": "Set or clear an icon for a tab. Returns True if successful.",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-tabination-set_tab_icon",
       "is_method": true
     },
@@ -6890,7 +8258,7 @@
       "name": "_update_tab_offsets",
       "class": "Tabination",
       "module": "ui",
-      "description": "Recalculate cached offsets for vertical tab layouts.",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-tabination-_update_tab_offsets",
       "is_method": true
     },
@@ -6972,6 +8340,38 @@
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/containers.html#method-pagination-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_scaled_button_margin",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-pagination-_scaled_button_margin",
+      "is_method": true
+    },
+    {
+      "name": "area",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-pagination-area",
+      "is_method": true
+    },
+    {
+      "name": "set_area",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-pagination-set_area",
+      "is_method": true
+    },
+    {
+      "name": "set_alignment",
+      "class": "Pagination",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-pagination-set_alignment",
       "is_method": true
     },
     {
@@ -7096,82 +8496,98 @@
     },
     {
       "name": "__init__",
-      "class": "Expandable",
+      "class": "Accordion",
       "module": "ui",
       "description": "No documentation",
-      "link": "ui/elements/containers.html#method-expandable-__init__",
+      "link": "ui/elements/containers.html#method-accordion-__init__",
       "is_method": true
     },
     {
       "name": "setupIcons",
-      "class": "Expandable",
+      "class": "Accordion",
       "module": "ui",
       "description": "No documentation",
-      "link": "ui/elements/containers.html#method-expandable-setupicons",
+      "link": "ui/elements/containers.html#method-accordion-setupicons",
       "is_method": true
     },
     {
       "name": "_get_init_args",
-      "class": "Expandable",
+      "class": "Accordion",
       "module": "ui",
       "description": "No documentation",
-      "link": "ui/elements/containers.html#method-expandable-_get_init_args",
+      "link": "ui/elements/containers.html#method-accordion-_get_init_args",
+      "is_method": true
+    },
+    {
+      "name": "_update_icon",
+      "class": "Accordion",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-accordion-_update_icon",
       "is_method": true
     },
     {
       "name": "_toggle",
-      "class": "Expandable",
+      "class": "Accordion",
       "module": "ui",
       "description": "No documentation",
-      "link": "ui/elements/containers.html#method-expandable-_toggle",
+      "link": "ui/elements/containers.html#method-accordion-_toggle",
       "is_method": true
     },
     {
       "name": "expand",
-      "class": "Expandable",
+      "class": "Accordion",
       "module": "ui",
       "description": "No documentation",
-      "link": "ui/elements/containers.html#method-expandable-expand",
+      "link": "ui/elements/containers.html#method-accordion-expand",
       "is_method": true
     },
     {
       "name": "collapse",
-      "class": "Expandable",
+      "class": "Accordion",
       "module": "ui",
       "description": "No documentation",
-      "link": "ui/elements/containers.html#method-expandable-collapse",
+      "link": "ui/elements/containers.html#method-accordion-collapse",
       "is_method": true
     },
     {
       "name": "is_expanded",
-      "class": "Expandable",
+      "class": "Accordion",
       "module": "ui",
       "description": "No documentation",
-      "link": "ui/elements/containers.html#method-expandable-is_expanded",
+      "link": "ui/elements/containers.html#method-accordion-is_expanded",
       "is_method": true
     },
     {
       "name": "add_to_content",
-      "class": "Expandable",
+      "class": "Accordion",
       "module": "ui",
       "description": "No documentation",
-      "link": "ui/elements/containers.html#method-expandable-add_to_content",
+      "link": "ui/elements/containers.html#method-accordion-add_to_content",
+      "is_method": true
+    },
+    {
+      "name": "_set_animated_height",
+      "class": "Accordion",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-accordion-_set_animated_height",
       "is_method": true
     },
     {
       "name": "update",
-      "class": "Expandable",
+      "class": "Accordion",
       "module": "ui",
       "description": "No documentation",
-      "link": "ui/elements/containers.html#method-expandable-update",
+      "link": "ui/elements/containers.html#method-accordion-update",
       "is_method": true
     },
     {
       "name": "render",
-      "class": "Expandable",
+      "class": "Accordion",
       "module": "ui",
       "description": "No documentation",
-      "link": "ui/elements/containers.html#method-expandable-render",
+      "link": "ui/elements/containers.html#method-accordion-render",
       "is_method": true
     },
     {
@@ -7407,6 +8823,14 @@
       "is_method": true
     },
     {
+      "name": "_sm",
+      "class": "Canvas",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/containers.html#method-canvas-_sm",
+      "is_method": true
+    },
+    {
       "name": "set_draw_callback",
       "class": "Canvas",
       "module": "ui",
@@ -7418,7 +8842,7 @@
       "name": "set_border",
       "class": "Canvas",
       "module": "ui",
-      "description": "Set the border appearance.",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-canvas-set_border",
       "is_method": true
     },
@@ -7426,7 +8850,7 @@
       "name": "set_position_mode",
       "class": "Canvas",
       "module": "ui",
-      "description": "Set how child elements are positioned inside the canvas.",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-canvas-set_position_mode",
       "is_method": true
     },
@@ -7434,7 +8858,7 @@
       "name": "_map_child_coordinates",
       "class": "Canvas",
       "module": "ui",
-      "description": "Convert child&#x27;s x, y, width, height from the current position_mode<br>to logical pixel coordinates (0..logical_width, 0..logical_height).",
+      "description": "No documentation",
       "link": "ui/elements/containers.html#method-canvas-_map_child_coordinates",
       "is_method": true
     },
@@ -7450,8 +8874,80 @@
       "name": "__init__",
       "class": "DialogBox",
       "module": "ui",
-      "description": "Initialize a dialog box.<br><br>Args:<br> &nbsp; &nbsp;x: X coordinate (before anchor).<br> &nbsp; &nbsp;y: Y coordinate (before anchor).<br> &nbsp; &nbsp;width: Width of dialog box.<br> &nbsp; &nbsp;height: Height of dialog box.<br> &nbsp; &nbsp;style: Visual style (&quot;default&quot;, &quot;rpg&quot;, &quot;pokemon&quot;, &quot;modern&quot;).<br> &nbsp; &nbsp;theme: Theme to apply.<br> &nbsp; &nbsp;element_id: Custom element ID.",
+      "description": "No documentation",
       "link": "ui/elements/dialogs.html#method-dialogbox-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_sm",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/dialogs.html#method-dialogbox-_sm",
+      "is_method": true
+    },
+    {
+      "name": "font_size",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/dialogs.html#method-dialogbox-font_size",
+      "is_method": true
+    },
+    {
+      "name": "name_font_size",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/dialogs.html#method-dialogbox-name_font_size",
+      "is_method": true
+    },
+    {
+      "name": "padding",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/dialogs.html#method-dialogbox-padding",
+      "is_method": true
+    },
+    {
+      "name": "name_padding",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/dialogs.html#method-dialogbox-name_padding",
+      "is_method": true
+    },
+    {
+      "name": "corner_radius",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/dialogs.html#method-dialogbox-corner_radius",
+      "is_method": true
+    },
+    {
+      "name": "corner_radius",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/dialogs.html#method-dialogbox-corner_radius",
+      "is_method": true
+    },
+    {
+      "name": "font",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/dialogs.html#method-dialogbox-font",
+      "is_method": true
+    },
+    {
+      "name": "name_font",
+      "class": "DialogBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/dialogs.html#method-dialogbox-name_font",
       "is_method": true
     },
     {
@@ -7466,7 +8962,7 @@
       "name": "set_text",
       "class": "DialogBox",
       "module": "ui",
-      "description": "Set the dialog text and start animation.<br><br>Args:<br> &nbsp; &nbsp;text: The full text to display.<br> &nbsp; &nbsp;speaker_name: Name of the speaker (shown above box).<br> &nbsp; &nbsp;instant: If True, show all text immediately without animation.",
+      "description": "No documentation",
       "link": "ui/elements/dialogs.html#method-dialogbox-set_text",
       "is_method": true
     },
@@ -7474,7 +8970,7 @@
       "name": "set_animation",
       "class": "DialogBox",
       "module": "ui",
-      "description": "Configure text animation.<br><br>Args:<br> &nbsp; &nbsp;animation_type: Currently only &quot;typewriter&quot; is supported.<br> &nbsp; &nbsp;speed: Characters per second.",
+      "description": "No documentation",
       "link": "ui/elements/dialogs.html#method-dialogbox-set_animation",
       "is_method": true
     },
@@ -7482,7 +8978,7 @@
       "name": "skip_animation",
       "class": "DialogBox",
       "module": "ui",
-      "description": "Immediately finish the text animation and mark as complete.",
+      "description": "No documentation",
       "link": "ui/elements/dialogs.html#method-dialogbox-skip_animation",
       "is_method": true
     },
@@ -7490,7 +8986,7 @@
       "name": "advance",
       "class": "DialogBox",
       "module": "ui",
-      "description": "Advance the dialog (skip animation or move to next dialog).<br>Returns True if the dialog is still active, False if it should be closed.",
+      "description": "No documentation",
       "link": "ui/elements/dialogs.html#method-dialogbox-advance",
       "is_method": true
     },
@@ -7498,7 +8994,7 @@
       "name": "set_on_complete",
       "class": "DialogBox",
       "module": "ui",
-      "description": "Register a callback called when text animation finishes.",
+      "description": "No documentation",
       "link": "ui/elements/dialogs.html#method-dialogbox-set_on_complete",
       "is_method": true
     },
@@ -7506,7 +9002,7 @@
       "name": "set_on_advance",
       "class": "DialogBox",
       "module": "ui",
-      "description": "Register a callback called when the user advances to the next dialog (after completion).",
+      "description": "No documentation",
       "link": "ui/elements/dialogs.html#method-dialogbox-set_on_advance",
       "is_method": true
     },
@@ -7976,17 +9472,953 @@
     },
     {
       "name": "__init__",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Initialize a Clock element.<br><br>Args:<br> &nbsp; &nbsp;x: X coordinate (before anchor).<br> &nbsp; &nbsp;y: Y coordinate (before anchor).<br> &nbsp; &nbsp;diameter: Diameter of the analog clock face.<br> &nbsp; &nbsp;font_name: Path to a custom font file.<br> &nbsp; &nbsp;font_size: Font size for digital display.<br> &nbsp; &nbsp;use_real_time: Whether to use system time.<br> &nbsp; &nbsp;show_numbers: Whether to show numbers on analog clock.<br> &nbsp; &nbsp;time_style: &#x27;12hr&#x27; or &#x27;24hr&#x27; format.<br> &nbsp; &nbsp;mode: &#x27;analog&#x27;, &#x27;digital&#x27;, or &#x27;both&#x27;.<br> &nbsp; &nbsp;pivot: Anchor point.<br> &nbsp; &nbsp;theme: Theme to apply.<br> &nbsp; &nbsp;element_id: Optional custom ID.",
+      "link": "ui/elements/misc.html#method-clock-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_get_init_args",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Return constructor arguments for restarting.",
+      "link": "ui/elements/misc.html#method-clock-_get_init_args",
+      "is_method": true
+    },
+    {
+      "name": "font",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Get the main font object (digital display).",
+      "link": "ui/elements/misc.html#method-clock-font",
+      "is_method": true
+    },
+    {
+      "name": "small_font",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Get the smaller font for analog clock numbers.",
+      "link": "ui/elements/misc.html#method-clock-small_font",
+      "is_method": true
+    },
+    {
+      "name": "update_theme",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Update theme colors for the clock.",
+      "link": "ui/elements/misc.html#method-clock-update_theme",
+      "is_method": true
+    },
+    {
+      "name": "set_face_color",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Set the clock face color (RGB).",
+      "link": "ui/elements/misc.html#method-clock-set_face_color",
+      "is_method": true
+    },
+    {
+      "name": "set_border_color",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Set the clock border color (RGB).",
+      "link": "ui/elements/misc.html#method-clock-set_border_color",
+      "is_method": true
+    },
+    {
+      "name": "set_hand_colors",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Set the colors for clock hands (hour, minute, second) as RGB tuples.",
+      "link": "ui/elements/misc.html#method-clock-set_hand_colors",
+      "is_method": true
+    },
+    {
+      "name": "set_number_color",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Set the color for analog clock numbers (RGB).",
+      "link": "ui/elements/misc.html#method-clock-set_number_color",
+      "is_method": true
+    },
+    {
+      "name": "set_digital_text_color",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Set the color for digital display text (RGB).",
+      "link": "ui/elements/misc.html#method-clock-set_digital_text_color",
+      "is_method": true
+    },
+    {
+      "name": "set_time",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Set a custom time for the clock.<br><br>Args:<br> &nbsp; &nbsp;time_struct: Time structure from time.localtime().",
+      "link": "ui/elements/misc.html#method-clock-set_time",
+      "is_method": true
+    },
+    {
+      "name": "set_time_from_string",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Set time from a string.<br><br>Args:<br> &nbsp; &nbsp;time_str: Time string (e.g., &quot;14:30:00&quot;).<br> &nbsp; &nbsp;format_str: Format string for parsing (default &quot;%H:%M:%S&quot;).",
+      "link": "ui/elements/misc.html#method-clock-set_time_from_string",
+      "is_method": true
+    },
+    {
+      "name": "get_time_string",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Get the current time as a formatted string according to time_style.",
+      "link": "ui/elements/misc.html#method-clock-get_time_string",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Update the clock time.",
+      "link": "ui/elements/misc.html#method-clock-update",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Render the clock.",
+      "link": "ui/elements/misc.html#method-clock-render",
+      "is_method": true
+    },
+    {
+      "name": "_render_analog_clock",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Render the analog clock face and hands.",
+      "link": "ui/elements/misc.html#method-clock-_render_analog_clock",
+      "is_method": true
+    },
+    {
+      "name": "_draw_clock_numbers",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Draw numbers 1-12 around the clock face.",
+      "link": "ui/elements/misc.html#method-clock-_draw_clock_numbers",
+      "is_method": true
+    },
+    {
+      "name": "_draw_tick_marks",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Draw tick marks for minutes/seconds.",
+      "link": "ui/elements/misc.html#method-clock-_draw_tick_marks",
+      "is_method": true
+    },
+    {
+      "name": "_draw_hand",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Draw a single clock hand.",
+      "link": "ui/elements/misc.html#method-clock-_draw_hand",
+      "is_method": true
+    },
+    {
+      "name": "_render_digital_clock",
+      "class": "Clock",
+      "module": "ui",
+      "description": "Render the digital clock display.",
+      "link": "ui/elements/misc.html#method-clock-_render_digital_clock",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Initialize a progress bar.<br><br>Args:<br> &nbsp; &nbsp;x, y: Position (before anchor).<br> &nbsp; &nbsp;width, height: Dimensions.<br> &nbsp; &nbsp;min_val: Minimum value (0%).<br> &nbsp; &nbsp;max_val: Maximum value (100%).<br> &nbsp; &nbsp;value: Current value.<br> &nbsp; &nbsp;pivot: Anchor point.<br> &nbsp; &nbsp;theme: Theme to apply.<br> &nbsp; &nbsp;orientation: &#x27;horizontal&#x27; or &#x27;vertical&#x27;.<br> &nbsp; &nbsp;element_id: Custom ID.<br> &nbsp; &nbsp;style: &#x27;default&#x27; or &#x27;soundpad&#x27; (segmented with gradient colors).<br> &nbsp; &nbsp;**kwargs: Additional parameters:<br> &nbsp; &nbsp; &nbsp; &nbsp;draw_value (bool): Show percentage text.<br> &nbsp; &nbsp; &nbsp; &nbsp;font_size (int): Font size for text.<br> &nbsp; &nbsp; &nbsp; &nbsp;font_draw (str): Font name for text.<br> &nbsp; &nbsp; &nbsp; &nbsp;segment_count (int): Number of segments for soundpad style.<br> &nbsp; &nbsp; &nbsp; &nbsp;segment_gap (int): Gap between segments.",
-      "link": "ui/elements/progress.html#method-progressbar-__init__",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_sm",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-_sm",
+      "is_method": true
+    },
+    {
+      "name": "segment_gap",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-segment_gap",
+      "is_method": true
+    },
+    {
+      "name": "segment_gap",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-segment_gap",
       "is_method": true
     },
     {
       "name": "_get_init_args",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Return constructor arguments for restarting.",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-_get_init_args",
+      "is_method": true
+    },
+    {
+      "name": "set_background_color",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-set_background_color",
+      "is_method": true
+    },
+    {
+      "name": "set_foreground_color",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-set_foreground_color",
+      "is_method": true
+    },
+    {
+      "name": "set_font_color",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-set_font_color",
+      "is_method": true
+    },
+    {
+      "name": "set_font",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-set_font",
+      "is_method": true
+    },
+    {
+      "name": "set_border_color",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-set_border_color",
+      "is_method": true
+    },
+    {
+      "name": "update_theme",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-update_theme",
+      "is_method": true
+    },
+    {
+      "name": "set_value",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-set_value",
+      "is_method": true
+    },
+    {
+      "name": "set_max_value",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-set_max_value",
+      "is_method": true
+    },
+    {
+      "name": "set_min_value",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-set_min_value",
+      "is_method": true
+    },
+    {
+      "name": "get_percentage",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-get_percentage",
+      "is_method": true
+    },
+    {
+      "name": "_get_soundpad_color",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-_get_soundpad_color",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-progressbar-render",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_sm",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-_sm",
+      "is_method": true
+    },
+    {
+      "name": "padding",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-padding",
+      "is_method": true
+    },
+    {
+      "name": "bar_spacing",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-bar_spacing",
+      "is_method": true
+    },
+    {
+      "name": "line_width",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-line_width",
+      "is_method": true
+    },
+    {
+      "name": "point_radius",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-point_radius",
+      "is_method": true
+    },
+    {
+      "name": "shadow_offset",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-shadow_offset",
+      "is_method": true
+    },
+    {
+      "name": "shadow_offset",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-shadow_offset",
+      "is_method": true
+    },
+    {
+      "name": "_get_init_args",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-_get_init_args",
+      "is_method": true
+    },
+    {
+      "name": "_default_colors",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-_default_colors",
+      "is_method": true
+    },
+    {
+      "name": "title_font",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-title_font",
+      "is_method": true
+    },
+    {
+      "name": "label_font",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-label_font",
+      "is_method": true
+    },
+    {
+      "name": "legend_font",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-legend_font",
+      "is_method": true
+    },
+    {
+      "name": "set_data",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-set_data",
+      "is_method": true
+    },
+    {
+      "name": "_recalc",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-_recalc",
+      "is_method": true
+    },
+    {
+      "name": "_get_color",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-_get_color",
+      "is_method": true
+    },
+    {
+      "name": "_get_point_color",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-_get_point_color",
+      "is_method": true
+    },
+    {
+      "name": "_shadow_color",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-_shadow_color",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-render",
+      "is_method": true
+    },
+    {
+      "name": "_render_bar",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-_render_bar",
+      "is_method": true
+    },
+    {
+      "name": "_render_pie",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-_render_pie",
+      "is_method": true
+    },
+    {
+      "name": "_render_line",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-_render_line",
+      "is_method": true
+    },
+    {
+      "name": "_render_scatter",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-_render_scatter",
+      "is_method": true
+    },
+    {
+      "name": "_render_radar",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-_render_radar",
+      "is_method": true
+    },
+    {
+      "name": "_render_legend",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-chartvisualizer-_render_legend",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_sm",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_sm",
+      "is_method": true
+    },
+    {
+      "name": "bar_spacing",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-bar_spacing",
+      "is_method": true
+    },
+    {
+      "name": "circle_thickness",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-circle_thickness",
+      "is_method": true
+    },
+    {
+      "name": "_get_init_args",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_get_init_args",
+      "is_method": true
+    },
+    {
+      "name": "_initialize_audio_data",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_initialize_audio_data",
+      "is_method": true
+    },
+    {
+      "name": "_generate_gradient_surface",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_generate_gradient_surface",
+      "is_method": true
+    },
+    {
+      "name": "_interpolate_gradient",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_interpolate_gradient",
+      "is_method": true
+    },
+    {
+      "name": "set_style",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-set_style",
+      "is_method": true
+    },
+    {
+      "name": "set_source",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-set_source",
+      "is_method": true
+    },
+    {
+      "name": "set_color_gradient",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-set_color_gradient",
+      "is_method": true
+    },
+    {
+      "name": "set_sensitivity",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-set_sensitivity",
+      "is_method": true
+    },
+    {
+      "name": "set_smoothing",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-set_smoothing",
+      "is_method": true
+    },
+    {
+      "name": "_get_audio_data",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_get_audio_data",
+      "is_method": true
+    },
+    {
+      "name": "_process_audio_data",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_process_audio_data",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-update",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-render",
+      "is_method": true
+    },
+    {
+      "name": "_render_bars",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_render_bars",
+      "is_method": true
+    },
+    {
+      "name": "_render_waveform",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_render_waveform",
+      "is_method": true
+    },
+    {
+      "name": "_render_circle",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_render_circle",
+      "is_method": true
+    },
+    {
+      "name": "_render_particles",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_render_particles",
+      "is_method": true
+    },
+    {
+      "name": "_render_spectrum",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_render_spectrum",
+      "is_method": true
+    },
+    {
+      "name": "_get_bar_color",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_get_bar_color",
+      "is_method": true
+    },
+    {
+      "name": "_get_waveform_color",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_get_waveform_color",
+      "is_method": true
+    },
+    {
+      "name": "_get_circle_color",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_get_circle_color",
+      "is_method": true
+    },
+    {
+      "name": "_get_particle_color",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_get_particle_color",
+      "is_method": true
+    },
+    {
+      "name": "_get_spectrum_color",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-audiovisualizer-_get_spectrum_color",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_sm",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-_sm",
+      "is_method": true
+    },
+    {
+      "name": "_get_init_args",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-_get_init_args",
+      "is_method": true
+    },
+    {
+      "name": "font",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-font",
+      "is_method": true
+    },
+    {
+      "name": "update_theme",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-update_theme",
+      "is_method": true
+    },
+    {
+      "name": "_recalc",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-_recalc",
+      "is_method": true
+    },
+    {
+      "name": "_get_image_surface",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-_get_image_surface",
+      "is_method": true
+    },
+    {
+      "name": "_draw_cell_image",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-_draw_cell_image",
+      "is_method": true
+    },
+    {
+      "name": "add_column",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-add_column",
+      "is_method": true
+    },
+    {
+      "name": "insert_column",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-insert_column",
+      "is_method": true
+    },
+    {
+      "name": "remove_column",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-remove_column",
+      "is_method": true
+    },
+    {
+      "name": "add_row",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-add_row",
+      "is_method": true
+    },
+    {
+      "name": "insert_row",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-insert_row",
+      "is_method": true
+    },
+    {
+      "name": "remove_row",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-remove_row",
+      "is_method": true
+    },
+    {
+      "name": "set_cell",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-set_cell",
+      "is_method": true
+    },
+    {
+      "name": "get_cell",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-get_cell",
+      "is_method": true
+    },
+    {
+      "name": "clear",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-clear",
+      "is_method": true
+    },
+    {
+      "name": "select_row",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-select_row",
+      "is_method": true
+    },
+    {
+      "name": "_content_height",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-_content_height",
+      "is_method": true
+    },
+    {
+      "name": "_max_scroll_y",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-_max_scroll_y",
+      "is_method": true
+    },
+    {
+      "name": "_scrollbar_rect",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-_scrollbar_rect",
+      "is_method": true
+    },
+    {
+      "name": "on_scroll",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-on_scroll",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-update",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-render",
+      "is_method": true
+    },
+    {
+      "name": "on_click",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/misc.html#method-table-on_click",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/progress.html#method-progressbar-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_sm",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/progress.html#method-progressbar-_sm",
+      "is_method": true
+    },
+    {
+      "name": "segment_gap",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/progress.html#method-progressbar-segment_gap",
+      "is_method": true
+    },
+    {
+      "name": "segment_gap",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/progress.html#method-progressbar-segment_gap",
+      "is_method": true
+    },
+    {
+      "name": "_get_init_args",
+      "class": "ProgressBar",
+      "module": "ui",
+      "description": "No documentation",
       "link": "ui/elements/progress.html#method-progressbar-_get_init_args",
       "is_method": true
     },
@@ -7994,7 +10426,7 @@
       "name": "set_background_color",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Set the background (empty part) color.",
+      "description": "No documentation",
       "link": "ui/elements/progress.html#method-progressbar-set_background_color",
       "is_method": true
     },
@@ -8002,7 +10434,7 @@
       "name": "set_foreground_color",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Set the foreground (filled part) color.",
+      "description": "No documentation",
       "link": "ui/elements/progress.html#method-progressbar-set_foreground_color",
       "is_method": true
     },
@@ -8010,7 +10442,7 @@
       "name": "set_font_color",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Set the color of the percentage text.",
+      "description": "No documentation",
       "link": "ui/elements/progress.html#method-progressbar-set_font_color",
       "is_method": true
     },
@@ -8018,7 +10450,7 @@
       "name": "set_font",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Set a custom font for the percentage text.",
+      "description": "No documentation",
       "link": "ui/elements/progress.html#method-progressbar-set_font",
       "is_method": true
     },
@@ -8026,7 +10458,7 @@
       "name": "set_border_color",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Set the border color (only used in default style).",
+      "description": "No documentation",
       "link": "ui/elements/progress.html#method-progressbar-set_border_color",
       "is_method": true
     },
@@ -8034,7 +10466,7 @@
       "name": "update_theme",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Apply a new theme to the progress bar.",
+      "description": "No documentation",
       "link": "ui/elements/progress.html#method-progressbar-update_theme",
       "is_method": true
     },
@@ -8042,7 +10474,7 @@
       "name": "set_value",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Update the current progress value (clamped to min/max).",
+      "description": "No documentation",
       "link": "ui/elements/progress.html#method-progressbar-set_value",
       "is_method": true
     },
@@ -8050,7 +10482,7 @@
       "name": "set_max_value",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Update the maximum progress value (clamped to min/max).",
+      "description": "No documentation",
       "link": "ui/elements/progress.html#method-progressbar-set_max_value",
       "is_method": true
     },
@@ -8058,7 +10490,7 @@
       "name": "set_min_value",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Update the minimum progress value (clamped to min/max).",
+      "description": "No documentation",
       "link": "ui/elements/progress.html#method-progressbar-set_min_value",
       "is_method": true
     },
@@ -8066,7 +10498,7 @@
       "name": "get_percentage",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Return the current progress as a percentage (0-100).",
+      "description": "No documentation",
       "link": "ui/elements/progress.html#method-progressbar-get_percentage",
       "is_method": true
     },
@@ -8074,7 +10506,7 @@
       "name": "_get_soundpad_color",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Get a gradient color for soundpad style (t in [0,1]).",
+      "description": "No documentation",
       "link": "ui/elements/progress.html#method-progressbar-_get_soundpad_color",
       "is_method": true
     },
@@ -8082,7 +10514,7 @@
       "name": "render",
       "class": "ProgressBar",
       "module": "ui",
-      "description": "Render the progress bar.",
+      "description": "No documentation",
       "link": "ui/elements/progress.html#method-progressbar-render",
       "is_method": true
     },
@@ -8106,7 +10538,7 @@
       "name": "on_activate",
       "class": "Select",
       "module": "ui",
-      "description": "Enter or exit manipulation mode.",
+      "description": "No documentation",
       "link": "ui/elements/selectors.html#method-select-on_activate",
       "is_method": true
     },
@@ -8322,7 +10754,7 @@
       "name": "on_activate",
       "class": "Slider",
       "module": "ui",
-      "description": "Enter or exit manipulation mode.",
+      "description": "No documentation",
       "link": "ui/elements/selectors.html#method-slider-on_activate",
       "is_method": true
     },
@@ -8399,11 +10831,43 @@
       "is_method": true
     },
     {
+      "name": "_scaled_option_height",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/selectors.html#method-dropdown-_scaled_option_height",
+      "is_method": true
+    },
+    {
+      "name": "_scaled_scrollbar_width",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/selectors.html#method-dropdown-_scaled_scrollbar_width",
+      "is_method": true
+    },
+    {
+      "name": "_scaled_search_box_height",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/selectors.html#method-dropdown-_scaled_search_box_height",
+      "is_method": true
+    },
+    {
       "name": "can_focus",
       "class": "Dropdown",
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/selectors.html#method-dropdown-can_focus",
+      "is_method": true
+    },
+    {
+      "name": "label_font",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/selectors.html#method-dropdown-label_font",
       "is_method": true
     },
     {
@@ -8442,7 +10906,7 @@
       "name": "set_on_expanded",
       "class": "Dropdown",
       "module": "ui",
-      "description": "Register a callback that is called when the dropdown expands or collapses.",
+      "description": "No documentation",
       "link": "ui/elements/selectors.html#method-dropdown-set_on_expanded",
       "is_method": true
     },
@@ -8466,7 +10930,7 @@
       "name": "_get_expanded_height",
       "class": "Dropdown",
       "module": "ui",
-      "description": "No documentation",
+      "description": "Return the expanded portion of the height using scaled internal metrics.",
       "link": "ui/elements/selectors.html#method-dropdown-_get_expanded_height",
       "is_method": true
     },
@@ -8474,7 +10938,7 @@
       "name": "_update_expanded_height",
       "class": "Dropdown",
       "module": "ui",
-      "description": "Recalculate the expanded height based on options and search box.",
+      "description": "No documentation",
       "link": "ui/elements/selectors.html#method-dropdown-_update_expanded_height",
       "is_method": true
     },
@@ -8482,7 +10946,7 @@
       "name": "_notify_parent_rearrange",
       "class": "Dropdown",
       "module": "ui",
-      "description": "Mark the nearest parent with auto_arrange_y as dirty.",
+      "description": "No documentation",
       "link": "ui/elements/selectors.html#method-dropdown-_notify_parent_rearrange",
       "is_method": true
     },
@@ -8508,6 +10972,30 @@
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/selectors.html#method-dropdown-_on_search_text_changed",
+      "is_method": true
+    },
+    {
+      "name": "on_key_down",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Route keyboard editing to the focused inline search editor.<br><br>The editor is intentionally not a generic child, so Scene registers the<br>Dropdown as its keyboard representative while pointer capture remains<br>owned by the Dropdown.",
+      "link": "ui/elements/selectors.html#method-dropdown-on_key_down",
+      "is_method": true
+    },
+    {
+      "name": "on_key_up",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/selectors.html#method-dropdown-on_key_up",
+      "is_method": true
+    },
+    {
+      "name": "_prepare_hit_test",
+      "class": "Dropdown",
+      "module": "ui",
+      "description": "Synchronize the expanded search child before pointer capture.<br><br>Pointer capture is resolved before the normal per-frame update. The<br>search box used to remain invisible or retain its previous geometry at<br>that point, allowing the Dropdown parent to capture the click first.",
+      "link": "ui/elements/selectors.html#method-dropdown-_prepare_hit_test",
       "is_method": true
     },
     {
@@ -8687,10 +11175,26 @@
       "is_method": true
     },
     {
+      "name": "label_font",
+      "class": "NumberSelector",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/selectors.html#method-numberselector-label_font",
+      "is_method": true
+    },
+    {
+      "name": "value_font",
+      "class": "NumberSelector",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/selectors.html#method-numberselector-value_font",
+      "is_method": true
+    },
+    {
       "name": "on_activate",
       "class": "NumberSelector",
       "module": "ui",
-      "description": "Enter or exit manipulation mode.",
+      "description": "No documentation",
       "link": "ui/elements/selectors.html#method-numberselector-on_activate",
       "is_method": true
     },
@@ -8762,7 +11266,7 @@
       "name": "_calculate_rects",
       "class": "NumberSelector",
       "module": "ui",
-      "description": "No documentation",
+      "description": "Compute design-time rects for label/control/up/down buttons (unchanged by ratio).",
       "link": "ui/elements/selectors.html#method-numberselector-_calculate_rects",
       "is_method": true
     },
@@ -8812,6 +11316,14 @@
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/selectors.html#method-checkbox-can_focus",
+      "is_method": true
+    },
+    {
+      "name": "font",
+      "class": "Checkbox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/selectors.html#method-checkbox-font",
       "is_method": true
     },
     {
@@ -8903,6 +11415,14 @@
       "is_method": true
     },
     {
+      "name": "_sm",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/textinputs.html#method-textbox-_sm",
+      "is_method": true
+    },
+    {
       "name": "_get_init_args",
       "class": "TextBox",
       "module": "ui",
@@ -8914,7 +11434,7 @@
       "name": "set_on_text_changed",
       "class": "TextBox",
       "module": "ui",
-      "description": "Set a callback to be invoked when the text changes.",
+      "description": "No documentation",
       "link": "ui/elements/textinputs.html#method-textbox-set_on_text_changed",
       "is_method": true
     },
@@ -8946,7 +11466,7 @@
       "name": "_update_layout",
       "class": "TextBox",
       "module": "ui",
-      "description": "Recalculate label and input rectangles based on current settings.",
+      "description": "No documentation",
       "link": "ui/elements/textinputs.html#method-textbox-_update_layout",
       "is_method": true
     },
@@ -9007,6 +11527,70 @@
       "is_method": true
     },
     {
+      "name": "_selection_bounds",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/textinputs.html#method-textbox-_selection_bounds",
+      "is_method": true
+    },
+    {
+      "name": "_selected_text",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/textinputs.html#method-textbox-_selected_text",
+      "is_method": true
+    },
+    {
+      "name": "_clear_selection",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/textinputs.html#method-textbox-_clear_selection",
+      "is_method": true
+    },
+    {
+      "name": "_delete_selection",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/textinputs.html#method-textbox-_delete_selection",
+      "is_method": true
+    },
+    {
+      "name": "copy",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/textinputs.html#method-textbox-copy",
+      "is_method": true
+    },
+    {
+      "name": "cut",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/textinputs.html#method-textbox-cut",
+      "is_method": true
+    },
+    {
+      "name": "paste",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/textinputs.html#method-textbox-paste",
+      "is_method": true
+    },
+    {
+      "name": "select_all",
+      "class": "TextBox",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/textinputs.html#method-textbox-select_all",
+      "is_method": true
+    },
+    {
       "name": "on_key_down",
       "class": "TextBox",
       "module": "ui",
@@ -9058,7 +11642,7 @@
       "name": "_render_text_content",
       "class": "TextBox",
       "module": "ui",
-      "description": "Render actual text or placeholder inside the input area.",
+      "description": "No documentation",
       "link": "ui/elements/textinputs.html#method-textbox-_render_text_content",
       "is_method": true
     },
@@ -9066,7 +11650,7 @@
       "name": "_get_cursor_position",
       "class": "TextBox",
       "module": "ui",
-      "description": "Compute screen position of the cursor.",
+      "description": "No documentation",
       "link": "ui/elements/textinputs.html#method-textbox-_get_cursor_position",
       "is_method": true
     },
@@ -9084,6 +11668,14 @@
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/textinputs.html#method-textarea-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_sm",
+      "class": "TextArea",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/textinputs.html#method-textarea-_sm",
       "is_method": true
     },
     {
@@ -9178,7 +11770,7 @@
       "name": "_get_text_width",
       "class": "TextArea",
       "module": "ui",
-      "description": "Return the exact pixel width of a string using the current font.",
+      "description": "No documentation",
       "link": "ui/elements/textinputs.html#method-textarea-_get_text_width",
       "is_method": true
     },
@@ -9186,7 +11778,7 @@
       "name": "_get_char_width_at_position",
       "class": "TextArea",
       "module": "ui",
-      "description": "Return the pixel width of the character at the given column.",
+      "description": "No documentation",
       "link": "ui/elements/textinputs.html#method-textarea-_get_char_width_at_position",
       "is_method": true
     },
@@ -9335,6 +11927,62 @@
       "is_method": true
     },
     {
+      "name": "_sm",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/visualizers.html#method-chartvisualizer-_sm",
+      "is_method": true
+    },
+    {
+      "name": "padding",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/visualizers.html#method-chartvisualizer-padding",
+      "is_method": true
+    },
+    {
+      "name": "bar_spacing",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/visualizers.html#method-chartvisualizer-bar_spacing",
+      "is_method": true
+    },
+    {
+      "name": "line_width",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/visualizers.html#method-chartvisualizer-line_width",
+      "is_method": true
+    },
+    {
+      "name": "point_radius",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/visualizers.html#method-chartvisualizer-point_radius",
+      "is_method": true
+    },
+    {
+      "name": "shadow_offset",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/visualizers.html#method-chartvisualizer-shadow_offset",
+      "is_method": true
+    },
+    {
+      "name": "shadow_offset",
+      "class": "ChartVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/visualizers.html#method-chartvisualizer-shadow_offset",
+      "is_method": true
+    },
+    {
       "name": "_get_init_args",
       "class": "ChartVisualizer",
       "module": "ui",
@@ -9418,16 +12066,8 @@
       "name": "_shadow_color",
       "class": "ChartVisualizer",
       "module": "ui",
-      "description": "Return a shadow version of the color (darker, with alpha).",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-chartvisualizer-_shadow_color",
-      "is_method": true
-    },
-    {
-      "name": "_draw_element_shadow",
-      "class": "ChartVisualizer",
-      "module": "ui",
-      "description": "Draws a shadow version of an element by shifting it and using a shadow color.<br>The draw_func is called with offset coordinates and a shadow color.",
-      "link": "ui/elements/visualizers.html#method-chartvisualizer-_draw_element_shadow",
       "is_method": true
     },
     {
@@ -9492,6 +12132,30 @@
       "module": "ui",
       "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-audiovisualizer-__init__",
+      "is_method": true
+    },
+    {
+      "name": "_sm",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/visualizers.html#method-audiovisualizer-_sm",
+      "is_method": true
+    },
+    {
+      "name": "bar_spacing",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/visualizers.html#method-audiovisualizer-bar_spacing",
+      "is_method": true
+    },
+    {
+      "name": "circle_thickness",
+      "class": "AudioVisualizer",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/visualizers.html#method-audiovisualizer-circle_thickness",
       "is_method": true
     },
     {
@@ -9687,6 +12351,14 @@
       "is_method": true
     },
     {
+      "name": "_sm",
+      "class": "Table",
+      "module": "ui",
+      "description": "No documentation",
+      "link": "ui/elements/visualizers.html#method-table-_sm",
+      "is_method": true
+    },
+    {
       "name": "_get_init_args",
       "class": "Table",
       "module": "ui",
@@ -9722,7 +12394,7 @@
       "name": "_get_image_surface",
       "class": "Table",
       "module": "ui",
-      "description": "Convert various image-like objects into a pygame.Surface.<br>Returns None if the data is not an image or loading fails.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-_get_image_surface",
       "is_method": true
     },
@@ -9730,7 +12402,7 @@
       "name": "_draw_cell_image",
       "class": "Table",
       "module": "ui",
-      "description": "Draw the image centered and scaled to fit inside the cell,<br>respecting cell_padding.",
+      "description": "No documentation",
       "link": "ui/elements/visualizers.html#method-table-_draw_cell_image",
       "is_method": true
     },
@@ -10440,6 +13112,230 @@
     },
     {
       "name": "__init__",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-__init__",
+      "is_method": true
+    },
+    {
+      "name": "source",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-source",
+      "is_method": true
+    },
+    {
+      "name": "scale",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-scale",
+      "is_method": true
+    },
+    {
+      "name": "size",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-size",
+      "is_method": true
+    },
+    {
+      "name": "alpha",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-alpha",
+      "is_method": true
+    },
+    {
+      "name": "flip_state",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-flip_state",
+      "is_method": true
+    },
+    {
+      "name": "rotation",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-rotation",
+      "is_method": true
+    },
+    {
+      "name": "_dirty",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-_dirty",
+      "is_method": true
+    },
+    {
+      "name": "set_scale",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-set_scale",
+      "is_method": true
+    },
+    {
+      "name": "set_size",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-set_size",
+      "is_method": true
+    },
+    {
+      "name": "set_alpha",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-set_alpha",
+      "is_method": true
+    },
+    {
+      "name": "set_source_rect",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-set_source_rect",
+      "is_method": true
+    },
+    {
+      "name": "set_filter",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-set_filter",
+      "is_method": true
+    },
+    {
+      "name": "clear_filters",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-clear_filters",
+      "is_method": true
+    },
+    {
+      "name": "set_mask",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-set_mask",
+      "is_method": true
+    },
+    {
+      "name": "set_flip",
+      "class": "Image",
+      "module": "graphics",
+      "description": "Mirror the image horizontally (flip_x) and/or vertically (flip_y).",
+      "link": "graphics/image.html#method-image-set_flip",
+      "is_method": true
+    },
+    {
+      "name": "flip",
+      "class": "Image",
+      "module": "graphics",
+      "description": "Flip the image: `x` mirrors left/right, `y` mirrors top/bottom.",
+      "link": "graphics/image.html#method-image-flip",
+      "is_method": true
+    },
+    {
+      "name": "set_rotation",
+      "class": "Image",
+      "module": "graphics",
+      "description": "Rotate counter-clockwise around the centre. `angle_type` is &#x27;Degree&#x27; or &#x27;Radian&#x27;.",
+      "link": "graphics/image.html#method-image-set_rotation",
+      "is_method": true
+    },
+    {
+      "name": "rotate",
+      "class": "Image",
+      "module": "graphics",
+      "description": "Rotate counter-clockwise around the centre (defaults to degrees).",
+      "link": "graphics/image.html#method-image-rotate",
+      "is_method": true
+    },
+    {
+      "name": "clear_transform",
+      "class": "Image",
+      "module": "graphics",
+      "description": "Reset any flip/rotation applied to this image.",
+      "link": "graphics/image.html#method-image-clear_transform",
+      "is_method": true
+    },
+    {
+      "name": "get_surface",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-get_surface",
+      "is_method": true
+    },
+    {
+      "name": "get_size",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-get_size",
+      "is_method": true
+    },
+    {
+      "name": "tostring",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-tostring",
+      "is_method": true
+    },
+    {
+      "name": "fromstring",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-fromstring",
+      "is_method": true
+    },
+    {
+      "name": "_apply_filter",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-_apply_filter",
+      "is_method": true
+    },
+    {
+      "name": "copy",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-copy",
+      "is_method": true
+    },
+    {
+      "name": "__getattr__",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-__getattr__",
+      "is_method": true
+    },
+    {
+      "name": "__repr__",
+      "class": "Image",
+      "module": "graphics",
+      "description": "No documentation",
+      "link": "graphics/image.html#method-image-__repr__",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
       "class": "Layer",
       "module": "graphics",
       "description": "No documentation",
@@ -10927,6 +13823,14 @@
       "is_method": true
     },
     {
+      "name": "get_image_at_rect",
+      "class": "SpriteSheet",
+      "module": "graphics",
+      "description": "Return an Image view of a sprite region; the legacy method returns a Surface.",
+      "link": "graphics/spritesheet.html#method-spritesheet-get_image_at_rect",
+      "is_method": true
+    },
+    {
       "name": "get_sprites_at_regions",
       "class": "SpriteSheet",
       "module": "graphics",
@@ -10940,6 +13844,14 @@
       "module": "graphics",
       "description": "Extract a sprite from a grid-based sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;cell_size (Tuple[int, int]): Width and height of each grid cell<br> &nbsp; &nbsp;grid_pos (Tuple[int, int]): Grid coordinates (col, row)<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface",
       "link": "graphics/spritesheet.html#method-spritesheet-get_sprite_grid",
+      "is_method": true
+    },
+    {
+      "name": "get_image_grid",
+      "class": "SpriteSheet",
+      "module": "graphics",
+      "description": "Return a grid frame as an Image without changing legacy return types.",
+      "link": "graphics/spritesheet.html#method-spritesheet-get_image_grid",
       "is_method": true
     },
     {
@@ -11727,6 +14639,30 @@
       "is_method": true
     },
     {
+      "name": "now",
+      "class": "Timer",
+      "module": "utils",
+      "description": "Return the wall-clock source used by Timer for elapsed durations.",
+      "link": "utils/timer.html#method-timer-now",
+      "is_method": true
+    },
+    {
+      "name": "ready",
+      "class": "Timer",
+      "module": "utils",
+      "description": "Return True once per ``duration`` seconds for a named cooldown.<br><br>A missing cooldown is created and returns True. Once the deadline is<br>reached, the deadline is advanced and True is returned. This is a<br>nonblocking one-line check suitable for gameplay cooldowns and input<br>repeat logic.",
+      "link": "utils/timer.html#method-timer-ready",
+      "is_method": true
+    },
+    {
+      "name": "clear_ready",
+      "class": "Timer",
+      "module": "utils",
+      "description": "Remove a named cooldown without affecting ordinary timers.",
+      "link": "utils/timer.html#method-timer-clear_ready",
+      "is_method": true
+    },
+    {
       "name": "add",
       "class": "Timer",
       "module": "utils",
@@ -11842,7 +14778,7 @@
       "name": "wait_for_end",
       "class": "Timer",
       "module": "utils",
-      "description": "Block until a timer completes.<br><br>Warning: This blocks the main thread! Use sparingly.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the timer to wait for<br> &nbsp; &nbsp;timeout (float): Maximum time to wait in seconds (0 = no timeout)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if timer completed, False if timeout reached or timer doesn&#x27;t exist<br> &nbsp; &nbsp;<br>Example:<br> &nbsp; &nbsp;&gt;&gt;&gt; timer.add(&quot;wait_test&quot;, 3.0)<br> &nbsp; &nbsp;&gt;&gt;&gt; timer.wait_for_end(&quot;wait_test&quot;) &nbsp;# Blocks for 3 seconds",
+      "description": "Compatibility helper that performs a nonblocking completion check.<br><br>The old implementation blocked and slept, which is unsafe in a game<br>loop. Callers should poll this method or use :meth:`ready` instead.<br>``timeout`` is retained for source compatibility and is not needed for<br>a single nonblocking check.",
       "link": "utils/timer.html#method-timer-wait_for_end",
       "is_method": true
     },
@@ -12220,382 +15156,6 @@
       "module": "backend",
       "description": "No documentation",
       "link": "backend/exceptions.html#method-openglinitializationerror-__init__",
-      "is_method": true
-    },
-    {
-      "name": "to_dict",
-      "class": "NetworkMessage",
-      "module": "backend",
-      "description": "Convert to dictionary for JSON serialization",
-      "link": "backend/network.html#method-networkmessage-to_dict",
-      "is_method": true
-    },
-    {
-      "name": "from_dict",
-      "class": "NetworkMessage",
-      "module": "backend",
-      "description": "Create from dictionary",
-      "link": "backend/network.html#method-networkmessage-from_dict",
-      "is_method": true
-    },
-    {
-      "name": "__init__",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/network.html#method-networkclient-__init__",
-      "is_method": true
-    },
-    {
-      "name": "connect",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "Connect to server with timeout",
-      "link": "backend/network.html#method-networkclient-connect",
-      "is_method": true
-    },
-    {
-      "name": "disconnect",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "Disconnect from server",
-      "link": "backend/network.html#method-networkclient-disconnect",
-      "is_method": true
-    },
-    {
-      "name": "send",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "Send message to server",
-      "link": "backend/network.html#method-networkclient-send",
-      "is_method": true
-    },
-    {
-      "name": "_send_raw",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "Send raw data to server",
-      "link": "backend/network.html#method-networkclient-_send_raw",
-      "is_method": true
-    },
-    {
-      "name": "_receive_loop",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "Receive messages in a loop",
-      "link": "backend/network.html#method-networkclient-_receive_loop",
-      "is_method": true
-    },
-    {
-      "name": "_handle_message",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "Handle incoming message",
-      "link": "backend/network.html#method-networkclient-_handle_message",
-      "is_method": true
-    },
-    {
-      "name": "_ping_loop",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "Send periodic ping to keep connection alive",
-      "link": "backend/network.html#method-networkclient-_ping_loop",
-      "is_method": true
-    },
-    {
-      "name": "_send_pong",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "Send pong response to a ping",
-      "link": "backend/network.html#method-networkclient-_send_pong",
-      "is_method": true
-    },
-    {
-      "name": "register_callback",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "Register callback for specific message type",
-      "link": "backend/network.html#method-networkclient-register_callback",
-      "is_method": true
-    },
-    {
-      "name": "get_message",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "Get message from queue with timeout",
-      "link": "backend/network.html#method-networkclient-get_message",
-      "is_method": true
-    },
-    {
-      "name": "__enter__",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/network.html#method-networkclient-__enter__",
-      "is_method": true
-    },
-    {
-      "name": "__exit__",
-      "class": "NetworkClient",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/network.html#method-networkclient-__exit__",
-      "is_method": true
-    },
-    {
-      "name": "__init__",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/network.html#method-networkserver-__init__",
-      "is_method": true
-    },
-    {
-      "name": "start",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Start the server",
-      "link": "backend/network.html#method-networkserver-start",
-      "is_method": true
-    },
-    {
-      "name": "stop",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Stop the server",
-      "link": "backend/network.html#method-networkserver-stop",
-      "is_method": true
-    },
-    {
-      "name": "_accept_connections",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Accept incoming connections (non-blocking)",
-      "link": "backend/network.html#method-networkserver-_accept_connections",
-      "is_method": true
-    },
-    {
-      "name": "_handle_client",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Handle communication with a single client",
-      "link": "backend/network.html#method-networkserver-_handle_client",
-      "is_method": true
-    },
-    {
-      "name": "_process_client_message",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Process message from client",
-      "link": "backend/network.html#method-networkserver-_process_client_message",
-      "is_method": true
-    },
-    {
-      "name": "_handle_auth",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Handle client authentication",
-      "link": "backend/network.html#method-networkserver-_handle_auth",
-      "is_method": true
-    },
-    {
-      "name": "_send_pong",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Send pong response to client ping",
-      "link": "backend/network.html#method-networkserver-_send_pong",
-      "is_method": true
-    },
-    {
-      "name": "_send_to_client",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Send data to specific client",
-      "link": "backend/network.html#method-networkserver-_send_to_client",
-      "is_method": true
-    },
-    {
-      "name": "broadcast",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Broadcast data to all connected clients",
-      "link": "backend/network.html#method-networkserver-broadcast",
-      "is_method": true
-    },
-    {
-      "name": "_send_error",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Send error message to client",
-      "link": "backend/network.html#method-networkserver-_send_error",
-      "is_method": true
-    },
-    {
-      "name": "_disconnect_client",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Disconnect and clean up client",
-      "link": "backend/network.html#method-networkserver-_disconnect_client",
-      "is_method": true
-    },
-    {
-      "name": "get_client_count",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Get number of connected clients",
-      "link": "backend/network.html#method-networkserver-get_client_count",
-      "is_method": true
-    },
-    {
-      "name": "get_client_ids",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Get list of connected client IDs",
-      "link": "backend/network.html#method-networkserver-get_client_ids",
-      "is_method": true
-    },
-    {
-      "name": "register_callback",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Register callback for specific message type",
-      "link": "backend/network.html#method-networkserver-register_callback",
-      "is_method": true
-    },
-    {
-      "name": "get_message",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Get message from queue with timeout",
-      "link": "backend/network.html#method-networkserver-get_message",
-      "is_method": true
-    },
-    {
-      "name": "enable_auth",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Enable authentication with provided tokens",
-      "link": "backend/network.html#method-networkserver-enable_auth",
-      "is_method": true
-    },
-    {
-      "name": "generate_auth_token",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "Generate a new authentication token",
-      "link": "backend/network.html#method-networkserver-generate_auth_token",
-      "is_method": true
-    },
-    {
-      "name": "__enter__",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/network.html#method-networkserver-__enter__",
-      "is_method": true
-    },
-    {
-      "name": "__exit__",
-      "class": "NetworkServer",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/network.html#method-networkserver-__exit__",
-      "is_method": true
-    },
-    {
-      "name": "__init__",
-      "class": "NetworkHost",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/network.html#method-networkhost-__init__",
-      "is_method": true
-    },
-    {
-      "name": "start",
-      "class": "NetworkHost",
-      "module": "backend",
-      "description": "Start the host (server + connect as client)",
-      "link": "backend/network.html#method-networkhost-start",
-      "is_method": true
-    },
-    {
-      "name": "_run_server",
-      "class": "NetworkHost",
-      "module": "backend",
-      "description": "Run the server (called in thread)",
-      "link": "backend/network.html#method-networkhost-_run_server",
-      "is_method": true
-    },
-    {
-      "name": "stop",
-      "class": "NetworkHost",
-      "module": "backend",
-      "description": "Stop the host",
-      "link": "backend/network.html#method-networkhost-stop",
-      "is_method": true
-    },
-    {
-      "name": "send_as_host",
-      "class": "NetworkHost",
-      "module": "backend",
-      "description": "Send message as host client",
-      "link": "backend/network.html#method-networkhost-send_as_host",
-      "is_method": true
-    },
-    {
-      "name": "broadcast_as_server",
-      "class": "NetworkHost",
-      "module": "backend",
-      "description": "Broadcast message as server to all clients",
-      "link": "backend/network.html#method-networkhost-broadcast_as_server",
-      "is_method": true
-    },
-    {
-      "name": "send_to_client",
-      "class": "NetworkHost",
-      "module": "backend",
-      "description": "Send message to specific client as server",
-      "link": "backend/network.html#method-networkhost-send_to_client",
-      "is_method": true
-    },
-    {
-      "name": "get_message",
-      "class": "NetworkHost",
-      "module": "backend",
-      "description": "Get message from queue with timeout",
-      "link": "backend/network.html#method-networkhost-get_message",
-      "is_method": true
-    },
-    {
-      "name": "get_client_count",
-      "class": "NetworkHost",
-      "module": "backend",
-      "description": "Get number of connected clients (excluding host client)",
-      "link": "backend/network.html#method-networkhost-get_client_count",
-      "is_method": true
-    },
-    {
-      "name": "get_client_ids",
-      "class": "NetworkHost",
-      "module": "backend",
-      "description": "Get list of connected client IDs (excluding host client)",
-      "link": "backend/network.html#method-networkhost-get_client_ids",
-      "is_method": true
-    },
-    {
-      "name": "__enter__",
-      "class": "NetworkHost",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/network.html#method-networkhost-__enter__",
-      "is_method": true
-    },
-    {
-      "name": "__exit__",
-      "class": "NetworkHost",
-      "module": "backend",
-      "description": "No documentation",
-      "link": "backend/network.html#method-networkhost-__exit__",
       "is_method": true
     },
     {
@@ -13759,10 +16319,42 @@
       "is_method": true
     },
     {
+      "name": "capture_pointer",
+      "class": "InputState",
+      "module": "backend",
+      "description": "Capture the current left-button pointer sequence for one element.",
+      "link": "backend/types.html#method-inputstate-capture_pointer",
+      "is_method": true
+    },
+    {
+      "name": "release_pointer",
+      "class": "InputState",
+      "module": "backend",
+      "description": "Release the current pointer capture.",
+      "link": "backend/types.html#method-inputstate-release_pointer",
+      "is_method": true
+    },
+    {
+      "name": "is_pointer_captured_by",
+      "class": "InputState",
+      "module": "backend",
+      "description": "No documentation",
+      "link": "backend/types.html#method-inputstate-is_pointer_captured_by",
+      "is_method": true
+    },
+    {
+      "name": "pointer_is_blocked_for",
+      "class": "InputState",
+      "module": "backend",
+      "description": "True when another unrelated element owns this pointer sequence.",
+      "link": "backend/types.html#method-inputstate-pointer_is_blocked_for",
+      "is_method": true
+    },
+    {
       "name": "consume_global_mouse",
       "class": "InputState",
       "module": "backend",
-      "description": "Mark that a mouse event has been handled globally.",
+      "description": "Legacy compatibility marker; pointer capture is the authoritative owner.",
       "link": "backend/types.html#method-inputstate-consume_global_mouse",
       "is_method": true
     },
@@ -14456,6 +17048,46 @@
     },
     {
       "name": "__init__",
+      "class": "_ConsoleCommandTextArea",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-_consolecommandtextarea-__init__",
+      "is_method": true
+    },
+    {
+      "name": "on_text_input",
+      "class": "_ConsoleCommandTextArea",
+      "module": "misc",
+      "description": "Ignore TEXTINPUT; console insertion is owned by ``on_key_down``.",
+      "link": "misc/debug.html#method-_consolecommandtextarea-on_text_input",
+      "is_method": true
+    },
+    {
+      "name": "on_key_down",
+      "class": "_ConsoleCommandTextArea",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-_consolecommandtextarea-on_key_down",
+      "is_method": true
+    },
+    {
+      "name": "on_key_up",
+      "class": "_ConsoleCommandTextArea",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-_consolecommandtextarea-on_key_up",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "_ConsoleCommandTextArea",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-_consolecommandtextarea-update",
+      "is_method": true
+    },
+    {
+      "name": "__init__",
       "class": "LiveInspector",
       "module": "misc",
       "description": "No documentation",
@@ -14492,6 +17124,38 @@
       "module": "misc",
       "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-close",
+      "is_method": true
+    },
+    {
+      "name": "_update_titlebar_rects",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "Position titlebar controls and return the absolute header rect.",
+      "link": "misc/debug.html#method-liveinspector-_update_titlebar_rects",
+      "is_method": true
+    },
+    {
+      "name": "_handle_titlebar_input",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "Handle inspector controls before UiFrame can start a drag.",
+      "link": "misc/debug.html#method-liveinspector-_handle_titlebar_input",
+      "is_method": true
+    },
+    {
+      "name": "update",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-update",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-render",
       "is_method": true
     },
     {
@@ -14540,6 +17204,22 @@
       "module": "misc",
       "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-_setup_custom_tab",
+      "is_method": true
+    },
+    {
+      "name": "_console_namespace",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "Build the intentionally small, import-free console namespace.",
+      "link": "misc/debug.html#method-liveinspector-_console_namespace",
+      "is_method": true
+    },
+    {
+      "name": "_execute_console_command",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_execute_console_command",
       "is_method": true
     },
     {
@@ -14644,6 +17324,14 @@
       "module": "misc",
       "description": "No documentation",
       "link": "misc/debug.html#method-liveinspector-_setup_settings_tab",
+      "is_method": true
+    },
+    {
+      "name": "_set_hot_reload",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_set_hot_reload",
       "is_method": true
     },
     {
@@ -14895,6 +17583,22 @@
       "is_method": true
     },
     {
+      "name": "_render_outline",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-_render_outline",
+      "is_method": true
+    },
+    {
+      "name": "render",
+      "class": "LiveInspector",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/debug.html#method-liveinspector-render",
+      "is_method": true
+    },
+    {
       "name": "_redirect_console_output",
       "class": "LiveInspector",
       "module": "misc",
@@ -15004,6 +17708,14 @@
       "module": "misc",
       "description": "Clear the internal cache, forcing fresh recolouring on next get_surface().",
       "link": "misc/icons.html#method-icon-clear_cache",
+      "is_method": true
+    },
+    {
+      "name": "as_image",
+      "class": "Icon",
+      "module": "misc",
+      "description": "Return this icon as a common Image while retaining get_surface compatibility.",
+      "link": "misc/icons.html#method-icon-as_image",
       "is_method": true
     },
     {
@@ -15580,6 +18292,158 @@
       "module": "misc",
       "description": "No documentation",
       "link": "misc/icons.html#method-icons-fire",
+      "is_method": true
+    },
+    {
+      "name": "STOP",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-stop",
+      "is_method": true
+    },
+    {
+      "name": "VIDEO",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-video",
+      "is_method": true
+    },
+    {
+      "name": "WALL",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-wall",
+      "is_method": true
+    },
+    {
+      "name": "WORLDMAP",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-worldmap",
+      "is_method": true
+    },
+    {
+      "name": "BUILD",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-build",
+      "is_method": true
+    },
+    {
+      "name": "CIRCUIT",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-circuit",
+      "is_method": true
+    },
+    {
+      "name": "CPU",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-cpu",
+      "is_method": true
+    },
+    {
+      "name": "DOCUMENT",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-document",
+      "is_method": true
+    },
+    {
+      "name": "IMAGE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-image",
+      "is_method": true
+    },
+    {
+      "name": "MAINTENANCE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-maintenance",
+      "is_method": true
+    },
+    {
+      "name": "MUSIC",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-music",
+      "is_method": true
+    },
+    {
+      "name": "PAUSE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-pause",
+      "is_method": true
+    },
+    {
+      "name": "PLAY",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-play",
+      "is_method": true
+    },
+    {
+      "name": "MOUSE",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-mouse",
+      "is_method": true
+    },
+    {
+      "name": "NETWORK",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-network",
+      "is_method": true
+    },
+    {
+      "name": "KEYBOARD",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-keyboard",
+      "is_method": true
+    },
+    {
+      "name": "BROWSER",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-browser",
+      "is_method": true
+    },
+    {
+      "name": "LIGHTBULB",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-lightbulb",
+      "is_method": true
+    },
+    {
+      "name": "OMEGA",
+      "class": "Icons",
+      "module": "misc",
+      "description": "No documentation",
+      "link": "misc/icons.html#method-icons-omega",
       "is_method": true
     },
     {
@@ -16369,5 +19233,5 @@
       "type": "example"
     }
   ],
-  "last_updated": "2026-09-14T16:30:18.044333"
+  "last_updated": "2026-09-26T12:41:57.915686"
 }

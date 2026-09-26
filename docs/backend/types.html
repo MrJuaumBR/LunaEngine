@@ -168,9 +168,25 @@
                 <code class="fs-6 fw-bold text-color-title">def __post_init__(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-inputstate-capture_pointer">
+                <code class="fs-6 fw-bold text-color-title">def capture_pointer(self: Any, element: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Capture the current left-button pointer sequence for one element.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-inputstate-release_pointer">
+                <code class="fs-6 fw-bold text-color-title">def release_pointer(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">Release the current pointer capture.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-inputstate-is_pointer_captured_by">
+                <code class="fs-6 fw-bold text-color-title">def is_pointer_captured_by(self: Any, element: Any) -> bool</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-inputstate-pointer_is_blocked_for">
+                <code class="fs-6 fw-bold text-color-title">def pointer_is_blocked_for(self: Any, element: Any) -> bool</code>
+                <div class="mt-2 text-muted small">True when another unrelated element owns this pointer sequence.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-inputstate-consume_global_mouse">
                 <code class="fs-6 fw-bold text-color-title">def consume_global_mouse(self: Any) -> Any</code>
-                <div class="mt-2 text-muted small">Mark that a mouse event has been handled globally.</div>
+                <div class="mt-2 text-muted small">Legacy compatibility marker; pointer capture is the authoritative owner.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-inputstate-is_global_mouse_consumed">
                 <code class="fs-6 fw-bold text-color-title">def is_global_mouse_consumed(self: Any) -> Any</code>
@@ -278,6 +294,9 @@
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>TOP: Any = 5</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>DEBUG_OVERLAY: Any = 6</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
@@ -617,7 +636,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>

@@ -4,12 +4,12 @@ import random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from lunaengine.core import Scene, LunaEngine # Core Items
-from lunaengine.ui.elements import * # UI Elements
-from lunaengine.graphics.particles import ParticleSystem, ParticleConfig, ExitPoint, PhysicsType  # Adicionar importações de partículas
+from lunaengine.ui import *
+from lunaengine.graphics.particles import ParticleSystem, ParticleConfig, ExitPoint, PhysicsType
+from lunaengine.backend import OpenGLRenderer
 import pygame
 
 class MainMenuScene(Scene):
-    CurrentTheme = ThemeType.EMERALD
     SnakeColor = (0, 255, 0)  # Default green snake
     
     def on_enter(self, previous_scene = None):
@@ -22,51 +22,52 @@ class MainMenuScene(Scene):
         super().__init__(engine)
         
         # Title
-        Ui_TitleLabel = TextLabel(512, 80, "Snake Game Demo", 72, pivot=(0.5, 0.5), theme=self.CurrentTheme)
-        self.ui_elements.append(Ui_TitleLabel)
+        Ui_TitleLabel = TextLabel(512, 80, "Snake Game Demo", 72, pivot=(0.5, 0.5))
+        self.add_ui_element(Ui_TitleLabel)
         
         # Play button
-        Ui_PlayButton = Button(512, 200, 200, 42, "[ Play ]", 40, pivot=(0.5, 0.5), theme=self.CurrentTheme)
+        Ui_PlayButton = Button(512, 200, 200, 42, "[ Play ]", 40, pivot=(0.5, 0.5))
         Ui_PlayButton.set_on_click(lambda: engine.set_scene("InGame"))
-        self.ui_elements.append(Ui_PlayButton)
+        self.add_ui_element(Ui_PlayButton)
         
         # Exit button
-        Ui_ExitButton = Button(512, 260, 200, 42, "[ Exit ]", 40, pivot=(0.5, 0.5), theme=self.CurrentTheme)
+        Ui_ExitButton = Button(512, 260, 200, 42, "[ Exit ]", 40, pivot=(0.5, 0.5))
         Ui_ExitButton.set_on_click(lambda: setattr(engine, 'running', False))
-        self.ui_elements.append(Ui_ExitButton)
+        self.add_ui_element(Ui_ExitButton)
         
         # Theme dropdown
-        Ui_ThemeDropdown = Dropdown(512, 330, 200, 30, engine.get_theme_names(), pivot=(0.5, 0.5), theme=self.CurrentTheme)
-        Ui_ThemeDropdown.set_on_selection_changed(lambda i, n: self.Ui_update_theme(n, engine))
-        self.ui_elements.append(Ui_ThemeDropdown)
+        Ui_ThemeDropdown = Dropdown(512, 330, 200, 30, engine.get_theme_names(), pivot=(0.5, 0.5))
+        # Ui_ThemeDropdown.set_on_selection_changed(lambda i, n: self.Ui_update_theme(n, engine))
+        Ui_ThemeDropdown.set_on_selection_changed(lambda i, t: self.engine.set_global_theme(t, True))
+        self.add_ui_element(Ui_ThemeDropdown)
         
         # Snake Color Customization Section
-        Ui_ColorLabel = TextLabel(512, 400, "Snake Color Customization", 28, pivot=(0.5, 0.5), theme=self.CurrentTheme)
-        self.ui_elements.append(Ui_ColorLabel)
+        Ui_ColorLabel = TextLabel(512, 400, "Snake Color Customization", 28, pivot=(0.5, 0.5))
+        self.add_ui_element(Ui_ColorLabel)
         
         # Red Slider
-        Ui_RedLabel = TextLabel(400, 450, "Red:", 20, pivot=(0, 0.5), theme=self.CurrentTheme)
-        self.ui_elements.append(Ui_RedLabel)
+        Ui_RedLabel = TextLabel(400, 450, "Red:", 20, pivot=(0, 0.5))
+        self.add_ui_element(Ui_RedLabel)
         
-        self.Ui_RedSlider = Slider(450, 450, 150, 20, 0, 255, self.SnakeColor[0], pivot=(0, 0.5), theme=self.CurrentTheme)
+        self.Ui_RedSlider = Slider(450, 450, 150, 20, 0, 255, self.SnakeColor[0], pivot=(0, 0.5))
         self.Ui_RedSlider.on_value_changed = lambda v: self.update_snake_color(0, int(v))
-        self.ui_elements.append(self.Ui_RedSlider)
+        self.add_ui_element(self.Ui_RedSlider)
         
         # Green Slider
-        Ui_GreenLabel = TextLabel(400, 490, "Green:", 20, pivot=(0, 0.5), theme=self.CurrentTheme)
-        self.ui_elements.append(Ui_GreenLabel)
+        Ui_GreenLabel = TextLabel(400, 490, "Green:", 20, pivot=(0, 0.5))
+        self.add_ui_element(Ui_GreenLabel)
         
-        self.Ui_GreenSlider = Slider(450, 490, 150, 20, 0, 255, self.SnakeColor[1], pivot=(0, 0.5), theme=self.CurrentTheme)
+        self.Ui_GreenSlider = Slider(450, 490, 150, 20, 0, 255, self.SnakeColor[1], pivot=(0, 0.5))
         self.Ui_GreenSlider.on_value_changed = lambda v: self.update_snake_color(1, int(v))
-        self.ui_elements.append(self.Ui_GreenSlider)
+        self.add_ui_element(self.Ui_GreenSlider)
         
         # Blue Slider
-        Ui_BlueLabel = TextLabel(400, 530, "Blue:", 20, pivot=(0, 0.5), theme=self.CurrentTheme)
-        self.ui_elements.append(Ui_BlueLabel)
+        Ui_BlueLabel = TextLabel(400, 530, "Blue:", 20, pivot=(0, 0.5))
+        self.add_ui_element(Ui_BlueLabel)
         
-        self.Ui_BlueSlider = Slider(450, 530, 150, 20, 0, 255, self.SnakeColor[2], pivot=(0, 0.5), theme=self.CurrentTheme)
+        self.Ui_BlueSlider = Slider(450, 530, 150, 20, 0, 255, self.SnakeColor[2], pivot=(0, 0.5))
         self.Ui_BlueSlider.on_value_changed = lambda v: self.update_snake_color(2, int(v))
-        self.ui_elements.append(self.Ui_BlueSlider)
+        self.add_ui_element(self.Ui_BlueSlider)
         
         
     def update_snake_color(self, channel: int, value: int):
@@ -75,15 +76,12 @@ class MainMenuScene(Scene):
         new_color[channel] = value
         self.SnakeColor = tuple(new_color)
         
-    def Ui_update_theme(self, n, engine: LunaEngine):
-        self.CurrentTheme = n
-        engine.set_global_theme(n)
-        
     def update(self, dt):
         pass
             
-    def render(self, renderer:Renderer):
+    def render(self, renderer:OpenGLRenderer):
         # Draw background
+        
         renderer.draw_rect(0, 0, 1024, 720, ThemeManager.get_theme(ThemeManager.get_current_theme()).background)
         
         # Color preview box
@@ -113,11 +111,10 @@ class InGameScene(Scene):
         # UI elements
         self.Ui_ScoreLabel = TextLabel(10, 10, f"Score: {self.score}", 24, pivot=(0, 0))
         self.Ui_InfoLabel = TextLabel(10, 40, "WASD/Arrows to move | ESC to menu", 18, pivot=(0, 0))
-        self.ui_elements.append(self.Ui_ScoreLabel)
-        self.ui_elements.append(self.Ui_InfoLabel)
+        self.add_ui_element(self.Ui_ScoreLabel)
+        self.add_ui_element(self.Ui_InfoLabel)
         
         # Particle system for apple flare effect
-        self.particle_system = ParticleSystem(max_particles=500)
         self.setup_apple_particles()
         
         # Register key events
@@ -196,8 +193,9 @@ class InGameScene(Scene):
     def emit_apple_particles(self):
         """Emit flare particles around the apple"""
         if hasattr(self, 'apple'):
-            apple_x = self.apple[0] * self.cell_size
-            apple_y = self.apple[1] * self.cell_size
+            apple_x, apple_y = self.camera.screen_to_world(pygame.Vector2(*self.apple) * self.cell_size).xy
+            apple_x += self.cell_size // 2
+            apple_y += self.cell_size // 2
             
             # Continuous glow effect
             self.particle_system.emit(
@@ -310,9 +308,6 @@ class InGameScene(Scene):
             self.update_snake()
             self.move_timer = 0
         
-        # Update particle system
-        self.particle_system.update(dt)
-        
         # Emit continuous apple particles (only if game is running)
         if not self.game_over:
             self.emit_apple_particles()
@@ -324,18 +319,17 @@ class InGameScene(Scene):
         if "MainMenu" in self.engine.scenes:
             self.snake_color = self.engine.scenes["MainMenu"].SnakeColor
     
-    def render(self, renderer: Renderer):
+    def render(self, renderer: OpenGLRenderer):
         # Draw background
         
         current_theme = ThemeManager.get_theme(ThemeManager.get_current_theme())
-        renderer.draw_rect(0, 0, 1024, 720, current_theme.background)
+        renderer.fill_screen(current_theme.background)
         
-        # Draw grid (optional, for visual reference)
-        grid_color = tuple(max(0, c - 20) for c in current_theme.background2)
-        for x in range(0, 1024, self.cell_size):
-            renderer.draw_line(x, 0, x, 720, grid_color)
-        for y in range(0, 720, self.cell_size):
-            renderer.draw_line(0, y, 1024, y, grid_color)
+        grid_color = tuple(max(0, c - 20) for c in current_theme.background2.color)
+        for x in range(0, int(self.WIDTH), self.cell_size):
+            renderer.draw_line(x, 0, x, self.HEIGHT, grid_color)
+        for y in range(0, int(self.HEIGHT), self.cell_size):
+            renderer.draw_line(0, y, self.WIDTH, y, grid_color)
         
         # Draw apple
         apple_x = self.apple[0] * self.cell_size
@@ -379,10 +373,6 @@ class InGameScene(Scene):
             renderer.draw_surface(game_over_text, 512 - game_over_text.get_width() // 2, 300)
             renderer.draw_surface(score_text, 512 - score_text.get_width() // 2, 380)
             renderer.draw_surface(restart_text, 512 - restart_text.get_width() // 2, 460)
-        
-        # Draw UI elements
-        for element in self.ui_elements:
-            element.render(renderer)
             
 def main():
     engine = LunaEngine("LunaEngine - Snake Demo", 1024, 720, False)

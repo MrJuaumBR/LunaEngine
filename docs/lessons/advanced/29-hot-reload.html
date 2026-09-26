@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hot Reload - LunaEngine Lessons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../theme.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html" id="navbar-logo-link">
+                <i class="bi bi-moon-stars-fill me-2"></i>
+                LunaEngine
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3">
+                    <input type="text" id="moduleSearch" class="form-control" placeholder="Search functions, classes, methods... (Ctrl+K)">
+                    <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
+                </div>
+                <span class="badge bg-primary me-3">Lessons</span>
+                <button class="btn btn-outline-secondary theme-toggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../index.html">Home</a></li><li class="breadcrumb-item"><a href="../index.html">Lessons</a></li><li class="breadcrumb-item active">Advanced</li><li class="breadcrumb-item active">Hot Reload</li></ol></nav>
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 d-none d-md-block">
+                <div class="card shadow-sm sticky-top" style="top: 6rem; max-height: 80vh; overflow-y: auto;">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="bi bi-map me-2"></i>Course Track</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush"><div class="list-group-item bg-light fw-bold">Basics</div><a href="../basics/01-installation.html" class="list-group-item list-group-item-action">1. Installation</a><a href="../basics/02-introduction.html" class="list-group-item list-group-item-action">2. Introduction</a><a href="../basics/03-scene-handling.html" class="list-group-item list-group-item-action">3. Scene Handling</a><a href="../basics/04-ui-elements-basics.html" class="list-group-item list-group-item-action">4. Ui Elements Basics</a><a href="../basics/05-camera-basics.html" class="list-group-item list-group-item-action">5. Camera Basics</a><a href="../basics/06-themes-and-styling.html" class="list-group-item list-group-item-action">6. Themes And Styling</a><a href="../basics/07-atlas-system.html" class="list-group-item list-group-item-action">7. Atlas System</a><a href="../basics/08-game-development-plan.html" class="list-group-item list-group-item-action">8. Game Development Plan</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Intermediate</div><a href="../intermediate/09-ui-layouts.html" class="list-group-item list-group-item-action">9. Ui Layouts</a><a href="../intermediate/10-tween-animations.html" class="list-group-item list-group-item-action">10. Tween Animations</a><a href="../intermediate/11-camera-movement.html" class="list-group-item list-group-item-action">11. Camera Movement</a><a href="../intermediate/12-particles-basics.html" class="list-group-item list-group-item-action">12. Particles Basics</a><a href="../intermediate/13-parallax-backgrounds.html" class="list-group-item list-group-item-action">13. Parallax Backgrounds</a><a href="../intermediate/14-audio-system.html" class="list-group-item list-group-item-action">14. Audio System</a><a href="../intermediate/15-custom-themes.html" class="list-group-item list-group-item-action">15. Custom Themes</a><a href="../intermediate/16-lunaengine-tools.html" class="list-group-item list-group-item-action">16. Lunaengine Tools</a><a href="../intermediate/17-scene-transitions.html" class="list-group-item list-group-item-action">17. Scene Transitions</a><a href="../intermediate/18-url-opening.html" class="list-group-item list-group-item-action">18. Url Opening</a><a href="../intermediate/19-clipboard.html" class="list-group-item list-group-item-action">19. Clipboard</a><div class="mb-2"></div><div class="list-group-item bg-light fw-bold">Advanced</div><a href="../advanced/17-advanced-ui.html" class="list-group-item list-group-item-action">17. Advanced Ui</a><a href="../advanced/18-camera-effects.html" class="list-group-item list-group-item-action">18. Camera Effects</a><a href="../advanced/19-opengl-effects.html" class="list-group-item list-group-item-action">19. Opengl Effects</a><a href="../advanced/20-advanced-ui.html" class="list-group-item list-group-item-action">20. Advanced Ui</a><a href="../advanced/20-particle-effects.html" class="list-group-item list-group-item-action">20. Particle Effects</a><a href="../advanced/21-camera-effects.html" class="list-group-item list-group-item-action">21. Camera Effects</a><a href="../advanced/21-sprite-animations.html" class="list-group-item list-group-item-action">21. Sprite Animations</a><a href="../advanced/22-combining-systems.html" class="list-group-item list-group-item-action">22. Combining Systems</a><a href="../advanced/22-opengl-effects.html" class="list-group-item list-group-item-action">22. Opengl Effects</a><a href="../advanced/23-particle-effects.html" class="list-group-item list-group-item-action">23. Particle Effects</a><a href="../advanced/23-ui-transitions.html" class="list-group-item list-group-item-action">23. Ui Transitions</a><a href="../advanced/24-image-manipulation.html" class="list-group-item list-group-item-action">24. Image Manipulation</a><a href="../advanced/24-sprite-animations.html" class="list-group-item list-group-item-action">24. Sprite Animations</a><a href="../advanced/25-audio-groups.html" class="list-group-item list-group-item-action">25. Audio Groups</a><a href="../advanced/25-combining-systems.html" class="list-group-item list-group-item-action">25. Combining Systems</a><a href="../advanced/26-hot-reload.html" class="list-group-item list-group-item-action">26. Hot Reload</a><a href="../advanced/26-ui-transitions.html" class="list-group-item list-group-item-action">26. Ui Transitions</a><a href="../advanced/27-image-manipulation.html" class="list-group-item list-group-item-action">27. Image Manipulation</a><a href="../advanced/28-audio-groups.html" class="list-group-item list-group-item-action">28. Audio Groups</a><a href="../advanced/29-hot-reload.html" class="list-group-item list-group-item-action active">29. Hot Reload</a><div class="mb-2"></div></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main content -->
+            <div class="col-md-9">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h3 mb-0">29. Hot Reload</h1>
+                    </div>
+                    <div class="card-body markdown-content">
+                        # 26 - Hot Reload
+
+Hot reload lets you edit a file while the game is running and see the change within about a second, without restarting. It watches **scene files** and **module files** you explicitly opt in with `watch_scene` and `watch_module`.
+
+Use it while iterating on balance numbers, tuning a stats file, or rebuilding a level layout. Do **not** ship it enabled — it's a development tool.
+
+## Enabling it
+
+Constructor:
+
+```python
+engine = LunaEngine("My Game", 1024, 720, hot_reload=True)
+```
+
+At runtime, via the LiveInspector: **Settings** tab → **Hot Reload** switch. Flipping it on starts the poll; flipping it off stops it.
+
+The engine polls every 0.5 seconds. Polling is driven by the existing `Timer` system — no threads, no background processes. A poll is one `os.path.getmtime()` call per watched file, which the OS serves from its metadata cache. Cost is effectively zero while nothing is changing.
+
+## Watching a scene
+
+```python
+engine.watch_scene("game")              # by registered name
+engine.watch_scene(GameScene)           # by class
+```
+
+`watch_scene` accepts a registered scene name (`str`) or the scene subclass itself. Both resolve to the scene's source file.
+
+When that file changes:
+
+1. Old scene: `on_exit()`
+2. New instance: `new_class(engine)` — full `__init__` runs again
+3. New scene: `on_enter()`
+4. Registered callbacks fire
+
+**No state is preserved.** Score, position, which tab is open, focused widget — everything resets. This is intentional. State preservation is a rabbit hole (renamed fields, changed types, stale references); a fresh rebuild is honest about what happened.
+
+If you need state to survive, expose a hook on the scene itself:
+
+```python
+class DialogueScene(Scene):
+    def on_hot_reload_snapshot(self) -> dict:
+        return {"node_id": self.current_node.id, "seen": self.seen_nodes}
+
+    def on_hot_reload_restore(self, data: dict):
+        self.current_node = self.nodes[data["node_id"]]
+        self.seen_nodes = data["seen"]
+```
+
+That pattern is optional and lives with the scene, not the engine.
+
+## Watching a module
+
+```python
+import stats
+
+engine.watch_module(stats)
+engine.watch_module("balance")                  # by import name
+engine.watch_module("src/balance.py")           # by file path (str)
+engine.watch_module(Path("src/balance.py"))     # Path
+engine.watch_module(atlas_item)                 # path-backed AtlasItem
+```
+
+All six forms resolve to a source file. If the module isn't imported yet, use the path form — the engine imports it on first reload.
+
+When the file changes, `importlib.reload(module)` runs. The module object is mutated in place, so any code that holds a reference to it sees the new values.
+
+**Packed `.res` AtlasItems raise `ValueError`.** Files inside a bundle aren't individual on disk, so there's nothing to reload.
+
+## Callbacks
+
+```python
+def refresh(self, module):
+    self.damage = module.BASE_DAMAGE
+    self.crit = module.CRIT_MULT
+
+engine.on_module_reload("stats", refresh)
+
+
+def on_scene_rebuilt(self, new_scene):
+    self.engine.show_notification("Scene reloaded", "info", duration=1.0)
+
+engine.on_scene_reload("game", on_scene_rebuilt)
+```
+
+The module callback receives the reloaded module object. The scene callback receives the new scene instance.
+
+For a module that's just constants, you don't need a callback at all — read the values directly:
+
+```python
+import stats
+# Read through the module, not through a local copy.
+damage = stats.BASE_DAMAGE
+```
+
+## The `from` import trap
+
+This will not hot-reload:
+
+```python
+from stats import BASE_DAMAGE   # snapshot, never updates
+```
+
+This will:
+
+```python
+import stats
+damage = stats.BASE_DAMAGE      # reads the current module attribute
+```
+
+`from X import Y` copies the value into your namespace at import time. Reloading `stats` replaces `stats.BASE_DAMAGE`, but the local `BASE_DAMAGE` still points at the old value. Use `import module; module.NAME` for anything you want to reload.
+
+If a scene or UI class caches a value at `__init__`, add a module-reload callback to refresh the cached copy. There's no way for the engine to know which attributes are cached.
+
+## Watched modules don't cascade
+
+If `stats.py` imports `curves.py` and you edit `curves.py`, reloading `stats` does **not** re-execute `curves`. Python caches imported modules.
+
+You have two options:
+
+1. Watch `curves` too, in dependency order.
+2. Live with it — most files you edit don't have runtime imports you're also editing.
+
+For typical balance iterations (edit `stats.py`, save, see the change) this never comes up.
+
+## Syntax errors don't kill the game
+
+If you save a file mid-edit and it has a syntax error, `importlib.reload` raises `SyntaxError`. The engine catches it, logs it to the LiveInspector console pane at `ERROR` level, and **keeps the old version running**. Your game doesn't crash.
+
+```python
+# What you see in the console:
+# [12:34:56] File "stats.py", line 4
+# [12:34:56]     BASE_DAMAGE = = 10
+# [12:34:56]                   ^
+# [12:34:56] SyntaxError: invalid syntax
+```
+
+Fix the file, save again, and the next poll reloads it cleanly. You'll lose a second, not the run.
+
+## The debounce
+
+An editor often writes a file in multiple steps: truncate, write header, write body, close. Without protection, the poll can catch a half-written file. The engine requires the file's mtime to be stable for **one full poll cycle** (~0.5s) before reloading. So a save that finishes in 50ms reloads on the next poll. A save that takes 2 seconds reloads 0.5s after it stops changing.
+
+You can watch the console pane if you want to see reloads land.
+
+## A working example
+
+`examples/hot_reload_demo.py` shows the full pattern.
+
+**`stats.py`:**
+
+```python
+PLAYER_SPEED = 200
+MAX_HEALTH = 100
+STARTING_GOLD = 50
+```
+
+**The scene:**
+
+```python
+import stats
+
+class GameScene(Scene):
+    def __init__(self, engine):
+        super().__init__(engine)
+        self._apply_stats()
+        self.label = TextLabel(20, 20, "", 20)
+        self.add_ui_element(self.label)
+
+    def _apply_stats(self):
+        self.speed = stats.PLAYER_SPEED
+        self.max_hp = stats.MAX_HEALTH
+        self.gold = stats.STARTING_GOLD
+
+    def update(self, dt):
+        self.label.set_text(
+            f"speed={self.speed}  hp={self.max_hp}  gold={self.gold}"
+        )
+
+class HotReloadDemo(Scene):
+    def __init__(self, engine):
+        super().__init__(engine)
+        engine.hot_reload = True
+        engine.watch_module("stats")
+        engine.on_module_reload("stats", lambda m: self.game._apply_stats())
+        engine.watch_scene("game")
+```
+
+Change `STARTING_GOLD = 50` to `STARTING_GOLD = 77`, save, and the label updates within a second. Change something in `hot_reload_scenes.py`, save, and the whole scene rebuilds.
+
+## What to watch for
+
+- **Editors that write via rename** can confuse the mtime check on some filesystems. If a save doesn't trigger a reload, try saving twice.
+- **`__pycache__`** doesn't matter — `importlib.reload` bypasses the cache for watched modules.
+- **Callbacks are one-shot per reload.** If you add the same callback twice, it fires twice. Remove callbacks via the manager if you need to.
+- **The whole scene rebuilds.** Scene-local data structures, cached textures, tweens in flight — all gone. That's the point.
+
+## When not to use it
+
+- **During a playtest you don't want to interrupt.** Turn it off. Reloading mid-boss-fight is worse than restarting.
+- **On target hardware.** Polling is cheap but non-zero, and the debug hooks add surface area. Ship with `hot_reload=False`.
+- **For code you didn't opt in.** Only watched files reload. Everything else is cached and unaffected.
+
+The design is deliberate: **you choose what reloads, when.** The engine doesn't guess.
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between">
+                            <a href='28-audio-groups.html' class='btn btn-outline-primary'><i class='bi bi-arrow-left me-2'></i>Previous: Audio Groups</a>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="../index.html" class="btn btn-secondary"><i class="bi bi-journal-bookmark me-2"></i>All Lessons</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-moon-stars-fill me-2"></i>LunaEngine</h5>
+                    <p class="text-white-50">2D Game Framework for Python</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-white-50">
+                        <i class="bi bi-lightning-charge me-1"></i>
+                        Documentation generated on 2026-09-26 12:38
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../theme.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('moduleSearch');
+        const searchIcon = document.querySelector('.input-group-text');
+        if (searchInput && searchIcon) {
+            const performSearch = () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // Compute relative path to root search.html
+                    const path = window.location.pathname;
+                    const parts = path.split('/').filter(p => p && p !== '');
+                    // Remove file part if present
+                    let dirParts = parts;
+                    if (dirParts.length > 0 && dirParts[dirParts.length - 1].includes('.')) {
+                        dirParts = dirParts.slice(0, -1);
+                    }
+                    // Number of levels to go up to reach the directory containing search.html
+                    const levels = Math.max(0, dirParts.length - 1);
+                    const searchPath = '../'.repeat(levels) + 'search.html';
+                    window.location.href = `${searchPath}?q=${encodeURIComponent(searchTerm)}`;
+                }
+            };
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    performSearch();
+                    return false;
+                }
+            });
+            searchIcon.addEventListener('click', performSearch);
+            const form = searchInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    performSearch();
+                    return false;
+                });
+            }
+        }
+    });
+    </script>
+    
+    
+    <script src="../../theme.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+        if (typeof initSimpleMarkdownParser === 'function') initSimpleMarkdownParser();
+        else setTimeout(function() {
+            if (window.initSimpleMarkdownParser) window.initSimpleMarkdownParser();
+        }, 100);
+    });</script>
+</body>
+</html>

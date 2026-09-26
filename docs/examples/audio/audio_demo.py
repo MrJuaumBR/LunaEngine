@@ -1,6 +1,6 @@
 """
-Audio Demo for LunaEngine 0.2.5+
-Showcases the new AudioManager with named channels, curves, balance, and device selection.
+Audio Demo for LunaEngine 0.2.6.2
+Showcases named channels, curves, groups, pan/balance, effects, and device selection.
 """
 
 import sys
@@ -67,8 +67,8 @@ class AudioDemoScene(Scene):
         try:
             # Try loading real files
             path = os.path.dirname(os.path.abspath(__file__))
-            sfx_path = f"{path}/../examples/explosion.wav"
-            music_path = f"{path}/../examples/music.mp3"
+            sfx_path = os.path.join(path, "explosion.wav")
+            music_path = os.path.join(path, "music.mp3")
 
             if os.path.exists(sfx_path):
                 self.audio_manager.load_sound(self.sfx_name, sfx_path)
@@ -114,7 +114,7 @@ class AudioDemoScene(Scene):
         self.engine.set_global_theme(ThemeType.DEFAULT)
 
         # Title
-        title = TextLabel(512, 30, "Audio Demo - LunaEngine 0.2.5", 36, pivot=(0.5, 0))
+        title = TextLabel(512, 30, "Audio Demo - LunaEngine 0.2.6.2", 36, pivot=(0.5, 0))
         self.add_ui_element(title)
 
         # Create main tabs container – adjust height to fit the window (720 - 90 for header = 630)
@@ -150,6 +150,9 @@ class AudioDemoScene(Scene):
         self.audio_manager.create_channel('sfx1', volume=0.8, balance=0.0)
         self.audio_manager.create_channel('sfx2', volume=0.8, balance=0.0)
         self.audio_manager.create_channel('sfx3', volume=0.8, balance=0.0)
+        sfx_group = self.audio_manager.create_group('sfx', parent='master', volume=1.0)
+        for name in ('sfx1', 'sfx2', 'sfx3'):
+            sfx_group.add_channel(self.audio_manager.get_channel(name))
 
         # Header
         self.main_tabs.add_to_tab(tab, TextLabel(10, 10, "Sound Effects", 24, (255, 255, 0)))
@@ -394,6 +397,14 @@ class AudioDemoScene(Scene):
         master_slider = Slider(150, 165, 200, 20, 0.0, 1.0, 1.0)
         master_slider.on_value_changed = lambda v: self.set_master_volume(v)
         self.main_tabs.add_to_tab(tab, master_slider)
+        self.sfx_group_label = TextLabel(10, 255, "SFX group: 100%", 16, (200, 200, 255))
+        self.main_tabs.add_to_tab(tab, self.sfx_group_label)
+        sfx_group_slider = Slider(150, 250, 200, 20, 0.0, 1.0, 1.0)
+        sfx_group_slider.on_value_changed = lambda v: self.set_sfx_group_volume(v)
+        self.main_tabs.add_to_tab(tab, sfx_group_slider)
+        mute_btn = Button(370, 245, 120, 30, "Mute SFX")
+        mute_btn.set_on_click(lambda: self.toggle_sfx_mute())
+        self.main_tabs.add_to_tab(tab, mute_btn)
 
         reload_btn = Button(10, 210, 150, 30, "Reload Sounds")
         reload_btn.set_on_click(lambda: self.reload_sounds())
@@ -561,9 +572,21 @@ class AudioDemoScene(Scene):
             self.add_event(f"Failed to switch to {device_name}")
 
     def set_master_volume(self, vol):
-        for ch in self.audio_manager.channels.values():
-            ch.set_volume(ch.volume * vol)
+        self.audio_manager.set_master_volume(vol)
         self.add_event(f"Master volume set to {vol:.2f}")
+
+    def set_sfx_group_volume(self, volume):
+        group = self.audio_manager.get_group('sfx')
+        if group:
+            group.set_volume(volume)
+            self.sfx_group_label.set_text(f"SFX group: {volume:.0%}")
+            self.add_event(f"SFX group volume set to {volume:.2f}")
+
+    def toggle_sfx_mute(self):
+        group = self.audio_manager.get_group('sfx')
+        if group:
+            group.set_mute(not group.muted)
+            self.add_event(f"SFX group {'muted' if group.muted else 'unmuted'}")
 
     def reload_sounds(self):
         self.add_event("Reloading sounds...")

@@ -48,7 +48,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">A progress bar widget that displays a value as a filled bar.<br>Supports horizontal/vertical orientation and a &#x27;soundpad&#x27; segmented style.</p>
+                    <p class="lead fs-6">A progress bar widget that displays a value as a filled bar.<br>Supports horizontal/vertical orientation and a &#x27;soundpad&#x27; segmented style.<br><br>Internal metrics (segment gap, border widths, corner radii, shadow distances)<br>scale with the current ratio. User-supplied values are respected verbatim.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -59,59 +59,71 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, min_val: float = 0, max_val: float = 100, value: float = 0, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, orientation: Literal['vertical', 'horizontal'] = 'horizontal', element_id: Optional[str] = None, style: str = 'default', **kwargs: dict) -> None</code>
-                <div class="mt-2 text-muted small">Initialize a progress bar.<br><br>Args:<br> &nbsp; &nbsp;x, y: Position (before anchor).<br> &nbsp; &nbsp;width, height: Dimensions.<br> &nbsp; &nbsp;min_val: Minimum value (0%).<br> &nbsp; &nbsp;max_val: Maximum value (100%).<br> &nbsp; &nbsp;value: Current value.<br> &nbsp; &nbsp;pivot: Anchor point.<br> &nbsp; &nbsp;theme: Theme to apply.<br> &nbsp; &nbsp;orientation: &#x27;horizontal&#x27; or &#x27;vertical&#x27;.<br> &nbsp; &nbsp;element_id: Custom ID.<br> &nbsp; &nbsp;style: &#x27;default&#x27; or &#x27;soundpad&#x27; (segmented with gradient colors).<br> &nbsp; &nbsp;**kwargs: Additional parameters:<br> &nbsp; &nbsp; &nbsp; &nbsp;draw_value (bool): Show percentage text.<br> &nbsp; &nbsp; &nbsp; &nbsp;font_size (int): Font size for text.<br> &nbsp; &nbsp; &nbsp; &nbsp;font_draw (str): Font name for text.<br> &nbsp; &nbsp; &nbsp; &nbsp;segment_count (int): Number of segments for soundpad style.<br> &nbsp; &nbsp; &nbsp; &nbsp;segment_gap (int): Gap between segments.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-_sm">
+                <code class="fs-6 fw-bold text-color-title">def _sm(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-segment_gap">
+                <code class="fs-6 fw-bold text-color-title">def segment_gap(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-segment_gap">
+                <code class="fs-6 fw-bold text-color-title">def segment_gap(self: Any, value: int) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-_get_init_args">
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
-                <div class="mt-2 text-muted small">Return constructor arguments for restarting.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-set_background_color">
                 <code class="fs-6 fw-bold text-color-title">def set_background_color(self: Any, color: Tuple[int, int, int]) -> None</code>
-                <div class="mt-2 text-muted small">Set the background (empty part) color.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-set_foreground_color">
                 <code class="fs-6 fw-bold text-color-title">def set_foreground_color(self: Any, color: Tuple[int, int, int]) -> None</code>
-                <div class="mt-2 text-muted small">Set the foreground (filled part) color.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-set_font_color">
                 <code class="fs-6 fw-bold text-color-title">def set_font_color(self: Any, color: Tuple[int, int, int]) -> None</code>
-                <div class="mt-2 text-muted small">Set the color of the percentage text.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-set_font">
                 <code class="fs-6 fw-bold text-color-title">def set_font(self: Any, font_name: str, font_size: int) -> None</code>
-                <div class="mt-2 text-muted small">Set a custom font for the percentage text.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-set_border_color">
                 <code class="fs-6 fw-bold text-color-title">def set_border_color(self: Any, color: Tuple[int, int, int]) -> None</code>
-                <div class="mt-2 text-muted small">Set the border color (only used in default style).</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-update_theme">
                 <code class="fs-6 fw-bold text-color-title">def update_theme(self: Any, theme_type: ThemeType) -> None</code>
-                <div class="mt-2 text-muted small">Apply a new theme to the progress bar.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-set_value">
                 <code class="fs-6 fw-bold text-color-title">def set_value(self: Any, value: float) -> None</code>
-                <div class="mt-2 text-muted small">Update the current progress value (clamped to min/max).</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-set_max_value">
                 <code class="fs-6 fw-bold text-color-title">def set_max_value(self: Any, value: float) -> None</code>
-                <div class="mt-2 text-muted small">Update the maximum progress value (clamped to min/max).</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-set_min_value">
                 <code class="fs-6 fw-bold text-color-title">def set_min_value(self: Any, value: float) -> None</code>
-                <div class="mt-2 text-muted small">Update the minimum progress value (clamped to min/max).</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-get_percentage">
                 <code class="fs-6 fw-bold text-color-title">def get_percentage(self: Any) -> float</code>
-                <div class="mt-2 text-muted small">Return the current progress as a percentage (0-100).</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-_get_soundpad_color">
                 <code class="fs-6 fw-bold text-color-title">def _get_soundpad_color(self: Any, t: float) -> Tuple[int, int, int]</code>
-                <div class="mt-2 text-muted small">Get a gradient color for soundpad style (t in [0,1]).</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-progressbar-render">
                 <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
-                <div class="mt-2 text-muted small">Render the progress bar.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
                 </div>
             </div>
@@ -137,7 +149,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>

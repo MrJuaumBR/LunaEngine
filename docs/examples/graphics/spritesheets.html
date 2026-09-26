@@ -45,13 +45,13 @@ Sprite Sheets Example - Full Feature Showcase for LunaEngine
 LOCATION: examples/spritesheets.py
 
 DESCRIPTION:
-Demonstrates all capabilities of the SpriteSheet and Animation system:
+Demonstrates the SpriteSheet, Animation, and Image systems:
 - Time-based animations with fade in/out
 - Colour replacement, tinting, painting, colour-to-alpha
 - Mask creation and visualisation
 - Resizing / scaling of sprites
 - Live effect preview on the running animation
-- Preview uses a raw sprite sheet frame (not a copy from the animation)
+- Preview includes a cached Image variant with normalized scale and alpha
 &quot;&quot;&quot;
 
 import sys
@@ -61,6 +61,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
 import pygame
 from lunaengine.core import Scene, LunaEngine
 from lunaengine.ui import *
+from lunaengine.graphics import Image
 from lunaengine.graphics.spritesheet import SpriteSheet, Animation
 
 # ------------------------------------------------------------
@@ -83,6 +84,8 @@ class SpriteSheetTestScene(Scene):
         # SpriteSheet reference for raw frames
         self.sprite_sheet = None
         self.raw_frame = None          # unmodified frame from sprite sheet
+        self.raw_image = None          # Image wrapper around the same frame
+        self.image_variant = None      # cached, filtered Image variant
         self.raw_frame_rect = None     # (x, y, width, height) of the frame
 
         # Settings
@@ -122,6 +125,11 @@ class SpriteSheetTestScene(Scene):
             # Define the rectangle for the first walk frame (size 70x70 at (0,0))
             self.raw_frame_rect = pygame.Rect(0, 0, 70, 70)
             self.raw_frame = self.sprite_sheet.get_sprite_at_rect(self.raw_frame_rect)
+            self.raw_image = self.sprite_sheet.get_image_at_rect(self.raw_frame_rect)
+            self.image_variant = (self.raw_image.copy()
+                                  .set_scale(1.25)
+                                  .set_alpha(0.9)
+                                  .set_filter(&quot;tint&quot;, color=(170, 210, 255), intensity=0.35))
 
             # Walk animation: 6 frames starting at (0,0)
             self.walk_animation = Animation(
@@ -167,6 +175,8 @@ class SpriteSheetTestScene(Scene):
         self.raw_frame = pygame.Surface((70, 70), pygame.SRCALPHA)
         self.raw_frame.fill((255, 0, 255))  # magenta
         pygame.draw.rect(self.raw_frame, (255, 255, 255), self.raw_frame.get_rect(), 2)
+        self.raw_image = Image(self.raw_frame)
+        self.image_variant = self.raw_image.copy().set_scale(1.25).set_alpha(0.9)
 
         colors = [(255,0,0), (0,255,0), (0,0,255), (255,255,0)]
         frames = []
@@ -248,8 +258,11 @@ class SpriteSheetTestScene(Scene):
         &quot;&quot;&quot;Apply selected effect to the raw sprite sheet frame.&quot;&quot;&quot;
         if self.raw_frame is None:
             return
-        frame = self.raw_frame.copy()   # copy for preview (safe, only once per effect change)
         effect = self.current_effect
+        if effect == &quot;Original&quot; and self.image_variant is not None:
+            frame = self.image_variant.get_surface()
+        else:
+            frame = self.raw_frame.copy()   # copy for preview (safe, only once per effect change)
 
         if effect == &quot;Original&quot;:
             pass
@@ -675,7 +688,8 @@ def main():
     engine.run()
 
 if __name__ == &quot;__main__&quot;:
-    main()</code></pre>
+    main()
+</code></pre>
                     </div>
                 </div>
             </div>
@@ -711,7 +725,7 @@ if __name__ == &quot;__main__&quot;:
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>

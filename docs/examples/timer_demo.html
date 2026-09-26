@@ -51,6 +51,7 @@ It shows:
 - Anonymous timers
 - Live display of timer status (elapsed, remaining, done)
 - Global timer controls (pause all, resume all, clear all)
+- Named nonblocking cooldown checks with ``engine.timer.ready(name, seconds)``
 - Notifications on timer completion
 &quot;&quot;&quot;
 
@@ -91,6 +92,7 @@ class TimerDemoScene(Scene):
         print(&quot;=== Timer Demo ===&quot;)
         print(&quot;Use the controls to add, manage, and monitor timers.&quot;)
         print(&quot;Timers fire notifications upon completion.&quot;)
+        print(&quot;For gameplay cooldowns, poll engine.timer.ready(&#x27;name&#x27;, seconds) each frame.&quot;)
 
     def on_exit(self, next_scene: str | None = None):
         # Clean up all timers
@@ -418,7 +420,8 @@ def main():
 
 
 if __name__ == &quot;__main__&quot;:
-    main()</code></pre>
+    main()
+</code></pre>
                     </div>
                 </div>
             </div>
@@ -454,7 +457,7 @@ if __name__ == &quot;__main__&quot;:
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>

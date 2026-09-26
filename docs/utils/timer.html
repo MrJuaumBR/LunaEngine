@@ -104,6 +104,18 @@
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">Initialize a new Timer manager with empty timer dictionary.</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-now">
+                <code class="fs-6 fw-bold text-color-title">def now() -> float</code>
+                <div class="mt-2 text-muted small">Return the wall-clock source used by Timer for elapsed durations.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-ready">
+                <code class="fs-6 fw-bold text-color-title">def ready(self: Any, name: str, duration: float) -> bool</code>
+                <div class="mt-2 text-muted small">Return True once per ``duration`` seconds for a named cooldown.<br><br>A missing cooldown is created and returns True. Once the deadline is<br>reached, the deadline is advanced and True is returned. This is a<br>nonblocking one-line check suitable for gameplay cooldowns and input<br>repeat logic.</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-clear_ready">
+                <code class="fs-6 fw-bold text-color-title">def clear_ready(self: Any, name: str) -> bool</code>
+                <div class="mt-2 text-muted small">Remove a named cooldown without affecting ordinary timers.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-add">
                 <code class="fs-6 fw-bold text-color-title">def add(self: Any, name: str, duration: float, callback: Optional[Callable] = None, callback_args: tuple = (), callback_kwargs: dict = None, repeats: bool = False) -> bool</code>
                 <div class="mt-2 text-muted small">Add a new timer to the system.<br><br>Args:<br> &nbsp; &nbsp;name (str): Unique identifier for the timer<br> &nbsp; &nbsp;duration (float): Timer duration in seconds<br> &nbsp; &nbsp;callback (Optional[Callable]): Function to call when timer completes<br> &nbsp; &nbsp;callback_args (tuple): Arguments to pass to the callback function<br> &nbsp; &nbsp;callback_kwargs (dict): Keyword arguments to pass to the callback function<br> &nbsp; &nbsp;repeats (bool): Whether the timer should restart after completion<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if timer was added, False if a timer with this name already exists<br> &nbsp; &nbsp;<br>Example:<br> &nbsp; &nbsp;&gt;&gt;&gt; timer.add(&quot;powerup&quot;, 10.0, remove_powerup, repeats=False)</div>
@@ -162,7 +174,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-wait_for_end">
                 <code class="fs-6 fw-bold text-color-title">def wait_for_end(self: Any, name: str, timeout: float = 0.0) -> bool</code>
-                <div class="mt-2 text-muted small">Block until a timer completes.<br><br>Warning: This blocks the main thread! Use sparingly.<br><br>Args:<br> &nbsp; &nbsp;name (str): Name of the timer to wait for<br> &nbsp; &nbsp;timeout (float): Maximum time to wait in seconds (0 = no timeout)<br> &nbsp; &nbsp;<br>Returns:<br> &nbsp; &nbsp;bool: True if timer completed, False if timeout reached or timer doesn&#x27;t exist<br> &nbsp; &nbsp;<br>Example:<br> &nbsp; &nbsp;&gt;&gt;&gt; timer.add(&quot;wait_test&quot;, 3.0)<br> &nbsp; &nbsp;&gt;&gt;&gt; timer.wait_for_end(&quot;wait_test&quot;) &nbsp;# Blocks for 3 seconds</div>
+                <div class="mt-2 text-muted small">Compatibility helper that performs a nonblocking completion check.<br><br>The old implementation blocked and slept, which is unsafe in a game<br>loop. Callers should poll this method or use :meth:`ready` instead.<br>``timeout`` is retained for source compatibility and is not needed for<br>a single nonblocking check.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-timer-get_all_timers">
                 <code class="fs-6 fw-bold text-color-title">def get_all_timers(self: Any) -> List[str]</code>
@@ -202,7 +214,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>

@@ -209,6 +209,18 @@
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>category: str = 'None'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>is_interactive: Any = False</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>default_cursor: Any = 'arrow'</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>hover_cursor: Any = None</code>
+                </div>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>pressed_cursor: Any = None</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
@@ -290,7 +302,7 @@
                 <div class="mt-2 text-muted small">Get the accumulated scroll offset from this element and its ancestors.<br>If is_for_scroll_event is True, scroll offsets are not applied (for hit testing).</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-get_actual_position">
-                <code class="fs-6 fw-bold text-color-title">def get_actual_position(self: Any, x: Union[int, float, None] = None, y: Union[int, float, None] = None) -> Union[Tuple[int, int], Tuple[float, float]]</code>
+                <code class="fs-6 fw-bold text-color-title">def get_actual_position(self: Any, x: Union[int, float, None] = None, y: Union[int, float, None] = None, include_parent_scroll: bool = True) -> Union[Tuple[int, int], Tuple[float, float]]</code>
                 <div class="mt-2 text-muted small">Get the absolute screen position of this element, considering parent and pivot.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uielement-mouse_over">
@@ -368,8 +380,20 @@
                 </div>
             </div>
         </div>
+                <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
                 
-                
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-_get_ratio_scale">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def _get_ratio_scale() -> Tuple[float, float, float]</code>
+                    <p class="mt-2 mb-0 text-muted">Return (scale_x, scale_y, scale_med) from ThemeManager._ratio.<br><br>These values are meant to scale *internal* metrics of UI elements<br>(spacing, padding, corner radius, border width, shadow offset, etc.).<br>They must NOT be applied to an element&#x27;s own position (x/y), size<br>(width/height), font size, or icon size.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-_scaled_shadow">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def _scaled_shadow(shadow: Optional[UiShadow], scale: Optional[float] = None) -> Optional[UiShadow]</code>
+                    <p class="mt-2 mb-0 text-muted">Return a new UiShadow with `distance` scaled by `scale` (defaults to ratio.med).</p>
+                </div>
+            </div>
             </div>
         </div>
         <div class="mt-5 mb-5 text-center">
@@ -389,7 +413,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>

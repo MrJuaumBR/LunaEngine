@@ -66,6 +66,10 @@
                 <code class="fs-6 fw-bold text-color-title">def get_sprite_at_rect(self: Any, rect: Union[pygame.Rect, Tuple[int, int, int, int]]) -> pygame.Surface</code>
                 <div class="mt-2 text-muted small">Extract a sprite from a specific rectangular region.<br><br>Args:<br> &nbsp; &nbsp;rect (Union[pygame.Rect, Tuple[int, int, int, int]]): Rectangle defining the sprite region<br> &nbsp; &nbsp; &nbsp; &nbsp;(x, y, width, height)<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface with alpha<br><br>Raises:<br> &nbsp; &nbsp;ValueError: If the rect is outside the sprite sheet bounds</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-get_image_at_rect">
+                <code class="fs-6 fw-bold text-color-title">def get_image_at_rect(self: Any, rect: Union[pygame.Rect, Tuple[int, int, int, int]]) -> Image</code>
+                <div class="mt-2 text-muted small">Return an Image view of a sprite region; the legacy method returns a Surface.</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-get_sprites_at_regions">
                 <code class="fs-6 fw-bold text-color-title">def get_sprites_at_regions(self: Any, regions: List[Union[pygame.Rect, Tuple[int, int, int, int]]]) -> List[pygame.Surface]</code>
                 <div class="mt-2 text-muted small">Extract multiple sprites from a list of rectangular regions.<br><br>Args:<br> &nbsp; &nbsp;regions (List[Union[pygame.Rect, Tuple[int, int, int, int]]]): List of rectangles defining sprite regions<br><br>Returns:<br> &nbsp; &nbsp;List[pygame.Surface]: List of extracted sprite surfaces</div>
@@ -73,6 +77,10 @@
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-get_sprite_grid">
                 <code class="fs-6 fw-bold text-color-title">def get_sprite_grid(self: Any, cell_size: Tuple[int, int], grid_pos: Tuple[int, int]) -> pygame.Surface</code>
                 <div class="mt-2 text-muted small">Extract a sprite from a grid-based sprite sheet.<br><br>Args:<br> &nbsp; &nbsp;cell_size (Tuple[int, int]): Width and height of each grid cell<br> &nbsp; &nbsp;grid_pos (Tuple[int, int]): Grid coordinates (col, row)<br><br>Returns:<br> &nbsp; &nbsp;pygame.Surface: The extracted sprite surface</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-get_image_grid">
+                <code class="fs-6 fw-bold text-color-title">def get_image_grid(self: Any, cell_size: Tuple[int, int], grid_pos: Tuple[int, int]) -> Image</code>
+                <div class="mt-2 text-muted small">Return a grid frame as an Image without changing legacy return types.</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-spritesheet-get_surface_drawn_area">
                 <code class="fs-6 fw-bold text-color-title">def get_surface_drawn_area(self: Any, surface: pygame.Surface, threshold: int = 1) -> pygame.Rect</code>
@@ -218,7 +226,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>

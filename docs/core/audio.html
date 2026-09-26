@@ -165,6 +165,58 @@
                 </div>
             </div>
         </div>
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-audiochannelgroup">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class AudioChannelGroup</h3>
+            </div>
+            <div class="card-body">
+                <div class="docstring-section mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
+                    <p class="lead fs-6">Hierarchical logical bus for channel volume, mute, and effects.</p>
+                </div>
+                
+                <div class="methods-section">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
+                    
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannelgroup-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, name: str, manager: 'AudioManager', parent: Optional['AudioChannelGroup'] = None, volume: float = 1.0) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannelgroup-effective_volume">
+                <code class="fs-6 fw-bold text-color-title">def effective_volume(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannelgroup-set_volume">
+                <code class="fs-6 fw-bold text-color-title">def set_volume(self: Any, volume: float) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannelgroup-set_mute">
+                <code class="fs-6 fw-bold text-color-title">def set_mute(self: Any, muted: bool = True) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannelgroup-add_channel">
+                <code class="fs-6 fw-bold text-color-title">def add_channel(self: Any, channel: 'AudioChannel') -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannelgroup-set_effect">
+                <code class="fs-6 fw-bold text-color-title">def set_effect(self: Any, effect: str, amount: float) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannelgroup-_refresh_channel">
+                <code class="fs-6 fw-bold text-color-title">def _refresh_channel(self: Any, channel: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannelgroup-_refresh">
+                <code class="fs-6 fw-bold text-color-title">def _refresh(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannelgroup-get_effective_volume">
+                <code class="fs-6 fw-bold text-color-title">def get_effective_volume(self: Any) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+                </div>
+            </div>
+        </div>
         <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-audiochannel">
             <div class="card-header bg-success text-white py-3">
                 <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class AudioChannel</h3>
@@ -180,6 +232,10 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, name: str, manager: 'AudioManager', volume: float = 1.0, pitch: float = 1.0, pan: float = 0.0, balance: float = 0.0, loop: bool = False) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-get_effective_volume">
+                <code class="fs-6 fw-bold text-color-title">def get_effective_volume(self: Any) -> float</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiochannel-_get_source">
@@ -306,6 +362,26 @@
                 <code class="fs-6 fw-bold text-color-title">def set_master_volume(self: Any, volume: float) -> Any</code>
                 <div class="mt-2 text-muted small">Set master volume (0.0 - 1.0).</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiomanager-create_group">
+                <code class="fs-6 fw-bold text-color-title">def create_group(self: Any, name: str, parent: Optional[Union[str, AudioChannelGroup]] = None, volume: float = 1.0) -> AudioChannelGroup</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiomanager-get_group">
+                <code class="fs-6 fw-bold text-color-title">def get_group(self: Any, name: str) -> Optional[AudioChannelGroup]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiomanager-set_group_volume">
+                <code class="fs-6 fw-bold text-color-title">def set_group_volume(self: Any, name: str, volume: float) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiomanager-set_group_mute">
+                <code class="fs-6 fw-bold text-color-title">def set_group_mute(self: Any, name: str, muted: bool = True) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiomanager-set_group_effect">
+                <code class="fs-6 fw-bold text-color-title">def set_group_effect(self: Any, name: str, effect: str, amount: float) -> Any</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-audiomanager-set_global_reverb">
                 <code class="fs-6 fw-bold text-color-title">def set_global_reverb(self: Any, amount: float) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -394,7 +470,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>

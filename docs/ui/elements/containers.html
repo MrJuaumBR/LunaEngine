@@ -92,7 +92,7 @@
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>_properties: Any = {**UIElement._properties, 'header_enabled': {'name': 'header enabled', 'key': 'header_enabled', 'type': bool, 'editable': True, 'description': 'Show header bar with title/icon'}, 'header_title': {'name': 'header title', 'key': 'header_title', 'type': str, 'editable': True, 'description': 'Text displayed in header'}, 'header_height': {'name': 'header height', 'key': 'header_height', 'type': int, 'editable': True, 'description': 'Height of header bar in pixels'}, 'draggable': {'name': 'draggable', 'key': 'draggable', 'type': bool, 'editable': True, 'description': 'Allow frame to be dragged by its header'}, 'padding': {'name': 'padding', 'key': 'padding', 'type': int, 'editable': True, 'description': 'Padding inside frame'}, 'background_color': {'name': 'background color', 'key': 'background_color', 'type': tuple, 'editable': True, 'description': 'RGB background color (None = transparent)'}, 'border_color': {'name': 'border color', 'key': 'border_color', 'type': tuple, 'editable': True, 'description': 'RGB border color (None = no border)'}, 'corner_radius': {'name': 'corner radius', 'key': 'corner_radius', 'type': (int, tuple), 'editable': True, 'description': 'Radius for rounded corners'}, 'auto_arrange_y': {'name': 'auto arrange y', 'key': 'auto_arrange_y', 'type': bool, 'editable': True, 'description': 'Automatically reposition child elements vertically when their heights change'}, 'arrange_spacing': {'name': 'arrange spacing', 'key': 'arrange_spacing', 'type': int, 'editable': True, 'description': 'Spacing between arranged children (pixels)'}, 'arrange_align': {'name': 'arrange align', 'key': 'arrange_align', 'type': str, 'editable': True, 'description': 'Alignment for arranged children: left, center, right'}}</code>
+                    <code>_properties: Any = {**UIElement._properties, 'header_enabled': {'name': 'header enabled', 'key': 'header_enabled', 'type': bool, 'editable': True, 'description': 'Show header bar with title/icon'}, 'header_title': {'name': 'header title', 'key': 'header_title', 'type': str, 'editable': True, 'description': 'Text displayed in header'}, 'header_height': {'name': 'header height', 'key': 'header_height', 'type': int, 'editable': True, 'description': 'Height of header bar in pixels'}, 'draggable': {'name': 'draggable', 'key': 'draggable', 'type': bool, 'editable': True, 'description': 'Allow frame to be dragged by its header'}, 'padding': {'name': 'padding', 'key': 'padding', 'type': int, 'editable': True, 'description': 'Padding inside frame'}, 'background_color': {'name': 'background color', 'key': 'background_color', 'type': tuple, 'editable': True, 'description': 'RGB background color (None = transparent)'}, 'border_color': {'name': 'border color', 'key': 'border_color', 'type': tuple, 'editable': True, 'description': 'RGB border color (None = no border)'}, 'corner_radius': {'name': 'corner radius', 'key': 'corner_radius', 'type': (int, tuple), 'editable': True, 'description': 'Radius for rounded corners'}, 'auto_arrange_y': {'name': 'auto arrange y', 'key': 'auto_arrange_y', 'type': bool, 'editable': True, 'description': 'Automatically reposition child elements vertically when their heights change'}, 'arrange_spacing': {'name': 'arrange spacing', 'key': 'arrange_spacing', 'type': int, 'editable': True, 'description': 'Spacing between arranged children (pixels)'}, 'arrange_align': {'name': 'arrange align', 'key': 'arrange_align', 'type': str, 'editable': True, 'description': 'Alignment for arranged children: left, center, right'}, 'cull_children': {'name': 'cull children', 'key': 'cull_children', 'type': bool, 'editable': True, 'description': 'Skip off-screen child update/render work; input and layout are never culled'}}</code>
                 </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>category: str = 'container'</code>
@@ -102,6 +102,30 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int | float, y: int | float, width: int | float, height: int | float, pivot: Tuple[int | float, int | float] = (0, 0), theme: Optional[ThemeType | ThemeKey] = None, element_id: Optional[str] = None, header_enabled: bool = False, header_title: str = '', header_icon: Optional[Union[str, pygame.Surface, Path, AtlasItem, Any]] = None, header_height: int = 30, draggable: bool = False, **kwargs: dict) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-_sm">
+                <code class="fs-6 fw-bold text-color-title">def _sm(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-_scaled_padding">
+                <code class="fs-6 fw-bold text-color-title">def _scaled_padding(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-_scaled_header_height">
+                <code class="fs-6 fw-bold text-color-title">def _scaled_header_height(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-_scaled_arrange_spacing">
+                <code class="fs-6 fw-bold text-color-title">def _scaled_arrange_spacing(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-_scaled_border_width">
+                <code class="fs-6 fw-bold text-color-title">def _scaled_border_width(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-_scaled_corner_radius">
+                <code class="fs-6 fw-bold text-color-title">def _scaled_corner_radius(self: Any) -> Any</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-header_font">
@@ -114,11 +138,11 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-_resolve_icon_to_surface">
                 <code class="fs-6 fw-bold text-color-title">def _resolve_icon_to_surface(self: Any, icon_input: Any, max_size: int, color: Optional[Tuple[int, int, int]] = None) -> Optional[pygame.Surface]</code>
-                <div class="mt-2 text-muted small">Convert various icon inputs to a pygame.Surface scaled to fit within max_size (square).<br>Supports:<br> &nbsp; &nbsp;- callables returning any supported type (e.g., Icons.BRAIN)<br> &nbsp; &nbsp;- objects with get_surface(color) (duck‑typed Icon)<br> &nbsp; &nbsp;- pygame.Surface<br> &nbsp; &nbsp;- str or Path (file path)<br> &nbsp; &nbsp;- AtlasItem (loads from bundle or disk)</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-_get_header_text_color">
                 <code class="fs-6 fw-bold text-color-title">def _get_header_text_color(self: Any) -> Tuple[int, int, int]</code>
-                <div class="mt-2 text-muted small">Return the text color for the header (from the current theme).</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-uiframe-_get_init_args">
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
@@ -215,6 +239,10 @@
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, content_width: int, content_height: int, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, header_enabled: bool = False, header_title: str = '', header_icon: Optional[Union[str, pygame.Surface]] = None, header_height: int = 30, draggable: bool = False, **kwargs: dict) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-_scaled_scrollbar_size">
+                <code class="fs-6 fw-bold text-color-title">def _scaled_scrollbar_size(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-_get_init_args">
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
@@ -229,11 +257,11 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-_get_child_logical_pos">
                 <code class="fs-6 fw-bold text-color-title">def _get_child_logical_pos(self: Any, child: UIElement) -> Tuple[float, float]</code>
-                <div class="mt-2 text-muted small">Return the child&#x27;s logical (non-scrolled) position.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-_get_child_screen_rect">
                 <code class="fs-6 fw-bold text-color-title">def _get_child_screen_rect(self: Any, child: UIElement) -> pygame.Rect</code>
-                <div class="mt-2 text-muted small">Return the child&#x27;s bounding box in screen coordinates (with scroll applied).</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-scrollingframe-_get_visible_rect">
                 <code class="fs-6 fw-bold text-color-title">def _get_visible_rect(self: Any) -> pygame.Rect</code>
@@ -301,7 +329,7 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Tabbed container. Fully optimized with cached metrics for vertical mode.<br>Supports icons on tabs with left/right positioning for horizontal orientation.</p>
+                    <p class="lead fs-6">Tabbed container. Fully optimized with cached metrics for vertical mode.<br>Supports icons on tabs with left/right positioning for horizontal orientation.<br><br>Ratio behavior:<br> &nbsp; &nbsp;tab_height / tab_width: if the caller does not pass an explicit value,<br> &nbsp; &nbsp;the defaults (30/100 for horizontal, 80/120 for vertical) are multiplied<br> &nbsp; &nbsp;by the current ratio. If the caller DOES pass a value, that value is used<br> &nbsp; &nbsp;as-is (no ratio applied).<br> &nbsp; &nbsp;Padding, spacing, arrow size and scroll speed are always scaled by the<br> &nbsp; &nbsp;ratio (dynamic — they follow the current ratio at render/update time).</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
@@ -312,6 +340,38 @@
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-__init__">
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, font_size: int = 20, font_name: Optional[str] = None, orientation: Literal['horizontal', 'vertical1', 'vertical2'] = 'horizontal', pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-tab_height">
+                <code class="fs-6 fw-bold text-color-title">def tab_height(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-tab_height">
+                <code class="fs-6 fw-bold text-color-title">def tab_height(self: Any, value: int) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-tab_width">
+                <code class="fs-6 fw-bold text-color-title">def tab_width(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-tab_width">
+                <code class="fs-6 fw-bold text-color-title">def tab_width(self: Any, value: int) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-tab_padding">
+                <code class="fs-6 fw-bold text-color-title">def tab_padding(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-tab_spacing">
+                <code class="fs-6 fw-bold text-color-title">def tab_spacing(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_arrow_size">
+                <code class="fs-6 fw-bold text-color-title">def _arrow_size(self: Any) -> int</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_scroll_speed">
+                <code class="fs-6 fw-bold text-color-title">def _scroll_speed(self: Any) -> int</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_get_init_args">
@@ -336,7 +396,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-add_tab">
                 <code class="fs-6 fw-bold text-color-title">def add_tab(self: Any, tab_name: str, icon: Optional[Union[str, pygame.Surface, Path, AtlasItem, Any]] = None, icon_position: Literal['left', 'right'] = 'left') -> UIElement | None</code>
-                <div class="mt-2 text-muted small">Add a new tab.<br><br>Args:<br> &nbsp; &nbsp;tab_name: Display name of the tab.<br> &nbsp; &nbsp;icon: Icon input (supports Icon, AtlasItem, str/Path, Surface, callable).<br> &nbsp; &nbsp;icon_position: For horizontal tabs, place icon left or right of text.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-add_to_tab">
                 <code class="fs-6 fw-bold text-color-title">def add_to_tab(self: Any, tab_name: str, ui_element: UIElement) -> UIElement | None</code>
@@ -368,7 +428,7 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-get_tab_frame">
                 <code class="fs-6 fw-bold text-color-title">def get_tab_frame(self: Any, tab_name: str) -> Optional[UiFrame]</code>
-                <div class="mt-2 text-muted small">Return the frame (UiFrame) of the tab with the given name.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-get_tab_frame_by_index">
                 <code class="fs-6 fw-bold text-color-title">def get_tab_frame_by_index(self: Any, index: int) -> Optional[UiFrame]</code>
@@ -392,15 +452,15 @@
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-set_tab_title">
                 <code class="fs-6 fw-bold text-color-title">def set_tab_title(self: Any, old_name: str, new_name: str) -> bool</code>
-                <div class="mt-2 text-muted small">Rename a tab. Returns True if successful.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-set_tab_icon">
                 <code class="fs-6 fw-bold text-color-title">def set_tab_icon(self: Any, tab_name: str, icon: Optional[Union[str, pygame.Surface, Path, AtlasItem, Any]], icon_position: Literal['left', 'right'] = 'left') -> bool</code>
-                <div class="mt-2 text-muted small">Set or clear an icon for a tab. Returns True if successful.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_update_tab_offsets">
                 <code class="fs-6 fw-bold text-color-title">def _update_tab_offsets(self: Any) -> None</code>
-                <div class="mt-2 text-muted small">Recalculate cached offsets for vertical tab layouts.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-tabination-_update_tab_scroll">
                 <code class="fs-6 fw-bold text-color-title">def _update_tab_scroll(self: Any) -> None</code>
@@ -455,7 +515,23 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, total_pages: int = 1, current_page: int = 1, max_visible_pages: int = 7, show_prev_next: bool = True, show_first_last: bool = True, button_style: Literal['numbers', 'dots', 'compact'] = 'numbers', pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, total_pages: int = 1, current_page: int = 1, max_visible_pages: int = 7, show_prev_next: bool = True, show_first_last: bool = True, button_style: Literal['numbers', 'dots', 'compact'] = 'numbers', pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, area: Optional[Tuple[int, int, int, int]] = None, alignment: Literal['left', 'center', 'right'] = 'center', spacing: int = 5) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-_scaled_button_margin">
+                <code class="fs-6 fw-bold text-color-title">def _scaled_button_margin(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-area">
+                <code class="fs-6 fw-bold text-color-title">def area(self: Any) -> Tuple[int, int, int, int]</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-set_area">
+                <code class="fs-6 fw-bold text-color-title">def set_area(self: Any, area: Tuple[int, int, int, int]) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-set_alignment">
+                <code class="fs-6 fw-bold text-color-title">def set_alignment(self: Any, alignment: Literal['left', 'center', 'right']) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-pagination-_get_init_args">
@@ -521,59 +597,67 @@
                 </div>
             </div>
         </div>
-        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-expandable">
+        <div class="card mb-5 shadow-sm border-0 overflow-hidden" id="class-accordion">
             <div class="card-header bg-success text-white py-3">
-                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Expandable</h3>
+                <h3 class="mb-0 h5"><i class="bi bi-box me-2"></i>class Accordion</h3>
             </div>
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">Expandable panel that toggles visibility of its content frame.<br>The content frame can have its own auto_arrange_y.</p>
+                    <p class="lead fs-6">Accordion panel with animated height and single-open sibling behavior.<br><br>The header toggles a content panel. By default, opening one accordion<br>collapses its siblings, matching the common accordion interaction model.<br>``allow_multiple=True`` opts into independent panels.</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
                 <div class="attribute-item ms-3 mb-2">
-                    <code>_properties: Any = {**UiFrame._properties, 'title': {'name': 'title', 'key': 'title', 'type': str, 'editable': True, 'description': 'Header text'}, 'expanded': {'name': 'expanded', 'key': '_expanded', 'type': bool, 'editable': True, 'description': 'Whether the panel is expanded'}, 'header_height': {'name': 'header height', 'key': 'header_height', 'type': int, 'editable': False, 'description': 'Height of header button'}, 'allow_multiple': {'name': 'allow multiple', 'key': 'allow_multiple', 'type': bool, 'editable': True, 'description': 'Allow multiple expanded items in same parent'}, 'accordion_group': {'name': 'accordion group', 'key': 'accordion_group', 'type': str, 'editable': True, 'description': 'Group name for accordion behavior'}}</code>
+                    <code>_properties: Any = {**UiFrame._properties, 'title': {'name': 'title', 'key': 'title', 'type': str, 'editable': True, 'description': 'Header text'}, 'expanded': {'name': 'expanded', 'key': '_expanded', 'type': bool, 'editable': True, 'description': 'Whether the panel is expanded'}, 'header_height': {'name': 'header height', 'key': 'header_height', 'type': int, 'editable': False, 'description': 'Height of header button'}, 'allow_multiple': {'name': 'allow multiple', 'key': 'allow_multiple', 'type': bool, 'editable': True, 'description': 'Allow multiple expanded items in same parent'}, 'accordion_group': {'name': 'accordion group', 'key': 'accordion_group', 'type': str, 'editable': True, 'description': 'Optional sibling group name'}}</code>
                 </div></div>
                 <div class="methods-section">
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, title: str = 'Expand', expanded: bool = False, allow_multiple: bool = False, accordion_group: Optional[str] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, auto_arrange_content: bool = False, arrange_spacing: int = 5, arrange_align: str = 'left') -> None</code>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-accordion-__init__">
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, title: str = 'Expand', expanded: bool = False, allow_multiple: bool = False, accordion_group: Optional[str] = None, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, auto_arrange_content: bool = False, arrange_spacing: int = 5, arrange_align: str = 'left', animation_speed: float = 12.0) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-setupicons">
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-accordion-setupicons">
                 <code class="fs-6 fw-bold text-color-title">def setupIcons(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-_get_init_args">
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-accordion-_get_init_args">
                 <code class="fs-6 fw-bold text-color-title">def _get_init_args(self: Any) -> Dict[str, Any]</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-_toggle">
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-accordion-_update_icon">
+                <code class="fs-6 fw-bold text-color-title">def _update_icon(self: Any) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-accordion-_toggle">
                 <code class="fs-6 fw-bold text-color-title">def _toggle(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-expand">
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-accordion-expand">
                 <code class="fs-6 fw-bold text-color-title">def expand(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-collapse">
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-accordion-collapse">
                 <code class="fs-6 fw-bold text-color-title">def collapse(self: Any) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-is_expanded">
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-accordion-is_expanded">
                 <code class="fs-6 fw-bold text-color-title">def is_expanded(self: Any) -> bool</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-add_to_content">
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-accordion-add_to_content">
                 <code class="fs-6 fw-bold text-color-title">def add_to_content(self: Any, element: UIElement) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-update">
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-accordion-_set_animated_height">
+                <code class="fs-6 fw-bold text-color-title">def _set_animated_height(self: Any, content_height: float) -> None</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-accordion-update">
                 <code class="fs-6 fw-bold text-color-title">def update(self: Any, dt: float, input_state: InputState) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
-            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-expandable-render">
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-accordion-render">
                 <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
@@ -587,9 +671,12 @@
             <div class="card-body">
                 <div class="docstring-section mb-4">
                     <h6 class="text-uppercase text-muted fw-bold small">Description</h6>
-                    <p class="lead fs-6">A color picker widget that expands/collapses to show sliders and hex input.<br>Inherits from UiFrame so that when its height changes (on expand/collapse),<br>any parent with auto_arrange_y=True will automatically reposition its children.<br><br>Attributes:<br> &nbsp; &nbsp;color (Color): Currently selected color.<br> &nbsp; &nbsp;expanded (bool): Whether the picker is expanded.<br> &nbsp; &nbsp;color_system (str): &#x27;rgb&#x27;, &#x27;hsl&#x27;, or &#x27;hsv&#x27;.<br> &nbsp; &nbsp;show_alpha (bool): If True, an alpha slider is shown.<br> &nbsp; &nbsp;on_color_changed (Callable[[Color], None]): Callback when color changes.</p>
+                    <p class="lead fs-6">No documentation</p>
                 </div>
                 <div class="attributes-section mb-4"><h6 class="text-uppercase text-muted fw-bold small">Attributes</h6>
+                <div class="attribute-item ms-3 mb-2">
+                    <code>is_interactive: Any = True</code>
+                </div>
                 <div class="attribute-item ms-3 mb-2">
                     <code>_properties: Any = {**UiFrame._properties, 'color': {'name': 'color', 'key': 'color', 'type': Color, 'editable': True, 'description': 'Current selected color'}, 'color_system': {'name': 'color system', 'key': 'color_system', 'type': str, 'editable': False, 'description': 'RGB, HSL or HSV'}, 'expanded': {'name': 'expanded', 'key': 'expanded', 'type': bool, 'editable': True, 'description': 'Show expanded panel'}, 'show_alpha': {'name': 'show alpha', 'key': 'show_alpha', 'type': bool, 'editable': True, 'description': 'Show alpha slider'}}</code>
                 </div></div>
@@ -597,7 +684,7 @@
                     <h6 class="text-uppercase text-muted fw-bold small mb-3">Methods</h6>
                     
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-colorpicker-__init__">
-                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int = 280, closed_height: int = 32, expanded_height: int = 196, color_system: Literal['rgb', 'hsl', 'hsv'] = 'rgb', initial_color: Optional[Union[Color, Tuple[int, int, int]]] = None, show_alpha: bool = False, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
+                <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int | float, y: int | float, width: int | float = 280, closed_height: Optional[int | float] = None, expanded_height: Optional[int | float] = None, color_system: Literal['rgb', 'hsl', 'hsv'] = 'rgb', initial_color: Optional[Union[Color, Tuple[int, int, int]]] = None, show_alpha: bool = False, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, **kwargs: dict) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-colorpicker-update_theme">
@@ -731,21 +818,25 @@
                 <code class="fs-6 fw-bold text-color-title">def __init__(self: Any, x: int, y: int, width: int, height: int, logical_width: Optional[int] = None, logical_height: Optional[int] = None, scale_mode: Literal['none', 'fit', 'stretch'] = 'fit', background_color: Optional[Tuple[int, int, int]] = None, alpha: float = 1.0, pivot: Tuple[float, float] = (0, 0), theme: Optional[ThemeType] = None, element_id: Optional[str] = None, position_mode: Literal['scaled', 'pixel'] = 'pixel', border_color: Optional[Tuple[int, int, int]] = None, border_width: int = 0, corner_radius: Union[int, Tuple[int, int, int, int]] = 0) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
+            <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-canvas-_sm">
+                <code class="fs-6 fw-bold text-color-title">def _sm(self: Any) -> float</code>
+                <div class="mt-2 text-muted small">No documentation</div>
+            </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-canvas-set_draw_callback">
                 <code class="fs-6 fw-bold text-color-title">def set_draw_callback(self: Any, callback: Callable[['Canvas', OpenGLRenderer], None]) -> None</code>
                 <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-canvas-set_border">
                 <code class="fs-6 fw-bold text-color-title">def set_border(self: Any, color: Optional[Tuple[int, int, int]], width: int = 1, corner_radius: Union[int, Tuple[int, int, int, int]] = 0) -> None</code>
-                <div class="mt-2 text-muted small">Set the border appearance.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-canvas-set_position_mode">
                 <code class="fs-6 fw-bold text-color-title">def set_position_mode(self: Any, mode: Literal['scaled', 'pixel']) -> None</code>
-                <div class="mt-2 text-muted small">Set how child elements are positioned inside the canvas.</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-canvas-_map_child_coordinates">
                 <code class="fs-6 fw-bold text-color-title">def _map_child_coordinates(self: Any, child: UIElement) -> Tuple[int, int, int, int]</code>
-                <div class="mt-2 text-muted small">Convert child&#x27;s x, y, width, height from the current position_mode<br>to logical pixel coordinates (0..logical_width, 0..logical_height).</div>
+                <div class="mt-2 text-muted small">No documentation</div>
             </div>
             <div class="method-item ms-3 mb-3 p-3 border-start border-3 border-success bg-light-subtle rounded-end" id="method-canvas-render">
                 <code class="fs-6 fw-bold text-color-title">def render(self: Any, renderer: OpenGLRenderer) -> None</code>
@@ -754,8 +845,20 @@
                 </div>
             </div>
         </div>
+                <h2 class="mt-5 mb-4 border-bottom pb-2">Global Functions</h2>
                 
-                
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-_container_clip_rect">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def _container_clip_rect(container: UIElement) -> pygame.Rect</code>
+                    <p class="mt-2 mb-0 text-muted">Compute a live visual clip rectangle without changing UI state.</p>
+                </div>
+            </div>
+            <div class="card mb-3 border-start border-2 border-info shadow-sm" id="func-_child_intersects_container">
+                <div class="card-body">
+                    <code class="fs-5 fw-bold text-color-title">def _child_intersects_container(container: UIElement, child: UIElement) -> bool</code>
+                    <p class="mt-2 mb-0 text-muted">Read-only optional culling check; never participates in input or layout.</p>
+                </div>
+            </div>
             </div>
         </div>
         <div class="mt-5 mb-5 text-center">
@@ -775,7 +878,7 @@
                 <div class="col-md-6 text-end">
                     <p class="text-white-50">
                         <i class="bi bi-lightning-charge me-1"></i>
-                        Documentation generated on 2026-09-14 16:30
+                        Documentation generated on 2026-09-26 12:41
                     </p>
                 </div>
             </div>
